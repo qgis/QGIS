@@ -1,18 +1,18 @@
 /***************************************************************************
-    qgsmaptoolrectangle3points.cpp  -  map tool for adding rectangle
-    from 3 points
-    ---------------------
-    begin                : September 2017
-    copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 3 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+   qgsmaptoolrectangle3points.cpp  -  map tool for adding rectangle
+   from 3 points
+   ---------------------
+   begin                : September 2017
+   copyright            : (C) 2017 by Loïc Bartoletti
+   email                : lbartoletti at tuxfamily dot org
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 3 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #include "qgsmaptoolrectangle3points.h"
 #include "qgsgeometryrubberband.h"
@@ -25,8 +25,9 @@
 #include "qgssnapindicator.h"
 
 QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *parentTool,
-    QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolAddRectangle( parentTool, canvas, mode )
+    QgsMapCanvas *canvas, CreateMode createMode, CaptureMode mode )
+  : QgsMapToolAddRectangle( parentTool, canvas, mode ),
+    mCreateMode( createMode )
 {
 }
 
@@ -77,7 +78,11 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       break;
       case 2:
       {
-        setDistance2( mPoints.at( 1 ).distance( point ) );
+        if ( mCreateMode == DistanceMode )
+          setDistance2( mPoints.at( 1 ).distance( point ) );
+        else if ( mCreateMode == ProjectedMode )
+          setDistance2( QgsGeometryUtils::perpendicularSegment( point, mPoints.at( 0 ), mPoints.at( 1 ) ).length() );
+
         int side = QgsGeometryUtils::leftOfLine( point.x(), point.y(),
                    mPoints.at( 0 ).x(), mPoints.at( 0 ).y(),
                    mPoints.at( 1 ).x(), mPoints.at( 1 ).y() );

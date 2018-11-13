@@ -1,12 +1,12 @@
 /***************************************************************************
-  qgisapp.cpp  -  description
-  -------------------
+ qgisapp.cpp  -  description
+ -------------------
 
-           begin                : Sat Jun 22 2002
-           copyright            : (C) 2002 by Gary E.Sherman
-           email                : sherman at mrcc.com
-           Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
- ***************************************************************************/
+          begin                : Sat Jun 22 2002
+          copyright            : (C) 2002 by Gary E.Sherman
+          email                : sherman at mrcc.com
+          Romans 3:23=>Romans 6:23=>Romans 10:9,10=>Romans 12
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -1530,7 +1530,8 @@ QgisApp::~QgisApp()
   delete mMapTools.mEllipseFoci;
   delete mMapTools.mRectangleCenterPoint;
   delete mMapTools.mRectangleExtent;
-  delete mMapTools.mRectangle3Points;
+  delete mMapTools.mRectangle3PointsDistance;
+  delete mMapTools.mRectangle3PointsProjected;
   delete mMapTools.mRegularPolygon2Points;
   delete mMapTools.mRegularPolygonCenterPoint;
   delete mMapTools.mRegularPolygonCenterCorner;
@@ -2090,7 +2091,8 @@ void QgisApp::createActions()
   connect( mActionEllipseFoci, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mEllipseFoci, true ); } );
   connect( mActionRectangleCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangleCenterPoint, true ); } );
   connect( mActionRectangleExtent, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangleExtent, true ); } );
-  connect( mActionRectangle3Points, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangle3Points, true ); } );
+  connect( mActionRectangle3PointsDistance, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangle3PointsDistance, true ); } );
+  connect( mActionRectangle3PointsProjected, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRectangle3PointsProjected, true ); } );
   connect( mActionRegularPolygon2Points, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRegularPolygon2Points, true ); } );
   connect( mActionRegularPolygonCenterPoint, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRegularPolygonCenterPoint, true ); } );
   connect( mActionRegularPolygonCenterCorner, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools.mRegularPolygonCenterCorner, true ); } );
@@ -2375,7 +2377,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionEllipseFoci );
   mMapToolGroup->addAction( mActionRectangleCenterPoint );
   mMapToolGroup->addAction( mActionRectangleExtent );
-  mMapToolGroup->addAction( mActionRectangle3Points );
+  mMapToolGroup->addAction( mActionRectangle3PointsDistance );
+  mMapToolGroup->addAction( mActionRectangle3PointsProjected );
   mMapToolGroup->addAction( mActionRegularPolygon2Points );
   mMapToolGroup->addAction( mActionRegularPolygonCenterPoint );
   mMapToolGroup->addAction( mActionRegularPolygonCenterCorner );
@@ -2934,7 +2937,8 @@ void QgisApp::createToolBars()
   tbAddRectangle->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddRectangle->addAction( mActionRectangleCenterPoint );
   tbAddRectangle->addAction( mActionRectangleExtent );
-  tbAddRectangle->addAction( mActionRectangle3Points );
+  tbAddRectangle->addAction( mActionRectangle3PointsDistance );
+  tbAddRectangle->addAction( mActionRectangle3PointsProjected );
   tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
   mShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
@@ -3574,8 +3578,10 @@ void QgisApp::createCanvasTools()
   mMapTools.mRectangleCenterPoint->setAction( mActionRectangleCenterPoint );
   mMapTools.mRectangleExtent = new QgsMapToolRectangleExtent( mMapTools.mAddFeature, mMapCanvas );
   mMapTools.mRectangleExtent->setAction( mActionRectangleExtent );
-  mMapTools.mRectangle3Points = new QgsMapToolRectangle3Points( mMapTools.mAddFeature, mMapCanvas );
-  mMapTools.mRectangle3Points->setAction( mActionRectangle3Points );
+  mMapTools.mRectangle3PointsDistance = new QgsMapToolRectangle3Points( mMapTools.mAddFeature, mMapCanvas, QgsMapToolRectangle3Points::DistanceMode );
+  mMapTools.mRectangle3PointsDistance->setAction( mActionRectangle3PointsDistance );
+  mMapTools.mRectangle3PointsProjected = new QgsMapToolRectangle3Points( mMapTools.mAddFeature, mMapCanvas, QgsMapToolRectangle3Points::ProjectedMode );
+  mMapTools.mRectangle3PointsProjected->setAction( mActionRectangle3PointsProjected );
   mMapTools.mRegularPolygon2Points = new QgsMapToolRegularPolygon2Points( mMapTools.mAddFeature, mMapCanvas );
   mMapTools.mRegularPolygon2Points->setAction( mActionRegularPolygon2Points );
   mMapTools.mRegularPolygonCenterPoint = new QgsMapToolRegularPolygonCenterPoint( mMapTools.mAddFeature, mMapCanvas );
@@ -12532,7 +12538,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionEllipseFoci->setEnabled( enableShapeTools );
       mActionRectangleCenterPoint->setEnabled( enableShapeTools );
       mActionRectangleExtent->setEnabled( enableShapeTools );
-      mActionRectangle3Points->setEnabled( enableShapeTools );
+      mActionRectangle3PointsDistance->setEnabled( enableShapeTools );
+      mActionRectangle3PointsProjected->setEnabled( enableShapeTools );
       mActionRegularPolygon2Points->setEnabled( enableShapeTools );
       mActionRegularPolygonCenterPoint->setEnabled( enableShapeTools );
       mActionRegularPolygonCenterCorner->setEnabled( enableShapeTools );

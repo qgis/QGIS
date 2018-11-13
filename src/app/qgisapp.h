@@ -1,10 +1,10 @@
 /***************************************************************************
-                          qgisapp.h  -  description
-                             -------------------
-    begin                : Sat Jun 22 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
- ***************************************************************************/
+                         qgisapp.h  -  description
+                            -------------------
+   begin                : Sat Jun 22 2002
+   copyright            : (C) 2002 by Gary E.Sherman
+   email                : sherman at mrcc.com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -2044,7 +2044,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mEllipseFoci = nullptr;
         QgsMapTool *mRectangleCenterPoint = nullptr;
         QgsMapTool *mRectangleExtent = nullptr;
-        QgsMapTool *mRectangle3Points = nullptr;
+        QgsMapTool *mRectangle3PointsDistance = nullptr;
+        QgsMapTool *mRectangle3PointsProjected = nullptr;
         QgsMapTool *mRegularPolygon2Points = nullptr;
         QgsMapTool *mRegularPolygonCenterPoint = nullptr;
         QgsMapTool *mRegularPolygonCenterCorner = nullptr;
