@@ -142,9 +142,9 @@
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QRadioButton" name="mProjected">
+    <widget class="QRadioButton" name="mEllipsoidal">
      <property name="text">
-      <string>Projected</string>
+      <string>Ellipsoidal</string>
      </property>
      <property name="checked">
       <bool>false</bool>
