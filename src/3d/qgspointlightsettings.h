@@ -36,6 +36,7 @@ class QDomElement;
 class QgsPointLightSettings
 {
   public:
+    //! Construct a point light with default values
     QgsPointLightSettings() = default;
 
     //! Returns position of the light (in 3D world coordinates)
