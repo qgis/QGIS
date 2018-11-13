@@ -49,14 +49,14 @@ RUN cmake \
 # Python testing environment setup
 
 # Add QGIS test runner
-COPY docker/qgis_resources/test_runner/qgis_* /usr/bin/
+COPY .docker/qgis_resources/test_runner/qgis_* /usr/bin/
 
 # Make all scripts executable
 RUN chmod +x /usr/bin/qgis_*
 
 # Add supervisor service configuration script
-COPY docker/qgis_resources/supervisor/supervisord.conf /etc/supervisor/
-COPY docker/qgis_resources/supervisor/supervisor.xvfb.conf /etc/supervisor/supervisor.d/
+COPY .docker/qgis_resources/supervisor/supervisord.conf /etc/supervisor/
+COPY .docker/qgis_resources/supervisor/supervisor.xvfb.conf /etc/supervisor/supervisor.d/
 
 # Python paths are for
 # - kartoza images (compiled)
