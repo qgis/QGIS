@@ -91,7 +91,7 @@ void QgsLightsWidget::onAddLight()
 {
   if ( mPointLights.count() >= 8 )
   {
-    QMessageBox::warning( this, tr( "Add light" ), tr( "It is not possible to add more than 8 lights to the scene." ) );
+    QMessageBox::warning( this, tr( "Add Light" ), tr( "It is not possible to add more than 8 lights to the scene." ) );
     return;
   }
 
