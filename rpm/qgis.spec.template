@@ -107,6 +107,10 @@ BuildRequires:  qwt-devel
 BuildRequires:  qwt-qt5-devel
 BuildRequires:  qwt-qt5-devel
 
+# GDAL must be explicit. It is required by some raster tools
+# like Warp (Reproject) which relies on gdalwarp
+Requires:       gdal
+
 # Installation of QCA plugins must be explicit
 Requires:       qca-qt5-ossl
 Requires:       gpsbabel
