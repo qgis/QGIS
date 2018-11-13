@@ -23,7 +23,7 @@ DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
 mkdir -p "$CCACHE_DIR"
 
 if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ true ]]; then
-  DIR=$(git rev-parse --show-toplevel)/docker
+  DIR=$(git rev-parse --show-toplevel)/.docker
   pushd "${DIR}"
   echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
   docker build --build-arg CACHE_DIR=/root/.ccache \

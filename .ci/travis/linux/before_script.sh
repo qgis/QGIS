@@ -16,7 +16,7 @@
 
 set -e
 
-pushd docker
+pushd .docker
 
 source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
 
