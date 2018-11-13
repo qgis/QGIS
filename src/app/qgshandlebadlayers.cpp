@@ -43,10 +43,10 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
 
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all unavailable layers unmodified (you can fix them later)." ) );
-  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setText( tr( "Keep unavailable layers" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setText( tr( "Keep Unavailable Layers" ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all unavailable layers from the project" ) );
-  dialog->buttonBox->button( QDialogButtonBox::Discard )->setText( tr( "Remove unavailable layers" ) );
-  dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setText( tr( "Remove Unavailable Layers" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
