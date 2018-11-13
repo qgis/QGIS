@@ -950,7 +950,7 @@ QString QgsApplication::userLoginName()
     sUserName = QString( name );
   }
 
-#elseif QT_CONFIG(process)
+#elif QT_CONFIG(process)
   QProcess process;
 
   process.start( QStringLiteral( "whoami" ) );
