@@ -41,6 +41,9 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsmaptoolpan.h"
+#include "qgsvectorlayercache.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
 #include <QDesktopServices>
 
 #include <QDragEnterEvent>
@@ -133,6 +136,11 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
       mMapCanvas->freeze( false );
       mMapCanvas->refresh();
     }
+    else if ( mTabWidget->currentWidget() == mAttributesTab )
+    {
+      if ( ! mAttributeTableFilterModel )
+        loadAttributeTable();
+    }
   } );
 }
 
@@ -202,6 +210,13 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     return;
   }
 
+  mAttributeTable->setModel( nullptr );
+  if ( mAttributeTableFilterModel )
+  {
+    // Cleanup
+    mAttributeTableFilterModel->deleteLater();
+    mAttributeTableFilterModel = nullptr;
+  }
   if ( mLayer && mLayer->isValid() )
   {
     bool ok = false;
@@ -212,6 +227,12 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     mMapCanvas->setDestinationCrs( mLayer->crs() );
     mMapCanvas->setLayers( QList< QgsMapLayer * >() << mLayer.get() );
     mMapCanvas->zoomToFullExtent();
+
+    if ( mAttributesTab && mLayer->type() != QgsMapLayer::VectorLayer )
+    {
+      mTabWidget->removeTab( mTabWidget->indexOf( mAttributesTab ) );
+      mAttributesTab = nullptr;
+    }
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
@@ -245,6 +266,39 @@ void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
+}
+
+void QgsBrowserLayerProperties::loadAttributeTable()
+{
+  if ( !mLayer || !mLayer->isValid() || mLayer->type() != QgsMapLayer::VectorLayer )
+    return;
+
+  // Initialize the cache
+  QgsVectorLayerCache *layerCache = new QgsVectorLayerCache( qobject_cast< QgsVectorLayer * >( mLayer.get() ), 1000, this );
+  layerCache->setCacheGeometry( false );
+  QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache, this );
+  mAttributeTableFilterModel = new QgsAttributeTableFilterModel( nullptr, tableModel, this );
+  tableModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setLimit( 100 ) );
+  layerCache->setParent( tableModel );
+  tableModel->setParent( mAttributeTableFilterModel );
+
+  mAttributeTable->setModel( mAttributeTableFilterModel );
+  tableModel->loadLayer();
+  QFont font = mAttributeTable->font();
+  int fontSize = font.pointSize();
+#ifdef Q_OS_WIN
+  fontSize = std::max( fontSize - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+#else
+  fontSize = std::max( fontSize - 2, 6 );
+#endif
+  font.setPointSize( fontSize );
+  mAttributeTable->setFont( font );
+
+  // we can safely do this expensive operation here (unlike in the main attribute table), because at most we have only 100 rows...
+  mAttributeTable->resizeColumnsToContents();
+  mAttributeTable->resizeRowsToContents();
+  mAttributeTable->verticalHeader()->setVisible( false ); // maximize valuable table space
+  mAttributeTable->setAlternatingRowColors( true );
 }
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget *parent )

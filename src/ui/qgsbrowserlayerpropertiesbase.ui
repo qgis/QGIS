@@ -71,7 +71,29 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QgsMapCanvas" name="mMapCanvas" native="true"/>
+        <widget class="QgsMapCanvas" name="mMapCanvas"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mAttributesTab">
+      <attribute name="title">
+       <string>Attributes</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsAttributeTableView" name="mAttributeTable"/>
        </item>
       </layout>
      </widget>
@@ -92,9 +114,14 @@
  <customwidgets>
   <customwidget>
    <class>QgsMapCanvas</class>
-   <extends>QWidget</extends>
+   <extends>QGraphicsView</extends>
    <header>qgsmapcanvas.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAttributeTableView</class>
+   <extends>QTableView</extends>
+   <header>qgsattributetableview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
