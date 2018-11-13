@@ -27,7 +27,7 @@
 using namespace Qt3DRender;
 
 
-static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByteArray &heights )
+static QByteArray createPlaneVertexData( int res, float side, float vertScale, float skirtHeight, const QByteArray &heights )
 {
   Q_ASSERT( res >= 2 );
   Q_ASSERT( heights.count() == res * res * static_cast<int>( sizeof( float ) ) );
@@ -58,17 +58,20 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
   // as we do not create valid triangles that would use such vertices
   const float noDataHeight = 0;
 
+  const int iMax = resolution.width() - 1;
+  const int jMax = resolution.height() - 1;
+
   // Iterate over z
   for ( int j = -1; j <= resolution.height(); ++j )
   {
-    int jBound = qBound( 0, j, resolution.height() - 1 );
+    int jBound = qBound( 0, j, jMax );
     const float z = z0 + static_cast<float>( jBound ) * dz;
     const float v = static_cast<float>( jBound ) * dv;
 
     // Iterate over x
     for ( int i = -1; i <= resolution.width(); ++i )
     {
-      int iBound = qBound( 0, i, resolution.width() - 1 );
+      int iBound = qBound( 0, i, iMax );
       const float x = x0 + static_cast<float>( iBound ) * dx;
       const float u = static_cast<float>( iBound ) * du;
 
@@ -83,18 +86,49 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
 
       // position
       *fptr++ = x;
-      *fptr++ = height;
+      *fptr++ = height / side * vertScale;
       *fptr++ = z;
 
       // texture coordinates
       *fptr++ = u;
       *fptr++ = v;
 
-      // TODO: compute correct normals based on neighboring pixels
-      // normal
-      *fptr++ = 0.0f;
-      *fptr++ = 1.0f;
-      *fptr++ = 0.0f;
+      // calculate normal coordinates
+#define zAt( ii, jj )  zData[ jj * resolution.width() + ii ] * vertScale
+      float zi0 = zAt( qBound( 0, i - 1, iMax ), jBound );
+      float zi1 = zAt( qBound( 0, i + 1, iMax ), jBound );
+      float zj0 = zAt( iBound, qBound( 0, j - 1, jMax ) );
+      float zj1 = zAt( iBound, qBound( 0, j + 1, jMax ) );
+
+      QVector3D n;
+      if ( std::isnan( zi0 ) || std::isnan( zi1 ) || std::isnan( zj0 ) || std::isnan( zj1 ) )
+        n = QVector3D( 0, 1, 0 );
+      else
+      {
+        float di, dj;
+        float zij = height * vertScale;
+
+        if ( i == 0 )
+          di = 2 * ( zij - zi1 );
+        else if ( i == iMax )
+          di = 2 * ( zi0 - zij );
+        else
+          di = zi0 - zi1;
+
+        if ( j == 0 )
+          dj = 2 * ( zij - zj1 );
+        else if ( j == jMax )
+          dj = 2 * ( zj0 - zij );
+        else
+          dj = zj0 - zj1;
+
+        n = QVector3D( di, 2 * side / res, dj );
+        n.normalize();
+      }
+
+      *fptr++ = n.x();
+      *fptr++ = n.y();
+      *fptr++ = n.z();
     }
   }
 
@@ -176,15 +210,17 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
 class PlaneVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
-    explicit PlaneVertexBufferFunctor( int resolution, float skirtHeight, const QByteArray &heightMap )
+    explicit PlaneVertexBufferFunctor( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap )
       : mResolution( resolution )
+      , mSide( side )
+      , mVertScale( vertScale )
       , mSkirtHeight( skirtHeight )
       , mHeightMap( heightMap )
     {}
 
     QByteArray operator()() final
     {
-      return createPlaneVertexData( mResolution, mSkirtHeight, mHeightMap );
+      return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap );
     }
 
     bool operator ==( const QBufferDataGenerator &other ) const final
@@ -192,6 +228,8 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
         return ( otherFunctor->mResolution == mResolution &&
+                 otherFunctor->mSide == mSide &&
+                 otherFunctor->mVertScale == mVertScale &&
                  otherFunctor->mSkirtHeight == mSkirtHeight &&
                  otherFunctor->mHeightMap == mHeightMap );
       return false;
@@ -201,6 +239,8 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 
   private:
     int mResolution;
+    float mSide;
+    float mVertScale;
     float mSkirtHeight;
     QByteArray mHeightMap;
 };
@@ -239,9 +279,11 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
 // ------------
 
 
-DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float skirtHeight, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
+DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
   : QGeometry( parent )
   , mResolution( resolution )
+  , mSide( side )
+  , mVertScale( vertScale )
   , mSkirtHeight( skirtHeight )
   , mHeightMap( heightMap )
 {
@@ -357,7 +399,7 @@ void DemTerrainTileGeometry::init()
 
   // switched to setting data instead of just setting data generators because we also need the buffers
   // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
-  mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSkirtHeight, mHeightMap )() );
+  mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap )() );
   mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
 
   addAttribute( mPositionAttribute );

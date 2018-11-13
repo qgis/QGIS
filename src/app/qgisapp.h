@@ -1381,8 +1381,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void customize();
     //! options dialog slot
     void options();
-    //! Whats-this help slot
-    void whatsThis();
     //! Open project properties dialog and show the projections tab
     void projectPropertiesProjections();
     /*  void urlData(); */

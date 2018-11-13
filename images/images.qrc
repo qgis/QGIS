@@ -728,6 +728,7 @@
         <file>themes/default/mIconAllRings.svg</file>
         <file>themes/default/mIconExteriorRing.svg</file>
         <file>themes/default/mIconInteriorRings.svg</file>
+        <file>themes/default/mIconFieldBinary.svg</file>
         <file>themes/default/mActionTrimExtendFeature.svg</file>
     </qresource>
     <qresource prefix="/images/tips">

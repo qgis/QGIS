@@ -32,6 +32,7 @@
 #include <QImage>
 #include "qgsrectangle.h"
 
+class QgsPhongMaterialSettings;
 class QgsTerrainEntity;
 class QgsTerrainTileEntity;
 
@@ -54,7 +55,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     //! Starts asynchronous rendering of map texture
     void loadTexture();
     //! Creates material component for the entity with the rendered map as a texture
-    void createTextureComponent( QgsTerrainTileEntity *entity );
+    void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
 

@@ -255,7 +255,7 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.6
      */
-    static int leftOfLine(const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
 
     /**
      * Returns a point a specified \a distance toward a second point.

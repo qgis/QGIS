@@ -47,6 +47,7 @@ class TestQgsProcessingAlgs: public QObject
     void transformAlg();
     void kmeansCluster();
     void categorizeByStyle();
+    void extractBinary();
 
   private:
 
@@ -626,6 +627,44 @@ void TestQgsProcessingAlgs::categorizeByStyle()
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name(), QStringLiteral( "#00ff00" ) );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name(), QStringLiteral( "#0000ff" ) );
+}
+
+void TestQgsProcessingAlgs::extractBinary()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:extractbinary" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString source = dataDir + QStringLiteral( "/attachments.gdb|layername=points__ATTACH" );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), source );
+  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "DATA" ) );
+  parameters.insert( QStringLiteral( "FILENAME" ), QgsProperty::fromExpression( QStringLiteral( "'test' || \"ATTACHMENTID\" || '.jpg'" ) ) );
+  const QString folder = QDir::tempPath();
+  parameters.insert( QStringLiteral( "FOLDER" ), folder );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.count(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "FOLDER" ) ).toString(), folder );
+
+  QFile file( folder + "/test1.jpg" );
+  QVERIFY( file.open( QIODevice::ReadOnly ) );
+  QByteArray d = file.readAll();
+  QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "ef3dbc530cc39a545832a6c82aac57b6" ) );
+
+  QFile file2( folder + "/test2.jpg" );
+  QVERIFY( file2.open( QIODevice::ReadOnly ) );
+  d = file2.readAll();
+  QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
 }
 
 

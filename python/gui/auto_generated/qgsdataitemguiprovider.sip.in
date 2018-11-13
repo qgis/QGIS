@@ -28,7 +28,7 @@ Encapsulates the context in which a QgsDataItem is shown within the application 
 Constructor for QgsDataItemGuiContext.
 %End
 
-    QgsMessageBar *messageBar();
+    QgsMessageBar *messageBar() const;
 %Docstring
 Returns the associated message bar.
 

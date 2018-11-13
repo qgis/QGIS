@@ -384,6 +384,11 @@ void TestQgsField::displayString()
   QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
   QCOMPARE( longField.displayString( 599999898999LL ), QString( "599999898999" ) );
 
+  // binary field
+  QgsField binaryField( QStringLiteral( "binary" ), QVariant::ByteArray, QStringLiteral( "Binary" ) );
+  QString testBAString( QStringLiteral( "test string" ) );
+  QByteArray testBA( testBAString.toLocal8Bit() );
+  QCOMPARE( binaryField.displayString( testBA ), QStringLiteral( "BLOB" ) );
 }
 
 void TestQgsField::convertCompatible()

@@ -96,7 +96,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number (integer 64 bit)" ), "integer64" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number (real)" ), "real" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date&time" ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date & time" ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
@@ -444,11 +445,14 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTDate;
     else if ( fieldType == QLatin1String( "datetime" ) )
       ogrType = OFTDateTime;
+    else if ( fieldType == QLatin1String( "binary" ) )
+      ogrType = OFTBinary;
 
     int ogrWidth = fieldWidth.toInt();
 
     gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
-    OGR_Fld_SetWidth( fld.get(), ogrWidth );
+    if ( ogrType != OFTBinary )
+      OGR_Fld_SetWidth( fld.get(), ogrWidth );
 
     if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
     {
@@ -479,22 +483,28 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   QString uri( QStringLiteral( "%1|layername=%2" ).arg( fileName, tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
-  QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
   if ( layer->isValid() )
   {
-    // register this layer with the central layers registry
-    QList<QgsMapLayer *> myList;
-    myList << layer;
-    //addMapLayers returns a list of all successfully added layers
-    //so we compare that to our original list.
-    if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+    if ( mAddToProject )
+    {
+      // register this layer with the central layers registry
+      QList<QgsMapLayer *> myList;
+      myList << layer.release();
+      //addMapLayers returns a list of all successfully added layers
+      //so we compare that to our original list.
+      if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+        return true;
+    }
+    else
+    {
       return true;
+    }
   }
   else
   {
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "New GeoPackage Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( tableName ) );
-    delete layer;
   }
 
   return false;
@@ -503,6 +513,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
 void QgsNewGeoPackageLayerDialog::setOverwriteBehavior( OverwriteBehavior behavior )
 {
   mBehavior = behavior;
+}
+
+void QgsNewGeoPackageLayerDialog::setAddToProject( bool addToProject )
+{
+  mAddToProject = addToProject;
 }
 
 void QgsNewGeoPackageLayerDialog::showHelp()

@@ -69,6 +69,14 @@ The default behavior is to prompt the user for an action to take.
 .. versionadded:: 3.0
 %End
 
+    void setAddToProject( bool addToProject );
+%Docstring
+Sets whether a newly created layer should automatically be added to the current project.
+Defaults to true.
+
+.. versionadded:: 3.6
+%End
+
 };
 
 /************************************************************************

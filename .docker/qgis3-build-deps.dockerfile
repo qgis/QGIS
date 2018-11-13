@@ -25,6 +25,7 @@ RUN  apt-get update \
     git \
     graphviz \
     grass-dev \
+    libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \
     libgdal-dev \

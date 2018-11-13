@@ -76,6 +76,14 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
      */
     void setOverwriteBehavior( OverwriteBehavior behavior );
 
+    /**
+     * Sets whether a newly created layer should automatically be added to the current project.
+     * Defaults to true.
+     *
+     * \since QGIS 3.6
+     */
+    void setAddToProject( bool addToProject );
+
   private slots:
     void mAddAttributeButton_clicked();
     void mRemoveAttributeButton_clicked();
@@ -100,6 +108,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     bool mTableNameEdited = false;
     bool mLayerIdentifierEdited = false;
     OverwriteBehavior mBehavior = Prompt;
+    bool mAddToProject = true;
 };
 
 #endif // QGSNEWVECTORLAYERDIALOG_H

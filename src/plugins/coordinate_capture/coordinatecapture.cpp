@@ -138,7 +138,7 @@ void CoordinateCapture::initGui()
 
   // Create the action for tool
   mpCaptureButton = new QPushButton( mypWidget );
-  mpCaptureButton->setText( tr( "Start capture" ) );
+  mpCaptureButton->setText( tr( "Start Capture" ) );
   mpCaptureButton->setToolTip( tr( "Click to enable coordinate capture" ) );
   mpCaptureButton->setIcon( QIcon( ":/coordinate_capture/coordinate_capture.png" ) );
   mpCaptureButton->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );

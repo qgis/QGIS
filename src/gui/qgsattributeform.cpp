@@ -1414,26 +1414,26 @@ void QgsAttributeForm::init()
     mSearchButtonBox->setLayout( boxLayout );
     mSearchButtonBox->setObjectName( QStringLiteral( "searchButtonBox" ) );
 
-    QPushButton *clearButton = new QPushButton( tr( "&Reset form" ), mSearchButtonBox );
+    QPushButton *clearButton = new QPushButton( tr( "&Reset Form" ), mSearchButtonBox );
     connect( clearButton, &QPushButton::clicked, this, &QgsAttributeForm::resetSearch );
     boxLayout->addWidget( clearButton );
     boxLayout->addStretch( 1 );
 
     QPushButton *flashButton = new QPushButton();
     flashButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    flashButton->setText( tr( "&Flash features" ) );
+    flashButton->setText( tr( "&Flash Features" ) );
     connect( flashButton, &QToolButton::clicked, this, &QgsAttributeForm::searchFlash );
     boxLayout->addWidget( flashButton );
 
     QPushButton *zoomButton = new QPushButton();
     zoomButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    zoomButton->setText( tr( "&Zoom to features" ) );
+    zoomButton->setText( tr( "&Zoom to Features" ) );
     connect( zoomButton, &QToolButton::clicked, this, &QgsAttributeForm::searchZoomTo );
     boxLayout->addWidget( zoomButton );
 
     QToolButton *selectButton = new QToolButton();
     selectButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    selectButton->setText( tr( "&Select features" ) );
+    selectButton->setText( tr( "&Select Features" ) );
     selectButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
     selectButton->setPopupMode( QToolButton::MenuButtonPopup );
     selectButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );

@@ -59,7 +59,7 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
      * Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
      * heightMap is array of float values with one height value for each vertex
      */
-    explicit DemTerrainTileGeometry( int resolution, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
+    explicit DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
 
     bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
 
@@ -67,6 +67,8 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
     void init();
 
     int mResolution;
+    float mSide;
+    float mVertScale;
     float mSkirtHeight;
     QByteArray mHeightMap;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;

@@ -21,8 +21,8 @@
 #include <QCompleter>
 #include <QSettings>
 
-QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
 }

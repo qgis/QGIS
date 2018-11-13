@@ -69,6 +69,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
 
+  groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
+  widgetTerrainMaterial->setDiffuseVisible( false );
+  widgetTerrainMaterial->setMaterial( mMap->terrainShadingMaterial() );
+
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
@@ -134,6 +138,9 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
   mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
+
+  mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
+  mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()

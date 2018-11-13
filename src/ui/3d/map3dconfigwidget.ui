@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>830</height>
+    <height>1135</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,6 +83,21 @@
          <double>10.000000000000000</double>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
+     <property name="title">
+      <string>Terrain shading</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true"/>
       </item>
      </layout>
     </widget>
@@ -223,6 +238,18 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPhongMaterialWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsphongmaterialwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -87,6 +87,11 @@ class TestQgsEditorWidgetRegistry: public QObject
       checkSimple( QStringLiteral( "string[]" ), QStringLiteral( "List" ) );
     }
 
+    void binaryType()
+    {
+      checkSimple( QStringLiteral( "binary" ), QStringLiteral( "Binary" ) );
+    }
+
     void configuredType()
     {
       QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );

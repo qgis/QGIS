@@ -19,8 +19,8 @@
 
 #include <QSettings>
 
-QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
 }

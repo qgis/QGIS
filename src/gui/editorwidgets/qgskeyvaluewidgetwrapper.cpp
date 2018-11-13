@@ -17,8 +17,8 @@
 #include "qgskeyvaluewidget.h"
 #include "qgsattributeform.h"
 
-QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
-  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent ):
+  QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 {
 }
 
