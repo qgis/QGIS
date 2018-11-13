@@ -90,6 +90,9 @@ void QgsMeasureDialog::projChanged()
     mDa.setEllipsoid( GEO_NONE );
   else
     mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mTable->clear();
+  mTotal = 0.;
+  updateUi();
 }
 
 void QgsMeasureDialog::openConfigTab()

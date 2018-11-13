@@ -166,7 +166,7 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
   // run length calculation
   std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, false ) );
   std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
-  dlg->mProjected->setChecked( true );
+  dlg->mEllipsoidal->setChecked( true );
 
   tool->restart();
   tool->addPoint( QgsPointXY( 2484588, 2425722 ) );
@@ -184,7 +184,7 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   std::unique_ptr< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, false ) );
   std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
-  dlg2->mProjected->setChecked( true );
+  dlg2->mEllipsoidal->setChecked( true );
 
   tool2->restart();
   tool2->addPoint( QgsPointXY( 2484588, 2425722 ) );
@@ -316,7 +316,7 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
   std::unique_ptr< QgsMeasureTool > tool( new QgsMeasureTool( mCanvas, true ) );
   std::unique_ptr< QgsMeasureDialog > dlg( new QgsMeasureDialog( tool.get() ) );
 
-  dlg->mProjected->setChecked( true );
+  dlg->mEllipsoidal->setChecked( true );
 
   tool->restart();
   tool->addPoint( QgsPointXY( 2484588, 2425722 ) );
@@ -337,7 +337,7 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
   std::unique_ptr< QgsMeasureTool > tool2( new QgsMeasureTool( mCanvas, true ) );
   std::unique_ptr< QgsMeasureDialog > dlg2( new QgsMeasureDialog( tool2.get() ) );
 
-  dlg2->mProjected->setChecked( true );
+  dlg2->mEllipsoidal->setChecked( true );
 
   tool2->restart();
   tool2->addPoint( QgsPointXY( 2484588, 2425722 ) );
