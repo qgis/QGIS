@@ -122,7 +122,7 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
 bool QgsMacNative::hasDarkTheme()
 {
 #if __MAC_OS_X_VERSION_MAX_ALLOWED >= __MAC_10_14
-  if (@available(macOS 10.14, *)) {
+  if ([NSApp respondsToSelector:@selector(effectiveAppearance)]) {
     // compiled on macos 10.14+ AND running on macos 10.14+
     // check the settings of effective appearance of the user
     NSAppearanceName appearanceName = [NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]];
