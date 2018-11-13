@@ -128,7 +128,11 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     void urlClicked( const QUrl &url );
 
   private:
+
+    void loadAttributeTable();
+
     std::unique_ptr<QgsMapLayer> mLayer;
+    QgsAttributeTableFilterModel *mAttributeTableFilterModel = nullptr;
 
 };
 
