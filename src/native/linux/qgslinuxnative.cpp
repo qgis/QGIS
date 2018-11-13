@@ -23,10 +23,11 @@
 #include <QtDBus/QtDBus>
 #include <QtDebug>
 #include <QImage>
+#include <QProcess>
 
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {
-  return NativeDesktopNotifications | NativeFilePropertiesDialog;
+  return NativeDesktopNotifications | NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
 }
 
 void QgsLinuxNative::initializeMainWindow( QWindow *,
@@ -136,6 +137,38 @@ void QgsLinuxNative::setApplicationBadgeCount( int count )
                          QStringLiteral( "Update" ) );
   message.setArguments( {mDesktopFile, properties} );
   QDBusConnection::sessionBus().send( message );
+}
+
+bool QgsLinuxNative::openTerminalAtPath( const QString &path )
+{
+  // logic adapted from https://askubuntu.com/a/227669,
+  // https://github.com/Microsoft/vscode/blob/fec1775aa52e2124d3f09c7b2ac8f69c57309549/src/vs/workbench/parts/execution/electron-browser/terminal.ts
+  QString term = QStringLiteral( "xterm" );
+  const QString desktopSession = qgetenv( "DESKTOP_SESSION" );
+  const QString currentDesktop = qgetenv( "XDG_CURRENT_DESKTOP" );
+  const QString gdmSession = qgetenv( "GDMSESSION" );
+  const bool isDebian = QFile::exists( QStringLiteral( "/etc/debian_version" ) );
+  if ( isDebian )
+  {
+    term = QStringLiteral( "x-terminal-emulator" );
+  }
+  else if ( desktopSession.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) ||
+            currentDesktop.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) ||
+            currentDesktop.contains( QLatin1String( "unity" ), Qt::CaseInsensitive ) )
+  {
+    term = QStringLiteral( "gnome-terminal" );
+  }
+  else if ( desktopSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) ||
+            currentDesktop.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) ||
+            gdmSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) )
+  {
+    term = QStringLiteral( "konsole" );
+  }
+
+  QStringList arguments;
+  arguments << QStringLiteral( "--working-directory" )
+            << path;
+  return QProcess::startDetached( term, QStringList(), path );
 }
 
 /**

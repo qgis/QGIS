@@ -46,6 +46,7 @@ class NATIVE_EXPORT QgsLinuxNative : public QgsNative
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
     void setApplicationBadgeCount( int count ) override;
+    bool openTerminalAtPath( const QString &path ) override;
     NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
   private:
     QString mDesktopFile;
