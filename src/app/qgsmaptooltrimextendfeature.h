@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolextendfeature.h  -  map tool for extending feature
+    qgmaptooltrimextendfeature.h  -  map tool to trim or extend feature
     ---------------------
     begin                : October 2018
     copyright            : (C) 2018 by Loïc Bartoletti
@@ -51,23 +51,28 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
     //!  Points for extend
     QgsPoint pExtend1, pExtend2;
     //!  intersection point between the projection of [pExtend1 - pExtend2] on [pLimit1 - pLimit2]
-    QgsPoint intersection;
+    QgsPoint mIntersection;
     //!  map point used to determine which edges will be used for trim the feature
-    QgsPointXY mapPoint;
+    QgsPointXY mMapPoint;
     //! geometry that will be returned
-    QgsGeometry geom;
+    QgsGeometry mGeom;
     //! Current layer which will be modified
-    QgsVectorLayer *vlayer = nullptr;
+    QgsVectorLayer *mVlayer = nullptr;
     //! Keep information about the state of the intersection
-    bool isIntersection = false;
+    bool mIsIntersection = false;
     //! Keep information of the first layer snapped is 3D or not
-    bool is3DLayer = false;
+    bool mIs3DLayer = false;
     //! if feature is modified
-    bool isModified = false;
+    bool mIsModified = false;
     //! if the segments are intersected = trim
-    bool segmentIntersects = false;
+    bool mSegmentIntersects = false;
+    enum Step
+    {
+      StepLimit,
+      StepExtend,
+    };
     //! The first step (0): choose the limit. The second step (1): choose the segment to trim/extend
-    int step = 0;
+    int mStep = StepLimit;
 };
 
 #endif // QGSMAPTOOLTRIMEXTENDFEATURE_H

@@ -529,7 +529,7 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
   return intersections;
 }
 
-int QgsGeometryUtils::leftOfLine( const QgsPoint point, const QgsPoint p1, const QgsPoint p2 )
+int QgsGeometryUtils::leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 )
 {
   return leftOfLine( point.x(), point.y(), p1.x(), p1.y(), p2.x(), p2.y() );
 }

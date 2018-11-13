@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolextendfeature.cpp  -  map tool for extending feature
+    qgmaptooltrimextendfeature.cpp  -  map tool to trim or extend feature
     ---------------------
     begin                : October 2018
     copyright            : (C) 2018 by Loïc Bartoletti
@@ -73,19 +73,19 @@ static void getPoints( const QgsPointLocator::Match &match, QgsPoint &p1, QgsPoi
 
 void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  mapPoint = e->mapPoint();
+  mMapPoint = e->mapPoint();
 
   FeatureFilter filter;
   QgsPointLocator::Match match;
 
-  switch ( step )
+  switch ( mStep )
   {
-    case 0:
+    case StepLimit:
 
-      match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+      match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
       if ( match.isValid() )
       {
-        is3DLayer = QgsWkbTypes::hasZ( match.layer()->wkbType() );
+        mIs3DLayer = QgsWkbTypes::hasZ( match.layer()->wkbType() );
 
         QgsPointXY p1, p2;
         match.edgePoints( p1, p2 );
@@ -96,31 +96,30 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         mRubberBandLimit->show();
 
       }
-      else
+      else if ( mRubberBandLimit )
       {
-        if ( mRubberBandLimit )
           mRubberBandLimit->hide();
       }
       break;
-    case 1:
+    case StepExtend:
 
       QgsMapLayer *currentLayer = mCanvas->currentLayer();
       if ( !currentLayer )
         break;
 
-      vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-      if ( !vlayer )
+      mVlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      if ( !mVlayer )
         break;
 
-      if ( !vlayer->isEditable() )
+      if ( !mVlayer->isEditable() )
         break;
 
-      filter.setLayer( vlayer );
-      match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+      filter.setLayer( mVlayer );
+      match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
 
       if ( match.isValid() )
       {
-        if ( match.layer() != vlayer )
+        if ( match.layer() != mVlayer )
           break;
 
         QgsPointXY p1, p2;
@@ -132,34 +131,35 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         if ( ( ( pLimit1 == pExtend1 ) || ( pLimit1 == pExtend2 ) ) || ( ( pLimit2 == pExtend1 ) || ( pLimit2 == pExtend2 ) ) )
           break;
 
-        segmentIntersects = QgsGeometryUtils::segmentIntersection( pLimit1, pLimit2, pExtend1, pExtend2, intersection, isIntersection, 1e-8, true );
+        mSegmentIntersects = QgsGeometryUtils::segmentIntersection( pLimit1, pLimit2, pExtend1, pExtend2, mIntersection, mIsIntersection, 1e-8, true );
 
-        if ( is3DLayer && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
+        if ( mIs3DLayer && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
         {
           /* Z Interpolation */
           QgsLineString line( pLimit1, pLimit2 );
 
-          intersection = QgsGeometryUtils::closestPoint( line, QgsPoint( intersection ) );
+          mIntersection = QgsGeometryUtils::closestPoint( line, QgsPoint( mIntersection ) );
         }
 
-        if ( isIntersection )
+        if ( mIsIntersection )
         {
           mRubberBandIntersection.reset( createRubberBand( QgsWkbTypes::PointGeometry ) );
-          mRubberBandIntersection->addPoint( QgsPointXY( intersection ) );
+          mRubberBandIntersection->addPoint( QgsPointXY( mIntersection ) );
           mRubberBandIntersection->show();
 
           mRubberBandExtend.reset( createRubberBand( match.layer()->geometryType() ) );
 
-          geom = match.layer()->getGeometry( match.featureId() );
+          mGeom = match.layer()->getGeometry( match.featureId() );
           int index = match.vertexIndex();
 
-          if ( !segmentIntersects )
+          if ( !mSegmentIntersects )
           {
-            QgsPoint ptInter( intersection.x(), intersection.y() );
+            QgsPoint ptInter( mIntersection.x(), mIntersection.y() );
             if ( pExtend2.distance( ptInter ) < pExtend1.distance( ptInter ) )
               index += 1;
           }
-          else // TRIM PART
+          // TRIM PART
+          else if ( QgsGeometryUtils::leftOfLine( QgsPoint( mMapPoint ), pLimit1, pLimit2 ) != QgsGeometryUtils::leftOfLine( pExtend1, pLimit1, pLimit2 ) )
           {
             // Part where the mouse is (+) will be trimed
             /*     |
@@ -177,15 +177,14 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
              *     +
              *     |
              */
-            if ( QgsGeometryUtils::leftOfLine( QgsPoint( mapPoint ), pLimit1, pLimit2 ) != QgsGeometryUtils::leftOfLine( pExtend1, pLimit1, pLimit2 ) )
               index += 1;
           }
 
-          isModified = geom.moveVertex( intersection, index );
+          mIsModified = mGeom.moveVertex( mIntersection, index );
 
-          if ( isModified )
+          if ( mIsModified )
           {
-            mRubberBandExtend->setToGeometry( geom );
+            mRubberBandExtend->setToGeometry( mGeom );
             mRubberBandExtend->show();
           }
         }
@@ -210,31 +209,31 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  mapPoint = e->mapPoint();
+  mMapPoint = e->mapPoint();
 
   FeatureFilter filter;
   QgsPointLocator::Match match;
 
   if ( e->button() == Qt::LeftButton )
   {
-    switch ( step )
+    switch ( mStep )
     {
-      case 0:
-        match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+      case StepLimit:
+        match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
         if ( mRubberBandLimit && mRubberBandLimit->isVisible() )
         {
           getPoints( match, pLimit1, pLimit2 );
-          step += 1;
+          mStep += 1;
         }
         break;
-      case 1:
-        if ( isModified )
+      case StepExtend:
+        if ( mIsModified )
         {
-          filter.setLayer( vlayer );
-          match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+          filter.setLayer( mVlayer );
+          match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter );
 
           match.layer()->beginEditCommand( tr( "Trim/Extend feature" ) );
-          match.layer()->changeGeometry( match.featureId(), geom );
+          match.layer()->changeGeometry( match.featureId(), mGeom );
           match.layer()->endEditCommand();
           match.layer()->triggerRepaint();
 
@@ -270,11 +269,11 @@ void QgsMapToolTrimExtendFeature::keyPressEvent( QKeyEvent *e )
 
 void QgsMapToolTrimExtendFeature::deactivate()
 {
-  step = 0;
-  isModified = false;
-  is3DLayer = false;
-  isIntersection = false;
-  segmentIntersects = false;
+  mStep = 0;
+  mIsModified = false;
+  mIs3DLayer = false;
+  mIsIntersection = false;
+  mSegmentIntersects = false;
   mRubberBandLimit.reset();
   mRubberBandExtend.reset();
   mRubberBandIntersection.reset();
