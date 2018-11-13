@@ -26,6 +26,8 @@ from builtins import next
 from builtins import str
 from hashlib import md5
 
+import os
+
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
 from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem, QFileDialog
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
@@ -231,31 +233,42 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.presetCombo.setCurrentIndex(index)
 
     def saveAsFilePreset(self):
+        settings = QgsSettings()
+        lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
+
         query = self._getSqlQuery()
         if query == "":
             return
 
-        filename, ext = QFileDialog.getSaveFileName(
+        filename, _ = QFileDialog.getSaveFileName(
             self,
             self.tr('Save SQL Query'),
-            QDir.homePath(),
+            lastDir,
             "SQL File (*.sql)")
 
         if filename:
             with open(filename, 'w') as f:
                 f.write(query)
+                lastDir = os.path.dirname(filename)
+                settings.setValue('DB_Manager/lastDirSQLFile', lastDir)
 
     def loadFilePreset(self):
-        filename = QFileDialog.getOpenFileName(
-                         self,
-                         self.tr("Load SQL Query"),
-                         QDir.homePath(),
-                         "SQL File (*.sql)");
+        settings = QgsSettings()
+        lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
+
+        filename, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Load SQL Query"),
+            lastDir,
+            "SQL File (*.sql)")
+
         if filename:
-            with open(filename[0], 'r') as f:
+            with open(filename, 'r') as f:
                 self.editSql.clear()
                 for line in f:
                     self.editSql.insertText(line)
+                lastDir = os.path.dirname(filename)
+                settings.setValue('DB_Manager/lastDirSQLFile', lastDir)
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
