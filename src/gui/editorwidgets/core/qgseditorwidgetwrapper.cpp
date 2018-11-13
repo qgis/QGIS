@@ -68,7 +68,7 @@ void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 
 void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 {
-  mFormFeature = feature;
+  setFormFeature( feature );
   setValue( feature.attribute( mFieldIdx ) );
 }
 
