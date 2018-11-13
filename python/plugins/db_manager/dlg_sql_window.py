@@ -244,9 +244,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self,
             self.tr('Save SQL Query'),
             lastDir,
-            "SQL File (*.sql)")
+            self.tr("SQL File (*.sql, *.SQL)"))
 
         if filename:
+            if not filename.lower().endswith('.sql'):
+                filename += ".sql"
+
             with open(filename, 'w') as f:
                 f.write(query)
                 lastDir = os.path.dirname(filename)
@@ -260,7 +263,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self,
             self.tr("Load SQL Query"),
             lastDir,
-            "SQL File (*.sql)")
+            self.tr("SQL File (*.sql, *.SQL)"))
 
         if filename:
             with open(filename, 'r') as f:
