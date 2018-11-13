@@ -17,9 +17,11 @@
 
 #include "qgis_core.h"
 #include "qgsnetworkreply.h"
+#include "qgsfeedback.h"
 #include <QThread>
 #include <QObject>
 #include <functional>
+#include <QPointer>
 
 class QNetworkRequest;
 class QNetworkReply;
@@ -70,6 +72,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * \a request. There is no need to manually apply the authentication to the request prior to calling
      * this method.
      *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
      * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
      * by calling reply().
      *
@@ -78,7 +82,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * \see post()
      */
-    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false );
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
     /**
      * Performs a "post" operation on the specified \a request, using the given \a data.
@@ -90,6 +94,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * \a request. There is no need to manually apply the authentication to the request prior to calling
      * this method.
      *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
      * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
      * by calling reply().
      *
@@ -98,7 +104,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * \see get()
      */
-    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false );
+    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
     /**
      * Returns the error message string, after a get() or post() request has been made.\
@@ -185,7 +191,9 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     int mExpirationSec = 30;
 
-    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh );
+    QPointer< QgsFeedback > mFeedback;
+
+    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr );
 
     QString errorMessageFailedAuth();
 

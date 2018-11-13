@@ -47,7 +47,7 @@ Constructor for QgsBlockingNetworkRequest
 
     ~QgsBlockingNetworkRequest();
 
-    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false );
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a "get" operation on the specified ``request``.
 
@@ -58,6 +58,8 @@ If an authCfg() has been set, then any authentication configuration required wil
 ``request``. There is no need to manually apply the authentication to the request prior to calling
 this method.
 
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
 The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
 by calling reply().
 
@@ -67,7 +69,7 @@ can be retrieved by calling errorMessage().
 .. seealso:: :py:func:`post`
 %End
 
-    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false );
+    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a "post" operation on the specified ``request``, using the given ``data``.
 
@@ -77,6 +79,8 @@ it is set to true then a new query is always performed.
 If an authCfg() has been set, then any authentication configuration required will automatically be applied to
 ``request``. There is no need to manually apply the authentication to the request prior to calling
 this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
 
 The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
 by calling reply().
