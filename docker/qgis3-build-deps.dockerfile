@@ -1,7 +1,7 @@
 FROM      ubuntu:18.04
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
-LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
+LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.1"
 
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -11,7 +11,8 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
-  && apt-get install -y \
+  && DEBIAN_FRONTEND=noninteractive \
+  apt-get install -y \
     apt-transport-https \
     bison \
     ca-certificates \
@@ -77,6 +78,7 @@ RUN  apt-get update \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
+    python3-pyqt5.qtwebkit \
     python3-sip \
     python3-sip-dev \
     python3-termcolor \
@@ -103,6 +105,11 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
+    opencl-headers \
+    ocl-icd-libopencl1 \
+    ocl-icd-opencl-dev \
+    supervisor \
+    expect \
   && pip3 install \
     psycopg2 \
     numpy \
@@ -114,6 +121,12 @@ RUN  apt-get update \
     owslib \
     oauthlib \
     pyopenssl \
+    pep8 \
+    pexpect \
+    capturer \
+    sphinx \
+    requests \
+    six \
   && apt-get clean
 
 
