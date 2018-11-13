@@ -124,7 +124,7 @@ bool QgsMacNative::hasDarkTheme()
 #if __MAC_OS_X_VERSION_MAX_ALLOWED >= __MAC_10_14
   if (@available(macOS 10.14, *)) {
     // compiled on macos 10.14+ AND running on macos 10.14+
-    // check the settings of effective apperance of the user
+    // check the settings of effective appearance of the user
     return ( NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua );
   } else {
     // compiled on macos 10.14+ BUT running on macos 10.13-
