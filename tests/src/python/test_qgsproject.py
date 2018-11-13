@@ -1121,6 +1121,25 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(q, query)
 
+    def testWriteEntryDirtying(self):
+
+        project = QgsProject()
+
+        # writing a new entry should dirty the project
+        project.setDirty(False)
+        self.assertTrue(project.writeEntry('myscope', 'myentry', True))
+        self.assertTrue(project.isDirty())
+
+        # over-writing a pre-existing entry with the same value should _not_ dirty the project
+        project.setDirty(False)
+        self.assertTrue(project.writeEntry('myscope', 'myentry', True))
+        self.assertFalse(project.isDirty())
+
+        # over-writing a pre-existing entry with a different value should dirty the project
+        project.setDirty(False)
+        self.assertTrue(project.writeEntry('myscope', 'myentry', False))
+        self.assertTrue(project.isDirty())
+
 
 if __name__ == '__main__':
     unittest.main()
