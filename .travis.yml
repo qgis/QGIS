@@ -7,7 +7,7 @@ matrix:
       language: python # This lets us use newer python versions from virtualenv
       env:
         - TRAVIS_CONFIG=linux
-        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/docker/docker-compose.travis.yml
+        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
         # TRAVIS_BRANCH is either the git tag or the branch name when no tag
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
         - TRAVIS_TIMESTAMP=$(date +%s)
