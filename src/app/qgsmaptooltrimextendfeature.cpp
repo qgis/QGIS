@@ -98,7 +98,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
       }
       else if ( mRubberBandLimit )
       {
-          mRubberBandLimit->hide();
+        mRubberBandLimit->hide();
       }
       break;
     case StepExtend:
@@ -177,7 +177,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
              *     +
              *     |
              */
-              index += 1;
+            index += 1;
           }
 
           mIsModified = mGeom.moveVertex( mIntersection, index );
