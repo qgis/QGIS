@@ -125,14 +125,15 @@ bool QgsMacNative::hasDarkTheme()
   if (@available(macOS 10.14, *)) {
     // compiled on macos 10.14+ AND running on macos 10.14+
     // check the settings of effective appearance of the user
-    return ( NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua );
+    NSAppearanceName appearanceName = [NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]];
+    return ([appearanceName isEqualToString:NSAppearanceNameDarkAqua]);
   } else {
     // compiled on macos 10.14+ BUT running on macos 10.13-
     // DarkTheme was introduced in MacOS 10.14, fallback to light theme
     return false;
   }
 #endif
-  // compiled on macos 10.13- AND running anywhere
+  // compiled on macos 10.13-
   // NSAppearanceNameDarkAqua is not in SDK headers
   // fallback to light theme
   return false;
