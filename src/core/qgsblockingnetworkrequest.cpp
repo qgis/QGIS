@@ -19,6 +19,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsauthmanager.h"
 #include "qgsmessagelog.h"
+#include "qgsfeedback.h"
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -55,20 +56,21 @@ void QgsBlockingNetworkRequest::setAuthCfg( const QString &authCfg )
   mAuthCfg = authCfg;
 }
 
-QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkRequest &request, bool forceRefresh )
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
 {
-  return doRequest( Get, request, forceRefresh );
+  return doRequest( Get, request, forceRefresh, feedback );
 }
 
-QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh )
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh, QgsFeedback *feedback )
 {
   mPostData = data;
-  return doRequest( Post, request, forceRefresh );
+  return doRequest( Post, request, forceRefresh, feedback );
 }
 
-QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBlockingNetworkRequest::Method method, QNetworkRequest &request, bool forceRefresh )
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBlockingNetworkRequest::Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
 {
   mMethod = method;
+  mFeedback = feedback;
 
   abort(); // cancel previous
   mIsAborted = false;
@@ -98,7 +100,10 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   bool threadFinished = false;
   bool success = false;
 
-  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
+  if ( mFeedback )
+    connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
+
+  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &waitCondition, &threadFinished, &success, feedback ]()
   {
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -117,6 +122,8 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
     };
 
     mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
+    if ( mFeedback )
+      connect( mFeedback, &QgsFeedback::canceled, mReply, &QNetworkReply::abort );
 
     if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg ) )
     {
@@ -221,7 +228,7 @@ void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 byte
   if ( bytesReceived != 0 )
     mGotNonEmptyResponse = true;
 
-  if ( !mIsAborted && mReply )
+  if ( !mIsAborted && mReply && ( !mFeedback || !mFeedback->isCanceled() ) )
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
@@ -241,7 +248,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 {
   if ( !mIsAborted && mReply )
   {
-    if ( mReply->error() == QNetworkReply::NoError )
+    if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
       QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
