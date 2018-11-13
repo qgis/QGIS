@@ -5,7 +5,7 @@
 
 TEST_NAME=$1
 
-cd /tests_directory
+cd /tests_directory || exit
 echo "Running test $1 ..."
 OUTPUT=$(QGIS_TEST_MODULE=${TEST_NAME} unbuffer qgis --version-migration --nologo --code /usr/bin/qgis_testrunner.py "$TEST_NAME"  2>/dev/null | tee /dev/tty)
 EXIT_CODE="$?"
