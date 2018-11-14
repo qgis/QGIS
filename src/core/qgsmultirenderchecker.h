@@ -144,7 +144,6 @@ class CORE_EXPORT QgsMultiRenderChecker
     QgsMapSettings mMapSettings;
 };
 
-#ifdef ENABLE_TESTS
 SIP_FEATURE( TESTS )
 SIP_IF_FEATURE( TESTS )
 
@@ -197,7 +196,6 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
 ///@endcond
 
 SIP_END
-#endif
 
 
 #endif // QGSMULTIRENDERCHECKER_H
