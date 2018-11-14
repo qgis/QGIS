@@ -73,6 +73,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   widgetTerrainMaterial->setDiffuseVisible( false );
   widgetTerrainMaterial->setMaterial( mMap->terrainShadingMaterial() );
 
+  widgetLights->setPointLights( mMap->pointLights() );
+
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
@@ -141,6 +143,8 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
   mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
+
+  mMap->setPointLights( widgetLights->pointLights() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()

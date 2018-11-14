@@ -69,7 +69,7 @@ void Qgs3DAnimationWidget::setCameraController( QgsCameraController *cameraContr
 
 void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSettings )
 {
-  cboInterpolation->setCurrentIndex( animSettings.easingCurve().type() );
+  whileBlocking( cboInterpolation )->setCurrentIndex( animSettings.easingCurve().type() );
 
   // initialize GUI from the given animation
   cboKeyframe->clear();

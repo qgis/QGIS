@@ -93,6 +93,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
 
   // create entities of renderers
 
@@ -105,19 +106,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
-  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-  lightTransform->setTranslation( QVector3D( 0, 1000, 0 ) );
-  // defaults: white, intensity 0.5
-  // attenuation: constant 1.0, linear 0.0, quadratic 0.0
-  Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-  light->setConstantAttenuation( 0 );
-  //light->setColor(Qt::white);
-  //light->setIntensity(0.5);
-  lightEntity->addComponent( light );
-  lightEntity->addComponent( lightTransform );
-  lightEntity->setParent( this );
-
+  updateLights();
 
 #if 0
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
@@ -463,6 +452,36 @@ void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
     pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection() );
   }
 
+}
+
+void Qgs3DMapScene::updateLights()
+{
+  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
+    entity->deleteLater();
+  mLightEntities.clear();
+
+  const auto newPointLights = mMap.pointLights();
+  for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
+  {
+    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+    lightTransform->setTranslation( QVector3D( pointLightSettings.position().x(),
+                                    pointLightSettings.position().y(),
+                                    pointLightSettings.position().z() ) );
+
+    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
+    light->setColor( pointLightSettings.color() );
+    light->setIntensity( pointLightSettings.intensity() );
+
+    light->setConstantAttenuation( pointLightSettings.constantAttenuation() );
+    light->setLinearAttenuation( pointLightSettings.linearAttenuation() );
+    light->setQuadraticAttenuation( pointLightSettings.quadraticAttenuation() );
+
+    lightEntity->addComponent( light );
+    lightEntity->addComponent( lightTransform );
+    lightEntity->setParent( this );
+    mLightEntities << lightEntity;
+  }
 }
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()
