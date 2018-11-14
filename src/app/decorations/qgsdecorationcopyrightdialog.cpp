@@ -61,8 +61,10 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
 
   // placement
   cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top center" ), QgsDecorationItem::TopCenter );
   cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
   cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );

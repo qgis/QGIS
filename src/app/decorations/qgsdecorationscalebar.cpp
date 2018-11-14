@@ -369,6 +369,10 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originX = deviceWidth - originX - size.width();
       originY = deviceHeight - originY - size.height();
       break;
+    case TopCenter:
+    case BottomCenter:
+    default:
+      QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   context.painter()->save();

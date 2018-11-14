@@ -40,7 +40,7 @@
 QgsDecorationTitle::QgsDecorationTitle( QObject *parent )
   : QgsDecorationItem( parent )
 {
-  mPlacement = TopLeft;
+  mPlacement = TopCenter;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
   setName( "Title Label" );
@@ -53,7 +53,7 @@ void QgsDecorationTitle::projectRead()
   QgsDecorationItem::projectRead();
 
   mLabelText = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), QString() );
-  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,66" ) ) );
+  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
 
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
@@ -190,8 +190,26 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = QgsTextRenderer::AlignRight;
       break;
+    case TopCenter: // Top Center
+      backgroundBar << QPointF( 0, 0 )
+                    << QPointF( deviceWidth, 0 )
+                    << QPointF( deviceWidth, yOffset * 2 + textHeight )
+                    << QPointF( 0, yOffset * 2 + textHeight );
+      yOffset = yOffset + textHeight - textDescent;
+      xOffset = deviceWidth / 2;
+      horizontalAlignment = QgsTextRenderer::AlignCenter;
+      break;
+    case BottomCenter: // Bottom Center
+      backgroundBar << QPointF( 0, deviceHeight )
+                    << QPointF( deviceWidth, deviceHeight )
+                    << QPointF( deviceWidth, deviceHeight - ( yOffset * 2 + textHeight ) )
+                    << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
+      yOffset = deviceHeight - yOffset - textDescent;
+      xOffset = deviceWidth / 2;
+      horizontalAlignment = QgsTextRenderer::AlignCenter;
+      break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   // Draw background bar
