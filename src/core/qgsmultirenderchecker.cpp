@@ -103,6 +103,8 @@ QString QgsMultiRenderChecker::controlImagePath() const
 // QgsLayoutChecker
 //
 
+///@cond PRIVATE
+
 QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
   : mTestName( testName )
   , mLayout( layout )
