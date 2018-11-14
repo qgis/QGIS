@@ -99,8 +99,6 @@ QString QgsMultiRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
-#ifdef ENABLE_TESTS
-
 //
 // QgsLayoutChecker
 //
@@ -171,5 +169,3 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
 
 
 ///@endcond
-
-#endif
