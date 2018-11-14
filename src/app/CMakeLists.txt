@@ -109,6 +109,8 @@ SET(QGIS_APP_SRCS
   qgsmaptooltextannotation.cpp
 
   decorations/qgsdecorationitem.cpp
+  decorations/qgsdecorationtitle.cpp
+  decorations/qgsdecorationtitledialog.cpp
   decorations/qgsdecorationcopyright.cpp
   decorations/qgsdecorationcopyrightdialog.cpp
   decorations/qgsdecorationlayoutextent.cpp
@@ -363,6 +365,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygoncentercorner.h
 
   decorations/qgsdecorationitem.h
+  decorations/qgsdecorationtitle.h
+  decorations/qgsdecorationtitledialog.h
   decorations/qgsdecorationcopyright.h
   decorations/qgsdecorationcopyrightdialog.h
   decorations/qgsdecorationlayoutextent.h
