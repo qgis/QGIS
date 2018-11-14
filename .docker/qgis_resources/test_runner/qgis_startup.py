@@ -2,8 +2,8 @@
 Disable QGIS modal error dialog.
 
 This script is meant to be run automatically when QGIS starts.
-Is should be renamed to `startup.py` and placed into ~/.qgis2/python/startup.py
-or  ~/.qgis-dev/python/startup.py or ~/.qgis3/python/startup.py
+Is should be renamed to `startup.py` and placed into
+~/.qgis3/python/startup.py
 
 """
 from qgis import utils
