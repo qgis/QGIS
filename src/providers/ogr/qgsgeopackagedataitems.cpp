@@ -86,10 +86,10 @@ QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
   connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
   {
     QList<QgsDataItem *> items = selectedItems();
-    for ( const QgsDataItem *item : items )
+    for ( QgsDataItem *item : items )
     {
-      if ( const QgsGeoPackageAbstractLayerItem *gpkgAbstractItem = qobject_cast<const QgsGeoPackageAbstractLayerItem *>( item ) )
-        deleteLayer( gpkgAbstractItem );
+      if ( QgsGeoPackageAbstractLayerItem *gpkgAbstractItem = qobject_cast< QgsGeoPackageAbstractLayerItem *>( item ) )
+        gpkgAbstractItem->deleteLayer();
     }
   } ) ;
   lst.append( actionDeleteLayer );
@@ -499,7 +499,7 @@ void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
   }
 }
 
-void QgsGeoPackageAbstractLayerItem::deleteLayer( const QgsGeoPackageAbstractLayerItem *item )
+void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   //dave: here we are - we need to find out what other layers in the gpkg are selected and delete em
   // Check if the layer(s) are in the registry
@@ -507,7 +507,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer( const QgsGeoPackageAbstractLay
   const auto mapLayers( QgsProject::instance()->mapLayers() );
   for ( QgsMapLayer *layer :  mapLayers )
   {
-    if ( layer->publicSource() == item->uri() )
+    if ( layer->publicSource() == mUri )
     {
       layersList << layer;
     }
@@ -516,13 +516,13 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer( const QgsGeoPackageAbstractLay
   if ( ! layersList.isEmpty( ) )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
-                                " do you want to remove it from the project and delete it?" ).arg( item->name(), layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                                " do you want to remove it from the project and delete it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     {
       return;
     }
   }
   else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                                   QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( item->name() ),
+                                   QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
   {
     return;
@@ -541,7 +541,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer( const QgsGeoPackageAbstractLay
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( item->name() ) );
+    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
     if ( mParent )
       mParent->refreshConnections();
   }

@@ -42,7 +42,7 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *menu ) override;
   public slots:
-    virtual void deleteLayer( const QgsGeoPackageAbstractLayerItem *item );
+    virtual void deleteLayer();
 #endif
 };
 
