@@ -242,6 +242,20 @@ class TestQgsGeometry(unittest.TestCase):
                 result = geom.constGet().perimeter()
                 self.assertAlmostEqual(result, exp, 5, "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
+    def testCollection(self):
+        g = QgsGeometry.fromWkt('MultiLineString()')
+        self.assertEqual(len(g.get()), 0)
+        self.assertTrue(g.get())
+        g = QgsGeometry.fromWkt('MultiLineString((0 0, 1 1),(13 2, 14 1))')
+        self.assertEqual(len(g.get()), 2)
+        self.assertTrue(g.get())
+        self.assertEqual(g.get().geometryN(0).asWkt(), 'LineString (0 0, 1 1)')
+        self.assertEqual(g.get().geometryN(1).asWkt(), 'LineString (13 2, 14 1)')
+        with self.assertRaises(IndexError):
+            g.get().geometryN(-1)
+        with self.assertRaises(IndexError):
+            g.get().geometryN(2)
+
     def testIntersection(self):
         myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
