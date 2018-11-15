@@ -23,6 +23,7 @@
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QColorDialog>
 #include <QColor>
@@ -35,12 +36,16 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   , mDeco( deco )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationTitleDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationTitleDialog::buttonBox_rejected );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsDecorationTitleDialog::mInsertExpressionButton_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationTitleDialog::showHelp );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationTitle/geometry" ) ).toByteArray() );
+  // once the documentation for this dialog is added, remove the line below
+  buttonBox->button( QDialogButtonBox::Help )->setVisible( false );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationTitleDialog::apply );
@@ -66,12 +71,12 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   pbnBackgroundColor->setColorDialogTitle( tr( "Select Background Bar Color" ) );
 
   // placement
-  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
-  cboPlacement->addItem( tr( "Top center" ), QgsDecorationItem::TopCenter );
-  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
-  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
-  cboPlacement->addItem( tr( "Bottom center" ), QgsDecorationItem::BottomCenter );
-  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->addItem( tr( "Top Left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top Center" ), QgsDecorationItem::TopCenter );
+  cboPlacement->addItem( tr( "Top Right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
+  cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
@@ -82,12 +87,6 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   mButtonFontStyle->setDialogTitle( tr( "Title Label Text Format" ) );
   mButtonFontStyle->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mButtonFontStyle->setTextFormat( mDeco.textFormat() );
-}
-
-QgsDecorationTitleDialog::~QgsDecorationTitleDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DecorationTitle/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationTitleDialog::buttonBox_accepted()
@@ -133,4 +132,9 @@ void QgsDecorationTitleDialog::apply()
   mDeco.mMarginVertical = spnVertical->value();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.update();
+}
+
+void QgsDecorationTitleDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#title-label" ) );
 }
