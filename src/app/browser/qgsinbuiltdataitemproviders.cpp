@@ -168,7 +168,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   menu->addSeparator();
 
-  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder24.svg" ) ), tr( "Open Directory…" ), menu );
+  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ), tr( "Open Directory…" ), menu );
   connect( openFolder, &QAction::triggered, this, [ = ]
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) );
