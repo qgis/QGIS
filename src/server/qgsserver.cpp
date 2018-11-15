@@ -239,9 +239,7 @@ bool QgsServer::init()
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
 
-#ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
-#endif
 
   sServiceRegistry = new QgsServiceRegistry();
 

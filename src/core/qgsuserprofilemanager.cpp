@@ -196,6 +196,7 @@ QgsUserProfile *QgsUserProfileManager::userProfile()
 
 void QgsUserProfileManager::loadUserProfile( const QString &name )
 {
+#if QT_CONFIG(process)
   QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
   arguments << QCoreApplication::arguments();
@@ -203,10 +204,13 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
   // on Windows this might not be case so we need to handle that
   // http://doc.qt.io/qt-5/qcoreapplication.html#arguments
   arguments.removeFirst();
-
   arguments << QStringLiteral( "--profile" ) << name;
   QgsDebugMsg( QStringLiteral( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
+#else
+  Q_UNUSED( name )
+  Q_ASSERT( "Starting the user profile is not supported on the platform" );
+#endif //QT_CONFIG(process)
 }
 
 void QgsUserProfileManager::setActiveUserProfile( const QString &profile )

@@ -106,6 +106,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void createTerrainDeferred();
     void onBackgroundColorChanged();
     void onLayerEntityPickEvent( Qt3DRender::QPickEvent *event );
+    void updateLights();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );
@@ -132,6 +133,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     SceneState mSceneState = Ready;
     //! List of currently registered pick handlers (used by identify tool)
     QList<Qgs3DMapScenePickHandler *> mPickHandlers;
+    //! List of lights in the scene
+    QList<Qt3DCore::QEntity *> mLightEntities;
 };
 
 #endif // QGS3DMAPSCENE_H

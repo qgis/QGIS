@@ -121,9 +121,20 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
 
 bool QgsMacNative::hasDarkTheme()
 {
-#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101400
-  return ( NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua );
-#else
-  return false;
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= __MAC_10_14
+  if ([NSApp respondsToSelector:@selector(effectiveAppearance)]) {
+    // compiled on macos 10.14+ AND running on macos 10.14+
+    // check the settings of effective appearance of the user
+    NSAppearanceName appearanceName = [NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]];
+    return ([appearanceName isEqualToString:NSAppearanceNameDarkAqua]);
+  } else {
+    // compiled on macos 10.14+ BUT running on macos 10.13-
+    // DarkTheme was introduced in MacOS 10.14, fallback to light theme
+    return false;
+  }
 #endif
+  // compiled on macos 10.13-
+  // NSAppearanceNameDarkAqua is not in SDK headers
+  // fallback to light theme
+  return false;
 }

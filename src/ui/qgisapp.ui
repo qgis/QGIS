@@ -106,6 +106,7 @@
      <addaction name="mActionDecorationGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
      <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationTitle"/>
      <addaction name="mActionDecorationCopyright"/>
      <addaction name="mActionDecorationLayoutExtent"/>
     </widget>
@@ -1975,6 +1976,21 @@ Ctrl (Cmd) increments by 15 deg.</string>
     <string>Embed layers and groups from other project files</string>
    </property>
   </action>
+  <action name="mActionDecorationTitle">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/copyright_label.svg</normaloff>:/images/themes/default/copyright_label.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Title Label…</string>
+   </property>
+   <property name="toolTip">
+    <string>Title Label</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a title label that is displayed on the map canvas.</string>
+   </property>
+  </action>
   <action name="mActionDecorationCopyright">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2107,7 +2123,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationGrid">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/transformed.svg</normaloff>:/images/themes/default/transformed.svg</iconset>
+     <normaloff>:/images/themes/default/grid.svg</normaloff>:/images/themes/default/grid.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Grid…</string>

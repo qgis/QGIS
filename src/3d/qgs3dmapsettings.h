@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgspointlightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 
@@ -274,6 +275,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Returns whether to display labels on terrain tiles
     bool showLabels() const { return mShowLabels; }
 
+    /**
+     * Returns list of point lights defined in the scene
+     * \since QGIS 3.6
+     */
+    QList<QgsPointLightSettings> pointLights() const { return mPointLights; }
+
+    /**
+     * Sets list of point lights defined in the scene
+     * \since QGIS 3.6
+     */
+    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -310,6 +323,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Emitted when the flag whether labels are displayed on terrain tiles has changed
     void showLabelsChanged();
 
+    /**
+     * Emitted when the list of point lights changes
+     * \since QGIS 3.6
+     */
+    void pointLightsChanged();
+
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
@@ -327,6 +346,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
+    QList<QgsPointLightSettings> mPointLights;  //!< List of lights defined for the scene
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
     bool mSkyboxEnabled = false;  //!< Whether to render skybox

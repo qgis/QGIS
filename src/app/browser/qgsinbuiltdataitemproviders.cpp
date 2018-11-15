@@ -53,7 +53,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QMenu *newMenu = new QMenu( tr( "New" ), menu );
 
-  QAction *createFolder = new QAction( tr( "Directory…" ), menu );
+  QAction *createFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewFolder.svg" ) ), tr( "Directory…" ), menu );
   connect( createFolder, &QAction::triggered, this, [ = ]
   {
     bool ok = false;
@@ -168,12 +168,23 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   menu->addSeparator();
 
-  QAction *openFolder = new QAction( tr( "Open Directory…" ), menu );
+  QAction *openFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder24.svg" ) ), tr( "Open Directory…" ), menu );
   connect( openFolder, &QAction::triggered, this, [ = ]
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) );
   } );
   menu->addAction( openFolder );
+
+  if ( QgsGui::instance()->nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
+  {
+    QAction *openTerminal = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ), tr( "Open in Terminal…" ), menu );
+    connect( openTerminal, &QAction::triggered, this, [ = ]
+    {
+      QgsGui::instance()->nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() );
+    } );
+    menu->addAction( openTerminal );
+    menu->addSeparator();
+  }
 
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]

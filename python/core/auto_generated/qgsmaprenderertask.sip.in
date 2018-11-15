@@ -27,7 +27,8 @@ task. This can be used to draw maps without blocking the QGIS interface.
     enum ErrorType
     {
       ImageAllocationFail,
-      ImageSaveFail
+      ImageSaveFail,
+      ImageUnsupportedFormat
     };
 
     QgsMapRendererTask( const QgsMapSettings &ms,

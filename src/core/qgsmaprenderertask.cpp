@@ -72,10 +72,14 @@ bool QgsMapRendererTask::run()
   QImage img;
   std::unique_ptr< QPainter > tempPainter;
   QPainter *destPainter = mPainter;
+
+#ifndef QT_NO_PRINTER
   std::unique_ptr< QPrinter > printer;
+#endif // ! QT_NO_PRINTER
 
   if ( mFileFormat == QStringLiteral( "PDF" ) )
   {
+#ifndef QT_NO_PRINTER
     printer.reset( new QPrinter() );
     printer->setOutputFileName( mFileName );
     printer->setOutputFormat( QPrinter::PdfFormat );
@@ -90,6 +94,10 @@ bool QgsMapRendererTask::run()
       tempPainter.reset( new QPainter( printer.get() ) );
       destPainter = tempPainter.get();
     }
+#else
+    mError = ImageUnsupportedFormat;
+    return false;
+#endif // ! QT_NO_PRINTER
   }
 
   if ( !destPainter )
@@ -173,11 +181,16 @@ bool QgsMapRendererTask::run()
 
     if ( mForceRaster && mFileFormat == QStringLiteral( "PDF" ) )
     {
+#ifndef QT_NO_PRINTER
       QPainter pp;
       pp.begin( printer.get() );
       QRectF rect( 0, 0, img.width(), img.height() );
       pp.drawImage( rect, img, rect );
       pp.end();
+#else
+      mError = ImageUnsupportedFormat;
+      return false;
+#endif // !QT_NO_PRINTER
     }
     else if ( mFileFormat != QStringLiteral( "PDF" ) )
     {

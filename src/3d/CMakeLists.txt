@@ -12,6 +12,7 @@ SET(QGIS_3D_SRCS
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
+  qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
@@ -93,6 +94,7 @@ SET(QGIS_3D_HDRS
   qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
+  qgspointlightsettings.h
   qgsraycastingutils_p.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h

@@ -197,11 +197,13 @@ QgsProjectProperty *findKey_( const QString &scope,
 \param key key name
 \param rootProperty is the property from which to start adding
 \param value the value associated with the key
+\param propertiesModified the parameter will be set to true if the written entry modifies pre-existing properties
 */
 QgsProjectProperty *addKey_( const QString &scope,
                              const QString &key,
                              QgsProjectPropertyKey *rootProperty,
-                             const QVariant &value )
+                             const QVariant &value,
+                             bool &propertiesModified )
 {
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -210,6 +212,7 @@ QgsProjectProperty *addKey_( const QString &scope,
   QgsProjectProperty *nextProperty; // link to next property down hierarchy
   QgsProjectPropertyKey *newPropertyKey = nullptr;
 
+  propertiesModified = false;
   while ( ! keySequence.isEmpty() )
   {
     // if the current head of the sequence list matches the property name,
@@ -223,14 +226,24 @@ QgsProjectProperty *addKey_( const QString &scope,
       // name to store the value
       if ( 1 == keySequence.count() )
       {
-        currentProperty->setValue( keySequence.front(), value );
+        QgsProjectProperty *property = currentProperty->find( keySequence.front() );
+        if ( !property || property->value() != value )
+        {
+          currentProperty->setValue( keySequence.front(), value );
+          propertiesModified = true;
+        }
+
         return currentProperty;
       }
       // we're at the top element if popping the keySequence element
       // will leave it empty; in that case, just add the key
       else if ( keySequence.isEmpty() )
       {
-        currentProperty->setValue( value );
+        if ( currentProperty->value() != value )
+        {
+          currentProperty->setValue( value );
+          propertiesModified = true;
+        }
 
         return currentProperty;
       }
@@ -263,7 +276,6 @@ QgsProjectProperty *addKey_( const QString &scope,
   }
 
   return nullptr;
-
 }
 
 
@@ -325,7 +337,6 @@ void removeKey_( const QString &scope,
       return;
     }
   }
-
 }
 
 QgsProject::QgsProject( QObject *parent )
@@ -1877,7 +1888,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
     }
 
     QFileInfo fi( fileName() );
-    struct utimbuf tb = { fi.lastRead().toTime_t(), fi.lastModified().toTime_t() };
+    struct utimbuf tb = { static_cast<time_t>( fi.lastRead().toSecsSinceEpoch() ), static_cast<time_t>( fi.lastModified().toSecsSinceEpoch() ) };
     utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
@@ -1932,37 +1943,57 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
 bool QgsProject::writeEntry( const QString &scope, QString const &key, bool value )
 {
-  setDirty( true );
+  bool propertiesModified;
+  bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
-  return addKey_( scope, key, &mProperties, value );
+  if ( propertiesModified )
+    setDirty( true );
+
+  return success;
 }
 
 bool QgsProject::writeEntry( const QString &scope, const QString &key, double value )
 {
-  setDirty( true );
+  bool propertiesModified;
+  bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
-  return addKey_( scope, key, &mProperties, value );
+  if ( propertiesModified )
+    setDirty( true );
+
+  return success;
 }
 
 bool QgsProject::writeEntry( const QString &scope, QString const &key, int value )
 {
-  setDirty( true );
+  bool propertiesModified;
+  bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
-  return addKey_( scope, key, &mProperties, value );
+  if ( propertiesModified )
+    setDirty( true );
+
+  return success;
 }
 
 bool QgsProject::writeEntry( const QString &scope, const QString &key, const QString &value )
 {
-  setDirty( true );
+  bool propertiesModified;
+  bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
-  return addKey_( scope, key, &mProperties, value );
+  if ( propertiesModified )
+    setDirty( true );
+
+  return success;
 }
 
 bool QgsProject::writeEntry( const QString &scope, const QString &key, const QStringList &value )
 {
-  setDirty( true );
+  bool propertiesModified;
+  bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
-  return addKey_( scope, key, &mProperties, value );
+  if ( propertiesModified )
+    setDirty( true );
+
+  return success;
 }
 
 QStringList QgsProject::readListEntry( const QString &scope,

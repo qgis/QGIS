@@ -34,7 +34,7 @@ QString QgsExtractBinaryFieldAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts contents from a binary field, saving them to individual files.\n\n"
                       "Filenames can be generated using data defined values, allowing them to be taken from"
-                      "an attribute in the source table or based on a more complex expression." );
+                      " an attribute in the source table or based on a more complex expression." );
 }
 
 QString QgsExtractBinaryFieldAlgorithm::shortDescription() const

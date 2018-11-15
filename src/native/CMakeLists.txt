@@ -1,6 +1,12 @@
 #############################################################
 # locate native libs
 
+IF (IOS)
+  # No native library for IOS
+  RETURN()
+ENDIF(IOS)
+
+
 SET(NATIVE_LINK_LIBS)
 
 IF(UNIX AND NOT APPLE AND NOT ANDROID)
@@ -24,7 +30,7 @@ IF(APPLE)
       MESSAGE(FATAL_ERROR "Couldn't find Apple's '${_lib}' framework or library")
     ENDIF(NOT APPLE_${_lib_var}_LIBRARY)
 
-    LIST(APPEND NATIVE_LINK_LIBS "-framework ${_lib}")
+    LIST(APPEND NATIVE_LINK_LIBS "-weak_framework ${_lib}")
   ENDFOREACH(_lib ${APPLE_LIB_LIST})
 ENDIF(APPLE)
 

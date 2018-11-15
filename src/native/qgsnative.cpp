@@ -73,6 +73,16 @@ void QgsNative::setApplicationBadgeCount( int )
 
 }
 
+bool QgsNative::hasDarkTheme()
+{
+  return false;
+}
+
+bool QgsNative::openTerminalAtPath( const QString & )
+{
+  return false;
+}
+
 QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString &, const QString &, const NotificationSettings & )
 {
   NotificationResult result;

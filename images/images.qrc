@@ -155,6 +155,7 @@
         <file>themes/default/grass_mapset.svg</file>
         <file>themes/default/grass_mapset_open.svg</file>
         <file>themes/default/grass_mapset_search.svg</file>
+        <file>themes/default/grid.svg</file>
         <file>themes/default/histogram.svg</file>
         <file>themes/default/heatmap.svg</file>
         <file>themes/default/join_bevel.svg</file>
@@ -584,6 +585,7 @@
         <file>themes/default/symbologyRemove.svg</file>
         <file>themes/default/sync_views.svg</file>
         <file>themes/default/text.svg</file>
+        <file>themes/default/title_label.svg</file>
         <file>themes/default/tracking.svg</file>
         <file>themes/default/transformed.svg</file>
         <file>themes/default/transp-background_8x8.png</file>
@@ -730,6 +732,9 @@
         <file>themes/default/mIconInteriorRings.svg</file>
         <file>themes/default/mIconFieldBinary.svg</file>
         <file>themes/default/mActionTrimExtendFeature.svg</file>
+        <file>themes/default/mActionTerminal.svg</file>
+        <file>themes/default/mIconFolder24.svg</file>
+        <file>themes/default/mActionNewFolder.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

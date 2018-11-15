@@ -42,6 +42,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mShowCameraViewCenter( other.mShowCameraViewCenter )
+  , mShowLabels( other.mShowLabels )
+  , mPointLights( other.mPointLights )
   , mLayers( other.mLayers )
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
@@ -86,6 +88,28 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   if ( !elemTerrainShadingMaterial.isNull() )
     mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial );
   mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
+
+  mPointLights.clear();
+  QDomElement elemPointLights = elem.firstChildElement( QStringLiteral( "point-lights" ) );
+  if ( !elemPointLights.isNull() )
+  {
+    QDomElement elemPointLight = elemPointLights.firstChildElement( QStringLiteral( "point-light" ) );
+    while ( !elemPointLight.isNull() )
+    {
+      QgsPointLightSettings pointLight;
+      pointLight.readXml( elemPointLight );
+      mPointLights << pointLight;
+      elemPointLight = elemPointLight.nextSiblingElement( QStringLiteral( "point-light" ) );
+    }
+  }
+  else
+  {
+    // QGIS <= 3.4 did not have light configuration
+    QgsPointLightSettings defaultLight;
+    defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+    mPointLights << defaultLight;
+  }
+
   QDomElement elemMapLayers = elemTerrain.firstChildElement( QStringLiteral( "layers" ) );
   QDomElement elemMapLayer = elemMapLayers.firstChildElement( QStringLiteral( "layer" ) );
   QList<QgsMapLayerRef> mapLayers;
@@ -95,6 +119,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     elemMapLayer = elemMapLayer.nextSiblingElement( QStringLiteral( "layer" ) );
   }
   mLayers = mapLayers;  // needs to resolve refs afterwards
+
   QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( QStringLiteral( "generator" ) );
   QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
   if ( terrainGenType == QLatin1String( "dem" ) )
@@ -180,6 +205,15 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial );
   elemTerrain.appendChild( elemTerrainShadingMaterial );
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
+
+  QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
+  for ( const QgsPointLightSettings &pointLight : qgis::as_const( mPointLights ) )
+  {
+    QDomElement elemPointLight = pointLight.writeXml( doc );
+    elemPointLights.appendChild( elemPointLight );
+  }
+  elem.appendChild( elemPointLights );
+
   QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
@@ -437,4 +471,13 @@ void Qgs3DMapSettings::setShowLabels( bool enabled )
 
   mShowLabels = enabled;
   emit showLabelsChanged();
+}
+
+void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &pointLights )
+{
+  if ( mPointLights == pointLights )
+    return;
+
+  mPointLights = pointLights;
+  emit pointLightsChanged();
 }
