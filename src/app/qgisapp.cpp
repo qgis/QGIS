@@ -3379,9 +3379,9 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDiagramProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) ) );
   mActionDecorationTitle->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/title_label.svg" ) ) );
   mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/copyright_label.svg" ) ) );
-  mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.png" ) ) );
+  mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.svg" ) ) );
   mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ) );
-  mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/transformed.svg" ) ) );
+  mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/grid.svg" ) ) );
   mActionReverseLine->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionReverseLine.svg" ) ) );
 
   emit currentThemeChanged( themeName );

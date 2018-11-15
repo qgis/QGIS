@@ -155,6 +155,7 @@
         <file>themes/default/grass_mapset.svg</file>
         <file>themes/default/grass_mapset_open.svg</file>
         <file>themes/default/grass_mapset_search.svg</file>
+        <file>themes/default/grid.svg</file>
         <file>themes/default/histogram.svg</file>
         <file>themes/default/heatmap.svg</file>
         <file>themes/default/join_bevel.svg</file>
