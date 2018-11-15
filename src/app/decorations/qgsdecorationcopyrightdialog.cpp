@@ -60,12 +60,12 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   }
 
   // placement
-  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
-  cboPlacement->addItem( tr( "Top center" ), QgsDecorationItem::TopCenter );
-  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
-  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
-  cboPlacement->addItem( tr( "Bottom center" ), QgsDecorationItem::BottomCenter );
-  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->addItem( tr( "Top Left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top Center" ), QgsDecorationItem::TopCenter );
+  cboPlacement->addItem( tr( "Top Right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
+  cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
