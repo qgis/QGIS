@@ -69,6 +69,7 @@ BuildRequires:  libzip-devel
 BuildRequires:  postgresql-devel
 BuildRequires:  sqlite-devel
 BuildRequires:  fcgi-devel
+BuildRequires:  exiv2-devel
 
 # OpenCL
 BuildRequires:  opencl-headers
