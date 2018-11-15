@@ -22,7 +22,6 @@
 #include "qgsexpressioncontext.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 
 #include <QColorDialog>

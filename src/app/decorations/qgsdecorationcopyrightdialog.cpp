@@ -19,7 +19,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgsgui.h"
 
 //qt includes
 #include <QColorDialog>
@@ -33,13 +33,13 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   , mDeco( deco )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationCopyrightDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationCopyrightDialog::buttonBox_rejected );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationCopyrightDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationCopyrightDialog::apply );
@@ -76,12 +76,6 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   mButtonFontStyle->setDialogTitle( tr( "Copyright Label Text Format" ) );
   mButtonFontStyle->setMapCanvas( QgisApp::instance()->mapCanvas() );
   mButtonFontStyle->setTextFormat( mDeco.textFormat() );
-}
-
-QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DecorationCopyright/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationCopyrightDialog::buttonBox_accepted()

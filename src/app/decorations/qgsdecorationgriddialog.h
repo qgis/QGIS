@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSDECORATIONGRIDDIALOG_H
 #define QGSDECORATIONGRIDDIALOG_H
 
@@ -32,7 +33,6 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
   public:
     QgsDecorationGridDialog( QgsDecorationGrid &decoGrid, QWidget *parent = nullptr );
-    ~QgsDecorationGridDialog() override;
 
   private slots:
     void apply();

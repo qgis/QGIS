@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSDECORATIONLAYOUTEXTENTDIALOG_H
 #define QGSDECORATIONLAYOUTEXTENTDIALOG_H
 
@@ -33,7 +34,6 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
 
   public:
     QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &decoration, QWidget *parent = nullptr );
-    ~QgsDecorationLayoutExtentDialog() override;
 
   private slots:
     void apply();
