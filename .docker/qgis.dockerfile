@@ -8,7 +8,7 @@ ARG CACHE_DIR
 FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
-LABEL Description="Docker container with QGIS for CI testing" Vendor="QGIS.org" Version="1.1"
+LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 
 
 ENV CC=/usr/lib/ccache/clang
