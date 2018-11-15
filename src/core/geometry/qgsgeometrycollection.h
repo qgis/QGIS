@@ -88,7 +88,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #ifndef SIP_RUN
     QgsAbstractGeometry *geometryN( int n );
 #else
-    SIP_PYOBJECT geometryN( int n ) const;
+    SIP_PYOBJECT geometryN( int n );
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {

@@ -19,6 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeos.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
+#include "qgsgeometrycollection.h"
 
 #include <limits>
 #include <QTransform>
@@ -245,6 +246,28 @@ void QgsAbstractGeometry::transformVertices( const std::function<QgsPoint( const
   // Ideally this would be pure virtual, but SIP has issues with that
 }
 
+QgsAbstractGeometry::part_iterator QgsAbstractGeometry::parts_end()
+{
+  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( this );
+  return part_iterator( this, collection ? collection->partCount() : 1 );
+}
+
+QgsGeometryPartIterator QgsAbstractGeometry::parts()
+{
+  return QgsGeometryPartIterator( this );
+}
+
+QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const
+{
+  return QgsGeometryConstPartIterator( this );
+}
+
+QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() const
+{
+  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( this );
+  return const_part_iterator( this, collection ? collection->partCount() : 1 );
+}
+
 QgsVertexIterator QgsAbstractGeometry::vertices() const
 {
   return QgsVertexIterator( this );
@@ -385,6 +408,120 @@ void QgsAbstractGeometry::vertex_iterator::digDown()
 }
 
 QgsPoint QgsVertexIterator::next()
+{
+  n = i++;
+  return *n;
+}
+
+QgsAbstractGeometry::part_iterator::part_iterator( QgsAbstractGeometry *g, int index )
+  : mIndex( index )
+  , mGeometry( g )
+{
+}
+
+QgsAbstractGeometry::part_iterator &QgsAbstractGeometry::part_iterator::operator++()
+{
+  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  if ( !collection )
+  {
+    mIndex = 1;
+    return *this; // end of geometry -- nowhere else to go
+  }
+
+  if ( mIndex >= collection->partCount() )
+    return *this; // end of geometry - nowhere else to go
+
+  mIndex++;
+  return *this;
+}
+
+QgsAbstractGeometry::part_iterator QgsAbstractGeometry::part_iterator::operator++( int )
+{
+  part_iterator it( *this );
+  ++*this;
+  return it;
+}
+
+QgsAbstractGeometry *QgsAbstractGeometry::part_iterator::operator*() const
+{
+  QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( mGeometry );
+  if ( !collection )
+  {
+    return mGeometry;
+  }
+
+  return collection->geometryN( mIndex );
+}
+
+int QgsAbstractGeometry::part_iterator::partNumber() const
+{
+  return mIndex;
+}
+
+bool QgsAbstractGeometry::part_iterator::operator==( QgsAbstractGeometry::part_iterator other ) const
+{
+  return mGeometry == other.mGeometry && mIndex == other.mIndex;
+}
+
+QgsAbstractGeometry *QgsGeometryPartIterator::next()
+{
+  n = i++;
+  return *n;
+}
+
+
+
+QgsAbstractGeometry::const_part_iterator::const_part_iterator( const QgsAbstractGeometry *g, int index )
+  : mIndex( index )
+  , mGeometry( g )
+{
+}
+
+QgsAbstractGeometry::const_part_iterator &QgsAbstractGeometry::const_part_iterator::operator++()
+{
+  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  if ( !collection )
+  {
+    mIndex = 1;
+    return *this; // end of geometry -- nowhere else to go
+  }
+
+  if ( mIndex >= collection->partCount() )
+    return *this; // end of geometry - nowhere else to go
+
+  mIndex++;
+  return *this;
+}
+
+QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_part_iterator::operator++( int )
+{
+  const_part_iterator it( *this );
+  ++*this;
+  return it;
+}
+
+const QgsAbstractGeometry *QgsAbstractGeometry::const_part_iterator::operator*() const
+{
+  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  if ( !collection )
+  {
+    return mGeometry;
+  }
+
+  return collection->geometryN( mIndex );
+}
+
+int QgsAbstractGeometry::const_part_iterator::partNumber() const
+{
+  return mIndex;
+}
+
+bool QgsAbstractGeometry::const_part_iterator::operator==( QgsAbstractGeometry::const_part_iterator other ) const
+{
+  return mGeometry == other.mGeometry && mIndex == other.mIndex;
+}
+
+const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
 {
   n = i++;
   return *n;
