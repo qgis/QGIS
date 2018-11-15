@@ -64,6 +64,7 @@ BuildRequires:  spatialindex-devel
 BuildRequires:  grass-devel
 
 # Other stuff
+BuildRequires:  exiv2-devel
 BuildRequires:  gsl-devel
 BuildRequires:  libzip-devel
 BuildRequires:  postgresql-devel
