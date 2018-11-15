@@ -323,6 +323,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! Move object and all its descendants to thread
     void moveToThread( QThread *targetThread );
 
+    void setSelectedItems( const QList<QgsDataItem *> &selectedItems ) { mSelectedItems = selectedItems; }
+    QList<QgsDataItem *> selectedItems() const { return mSelectedItems; }
+
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
@@ -418,6 +421,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher;
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
+    QList<QgsDataItem *> mSelectedItems;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
