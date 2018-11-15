@@ -19,7 +19,7 @@
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
 #include "qgspointlocator.h"
-
+#include "qgsrubberband.h"
 
 class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
 {
@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
 
   public:
     QgsMapToolTrimExtendFeature( QgsMapCanvas *canvas );
-    ~QgsMapToolTrimExtendFeature() override;
+    ~QgsMapToolTrimExtendFeature() override = default;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 

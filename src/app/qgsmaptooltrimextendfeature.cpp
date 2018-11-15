@@ -19,13 +19,14 @@
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
 #include "qgisapp.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapmouseevent.h"
 #include "qgssnapindicator.h"
+
+class QgsRubberBand;
 
 class FeatureFilter : public QgsPointLocator::MatchFilter
 {
@@ -51,10 +52,6 @@ QgsMapToolTrimExtendFeature::QgsMapToolTrimExtendFeature( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
 {
   mToolName = tr( "Trim/Extend feature" );
-}
-
-QgsMapToolTrimExtendFeature::~QgsMapToolTrimExtendFeature()
-{
 }
 
 static void getPoints( const QgsPointLocator::Match &match, QgsPoint &p1, QgsPoint &p2 )
