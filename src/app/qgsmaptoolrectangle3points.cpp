@@ -78,11 +78,15 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       break;
       case 2:
       {
-        if ( mCreateMode == DistanceMode )
-          setDistance2( mPoints.at( 1 ).distance( point ) );
-        else if ( mCreateMode == ProjectedMode )
-          setDistance2( QgsGeometryUtils::perpendicularSegment( point, mPoints.at( 0 ), mPoints.at( 1 ) ).length() );
-
+        switch ( mCreateMode )
+        {
+          case DistanceMode:
+            setDistance2( mPoints.at( 1 ).distance( point ) );
+            break;
+          case ProjectedMode:
+            setDistance2( QgsGeometryUtils::perpendicularSegment( point, mPoints.at( 0 ), mPoints.at( 1 ) ).length() );
+            break;
+        }
         int side = QgsGeometryUtils::leftOfLine( point.x(), point.y(),
                    mPoints.at( 0 ).x(), mPoints.at( 0 ).y(),
                    mPoints.at( 1 ).x(), mPoints.at( 1 ).y() );
