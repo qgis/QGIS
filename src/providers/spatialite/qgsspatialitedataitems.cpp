@@ -45,8 +45,19 @@ QList<QAction *> QgsSLLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), parent );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsSLLayerItem::deleteLayer );
+  const QString deleteText = selectedItems().count() == 1 ? tr( "Delete Layer '%1'…" ).arg( mName )
+                             : tr( "Delete Selected Layers" );
+  QAction *actionDeleteLayer = new QAction( deleteText, parent );
+
+  connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
+  {
+    QList<QgsDataItem *> items = selectedItems();
+    for ( QgsDataItem *item : items )
+    {
+      if ( QgsSLLayerItem *slLayerItem = qobject_cast< QgsSLLayerItem *>( item ) )
+        slLayerItem->deleteLayer();
+    }
+  } ) ;
   lst.append( actionDeleteLayer );
 
   return lst;

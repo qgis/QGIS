@@ -317,8 +317,18 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
   connect( actionRenameLayer, &QAction::triggered, this, &QgsPGLayerItem::renameLayer );
   lst.append( actionRenameLayer );
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( typeName ), parent );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsPGLayerItem::deleteLayer );
+  const QString deleteText = selectedItems().count() == 1 ? tr( "Delete %1" ).arg( typeName )
+                             : tr( "Delete Selected Tables" );
+  QAction *actionDeleteLayer = new QAction( deleteText, parent );
+  connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
+  {
+    QList<QgsDataItem *> items = selectedItems();
+    for ( QgsDataItem *item : items )
+    {
+      if ( QgsPGLayerItem *pgLayerItem = qobject_cast< QgsPGLayerItem *>( item ) )
+        pgLayerItem->deleteLayer();
+    }
+  } ) ;
   lst.append( actionDeleteLayer );
 
   if ( !mLayerProperty.isView )
