@@ -2109,7 +2109,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationGrid">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/transformed.svg</normaloff>:/images/themes/default/transformed.svg</iconset>
+     <normaloff>:/images/themes/default/grid.svg</normaloff>:/images/themes/default/grid.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Grid…</string>
