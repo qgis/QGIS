@@ -28,19 +28,20 @@
 #include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgstextformatwidget.h"
+#include "qgsgui.h"
 
 QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &deco, QWidget *parent )
   : QDialog( parent )
   , mDeco( deco )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationLayoutExtentDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationLayoutExtentDialog::buttonBox_rejected );
 
   mSymbolButton->setSymbolType( QgsSymbol::Fill );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationLayoutExtent/geometry" ) ).toByteArray() );
 
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
@@ -63,12 +64,6 @@ void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
   mDeco.setSymbol( mSymbolButton->clonedSymbol< QgsFillSymbol >() );
   mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.setLabelExtents( mCheckBoxLabelExtents->isChecked() );
-}
-
-QgsDecorationLayoutExtentDialog::~QgsDecorationLayoutExtentDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationLayoutExtent/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationLayoutExtentDialog::buttonBox_accepted()

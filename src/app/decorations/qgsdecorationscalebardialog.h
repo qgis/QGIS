@@ -9,6 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+
 #ifndef QGSSCALEBARPLUGINGUI_H
 #define QGSSCALEBARPLUGINGUI_H
 
@@ -24,7 +25,6 @@ class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDe
 
   public:
     QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, int units, QWidget *parent = nullptr );
-    ~QgsDecorationScaleBarDialog() override;
 
   private slots:
     void buttonBox_accepted();

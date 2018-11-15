@@ -9,6 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+
 #ifndef QGSCOPYRIGHTLABELPLUGINGUI_H
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
@@ -26,7 +27,6 @@ class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsD
 
   public:
     QgsDecorationCopyrightDialog( QgsDecorationCopyright &deco, QWidget *parent = nullptr );
-    ~QgsDecorationCopyrightDialog() override;
 
   private slots:
     void buttonBox_accepted();

@@ -14,7 +14,7 @@
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
-#include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QColorDialog>
 #include <QDialogButtonBox>
@@ -25,12 +25,12 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   , mDeco( deco )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationScaleBarDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationScaleBarDialog::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationScaleBarDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
@@ -86,12 +86,6 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   mButtonFontStyle->setMode( QgsFontButton::ModeTextRenderer );
   mButtonFontStyle->setTextFormat( mDeco.mTextFormat );
-}
-
-QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationScaleBarDialog::showHelp()

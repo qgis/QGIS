@@ -9,6 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+
 #ifndef QGSNORTHARROWPLUGINGUI_H
 #define QGSNORTHARROWPLUGINGUI_H
 
@@ -23,7 +24,6 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
 
   public:
     QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent = nullptr );
-    ~QgsDecorationNorthArrowDialog() override;
 
   private:
     void updateSvgPath( const QString &svgPath );
