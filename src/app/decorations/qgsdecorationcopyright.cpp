@@ -118,7 +118,7 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   context.painter()->setRenderHint( QPainter::Antialiasing, true );
 
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
-  QStringList displayStringList = displayString.split( QStringLiteral( "\n" ) );
+  QStringList displayStringList = displayString.split( '\n' );
 
   QFontMetricsF fm( mTextFormat.scaledFont( context ) );
   QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
