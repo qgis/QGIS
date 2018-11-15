@@ -53,6 +53,24 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
       return mGeometries.size();
     }
 
+#ifdef SIP_RUN
+
+    /**
+     * Returns the number of geometries within the collection.
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->numGeometries();
+    % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+#endif
+
+
     /**
      * Returns a const reference to a geometry from within the collection.
      * \param n index of geometry to return
@@ -67,7 +85,23 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * Returns a geometry from within the collection.
      * \param n index of geometry to return
      */
+#ifndef SIP_RUN
     QgsAbstractGeometry *geometryN( int n );
+#else
+    SIP_PYOBJECT geometryN( int n ) const;
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->geometryN( a0 ), sipType_QgsAbstractGeometry, NULL );
+    }
+    % End
+#endif
+
 
     //methods inherited from QgsAbstractGeometry
     bool isEmpty() const override;
