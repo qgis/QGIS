@@ -30,12 +30,12 @@ class APP_EXPORT QgsDecorationTitleDialog : public QDialog, private Ui::QgsDecor
 
   public:
     QgsDecorationTitleDialog( QgsDecorationTitle &deco, QWidget *parent = nullptr );
-    ~QgsDecorationTitleDialog() override;
 
   private slots:
     void buttonBox_accepted();
     void buttonBox_rejected();
     void mInsertExpressionButton_clicked();
+    void showHelp();
     void apply();
 
   protected:
