@@ -21,6 +21,7 @@
 #include <QString>
 #include <QDir>
 #include <QWindow>
+#include <QProcess>
 #include <QAbstractEventDispatcher>
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>
@@ -198,6 +199,28 @@ QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QStri
     result.successful = true;
 
   return result;
+}
+
+bool QgsWinNative::openTerminalAtPath( const QString &path )
+{
+  // logic from https://github.com/Microsoft/vscode/blob/fec1775aa52e2124d3f09c7b2ac8f69c57309549/src/vs/workbench/parts/execution/electron-browser/terminal.ts#L44
+  const bool isWow64 = qEnvironmentVariableIsSet( "PROCESSOR_ARCHITEW6432" );
+  QString windir = qgetenv( "WINDIR" );
+  if ( windir.isEmpty() )
+    windir = QStringLiteral( "C:\\Windows" );
+  const QString term = QStringLiteral( "%1\\%2\\cmd.exe" ).arg( windir, isWow64 ? QStringLiteral( "Sysnative" ) : QStringLiteral( "System32" ) );
+
+  QProcess process;
+  process.setProgram( term );
+  process.setCreateProcessArgumentsModifier( []( QProcess::CreateProcessArguments * args )
+  {
+    args->flags |= CREATE_NEW_CONSOLE;
+    args->startupInfo->dwFlags &= ~ STARTF_USESTDHANDLES;
+  } );
+  process.setWorkingDirectory( path );
+
+  qint64 pid;
+  return process.startDetached( &pid );
 }
 
 bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, long * )
