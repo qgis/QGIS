@@ -58,7 +58,7 @@ Returns the number of geometries within the collection.
 
 
 
-    SIP_PYOBJECT geometryN( int n ) const;
+    SIP_PYOBJECT geometryN( int n );
 %Docstring
 Returns a geometry from within the collection.
 

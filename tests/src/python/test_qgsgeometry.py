@@ -95,6 +95,104 @@ class TestQgsGeometry(unittest.TestCase):
         with self.assertRaises(StopIteration):
             next(it)
 
+    def testPartIterator(self):
+        g = QgsGeometry()
+        it = g.parts()
+        with self.assertRaises(StopIteration):
+            next(it)
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # single point geometry
+        g = QgsGeometry.fromWkt('Point (10 10)')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'Point (10 10)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        it = g.get().parts()
+        self.assertEqual(next(it).asWkt(), 'Point (10 10)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # multi point geometry
+        g = QgsGeometry.fromWkt('MultiPoint (10 10, 20 20, 10 20)')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'Point (10 10)')
+        self.assertEqual(next(it).asWkt(), 'Point (20 20)')
+        self.assertEqual(next(it).asWkt(), 'Point (10 20)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        it = g.get().parts()
+        self.assertEqual(next(it).asWkt(), 'Point (10 10)')
+        self.assertEqual(next(it).asWkt(), 'Point (20 20)')
+        self.assertEqual(next(it).asWkt(), 'Point (10 20)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # empty multi point geometry
+        g = QgsGeometry.fromWkt('MultiPoint ()')
+        it = g.parts()
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # single line geometry
+        g = QgsGeometry.fromWkt('LineString (10 10, 20 10, 30 10)')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'LineString (10 10, 20 10, 30 10)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # multi line geometry
+        g = QgsGeometry.fromWkt('MultiLineString ((10 10, 20 20, 10 20),(5 7, 8 9))')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'LineString (10 10, 20 20, 10 20)')
+        self.assertEqual(next(it).asWkt(), 'LineString (5 7, 8 9)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # empty multi line geometry
+        g = QgsGeometry.fromWkt('MultiLineString ()')
+        it = g.parts()
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # single polygon geometry
+        g = QgsGeometry.fromWkt('Polygon ((10 10, 100 10, 100 100, 10 100, 10 10),(50 50, 55 50, 55 55, 50 55, 50 50))')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'Polygon ((10 10, 100 10, 100 100, 10 100, 10 10),(50 50, 55 50, 55 55, 50 55, 50 50))')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # multi polygon geometry
+        g = QgsGeometry.fromWkt('MultiPolygon (((10 10, 100 10, 100 100, 10 100, 10 10),(50 50, 55 50, 55 55, 50 55, 50 50)),((20 2, 20 4, 22 4, 22 2, 20 2)))')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'Polygon ((10 10, 100 10, 100 100, 10 100, 10 10),(50 50, 55 50, 55 55, 50 55, 50 50))')
+        self.assertEqual(next(it).asWkt(), 'Polygon ((20 2, 20 4, 22 4, 22 2, 20 2))')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # empty multi polygon geometry
+        g = QgsGeometry.fromWkt('MultiPolygon ()')
+        it = g.parts()
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # geometry collection
+        g = QgsGeometry.fromWkt('GeometryCollection( Point( 1 2), LineString( 4 5, 8 7 ))')
+        it = g.parts()
+        self.assertEqual(next(it).asWkt(), 'Point (1 2)')
+        self.assertEqual(next(it).asWkt(), 'LineString (4 5, 8 7)')
+        with self.assertRaises(StopIteration):
+            next(it)
+
+        # empty geometry collection
+        g = QgsGeometry.fromWkt('GeometryCollection()')
+        it = g.parts()
+        with self.assertRaises(StopIteration):
+            next(it)
+
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)

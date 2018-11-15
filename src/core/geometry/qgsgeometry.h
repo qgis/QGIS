@@ -377,6 +377,9 @@ class CORE_EXPORT QgsGeometry
 
 #ifndef SIP_RUN
 
+    // TODO QGIS 4: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
+    // to camelCase
+
     /**
      * Returns STL-style iterator pointing to the first vertex of the geometry
      * \since QGIS 3.0
@@ -391,10 +394,142 @@ class CORE_EXPORT QgsGeometry
 #endif
 
     /**
-     * Returns Java-style iterator for traversal of vertices of the geometry
+     * Returns a read-only, Java-style iterator for traversal of vertices of all the geometry, including all geometry parts and rings.
+     *
+     * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
+     * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the x and y coordinate for each vertex in a LineString
+     *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+     *   for v in geometry.vertices():
+     *       print(v.x(), v.y())
+     *
+     *   # vertex iteration includes all parts and rings
+     *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for v in geometry.vertices():
+     *       print(v.x(), v.y())
+     * \endcode
+     *
+     * \see parts()
      * \since QGIS 3.0
      */
     QgsVertexIterator vertices() const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns STL-style iterator pointing to the first part of the geometry.
+     *
+     * This method forces a detach. Use const_parts_begin() to avoid the detach
+     * if the parts are not going to be modified.
+     *
+     * \since QGIS 3.6
+     */
+    QgsAbstractGeometry::part_iterator parts_begin();
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary part after the last part of the geometry.
+     *
+     * This method forces a detach. Use const_parts_begin() to avoid the detach
+     * if the parts are not going to be modified.
+     *
+     * \since QGIS 3.6
+     */
+    QgsAbstractGeometry::part_iterator parts_end();
+
+    /**
+     * Returns STL-style const iterator pointing to the first part of the geometry.
+     *
+     * This method avoids a detach and is more efficient then parts_begin() for read
+     * only iteration.
+     *
+     * \since QGIS 3.6
+     */
+    QgsAbstractGeometry::const_part_iterator const_parts_begin() const;
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary part after the last part of the geometry.
+     *
+     * This method avoids a detach and is more efficient then parts_end() for read
+     * only iteration.
+     *
+     * \since QGIS 3.6
+     */
+    QgsAbstractGeometry::const_part_iterator const_parts_end() const;
+#endif
+
+    /**
+     * Returns Java-style iterator for traversal of parts of the geometry. This iterator
+     * can safely be used to modify parts of the geometry.
+     *
+     * This method forces a detach. Use constParts() to avoid the detach
+     * if the parts are not going to be modified.
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the WKT representation of each part in a multi-point geometry
+     *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # single part geometries only have one part - this loop will iterate once only
+     *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # parts can be modified during the iteration
+     *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       part.transform(ct)
+     *
+     *   # part iteration can also be combined with vertex iteration
+     *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for part in geometry.parts():
+     *       for v in part.vertices():
+     *           print(v.x(), v.y())
+     *
+     * \endcode
+     *
+     * \see constParts()
+     * \see vertices()
+     * \since QGIS 3.6
+     */
+    QgsGeometryPartIterator parts();
+
+    /**
+     * Returns Java-style iterator for traversal of parts of the geometry. This iterator
+     * returns read-only references to parts and cannot be used to modify the parts.
+     *
+     * Unlike parts(), this method does not force a detach and is more efficient if read-only
+     * iteration only is required.
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the WKT representation of each part in a multi-point geometry
+     *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # single part geometries only have one part - this loop will iterate once only
+     *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # part iteration can also be combined with vertex iteration
+     *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for part in geometry.parts():
+     *       for v in part.vertices():
+     *           print(v.x(), v.y())
+     *
+     * \endcode
+     *
+     * \see parts()
+     * \see vertices()
+     * \since QGIS 3.6
+     */
+    QgsGeometryConstPartIterator constParts() const;
 
     /**
      * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
