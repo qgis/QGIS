@@ -72,7 +72,7 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
       StepExtend,
     };
     //! The first step (0): choose the limit. The second step (1): choose the segment to trim/extend
-    int mStep = StepLimit;
+    Step mStep = StepLimit;
 };
 
 #endif // QGSMAPTOOLTRIMEXTENDFEATURE_H

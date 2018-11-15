@@ -220,7 +220,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mRubberBandLimit && mRubberBandLimit->isVisible() )
         {
           getPoints( match, pLimit1, pLimit2 );
-          mStep += 1;
+          mStep = StepExtend;
         }
         break;
       case StepExtend:
@@ -266,7 +266,7 @@ void QgsMapToolTrimExtendFeature::keyPressEvent( QKeyEvent *e )
 
 void QgsMapToolTrimExtendFeature::deactivate()
 {
-  mStep = 0;
+  mStep = StepLimit;
   mIsModified = false;
   mIs3DLayer = false;
   mIsIntersection = false;
