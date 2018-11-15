@@ -11,7 +11,7 @@
 #
 
 
-FIND_PATH(SPATIALINDEX_INCLUDE_DIR NAMES SpatialIndex.h PATHS
+FIND_PATH(SPATIALINDEX_INCLUDE_DIR spatialindex/SpatialIndex.h PATHS
   /usr/include
   /usr/local/include
   "$ENV{LIB_DIR}/include"

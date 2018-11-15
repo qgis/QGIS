@@ -23,7 +23,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsfeedback.h"
 
-#include "SpatialIndex.h"
+#include <spatialindex/SpatialIndex.h>
 #include <QMutex>
 #include <QMutexLocker>
 
