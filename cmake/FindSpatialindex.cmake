@@ -17,7 +17,6 @@ FIND_PATH(SPATIALINDEX_INCLUDE_DIR spatialindex/SpatialIndex.h PATHS
   "$ENV{LIB_DIR}/include"
   "$ENV{INCLUDE}"
   "$ENV{OSGEO4W_ROOT}/include"
-  PATH_SUFFIXES spatialindex
   )
 
 FIND_LIBRARY(SPATIALINDEX_LIBRARY NAMES spatialindex_i spatialindex spatialindex-64 PATHS
