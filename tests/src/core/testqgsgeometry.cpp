@@ -82,6 +82,7 @@ class TestQgsGeometry : public QObject
     void isEmpty();
     void equality();
     void vertexIterator();
+    void partIterator();
 
 
     // geometry types
@@ -475,6 +476,33 @@ void TestQgsGeometry::vertexIterator()
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 3, 4 ) );
   QVERIFY( !it2.hasNext() );
+}
+
+void TestQgsGeometry::partIterator()
+{
+  QgsGeometry geom;
+  QgsGeometryPartIterator it = geom.parts();
+  QVERIFY( !it.hasNext() );
+
+  geom = QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) );
+  QgsGeometryConstPartIterator it2 = geom.constParts();
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next()->asWkt(), QStringLiteral( "Point (1 2)" ) );
+  QVERIFY( !it2.hasNext() );
+
+  // test that non-const iterator detaches
+  QgsGeometry geom2 = geom;
+  it = geom2.parts();
+  QVERIFY( it.hasNext() );
+  QgsAbstractGeometry *part = it.next();
+  QCOMPARE( part->asWkt(), QStringLiteral( "Point (1 2)" ) );
+  static_cast< QgsPoint * >( part )->setX( 100 );
+  QCOMPARE( geom2.asWkt(), QStringLiteral( "Point (100 2)" ) );
+  QVERIFY( !it.hasNext() );
+  // geom2 should hve adetached, geom should be unaffected by change
+  QCOMPARE( geom.asWkt(), QStringLiteral( "Point (1 2)" ) );
+
+  // See test_qgsgeometry.py for geometry-type specific checks!
 }
 
 void TestQgsGeometry::point()
