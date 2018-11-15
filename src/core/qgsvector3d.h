@@ -126,6 +126,21 @@ class CORE_EXPORT QgsVector3D
       }
     }
 
+    double distance( const QgsVector3D &other ) const
+    {
+      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) +
+                        ( mY - other.y() ) * ( mY - other.y() ) +
+                        ( mZ - other.z() ) * ( mZ - other.z() ) );
+    }
+
+    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp )
+    {
+      QgsVector3D d = ( v2 - v1 ) / v2.distance( v1 );
+      QgsVector3D v = vp - v2;
+      double t = dotProduct( v, d );
+      QgsVector3D P = v2 + ( d * t );
+      return P;
+    }
 
   private:
     double mX = 0, mY = 0, mZ = 0;

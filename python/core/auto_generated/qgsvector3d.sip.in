@@ -89,6 +89,9 @@ Returns the length of the vector
 Normalizes the current vector in place.
 %End
 
+    double distance( const QgsVector3D &other ) const;
+
+    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp );
 
 };
 

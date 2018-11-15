@@ -68,19 +68,11 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-        if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
-        {
-          mRectangle = QgsBox3d( mPoints.at( 0 ), point );
-          mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon( ) );
-        }
-        else
-        {
-          double dist = mPoints.at( 0 ).distance( point );
-          double angle = mPoints.at( 0 ).azimuth( point );
+        double dist = mPoints.at( 0 ).distance( point );
+        double angle = mPoints.at( 0 ).azimuth( point );
 
-          mRectangle = QgsBox3d( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
-          mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
-        }
+        mRectangle = QgsQuadix::rectangleFromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
+        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
       }
       break;
       default:

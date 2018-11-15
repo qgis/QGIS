@@ -1,0 +1,117 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsquadix.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsQuadix
+{
+%Docstring
+Quadix (Quadrilateral) geometry type.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsquadix.h"
+%End
+  public:
+    QgsQuadix();
+
+    QgsQuadix( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
+%Docstring
+Construct a QgsQuadix from three :py:class:`QgsPointV2`.
+
+:param p1: first point
+:param p2: second point
+:param p3: third point
+:param p4: fourth point
+%End
+
+    explicit QgsQuadix( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 );
+%Docstring
+Construct a QgsQuadix from three :py:class:`QgsPoint`.
+
+:param p1: first point
+:param p2: second point
+:param p3: third point
+:param p4: fourth point
+%End
+
+
+    enum ConstructionOption
+    {
+      Distance,
+      Projected,
+    };
+    static QgsQuadix rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
+    static QgsQuadix rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
+    static const auto &rectangleFromDiagonal = rectangleFromExtent;
+    static QgsQuadix squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
+    static QgsQuadix rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
+    static QgsQuadix fromRectangle( const QgsRectangle &rectangle );
+
+
+    bool operator==( const QgsQuadix &other ) const;
+    bool operator!=( const QgsQuadix &other ) const;
+
+    bool isEmpty() const;
+    enum Point
+    {
+      Point1,
+      Point2,
+      Point3,
+      Point4,
+    };
+
+    void setPoint( const QgsPoint &newPoint, Point index );
+    void setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
+
+    QgsPointSequence points() const;
+%Docstring
+Returns a list including the vertices of the quadrilateral.
+%End
+
+    QgsPolygon *toPolygon() const /Factory/;
+%Docstring
+Returns as a polygon.
+%End
+
+    QgsLineString *toLineString() const /Factory/;
+%Docstring
+Returns as a linestring.
+%End
+
+    QString toString( int pointPrecision = 17 ) const;
+%Docstring
+Returns a string representation of the quadrilateral.
+Members will be truncated to the specified precision.
+%End
+
+    double area() const;
+%Docstring
+Returns the area.
+Returns 0 if the quadrilateral is empty.
+%End
+
+    double perimeter() const;
+%Docstring
+Returns the perimeter.
+Returns 0 if the quadrilateral is empty.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsquadix.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
