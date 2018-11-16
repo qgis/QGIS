@@ -36,6 +36,7 @@ echo "TRAVIS_COMMIT_MESSAGE: $TRAVIS_COMMIT_MESSAGE"
 echo "DOCKER_DEPS_PUSH: $DOCKER_DEPS_PUSH"
 echo "DOCKER_DEPS_IMAGE_REBUILD: $DOCKER_DEPS_IMAGE_REBUILD"
 echo "DOCKER_BUILD_QGIS_IMAGE: $DOCKER_BUILD_QGIS_IMAGE"
+echo "DOCKER_BUILD_DEPS_FILE: $DOCKER_BUILD_DEPS_FILE"
 echo "TRAVIS_TIMESTAMP: $TRAVIS_TIMESTAMP"
 echo "travis_fold:end:travis_env"
 
@@ -49,10 +50,10 @@ if [[ $DOCKER_BUILD_QGIS_IMAGE =~ false ]]; then
 fi
 
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
-  docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
+  docker build --no-cache -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
 else
   docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
-  docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f qgis3-build-deps.dockerfile .
+  docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
 fi
 echo "travis_fold:end:docker_build"
 
