@@ -18,14 +18,8 @@ set -e
 
 pushd .docker
 
-source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
-
-
 DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYPE =~ push ]] && echo "true" || echo "false" )
 DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
-# on cron job, QGIS image is built and push without testing
-DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
-
 
 echo "travis_fold:start:travis_env"
 echo "${bold}Travis environment variables${endbold}"

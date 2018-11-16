@@ -16,13 +16,10 @@
 
 set -e
 
-source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
-
-DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
-
 mkdir -p "$CCACHE_DIR"
 
 if [[ DOCKER_BUILD_QGIS_IMAGE =~ true ]]; then
+  # building docker images
   DIR=$(git rev-parse --show-toplevel)/.docker
   pushd "${DIR}"
   echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
@@ -36,5 +33,6 @@ if [[ DOCKER_BUILD_QGIS_IMAGE =~ true ]]; then
   docker push "qgis/qgis:${DOCKER_TAG}"
   popd
 else
+  # running tests
   docker-compose -f "${DOCKER_COMPOSE}" run --rm qgis-deps
 fi
