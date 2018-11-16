@@ -59,6 +59,9 @@ cmake \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
+ -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
+ -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
+ -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \
  ..
 echo "travis_fold:end:cmake"
 
