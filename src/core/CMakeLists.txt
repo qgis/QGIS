@@ -593,6 +593,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
+  qgscoordinateutils.h
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
@@ -840,7 +841,6 @@ SET(QGIS_CORE_HDRS
   qgscoordinateformatter.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
-  qgscoordinateutils.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h

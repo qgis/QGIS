@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include <QString>
+#include <QObject>
 
 #include "qgis_core.h"
 
@@ -39,6 +40,8 @@ class QgsProject;
  */
 class CORE_EXPORT QgsCoordinateUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -52,14 +55,14 @@ class CORE_EXPORT QgsCoordinateUtils
      * \param mapCrs CRS of map
      * \returns optimal number of decimal places for coordinates
      */
-    static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
+    Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 
     /**
      * Formats a \a point coordinate for use with the specified \a project, respecting the project's
      * coordinate display settings.
      * \since QGIS 3.2
      */
-    static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+    Q_INVOKABLE static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
 };
 
