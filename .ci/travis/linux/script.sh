@@ -18,7 +18,7 @@ set -e
 
 mkdir -p "$CCACHE_DIR"
 
-if [[ DOCKER_BUILD_QGIS_IMAGE =~ true ]]; then
+if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   # building docker images
   DIR=$(git rev-parse --show-toplevel)/.docker
   pushd "${DIR}"
@@ -34,5 +34,5 @@ if [[ DOCKER_BUILD_QGIS_IMAGE =~ true ]]; then
   popd
 else
   # running tests
-  docker-compose -f "${DOCKER_COMPOSE}" run --rm qgis-deps
+  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
 fi

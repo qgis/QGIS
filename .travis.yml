@@ -10,8 +10,8 @@ cache:
     - $HOME/.ccache
   timeout: 1000
 
-global:
-  env:
+env:
+  global:
     - TRAVIS_TIMESTAMP=$(date +%s)
     - CCACHE_DIR=${HOME}/.ccache
 
