@@ -10,27 +10,37 @@ cache:
     - $HOME/.ccache
   timeout: 1000
 
+global:
+  env:
+    - TRAVIS_TIMESTAMP=$(date +%s)
+    - CCACHE_DIR=${HOME}/.ccache
+
 matrix:
   fast_finish: true
   include:
+
+##########################################################
+#
+# TESTS FOR STANDARD COMMITS
+#
+##########################################################
+
       ##########################################################
       # QGIS TESTS ON BIONIC
       ##########################################################
     - os: linux
+      if: type != cron
       services: docker
       env:
         - TRAVIS_CONFIG=linux
-        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
-        # TRAVIS_BRANCH is either the git tag or the branch name when no tag
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - TRAVIS_TIMESTAMP=$(date +%s)
-        - CCACHE_DIR=${HOME}/.ccache
-      if: type!=cron
+        - DOCKER_BUILD_QGIS_IMAGE=false
 
       ##########################################################
       # CODE LAYOUT
       ##########################################################
-    
+    - os: linux
+      if: type != cron
       env:
         - TRAVIS_CONFIG=code_layout
       addons:
@@ -68,46 +78,36 @@ matrix:
 
 
 
-      ##########################################################
-      #
-      #  DOCKER IMAGE BUILD JOBS ON CRON
-      #
-      ##########################################################
-
-
-
+##########################################################
+#
+#  DOCKER IMAGE BUILD JOBS ON CRON OR TAG
+#
+##########################################################
 
 
       ##########################################################
-      # BIONIC DOCKER BUILD ON CRON
+      # BIONIC DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
+      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
         - TRAVIS_CONFIG=linux
-        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
-        # TRAVIS_BRANCH is either the git tag or the branch name when no tag
-        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - TRAVIS_TIMESTAMP=$(date +%s)
-        - CCACHE_DIR=${HOME}/.ccache
+        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
         - DOCKER_DEBIAN_DISTRO=bionic
-      if: type=cron
+        - DOCKER_BUILD_QGIS_IMAGE=true
 
       ##########################################################
-      # COSMIC DOCKER BUILD ON CRON
+      # COSMIC DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
+      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
         - TRAVIS_CONFIG=linux
-        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
-        # TRAVIS_BRANCH is either the git tag or the branch name when no tag
-        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - TRAVIS_TIMESTAMP=$(date +%s)
-        - CCACHE_DIR=${HOME}/.ccache
+        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
         - DOCKER_DEBIAN_DISTRO=cosmic
-      if: type=cron
-
+        - DOCKER_BUILD_QGIS_IMAGE=true
 
 
 
@@ -134,7 +134,6 @@ notifications:
   on_success: change
   skip_join: true
 
-notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
@@ -153,6 +152,3 @@ before_script:
 
 script:
   - ./.ci/travis/${TRAVIS_CONFIG}/script.sh
-
-after_script:
-  - ./.ci/travis/${TRAVIS_CONFIG}/after_script.sh

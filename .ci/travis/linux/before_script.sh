@@ -25,7 +25,6 @@ DOCKER_DEPS_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_EVENT_TYP
 DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
 # on cron job, QGIS image is built and push without testing
 DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
-QGIS_LAST_BUILD_SUCCESS=true # TODO use API to know if last build succeed https://developer.travis-ci.com/resource/builds
 
 
 echo "travis_fold:start:travis_env"
@@ -36,8 +35,7 @@ echo "DOCKER_TAG: $DOCKER_TAG"
 echo "TRAVIS_COMMIT_MESSAGE: $TRAVIS_COMMIT_MESSAGE"
 echo "DOCKER_DEPS_PUSH: $DOCKER_DEPS_PUSH"
 echo "DOCKER_DEPS_IMAGE_REBUILD: $DOCKER_DEPS_IMAGE_REBUILD"
-echo "DOCKER_QGIS_IMAGE_BUILD_PUSH: $DOCKER_QGIS_IMAGE_BUILD_PUSH"
-echo "QGIS_LAST_BUILD_SUCCESS: $QGIS_LAST_BUILD_SUCCESS"
+echo "DOCKER_BUILD_QGIS_IMAGE: $DOCKER_BUILD_QGIS_IMAGE"
 echo "TRAVIS_TIMESTAMP: $TRAVIS_TIMESTAMP"
 echo "travis_fold:end:travis_env"
 
@@ -45,9 +43,9 @@ echo "travis_fold:end:travis_env"
 echo "travis_fold:start:docker_build"
 echo "${bold}Docker build deps${endbold}"
 docker --version
-if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ false ]]; then
+if [[ $DOCKER_BUILD_QGIS_IMAGE =~ false ]]; then
   docker-compose --version
-  docker-compose -f "${DOCKER_COMPOSE}" config
+  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml config
 fi
 
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then
