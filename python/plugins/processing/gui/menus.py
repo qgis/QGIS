@@ -98,6 +98,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
 rasterMenu = QApplication.translate('MainWindow', '&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
+                           'gdal:extractprojection': projectionsMenu,
                            'gdal:assignprojection': projectionsMenu})
 conversionMenu = rasterMenu + "/" + Processing.tr('Conversion')
 defaultMenuEntries.update({'gdal:rasterize': conversionMenu,
