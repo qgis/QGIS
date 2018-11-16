@@ -53,8 +53,8 @@ class CORE_EXPORT QgsCoordinateUtils
      * having enough decimal places to show the difference in position between adjacent
      * pixels.
      *
-     * \since QGIS 3.6 a new \a project parameter is available. Using the method without this
-     *        a \a project paramter is deprecated and will be removed with QGIS 4.
+     * \note  Since QGIS 3.6 a new \a project parameter is available. Using the method without this
+     *        a \a project parameter is deprecated and will be removed with QGIS 4.
      *        For backward compatibility, QgsProject.instance() will be used if the \a project
      *        parameter is not specified.
      */
