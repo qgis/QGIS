@@ -89,7 +89,6 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
   QLineEdit::focusInEvent( e );
   if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
-    mFocusInEvent = true;
     mWaitingForMouseRelease = true;
   }
 }
@@ -213,3 +212,14 @@ bool QgsFilterLineEdit::event( QEvent *event )
 
   return QLineEdit::event( event );;
 }
+
+/// @cond PRIVATE
+void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
+{
+  QLineEdit::focusInEvent( e );
+  if ( isNull() )
+  {
+    clear();
+  }
+}
+/// @endcond
