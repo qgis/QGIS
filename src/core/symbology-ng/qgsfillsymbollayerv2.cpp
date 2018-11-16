@@ -353,7 +353,7 @@ void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
     QDomElement strokeElem = doc.createElement( "se:Stroke" );
     symbolizerElem.appendChild( strokeElem );
     double borderWidth = QgsSymbolLayerV2Utils::rescaleUom( mBorderWidth, mBorderWidthUnit, props );
-    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, borderWidth, borderWidth, &mPenJoinStyle );
+    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, mBorderColor, borderWidth, &mPenJoinStyle );
   }
 
   // <se:Displacement>
