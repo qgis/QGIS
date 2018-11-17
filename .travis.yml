@@ -1,42 +1,49 @@
+language: python # This lets us use newer python versions from virtualenv
+python: "3.5"
+compiler: clang
+dist: trusty
+sudo: false
+cache:
+  apt: true
+  pip: true
+  directories:
+    - $HOME/.ccache
+  timeout: 1000
+
+env:
+  global:
+    - TRAVIS_TIMESTAMP=$(date +%s)
+    - CCACHE_DIR=${HOME}/.ccache
+
 matrix:
   fast_finish: true
   include:
-    # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
+
+##########################################################
+#
+# TESTS FOR STANDARD COMMITS
+#
+##########################################################
+
+      ##########################################################
+      # QGIS TESTS ON BIONIC
+      ##########################################################
     - os: linux
+      if: type != cron
       services: docker
-      language: python # This lets us use newer python versions from virtualenv
       env:
         - TRAVIS_CONFIG=linux
-        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
-        # TRAVIS_BRANCH is either the git tag or the branch name when no tag
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - TRAVIS_TIMESTAMP=$(date +%s)
-        - CCACHE_DIR=${HOME}/.ccache
-      dist: trusty
-      sudo: false
-      cache:
-        apt: true
-        pip: true
-        directories:
-          - $HOME/.ccache
-        timeout: 1000
-      compiler: clang
-      python: "3.5"
-      addons:
-        apt:
-          sources:
-          packages:
+        - DOCKER_BUILD_QGIS_IMAGE=false
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
-
+      ##########################################################
+      # CODE LAYOUT
+      ##########################################################
     - os: linux
-      language: python
-      python: "3.5"
+      if: type != cron
       env:
         - TRAVIS_CONFIG=code_layout
-      dist: trusty
-      sudo: false
-      cache:
-        apt: true
       addons:
         apt:
           sources:
@@ -69,6 +76,44 @@ matrix:
             - libstrictures-perl
             - libstring-escape-perl
             - libtry-tiny-perl
+
+
+
+##########################################################
+#
+#  DOCKER IMAGE BUILD JOBS ON CRON OR TAG
+#
+##########################################################
+
+
+      ##########################################################
+      # BIONIC DOCKER BUILD ON CRON OR TAG
+      ##########################################################
+    - os: linux
+      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
+      services: docker
+      env:
+        - TRAVIS_CONFIG=linux
+        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
+        - DOCKER_DEBIAN_DISTRO=bionic
+        - DOCKER_BUILD_QGIS_IMAGE=true
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
+
+      ##########################################################
+      # COSMIC DOCKER BUILD ON CRON OR TAG
+      ##########################################################
+    - os: linux
+      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
+      services: docker
+      env:
+        - TRAVIS_CONFIG=linux
+        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic
+        - DOCKER_DEBIAN_DISTRO=cosmic
+        - DOCKER_BUILD_QGIS_IMAGE=true
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
+
+
+
     # OSX based build with QT4 and Python 2
 #    - os: osx
 #      osx_image: xcode8.3 # MacOS 10.12: Sierra
@@ -92,7 +137,6 @@ notifications:
   on_success: change
   skip_join: true
 
-notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
@@ -111,6 +155,3 @@ before_script:
 
 script:
   - ./.ci/travis/${TRAVIS_CONFIG}/script.sh
-
-after_script:
-  - ./.ci/travis/${TRAVIS_CONFIG}/after_script.sh
