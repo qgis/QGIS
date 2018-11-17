@@ -116,9 +116,6 @@ the given ``format``.
 
   public slots:
 
-    virtual void accept();
-
-
     void reportError( const QString &error, bool fatalError );
 %Docstring
 Reports an ``error`` string to the dialog's log.
@@ -271,6 +268,11 @@ Formats an input ``string`` for display in the log tab.
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 %Docstring
 Called when the algorithm has finished executing.
+%End
+
+    virtual void runAlgorithm();
+%Docstring
+Called when the dialog's algorithm should be run. Must be overridden by subclasses.
 %End
 
 };

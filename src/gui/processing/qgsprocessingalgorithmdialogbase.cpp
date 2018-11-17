@@ -95,7 +95,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   splitterChanged( 0, 0 );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::accept );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
 
   // Rename OK button to Run
   mButtonRun = mButtonBox->button( QDialogButtonBox::Ok );
@@ -260,10 +260,6 @@ void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
 void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
 
-}
-
-void QgsProcessingAlgorithmDialogBase::accept()
-{
 }
 
 void QgsProcessingAlgorithmDialogBase::openHelp()
@@ -462,6 +458,11 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
     // to retrieve results and execution status).
     deleteLater();
   }
+}
+
+void QgsProcessingAlgorithmDialogBase::runAlgorithm()
+{
+
 }
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
