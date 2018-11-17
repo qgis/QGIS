@@ -98,7 +98,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
-    QgsProcessingAlgorithmDialogBase( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Sets the \a algorithm to run in the dialog.
