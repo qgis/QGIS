@@ -95,7 +95,6 @@ matrix:
       env:
         - TRAVIS_CONFIG=linux
         - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
-        - DOCKER_DEBIAN_DISTRO=bionic
         - DOCKER_BUILD_QGIS_IMAGE=true
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
 
@@ -107,8 +106,7 @@ matrix:
       services: docker
       env:
         - TRAVIS_CONFIG=linux
-        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic
-        - DOCKER_DEBIAN_DISTRO=cosmic
+        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic"
         - DOCKER_BUILD_QGIS_IMAGE=true
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
 
