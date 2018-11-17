@@ -113,6 +113,11 @@ QgsFields QgsMultiRingConstantBufferAlgorithm::outputFields( const QgsFields &in
   return fields;
 }
 
+QgsProcessingFeatureSource::Flag QgsMultiRingConstantBufferAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   double currentDistance = 0;
