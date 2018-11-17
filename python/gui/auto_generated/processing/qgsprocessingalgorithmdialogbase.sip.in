@@ -38,10 +38,13 @@ Base class for processing algorithm dialogs.
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
+    ~QgsProcessingAlgorithmDialogBase();
 
-    void setAlgorithm( QgsProcessingAlgorithm *algorithm );
+    void setAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
 %Docstring
 Sets the ``algorithm`` to run in the dialog.
+
+Ownership of the algorithm instance is transferred to the dialog.
 
 .. seealso:: :py:func:`algorithm`
 %End
