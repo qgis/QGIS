@@ -38,6 +38,9 @@ RUN cmake \
   -DWITH_QSPATIALITE=ON \
   -DWITH_APIDOC=OFF \
   -DWITH_ASTYLE=OFF \
+  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
+  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
+  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \
  .. \
  && ninja install \
  && rm -rf /usr/src/QGIS
