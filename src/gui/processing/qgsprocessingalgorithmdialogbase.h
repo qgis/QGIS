@@ -99,12 +99,16 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
     QgsProcessingAlgorithmDialogBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+    ~QgsProcessingAlgorithmDialogBase() override;
 
     /**
      * Sets the \a algorithm to run in the dialog.
+     *
+     * Ownership of the algorithm instance is transferred to the dialog.
+     *
      * \see algorithm()
      */
-    void setAlgorithm( QgsProcessingAlgorithm *algorithm );
+    void setAlgorithm( QgsProcessingAlgorithm *algorithm SIP_TRANSFER );
 
     /**
      * Returns the algorithm running in the dialog.
@@ -333,7 +337,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     bool mExecuted = false;
     QVariantMap mResults;
     QWidget *mMainWidget = nullptr;
-    QgsProcessingAlgorithm *mAlgorithm = nullptr;
+    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 
     bool mHelpCollapsed = false;

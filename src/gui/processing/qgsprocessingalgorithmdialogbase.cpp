@@ -119,9 +119,11 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmDialogBase::taskTriggered );
 }
 
+QgsProcessingAlgorithmDialogBase::~QgsProcessingAlgorithmDialogBase() = default;
+
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
-  mAlgorithm = algorithm;
+  mAlgorithm.reset( algorithm );
   QString title;
   if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
   {
@@ -156,7 +158,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
 
 QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
 {
-  return mAlgorithm;
+  return mAlgorithm.get();
 }
 
 void QgsProcessingAlgorithmDialogBase::setMainWidget( QWidget *widget )
