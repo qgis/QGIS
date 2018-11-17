@@ -168,8 +168,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
   public slots:
 
-    void accept() override;
-
     /**
      * Reports an \a error string to the dialog's log.
      *
@@ -314,6 +312,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Called when the algorithm has finished executing.
      */
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    /**
+     * Called when the dialog's algorithm should be run. Must be overridden by subclasses.
+     */
+    virtual void runAlgorithm();
 
   private slots:
 
