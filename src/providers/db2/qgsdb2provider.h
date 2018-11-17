@@ -124,8 +124,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
        * Returns a thread-safe connection name for use with QSqlDatabase
        */
     static QString dbConnectionName( const QString &name );
-	
-    static QMutex sMutex;	
+
+    static QMutex sMutex;
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;

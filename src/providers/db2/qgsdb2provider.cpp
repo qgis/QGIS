@@ -222,14 +222,14 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
         QSqlDatabase::removeDatabase( connectionName );
       }, Qt::DirectConnection );
     }
-	}
+  }
   else  /* if existing database connection */
   {
     QgsDebugMsg( QStringLiteral( "found existing connection, use the existing one" ) );
     db = QSqlDatabase::database( threadSafeConnectionName );
   }
-  locker.unlock();  
-  
+  locker.unlock();
+
   db.setHostName( host );
   db.setPort( port.toInt() );
   bool connected = false;
