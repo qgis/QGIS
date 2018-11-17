@@ -159,7 +159,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         return self.algorithm().preprocessParameters(parameters)
 
-    def accept(self):
+    def runAlgorithm(self):
         feedback = self.createFeedback()
         context = dataobjects.createContext(feedback)
 
