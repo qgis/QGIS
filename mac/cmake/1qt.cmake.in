@@ -105,6 +105,10 @@ EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../iconengines")
 IF (NOT EXISTS "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/iconengines/libqsvgicon.dylib" "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
 ENDIF ()
+EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../styles")
+IF (NOT EXISTS "${QPLUGDIR}/../styles/libqmacstyle.dylib")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/styles/libqmacstyle.dylib" "${QPLUGDIR}/../styles/libqmacstyle.dylib")
+ENDIF ()
 
 # Qwt
 
@@ -495,6 +499,7 @@ FOREACH (QFW ${QTLISTQG})
     ENDIF ()
     INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
     INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../phonon_backend/libphonon_qt7.dylib")
+    INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../styles/libqmacstyle.dylib")
     # qt fw
     IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
