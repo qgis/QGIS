@@ -24,6 +24,7 @@ WORKDIR /usr/src/QGIS/build
 
 RUN cmake \
   -GNinja \
+  -DUSE_CCACHE=OFF \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DWITH_DESKTOP=OFF \
