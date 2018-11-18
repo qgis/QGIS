@@ -18,6 +18,7 @@ COPY . /usr/src/QGIS
 COPY ${CACHE_DIR} /root/.ccache
 ENV CCACHE_DIR=/root/.ccache
 RUN ccache -M 1G
+RUN ccache -s
 
 WORKDIR /usr/src/QGIS/build
 
