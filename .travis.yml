@@ -7,7 +7,7 @@ cache:
   apt: true
   pip: true
   directories:
-    - $HOME/.ccache
+    - ${HOME}/.ccache
   timeout: 1000
 
 env:
