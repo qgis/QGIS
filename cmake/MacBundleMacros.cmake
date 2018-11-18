@@ -21,13 +21,10 @@
 
 # message only if verbose makefiles
 
-CMAKE_POLICY (SET CMP0053 OLD)
-
-
 FUNCTION (MYMESSAGE MSG)
-    IF (@CMAKE_VERBOSE_MAKEFILE@)
+    IF (${CMAKE_VERBOSE_MAKEFILE})
         MESSAGE (STATUS "${MSG}")
-    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+    ENDIF (${CMAKE_VERBOSE_MAKEFILE})
 ENDFUNCTION (MYMESSAGE)
 
 # get the install_name of a library or framework
