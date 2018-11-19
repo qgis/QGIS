@@ -4601,6 +4601,8 @@ class TestQgsGeometry(unittest.TestCase):
             ["LINESTRING (0 0, 0 100, 100 100)", -1, "LineString (1 0, 1 99, 100 99)"],
             ["LINESTRING (100 100, 0 100, 0 0)", 1, "LineString (100 99, 1 99, 1 0)"],
             ["LINESTRING (100 100, 0 100, 0 0)", -1, "LineString (100 101, -1 101, -1 0)"],
+            # linestring which becomes multilinestring -- the actual offset curve calculated by GEOS looks bad, but we shouldn't crash here
+            ["LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )", 100, "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"],
             ["MULTILINESTRING ((0 0, 0 100, 100 100),(100 100, 0 100, 0 0))", 1, "MultiLineString ((-1 0, -1 101, 100 101),(100 99, 1 99, 1 0))"]
         ]
         for t in tests:
