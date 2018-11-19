@@ -14,6 +14,9 @@ env:
   global:
     - TRAVIS_TIMESTAMP=$(date +%s)
     - CCACHE_DIR=${HOME}/.ccache
+    # Docker hub username and passowrd
+    - secure: "b7eMDIolaAnq1voGKC1ez7Kcf+/A0WZDJEHBvNwk2KubBfrGOE83GMDrFNF4NqjIprqIAvVKj+TrX1ckCvs24re3IqUJo71TaF1IgxzDDPwSsmNh5UMmvZkeiJys9bWjqDO9wYR5ietNmIE18qyMc8ToJk8oKm6AXuAG2n6znmM="
+    - secure: "PHCp7F3nApp38Mz6b4/OLxgfBiikRGzPQDHg3R5LX+SQOll24c/DMtwpPwizNuFEiCFcRmJ9uc1t0HWEerIZe5uqm7AtE/nMXBsvDZ+hj4Tz/fEBF98a1k4WLYheN1exFidVkJgdAeiwMOOUQXw5KuIX62bxBdzsdcd0QGwxiXo="
 
 matrix:
   fast_finish: true
