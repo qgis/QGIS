@@ -18,7 +18,6 @@
 
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
-#include "qgspointlocator.h"
 #include "qgsrubberband.h"
 
 class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit

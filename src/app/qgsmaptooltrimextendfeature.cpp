@@ -42,7 +42,7 @@ class FeatureFilter : public QgsPointLocator::MatchFilter
       return match.hasEdge();
     }
     // We only want to modify the current layer. When geometries are overlapped, this makes it possible to snap onto the current layer.
-    void setLayer( QgsVectorLayer *vlayer ) { mLayer = vlayer; }
+    void setLayer( QgsVectorLayer *layer ) { mLayer = layer; }
 
   private:
     const QgsVectorLayer *mLayer = nullptr;
