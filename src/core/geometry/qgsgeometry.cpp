@@ -1758,12 +1758,15 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
       return result;
     }
 
-    const QgsCurve::Orientation newOrientation = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() )->orientation();
-    if ( newOrientation != prevOrientation )
+    if ( const QgsCurve *offsetCurve = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() ) )
     {
-      // GEOS has flipped line orientation, flip it back
-      std::unique_ptr< QgsAbstractGeometry > flipped( qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() )->reversed() );
-      offsetGeom = std::move( flipped );
+      const QgsCurve::Orientation newOrientation = offsetCurve->orientation();
+      if ( newOrientation != prevOrientation )
+      {
+        // GEOS has flipped line orientation, flip it back
+        std::unique_ptr< QgsAbstractGeometry > flipped( offsetCurve->reversed() );
+        offsetGeom = std::move( flipped );
+      }
     }
     return QgsGeometry( std::move( offsetGeom ) );
   }
