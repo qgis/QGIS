@@ -23,6 +23,8 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
 
 #include <queue>
 #include <vector>
@@ -473,10 +475,30 @@ bool QgsTracer::initGraph()
 
   t1.start();
   int featuresCounted = 0;
-  for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
+  bool enableInvisibleFeature = QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool();
+  for ( const QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
-    request.setNoAttributes();
+    bool filter = false;
+    std::unique_ptr< QgsFeatureRenderer > renderer;
+    std::unique_ptr<QgsRenderContext> ctx;
+
+    if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
+    {
+      renderer.reset( vl->renderer()->clone() );
+      ctx.reset( new QgsRenderContext( *mRenderContext.get() ) );
+      ctx->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
+
+      // setup scale for scale dependent visibility (rule based)
+      renderer->startRender( *ctx.get(), vl->fields() );
+      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+      request.setSubsetOfAttributes( renderer->usedAttributes( *ctx.get() ), vl->fields() );
+    }
+    else
+    {
+      request.setNoAttributes();
+    }
+
     request.setDestinationCrs( mCRS, mTransformContext );
     if ( !mExtent.isEmpty() )
       request.setFilterRect( mExtent );
@@ -487,11 +509,25 @@ bool QgsTracer::initGraph()
       if ( !f.hasGeometry() )
         continue;
 
+      if ( filter )
+      {
+        ctx->expressionContext().setFeature( f );
+        if ( !renderer->willRenderFeature( f, *ctx.get() ) )
+        {
+          continue;
+        }
+      }
+
       extractLinework( f.geometry(), mpl );
 
       ++featuresCounted;
       if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )
         return false;
+    }
+
+    if ( renderer )
+    {
+      renderer->stopRender( *ctx.get() );
     }
   }
   int timeExtract = t1.elapsed();
@@ -544,6 +580,7 @@ bool QgsTracer::initGraph()
   Q_UNUSED( timeMake );
   QgsDebugMsg( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
                .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
+
   return true;
 }
 
@@ -562,6 +599,9 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
     disconnect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
     disconnect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
+    disconnect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsTracer::onAttributeValueChanged );
+    disconnect( layer, &QgsVectorLayer::dataChanged, this, &QgsTracer::onDataChanged );
+    disconnect( layer, &QgsVectorLayer::styleChanged, this, &QgsTracer::onStyleChanged );
     disconnect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
@@ -572,6 +612,9 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
     connect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
     connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
+    connect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsTracer::onAttributeValueChanged );
+    connect( layer, &QgsVectorLayer::dataChanged, this, &QgsTracer::onDataChanged );
+    connect( layer, &QgsVectorLayer::styleChanged, this, &QgsTracer::onStyleChanged );
     connect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
@@ -582,6 +625,12 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, cons
 {
   mCRS = crs;
   mTransformContext = context;
+  invalidateGraph();
+}
+
+void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
+{
+  mRenderContext.reset( new QgsRenderContext( *renderContext ) );
   invalidateGraph();
 }
 
@@ -646,6 +695,24 @@ void QgsTracer::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   Q_UNUSED( fid );
   Q_UNUSED( geom );
+  invalidateGraph();
+}
+
+void QgsTracer::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  Q_UNUSED( fid );
+  Q_UNUSED( idx );
+  Q_UNUSED( value );
+  invalidateGraph();
+}
+
+void QgsTracer::onDataChanged( )
+{
+  invalidateGraph();
+}
+
+void QgsTracer::onStyleChanged( )
+{
   invalidateGraph();
 }
 
