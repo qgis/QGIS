@@ -997,6 +997,24 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
     /**
+     * Returns the name of the parameter corresponding to the input layer.
+     *
+     * By default this is the standard "INPUT" parameter name.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterName() const;
+
+    /**
+     * Returns the translated description of the parameter corresponding to the input layer.
+     *
+     * By default this is a translated "Input layer" string.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterDescription() const;
+
+    /**
      * Returns the translated, user visible name for any layers created by this algorithm.
      * This name will be used as the default name when loading the resultant layer into a
      * QGIS project.
