@@ -34,6 +34,18 @@ if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   docker push "qgis/qgis:${DOCKER_TAG}"
   popd
 else
-  # running tests
-  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
+  # running QGIS tests
+  #docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
+  # running tests for the python test runner
+  docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests/src/python -e DISPLAY=:99 "qgis/qgis:${DOCKER_TAG}"
+  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner"
+  [ $? -ne 0 ]   # expected failure
+  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_all"
+  [ $? -ne 0 ]   # expected failure
+  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_failing"
+  [ $? -ne 0 ]   # expected failure
+  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_passing"
+  [ $? -eq 0 ]   # expected pass
+  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_skipped_and_passing"
+  [ $? -eq 0 ]   # expected pass
 fi
