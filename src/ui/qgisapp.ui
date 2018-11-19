@@ -2471,6 +2471,9 @@ Acts on currently active editable layer</string>
    <property name="toolTip">
     <string>Paste features in clipboard into a new temporary scratch layer.</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+V</string>
+   </property>
   </action>
   <action name="mActionDxfExport">
    <property name="text">
