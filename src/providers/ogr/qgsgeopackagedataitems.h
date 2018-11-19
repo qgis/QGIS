@@ -28,9 +28,6 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 
-    //! Returns layer uri or empty string if layer cannot be created
-    QString uri() const { return mUri; }
-
   protected:
     QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 

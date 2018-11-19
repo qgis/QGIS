@@ -77,7 +77,6 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 {
-  //dave: decide if more than one layer is selected. if more then "Delete selected Layers"
   QList<QAction *> lst;
 
   const QString deleteText = selectedItems().count() == 1 ? tr( "Delete Layer '%1'…" ).arg( mName )
@@ -501,7 +500,6 @@ void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
 
 void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
-  //dave: here we are - we need to find out what other layers in the gpkg are selected and delete em
   // Check if the layer(s) are in the registry
   QList<QgsMapLayer *> layersList;
   const auto mapLayers( QgsProject::instance()->mapLayers() );
