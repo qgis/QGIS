@@ -35,17 +35,22 @@ if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
   popd
 else
   # running QGIS tests
-  #docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
+  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
+
   # running tests for the python test runner
-  docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests/src/python -e DISPLAY=:99 "qgis/qgis:${DOCKER_TAG}"
-  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner"
-  [ $? -ne 0 ]   # expected failure
-  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_all"
-  [ $? -ne 0 ]   # expected failure
-  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_failing"
-  [ $? -ne 0 ]   # expected failure
-  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_passing"
-  [ $? -eq 0 ]   # expected pass
-  docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh test_testrunner.run_skipped_and_passing"
-  [ $? -eq 0 ]   # expected pass
+  docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 "qgis/qgis:${DOCKER_TAG}"
+  sleep 10  # Wait for xvfb to finish starting
+  # Temporary workaround until docker images are built
+  docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/qgis_testrunner.sh qgis-testing-environment:/usr/bin/qgis_testrunner.sh
+  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_passing"
+  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_skipped_and_passing"
+  # Failing cases:
+  set +e
+  ret=0 && docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner" || ret=127
+  [ $ret -eq 127 ] || exit 1  # expected failure
+  ret=0 && docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_all" || ret=127
+  [ $ret -eq 127 ] || exit 1  # expected failure
+  ret=0 && docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_failing" || ret=127
+  [ $ret -eq 127 ] || exit 1  # expected failure
+  set -e
 fi

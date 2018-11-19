@@ -16,12 +16,9 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 import sys
 
-from qgis.testing import unittest, start_app
+from qgis.testing import unittest
 from console import console
 from qgis.core import Qgis
-from qgis.PyQt.QtCore import QCoreApplication
-
-start_app()
 
 
 class TestTestRunner(unittest.TestCase):
@@ -57,7 +54,7 @@ def run_failing():
     return _make_runner(['test_fails'])
 
 
-def run_passes():
+def run_passing():
     """Run passing test only"""
     return _make_runner(['test_passes'])
 
