@@ -81,6 +81,7 @@
 #include "qgsalgorithmorthogonalize.h"
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmarrayoffsetlines.h"
+#include "qgsalgorithmpointsinpolygon.h"
 #include "qgsalgorithmpointonsurface.h"
 #include "qgsalgorithmpointtolayer.h"
 #include "qgsalgorithmpointsalonggeometry.h"
@@ -252,6 +253,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsOrthogonalizeAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsCreateArrayOffsetLinesAlgorithm() );
+  addAlgorithm( new QgsPointsInPolygonAlgorithm() );
   addAlgorithm( new QgsPointOnSurfaceAlgorithm() );
   addAlgorithm( new QgsPointToLayerAlgorithm() );
   addAlgorithm( new QgsPointsAlongGeometryAlgorithm() );
