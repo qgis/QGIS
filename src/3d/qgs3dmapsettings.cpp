@@ -39,6 +39,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
   , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
   , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
+  , mTerrainMapTheme( other.mTerrainMapTheme )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mShowCameraViewCenter( other.mShowCameraViewCenter )
@@ -87,6 +88,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemTerrainShadingMaterial = elemTerrain.firstChildElement( QStringLiteral( "shading-material" ) );
   if ( !elemTerrainShadingMaterial.isNull() )
     mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial );
+  mTerrainMapTheme = elemTerrain.attribute( QStringLiteral( "map-theme" ) );
   mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
 
   mPointLights.clear();
@@ -204,6 +206,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemTerrainShadingMaterial = doc.createElement( QStringLiteral( "shading-material" ) );
   mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial );
   elemTerrain.appendChild( elemTerrainShadingMaterial );
+  elemTerrain.setAttribute( QStringLiteral( "map-theme" ), mTerrainMapTheme );
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
 
   QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
@@ -430,6 +433,15 @@ void Qgs3DMapSettings::setTerrainShadingMaterial( const QgsPhongMaterialSettings
 
   mTerrainShadingMaterial = material;
   emit terrainShadingChanged();
+}
+
+void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
+{
+  if ( mTerrainMapTheme == theme )
+    return;
+
+  mTerrainMapTheme = theme;
+  emit terrainMapThemeChanged();
 }
 
 void Qgs3DMapSettings::setRenderers( const QList<QgsAbstract3DRenderer *> &renderers )

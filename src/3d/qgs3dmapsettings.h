@@ -148,9 +148,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Returns vertical scale (exaggeration) of terrain
     double terrainVerticalScale() const;
 
-    //! Sets the list of map layers to be rendered as a texture of the terrain
+    /**
+     * Sets the list of map layers to be rendered as a texture of the terrain
+     * \note If terrain map theme is set, it has a priority over the list of layers specified here.
+     */
     void setLayers( const QList<QgsMapLayer *> &layers );
-    //! Returns the list of map layers to be rendered as a texture of the terrain
+
+    /**
+     * Returns the list of map layers to be rendered as a texture of the terrain
+     * \note If terrain map theme is set, it has a priority over the list of layers specified here.
+     */
     QList<QgsMapLayer *> layers() const;
 
     /**
@@ -231,6 +238,24 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     QgsPhongMaterialSettings terrainShadingMaterial() const { return mTerrainShadingMaterial; }
 
+    /**
+     * Sets name of the map theme.
+     * \see terrainMapTheme()
+     * \since QGIS 3.6
+     */
+    void setTerrainMapTheme( const QString &theme );
+
+    /**
+     * Returns name of the map theme (from the active project) that will be used for terrain's texture.
+     * Empty map theme name means that the map theme is not overridden and the current map theme will be used.
+     * \since QGIS 3.6
+     */
+    QString terrainMapTheme() const { return mTerrainMapTheme; }
+
+    //
+    // misc configuration
+    //
+
     //! Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
     void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers SIP_TRANSFER );
     //! Returns list of extra 3D renderers
@@ -310,6 +335,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      * \since QGIS 3.6
      */
     void terrainShadingChanged();
+
+    /**
+     * Emitted when terrain's map theme has changed
+     * \since QGIS 3.6
+     */
+    void terrainMapThemeChanged();
     //! Emitted when the flag whether terrain's bounding boxes are shown has changed
     void showTerrainBoundingBoxesChanged();
     //! Emitted when the flag whether terrain's tile info is shown has changed
@@ -342,6 +373,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
     bool mTerrainShadingEnabled = false;   //!< Whether terrain should be shaded taking lights into account
     QgsPhongMaterialSettings mTerrainShadingMaterial;  //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
+    QString mTerrainMapTheme;  //!< Name of map theme used for terrain's texture (empty means use the current map theme)
     bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
