@@ -316,7 +316,8 @@
      </property>
      <addaction name="mActionRectangleExtent"/>
      <addaction name="mActionRectangleCenterPoint"/>
-     <addaction name="mActionRectangle3Points"/>
+     <addaction name="mActionRectangle3PointsDistance"/>
+     <addaction name="mActionRectangle3PointsProjected"/>
     </widget>
     <widget class="QMenu" name="mMenuRegularPolygon">
      <property name="title">
@@ -2961,19 +2962,19 @@ Acts on currently active editable layer</string>
     <string>Add circle from 3 tangents</string>
    </property>
   </action>
-  <action name="mActionRectangle3Points">
+  <action name="mActionRectangle3PointsDistance">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangle3Points.svg</normaloff>:/images/themes/default/mActionRectangle3Points.svg</iconset>
+    <iconset>
+     <normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Rectangle &amp;from 3 Points</string>
+    <string>Add Rectangle &amp;from 3 Points (Distance from 2nd and 3rd point)</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from 3 points</string>
+    <string>Add rectangle from 3 points (Distance from 2nd and 3rd point)</string>
    </property>
   </action>
   <action name="mActionCircle2TangentsPoint">
@@ -3110,6 +3111,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Vertex Tool (Current Layer)</string>
+   </property>
+  </action>
+  <action name="mActionRectangle3PointsProjected">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Rectangle &amp;from 3 Points (Distance from projected point on segment p1 and p2)</string>
+   </property>
+   <property name="toolTip">
+    <string>Add rectangle from 3 points (Distance from projected point on segment p1 and p2)</string>
    </property>
   </action>
  </widget>

@@ -673,7 +673,8 @@
         <file>themes/default/mActionEllipseCenterPoint.svg</file>
         <file>themes/default/mActionEllipseExtent.svg</file>
         <file>themes/default/mActionRectangleExtent.svg</file>
-        <file>themes/default/mActionRectangle3Points.svg</file>
+        <file>themes/default/mActionRectangle3PointsDistance.svg</file>
+        <file>themes/default/mActionRectangle3PointsProjected.svg</file>
         <file>themes/default/mActionRectangleCenter.svg</file>
         <file>themes/default/mActionRegularPolygonCenterCorner.svg</file>
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
