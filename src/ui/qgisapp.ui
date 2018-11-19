@@ -1622,7 +1622,7 @@
   </action>
   <action name="mActionLayerProperties">
    <property name="text">
-    <string>&amp;Properties…</string>
+    <string>Layer &amp;Properties…</string>
    </property>
    <property name="toolTip">
     <string>Layer Properties</string>
