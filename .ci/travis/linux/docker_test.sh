@@ -23,6 +23,6 @@
 
 TEST_NAME=$1
 
-docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${TEST_NAME}"
+docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh ${TEST_NAME}" &>/dev/null
 
 echo $?
