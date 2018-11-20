@@ -13,7 +13,6 @@
 
 
 
-
 class QgsFeature
 {
 %Docstring
@@ -327,6 +326,21 @@ Set the feature's geometry. The feature will be valid after.
 .. seealso:: :py:func:`geometry`
 
 .. seealso:: :py:func:`clearGeometry`
+%End
+
+    void setGeometry( QgsAbstractGeometry *geometry /Transfer/ );
+%Docstring
+Set the feature's ``geometry``. Ownership of the geometry is transferred to the feature.
+The feature will be made valid after calling this method.
+
+.. seealso:: :py:func:`geometry`
+
+.. seealso:: :py:func:`clearGeometry`
+
+.. versionadded:: 3.6
+%End
+%MethodCode
+    sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );
 %End
 
     void clearGeometry();
