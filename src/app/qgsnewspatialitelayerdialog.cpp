@@ -287,7 +287,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     msgBox.setWindowTitle( tr( "New SpatiaLite Layer" ) );
     msgBox.setText( tr( "The file already exists. Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
     QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
-    QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
+    QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add New Layer" ), QMessageBox::ActionRole );
     msgBox.setStandardButtons( QMessageBox::Cancel );
     msgBox.setDefaultButton( addNewLayerButton );
     int ret = msgBox.exec();
