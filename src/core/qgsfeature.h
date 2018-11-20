@@ -349,6 +349,25 @@ class CORE_EXPORT QgsFeature
     /**
      * Set the feature's \a geometry. Ownership of the geometry is transferred to the feature.
      * The feature will be made valid after calling this method.
+     *
+     * This method is a shortcut for calling:
+     * \code{.py}
+     *   feature.setGeometry( QgsGeometry( geometry ) )
+     * \endcode
+     *
+     * * Example:
+     * \code{.py}
+     *   # Sets a feature's geometry to a point geometry
+     *   feature.setGeometry( QgsPoint( 210, 41 ) )
+     *   print(feature.geometry())
+     *   # output: <QgsGeometry: Point (210 41)>
+     *
+     *   # Sets a feature's geometry to a line string
+     *   feature.setGeometry( QgsLineString( [ QgsPoint( 210, 41 ), QgsPoint( 301, 55 ) ] ) )
+     *   print(feature.geometry())
+     *   # output: <QgsGeometry: LineString (210 41, 301 55)>
+     * \endcode
+     *
      * \see geometry()
      * \see clearGeometry()
      * \since QGIS 3.4.3
