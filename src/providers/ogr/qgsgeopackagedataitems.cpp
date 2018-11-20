@@ -75,26 +75,6 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
-{
-  QList<QAction *> lst;
-
-  const QString deleteText = selectedItems().count() == 1 ? tr( "Delete Layer '%1'…" ).arg( mName )
-                             : tr( "Delete Selected Layers" );
-  QAction *actionDeleteLayer = new QAction( deleteText, this );
-  connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
-  {
-    QList<QgsDataItem *> items = selectedItems();
-    for ( QgsDataItem *item : items )
-    {
-      if ( QgsGeoPackageAbstractLayerItem *gpkgAbstractItem = qobject_cast< QgsGeoPackageAbstractLayerItem *>( item ) )
-        gpkgAbstractItem->deleteLayer();
-    }
-  } ) ;
-  lst.append( actionDeleteLayer );
-  return lst;
-}
-
 void QgsGeoPackageRootItem::onConnectionsChanged()
 {
   refresh();
@@ -498,7 +478,7 @@ void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
   }
 }
 
-void QgsGeoPackageAbstractLayerItem::deleteLayer()
+bool QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   // Check if the layer(s) are in the registry
   QList<QgsMapLayer *> layersList;
@@ -516,14 +496,14 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
                                 " do you want to remove it from the project and delete it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     {
-      return;
+      return true;
     }
   }
   else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
                                    QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
   {
-    return;
+    return true;
   }
 
   if ( layersList.isEmpty() )
@@ -543,7 +523,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     if ( mParent )
       mParent->refreshConnections();
   }
-
+  return true;
 }
 #endif
 

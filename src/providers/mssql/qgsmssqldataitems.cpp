@@ -570,46 +570,24 @@ QList<QAction *> QgsMssqlLayerItem::actions( QWidget *actionParent )
 {
   QList<QAction *> lst;
 
-  // delete
-  const QString deleteText = selectedItems().count() == 1 ? tr( "Delete Table" )
-                             : tr( "Delete Selected Tables" );
-  QAction *actionDeleteLayer = new QAction( deleteText, actionParent );
-  connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
-  {
-    QList<QgsDataItem *> items = selectedItems();
-    for ( QgsDataItem *item : items )
-    {
-      if ( QgsMssqlLayerItem *mssqlLayerItem = qobject_cast< QgsMssqlLayerItem *>( item ) )
-        mssqlLayerItem->deleteLayer();
-    }
-  } );
-  lst.append( actionDeleteLayer );
-
   // truncate
-  const QString truncateText = selectedItems().count() == 1 ? tr( "Truncate Table" )
-                               : tr( "Truncate Selected Tables" );
-  QAction *actionTruncateLayer = new QAction( truncateText, actionParent );
+  QAction *actionTruncateLayer = new QAction( tr( "Truncate Table" ), actionParent );
   connect( actionTruncateLayer, &QAction::triggered, this, [ = ]
   {
-    QList<QgsDataItem *> items = selectedItems();
-    for ( QgsDataItem *item : items )
-    {
-      if ( QgsMssqlLayerItem *mssqlLayerItem = qobject_cast< QgsMssqlLayerItem *>( item ) )
-        mssqlLayerItem->truncateTable();
-    }
+    truncateTable();
   } );
   lst.append( actionTruncateLayer );
   return lst;
 }
 
-void QgsMssqlLayerItem::deleteLayer()
+bool QgsMssqlLayerItem::deleteLayer()
 {
   QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
                               QObject::tr( "Are you sure you want to delete [%1].[%2]?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+    return true;
 
   QString errCause;
   bool res = QgsMssqlConnection::dropTable( mUri, &errCause );
@@ -623,6 +601,7 @@ void QgsMssqlLayerItem::deleteLayer()
     if ( connItem )
       connItem->refresh();
   }
+  return true;
 }
 
 void QgsMssqlLayerItem::truncateTable()

@@ -317,20 +317,6 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
   connect( actionRenameLayer, &QAction::triggered, this, &QgsPGLayerItem::renameLayer );
   lst.append( actionRenameLayer );
 
-  const QString deleteText = selectedItems().count() == 1 ? tr( "Delete %1" ).arg( typeName )
-                             : tr( "Delete Selected Tables" );
-  QAction *actionDeleteLayer = new QAction( deleteText, parent );
-  connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
-  {
-    QList<QgsDataItem *> items = selectedItems();
-    for ( QgsDataItem *item : items )
-    {
-      if ( QgsPGLayerItem *pgLayerItem = qobject_cast< QgsPGLayerItem *>( item ) )
-        pgLayerItem->deleteLayer();
-    }
-  } ) ;
-  lst.append( actionDeleteLayer );
-
   if ( !mLayerProperty.isView )
   {
     QAction *actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), parent );
@@ -348,12 +334,12 @@ QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
   return lst;
 }
 
-void QgsPGLayerItem::deleteLayer()
+bool QgsPGLayerItem::deleteLayer()
 {
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
                               QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+    return true;
 
   QString errCause;
   bool res = ::deleteLayer( mUri, errCause );
@@ -367,6 +353,7 @@ void QgsPGLayerItem::deleteLayer()
     if ( mParent )
       mParent->refresh();
   }
+  return true;
 }
 
 void QgsPGLayerItem::renameLayer()

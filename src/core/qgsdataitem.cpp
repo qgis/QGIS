@@ -219,6 +219,11 @@ void QgsDataItem::moveToThread( QThread *targetThread )
   QObject::moveToThread( targetThread );
 }
 
+bool QgsDataItem::deleteLayer()
+{
+  return false;
+}
+
 QIcon QgsDataItem::icon()
 {
   if ( state() == Populating && sPopulatingIcon )

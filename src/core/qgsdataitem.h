@@ -323,8 +323,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! Move object and all its descendants to thread
     void moveToThread( QThread *targetThread );
 
-    void setSelectedItems( const QList<QgsDataItem *> &selectedItems ) { mSelectedItems = selectedItems; }
-    QList<QgsDataItem *> selectedItems() const { return mSelectedItems; }
+    //! Delete this layer item
+    virtual bool deleteLayer();
 
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );

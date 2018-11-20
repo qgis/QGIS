@@ -366,6 +366,15 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   } );
   menu->addAction( addAction );
 
+  const QString deleteText = selectedItems.count() == 1 ? tr( "Delete Layer" )
+                             : tr( "Delete Selected Layers" );
+  QAction *deleteAction = new QAction( deleteText, menu );
+  connect( deleteAction, &QAction::triggered, this, [ = ]
+  {
+    deleteLayers( selectedItems );
+  } );
+  menu->addAction( deleteAction );
+
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
@@ -431,6 +440,15 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
   }
   if ( !layerUriList.isEmpty() )
     QgisApp::instance()->handleDropUriList( layerUriList );
+}
+
+void QgsLayerItemGuiProvider::deleteLayers( const QList<QgsDataItem *> &items )
+{
+  for ( QgsDataItem *item : items )
+  {
+    if ( !item->deleteLayer() )
+      QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+  }
 }
 
 void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )

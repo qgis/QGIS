@@ -211,7 +211,6 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   QMenu *menu = new QMenu( this );
 
   const QList<QMenu *> menus = item->menus( menu );
-  item->setSelectedItems( selectedItems );
   QList<QAction *> actions = item->actions( menu );
 
   if ( !menus.isEmpty() )

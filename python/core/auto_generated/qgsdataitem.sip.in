@@ -314,8 +314,10 @@ Sets a custom sorting ``key`` for the item.
 Move object and all its descendants to thread
 %End
 
-    void setSelectedItems( const QList<QgsDataItem *> &selectedItems );
-    QList<QgsDataItem *> selectedItems() const;
+    virtual bool deleteLayer();
+%Docstring
+Delete this layer item
+%End
 
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );

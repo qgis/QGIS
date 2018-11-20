@@ -142,7 +142,7 @@ class QgsMssqlLayerItem : public QgsLayerItem
 
   public slots:
 #ifdef HAVE_GUI
-    void deleteLayer();
+    bool deleteLayer() override;
     void truncateTable();
 #endif
 
