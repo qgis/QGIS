@@ -44,7 +44,7 @@ else
   docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/qgis_testrunner.sh qgis-testing-environment:/usr/bin/qgis_testrunner.sh
   # Run tests in the docker
   # Passing cases:
-  TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/linux/docker_test.sh
+  TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker_test.sh
   [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_passing) -eq '0' ]]
   [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_skipped_and_passing) -eq '0' ]]
   # Failing cases:
