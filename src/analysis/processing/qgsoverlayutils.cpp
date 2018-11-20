@@ -116,7 +116,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
       if ( !intersects.isEmpty() )
       {
         // use prepared geometries for faster intersection tests
-        engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( geom.constGet() );
         engine->prepareGeometry();
       }
 
@@ -211,7 +211,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     if ( !intersects.isEmpty() )
     {
       // use prepared geometries for faster intersection tests
-      engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+      engine = QgsGeometry::createGeometryEngine( geom.constGet() );
       engine->prepareGeometry();
     }
 
@@ -311,7 +311,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       if ( !g1engine )
       {
         // use prepared geometries for faster intersection tests
-        g1engine.reset( QgsGeometry::createGeometryEngine( g1.constGet() ) );
+        g1engine = QgsGeometry::createGeometryEngine( g1.constGet() );
         g1engine->prepareGeometry();
       }
 

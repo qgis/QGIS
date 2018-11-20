@@ -3368,9 +3368,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
   }
 }
 
-QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry )
+std::unique_ptr< QgsGeometryEngine > QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry )
 {
-  return new QgsGeos( geometry );
+  return qgis::make_unique< QgsGeos >( geometry );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )

@@ -132,7 +132,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     else
     {
       request.setFilterRect( transformedPolygon.boundingBox() );
-      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.constGet() ) );
+      polygonEngine = QgsGeometry::createGeometryEngine( transformedPolygon.constGet() );
       polygonEngine->prepareGeometry();
     }
   }

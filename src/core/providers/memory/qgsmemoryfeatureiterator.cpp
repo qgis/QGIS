@@ -52,7 +52,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     mSelectRectGeom = QgsGeometry::fromRect( mFilterRect );
-    mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() ) );
+    mSelectRectEngine = QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() );
     mSelectRectEngine->prepareGeometry();
   }
 

@@ -1400,7 +1400,7 @@ Exports the geometry to WKT
 Exports the geometry to a GeoJSON string.
 %End
 
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
 %Docstring
 Try to convert the geometry to the requested type
 
@@ -1742,7 +1742,7 @@ geometry will be a polyline.
 .. versionadded:: 2.7
 %End
 
-    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon );
 %Docstring
 Creates a QgsPolylineXY from a QPolygonF.
 
@@ -1753,7 +1753,7 @@ Creates a QgsPolylineXY from a QPolygonF.
 .. seealso:: :py:func:`createPolygonFromQPolygonF`
 %End
 
-    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon );
 %Docstring
 Creates a QgsPolygonXYfrom a QPolygonF.
 
@@ -1906,7 +1906,11 @@ geometry will retain the same dimensionality as the input geometry.
 
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) /Factory/;
 %Docstring
-Creates and returns a new geometry engine
+Creates and returns a new geometry engine. The caller takes ownership of the returned
+engine.
+%End
+%MethodCode
+    return sipConvertFromType( QgsGeometry::createGeometryEngine( a0 ).release(), sipType_QgsGeometryEngine, Py_None );
 %End
 
     static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );

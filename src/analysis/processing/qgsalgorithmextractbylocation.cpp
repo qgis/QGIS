@@ -138,7 +138,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine = QgsGeometry::createGeometryEngine( f.geometry().constGet() );
         engine->prepareGeometry();
       }
 

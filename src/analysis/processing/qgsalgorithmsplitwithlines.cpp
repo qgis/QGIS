@@ -163,7 +163,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
         QgsGeometry splitGeom = splitGeoms.value( line );
         if ( !engine )
         {
-          engine.reset( QgsGeometry::createGeometryEngine( inGeom.constGet() ) );
+          engine = QgsGeometry::createGeometryEngine( inGeom.constGet() );
           engine->prepareGeometry();
         }
 

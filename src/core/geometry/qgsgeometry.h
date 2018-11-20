@@ -1409,7 +1409,7 @@ class CORE_EXPORT QgsGeometry
      * \returns the converted geometry or nullptr if the conversion fails.
      * \since QGIS 2.2
      */
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const SIP_FACTORY;
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
 
     /* Accessor functions for getting geometry data */
 
@@ -1756,7 +1756,7 @@ class CORE_EXPORT QgsGeometry
      * \returns QgsPolylineXY
      * \see createPolygonFromQPolygonF
      */
-    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon );
 
     /**
      * Creates a QgsPolygonXYfrom a QPolygonF.
@@ -1764,7 +1764,7 @@ class CORE_EXPORT QgsGeometry
      * \returns QgsPolygon
      * \see createPolylineFromQPolygonF
      */
-    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon );
 
 #ifndef SIP_RUN
 
@@ -1943,9 +1943,17 @@ class CORE_EXPORT QgsGeometry
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
-     * Creates and returns a new geometry engine
+     * Creates and returns a new geometry engine. The caller takes ownership of the returned
+     * engine.
      */
+#ifndef SIP_RUN
+    static std::unique_ptr< QgsGeometryEngine > createGeometryEngine( const QgsAbstractGeometry *geometry );
+#else
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
+    % MethodCode
+    return sipConvertFromType( QgsGeometry::createGeometryEngine( a0 ).release(), sipType_QgsGeometryEngine, Py_None );
+    % End
+#endif
 
     /**
      * Upgrades a point list from QgsPointXY to QgsPoint
