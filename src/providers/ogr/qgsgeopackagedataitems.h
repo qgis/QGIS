@@ -36,10 +36,12 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      * the real deletion implementation
      */
     virtual bool executeDeleteLayer( QString &errCause );
+    virtual bool executeRenameLayer( QString &newName, QString &errCause );
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *menu ) override;
   public slots:
     virtual void deleteLayer();
+    void renameLayer();
 #endif
 };
 
@@ -63,6 +65,7 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
   protected:
     bool executeDeleteLayer( QString &errCause ) override;
+    bool executeRenameLayer( QString &newName, QString &errCause ) override;
 };
 
 

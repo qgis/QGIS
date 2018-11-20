@@ -81,6 +81,13 @@ QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
   QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'…" ).arg( mName ), this );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
+  // For now, rename is only available for vectors
+  if ( mapLayerType() == QgsMapLayer::LayerType::VectorLayer )
+  {
+    QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( mName ), this );
+    connect( actionRenameLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::renameLayer );
+    lst.append( actionRenameLayer );
+  }
   return lst;
 }
 
@@ -515,7 +522,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     return;
   }
 
-  if ( layersList.isEmpty() )
+  if ( ! layersList.isEmpty() )
   {
     QgsProject::instance()->removeMapLayers( layersList );
   }
@@ -529,6 +536,54 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
   else
   {
     QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
+    if ( mParent )
+      mParent->refreshConnections();
+  }
+
+}
+
+void QgsGeoPackageAbstractLayerItem::renameLayer()
+{
+  // Check if the layer(s) are in the registry
+  QList<QgsMapLayer *> layersList;
+  const auto mapLayers( QgsProject::instance()->mapLayers() );
+  for ( QgsMapLayer *layer :  mapLayers )
+  {
+    if ( layer->publicSource() == mUri )
+    {
+      layersList << layer;
+    }
+  }
+
+  if ( ! layersList.isEmpty( ) )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Rename Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
+                                " do you want to remove it from the project and rename it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
+  if ( ! layersList.isEmpty() )
+  {
+    QgsProject::instance()->removeMapLayers( layersList );
+  }
+
+  bool ok;
+  QString newName = QInputDialog::getText( nullptr, QObject::tr( "Rename %1" ).arg( mName ),
+                    QObject::tr( "New name:" ), QLineEdit::Normal,
+                    QString(), &ok );
+  if ( ! ok || newName.isEmpty() )
+    return;
+
+  QString errCause;
+  bool res = executeRenameLayer( newName, errCause );
+  if ( !res )
+  {
+    QMessageBox::warning( nullptr, tr( "Rename Layer" ), errCause );
+  }
+  else
+  {
+    QMessageBox::information( nullptr, tr( "Rename Layer" ), tr( "Layer <b>%1</b> renamed successfully." ).arg( mName ) );
     if ( mParent )
       mParent->refreshConnections();
   }
@@ -718,6 +773,13 @@ bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
   return false;
 }
 
+bool QgsGeoPackageAbstractLayerItem::executeRenameLayer( QString &newName, QString &errCause )
+{
+  Q_UNUSED( newName );
+  errCause = QObject::tr( "The layer <b>%1</b> cannot be renamed because this feature is not yet implemented for this kind of layers." ).arg( mName );
+  return false;
+}
+
 
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
@@ -737,9 +799,39 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
   return QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
 }
 
-
 bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
   return ::deleteLayer( mUri, errCause );
+}
+
+bool QgsGeoPackageVectorLayerItem::executeRenameLayer( QString &newName, QString &errCause )
+{
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mUri );
+  if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( "layerName" ).isNull() )
+  {
+    errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( mUri );
+  }
+  else
+  {
+    QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+    // TODO: maybe an index?
+    QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
+
+    GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
+    if ( hDS )
+    {
+      QString sql( QStringLiteral( "ALTER TABLE \"%1\" RENAME TO \"%2\"" ).arg( oldName, newName ) );
+      OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr ) );
+      if ( ogrLayer )
+        GDALDatasetReleaseResultSet( hDS, ogrLayer );
+      GDALClose( hDS );
+      errCause = CPLGetLastErrorMsg( );
+    }
+    else
+    {
+      errCause = QObject::tr( "There was an error opening %1!" ).arg( filePath );
+    }
+  }
+  return errCause.isEmpty();
 }
 
