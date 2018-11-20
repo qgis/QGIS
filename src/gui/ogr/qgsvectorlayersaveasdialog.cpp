@@ -88,7 +88,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
     mExtentGroupBox->hide();
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
-  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  mButtonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
 }
 
 void QgsVectorLayerSaveAsDialog::setup()
@@ -104,7 +104,16 @@ void QgsVectorLayerSaveAsDialog::setup()
   connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked );
   connect( mReplaceRawFieldValues, &QCheckBox::stateChanged, this, &QgsVectorLayerSaveAsDialog::mReplaceRawFieldValues_stateChanged );
   connect( mAttributeTable, &QTableWidget::itemChanged, this, &QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
+
+#ifdef Q_OS_WIN
+  mHelpButtonBox->setVisible( false );
+  mButtonBox->addButton( QDialogButtonBox::Help );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
+#else
+  connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
+#endif
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsVectorLayerSaveAsDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsVectorLayerSaveAsDialog::reject );
 
   const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
@@ -174,7 +183,7 @@ void QgsVectorLayerSaveAsDialog::setup()
       QFileInfo fileInfo( filePath );
       leLayername->setText( fileInfo.baseName() );
     }
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
 }
 
