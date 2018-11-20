@@ -30,12 +30,13 @@ email                : sherman at mrcc.com
 #include "qgsattributes.h"
 #include "qgsfields.h"
 #include "qgsfeatureid.h"
-
+#include <memory>
 class QgsFeature;
 class QgsFeaturePrivate;
 class QgsField;
 class QgsGeometry;
 class QgsRectangle;
+class QgsAbstractGeometry;
 
 
 /***************************************************************************
@@ -344,6 +345,22 @@ class CORE_EXPORT QgsFeature
      * \see clearGeometry()
      */
     void setGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Set the feature's \a geometry. Ownership of the geometry is transferred to the feature.
+     * The feature will be made valid after calling this method.
+     * \see geometry()
+     * \see clearGeometry()
+     * \since QGIS 3.6
+     */
+#ifndef SIP_RUN
+    void setGeometry( std::unique_ptr< QgsAbstractGeometry > geometry );
+#else
+    void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    % MethodCode
+    sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );
+    % End
+#endif
 
     /**
      * Removes any geometry associated with the feature.

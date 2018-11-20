@@ -141,6 +141,13 @@ void QgsFeature::setGeometry( const QgsGeometry &geometry )
   d->valid = true;
 }
 
+void QgsFeature::setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry )
+{
+  d.detach();
+  d->geometry = QgsGeometry( std::move( geometry ) );
+  d->valid = true;
+}
+
 void QgsFeature::clearGeometry()
 {
   setGeometry( QgsGeometry() );
