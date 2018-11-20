@@ -32,7 +32,7 @@ This is the main image containing a build of QGIS.
 ### Features
 
 The docker file builds QGIS from the current directory and
-sets up a testing environment suitable for runnning tests
+sets up a testing environment suitable for running tests
 inside QGIS.
 
 You can use this docker image to test QGIS and/or to run unit tests inside
@@ -119,7 +119,7 @@ Please note that in order to make the test script accessible to Python
 the calling command must ensure that the tests are in Python path.
 Common patterns are:
 - change directory to the one containing the tests (like in the examples above)
-- add to `PYTHONPATH` the directory contaning the tests
+- add to `PYTHONPATH` the directory containing the tests
 
 #### Running tests for a Python plugin
 
