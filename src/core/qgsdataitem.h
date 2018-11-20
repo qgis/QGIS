@@ -421,7 +421,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher;
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
-    QList<QgsDataItem *> mSelectedItems;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
