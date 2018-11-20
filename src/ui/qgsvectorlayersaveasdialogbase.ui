@@ -127,16 +127,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="mAddToCanvas">
-         <property name="text">
-          <string>Add saved file to map</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QgsCollapsibleGroupBox" name="mAttributesSelection">
          <property name="title">
           <string>Select fields to export and their export options</string>
@@ -417,14 +407,51 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QDialogButtonBox" name="mHelpButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Help</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mAddToCanvas">
+       <property name="text">
+        <string>Add saved file to map</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="mButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -480,11 +507,11 @@
   <tabstop>mGeometryTypeComboBox</tabstop>
   <tabstop>mForceMultiCheckBox</tabstop>
   <tabstop>mIncludeZCheckBox</tabstop>
-  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mAttributeTable</tabstop>
   <tabstop>mReplaceRawFieldValues</tabstop>
   <tabstop>mOgrDatasourceOptions</tabstop>
   <tabstop>mOgrLayerOptions</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
  </tabstops>
  <resources/>
  <connections>
