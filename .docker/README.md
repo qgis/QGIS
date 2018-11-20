@@ -31,12 +31,13 @@ This is the main image containing a build of QGIS.
 
 ### Features
 
-The docker file builds QGIS from the current directory
-sets up a testing environment and to run tests inside QGIS.
+The docker file builds QGIS from the current directory and
+sets up a testing environment suitable for runnning tests
+inside QGIS.
 
-You can use this docker to test QGIS or to run unit tests inside QGIS,
-`xvfb` (A fake X server) is available and running as a service inside the
-container to allow for fully automated headless testing in CI pipelines
+You can use this docker image to test QGIS and/or to run unit tests inside
+QGIS, `xvfb` (A fake X server) is available and running as a service inside
+the container to allow for fully automated headless testing in CI pipelines
 such as Travis or Circle-CI.
 
 ### Building
@@ -63,8 +64,10 @@ display to use QGIS and the image is tagged `qgis/qgis:latest` you can use a scr
 ```
 # Allow connections from any host
 $ xhost +
-$ docker run --rm  -it --name qgis -v /tmp/.X11-unix:/tmp/.X11-unix  \
-    -e DISPLAY=unix$DISPLAY qgis/qgis:latest qgis
+$ docker run --rm -it --name qgis \
+    -v /tmp/.X11-unix:/tmp/.X11-unix  \
+    -e DISPLAY=unix$DISPLAY \
+    qgis/qgis:latest qgis
 ```
 
 This code snippet will launch QGIS inside a container and display the
@@ -130,8 +133,15 @@ The `qgis_setup.sh` script prepares QGIS to run in headless mode and
 simulate the plugin installation process:
 
 - creates the QGIS profile folders
+- "installs" the plugin by making a symbolic link from the prfiles folder to the plugin folder
 - installs `startup.py` monkey patches to prevent blocking dialogs
 - enables the plugin
+
+Please note that depending on your plugin repository internal directory structure
+you may need to adjust (remove and create) the symbolic link created by `qgis_setup.sh`,
+this is required in particular if the real plugin code in your repository is contained
+in the main directory and not in a subdirectory with the same name of the plugin
+internal name (the name in `metadata.txt`).
 
 #### Options for the test runner
 
@@ -153,16 +163,48 @@ install:
     # Setup qgis and enables the plugin
     - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh QuickWKT"
     # Additional steps (for example make or paver setup) here
-    # Link the plugin to the tests_directory
-    # (this mimicks the plugin download and installation process)
+    # Fix the symlink created by qgis_setup.sh
+    - docker exec  -it qgis-testing-environment sh -c "rm -f  /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/QuickWKT"
     - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/ /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/QuickWKT"
 
 script:
-    - docker exec -it qgis-testing-environment sh -c "cd /tests_directory &&qgis_testrunner.sh QuickWKT.tests.test_Plugin"
+    - docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh tests.test_Plugin"
 ```
 
 Please note that `cd /tests_directory && ` before the call to `qgis_testrunner.sh` could be avoided here, because QGIS automatically
 adds the plugin main directory to Python path.
+
+
+#### Running on Circle-CI
+
+Here is an example for running unit tests of a small QGIS plugin (named *QuickWKT*), assuming
+that the tests are in `tests/test_Plugin.py` under the main directory of the QuickWKT plugin:
+
+```
+version: 2
+jobs:
+  build:
+    docker:
+      - image: qgis/qgis:latest
+        environment:
+          DISPLAY: ":99"
+    working_directory: /tests_directory
+    steps:
+      - checkout
+      - run:
+          name: Setup plugin
+          command: |
+            qgis_setup.sh QuickWKT
+      - run:
+          name: Fix installation path created by qgis_setup.s
+          command: |
+            rm -f  /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/QuickWKT
+            ln -s /tests_directory/ /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/qgisce
+      - run:
+          name: run tests
+          command: |
+            qgis_testrunner.sh tests.test_Plugin
+```
 
 
 #### Implementation notes
