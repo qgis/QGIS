@@ -42,15 +42,13 @@ else
   sleep 10  # Wait for xvfb to finish starting
   # Temporary workaround until docker images are built
   docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/qgis_testrunner.sh qgis-testing-environment:/usr/bin/qgis_testrunner.sh
-  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_passing"
-  docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_skipped_and_passing"
+  # Run tests in the docker
+  # Passing cases:
+  TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/linux/docker_test.sh
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_passing) -eq '0' ]]
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_skipped_and_passing) -eq '0' ]]
   # Failing cases:
-  set +e
-  ret=0 && docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner" || ret=127
-  [ $ret -eq 127 ] || exit 1  # expected failure
-  ret=0 && docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_all" || ret=127
-  [ $ret -eq 127 ] || exit 1  # expected failure
-  ret=0 && docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh test_testrunner.run_failing" || ret=127
-  [ $ret -eq 127 ] || exit 1  # expected failure
-  set -e
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner) -eq '1' ]]
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_all) -eq '1' ]]
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_failing) -eq '1' ]]
 fi
