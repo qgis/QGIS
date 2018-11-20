@@ -28,6 +28,8 @@ Multiple versions of this image may be available: the suffix in the image name i
 
 This is the main image containing a build of QGIS.
 
+The docker tags for this image are assigned for each point release (prefixed with `final-`), for the active development branches (prefixed with `release-`) while the `latest` tag refers to a build of the current master branch.
+
 
 ### Features
 
@@ -61,7 +63,7 @@ You can also use this image to run QGIS on your desktop.
 To run a QGIS container, assuming that you want to use your current
 display to use QGIS and the image is tagged `qgis/qgis:latest` you can use a script like the one here below:
 
-```
+```bash
 # Allow connections from any host
 $ xhost +
 $ docker run --rm -it --name qgis \
@@ -88,13 +90,32 @@ contains the tests (e.g. your local directory `/my_tests`) into a volume
 that is accessible by the container, see `-v /my_tests/:/tests_directory`
 in the example below:
 
-```
+```bash
 $ docker run -d --name qgis -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /my_tests/:/tests_directory \
     -e DISPLAY=:99 \
     qgis/qgis:latest
 ```
 
+Here is an extract of `test_TravisTest.py`:
+
+```python
+# -*- coding: utf-8 -*-
+import sys
+from qgis.testing import unittest
+
+class TestTest(unittest.TestCase):
+
+    def test_passes(self):
+        self.assertTrue(True)
+
+def run_all():
+    """Default function that is called by the runner if nothing else is specified"""
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(TestTest, 'test'))
+    unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite)
+
+```
 
 When done, you can invoke the test runnner by specifying the test
 that you want to run, for instance:
@@ -108,7 +129,7 @@ The test can be specified by using a dotted notation, similar to Python
 import notation, by default the function named `run_all` will be executed
 but you can pass another function name as the last item in the dotted syntax:
 
-```
+```bash
 # Call the default function "run_all" inside test_TravisTest module
 qgis_testrunner.sh travis_tests.test_TravisTest
 # Call the function "run_fail" inside test_TravisTest module
@@ -133,7 +154,7 @@ The `qgis_setup.sh` script prepares QGIS to run in headless mode and
 simulate the plugin installation process:
 
 - creates the QGIS profile folders
-- "installs" the plugin by making a symbolic link from the prfiles folder to the plugin folder
+- "installs" the plugin by making a symbolic link from the profiles folder to the plugin folder
 - installs `startup.py` monkey patches to prevent blocking dialogs
 - enables the plugin
 
@@ -154,7 +175,7 @@ contains extra parameters that are passed to QGIS by the test runner.
 Here is a simple example for running unit tests of a small QGIS plugin (named *QuickWKT*), assuming that the tests are in `tests/test_Plugin.py` under
 the main directory of the QuickWKT plugin:
 
-```
+```yml
 services:
     - docker
 install:
@@ -180,7 +201,7 @@ adds the plugin main directory to Python path.
 Here is an example for running unit tests of a small QGIS plugin (named *QuickWKT*), assuming
 that the tests are in `tests/test_Plugin.py` under the main directory of the QuickWKT plugin:
 
-```
+```yml
 version: 2
 jobs:
   build:
@@ -203,6 +224,7 @@ jobs:
       - run:
           name: run tests
           command: |
+            sh -c "/usr/bin/Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset -nolisten tcp &"
             qgis_testrunner.sh tests.test_Plugin
 ```
 
@@ -228,7 +250,7 @@ The implementation is:
 - the output of the tests is captured by the `test_runner.sh` script and
   searched for `FAILED` (that is in the standard unit tests output) and other
   string that indicate a failure or success condition, if a failure condition
-  is identified, the script exists with `1` otherwise it exits with `0`.
+  is identified, the script exits with `1` otherwise it exits with `0`.
 
 `qgis_testrunner.sh` accepts a dotted notation path to the test module that
 can end with the function that has to be called inside the module to run the
