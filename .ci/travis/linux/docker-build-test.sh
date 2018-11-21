@@ -159,7 +159,7 @@ fi
 ################################
 
 # Install test runner scripts into /usr/bin
-cp /root/QGIS/.docker/qgis_resources/*.* /usr/bin/
+cp /root/QGIS/.docker/qgis_resources/test_runner/*.* /usr/bin/
 
 # Setup QGIS for headless run
 /usr/bin/qgis_setup.sh
