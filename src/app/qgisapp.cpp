@@ -11128,8 +11128,10 @@ void QgisApp::new3DMapCanvas()
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers() );
+
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
+    map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
     connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
     {
       map->setTransformContext( QgsProject::instance()->transformContext() );
@@ -13543,6 +13545,14 @@ void QgisApp::readProject( const QDomDocument &doc )
       Qgs3DMapSettings *map = new Qgs3DMapSettings;
       map->readXml( elem3D, readWriteContext );
       map->resolveReferences( *QgsProject::instance() );
+
+      map->setTransformContext( QgsProject::instance()->transformContext() );
+      map->setPathResolver( QgsProject::instance()->pathResolver() );
+      map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
+      connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
+      {
+        map->setTransformContext( QgsProject::instance()->transformContext() );
+      } );
 
       // these things are not saved in project
       map->setSelectionColor( mMapCanvas->selectionColor() );

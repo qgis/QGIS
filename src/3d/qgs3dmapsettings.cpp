@@ -49,6 +49,9 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
   , mSkyboxFileExtension( other.mSkyboxFileExtension )
+  , mTransformContext( other.mTransformContext )
+  , mPathResolver( other.mPathResolver )
+  , mMapThemes( other.mMapThemes )
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {

@@ -136,9 +136,9 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   mapSettings.setTransformContext( mMap.transformContext() );
   mapSettings.setPathResolver( mMap.pathResolver() );
 
-  QgsMapThemeCollection *mapThemes = QgsProject::instance()->mapThemeCollection();
+  QgsMapThemeCollection *mapThemes = mMap.mapThemeCollection();
   QString mapThemeName = mMap.terrainMapTheme();
-  if ( mapThemeName.isEmpty() || !mapThemes->hasMapTheme( mapThemeName ) )
+  if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
   {
     mapSettings.setLayers( mMap.layers() );
   }

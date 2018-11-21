@@ -217,7 +217,13 @@ bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, 
     mSettings.reset( new Qgs3DMapSettings );
     mSettings->readXml( elemSettings, context );
     if ( mLayout->project() )
+    {
       mSettings->resolveReferences( *mLayout->project() );
+
+      mSettings->setTransformContext( mLayout->project()->transformContext() );
+      mSettings->setPathResolver( mLayout->project()->pathResolver() );
+      mSettings->setMapThemeCollection( mLayout->project()->mapThemeCollection() );
+    }
   }
 
   QDomElement elemCameraPose = element.firstChildElement( QStringLiteral( "camera-pose" ) );

@@ -126,6 +126,21 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
+    /**
+     * Returns pointer to the collection of map themes. Normally this would be QgsProject::mapThemeCollection()
+     * of the currently used project. Without a valid map theme collection object it is not possible
+     * to resolve map themes from their names.
+     * \since QGIS 3.6
+     */
+    QgsMapThemeCollection *mapThemeCollection() const { return mMapThemes; }
+
+    /**
+     * Sets pointer to the collection of map themes.
+     * \see mapThemeCollection()
+     * \since QGIS 3.6
+     */
+    void setMapThemeCollection( QgsMapThemeCollection *mapThemes ) { mMapThemes = mapThemes; }
+
     //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
     //! Returns background color of the 3D map view
@@ -248,6 +263,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     /**
      * Returns name of the map theme (from the active project) that will be used for terrain's texture.
      * Empty map theme name means that the map theme is not overridden and the current map theme will be used.
+     * \note Support for map themes only works if mapThemeCollection() is a valid object (otherwise it is not possible to resolve map themes from names)
      * \since QGIS 3.6
      */
     QString terrainMapTheme() const { return mTerrainMapTheme; }
@@ -387,6 +403,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
+    QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
 };
 
 
