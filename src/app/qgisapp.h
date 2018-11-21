@@ -2084,6 +2084,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mRotateLabel = nullptr;
         QgsMapTool *mChangeLabelProperties = nullptr;
         QgsMapTool *mReverseLine = nullptr ;
+        QgsMapTool *mTrimExtendFeature = nullptr ;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool = nullptr;

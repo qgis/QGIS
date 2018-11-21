@@ -732,6 +732,7 @@
         <file>themes/default/mIconExteriorRing.svg</file>
         <file>themes/default/mIconInteriorRings.svg</file>
         <file>themes/default/mIconFieldBinary.svg</file>
+        <file>themes/default/mActionTrimExtendFeature.svg</file>
         <file>themes/default/mActionTerminal.svg</file>
         <file>themes/default/mIconFolder24.svg</file>
         <file>themes/default/mActionNewFolder.svg</file>
