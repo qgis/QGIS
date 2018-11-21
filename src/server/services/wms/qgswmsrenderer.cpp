@@ -2024,7 +2024,7 @@ namespace QgsWms
     //the HTML head
     featureInfoString.append( "<HEAD>\n" );
     featureInfoString.append( "<TITLE> GetFeatureInfo results </TITLE>\n" );
-    featureInfoString.append( "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n" );
+    featureInfoString.append( "<META http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n" );
     featureInfoString.append( "</HEAD>\n" );
 
     //start the html body
