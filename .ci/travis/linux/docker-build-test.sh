@@ -162,10 +162,10 @@ fi
 cp /root/QGIS/.docker/qgis_resources/*.* /usr/bin/
 
 # Setup QGIS for headless run
-qgis_setup.sh
+/usr/bin/qgis_setup.sh
 
 # Run a test
-PYTHONPATH=/root/QGIS/tests/src/python:${PYTHONPATH} xvfb-run qgis_testrunner.sh test_testrunner.run_all
+PYTHONPATH=/root/QGIS/tests/src/python:${PYTHONPATH} xvfb-run /usr/bin/qgis_testrunner.sh test_testrunner.run_all
 
 
 ########################
