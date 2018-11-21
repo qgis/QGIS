@@ -154,6 +154,20 @@ if [ $rv -eq 124 ] ; then
     exit #$rv
 fi
 
+################################
+# Run headless tests inside QGIS
+################################
+
+# Install test runner scripts into /usr/bin
+cp /root/QGIS/.docker/qgis_resources/*.* /usr/bin/
+
+# Setup QGIS for headless run
+qgis_setup.sh
+
+# Run a test
+PYTHONPATH=/root/QGIS/tests/src/python:${PYTHONPATH} xvfb-run qgis_testrunner.sh test_testrunner.run_all
+
+
 ########################
 # Show ccache statistics
 ########################
