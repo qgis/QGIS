@@ -408,6 +408,19 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
                          {('EPSG:4204', 'EPSG:4326'): QgsDatumTransform.TransformPair(source_id_1, dest_id_1),
                           ('EPSG:4205', 'EPSG:4326'): QgsDatumTransform.TransformPair(source_id_2, dest_id_2)})
 
+    def testEqualOperator(self):
+        context1 = QgsCoordinateTransformContext()
+        context2 = QgsCoordinateTransformContext()
+        self.assertTrue(context1 == context2)
+
+        context1.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                    QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2)
+        self.assertFalse(context1 == context2)
+
+        context2.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                    QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2)
+        self.assertTrue(context1 == context2)
+
 
 if __name__ == '__main__':
     unittest.main()
