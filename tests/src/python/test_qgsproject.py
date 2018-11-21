@@ -1129,7 +1129,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(q, query)
 
-    def testWriteEntryDirtying(self):
+    def testDirtying(self):
 
         project = QgsProject()
 
@@ -1147,6 +1147,27 @@ class TestQgsProject(unittest.TestCase):
         project.setDirty(False)
         self.assertTrue(project.writeEntry('myscope', 'myentry', False))
         self.assertTrue(project.isDirty())
+
+        # removing an existing entry should dirty the project
+        project.setDirty(False)
+        self.assertTrue(project.removeEntry('myscope', 'myentry'))
+        self.assertTrue(project.isDirty())
+
+        # removing a non-existing entry should _not_ dirty the project
+        project.setDirty(False)
+        self.assertTrue(project.removeEntry('myscope', 'myentry'))
+        self.assertFalse(project.isDirty())
+
+        # setting a project CRS with a new value should dirty the project
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        project.setDirty(False)
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
+        self.assertTrue(project.isDirty())
+
+        # setting a project CRS with the same project CRS should not dirty the project
+        project.setDirty(False)
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
+        self.assertFalse(project.isDirty())
 
 
 if __name__ == '__main__':

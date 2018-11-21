@@ -278,6 +278,13 @@ QgsProjectProperty *addKey_( const QString &scope,
   return nullptr;
 }
 
+/**
+ * Remove a given key
+
+\param scope scope of key
+\param key key name
+\param rootProperty is the property from which to start adding
+*/
 
 void removeKey_( const QString &scope,
                  const QString &key,
@@ -628,6 +635,9 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
 
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( crs == mCrs )
+    return;
+
   mCrs = crs;
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
   setDirty( true );
@@ -645,7 +655,6 @@ QString QgsProject::ellipsoid() const
 void QgsProject::setEllipsoid( const QString &ellipsoid )
 {
   writeEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), ellipsoid );
-  setDirty( true );
   emit ellipsoidChanged( ellipsoid );
 }
 
@@ -656,6 +665,9 @@ QgsCoordinateTransformContext QgsProject::transformContext() const
 
 void QgsProject::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  if ( context == mTransformContext )
+    return;
+
   mTransformContext = context;
   emit transformContextChanged();
 }
@@ -848,7 +860,7 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
     return;
 
   mSnappingConfig = snappingConfig;
-  setDirty();
+  setDirty( true );
   emit snappingConfigChanged( mSnappingConfig );
 }
 
@@ -2117,9 +2129,11 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
 
 bool QgsProject::removeEntry( const QString &scope, const QString &key )
 {
-  removeKey_( scope, key, mProperties );
-
-  setDirty( true );
+  if ( findKey_( scope, key, mProperties ) )
+  {
+    removeKey_( scope, key, mProperties );
+    setDirty( true );
+  }
 
   return !findKey_( scope, key, mProperties );
 }
@@ -2390,6 +2404,9 @@ bool QgsProject::evaluateDefaultValues() const
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
+  if ( evaluateDefaultValues == mEvaluateDefaultValues )
+    return;
+
   const QMap<QString, QgsMapLayer *> layers = mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
@@ -2886,6 +2903,9 @@ const QgsProjectMetadata &QgsProject::metadata() const
 
 void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
 {
+  if ( metadata == mMetadata )
+    return;
+
   mMetadata = metadata;
   emit metadataChanged();
 
