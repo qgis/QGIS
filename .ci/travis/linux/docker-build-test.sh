@@ -144,6 +144,7 @@ EOT
 ###########
 # Run tests
 ###########
+
 CURRENT_TIME=$(date +%s)
 TIMEOUT=$((( TRAVIS_TIME - UPLOAD_TIME) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
@@ -158,6 +159,14 @@ fi
 # Run headless tests inside QGIS
 ################################
 
+pushd /root/QGIS/build > /dev/null
+
+# Headless requires installed qgis
+${CTEST_BUILD_COMMAND} install
+
+# And needs to find the libraries
+ldconfig
+
 # Install test runner scripts into /usr/bin
 cp /root/QGIS/.docker/qgis_resources/test_runner/*.* /usr/bin/
 
@@ -165,8 +174,9 @@ cp /root/QGIS/.docker/qgis_resources/test_runner/*.* /usr/bin/
 /usr/bin/qgis_setup.sh
 
 # Run a test
-PYTHONPATH=/root/QGIS/tests/src/python:${PYTHONPATH} xvfb-run /usr/bin/qgis_testrunner.sh test_testrunner.run_all
+PYTHONPATH=/root/QGIS/tests/src/python:${PYTHONPATH} xvfb-run /usr/bin/qgis_testrunner.sh test_testrunner.run_passing
 
+popd > /dev/null
 
 ########################
 # Show ccache statistics
