@@ -50,10 +50,8 @@ if [ -n "$PLUGIN_NAME" ]; then
 fi
 
 # Disable firstRunVersionFlag for master
-{
-    printf
-    "\n[migration]\n"
-    "fileVersion=2\n"
-    "firstRunVersionFlag=30500\n"
-    "settings=true\n\n"
-} >> $CONF_MASTER_FILE
+echo "
+[migration]
+fileVersion=2
+firstRunVersionFlag=30500
+settings=true" >> $CONF_MASTER_FILE
