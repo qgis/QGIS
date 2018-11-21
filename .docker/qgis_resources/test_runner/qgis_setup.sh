@@ -54,4 +54,5 @@ echo "
 [migration]
 fileVersion=2
 firstRunVersionFlag=30500
-settings=true" >> $CONF_MASTER_FILE
+settings=true
+" >> $CONF_MASTER_FILE
