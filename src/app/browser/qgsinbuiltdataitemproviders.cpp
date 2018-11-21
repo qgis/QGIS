@@ -366,14 +366,24 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   } );
   menu->addAction( addAction );
 
-  const QString deleteText = selectedItems.count() == 1 ? tr( "Delete Layer" )
-                             : tr( "Delete Selected Layers" );
-  QAction *deleteAction = new QAction( deleteText, menu );
-  connect( deleteAction, &QAction::triggered, this, [ = ]
+  if ( item->capabilities2() & QgsDataItem::Delete )
   {
-    deleteLayers( selectedItems );
-  } );
-  menu->addAction( deleteAction );
+    QList<QgsLayerItem *> selectedDeletableItems;
+    for ( QgsDataItem *selectedItem : selectedItems )
+    {
+      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & QgsDataItem::Delete ) )
+        selectedDeletableItems.append( qobject_cast<QgsLayerItem *>( selectedItem ) );
+    }
+
+    const QString deleteText = selectedDeletableItems.count() == 1 ? tr( "Delete Layer" )
+                               : tr( "Delete Selected Layers" );
+    QAction *deleteAction = new QAction( deleteText, menu );
+    connect( deleteAction, &QAction::triggered, this, [ = ]
+    {
+      deleteLayers( selectedDeletableItems );
+    } );
+    menu->addAction( deleteAction );
+  }
 
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
@@ -442,9 +452,9 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     QgisApp::instance()->handleDropUriList( layerUriList );
 }
 
-void QgsLayerItemGuiProvider::deleteLayers( const QList<QgsDataItem *> &items )
+void QgsLayerItemGuiProvider::deleteLayers( const QList<QgsLayerItem *> &items )
 {
-  for ( QgsDataItem *item : items )
+  for ( QgsLayerItem *item : items )
   {
     if ( !item->deleteLayer() )
       QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );

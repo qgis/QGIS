@@ -37,6 +37,7 @@ QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QS
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
+  mCapabilities |= Delete;
   setState( Populated ); // no children are expected
 }
 

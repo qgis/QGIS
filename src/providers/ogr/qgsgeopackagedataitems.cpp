@@ -699,6 +699,7 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
+  mCapabilities |= Delete;
   mToolTip = uri;
   setState( Populated ); // no children are expected
 }

@@ -100,7 +100,7 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void addLayersFromItems( const QList<QgsDataItem *> &items );
     void showPropertiesForItem( QgsLayerItem *item );
-    void deleteLayers( const QList<QgsDataItem *> &items );
+    void deleteLayers( const QList<QgsLayerItem *> &items );
 
 };
 

@@ -219,11 +219,6 @@ void QgsDataItem::moveToThread( QThread *targetThread )
   QObject::moveToThread( targetThread );
 }
 
-bool QgsDataItem::deleteLayer()
-{
-  return false;
-}
-
 QIcon QgsDataItem::icon()
 {
   if ( state() == Populating && sPopulatingIcon )
@@ -704,6 +699,11 @@ QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
     default:
       return QStringLiteral( "/mIconLayer.png" );
   }
+}
+
+bool QgsLayerItem::deleteLayer()
+{
+  return false;
 }
 
 bool QgsLayerItem::equal( const QgsDataItem *other )

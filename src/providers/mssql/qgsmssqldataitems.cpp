@@ -561,6 +561,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "mssql" ) )
   , mLayerProperty( layerProperty )
 {
+  mCapabilities |= Delete;
   mUri = createUri();
   setState( Populated );
 }
