@@ -162,7 +162,7 @@ fi
 pushd /root/QGIS/build > /dev/null
 
 # Headless requires installed qgis
-${CTEST_BUILD_COMMAND} install
+${CTEST_BUILD_COMMAND} install > /dev/null
 
 # And needs to find the libraries
 ldconfig
