@@ -32,14 +32,28 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
     /**
+     * Deletes a layer.
      * Subclasses need to implement this function with
      * the real deletion implementation
      */
     virtual bool executeDeleteLayer( QString &errCause );
+
+    /**
+     * Returns a list of all table names for the geopackage
+     */
+    QList<QString> tableNames();
+
 #ifdef HAVE_GUI
+
+    //! Checks if the data source has any layer in the current project returns them
+    QList<QgsMapLayer *> layersInProject() const;
+
     QList<QAction *> actions( QWidget *menu ) override;
+
   public slots:
     virtual void deleteLayer();
+    //! Renames the layer: default implementation does nothing!
+    virtual void renameLayer();
 #endif
 };
 
@@ -61,8 +75,21 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
 
   public:
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
+
+    /**
+     * Sets a new \a name for the item, and returns true if the item was successfully renamed.
+     *
+     * \since QGIS 3.6
+     */
+    virtual bool rename( const QString &name ) override;
+
   protected:
     bool executeDeleteLayer( QString &errCause ) override;
+#ifdef HAVE_GUI
+  public slots:
+    //! Renames the layer
+    virtual void renameLayer() override;
+#endif
 };
 
 
