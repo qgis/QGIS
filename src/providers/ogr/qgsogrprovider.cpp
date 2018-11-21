@@ -3098,6 +3098,28 @@ QGISEXTERN QVariantMap decodeUri( const QString &uri )
     path = path.left( pipeIndex );
   }
 
+  // Handles DB connections extracting database name if possible
+  // Example: MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'
+  if ( uri.startsWith( QStringLiteral( "MySQL" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "PostgreSQL" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "MSSQL" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "ODBC" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "PGeo" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "SDE" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "OGDI" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "Ingres" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "IDB" ), Qt::CaseSensitivity::CaseInsensitive ) ||
+       uri.startsWith( QStringLiteral( "OCI" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    auto parts( uri.split( ':' ) );
+    if ( parts.count( ) > 1 )
+    {
+      auto dataParts( parts.at( 1 ).split( ',' ) );
+      if ( dataParts.count() > 0 )
+        layerName = dataParts.at( 0 );
+    }
+  }
+
   QString vsiPrefix = qgsVsiPrefix( path );
   if ( !vsiPrefix.isEmpty() )
     path = path.mid( vsiPrefix.count() );

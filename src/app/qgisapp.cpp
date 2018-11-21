@@ -4587,7 +4587,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
   Q_FOREACH ( QString src, layerQStringList )
   {
     src = src.trimmed();
-    QString base;
+    QString baseName;
     if ( dataSourceType == QLatin1String( "file" ) )
     {
       QString srcWithoutLayername( src );
@@ -4595,7 +4595,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       if ( posPipe >= 0 )
         srcWithoutLayername.resize( posPipe );
       QFileInfo fi( srcWithoutLayername );
-      base = fi.completeBaseName();
+      baseName = fi.completeBaseName();
 
       // if needed prompt for zipitem layers
       QString vsiPrefix = QgsZipItem::vsiPrefix( src );
@@ -4608,25 +4608,31 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
     }
     else if ( dataSourceType == QLatin1String( "database" ) )
     {
-      base = src;
+      // Try to extract the database name and use it as base name
+      // sublayers names (if any) will be appended to the layer name
+      auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), src ) );
+      if ( ! parts.value( QStringLiteral( "layerName" ) ).isNull() )
+        baseName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      else
+        baseName = src;
     }
     else //directory //protocol
     {
       QFileInfo fi( src );
-      base = fi.completeBaseName();
+      baseName = fi.completeBaseName();
     }
     if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
     {
-      base = QgsMapLayer::formatLayerName( base );
+      baseName = QgsMapLayer::formatLayerName( baseName );
     }
 
-    QgsDebugMsg( "completeBaseName: " + base );
+    QgsDebugMsgLevel( "completeBaseName: " + baseName, 2 );
 
     // create the layer
 
     QgsVectorLayer::LayerOptions options;
     options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( src, base, QStringLiteral( "ogr" ), options );
+    QgsVectorLayer *layer = new QgsVectorLayer( src, baseName, QStringLiteral( "ogr" ), options );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
