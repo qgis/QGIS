@@ -36,6 +36,19 @@ QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const Q
   return *this;
 }
 
+bool QgsCoordinateTransformContext::operator==( const QgsCoordinateTransformContext &rhs ) const
+{
+  if ( d == rhs.d )
+    return true;
+
+  d->mLock.lockForRead();
+  rhs.d->mLock.lockForRead();
+  bool equal = d->mSourceDestDatumTransforms == rhs.d->mSourceDestDatumTransforms;
+  d->mLock.unlock();
+  rhs.d->mLock.unlock();
+  return equal;
+}
+
 void QgsCoordinateTransformContext::clear()
 {
   d.detach();

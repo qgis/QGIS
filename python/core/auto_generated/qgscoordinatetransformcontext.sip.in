@@ -63,6 +63,7 @@ Copy constructor
 %End
 
 
+    bool operator==( const QgsCoordinateTransformContext &rhs ) const;
 
     void clear();
 %Docstring
