@@ -1,0 +1,150 @@
+<!DOCTYPE qgis-layer-definition>
+<qlr>
+  <layer-tree-group expanded="1" checked="Qt::Checked" name="">
+    <customproperties/>
+    <layer-tree-group expanded="1" checked="Qt::Checked" name="qgis_plugin">
+      <customproperties/>
+      <layer-tree-group expanded="0" checked="Qt::Checked" name="Baggrundskort">
+        <customproperties/>
+        <layer-tree-layer expanded="1" providerKey="wms" checked="Qt::Checked" id="DTK_D8502016120170201702017020170201702017201801241314424672312" source="IgnoreGetMapUrl=1&amp;contextualWMSLegend=0&amp;crs=EPSG:25832&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=dtk_d850&amp;styles=&amp;url=http://kortforsyningen.kms.dk/service?servicename%3Dtopo_basis%26client%3DQGIS%26version%3D1.1.1%26login%3Dj%26password%3Dj" name="DTK/D850">
+          <customproperties/>
+        </layer-tree-layer>
+        <layer-tree-layer providerKey="memory" checked="Qt::Checked" expanded="1" name="NewMemory" source="NoGeometry?crs=EPSG:4326&amp;uid={64c9bcbf-cabe-4bd9-9058-2b80ebf87a72}" id="NewMemory_ffa4d8a4_e5be_46a9_a0e0_fb6ee924f3cd">
+        <customproperties/>
+      </layer-tree-layer>
+      </layer-tree-group>
+    </layer-tree-group>
+  </layer-tree-group>
+  <maplayers>
+    <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
+      <extent>
+        <xmin>120000</xmin>
+        <ymin>5900000</ymin>
+        <xmax>1000000</xmax>
+        <ymax>6500000</ymax>
+      </extent>
+      <id>DTK_D8502016120170201702017020170201702017201801241314424672312</id>
+      <datasource>IgnoreGetMapUrl=1&amp;contextualWMSLegend=0&amp;crs=EPSG:25832&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=dtk_d850&amp;styles=&amp;url=http://kortforsyningen.kms.dk/service?servicename%3Dtopo_basis%26client%3DQGIS%26version%3D1.1.1%26login%3Dj%26password%3Dj</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>DTK/D850</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+          <srsid>2105</srsid>
+          <srid>25832</srid>
+          <authid>EPSG:25832</authid>
+          <description>ETRS89 / UTM zone 32N</description>
+          <projectionacronym>utm</projectionacronym>
+          <ellipsoidacronym>GRS80</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <customproperties>
+        <property key="identify/format" value="Undefined"/>
+      </customproperties>
+      <provider>wms</provider>
+      <noData>
+        <noDataList bandNo="1" useSrcNoData="0"/>
+      </noData>
+      <map-layer-style-manager current="">
+        <map-layer-style name=""/>
+      </map-layer-style-manager>
+      <pipe>
+        <rasterrenderer opacity="1" alphaBand="-1" band="1" type="singlebandcolordata">
+          <rasterTransparency/>
+        </rasterrenderer>
+        <brightnesscontrast brightness="0" contrast="0"/>
+        <huesaturation colorizeGreen="128" colorizeOn="0" colorizeRed="255" colorizeBlue="128" grayscaleMode="0" saturation="0" colorizeStrength="100"/>
+        <rasterresampler maxOversampling="2"/>
+      </pipe>
+      <blendMode>0</blendMode>
+    </maplayer>
+    <maplayer refreshOnNotifyEnabled="0" readOnly="0" minScale="1e+8" type="vector" autoRefreshTime="0" hasScaleBasedVisibilityFlag="0" geometry="No geometry" autoRefreshEnabled="0" refreshOnNotifyMessage="" maxScale="0">
+      <id>NewMemory_ffa4d8a4_e5be_46a9_a0e0_fb6ee924f3cd</id>
+      <datasource>memory?geometry=NoGeometry&amp;crs=EPSG:4326</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>NewMemory</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+          <srsid>3452</srsid>
+          <srid>4326</srid>
+          <authid>EPSG:4326</authid>
+          <description>WGS 84</description>
+          <projectionacronym>longlat</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>true</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <customproperties/>
+      <provider encoding="UTF-8">memory</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="predefinito">
+        <map-layer-style name="predefinito"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <fieldConfiguration/>
+      <aliases/>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults/>
+      <constraints/>
+      <constraintExpressions/>
+      <attributeactions>
+        <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+      </attributeactions>
+      <attributetableconfig sortOrder="0" actionWidgetStyle="dropDown" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <editform></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <expressionfields/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+  </maplayers>
+</qlr>

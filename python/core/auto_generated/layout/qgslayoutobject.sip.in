@@ -1,0 +1,317 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutobject.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutObject: QObject, QgsExpressionContextGenerator
+{
+%Docstring
+A base class for objects which belong to a layout.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutobject.h"
+#include <qgslayoutitem.h>
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutitempage.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
+    {
+      // the conversions have to be static, because they're using multiple inheritance
+      // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+      switch ( item->type() )
+      {
+        // FREAKKKKIIN IMPORTANT!
+        // IF YOU PUT SOMETHING HERE, PUT IT IN QgsLayoutItem CASTING **ALSO**
+        // (it's not enough for it to be in only one of the places, as sip inconsistently
+        // decides which casting code to perform here)
+
+        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+        case QGraphicsItem::UserType + 101:
+          sipType = sipType_QgsLayoutItemGroup;
+          *sipCppRet = static_cast<QgsLayoutItemGroup *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 102:
+          sipType = sipType_QgsLayoutItemPage;
+          *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 103:
+          sipType = sipType_QgsLayoutItemMap;
+          *sipCppRet = static_cast<QgsLayoutItemMap *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 104:
+          sipType = sipType_QgsLayoutItemPicture;
+          *sipCppRet = static_cast<QgsLayoutItemPicture *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 105:
+          sipType = sipType_QgsLayoutItemLabel;
+          *sipCppRet = static_cast<QgsLayoutItemLabel *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 106:
+          sipType = sipType_QgsLayoutItemLegend;
+          *sipCppRet = static_cast<QgsLayoutItemLegend *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 107:
+          sipType = sipType_QgsLayoutItemShape;
+          *sipCppRet = static_cast<QgsLayoutItemShape *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 108:
+          sipType = sipType_QgsLayoutItemPolygon;
+          *sipCppRet = static_cast<QgsLayoutItemPolygon *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 109:
+          sipType = sipType_QgsLayoutItemPolyline;
+          *sipCppRet = static_cast<QgsLayoutItemPolyline *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 110:
+          sipType = sipType_QgsLayoutItemScaleBar;
+          *sipCppRet = static_cast<QgsLayoutItemScaleBar *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 111:
+          sipType = sipType_QgsLayoutFrame;
+          *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
+          break;
+
+        // did you read that comment above? NO? Go read it now. You're about to break stuff.
+
+        default:
+          sipType = sipType_QgsLayoutItem;
+      }
+    }
+    else
+      sipType = NULL;
+%End
+  public:
+
+    enum DataDefinedProperty
+    {
+      NoProperty,
+      AllProperties,
+      TestProperty,
+      //composer page properties
+      PresetPaperSize,
+      PaperWidth,
+      PaperHeight,
+      NumPages,
+      PaperOrientation,
+      //general composer item properties
+      PageNumber,
+      PositionX,
+      PositionY,
+      ItemWidth,
+      ItemHeight,
+      ItemRotation,
+      Transparency,
+      Opacity,
+      BlendMode,
+      ExcludeFromExports,
+      FrameColor,
+      BackgroundColor,
+      //composer map
+      MapRotation,
+      MapScale,
+      MapXMin,
+      MapYMin,
+      MapXMax,
+      MapYMax,
+      MapAtlasMargin,
+      MapLayers,
+      MapStylePreset,
+      //composer picture
+      PictureSource,
+      PictureSvgBackgroundColor,
+      PictureSvgStrokeColor,
+      PictureSvgStrokeWidth,
+      //html item
+      SourceUrl,
+      //legend item
+      LegendTitle,
+      LegendColumnCount,
+      //scalebar item
+      ScalebarFillColor,
+      ScalebarFillColor2,
+      ScalebarLineColor,
+      ScalebarLineWidth,
+      //table item
+      AttributeTableSourceLayer,
+    };
+
+    enum PropertyValueType
+    {
+      EvaluatedValue,
+      OriginalValue
+    };
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the layout object property definitions.
+%End
+
+    explicit QgsLayoutObject( QgsLayout *layout );
+%Docstring
+Constructor for QgsLayoutObject, with the specified parent ``layout``.
+
+.. note::
+
+   While ownership of a QgsLayoutObject is not passed to the layout,
+   classes which are derived from QgsLayoutObject (such as QgsLayoutItem)
+   may transfer their ownership to a layout upon construction.
+%End
+
+
+    QgsLayout *layout();
+%Docstring
+Returns the layout the object is attached to.
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the object's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the objects's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+%End
+
+
+    void setCustomProperty( const QString &key, const QVariant &value );
+%Docstring
+Set a custom property for the object.
+
+:param key: property key. If a property with the same key already exists it will be overwritten.
+:param value: property value
+
+.. seealso:: :py:func:`customProperty`
+
+.. seealso:: :py:func:`removeCustomProperty`
+
+.. seealso:: :py:func:`customProperties`
+%End
+
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+%Docstring
+Read a custom property from the object.
+
+:param key: property key
+:param defaultValue: default value to return if property with matching key does not exist
+
+:return: value of matching property
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. seealso:: :py:func:`removeCustomProperty`
+
+.. seealso:: :py:func:`customProperties`
+%End
+
+    void removeCustomProperty( const QString &key );
+%Docstring
+Remove a custom property from the object.
+
+:param key: property key
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. seealso:: :py:func:`customProperty`
+
+.. seealso:: :py:func:`customProperties`
+%End
+
+    QStringList customProperties() const;
+%Docstring
+Returns list of keys stored in custom properties for the object.
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. seealso:: :py:func:`customProperty`
+
+.. seealso:: :py:func:`removeCustomProperty`
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+%Docstring
+Creates an expression context relating to the objects' current state. The context includes
+scopes for global, project and layout properties.
+%End
+
+  public slots:
+
+    virtual void refresh();
+%Docstring
+Refreshes the object, causing a recalculation of any property overrides.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the object's properties change.
+%End
+
+  protected:
+
+    bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores object properties within an XML DOM element.
+
+:param parentElement: is the parent DOM element to store the object's properties in
+:param document: DOM document
+:param context: read write context
+
+:return: true if write was successful
+
+.. seealso:: :py:func:`readObjectPropertiesFromElement`
+%End
+
+    bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+Sets object properties from a DOM element
+
+:param parentElement: is the parent DOM element for the object
+:param document: DOM document
+:param context: read write context
+
+:return: true if read was successful
+
+.. seealso:: :py:func:`writeObjectPropertiesToElement`
+%End
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutobject.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

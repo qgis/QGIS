@@ -23,41 +23,33 @@
 
 #include <QList>
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 /**
-  \brief Base clasee for GDAL and WCS providers.
+  \brief Base class for GDAL and WCS providers.
 */
 class QgsGdalProviderBase
 {
   public:
     QgsGdalProviderBase();
 
-    /** \brief ensures that GDAL drivers are registered, but only once */
+    //! \brief ensures that GDAL drivers are registered, but only once
     static void registerGdalDrivers();
 
-    /** Wrapper function for GDALOpen to get around possible bugs in GDAL */
+    //! Wrapper function for GDALOpen to get around possible bugs in GDAL
     static GDALDatasetH  gdalOpen( const char *pszFilename, GDALAccess eAccess );
 
-    /** Wrapper function for GDALRasterIO to get around possible bugs in GDAL */
-    static CPLErr gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace );
+    //! Wrapper function for GDALRasterIO to get around possible bugs in GDAL
+    static CPLErr gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback = nullptr );
 
-    /** Wrapper function for GDALRasterIO to get around possible bugs in GDAL */
+    //! Wrapper function for GDALRasterIO to get around possible bugs in GDAL
     static int gdalGetOverviewCount( GDALRasterBandH hBand );
   protected:
 
-    QGis::DataType dataTypeFromGdal( const GDALDataType theGdalDataType ) const;
+    Qgis::DataType dataTypeFromGdal( GDALDataType gdalDataType ) const;
 
-    int colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const;
+    int colorInterpretationFromGdal( GDALColorInterp gdalColorInterpretation ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
 

@@ -19,26 +19,26 @@
 #define QGSMAPTOOLMOVELABEL_H
 
 #include "qgsmaptoollabel.h"
+#include "qgis_app.h"
 
-/** A map tool for dragging label positions*/
+//! A map tool for dragging label positions
 class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 {
     Q_OBJECT
 
   public:
-    QgsMapToolMoveLabel( QgsMapCanvas* canvas );
-    ~QgsMapToolMoveLabel();
+    QgsMapToolMoveLabel( QgsMapCanvas *canvas );
 
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
 
-    /** Start point of the move in map coordinates*/
-    QgsPoint mStartPointMapCoords;
+    //! Start point of the move in map coordinates
+    QgsPointXY mStartPointMapCoords;
 
     double mClickOffsetX;
     double mClickOffsetY;

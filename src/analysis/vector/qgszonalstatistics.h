@@ -18,14 +18,28 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include "qgsrectangle.h"
 #include <QString>
+#include <QMap>
+
+#include <limits>
+#include <cfloat>
+
+#include "qgis_analysis.h"
+#include "qgsfeedback.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
-class QProgressDialog;
+class QgsRasterLayer;
+class QgsRasterInterface;
+class QgsRasterDataProvider;
+class QgsRectangle;
+class QgsField;
 
-/** A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
+/**
+ * \ingroup analysis
+ * A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
+*/
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
@@ -44,31 +58,89 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       Minority = 256, //!< Minority of pixel values
       Majority = 512, //!< Majority of pixel values
       Variety = 1024, //!< Variety (count of distinct) pixel values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety
+      Variance = 2048, //!< Variance of pixel values
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
-    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
-                        const Statistics& stats = Statistics( Count | Sum | Mean ) );
+    /**
+     * Convenience constructor for QgsZonalStatistics, using an input raster layer.
+     *
+     * The raster layer must exist for the lifetime of the zonal statistics calculation.
+     *
+     * \warning Constructing QgsZonalStatistics using this method is not thread safe, and
+     * the constructor which accepts a QgsRasterInterface should be used instead.
+     */
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterLayer *rasterLayer,
+                        const QString &attributePrefix = QString(),
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
-    /** Starts the calculation
-      @return 0 in case of success*/
-    int calculateStatistics( QProgressDialog* p );
+    /**
+     * Constructor for QgsZonalStatistics, using a QgsRasterInterface.
+     *
+     * The \a polygonLayer gives the vector layer containing the (multi)polygon features corresponding to the
+     * different zones. This layer will be modified, adding extra attributes for each of the zonal statistics
+     * calculated.
+     *
+     * Pixel values for each zone are taken from the raster \a rasterInterface. The constructor must also
+     * be given various properties relating to the input raster, such as the raster CRS (\a rasterCrs),
+     * and the size (X and Y) in map units for each raster pixel. The source raster band is specified
+     * via \a rasterBand, where a value of 1 corresponds to the first band.
+     *
+     * If the CRS of the \a polygonLayer and \a rasterCrs differ, the calculation will automatically
+     * reproject the zones to ensure valid results are calculated.
+     *
+     * The \a attributePrefix argument specifies an optional prefix to use when creating the
+     * new fields for each calculated statistic.
+     *
+     * Finally, the calculated statistics can be set via the \a stats argument. A new field will be
+     * added to \a polygonLayer for each statistic calculated.
+     *
+     * \warning The raster interface must exist for the lifetime of the zonal statistics calculation. For thread
+     * safe use, always use a cloned raster interface.
+     *
+     * \since QGIS 3.2
+     */
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterInterface *rasterInterface,
+                        const QgsCoordinateReferenceSystem &rasterCrs,
+                        double rasterUnitsPerPixelX,
+                        double rasterUnitsPerPixelY,
+                        const QString &attributePrefix = QString(),
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+
+    /**
+     * Starts the calculation
+     * \returns 0 in case of success
+    */
+    int calculateStatistics( QgsFeedback *feedback );
 
   private:
-    QgsZonalStatistics();
+    QgsZonalStatistics() = default;
 
     class FeatureStats
     {
       public:
         FeatureStats( bool storeValues = false, bool storeValueCounts = false )
-            : mStoreValues( storeValues )
-            , mStoreValueCounts( storeValueCounts )
+          : mStoreValues( storeValues )
+          , mStoreValueCounts( storeValueCounts )
         {
-          reset();
         }
-        void reset() { sum = 0; count = 0; max = -FLT_MAX; min = FLT_MAX; valueCount.clear(); values.clear(); }
-        void addValue( float value, double weight = 1.0 )
+
+        void reset()
+        {
+          sum = 0;
+          count = 0;
+          max = std::numeric_limits<double>::lowest();
+          min = std::numeric_limits<double>::max();
+          valueCount.clear();
+          values.clear();
+        }
+
+        void addValue( double value, double weight = 1.0 )
         {
           if ( weight < 1.0 )
           {
@@ -80,53 +152,42 @@ class ANALYSIS_EXPORT QgsZonalStatistics
             sum += value;
             ++count;
           }
-          min = qMin( min, value );
-          max = qMax( max, value );
+          min = std::min( min, value );
+          max = std::max( max, value );
           if ( mStoreValueCounts )
             valueCount.insert( value, valueCount.value( value, 0 ) + 1 );
           if ( mStoreValues )
             values.append( value );
         }
-        double sum;
-        double count;
-        float max;
-        float min;
-        QMap< float, int > valueCount;
-        QList< float > values;
+        double sum = 0.0;
+        double count = 0.0;
+        double max = std::numeric_limits<double>::lowest();
+        double min = std::numeric_limits<double>::max();
+        QMap< double, int > valueCount;
+        QList< double > values;
 
       private:
-        bool mStoreValues;
-        bool mStoreValueCounts;
+        bool mStoreValues = false;
+        bool mStoreValueCounts = false;
     };
 
-    /** Analysis what cells need to be considered to cover the bounding box of a feature
-      @return 0 in case of success*/
-    int cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
-                         int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const;
+    QString getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields );
 
-    /** Returns statistics by considering the pixels where the center point is within the polygon (fast)*/
-    void statisticsFromMiddlePointTest( void* band, const QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
-                                        double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats );
+    QgsRasterInterface *mRasterInterface = nullptr;
+    QgsCoordinateReferenceSystem mRasterCrs;
 
-    /** Returns statistics with precise pixel - polygon intersection test (slow) */
-    void statisticsFromPreciseIntersection( void* band, const QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
-                                            double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats& stats );
+    double mCellSizeX = 0;
+    double mCellSizeY = 0;
 
-    /** Tests whether a pixel's value should be included in the result*/
-    bool validPixel( float value ) const;
-
-    QString getUniqueFieldName( const QString& fieldName );
-
-    QString mRasterFilePath;
-    /** Raster band to calculate statistics from (defaults to 1)*/
-    int mRasterBand;
-    QgsVectorLayer* mPolygonLayer;
+    //! Raster band to calculate statistics
+    int mRasterBand = 0;
+    QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
-    /** The nodata value of the input layer*/
-    float mInputNodataValue;
-    Statistics mStatistics;
+    Statistics mStatistics = QgsZonalStatistics::All;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSZONALSTATISTICS_H

@@ -13,6 +13,7 @@ trans.cs = i18n/qgis_cs.ts
 trans.da = i18n/qgis_da.ts
 trans.de = i18n/qgis_de.ts
 trans.el = i18n/qgis_el.ts
+trans.eo = i18n/qgis_eo.ts
 trans.es = i18n/qgis_es.ts
 trans.et = i18n/qgis_et.ts
 trans.eu = i18n/qgis_eu.ts

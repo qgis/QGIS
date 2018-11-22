@@ -17,7 +17,9 @@
 
 #include "qgsmessagelogviewer.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsdockwidget.h"
 
 #include <QFile>
 #include <QDateTime>
@@ -25,37 +27,40 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QToolTip>
-#include <QDockWidget>
 #include <QPlainTextEdit>
 #include <QScrollBar>
+#include <QDebug>
 
-
-QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, const Qt::WindowFlags& fl )
-    : QDialog( parent, fl )
+QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
-  Q_UNUSED( statusBar )
   setupUi( this );
 
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
-           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLog::messageReceived ),
+           this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
 
-  connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
+  connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 }
 
-QgsMessageLogViewer::~QgsMessageLogViewer()
+void QgsMessageLogViewer::closeEvent( QCloseEvent *e )
+{
+  e->ignore();
+}
+
+void QgsMessageLogViewer::reject()
 {
 }
 
-void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
-  if ( tag.isNull() )
-    tag = tr( "General" );
+  QString cleanedTag = tag;
+  if ( cleanedTag.isNull() )
+    cleanedTag = tr( "General" );
 
   int i;
-  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
-    ;
+  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ).remove( QChar( '&' ) ) != cleanedTag; i++ );
 
-  QPlainTextEdit *w;
+  QPlainTextEdit *w = nullptr;
   if ( i < tabWidget->count() )
   {
     w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
@@ -65,18 +70,49 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
-    tabWidget->addTab( w, tag );
+    tabWidget->addTab( w, cleanedTag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
   }
 
-  QString prefix = QString( "%1\t%2\t" )
-                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
-                   .arg( level );
-  w->appendPlainText( message.prepend( prefix ).replace( '\n', "\n\t\t\t" ) );
+  QString levelString;
+  QgsSettings settings;
+  QColor color;
+  switch ( level )
+  {
+    case Qgis::Info:
+      levelString = QStringLiteral( "INFO" );
+      color = QColor( settings.value( QStringLiteral( "colors/info" ), QStringLiteral( "#000000" ) ).toString() );
+      break;
+    case Qgis::Warning:
+      levelString = QStringLiteral( "WARNING" );
+      color = QColor( settings.value( QStringLiteral( "colors/warning" ), QStringLiteral( "#000000" ) ).toString() );
+      break;
+    case Qgis::Critical:
+      levelString = QStringLiteral( "CRITICAL" );
+      color = QColor( settings.value( QStringLiteral( "colors/critical" ), QStringLiteral( "#000000" ) ).toString() );
+      break;
+    case Qgis::Success:
+      levelString = QStringLiteral( "SUCCESS" );
+      color = QColor( settings.value( QStringLiteral( "colors/success" ), QStringLiteral( "#000000" ) ).toString() );
+      break;
+    case Qgis::None:
+      levelString = QStringLiteral( "NONE" );
+      color = QColor( settings.value( QStringLiteral( "colors/default" ), QStringLiteral( "#000000" ) ).toString() );
+      break;
+  }
+
+  QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
+                   .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
+  QString cleanedMessage = message;
+  cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" ) );
+  w->appendHtml( cleanedMessage );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  tabWidget->removeTab( index );
+  if ( tabWidget->count() == 1 )
+    qobject_cast<QPlainTextEdit *>( tabWidget->widget( 0 ) )->clear();
+  else
+    tabWidget->removeTab( index );
 }

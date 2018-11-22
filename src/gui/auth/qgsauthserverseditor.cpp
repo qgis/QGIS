@@ -20,51 +20,52 @@
 
 #include <QMenu>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
+#include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
 #include "qgslogger.h"
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
-    : QWidget( parent )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
-    , mRootSslConfigItem( nullptr )
+  : QWidget( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( btnAddServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnAddServer_clicked );
+    connect( btnRemoveServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnRemoveServer_clicked );
+    connect( btnEditServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnEditServer_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthServersEditor::btnGroupByOrg_toggled );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
+             this, &QgsAuthServersEditor::authMessageOut );
 
-    connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
-             this, SLOT( refreshSslConfigsView() ) );
+    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
+             this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     setupSslConfigsTree();
 
-    connect( treeServerConfigs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-             this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+    connect( treeServerConfigs->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthServersEditor::selectionChanged );
 
-    connect( treeServerConfigs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeServerConfigs, &QTreeWidget::itemDoubleClicked,
+             this, &QgsAuthServersEditor::handleDoubleClick );
 
-    connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshSslConfigsView() ) );
+    connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QString( "serverssortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -73,11 +74,7 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   }
 }
 
-QgsAuthServersEditor::~QgsAuthServersEditor()
-{
-}
-
-static void setItemBold_( QTreeWidgetItem* item )
+static void setItemBold_( QTreeWidgetItem *item )
 {
   item->setFirstColumnSpanned( true );
   QFont secf( item->font( 0 ) );
@@ -100,16 +97,16 @@ void QgsAuthServersEditor::setupSslConfigsTree()
   mRootSslConfigItem = new QTreeWidgetItem(
     treeServerConfigs,
     QStringList( tr( "SSL Server Configurations" ) ),
-    ( int )QgsAuthServersEditor::Section );
+    static_cast<int>( QgsAuthServersEditor::Section ) );
   setItemBold_( mRootSslConfigItem );
   mRootSslConfigItem->setFlags( Qt::ItemIsEnabled );
   mRootSslConfigItem->setExpanded( true );
   treeServerConfigs->insertTopLevelItem( 0, mRootSslConfigItem );
 }
 
-static void removeChildren_( QTreeWidgetItem* item )
+static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem* child, item->takeChildren() )
+  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
   {
     delete child;
   }
@@ -120,7 +117,7 @@ void QgsAuthServersEditor::populateSslConfigsView()
   removeChildren_( mRootSslConfigItem );
 
   populateSslConfigsSection( mRootSslConfigItem,
-                             QgsAuthManager::instance()->getSslCertCustomConfigs(),
+                             QgsApplication::authManager()->sslCertCustomConfigs(),
                              QgsAuthServersEditor::ServerConfig );
 }
 
@@ -130,7 +127,7 @@ void QgsAuthServersEditor::refreshSslConfigsView()
 }
 
 void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
-    const QList<QgsAuthConfigSslServer>& configs,
+    const QList<QgsAuthConfigSslServer> &configs,
     QgsAuthServersEditor::ConfigType conftype )
 {
   if ( btnGroupByOrg->isChecked() )
@@ -143,11 +140,11 @@ void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
   }
 }
 
-void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer>& configs,
+void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer> &configs,
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
-  if ( configs.size() < 1 )
+  if ( configs.empty() )
     return;
 
   if ( !parent )
@@ -162,9 +159,9 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   QMap< QString, QList<QgsAuthConfigSslServer> >::const_iterator it = orgconfigs.constBegin();
   for ( ; it != orgconfigs.constEnd(); ++it )
   {
-    QTreeWidgetItem * grpitem( new QTreeWidgetItem( parent,
-                               QStringList() << it.key(),
-                               ( int )QgsAuthServersEditor::OrgName ) );
+    QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
+                              QStringList() << it.key(),
+                              static_cast<int>( QgsAuthServersEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -182,11 +179,11 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslServer>& configs,
+void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslServer> &configs,
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
-  if ( configs.size() < 1 )
+  if ( configs.empty() )
     return;
 
   if ( !parent )
@@ -197,7 +194,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
   QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Host, Expiry Date
-  Q_FOREACH ( const QgsAuthConfigSslServer& config, configs )
+  Q_FOREACH ( const QgsAuthConfigSslServer &config, configs )
   {
     QSslCertificate cert( config.sslCertificate() );
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
@@ -207,13 +204,13 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
     coltxts << QString( config.sslHostPort() );
     coltxts << cert.expiryDate().toString();
 
-    QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )conftype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( conftype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificate.svg" ) );
-    if ( !cert.isValid() )
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -222,7 +219,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthServersEditor::selectionChanged( const QItemSelection& selected , const QItemSelection& deselected )
+void QgsAuthServersEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
@@ -234,9 +231,9 @@ void QgsAuthServersEditor::checkSelection()
   bool isconfig = false;
   if ( treeServerConfigs->selectionModel()->selection().length() > 0 )
   {
-    QTreeWidgetItem* item( treeServerConfigs->currentItem() );
+    QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 
-    switch (( QgsAuthServersEditor::ConfigType )item->type() )
+    switch ( ( QgsAuthServersEditor::ConfigType )item->type() )
     {
       case QgsAuthServersEditor::ServerConfig :
         isconfig = true;
@@ -255,7 +252,7 @@ void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
   Q_UNUSED( col );
   bool isconfig = true;
 
-  switch (( QgsAuthServersEditor::ConfigType )item->type() )
+  switch ( ( QgsAuthServersEditor::ConfigType )item->type() )
   {
     case QgsAuthServersEditor::Section:
       isconfig = false;
@@ -269,11 +266,11 @@ void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 
   if ( isconfig )
   {
-    on_btnEditServer_clicked();
+    btnEditServer_clicked();
   }
 }
 
-void QgsAuthServersEditor::on_btnAddServer_clicked()
+void QgsAuthServersEditor::btnAddServer_clicked()
 {
   QgsAuthSslImportDialog *dlg = new QgsAuthSslImportDialog( this );
   dlg->setWindowModality( Qt::WindowModal );
@@ -285,13 +282,13 @@ void QgsAuthServersEditor::on_btnAddServer_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthServersEditor::on_btnRemoveServer_clicked()
+void QgsAuthServersEditor::btnRemoveServer_clicked()
 {
-  QTreeWidgetItem* item( treeServerConfigs->currentItem() );
+  QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -301,27 +298,27 @@ void QgsAuthServersEditor::on_btnRemoveServer_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config id missing" ),
-                               QgsMessageBar::WARNING );
+                               Qgis::Warning );
     return;
   }
   if ( hostport.isEmpty() )
   {
     messageBar()->pushMessage( tr( "SSL custom config host:port missing" ),
-                               QgsMessageBar::WARNING );
+                               Qgis::Warning );
     return;
   }
 
-  if ( !QgsAuthManager::instance()->existsSslCertCustomConfig( digest, hostport ) )
+  if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( QString( "SSL custom config does not exist in database for host:port, id %1:" )
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
                  .arg( hostport, digest ) );
     return;
   }
 
   if ( QMessageBox::warning(
-         this, tr( "Remove SSL Custom Config" ),
+         this, tr( "Remove SSL Custom Configuration" ),
          tr( "Are you sure you want to remove the selected "
-             "SSL custom config from the database?\n\n"
+             "SSL custom configuration from the database?\n\n"
              "Operation can NOT be undone!" ),
          QMessageBox::Ok | QMessageBox::Cancel,
          QMessageBox::Cancel ) == QMessageBox::Cancel )
@@ -329,11 +326,11 @@ void QgsAuthServersEditor::on_btnRemoveServer_clicked()
     return;
   }
 
-  if ( !QgsAuthManager::instance()->removeSslCertCustomConfig( digest, hostport ) )
+  if ( !QgsApplication::authManager()->removeSslCertCustomConfig( digest, hostport ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing SSL custom config from authentication database for host:port, id %1:" )
                                .arg( hostport, digest ),
-                               QgsMessageBar::CRITICAL );
+                               Qgis::Critical );
     return;
   }
 
@@ -341,13 +338,13 @@ void QgsAuthServersEditor::on_btnRemoveServer_clicked()
   delete item;
 }
 
-void QgsAuthServersEditor::on_btnEditServer_clicked()
+void QgsAuthServersEditor::btnEditServer_clicked()
 {
-  QTreeWidgetItem* item( treeServerConfigs->currentItem() );
+  QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -356,27 +353,27 @@ void QgsAuthServersEditor::on_btnEditServer_clicked()
 
   if ( digest.isEmpty() )
   {
-    messageBar()->pushMessage( tr( "SSL custom config id missing" ),
-                               QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "SSL custom config id missing." ),
+                               Qgis::Warning );
     return;
   }
   if ( hostport.isEmpty() )
   {
-    messageBar()->pushMessage( tr( "SSL custom config host:port missing" ),
-                               QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "SSL custom config host:port missing." ),
+                               Qgis::Warning );
     return;
   }
 
-  if ( !QgsAuthManager::instance()->existsSslCertCustomConfig( digest, hostport ) )
+  if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( "SSL custom config does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database" ) );
     return;
   }
 
-  QgsAuthConfigSslServer config( QgsAuthManager::instance()->getSslCertCustomConfig( digest, hostport ) );
+  QgsAuthConfigSslServer config( QgsApplication::authManager()->sslCertCustomConfig( digest, hostport ) );
   QSslCertificate cert( config.sslCertificate() );
 
-  QgsAuthSslConfigDialog * dlg = new QgsAuthSslConfigDialog( this, cert, hostport );
+  QgsAuthSslConfigDialog *dlg = new QgsAuthSslConfigDialog( this, cert, hostport );
   dlg->sslCustomConfigWidget()->setConfigCheckable( false );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 500, 500 );
@@ -387,21 +384,21 @@ void QgsAuthServersEditor::on_btnEditServer_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthServersEditor::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "serverssortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference" ),
+    authMessageOut( QObject::tr( "Could not store sort by preference." ),
                     QObject::tr( "Authentication SSL Configs" ),
                     QgsAuthManager::WARNING );
   }
   populateSslConfigsView();
 }
 
-void QgsAuthServersEditor::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthServersEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = ( int )level;
-  messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
+  int levelint = static_cast<int>( level );
+  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 
 void QgsAuthServersEditor::showEvent( QShowEvent *e )
@@ -413,13 +410,13 @@ void QgsAuthServersEditor::showEvent( QShowEvent *e )
   QWidget::showEvent( e );
 }
 
-QgsMessageBar * QgsAuthServersEditor::messageBar()
+QgsMessageBar *QgsAuthServersEditor::messageBar()
 {
   return msgBar;
 }
 
 int QgsAuthServersEditor::messageTimeout()
 {
-  QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

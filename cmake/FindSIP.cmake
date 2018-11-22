@@ -9,7 +9,7 @@
 # This file defines the following variables:
 #
 # SIP_VERSION - The version of SIP found expressed as a 6 digit hex number
-#     suitable for comparision as a string.
+#     suitable for comparison as a string.
 #
 # SIP_VERSION_STR - The version of SIP found as a human readable string.
 #
@@ -41,7 +41,7 @@ ELSE(SIP_VERSION)
     STRING(REGEX REPLACE ".*\nsip_bin:([^\n]+).*$" "\\1" SIP_BINARY_PATH ${sip_config})
     STRING(REGEX REPLACE ".*\ndefault_sip_dir:([^\n]+).*$" "\\1" SIP_DEFAULT_SIP_DIR ${sip_config})
     STRING(REGEX REPLACE ".*\nsip_inc_dir:([^\n]+).*$" "\\1" SIP_INCLUDE_DIR ${sip_config})
-    STRING(REGEX REPLACE ".*\nsip_mod_dir:([^\n]+).*$" "\\1" SIP_MOD_DIR ${sip_config})
+    STRING(REGEX REPLACE ".*\nsip_module_dir:([^\n]+).*$" "\\1" SIP_MODULE_DIR ${sip_config})
     SET(SIP_FOUND TRUE)
   ENDIF(sip_config)
 

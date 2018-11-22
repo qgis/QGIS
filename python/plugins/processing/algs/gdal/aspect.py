@@ -27,11 +27,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsProcessingException,
+                       QgsRasterFileWriter,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -45,49 +49,88 @@ class aspect(GdalAlgorithm):
     ZEVENBERGEN = 'ZEVENBERGEN'
     TRIG_ANGLE = 'TRIG_ANGLE'
     ZERO_FLAT = 'ZERO_FLAT'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Aspect')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterNumber(
-            self.BAND, self.tr('Band number'), 1, 99, 1))
-        self.addParameter(ParameterBoolean(
-            self.COMPUTE_EDGES, self.tr('Compute edges'), False))
-        self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-                                           self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
-                                           False))
-        self.addParameter(ParameterBoolean(self.TRIG_ANGLE,
-                                           self.tr('Return trigonometric angle (instead of azimuth)'), False))
-        self.addParameter(ParameterBoolean(self.ZERO_FLAT,
-                                           self.tr('Return 0 for flat (instead of -9999)'), False))
+    def __init__(self):
+        super().__init__()
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Aspect')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.TRIG_ANGLE,
+                                                        self.tr('Return trigonometric angle instead of azimuth'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ZERO_FLAT,
+                                                        self.tr('Return 0 for flat instead of -9999'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
+                                                        self.tr('Compute edges'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ZEVENBERGEN,
+                                                        self.tr("Use Zevenbergen&Thorne formula instead of the Horn's one"),
+                                                        defaultValue=False))
 
-    def getConsoleCommands(self):
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Aspect')))
+
+    def name(self):
+        return 'aspect'
+
+    def displayName(self):
+        return self.tr('Aspect')
+
+    def group(self):
+        return self.tr('Raster analysis')
+
+    def groupId(self):
+        return 'rasteranalysis'
+
+    def commandName(self):
+        return 'gdaldem'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['aspect']
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        output = unicode(self.getOutputValue(self.OUTPUT))
-        arguments.append(output)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+        arguments.append(inLayer.source())
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        arguments.append(out)
 
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.getParameterValue(self.COMPUTE_EDGES):
+        if self.parameterAsBool(parameters, self.TRIG_ANGLE, context):
+            arguments.append('-trigonometric')
+
+        if self.parameterAsBool(parameters, self.ZERO_FLAT, context):
+            arguments.append('-zero_for_flat')
+
+        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.getParameterValue(self.ZEVENBERGEN):
+        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
-        if self.getParameterValue(self.TRIG_ANGLE):
-            arguments.append('-trigonometric')
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
-        if self.getParameterValue(self.ZERO_FLAT):
-            arguments.append('-zero_for_flat')
-
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

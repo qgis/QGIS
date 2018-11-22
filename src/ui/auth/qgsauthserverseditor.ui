@@ -14,16 +14,7 @@
    <string>Server Exceptions/SSL Configs Editor</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -63,70 +54,43 @@
        </property>
        <item>
         <widget class="QToolButton" name="btnAddServer">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
+         <property name="toolTip">
+          <string>Add new server certificate configuration</string>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnRemoveServer">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
+         <property name="toolTip">
+          <string>Remove selected server certificate configuration</string>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnEditServer">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
+         <property name="toolTip">
+          <string>Edit selected server certificate configuration</string>
          </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
          </property>
         </widget>
        </item>
@@ -145,27 +109,15 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnGroupByOrg">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Group by organization</string>
          </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -177,24 +129,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnViewRefresh">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionRefresh.png</normaloff>:/images/themes/default/mActionRefresh.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
          </property>
         </widget>
        </item>

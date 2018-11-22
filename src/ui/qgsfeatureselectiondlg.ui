@@ -15,9 +15,28 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QgsDualView" name="mDualView">
-     <widget class="QWidget" name="page"/>
-     <widget class="QWidget" name="page_2"/>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>448</width>
+        <height>444</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QgsDualView" name="mDualView">
+         <widget class="QWidget" name="page"/>
+         <widget class="QWidget" name="page_2"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>

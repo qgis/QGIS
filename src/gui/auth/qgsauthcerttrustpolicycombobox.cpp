@@ -22,26 +22,27 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
     QgsAuthCertUtils::CertTrustPolicy policy,
     QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
-    : QComboBox( parent )
+  : QComboBox( parent )
 {
   QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
   policies << qMakePair( QgsAuthCertUtils::DefaultTrust,
                          defaultTrustText( defaultpolicy ) )
-  << qMakePair( QgsAuthCertUtils::Trusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-  << qMakePair( QgsAuthCertUtils::Untrusted,
-                QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+           << qMakePair( QgsAuthCertUtils::Trusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+           << qMakePair( QgsAuthCertUtils::Untrusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
     QgsAuthCertUtils::CertTrustPolicy polcy = policies.at( i ).first;
     QString name = policies.at( i ).second;
-    addItem( name, QVariant(( int )polcy ) );
+    addItem( name, QVariant( static_cast<int>( polcy ) ) );
   }
 
   setItemData( 1, QgsAuthGuiUtils::greenColor(), Qt::TextColorRole );
@@ -51,20 +52,16 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
 //  setEditable( true );
 //  lineEdit()->setReadOnly( true );
 
-  connect( this, SIGNAL( currentIndexChanged( int ) ),
-           this, SLOT( highlightCurrentIndex( int ) ) );
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex );
 
   setTrustPolicy( policy );
   setDefaultTrustPolicy( defaultpolicy );
 }
 
-QgsAuthCertTrustPolicyComboBox::~QgsAuthCertTrustPolicyComboBox()
-{
-}
-
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicy()
 {
-  return ( QgsAuthCertUtils::CertTrustPolicy )itemData( currentIndex() ).toInt();
+  return ( QgsAuthCertUtils::CertTrustPolicy )currentData().toInt();
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyForIndex( int indx )
@@ -74,37 +71,37 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyFor
 
 void QgsAuthCertTrustPolicyComboBox::setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy )
 {
-  int idx = findData( QVariant(( int )policy ) );
+  int idx = findData( QVariant( static_cast<int>( policy ) ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
 void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
 {
-  int idx = findData( QVariant(( int )QgsAuthCertUtils::DefaultTrust ) );
+  int idx = findData( QVariant( static_cast<int>( QgsAuthCertUtils::DefaultTrust ) ) );
   setItemText( idx, defaultTrustText( defaultpolicy ) );
 }
 
 void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
 {
   QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
-  QString ss( "" );
+  QString ss;
 
   // TODO: why are these widget state selectors backwards?
   switch ( policy )
   {
     case QgsAuthCertUtils::Trusted:
       // ss = QgsAuthCertUtils::greenTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( "QComboBox:open" ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::Untrusted:
       // ss = QgsAuthCertUtils::redTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::redTextStyleSheet( "QComboBox:open" ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::DefaultTrust:
     default:
       break;
   }
-  QgsDebugMsg( QString( "Set Stylesheet to : %1" ).arg( ss ) );
+  QgsDebugMsg( QStringLiteral( "Set Stylesheet to : %1" ).arg( ss ) );
   // lineEdit()->setStyleSheet( ss );
   setStyleSheet( ss );
 }
@@ -113,16 +110,16 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
 {
   if ( defaultpolicy == QgsAuthCertUtils::DefaultTrust )
   {
-    if ( !QgsAuthManager::instance()->isDisabled() )
+    if ( !QgsApplication::authManager()->isDisabled() )
     {
-      defaultpolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+      defaultpolicy = QgsApplication::authManager()->defaultCertTrustPolicy();
     }
     else
     {
       defaultpolicy = QgsAuthCertUtils::Trusted;
     }
   }
-  return QString( "%1 (%2)" )
+  return QStringLiteral( "%1 (%2)" )
          .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ),
                QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

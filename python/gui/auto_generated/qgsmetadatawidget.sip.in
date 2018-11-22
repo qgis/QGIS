@@ -1,0 +1,190 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmetadatawidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMetadataWidget : QWidget
+{
+%Docstring
+A wizard to edit metadata on a map layer.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsmetadatawidget.h"
+%End
+  public:
+
+    enum Mode
+    {
+      LayerMetadata,
+      ProjectMetadata,
+    };
+
+    QgsMetadataWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
+%Docstring
+Constructor for the wizard.
+
+If ``layer`` is set, then this constructor automatically sets the widget's metadata() to match
+the layer's metadata..
+
+.. seealso:: :py:func:`setMetadata`
+%End
+
+    void setMode( Mode mode );
+%Docstring
+Sets the widget's current ``mode``.
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.2
+%End
+
+    Mode mode() const;
+%Docstring
+Returns the widget's current mode.
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.2
+%End
+
+    void setMetadata( const QgsAbstractMetadataBase *metadata );
+%Docstring
+Sets the ``metadata`` to display in the widget.
+
+This method can be called after constructing a QgsMetadataWidget in order
+to set the displayed metadata to custom, non-layer based metadata.
+
+Calling this method will automatically setMode() to the correct mode corresponding
+to the specified ``metadata`` object.
+
+.. seealso:: :py:func:`metadata`
+%End
+
+    QgsAbstractMetadataBase *metadata() /Factory/;
+%Docstring
+Returns a QgsAbstractMetadataBase object representing the current state of the widget.
+
+Caller takes ownership of the returned object.
+
+.. seealso:: :py:func:`saveMetadata`
+%End
+
+    void saveMetadata( QgsAbstractMetadataBase *metadata );
+%Docstring
+Save all fields in a metadata object.
+
+.. seealso:: :py:func:`metadata`
+
+.. seealso:: :py:func:`acceptMetadata`
+
+.. seealso:: :py:func:`checkMetadata`
+%End
+
+    bool checkMetadata();
+%Docstring
+Check if values in the wizard are correct.
+
+.. seealso:: :py:func:`saveMetadata`
+%End
+
+    void crsChanged();
+%Docstring
+If the CRS is updated.
+%End
+
+    void acceptMetadata();
+%Docstring
+Saves the metadata to the layer.
+%End
+
+    static QMap<QString, QString> parseLanguages();
+%Docstring
+Returns a list of languages available by default in the wizard.
+%End
+
+    static QStringList parseLicenses();
+%Docstring
+Returns a list of licences available by default in the wizard.
+%End
+
+    static QStringList parseLinkTypes();
+%Docstring
+Returns a list of link types available by default in the wizard.
+
+.. seealso:: :py:func:`https`
+%End
+
+    static QStringList parseMimeTypes();
+%Docstring
+Returns a list of MIME types available by default in the wizard.
+
+.. seealso:: :py:func:`https`
+%End
+
+    static QMap<QString, QString> parseTypes();
+%Docstring
+Returns a list of types available by default in the wizard.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets a map ``canvas`` associated with the widget.
+%End
+
+    QString title() const;
+%Docstring
+Returns the current title field for the metadata.
+
+.. seealso:: :py:func:`setTitle`
+
+.. seealso:: :py:func:`titleChanged`
+
+.. versionadded:: 3.2
+%End
+
+  public slots:
+
+    void setTitle( const QString &title );
+%Docstring
+Sets the ``title`` field for the metadata.
+
+.. seealso:: :py:func:`title`
+
+.. seealso:: :py:func:`titleChanged`
+
+.. versionadded:: 3.2
+%End
+
+  signals:
+
+    void titleChanged( const QString &title );
+%Docstring
+Emitted when the ``title`` field is changed.
+
+.. seealso:: :py:func:`title`
+
+.. seealso:: :py:func:`setTitle`
+
+.. versionadded:: 3.2
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmetadatawidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

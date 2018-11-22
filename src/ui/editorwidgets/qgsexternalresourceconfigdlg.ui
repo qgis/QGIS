@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>371</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,7 +34,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-210</y>
-        <width>465</width>
-        <height>621</height>
+        <y>0</y>
+        <width>467</width>
+        <height>715</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -66,16 +66,16 @@
              <enum>QLayout::SetMinimumSize</enum>
             </property>
             <property name="leftMargin">
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="topMargin">
-             <number>6</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="bottomMargin">
-             <number>6</number>
+             <number>0</number>
             </property>
             <item>
              <widget class="QLabel" name="label">
@@ -101,9 +101,32 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="mRootPathButton">
+             <widget class="QLineEdit" name="mRootPathExpression">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mRootPathButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mRootPathPropertyOverrideButton">
+              <property name="text">
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -139,7 +162,7 @@
              <item>
               <widget class="QRadioButton" name="mRelativeProject">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;Eg: if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;For example, if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Relative to project path</string>
@@ -158,7 +181,7 @@
                 <bool>false</bool>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;Eg: if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;For example, if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Relative to default path</string>
@@ -186,7 +209,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set exclusive file selection methods.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="title">
-          <string>Storage mode</string>
+          <string>Storage Mode</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
@@ -227,7 +250,7 @@
        <item>
         <widget class="QGroupBox" name="mFileWidgetGroupBox">
          <property name="title">
-          <string>Display resource path</string>
+          <string>Display Resource Path</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -302,65 +325,12 @@
        <item>
         <widget class="QGroupBox" name="mDocumentViewerGroupBox">
          <property name="title">
-          <string>Integrated document viewer</string>
+          <string>Integrated Document Viewer</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Height</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QgsSpinBox" name="mDocumentViewerHeight">
-            <property name="specialValueText">
-             <string>Auto</string>
-            </property>
-            <property name="suffix">
-             <string> px</string>
-            </property>
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QgsSpinBox" name="mDocumentViewerWidth">
-            <property name="specialValueText">
-             <string>Auto</string>
-            </property>
-            <property name="suffix">
-             <string> px</string>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3" rowspan="2">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Specify the size of the preview. If you leave it set to Auto, an optimal size will be calculated.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_3">
             <property name="text">
@@ -370,6 +340,120 @@
           </item>
           <item row="0" column="2">
            <widget class="QComboBox" name="mDocumentViewerContentComboBox"/>
+          </item>
+          <item row="0" column="5">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1" colspan="5">
+           <widget class="QWidget" name="mDocumentViewerContentSettingsWidget" native="true">
+            <layout class="QGridLayout" name="gridLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="2" rowspan="2">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Specify the size of the preview. If you leave it set to Auto, an optimal size will be calculated.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Width</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QgsSpinBox" name="mDocumentViewerHeight">
+               <property name="specialValueText">
+                <string>Auto</string>
+               </property>
+               <property name="suffix">
+                <string> px</string>
+               </property>
+               <property name="prefix">
+                <string/>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsSpinBox" name="mDocumentViewerWidth">
+               <property name="specialValueText">
+                <string>Auto</string>
+               </property>
+               <property name="suffix">
+                <string> px</string>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Height</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QgsPropertyOverrideButton" name="mDocumentViewerContentPropertyOverrideButton">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="mDocumentViewerContentExpression">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -395,15 +479,25 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRootPath</tabstop>
-  <tabstop>mRootPathButton</tabstop>
   <tabstop>mRelativeGroupBox</tabstop>
   <tabstop>mRelativeProject</tabstop>
   <tabstop>mRelativeDefault</tabstop>
@@ -416,8 +510,6 @@
   <tabstop>mFullUrl</tabstop>
   <tabstop>mDocumentViewerGroupBox</tabstop>
   <tabstop>mDocumentViewerContentComboBox</tabstop>
-  <tabstop>mDocumentViewerWidth</tabstop>
-  <tabstop>mDocumentViewerHeight</tabstop>
  </tabstops>
  <resources/>
  <connections/>

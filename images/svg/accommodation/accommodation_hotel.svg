@@ -1,50 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="hotel.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<sodipodi:namedview  showgrid="false" inkscape:cy="281.19503" inkscape:cx="331.95305" inkscape:zoom="0.92167712" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="25" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="947" inkscape:window-width="1048">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="60 : 30 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 30 : 1" sodipodi:type="inkscape:persp3d" id="perspective3452" inkscape:persp3d-origin="30 : 20 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective4471" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="12 : 6 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 6 : 1" sodipodi:type="inkscape:persp3d" id="perspective4668" inkscape:persp3d-origin="6 : 4 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="32 : 16 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 16 : 1" sodipodi:type="inkscape:persp3d" id="perspective4904" inkscape:persp3d-origin="16 : 10.666667 : 1">
-		</inkscape:perspective>
-</defs>
-<g id="layer3" transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)" inkscape:label="Layout" display="none">
-	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
-	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
-</g>
-<polygon opacity="0.5" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" points="295.237,39.758 294.855,39.364 
-	106.54,232.642 144.682,232.642 144.682,520.607 257.98,520.607 257.98,374.266 334.294,374.266 334.294,520.607 445.027,520.607 
-	445.027,232.642 483.169,232.642 "/>
-<g>
-	<polygon fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" stroke-miterlimit="10" points="505.014,350.967 503.808,412.455 
-		77.661,409.614 79.33,279.464 45.71,279.033 42.709,513.187 76.328,513.618 77.23,443.234 503.148,446.073 502.012,504.067 
-		535.627,504.726 538.629,351.625 	"/>
-	<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" stroke-miterlimit="10" d="M257.652,402.149h195.127
-		c22.248,0,40.348-18.1,40.348-40.347s-18.1-40.347-40.348-40.347H257.652c-22.247,0-40.346,18.1-40.346,40.347
-		S235.405,402.149,257.652,402.149z"/>
-	<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" stroke-miterlimit="10" d="M169.841,328.922h0.013
-		c9.029-0.003,17.523-3.125,23.917-8.791c6.433-5.7,9.974-13.29,9.97-21.394c-0.007-16.617-15.216-30.136-33.915-30.136
-		c-9.029,0.003-17.523,3.125-23.917,8.792c-6.433,5.701-9.974,13.29-9.97,21.393C135.947,315.402,151.155,328.922,169.841,328.922z
-		 M169.841,327.772L169.841,327.772L169.841,327.772L169.841,327.772z"/>
-	<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" stroke-miterlimit="10" d="M106.799,398.126h84.055
-		c11.339,0,20.563-9.225,20.563-20.563S202.193,357,190.854,357h-84.055c-11.339,0-20.563,9.224-20.563,20.563
-		S95.46,398.126,106.799,398.126z"/>
-</g>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m295.237 39.758l-.382-.394-188.315 193.278h38.142v287.965h113.298v-146.341h76.314v146.341h110.733v-287.965h38.142z" fill="param(fill)" opacity=".5" stroke="param(outline)" stroke-width="param(outline-width)"/>
+<path d="m505.014 350.967l-1.206 61.488-426.147-2.841 1.669-130.15-33.62-.431-3.001 234.154 33.619.431.902-70.384 425.918 2.839-1.136 57.994 33.615.659 3.002-153.101z" fill="param(fill)" stroke="param(outline)" stroke-miterlimit="10" stroke-width="param(outline-width)"/>
+<path d="m257.652 402.149h195.127c22.248 0 40.348-18.1 40.348-40.347s-18.1-40.347-40.348-40.347h-195.127c-22.247 0-40.346 18.1-40.346 40.347s18.099 40.347 40.346 40.347z" fill="param(fill)" stroke="param(outline)" stroke-miterlimit="10" stroke-width="param(outline-width)"/>
+<path d="m169.841 328.922h.013c9.029-.003 17.523-3.125 23.917-8.791 6.433-5.7 9.974-13.29 9.97-21.394-.007-16.617-15.216-30.136-33.915-30.136-9.029.003-17.523 3.125-23.917 8.792-6.433 5.701-9.974 13.29-9.97 21.393.008 16.616 15.216 30.136 33.902 30.136z" fill="param(fill)" stroke="param(outline)" stroke-miterlimit="10" stroke-width="param(outline-width)"/>
+<path d="m106.799 398.126h84.055c11.339 0 20.563-9.225 20.563-20.563s-9.224-20.563-20.563-20.563h-84.055c-11.339 0-20.563 9.224-20.563 20.563s9.224 20.563 20.563 20.563z" fill="param(fill)" stroke="param(outline)" stroke-miterlimit="10" stroke-width="param(outline-width)"/>
 </svg>

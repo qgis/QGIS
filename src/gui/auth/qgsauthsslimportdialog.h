@@ -63,32 +63,34 @@
 #define QGSAUTHSSLIMPORTDIALOG_H
 
 #include "ui_qgsauthsslimportdialog.h"
+#include "qgis.h"
 
 #include <QDialog>
 #include <QAbstractSocket>
 #include <QSslSocket>
+#include "qgis_gui.h"
 
 class QPushButton;
 class QSslSocket;
 class QTimer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing an SSL server certificate exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSslTestDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Construct dialog for importing certificates
-     * @param parent
+     * \param parent
      */
-    QgsAuthSslImportDialog( QWidget *parent = nullptr );
-    ~QgsAuthSslImportDialog();
+    QgsAuthSslImportDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   public slots:
-    /** Overridden slot of base dialog */
     void accept() override;
 
   private slots:
@@ -110,7 +112,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     void radioServerImportToggled( bool checked );
     void radioFileImportToggled( bool checked );
 
-    void on_btnCertPath_clicked();
+    void btnCertPath_clicked();
     void clearCertificateConfig();
     void clearStatusCertificateConfig();
 
@@ -119,18 +121,18 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 
     void appendString( const QString &line );
 
-    QPushButton* saveButton();
-    QPushButton* closeButton();
-    QString getOpenFileName( const QString& title, const QString& extfilter );
+    QPushButton *saveButton();
+    QPushButton *closeButton();
+    QString getOpenFileName( const QString &title, const QString &extfilter );
 
-    QSslSocket *mSocket;
-    bool mExecErrorsDialog;
-    QTimer *mTimer;
+    QSslSocket *mSocket = nullptr;
+    bool mExecErrorsDialog = false;
+    QTimer *mTimer = nullptr;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHSSLIMPORTDIALOG_H

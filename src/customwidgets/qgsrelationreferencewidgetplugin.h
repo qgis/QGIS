@@ -18,13 +18,9 @@
 
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDesignerCustomWidgetCollectionInterface>
-#include <QDesignerExportWidget>
-#else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#endif
+#include "qgis_customwidgets.h"
 
 
 class CUSTOMWIDGETS_EXPORT QgsRelationReferenceWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
@@ -33,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsRelationReferenceWidgetPlugin : public QObject, pu
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsRelationReferenceWidgetPlugin( QObject *parent = 0 );
+    explicit QgsRelationReferenceWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

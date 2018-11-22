@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -22,16 +22,21 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaprenderer.h>
-#include <qgsmaplayer.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgsproviderregistry.h"
+#include "qgsproject.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsRenderers : public QObject
@@ -39,14 +44,8 @@ class TestQgsRenderers : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
-    {}
-    ~TestQgsRenderers()
+    TestQgsRenderers() = default;
+    ~TestQgsRenderers() override
     {
       delete mMapSettings;
     }
@@ -58,17 +57,19 @@ class TestQgsRenderers : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void singleSymbol();
+    void emptyGeometry();
 //    void uniqueValue();
 //    void graduatedSymbol();
 //    void continuousSymbol();
   private:
-    bool mTestHasError;
-    bool setQml( const QString& theType ); //uniquevalue / continuous / single /
-    bool imageCheck( const QString& theType ); //as above
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
+    bool mTestHasError =  false ;
+    bool setQml( const QString &type ); //uniquevalue / continuous / single /
+    bool imageCheck( const QString &type ); //as above
+    bool checkEmptyRender( const QString &name, QgsVectorLayer *layer );
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsMapLayer *mpLinesLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -95,9 +96,9 @@ void TestQgsRenderers::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
@@ -106,9 +107,9 @@ void TestQgsRenderers::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
 
@@ -118,9 +119,9 @@ void TestQgsRenderers::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
@@ -128,8 +129,8 @@ void TestQgsRenderers::initTestCase()
   // and is more light weight
   //
   mMapSettings->setLayers(
-    QStringList() << mpPointsLayer->id() << mpPolysLayer->id() << mpLinesLayer->id() );
-  mReport += "<h1>Vector Renderer Tests</h1>\n";
+    QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
+  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()
 {
@@ -148,39 +149,90 @@ void TestQgsRenderers::cleanupTestCase()
 
 void TestQgsRenderers::singleSymbol()
 {
-  mReport += "<h2>Single symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Single symbol renderer test</h2>\n" );
   QVERIFY( setQml( "single" ) );
   QVERIFY( imageCheck( "single" ) );
 }
 
-// TODO: update tests and enable
-/*
-void TestQgsRenderers::uniqueValue()
+void TestQgsRenderers::emptyGeometry()
 {
-  mReport += "<h2>Unique value symbol renderer test</h2>\n";
-  QVERIFY( setQml( "uniquevalue" ) );
-  QVERIFY( imageCheck( "uniquevalue" ) );
+  // test rendering an empty geometry
+  // note - this test is of limited use, because the features with empty geometries should not be rendered
+  // by the feature iterator given that renderer uses a filter rect on the request. It's placed here
+  // for manual testing by commenting out the part of the renderer which places the filterrect on the
+  // layer's feature request. The purpose of this test is to ensure that we do not crash for empty geometries,
+  // as it's possible that malformed providers OR bugs in underlying libraries will still return empty geometries
+  // even when a filter rect request was made, and we shouldn't crash for these.
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+
+  QgsFeature f;
+  std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
+  mp->addGeometry( new QgsPolygon() );
+  f.setGeometry( QgsGeometry( std::move( mp ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "Multipolygon", vl ) );
+
+  // polygon
+  vl = new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  f.setGeometry( QgsGeometry( new QgsPolygon() ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "Polygon", vl ) );
+
+  // linestring
+  vl = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  f.setGeometry( QgsGeometry( new QgsLineString() ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "LineString", vl ) );
+
+  // multilinestring
+  vl = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  std::unique_ptr< QgsMultiLineString > mls = qgis::make_unique< QgsMultiLineString >();
+  mls->addGeometry( new QgsLineString() );
+  f.setGeometry( QgsGeometry( std::move( mls ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "MultiLineString", vl ) );
+
+  // multipoint
+  vl = new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  std::unique_ptr< QgsMultiPoint > mlp = qgis::make_unique< QgsMultiPoint >();
+  f.setGeometry( QgsGeometry( std::move( mlp ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "MultiPoint", vl ) );
 }
 
-void TestQgsRenderers::graduatedSymbol()
+bool TestQgsRenderers::checkEmptyRender( const QString &testName, QgsVectorLayer *layer )
 {
-  mReport += "<h2>Graduated symbol renderer test</h2>\n";
-  QVERIFY( setQml( "graduated" ) );
-  QVERIFY( imageCheck( "graduated" ) );
+  QgsMapSettings ms;
+  QgsRectangle extent( -180, -90, 180, 90 );
+  ms.setExtent( extent );
+  ms.setFlag( QgsMapSettings::ForceVectorOutput );
+  ms.setOutputDpi( 96 );
+  ms.setLayers( QList< QgsMapLayer * >() << layer );
+  QgsMultiRenderChecker myChecker;
+  myChecker.setControlName( "expected_emptygeometry" );
+  myChecker.setMapSettings( ms );
+  myChecker.setControlPathPrefix( "map_renderer" );
+  myChecker.setColorTolerance( 15 );
+  bool myResultFlag = myChecker.runTest( testName, 200 );
+  mReport += myChecker.report();
+  return myResultFlag;
 }
 
-void TestQgsRenderers::continuousSymbol()
-{
-  mReport += "<h2>Continuous symbol renderer test</h2>\n";
-  QVERIFY( setQml( "continuous" ) );
-  QVERIFY( imageCheck( "continuous" ) );
-}
-*/
 //
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRenderers::setQml( const QString& theType )
+bool TestQgsRenderers::setQml( const QString &type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -189,7 +241,7 @@ bool TestQgsRenderers::setQml( const QString& theType )
   {
     return false;
   }
-  QString myFileName = mTestDataDir + "points_" + theType + "_symbol.qml";
+  QString myFileName = mTestDataDir + "points_" + type + "_symbol.qml";
   bool myStyleFlag = false;
   QString error = mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
@@ -201,7 +253,7 @@ bool TestQgsRenderers::setQml( const QString& theType )
   {
     myStyleFlag = false; //ready for next test
   }
-  myFileName = mTestDataDir + "polys_" + theType + "_symbol.qml";
+  myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
@@ -211,12 +263,12 @@ bool TestQgsRenderers::setQml( const QString& theType )
   {
     myStyleFlag = false; //ready for next test
   }
-  myFileName = mTestDataDir + "lines_" + theType + "_symbol.qml";
+  myFileName = mTestDataDir + "lines_" + type + "_symbol.qml";
   mpLinesLayer->loadNamedStyle( myFileName, myStyleFlag );
   return myStyleFlag;
 }
 
-bool TestQgsRenderers::imageCheck( const QString& theTestType )
+bool TestQgsRenderers::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -229,13 +281,13 @@ bool TestQgsRenderers::imageCheck( const QString& theTestType )
   mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( theTestType, 200 );
+  bool myResultFlag = myChecker.runTest( testType, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsRenderers )
+QGSTEST_MAIN( TestQgsRenderers )
 #include "testqgsrenderers.moc"

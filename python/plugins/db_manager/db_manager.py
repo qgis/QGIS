@@ -24,11 +24,14 @@ The content of this file is based on
 
 import functools
 
-from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QSize
+from qgis.PyQt.QtCore import Qt, QByteArray, QSize
 from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsMapLayer
+from qgis.utils import OverrideCursor
+
 from .info_viewer import InfoViewer
 from .table_viewer import TableViewer
 from .layer_preview import LayerPreview
@@ -48,12 +51,16 @@ class DBManager(QMainWindow):
         self.iface = iface
 
         # restore the window state
-        settings = QSettings()
+        settings = QgsSettings()
         self.restoreGeometry(settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray))
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
+        self.toolBar.setIconSize(self.iface.iconSize())
+        self.toolBarOrientation()
+        self.toolBar.orientationChanged.connect(self.toolBarOrientation)
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
+        self.tree.model().dataChanged.connect(self.iface.reloadConnections)
         self.itemChanged(None)
 
     def closeEvent(self, e):
@@ -62,36 +69,30 @@ class DBManager(QMainWindow):
         self.preview.loadPreview(None)
 
         # save the window state
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue("/DB_Manager/mainWindow/windowState", self.saveState())
         settings.setValue("/DB_Manager/mainWindow/geometry", self.saveGeometry())
 
         QMainWindow.closeEvent(self, e)
 
     def refreshItem(self, item=None):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            if item is None:
-                item = self.tree.currentItem()
-            self.tree.refreshItem(item)  # refresh item children in the db tree
-        except BaseError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                if item is None:
+                    item = self.tree.currentItem()
+                self.tree.refreshItem(item)  # refresh item children in the db tree
+            except BaseError as e:
+                DlgDbError.showError(e, self)
 
     def itemChanged(self, item):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.reloadButtons()
-            # clear preview, this will delete the layer in preview tab
-            self.preview.loadPreview(None)
-            self.refreshTabs()
-        except BaseError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.reloadButtons()
+                # clear preview, this will delete the layer in preview tab
+                self.preview.loadPreview(None)
+                self.refreshTabs()
+            except BaseError as e:
+                DlgDbError.showError(e, self)
 
     def reloadButtons(self):
         db = self.tree.currentDatabase()
@@ -111,14 +112,11 @@ class DBManager(QMainWindow):
             self._lastDb.registerAllActions(self)
 
     def tabChanged(self, index):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.refreshTabs()
-        except BaseError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.refreshTabs()
+            except BaseError as e:
+                DlgDbError.showError(e, self)
 
     def refreshTabs(self):
         index = self.tabs.currentIndex()
@@ -151,7 +149,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     QgsMessageBar.INFO, self.iface.messageTimeout())
+                                     Qgis.Info, self.iface.messageTimeout())
             return
 
         outUri = db.uri()
@@ -167,11 +165,16 @@ class DBManager(QMainWindow):
     def exportActionSlot(self):
         table = self.tree.currentTable()
         if table is None:
-            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), QgsMessageBar.INFO,
+            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), Qgis.Info,
                                      self.iface.messageTimeout())
             return
 
         inLayer = table.toMapLayer()
+        if inLayer.type() != QgsMapLayer.VectorLayer:
+            self.infoBar.pushMessage(
+                self.tr("Select a vector or a tabular layer you want export."),
+                Qgis.Warning, self.iface.messageTimeout())
+            return
 
         from .dlg_export_vector import DlgExportVector
 
@@ -184,7 +187,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     QgsMessageBar.INFO, self.iface.messageTimeout())
+                                     Qgis.Info, self.iface.messageTimeout())
             # force displaying of the message, it appears on the first tab (i.e. Info)
             self.tabs.setCurrentIndex(0)
             return
@@ -193,11 +196,20 @@ class DBManager(QMainWindow):
 
         query = DlgSqlWindow(self.iface, db, self)
         dbname = db.connection().connectionName()
-        tabname = self.tr("Query") + u" (%s)" % dbname
+        tabname = self.tr("Query ({0})").format(dbname)
         index = self.tabs.addTab(query, tabname)
         self.tabs.setTabIcon(index, db.connection().icon())
         self.tabs.setCurrentIndex(index)
         query.nameChanged.connect(functools.partial(self.update_query_tab_name, index, dbname))
+
+    def runSqlLayerWindow(self, layer):
+        from .dlg_sql_layer_window import DlgSqlLayerWindow
+        query = DlgSqlLayerWindow(self.iface, layer, self)
+        lname = layer.name()
+        tabname = self.tr("Layer ({0})").format(lname)
+        index = self.tabs.addTab(query, tabname)
+        # self.tabs.setTabIcon(index, db.connection().icon())
+        self.tabs.setCurrentIndex(index)
 
     def update_query_tab_name(self, index, dbname, queryname):
         if not queryname:
@@ -283,17 +295,12 @@ class DBManager(QMainWindow):
                 This method takes care to override and restore the cursor,
                 but also catches exceptions and displays the error dialog.
         """
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            callback(self.tree.currentItem(), self.sender(), self, *params)
-
-        except BaseError as e:
-            # catch database errors and display the error dialog
-            DlgDbError.showError(e, self)
-            return
-
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                callback(self.tree.currentItem(), self.sender(), self, *params)
+            except BaseError as e:
+                # catch database errors and display the error dialog
+                DlgDbError.showError(e, self)
 
     def unregisterAction(self, action, menuName):
         if not hasattr(self, '_registeredDbActions'):
@@ -351,6 +358,16 @@ class DBManager(QMainWindow):
             self.tabs.removeTab(index)
             widget.deleteLater()
 
+    def toolBarOrientation(self):
+        button_style = Qt.ToolButtonIconOnly
+        if self.toolBar.orientation() == Qt.Horizontal:
+            button_style = Qt.ToolButtonTextBesideIcon
+
+        widget = self.toolBar.widgetForAction(self.actionImport)
+        widget.setToolButtonStyle(button_style)
+        widget = self.toolBar.widgetForAction(self.actionExport)
+        widget.setToolButtonStyle(button_style)
+
     def setupUi(self):
         self.setWindowTitle(self.tr("DB Manager"))
         self.setWindowIcon(QIcon(":/db_manager/icon"))
@@ -388,7 +405,7 @@ class DBManager(QMainWindow):
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
         # create database tree
-        self.dock = QDockWidget("Tree", self)
+        self.dock = QDockWidget(self.tr("Providers"), self)
         self.dock.setObjectName("DB_Manager_DBView")
         self.dock.setFeatures(QDockWidget.DockWidgetMovable)
         self.tree = DBTree(self)
@@ -413,7 +430,7 @@ class DBManager(QMainWindow):
         self.setMenuBar(self.menuBar)
 
         # create toolbar
-        self.toolBar = QToolBar("Default", self)
+        self.toolBar = QToolBar(self.tr("Default"), self)
         self.toolBar.setObjectName("DB_Manager_ToolBar")
         self.addToolBar(self.toolBar)
 
@@ -424,9 +441,9 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_DbMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionRefresh = self.menuDb.addAction(QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"),
+        self.actionRefresh = self.menuDb.addAction(QgsApplication.getThemeIcon("/mActionRefresh.svg"), self.tr("&Refresh"),
                                                    self.refreshActionSlot, QKeySequence("F5"))
-        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL window"),
+        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
                                                      self.runSqlWindow, QKeySequence("F2"))
         self.menuDb.addSeparator()
         self.actionClose = self.menuDb.addAction(QIcon(), self.tr("&Exit"), self.close, QKeySequence("CTRL+Q"))
@@ -444,8 +461,10 @@ class DBManager(QMainWindow):
         sep.setVisible(False)
 
         self.actionImport = self.menuTable.addAction(QIcon(":/db_manager/actions/import"),
-                                                     self.tr("&Import layer/file"), self.importActionSlot)
-        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to file"),
+                                                     QApplication.translate("DBManager", "&Import Layer/File…"),
+                                                     self.importActionSlot)
+        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"),
+                                                     QApplication.translate("DBManager", "&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
         #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
@@ -456,5 +475,6 @@ class DBManager(QMainWindow):
         # add actions to the toolbar
         self.toolBar.addAction(self.actionRefresh)
         self.toolBar.addAction(self.actionSqlWindow)
+        self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImport)
         self.toolBar.addAction(self.actionExport)

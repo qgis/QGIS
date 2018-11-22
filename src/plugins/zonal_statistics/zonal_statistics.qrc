@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/zonal_statistics/" >
-        <file>raster-stats.png</file>
-    </qresource>
-</RCC>
-

@@ -16,72 +16,149 @@
 #ifndef QGSLAYERTREELAYER_H
 #define QGSLAYERTREELAYER_H
 
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgslayertreenode.h"
+#include "qgsmaplayerref.h"
+#include "qgsreadwritecontext.h"
 
 class QgsMapLayer;
 
 /**
+ * \ingroup core
  * Layer tree node points to a map layer.
- *
- * When using with existing QgsMapLayer instance, it is expected that the layer
- * has been registered in QgsMapLayerRegistry earlier.
  *
  * The node can exist also without a valid instance of a layer (just ID). That
  * means the referenced layer does not need to be loaded in order to use it
- * in layer tree. In such case, the node will start listening to map layer
- * registry updates in expectation that the layer (identified by its ID) will
- * be loaded later.
+ * in layer tree. In such case, resolveReferences() method can be called
+ * once the layer is loaded.
  *
  * A map layer is supposed to be present in one layer tree just once. It is
  * however possible that temporarily a layer exists in one tree more than just
  * once, e.g. while reordering items with drag and drop.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeLayer( QgsMapLayer* layer );
-    QgsLayerTreeLayer( const QgsLayerTreeLayer& other );
+    explicit QgsLayerTreeLayer( QgsMapLayer *layer );
 
-    explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
+#ifndef SIP_RUN
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+#endif
 
-    QString layerId() const { return mLayerId; }
+    /**
+     * Constructor for QgsLayerTreeLayer using weak references to layer ID, \a name, public \a source, and \a provider key.
+     */
+    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
-    QgsMapLayer* layer() const { return mLayer; }
+    /**
+     * Returns the ID for the map layer associated with this node.
+     *
+     * \see layer()
+     */
+    QString layerId() const { return mRef.layerId; }
 
-    QString layerName() const;
-    void setLayerName( const QString& n );
+    /**
+     * Returns the map layer associated with this node.
+     *
+     * \warning This can be (and often is!) a nullptr, e.g. in the case of a layer node representing a layer
+     * which has not yet been fully loaded into a project, or a layer node representing a layer
+     * with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a nullptr.
+     *
+     * \see layerId()
+     */
+    QgsMapLayer *layer() const { return mRef.get(); }
 
-    Qt::CheckState isVisible() const { return mVisible; }
-    void setVisible( Qt::CheckState visible );
+    /**
+     * Returns the layer's name.
+     *
+     * \see setName()
+     *
+     * \since QGIS 3.0
+     */
+    QString name() const override;
 
-    static QgsLayerTreeLayer* readXML( QDomElement& element );
-    virtual void writeXML( QDomElement& parentElement ) override;
+    /**
+     * Sets the layer's name.
+     *
+     * \see name()
+     *
+     * \since QGIS 3.0
+     */
+    void setName( const QString &n ) override;
 
-    virtual QString dump() const override;
+    /**
+     * Read layer node from XML. Returns new instance.
+     * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+     */
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QgsLayerTreeLayer* clone() const override;
+    /**
+     * Read layer node from XML. Returns new instance.
+     * Also resolves textual references to layers from the project (calls resolveReferences() internally).
+     * \since QGIS 3.0
+     */
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-  protected slots:
-    void registryLayersAdded( const QList<QgsMapLayer*>& layers );
-    void registryLayersWillBeRemoved( const QStringList& layerIds );
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
+
+    QString dump() const override;
+
+    QgsLayerTreeLayer *clone() const override SIP_FACTORY;
+
+    /**
+     * Resolves reference to layer from stored layer ID (if it has not been resolved already)
+     * \since QGIS 3.0
+     */
+    void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
   signals:
-    //! emitted when a previously unavailable layer got loaded
+
+    /**
+     * Emitted when a previously unavailable layer got loaded.
+     */
     void layerLoaded();
-    //! emitted when a previously available layer got unloaded (from layer registry)
-    //! @note added in 2.6
+
+    /**
+     * Emitted when a previously available layer got unloaded (from layer registry).
+     * \since QGIS 2.6
+     */
     void layerWillBeUnloaded();
 
   protected:
     void attachToLayer();
 
-    QString mLayerId;
-    QString mLayerName; // only used if layer does not exist
-    QgsMapLayer* mLayer; // not owned! may be null
-    Qt::CheckState mVisible;
+    //! Weak reference to the layer (or just it's ID if the reference is not resolved yet)
+    QgsMapLayerRef mRef;
+    //! Layer name - only used if layer does not exist
+    QString mLayerName;
+
+  private slots:
+
+    /**
+     * Emits a nameChanged() signal if layer's name has changed
+     * \since QGIS 3.0
+     */
+    void layerNameChanged();
+
+    /**
+     * Handles the event of deletion of the referenced layer
+     * \since QGIS 3.0
+     */
+    void layerWillBeDeleted();
+
+  private:
+
+#ifdef SIP_RUN
+
+    /**
+     * Copies are not allowed
+     */
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+#endif
 };
 
 

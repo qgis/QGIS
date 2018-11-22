@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -45,7 +45,6 @@ __revision__ = '$Format:%H$'
 #% keywords: vector, upgrade
 #%End
 
-import os
 try:
     from grass.script import core as grass
 except ImportError:
@@ -68,6 +67,7 @@ def main():
     grass.message('Transferring tables to the new DB')
     if grass.run_command('v.db.reconnect.all', flags='cd') != 0:
         grass.warning('Cannot transfer tables')
+
 
 if __name__ == "__main__":
     options, flags = grass.parser()

@@ -1,2 +1,0 @@
-python-dateutil>=1.5
-pytz

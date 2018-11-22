@@ -84,16 +84,16 @@ Session::Session(QObject* parent) :
     //create emulation backend
     _emulation = new Vt102Emulation();
 
-    connect( _emulation, SIGNAL( titleChanged( int, const QString & ) ),
-             this, SLOT( setUserTitle( int, const QString & ) ) );
-    connect( _emulation, SIGNAL( stateSet(int) ),
-             this, SLOT( activityStateSet(int) ) );
+    connect( _emulation, &Emulation::titleChanged,
+             this, &Session::setUserTitle );
+    connect( _emulation, &Emulation::stateSet,
+             this, &Session::activityStateSet );
 //    connect( _emulation, SIGNAL( zmodemDetected() ), this ,
 //            SLOT( fireZModemDetected() ) );
-    connect( _emulation, SIGNAL( changeTabTextColorRequest( int ) ),
-             this, SIGNAL( changeTabTextColorRequest( int ) ) );
-    connect( _emulation, SIGNAL(profileChangeCommandReceived(const QString &)),
-             this, SIGNAL( profileChangeCommandReceived(const QString &)) );
+    connect( _emulation, &Emulation::changeTabTextColorRequest,
+             this, &Session::changeTabTextColorRequest );
+    connect( _emulation, &Emulation::profileChangeCommandReceived,
+             this, &Session::profileChangeCommandReceived );
     // TODO
     // connect( _emulation,SIGNAL(imageSizeChanged(int,int)) , this ,
     //        SLOT(onEmulationSizeChange(int,int)) );
@@ -101,20 +101,20 @@ Session::Session(QObject* parent) :
     //connect teletype to emulation backend
     _shellProcess->setUtf8Mode(_emulation->utf8());
 
-    connect( _shellProcess,SIGNAL(receivedData(const char *,int)),this,
-             SLOT(onReceiveBlock(const char *,int)) );
-    connect( _emulation,SIGNAL(sendData(const char *,int)),_shellProcess,
-             SLOT(sendData(const char *,int)) );
-    connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
-    connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );
+    connect( _shellProcess,&Pty::receivedData,this,
+             &Session::onReceiveBlock );
+    connect( _emulation,&Emulation::sendData,_shellProcess,
+             &Pty::sendData );
+    connect( _emulation,&Emulation::lockPtyRequest,_shellProcess,&Pty::lockPty );
+    connect( _emulation,&Emulation::useUtf8Request,_shellProcess,&Pty::setUtf8Mode );
 
-    connect( _shellProcess,SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(done(int)) );
+    connect( _shellProcess,static_cast<void ( QProcess::* )( int )>( &QProcess::finished ), this, &Session::done );
     // not in kprocess anymore connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
 
     //setup timer for monitoring session activity
     _monitorTimer = new QTimer(this);
     _monitorTimer->setSingleShot(true);
-    connect(_monitorTimer, SIGNAL(timeout()), this, SLOT(monitorTimerDone()));
+    connect(_monitorTimer, &QTimer::timeout, this, &Session::monitorTimerDone);
 }
 
 WId Session::windowId() const
@@ -134,12 +134,12 @@ WId Session::windowId() const
 	// On Qt5, requesting window IDs breaks QQuickWidget and the likes,
 	// for example, see the following bug reports:
 	//
-	// https://bugreports.qt-project.org/browse/QTBUG-41779
-	// https://bugreports.qt-project.org/browse/QTBUG-40765
-	// https://bugreports.qt-project.org/browse/QTBUG-41942
+	// https://bugreports.qt.io/browse/QTBUG-41779
+	// https://bugreports.qt.io/browse/QTBUG-40765
+	// https://bugreports.qt.io/browse/QTBUG-41942
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	return 0;
+  return 0;
 #else
     if ( _views.count() == 0 ) {
         return 0;
@@ -201,17 +201,17 @@ void Session::addView(TerminalDisplay * widget)
 
     if ( _emulation != 0 ) {
         // connect emulation - view signals and slots
-        connect( widget , SIGNAL(keyPressedSignal(QKeyEvent *)) , _emulation ,
-                 SLOT(sendKeyEvent(QKeyEvent *)) );
-        connect( widget , SIGNAL(mouseSignal(int,int,int,int)) , _emulation ,
-                 SLOT(sendMouseEvent(int,int,int,int)) );
-        connect( widget , SIGNAL(sendStringToEmu(const char *)) , _emulation ,
-                 SLOT(sendString(const char *)) );
+        connect( widget , &TerminalDisplay::keyPressedSignal , _emulation ,
+                 &Emulation::sendKeyEvent );
+        connect( widget , &TerminalDisplay::mouseSignal , _emulation ,
+                 &Emulation::sendMouseEvent );
+        connect( widget , &TerminalDisplay::sendStringToEmu , _emulation ,
+                 [=]( const char* c ){ _emulation->sendString( c ); } );
 
         // allow emulation to notify view when the foreground process
         // indicates whether or not it is interested in mouse signals
-        connect( _emulation , SIGNAL(programUsesMouseChanged(bool)) , widget ,
-                 SLOT(setUsesMouse(bool)) );
+        connect( _emulation , &Emulation::programUsesMouseChanged , widget ,
+                 &TerminalDisplay::setUsesMouse );
 
         widget->setUsesMouse( _emulation->programUsesMouse() );
 
@@ -219,13 +219,13 @@ void Session::addView(TerminalDisplay * widget)
     }
 
     //connect view signals and slots
-    QObject::connect( widget ,SIGNAL(changedContentSizeSignal(int,int)),this,
-                      SLOT(onViewSizeChange(int,int)));
+    QObject::connect( widget ,&TerminalDisplay::changedContentSizeSignal,this,
+                      &Session::onViewSizeChange);
 
-    QObject::connect( widget ,SIGNAL(destroyed(QObject *)) , this ,
-                      SLOT(viewDestroyed(QObject *)) );
+    QObject::connect( widget ,&QObject::destroyed , this ,
+                      &Session::viewDestroyed );
 //slot for close
-    QObject::connect(this, SIGNAL(finished()), widget, SLOT(close()));
+    QObject::connect(this, &Session::finished, widget, &QWidget::close);
 
 }
 
@@ -284,19 +284,19 @@ void Session::run()
     // Check to see if the given program is executable.
 
 
-    /* ok iam not exactly sure where _program comes from - however it was set to /bin/bash on my system
+    /* OK i am not exactly sure where _program comes from - however it was set to /bin/bash on my system
      * Thats bad for BSD as its /usr/local/bin/bash there - its also bad for arch as its /usr/bin/bash there too!
      * So i added a check to see if /bin/bash exists - if no then we use $SHELL - if that does not exist either, we fall back to /bin/sh
      * As far as i know /bin/sh exists on every unix system.. You could also just put some ifdef __FREEBSD__ here but i think these 2 filechecks are worth
-     * their computing time on any system - especially with the problem on arch linux beeing there too.
+     * their computing time on any system - especially with the problem on arch linux being there too.
      */
     QString exec = QFile::encodeName(_program);
     // if 'exec' is not specified, fall back to default shell.  if that
     // is not set then fall back to /bin/sh
 
     // here we expect full path. If there is no fullpath let's expect it's
-    // a custom shell (eg. python, etc.) available in the PATH.
-    if (exec.startsWith("/"))
+    // a custom shell (e.g., python, etc.) available in the PATH.
+    if (exec.startsWith(QLatin1String("/")))
     {
         QFile excheck(exec);
         if ( exec.isEmpty() || !excheck.exists() ) {
@@ -305,13 +305,13 @@ void Session::run()
         excheck.setFileName(exec);
 
         if ( exec.isEmpty() || !excheck.exists() ) {
-            exec = "/bin/sh";
+            exec = QStringLiteral("/bin/sh");
         }
     }
 
     // _arguments sometimes contain ("") so isEmpty()
     // or count() does not work as expected...
-    QString argsTmp(_arguments.join(" ").trimmed());
+    QString argsTmp(_arguments.join(QStringLiteral(" ")).trimmed());
     QStringList arguments;
     arguments << exec;
     if (argsTmp.length())
@@ -360,8 +360,8 @@ void Session::runEmptyPTY()
     _shellProcess->setWriteable(false);
 
     // disconnet send data from emulator to internal terminal process
-    disconnect( _emulation,SIGNAL(sendData(const char *,int)),
-                _shellProcess, SLOT(sendData(const char *,int)) );
+    disconnect( _emulation,&Emulation::sendData,
+                _shellProcess, &Pty::sendData );
 
     _shellProcess->setEmptyPTYProperties();
 
@@ -371,7 +371,7 @@ void Session::runEmptyPTY()
 
 void Session::setUserTitle( int what, const QString & caption )
 {
-    //set to true if anything is actually changed (eg. old _nameTitle != new _nameTitle )
+    //set to true if anything is actually changed (e.g., old _nameTitle != new _nameTitle )
     bool modified = false;
 
     // (btw: what=0 changes _userTitle and icon, what=1 only icon, what=2 only _nameTitle
@@ -486,7 +486,7 @@ void Session::activityStateSet(int state)
 {
     if (state==NOTIFYBELL) {
         QString s;
-        s.sprintf("Bell in session '%s'",_nameTitle.toUtf8().data());
+        s.sprintf("Bell in session '%s'",_nameTitle.toUtf8().constData());
 
         emit bellRequest( s );
     } else if (state==NOTIFYACTIVITY) {
@@ -541,8 +541,8 @@ void Session::updateTerminalSize()
         if ( view->isHidden() == false &&
                 view->lines() >= VIEW_LINES_THRESHOLD &&
                 view->columns() >= VIEW_COLUMNS_THRESHOLD ) {
-            minLines = (minLines == -1) ? view->lines() : qMin( minLines , view->lines() );
-            minColumns = (minColumns == -1) ? view->columns() : qMin( minColumns , view->columns() );
+            minLines = (minLines == -1) ? view->lines() : std::min( minLines , view->lines() );
+            minColumns = (minColumns == -1) ? view->columns() : std::min( minColumns , view->columns() );
         }
     }
 
@@ -632,16 +632,16 @@ void Session::done(int exitStatus)
 
         if (_shellProcess->exitStatus() == QProcess::NormalExit) {
             message.sprintf("Session '%s' exited with status %d.",
-                          _nameTitle.toUtf8().data(), exitStatus);
+                          _nameTitle.toUtf8().constData(), exitStatus);
         } else {
             message.sprintf("Session '%s' crashed.",
-                          _nameTitle.toUtf8().data());
+                          _nameTitle.toUtf8().constData());
         }
     }
 
     if ( !_wantedClose && _shellProcess->exitStatus() != QProcess::NormalExit )
         message.sprintf("Session '%s' exited unexpectedly.",
-                        _nameTitle.toUtf8().data());
+                        _nameTitle.toUtf8().constData());
     else
         emit finished();
 
@@ -1068,8 +1068,8 @@ void SessionGroup::connectPair(Session * master , Session * other)
     if ( _masterMode & CopyInputToAll ) {
         qDebug() << "Connection session " << master->nameTitle() << "to" << other->nameTitle();
 
-        connect( master->emulation() , SIGNAL(sendData(const char *,int)) , other->emulation() ,
-                 SLOT(sendString(const char *,int)) );
+        connect( master->emulation() , &Emulation::sendData , other->emulation() ,
+                 &Emulation::sendString );
     }
 }
 void SessionGroup::disconnectPair(Session * master , Session * other)
@@ -1079,8 +1079,8 @@ void SessionGroup::disconnectPair(Session * master , Session * other)
     if ( _masterMode & CopyInputToAll ) {
         qDebug() << "Disconnecting session " << master->nameTitle() << "from" << other->nameTitle();
 
-        disconnect( master->emulation() , SIGNAL(sendData(const char *,int)) , other->emulation() ,
-                    SLOT(sendString(const char *,int)) );
+        disconnect( master->emulation() , &Emulation::sendData , other->emulation() ,
+                    &Emulation::sendString );
     }
 }
 

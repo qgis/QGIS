@@ -18,46 +18,97 @@
 #define QGSNEWGEOPACKAGELAYERDIALOG_H
 
 #include "ui_qgsnewgeopackagelayerdialogbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
-/** Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers */
+/**
+ * \ingroup gui
+ * Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers */
 class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
     Q_OBJECT
 
   public:
-    /** Constructor */
-    QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsNewGeoPackageLayerDialog();
+
+    //! Behavior to use when an existing geopackage already exists
+    enum OverwriteBehavior
+    {
+      Prompt, //!< Prompt user for action
+      Overwrite, //!< Overwrite whole geopackage
+      AddNewLayer, //!< Keep existing contents and add new layer
+    };
+
+    //! Constructor
+    QgsNewGeoPackageLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * \since QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the database path
+     * \since QGIS 3.0
+     */
+    QString databasePath() const { return mDatabase->filePath(); }
+
+    /**
+     * Sets the initial database \a path
+     * \since QGIS 3.0
+     */
+    void setDatabasePath( const QString &path ) { mDatabase->setFilePath( path ); }
+
+    /**
+     * Sets the database path widgets to a locked and read-only mode.
+     * \since QGIS 3.0
+     */
+    void lockDatabasePath();
+
+    /**
+     * Sets the \a behavior to use when a path to an existing geopackage file is used.
+     *
+     * The default behavior is to prompt the user for an action to take.
+     *
+     * \since QGIS 3.0
+     */
+    void setOverwriteBehavior( OverwriteBehavior behavior );
+
+    /**
+     * Sets whether a newly created layer should automatically be added to the current project.
+     * Defaults to true.
+     *
+     * \since QGIS 3.6
+     */
+    void setAddToProject( bool addToProject );
 
   private slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFieldTypeBox_currentIndexChanged( int index );
-    void on_mGeometryTypeBox_currentIndexChanged( int index );
-    void on_mSelectDatabaseButton_clicked();
-    void on_mDatabaseEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textEdited( const QString& text );
-    void on_mLayerIdentifierEdit_textEdited( const QString& text );
-    void fieldNameChanged( const QString& );
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFieldTypeBox_currentIndexChanged( int index );
+    void mGeometryTypeBox_currentIndexChanged( int index );
+    void mTableNameEdit_textChanged( const QString &text );
+    void mTableNameEdit_textEdited( const QString &text );
+    void mLayerIdentifierEdit_textEdited( const QString &text );
+    void fieldNameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void showHelp();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
     bool apply();
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
-    bool mTableNameEdited;
-    bool mLayerIdentifierEdited;
+    bool mTableNameEdited = false;
+    bool mLayerIdentifierEdited = false;
+    OverwriteBehavior mBehavior = Prompt;
+    bool mAddToProject = true;
 };
 
 #endif // QGSNEWVECTORLAYERDIALOG_H

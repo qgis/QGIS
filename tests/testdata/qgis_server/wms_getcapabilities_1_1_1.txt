@@ -1,0 +1,211 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'>
+<WMT_MS_Capabilities version="1.1.1">
+ <Service>
+  <Name>WMS</Name>
+  <Title>QGIS TestProject</Title>
+  <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
+  <KeywordList>
+   <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+  </KeywordList>
+  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <ContactInformation>
+   <ContactPersonPrimary>
+    <ContactPerson>Alessandro Pasotti</ContactPerson>
+    <ContactOrganization>QGIS dev team</ContactOrganization>
+   </ContactPersonPrimary>
+   <ContactElectronicMailAddress>elpaso@itopen.it</ContactElectronicMailAddress>
+  </ContactInformation>
+  <Fees>conditions unknown</Fees>
+  <AccessConstraints>None</AccessConstraints>
+ </Service>
+ <Capability>
+  <Request>
+   <GetCapabilities>
+    <Format>application/vnd.ogc.wms_xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetCapabilities>
+   <GetMap>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <Format>image/png; mode=16bit</Format>
+    <Format>image/png; mode=8bit</Format>
+    <Format>image/png; mode=1bit</Format>
+    <Format>application/dxf</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetMap>
+   <GetFeatureInfo>
+    <Format>text/plain</Format>
+    <Format>text/html</Format>
+    <Format>text/xml</Format>
+    <Format>application/vnd.ogc.gml</Format>
+    <Format>application/vnd.ogc.gml/3.1.1</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetFeatureInfo>
+   <GetLegendGraphic>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetLegendGraphic>
+   <DescribeLayer>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </DescribeLayer>
+   <GetStyles>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetStyles>
+  </Request>
+  <Exception>
+   <Format>application/vnd.ogc.se_xml</Format>
+  </Exception>
+  <Layer>
+   <Title>QGIS Test Project</Title>
+   <Abstract>QGIS Test Project</Abstract>
+   <SRS>CRS:84</SRS>
+   <SRS>EPSG:4326</SRS>
+   <SRS>EPSG:3857</SRS>
+   <LatLonBoundingBox maxy="44.9016" maxx="8.20416" miny="44.9012" minx="8.20315"/>
+   <BoundingBox maxy="5.60604e+06" SRS="EPSG:3857" maxx="913283" miny="5.60599e+06" minx="913171"/>
+   <BoundingBox maxy="44.9016" SRS="EPSG:4326" maxx="8.20416" miny="44.9012" minx="8.20315"/>
+   <Name>QGIS Test Project</Name>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
+   <Layer queryable="1">
+    <Name>layer_with_short_name</Name>
+    <Title>A Layer with a short name</Title>
+    <Abstract>A Layer with an abstract</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+   <Layer queryable="1">
+    <Name>testlayer èé</Name>
+    <Title>A test vector layer</Title>
+    <Abstract>A test vector layer with unicode òà</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+   <Layer>
+    <Name>group_name</Name>
+    <Title>Group title</Title>
+    <Abstract>Group abstract</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Layer queryable="1">
+     <Name>testlayer2</Name>
+     <Title>testlayer2</Title>
+     <SRS>CRS:84</SRS>
+     <SRS>EPSG:4326</SRS>
+     <SRS>EPSG:3857</SRS>
+     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <Style>
+      <Name>default</Name>
+      <Title>default</Title>
+      <LegendURL>
+       <Format>image/png</Format>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </LegendURL>
+     </Style>
+    </Layer>
+   </Layer>
+   <Layer>
+    <Name>groupwithoutshortname</Name>
+    <Title>groupwithoutshortname</Title>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Layer queryable="0">
+     <Name>testlayer3</Name>
+     <Title>testlayer3</Title>
+     <SRS>CRS:84</SRS>
+     <SRS>EPSG:4326</SRS>
+     <SRS>EPSG:3857</SRS>
+     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <Style>
+      <Name>default</Name>
+      <Title>default</Title>
+      <LegendURL>
+       <Format>image/png</Format>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </LegendURL>
+     </Style>
+    </Layer>
+   </Layer>
+  </Layer>
+ </Capability>
+</WMT_MS_Capabilities>

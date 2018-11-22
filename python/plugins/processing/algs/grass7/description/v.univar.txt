@@ -1,11 +1,13 @@
 v.univar
 Calculates univariate statistics for attribute. Variance and standard deviation is calculated only for points if specified.
 Vector (v.*)
-ParameterVector|map|Name of input vector map|-1|False
-ParameterString|type|Feature type|point,line,area
-ParameterTableField|column|Column name|map|-1|False
-ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
-ParameterString|percentile|Percentile to calculate|90
-ParameterBoolean|-g|Print the stats in shell script style|True
-ParameterBoolean|-e|Calculate extended statistics|False
-OutputHTML|html|Statistics
+QgsProcessingParameterFeatureSource|map|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area|True|0,1,4|True
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterField|column|Column name|None|map|-1|False|False
+QgsProcessingParameterNumber|percentile|Percentile to calculate|QgsProcessingParameterNumber.Integer|90|True|0|100
+QgsProcessingParameterBoolean|-g|Print the stats in shell script style|True
+QgsProcessingParameterBoolean|-e|Calculate extended statistics|False
+QgsProcessingParameterBoolean|-w|Weigh by line length or area size|False
+QgsProcessingParameterBoolean|-d|Calculate geometric distances instead of attribute statistics|False
+QgsProcessingParameterFileDestination|html|Statistics|Html files (*.html)|report.html|False

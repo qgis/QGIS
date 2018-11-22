@@ -16,6 +16,7 @@
 #ifndef QGSLEGENDRENDERER_H
 #define QGSLEGENDRENDERER_H
 
+#include "qgis_core.h"
 #include <QPointF>
 
 class QRectF;
@@ -26,58 +27,61 @@ class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeNode;
-class QgsSymbolV2;
+class QgsSymbol;
 
 #include "qgslegendsettings.h"
 
 /**
- * @brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
+ * \ingroup core
+ * \brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
  * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.
  *
  * All spacing and sizes are in millimeters.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendRenderer
 {
   public:
-    /** Construct legend renderer. The ownership of legend model does not change */
-    QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings );
+    //! Construct legend renderer. The ownership of legend model does not change
+    QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings );
 
-    /** Run the layout algorithm and determine the size required for legend */
+    //! Run the layout algorithm and determine the size required for legend
     QSizeF minimumSize();
 
-    /** Set the preferred resulting legend size. */
+    //! Sets the preferred resulting legend size.
     void setLegendSize( QSizeF s ) { mLegendSize = s; }
 
-    /** Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size */
+    //! Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size
     QSizeF legendSize() const { return mLegendSize; }
 
-    /** Draw the legend with given painter. It will occupy the area reported in legendSize().
+    /**
+     * Draw the legend with given painter. It will occupy the area reported in legendSize().
      *  Painter should be scaled beforehand so that units correspond to millimeters.
      */
-    void drawLegend( QPainter* painter );
+    void drawLegend( QPainter *painter );
 
 
-    static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerLegendStyle::Style style );
-    static QgsComposerLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
+    static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
+    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 
   private:
 
-    /** Nucleon is either group title, layer title or layer child item.
-     *  Nucleon is similar to QgsComposerLegendItem but it does not have
-     *  the same hierarchy. E.g. layer title nucleon is just title, it does not
+#ifndef SIP_RUN
+
+    /**
+     * Nucleon is either group title, layer title or layer child item.
+     *  E.g. layer title nucleon is just title, it does not
      *  include all layer subitems, the same with groups.
      */
     class Nucleon
     {
       public:
-        Nucleon()
-            : item( nullptr )
-            , labelXOffset( 0.0 )
-        {}
-        QObject* item;
+        //! Constructor for Nuclean
+        Nucleon() = default;
+
+        QObject *item = nullptr;
         // Symbol size size without any space around for symbol item
         QSizeF symbolSize;
         // Label size without any space around for symbol item
@@ -85,10 +89,11 @@ class CORE_EXPORT QgsLegendRenderer
         QSizeF size;
         // Offset of symbol label, this offset is the same for all symbol labels
         // of the same layer in the same column
-        double labelXOffset;
+        double labelXOffset = 0.0;
     };
 
-    /** Atom is indivisible set (indivisible into more columns). It may consists
+    /**
+     * Atom is indivisible set (indivisible into more columns). It may consists
      *  of one or more Nucleon, depending on layer splitting mode:
      *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
      *  2) layer split:    [group_title ...] layer_title layer_item
@@ -100,52 +105,56 @@ class CORE_EXPORT QgsLegendRenderer
     class Atom
     {
       public:
-        Atom(): size( QSizeF( 0, 0 ) ), column( 0 ) {}
+        Atom(): size( QSizeF( 0, 0 ) ) {}
         QList<Nucleon> nucleons;
         // Atom size including nucleons interspaces but without any space around atom.
         QSizeF size;
-        int column;
+        int column = 0;
     };
 
-    QSizeF paintAndDetermineSize( QPainter* painter );
+    QSizeF paintAndDetermineSize( QPainter *painter );
 
-    /** Create list of atoms according to current layer splitting mode */
-    QList<Atom> createAtomList( QgsLayerTreeGroup* parentGroup, bool splitLayer );
+    //! Create list of atoms according to current layer splitting mode
+    QList<Atom> createAtomList( QgsLayerTreeGroup *parentGroup, bool splitLayer );
 
-    /** Divide atoms to columns and set columns on atoms */
-    void setColumns( QList<Atom>& atomList );
+    //! Divide atoms to columns and set columns on atoms
+    void setColumns( QList<Atom> &atomList );
 
-    /** Draws title in the legend using the title font and the specified alignment
+    /**
+     * Draws title in the legend using the title font and the specified alignment
      * If no painter is specified, function returns the required width/height to draw the title.
      */
-    QSizeF drawTitle( QPainter* painter = nullptr, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+    QSizeF drawTitle( QPainter *painter = nullptr, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
-    double spaceAboveAtom( const Atom& atom );
+    double spaceAboveAtom( const Atom &atom );
 
-    /** Draw atom and return its actual size, the atom is drawn with the space above it
+    /**
+     * Draw atom and return its actual size, the atom is drawn with the space above it
      *  so that first atoms in column are all aligned to the same line regardles their
      * style top space */
-    QSizeF drawAtom( const Atom& atom, QPainter* painter = nullptr, QPointF point = QPointF() );
+    QSizeF drawAtom( const Atom &atom, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode* symbolItem, QPainter* painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
+    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QPainter *painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
 
-    /** Draws a layer item */
-    QSizeF drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter* painter = nullptr, QPointF point = QPointF() );
+    //! Draws a layer item
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-    /** Draws a group item.
+    /**
+     * Draws a group item.
      * Returns list of sizes of layers and groups including this group.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter* painter = nullptr, QPointF point = QPointF() );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-    QgsComposerLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node );
+    QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
   private:
-    QgsLayerTreeModel* mLegendModel;
+    QgsLayerTreeModel *mLegendModel = nullptr;
 
     QgsLegendSettings mSettings;
 
     QSizeF mLegendSize;
 
+#endif
 };
 
 #endif // QGSLEGENDRENDERER_H

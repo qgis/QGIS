@@ -1,0 +1,8 @@
+
+
+class_headerfile:
+  QgsAbstractFeatureIteratorFromSource: qgsfeatureiterator.h
+
+no_export_macro:
+  - QgsRange
+  - QgsTemporalRange

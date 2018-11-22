@@ -21,72 +21,58 @@
 #include <QObject>
 #include <QFont>
 #include <QMap>
+#include "qgis_app.h"
 
-/** @class QgisAppStyleSheet
- * @brief Adjustable stylesheet for the Qgis application
+/**
+ * \class QgisAppStyleSheet
+ * \brief Adjustable stylesheet for the Qgis application
  */
 class APP_EXPORT QgisAppStyleSheet: public QObject
 {
     Q_OBJECT
 
   public:
-    QgisAppStyleSheet( QObject * parent = nullptr );
-    ~QgisAppStyleSheet();
+    QgisAppStyleSheet( QObject *parent = nullptr );
 
-    /** Return changeable options built from settings and/or defaults */
+    //! Returns changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultOptions();
 
-    /** Generate stylesheet
-     * @param opts generated default option values, or a changed copy of them
-     * @note on success emits appStyleSheetChanged
+    /**
+     * Generate stylesheet
+     * \param opts generated default option values, or a changed copy of them
+     * \note on success emits appStyleSheetChanged
      */
-    void buildStyleSheet( const QMap<QString, QVariant>& opts );
+    void buildStyleSheet( const QMap<QString, QVariant> &opts );
 
-    /** Save changed default option keys/values to user settings */
-    void saveToSettings( const QMap<QString, QVariant>& opts );
+    //! Save changed default option keys/values to user settings
+    void saveToSettings( const QMap<QString, QVariant> &opts );
 
-    /** Get reference font for initial qApp */
+    //! Gets reference font for initial qApp
     QFont defaultFont() { return mDefaultFont; }
 
   signals:
-    /** Signal the successful stylesheet build results
-     * @note connect to (app|widget)->setStyleSheet or similar custom slot
+
+    /**
+     * Signal the successful stylesheet build results
+     * \note connect to (app|widget)->setStyleSheet or similar custom slot
      */
-    void appStyleSheetChanged( const QString& appStyleSheet );
+    void appStyleSheetChanged( const QString &appStyleSheet );
 
   private:
-    /** Set active configuration values */
+    //! Sets active configuration values
     void setActiveValues();
 
     // qt styles
     QString mStyle; // active style name (lowercase)
-    bool mMotifStyle; // motif
-    bool mCdeStyle; // cde
-    bool mPlastqStyle; // plastique
-    bool mCleanLkStyle; // cleanlooks
-    bool mGtkStyle; // gtk+
-    bool mWinStyle; // windows
-    bool mWinXpStyle; // windowsxp
-    bool mWinVistaStyle; // windowsvista
-    bool mMacStyle; // macintosh (aqua)
-    bool mOxyStyle; // oxygen
+    bool mMacStyle = false; // macintosh (aqua)
+    bool mOxyStyle = false; // oxygen
 
     // default font saved for reference
     QFont mDefaultFont;
 
     // platforms, specific
-    bool mLinuxOS;
-    bool mWinOS;
-    bool mMacOS;
-    bool mAndroidOS;
-
-    // platforms, general
-    bool mUnix;
-
-    // window servers
-    bool mX11WS;
-    bool mWinWS;
-    bool mMacWS;
+    bool mWinOS = false;
+    bool mAndroidOS = false;
 };
 
 #endif //QGISAPPSTYLESHEET_H

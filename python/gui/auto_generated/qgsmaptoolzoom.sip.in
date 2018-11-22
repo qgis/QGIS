@@ -1,0 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolzoom.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapToolZoom : QgsMapTool
+{
+%Docstring
+A map tool for zooming into the map.
+
+.. seealso:: :py:class:`QgsMapTool`
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolzoom.h"
+%End
+  public:
+    QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
+%Docstring
+constructor
+%End
+    ~QgsMapToolZoom();
+
+    virtual Flags flags() const;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
+    virtual void deactivate();
+
+
+  protected:
+
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolzoom.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

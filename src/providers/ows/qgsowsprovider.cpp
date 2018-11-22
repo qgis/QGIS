@@ -21,21 +21,17 @@
 
 #include <QString>
 
-static QString PROVIDER_KEY = "ows";
-static QString PROVIDER_DESCRIPTION = "OWS meta provider";
+static QString PROVIDER_KEY = QStringLiteral( "ows" );
+static QString PROVIDER_DESCRIPTION = QStringLiteral( "OWS meta provider" );
 
-QgsOwsProvider::QgsOwsProvider( QString const & uri )
-    : QgsDataProvider( uri )
+QgsOwsProvider::QgsOwsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsDataProvider( uri, options )
 {
 }
 
-QgsOwsProvider::~QgsOwsProvider()
+QGISEXTERN QgsOwsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-}
-
-QGISEXTERN QgsOwsProvider * classFactory( const QString *uri )
-{
-  return new QgsOwsProvider( *uri );
+  return new QgsOwsProvider( *uri, options );
 }
 
 QString QgsOwsProvider::name() const

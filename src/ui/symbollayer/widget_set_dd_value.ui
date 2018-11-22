@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsDataDefinedValueDialog</class>
- <widget class="QDialog" name="QgsDataDefinedValueDialog">
+ <class>QgsDataDefinedValueBaseDialog</class>
+ <widget class="QDialog" name="QgsDataDefinedValueBaseDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>99</height>
+    <width>214</width>
+    <height>81</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="mLabel">
-     <property name="text">
-      <string>Label</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <widget class="QgsDoubleSpinBox" name="mSpinBox">
      <property name="maximum">
@@ -29,9 +22,16 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mLabel">
+     <property name="text">
+      <string>Label</string>
      </property>
     </widget>
    </item>
@@ -49,14 +49,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -64,7 +64,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsDataDefinedValueDialog</receiver>
+   <receiver>QgsDataDefinedValueBaseDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -80,7 +80,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsDataDefinedValueDialog</receiver>
+   <receiver>QgsDataDefinedValueBaseDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

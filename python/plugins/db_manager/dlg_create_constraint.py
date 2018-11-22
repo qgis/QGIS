@@ -24,6 +24,7 @@ The content of this file is based on
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QApplication
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
@@ -52,14 +53,12 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
         constr = self.getConstraint()
 
         # now create the constraint
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.table.addConstraint(constr)
-        except DbError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.table.addConstraint(constr)
+            except DbError as e:
+                DlgDbError.showError(e, self)
+                return
 
         self.accept()
 

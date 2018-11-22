@@ -28,17 +28,22 @@ __revision__ = '$Format:%H$'
 import os
 import stat
 import subprocess
+import time
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
-SAGA_FOLDER = 'SAGA_FOLDER'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
+
+_installedVersion = None
+_installedVersionFound = False
 
 
 def sagaBatchJobFilename():
@@ -47,7 +52,7 @@ def sagaBatchJobFilename():
     else:
         filename = 'saga_batch_job.sh'
 
-    batchfile = userFolder() + os.sep + filename
+    batchfile = os.path.join(userFolder(), filename)
 
     return batchfile
 
@@ -63,18 +68,26 @@ def findSagaFolder():
             if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
                 folder = testfolder
     elif isWindows():
-        testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga')
-        if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
-            folder = testfolder
+        folders = []
+        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga-ltr'))
+        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga'))
+        if "OSGEO4W_ROOT" in os.environ:
+            folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga-ltr"))
+            folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga"))
+
+        for testfolder in folders:
+            if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
+                folder = testfolder
+                break
+
     return folder
 
 
 def sagaPath():
-    folder = ProcessingConfig.getSetting(SAGA_FOLDER)
-    if folder is None or folder == '':
-        folder = findSagaFolder()
-        if folder is not None:
-            ProcessingConfig.setSettingValue(SAGA_FOLDER, folder)
+    if not isWindows() and not isMac():
+        return ''
+
+    folder = findSagaFolder()
     return folder or ''
 
 
@@ -84,29 +97,28 @@ def sagaDescriptionPath():
 
 def createSagaBatchJobFileFromSagaCommands(commands):
 
-    fout = open(sagaBatchJobFilename(), 'w')
-    if isWindows():
-        fout.write('set SAGA=' + sagaPath() + '\n')
-        fout.write('set SAGA_MLB=' + sagaPath() + os.sep
-                   + 'modules' + '\n')
-        fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
-    elif isMac():
-        fout.write('export SAGA_MLB=' + sagaPath()
-                   + '/../lib/saga\n')
-        fout.write('export PATH=' + sagaPath() + ':$PATH\n')
-    else:
-        pass
-    for command in commands:
-        fout.write('saga_cmd ' + command.encode('utf8') + '\n')
+    with open(sagaBatchJobFilename(), 'w') as fout:
+        if isWindows():
+            fout.write('set SAGA=' + sagaPath() + '\n')
+            fout.write('set SAGA_MLB=' + os.path.join(sagaPath(), 'modules') + '\n')
+            fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
+        elif isMac():
+            fout.write('export SAGA_MLB=' + os.path.join(sagaPath(), '../lib/saga') + '\n')
+            fout.write('export PATH=' + sagaPath() + ':$PATH\n')
+        else:
+            pass
+        for command in commands:
+            try:
+                # Python 2
+                fout.write('saga_cmd ' + command.encode('utf8') + '\n')
+            except TypeError:
+                # Python 3
+                fout.write('saga_cmd ' + command + '\n')
 
-    fout.write('exit')
-    fout.close()
-
-_installedVersion = None
-_installedVersionFound = False
+        fout.write('exit')
 
 
-def getSagaInstalledVersion(runSaga=False):
+def getInstalledVersion(runSaga=False):
     global _installedVersion
     global _installedVersionFound
 
@@ -125,61 +137,64 @@ def getSagaInstalledVersion(runSaga=False):
         # (python docs advices to use subprocess32 instead of python2.7's subprocess)
         commands = ["saga_cmd -v"]
     while retries < maxRetries:
-        proc = subprocess.Popen(
+        with subprocess.Popen(
             commands,
             shell=True,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-        ).stdout
-        try:
-            lines = proc.readlines()
-            for line in lines:
-                if line.startswith("SAGA Version:"):
-                    _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
-                    _installedVersionFound = True
-                    return _installedVersion
-            return None
-        except IOError:
-            retries += 1
-        except:
-            return None
+        ) as proc:
+            if isMac():  # This trick avoids having an uninterrupted system call exception if SAGA is not installed
+                time.sleep(1)
+            try:
+                lines = proc.stdout.readlines()
+                for line in lines:
+                    if line.startswith("SAGA Version:"):
+                        _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
+                        _installedVersionFound = True
+                        return _installedVersion
+                return None
+            except IOError:
+                retries += 1
+            except:
+                return None
 
     return _installedVersion
 
 
-def executeSaga(progress):
+def executeSaga(feedback):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
     else:
-        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC
-                 | stat.S_IREAD | stat.S_IWRITE)
-        command = [sagaBatchJobFilename()]
+        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
+                 stat.S_IREAD | stat.S_IWRITE)
+        command = ["'" + sagaBatchJobFilename() + "'"]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
-    proc = subprocess.Popen(
+    with subprocess.Popen(
         command,
         shell=True,
         stdout=subprocess.PIPE,
-        stdin=open(os.devnull),
+        stdin=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
         universal_newlines=True,
-    ).stdout
-    try:
-        for line in iter(proc.readline, ''):
-            if '%' in line:
-                s = ''.join([x for x in line if x.isdigit()])
-                try:
-                    progress.setPercentage(int(s))
-                except:
-                    pass
-            else:
-                line = line.strip()
-                if line != '/' and line != '-' and line != '\\' and line != '|':
-                    loglines.append(line)
-                    progress.setConsoleInfo(line)
-    except:
-        pass
+    ) as proc:
+        try:
+            for line in iter(proc.stdout.readline, ''):
+                if '%' in line:
+                    s = ''.join([x for x in line if x.isdigit()])
+                    try:
+                        feedback.setProgress(int(s))
+                    except:
+                        pass
+                else:
+                    line = line.strip()
+                    if line != '/' and line != '-' and line != '\\' and line != '|':
+                        loglines.append(line)
+                        feedback.pushConsoleInfo(line)
+        except:
+            pass
+
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)

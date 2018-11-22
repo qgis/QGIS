@@ -17,30 +17,30 @@
  ***************************************************************************/
 
 #include "qgsdb2dataitems.h"
-#include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
-#include <qgslogger.h>
-//#include <qaction.h>
+#include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsvectorlayer.h"
+#include "qgssettings.h"
+#include "qgsmessageoutput.h"
 
-#include <QSettings>
+#ifdef HAVE_GUI
+#include "qgsdb2newconnection.h"
+#include "qgsdb2sourceselect.h"
+#endif
+
 #include <QMessageBox>
-//#include <QtSql/QSqlDatabase>
-//#include <QtSql/QSqlError>
 #include <QProgressDialog>
 
-static const QString PROVIDER_KEY = "DB2";
+static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 
 QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString name, const QString path )
-    : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.svg" );
+  mCapabilities |= Collapse;
   populate();
-}
-
-QgsDb2ConnectionItem::~QgsDb2ConnectionItem()
-{
 }
 
 bool QgsDb2ConnectionItem::ConnInfoFromParameters(
@@ -59,8 +59,8 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   {
     if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
     {
-      QgsDebugMsg( "Host, port, driver or database missing" );
-      errorMsg = "Host, port, driver or database missing";
+      QgsDebugMsg( QStringLiteral( "Host, port, driver or database missing" ) );
+      errorMsg = QStringLiteral( "Host, port, driver or database missing" );
       return false;
     }
     connInfo = "driver='" + driver + "' "
@@ -72,8 +72,8 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   {
     if ( database.isEmpty() )
     {
-      QgsDebugMsg( "Database must be specified" );
-      errorMsg = "Database must be specified";
+      QgsDebugMsg( QStringLiteral( "Database must be specified" ) );
+      errorMsg = QStringLiteral( "Database must be specified" );
       return false;
     }
     connInfo = "service='" + service + "' "
@@ -84,18 +84,18 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   {
     connInfo += "authcfg='" + authcfg + "' ";
   }
-  else  // include user and password if authcfg is empty
-  {
-    if ( !username.isEmpty() )
-    {
-      connInfo += "user='" + username + "' ";
-    }
 
-    if ( !password.isEmpty() )
-    {
-      connInfo += "password='" + password + "' ";
-    }
+  if ( !password.isEmpty() )
+  {
+    // include password if authcfg is empty
+    connInfo += "password='" + password + "' ";
   }
+
+  if ( !username.isEmpty() )
+  {
+    connInfo += "user='" + username + "' ";
+  }
+
   QgsDebugMsg( "connInfo: '" + connInfo + "'" );
   return true;
 }
@@ -103,8 +103,8 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
 bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
     QString &connInfo, QString &errorMsg )
 {
-  QgsDebugMsg( QString( "Get settings for connection '%1'" ).arg( connInfo ) );
-  QSettings settings;
+  QgsDebugMsg( QStringLiteral( "Get settings for connection '%1'" ).arg( connInfo ) );
+  QgsSettings settings;
   QString key = "/DB2/connections/" + connName;
 
   bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
@@ -133,16 +133,16 @@ void QgsDb2ConnectionItem::refresh()
   QgsDebugMsg( "db2 mPath = " + mPath );
 
   // read up the schemas and layers from database
-  QVector<QgsDataItem*> items = createChildren();
+  QVector<QgsDataItem *> items = createChildren();
 
   // Add new items
   Q_FOREACH ( QgsDataItem *item, items )
   {
-    // Is it present in childs?
+    // Is it present in children?
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
-      (( QgsDb2SchemaItem* )mChildren.at( index ) )->addLayers( item );
+      ( ( QgsDb2SchemaItem * )mChildren.at( index ) )->addLayers( item );
       delete item;
       continue;
     }
@@ -150,9 +150,9 @@ void QgsDb2ConnectionItem::refresh()
   }
 }
 
-QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
+QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
 {
-  QVector<QgsDataItem*> children;
+  QVector<QgsDataItem *> children;
 
   QString connInfo;
   QString errorMsg;
@@ -181,16 +181,16 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   }
 
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
-  int sqlcode = db2GC.open();
+  QString sqlcode = db2GC.open();
 
   /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
      so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
-  if ( sqlcode == -204 )
+  if ( sqlcode == QStringLiteral( "-204" ) )
   {
     children.append( new QgsErrorItem( this, tr( "DB2 Spatial Extender is not enabled or set up." ), mPath + "/error" ) );
     return children;
   }
-  else if ( sqlcode != 0 )
+  else if ( !sqlcode.isEmpty() && sqlcode != QStringLiteral( "0" ) )
   {
     children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
     return children;
@@ -200,12 +200,12 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
   //QVector<QgsDataItem*> newLayers;
   while ( db2GC.populateLayerProperty( layer ) )
   {
-    QgsDb2SchemaItem* schemaItem = NULL;
+    QgsDb2SchemaItem *schemaItem = nullptr;
     Q_FOREACH ( QgsDataItem *child, children )
     {
       if ( child->name() == layer.schemaName )
       {
-        schemaItem = ( QgsDb2SchemaItem* )child;
+        schemaItem = ( QgsDb2SchemaItem * )child;
         break;
       }
     }
@@ -219,7 +219,7 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
       children.append( schemaItem );
     }
 
-    QgsDb2LayerItem* added = schemaItem->addLayer( layer, true );
+    QgsDb2LayerItem *added = schemaItem->addLayer( layer, true );
 
     if ( added )
     {
@@ -228,7 +228,7 @@ QVector<QgsDataItem*> QgsDb2ConnectionItem::createChildren()
     }
     else
     {
-      QgsDebugMsg( " DB2 layer not added " );
+      QgsDebugMsg( QStringLiteral( " DB2 layer not added " ) );
     }
   }
   return children;
@@ -245,20 +245,21 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-QList<QAction*> QgsDb2ConnectionItem::actions()
+#ifdef HAVE_GUI
+QList<QAction *> QgsDb2ConnectionItem::actions( QWidget *parent )
 {
-  QList<QAction*> lst;
+  QList<QAction *> lst;
 
-  QAction* actionRefresh = new QAction( tr( "Refresh connection" ), this );
-  connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
+  QAction *actionRefresh = new QAction( tr( "Refresh Connection" ), parent );
+  connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
-  QAction* actionEdit = new QAction( tr( "Edit connection..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
+  connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction* actionDelete = new QAction( tr( "Delete connection" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
+  connect( actionDelete, &QAction::triggered, this, &QgsDb2ConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -270,14 +271,14 @@ void QgsDb2ConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
 void QgsDb2ConnectionItem::deleteConnection()
 {
   QString key = "/DB2/connections/" + mName;
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/driver" );
   settings.remove( key + "/port" );
@@ -287,7 +288,7 @@ void QgsDb2ConnectionItem::deleteConnection()
   settings.remove( key + "/password" );
   settings.remove( key + "/environment" );
   settings.remove( key );
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 
 void QgsDb2ConnectionItem::refreshConnection()
@@ -297,7 +298,7 @@ void QgsDb2ConnectionItem::refreshConnection()
   Q_UNUSED( db );
   if ( errMsg.isEmpty() )
   {
-    QgsDebugMsg( "successful get db2 connection on refresh" );
+    QgsDebugMsg( QStringLiteral( "successful get db2 connection on refresh" ) );
   }
   else
   {
@@ -305,50 +306,43 @@ void QgsDb2ConnectionItem::refreshConnection()
   }
   refresh();
 }
+#endif
 
 
-bool QgsDb2ConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
+bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
   return handleDrop( data, QString() );
 }
 
-bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toSchema )
+bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
   // TODO: probably should show a GUI with settings etc
-  qApp->setOverrideCursor( Qt::WaitCursor );
-
-  QProgressDialog *progress = new QProgressDialog( tr( "Copying features..." ), tr( "Abort" ), 0, 0, nullptr );
-  progress->setWindowTitle( tr( "Import layer" ) );
-  progress->setWindowModality( Qt::WindowModal );
-  progress->show();
-
   QStringList importResults;
   bool hasError = false;
-  bool cancelled = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
+  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
   {
-    if ( u.layerType != "vector" )
+    if ( u.layerType != QLatin1String( "vector" ) )
     {
       importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
       hasError = true; // only vectors can be imported
       continue;
     }
 
-    QgsDebugMsg( QString( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
+    QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
-    QgsVectorLayer* srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
     if ( srcLayer->isValid() )
     {
       QString tableName;
       if ( !toSchema.isEmpty() )
       {
-        tableName = QString( "%1.%2" ).arg( toSchema, u.name );
+        tableName = QStringLiteral( "%1.%2" ).arg( toSchema, u.name );
       }
       else
       {
@@ -356,242 +350,221 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData* data, const QString& toS
       }
 
       QString uri = connInfo() + " table=" + tableName;
-      if ( srcLayer->geometryType() != QGis::NoGeometry )
-        uri += " (geom)";
+      if ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry )
+        uri += QLatin1String( " (geom)" );
 
-      QgsVectorLayerImport::ImportError err;
-      QString importError;
-      err = QgsVectorLayerImport::importLayer( srcLayer, uri, "DB2", &srcLayer->crs(), false, &importError, false, nullptr, progress );
-      if ( err == QgsVectorLayerImport::NoError )
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "DB2" ), srcLayer->crs() ) );
+
+      // when export is successful:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
       {
-        importResults.append( tr( "%1: OK!" ).arg( u.name ) );
-        QgsDebugMsg( "import successful" );
-      }
-      else
-      {
-        if ( err == QgsVectorLayerImport::ErrUserCancelled )
-        {
-          cancelled = true;
-          QgsDebugMsg( "import cancelled" );
-        }
+        // this is gross - TODO - find a way to get access to messageBar from data items
+        QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import was successful." ) );
+        if ( state() == Populated )
+          refresh();
         else
+          populate();
+      } );
+
+      // when an error occurs:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+      {
+        if ( error != QgsVectorLayerExporter::ErrUserCanceled )
         {
-          QString errMsg = QString( "%1: %2" ).arg( u.name, importError );
-          QgsDebugMsg( "import failed: " + errMsg );
-          importResults.append( errMsg );
-          hasError = true;
+          QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+          output->setTitle( tr( "Import to DB2 database" ) );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->showMessage();
         }
-      }
+        if ( state() == Populated )
+          refresh();
+        else
+          populate();
+      } );
+
+      QgsApplication::taskManager()->addTask( exportTask.release() );
     }
     else
     {
-      importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
       hasError = true;
     }
-
-    delete srcLayer;
   }
 
-  delete progress;
-  qApp->restoreOverrideCursor();
-
-  if ( cancelled )
+  if ( hasError )
   {
-    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import cancelled." ) );
-    refresh();
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to DB2 database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->showMessage();
   }
-  else if ( hasError )
-  {
-    QMessageBox::warning( nullptr, tr( "Import to DB2 database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import was successful." ) );
-  }
-
-  if ( state() == Populated )
-    refresh();
-  else
-    populate();
 
   return true;
 }
 
-QgsDb2RootItem::QgsDb2RootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconDb2.svg";
+  mIconName = QStringLiteral( "mIconDb2.svg" );
   populate();
 }
 
-QgsDb2RootItem::~QgsDb2RootItem()
+QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
 {
-}
-
-QVector<QgsDataItem*> QgsDb2RootItem::createChildren()
-{
-  QVector<QgsDataItem*> connections;
-  QSettings settings;
-  settings.beginGroup( "/DB2/connections" );
-  Q_FOREACH ( const QString& connName, settings.childGroups() )
+  QVector<QgsDataItem *> connections;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
+  Q_FOREACH ( const QString &connName, settings.childGroups() )
   {
     connections << new QgsDb2ConnectionItem( this, connName, mPath + "/" + connName );
   }
   return connections;
 }
 
-QList<QAction*> QgsDb2RootItem::actions()
+#ifdef HAVE_GUI
+QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
 {
-  QList<QAction*> actionList;
+  QList<QAction *> actionList;
 
-  QAction* action = new QAction( tr( "New Connection..." ), this );
-  connect( action, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  QAction *action = new QAction( tr( "New Connection…" ), parent );
+  connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
   actionList.append( action );
-  QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );
 
   return actionList;
 }
 
 QWidget *QgsDb2RootItem::paramWidget()
 {
-  return NULL;
+  return nullptr;
 }
 
 void QgsDb2RootItem::newConnection()
 {
-  QgsDebugMsg( "DB2: Browser Panel; New Connection dialog requested." );
-  QgsDb2NewConnection newConnection( NULL, mName );
+  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; New Connection dialog requested." ) );
+  QgsDb2NewConnection newConnection( nullptr, mName );
   if ( newConnection.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 
 }
+#endif
 
 // ---------------------------------------------------------------------------
-QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
-    : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
-    , mLayerProperty( layerProperty )
+QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
+  : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
+  , mLayerProperty( layerProperty )
 {
-  QgsDebugMsg( QString( "new db2 layer created : %1" ).arg( layerType ) );
+  QgsDebugMsg( QStringLiteral( "new db2 layer created : %1" ).arg( layerType ) );
   mUri = createUri();
   setState( Populated );
 }
 
-QgsDb2LayerItem::~QgsDb2LayerItem()
-{
-
-}
-
-QgsDb2LayerItem* QgsDb2LayerItem::createClone()
+QgsDb2LayerItem *QgsDb2LayerItem::createClone()
 {
   return new QgsDb2LayerItem( mParent, mName, mPath, mLayerType, mLayerProperty );
 }
 
 QString QgsDb2LayerItem::createUri()
 {
-  QgsDb2ConnectionItem *connItem = qobject_cast<QgsDb2ConnectionItem *>( parent() ? parent()->parent() : 0 );
+  QgsDb2ConnectionItem *connItem = qobject_cast<QgsDb2ConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
-    QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
+    return QString();
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
-  QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
+  QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, mLayerProperty.pkColumnName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setWkbType( QGis::fromOldWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) ) );
-  uri.setParam( "extents", mLayerProperty.extents );
+  uri.setWkbType( QgsDb2TableModel::wkbTypeFromDb2( mLayerProperty.type ) );
+  uri.setParam( QStringLiteral( "extents" ), mLayerProperty.extents );
   QString uriString = uri.uri( false );
   QgsDebugMsg( "Layer URI: " + uriString );
   return uriString;
 }
 // ---------------------------------------------------------------------------
-QgsDb2SchemaItem::QgsDb2SchemaItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsDb2SchemaItem::QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconDbSchema.png";
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
 }
 
-QVector<QgsDataItem*> QgsDb2SchemaItem::createChildren()
+QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 {
-  QgsDebugMsg( "schema this DB2 Entering." );
+  QgsDebugMsg( QStringLiteral( "schema this DB2 Entering." ) );
 
-  QVector<QgsDataItem*>items;
+  QVector<QgsDataItem *>items;
 
   Q_FOREACH ( QgsDataItem *child, this->children() )
   {
-    items.append((( QgsDb2LayerItem* )child )->createClone() );
+    items.append( ( ( QgsDb2LayerItem * )child )->createClone() );
   }
   return items;
 }
 
-QgsDb2SchemaItem::~QgsDb2SchemaItem()
-{
-}
-
-void QgsDb2SchemaItem::addLayers( QgsDataItem* newLayers )
+void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )
 {
   // Add new items
   Q_FOREACH ( QgsDataItem *child, newLayers->children() )
   {
-    // Is it present in childs?
+    // Is it present in children?
     if ( findItem( mChildren, child ) >= 0 )
     {
       continue;
     }
-    QgsDb2LayerItem* layer = (( QgsDb2LayerItem* )child )->createClone();
+    QgsDb2LayerItem *layer = ( ( QgsDb2LayerItem * )child )->createClone();
     addChildItem( layer, true );
   }
 }
 
-bool QgsDb2SchemaItem::handleDrop( const QMimeData* data, Qt::DropAction )
+bool QgsDb2SchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
   QgsDb2ConnectionItem *conn = qobject_cast<QgsDb2ConnectionItem *>( parent() );
   if ( !conn )
-    return 0;
+    return false;
 
   return conn->handleDrop( data, mName );
 }
 
-QgsDb2LayerItem* QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
+QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, bool refresh )
 {
-  QGis::WkbType wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
+  QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( layerProperty.type );
   QString tip = tr( "DB2 *** %1 as %2 in %3" ).arg( layerProperty.geometryColName,
-                QgsDb2TableModel::displayStringForWkbType( wkbType ),
+                QgsWkbTypes::displayString( wkbType ),
                 layerProperty.srid );
   QgsDebugMsg( tip );
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
-      if ( layerProperty.type == "NONE" && layerProperty.geometryColName.isEmpty() )
+      if ( layerProperty.type == QLatin1String( "NONE" ) && layerProperty.geometryColName.isEmpty() )
       {
         layerType = QgsLayerItem::TableLayer;
         tip = tr( "as geometryless table" );
       }
       else
       {
-        return NULL;
+        return nullptr;
       }
   }
 

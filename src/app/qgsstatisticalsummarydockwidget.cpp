@@ -12,16 +12,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include "qgisapp.h"
+#include "qgsclipboard.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
-#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
+#include "qgsvectorlayerutils.h"
+
 #include <QTableWidget>
 #include <QAction>
-#include <QSettings>
+#include <QMenu>
 
-QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayStats =
+QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStats =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
   << QgsStatisticalSummary::Sum
   << QgsStatisticalSummary::Mean
@@ -38,7 +45,7 @@ QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisp
   << QgsStatisticalSummary::ThirdQuartile
   << QgsStatisticalSummary::InterQuartileRange;
 
-QList< QgsStringStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayStringStats =
+QList< QgsStringStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStringStats =
   QList< QgsStringStatisticalSummary::Statistic > () << QgsStringStatisticalSummary::Count
   << QgsStringStatisticalSummary::CountDistinct
   << QgsStringStatisticalSummary::CountMissing
@@ -47,7 +54,7 @@ QList< QgsStringStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget:
   << QgsStringStatisticalSummary::MinimumLength
   << QgsStringStatisticalSummary::MaximumLength;
 
-QList< QgsDateTimeStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayDateTimeStats =
+QList< QgsDateTimeStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayDateTimeStats =
   QList< QgsDateTimeStatisticalSummary::Statistic > () << QgsDateTimeStatisticalSummary::Count
   << QgsDateTimeStatisticalSummary::CountDistinct
   << QgsDateTimeStatisticalSummary::CountMissing
@@ -57,29 +64,27 @@ QList< QgsDateTimeStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidge
 
 #define MISSING_VALUES -1
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
-
-  const QgsStatisticalSummaryDockWidget* widget = ( const QgsStatisticalSummaryDockWidget* ) context;
-  if ( widget )
-  {
-    expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
-  }
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+             << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
-    : QDockWidget( parent )
-    , mLayer( nullptr )
+  : QgsDockWidget( parent )
+
 {
   setupUi( this );
 
-  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mCancelButton->hide();
+  mCalculatingProgressBar->hide();
+
+  mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mFieldExpressionWidget->setFilters( QgsFieldProxyModel::Numeric |
@@ -89,101 +94,174 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mLayerComboBox->setLayer( mLayerComboBox->layer( 0 ) );
   mFieldExpressionWidget->setLayer( mLayerComboBox->layer( 0 ) );
 
-  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
-  connect( mFieldExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( refreshStatistics() ) );
-  connect( mSelectedOnlyCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshStatistics() ) );
-  connect( mButtonRefresh, SIGNAL( clicked( bool ) ), this, SLOT( refreshStatistics() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
+  connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsStatisticalSummaryDockWidget::layerChanged );
+  connect( mFieldExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsStatisticalSummaryDockWidget::fieldChanged );
+  connect( mSelectedOnlyCheckBox, &QAbstractButton::toggled, this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
+  connect( mButtonCopy, &QAbstractButton::clicked, this, &QgsStatisticalSummaryDockWidget::copyStatistics );
+  connect( mButtonRefresh, &QAbstractButton::clicked, this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsStatisticalSummaryDockWidget::layersRemoved );
 
-  QSettings settings;
-  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
-  {
-    QAction* action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
-    action->setCheckable( true );
-    bool checked = settings.value( QString( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
-    action->setChecked( checked );
-    action->setData( stat );
-    mStatsActions.insert( stat, action );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( statActionTriggered( bool ) ) );
-    mOptionsToolButton->addAction( action );
-  }
+  mStatisticsMenu = new QMenu( mOptionsToolButton );
+  mOptionsToolButton->setMenu( mStatisticsMenu );
 
-  //count of null values statistic:
-  QAction* nullCountAction = new QAction( tr( "Missing (null) values" ), mOptionsToolButton );
-  nullCountAction->setCheckable( true );
-  bool checked = settings.value( QString( "/StatisticalSummaryDock/checked_missing_values" ), true ).toBool();
-  nullCountAction->setChecked( checked );
-  nullCountAction->setData( MISSING_VALUES );
-  mStatsActions.insert( MISSING_VALUES, nullCountAction );
-  connect( nullCountAction, SIGNAL( triggered( bool ) ), this, SLOT( statActionTriggered( bool ) ) );
-  mOptionsToolButton->addAction( nullCountAction );
+  mFieldType = DataType::Numeric;
+  mPreviousFieldType = DataType::Numeric;
+  refreshStatisticsMenu();
 }
 
 QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
 {
+  if ( mGatherer )
+  {
+    mGatherer->cancel();
+  }
+}
 
+void QgsStatisticalSummaryDockWidget::fieldChanged()
+{
+  if ( mFieldExpressionWidget->expression() != mExpression )
+  {
+    mExpression = mFieldExpressionWidget->expression();
+    refreshStatistics();
+  }
+}
+
+void QgsStatisticalSummaryDockWidget::copyStatistics()
+{
+  QStringList rows;
+  QStringList columns;
+  for ( int i = 0; i < mStatisticsTable->rowCount(); i++ )
+  {
+    for ( int j = 0; j < mStatisticsTable->columnCount(); j++ )
+    {
+      QTableWidgetItem *item =  mStatisticsTable->item( i, j );
+      columns += item->text();
+    }
+    rows += columns.join( QStringLiteral( "\t" ) );
+    columns.clear();
+  }
+
+  if ( !rows.isEmpty() )
+  {
+    QString text = QStringLiteral( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
+                   mStatisticsTable->horizontalHeaderItem( 1 )->text(),
+                   rows.join( QStringLiteral( "\n" ) ) );
+    QString html = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
+    html.replace( QStringLiteral( "\t" ), QStringLiteral( "</td><td>" ) ).replace( QStringLiteral( "\n" ), QStringLiteral( "</td></tr><tr><td>" ) );
+
+    QgsClipboard clipboard;
+    clipboard.setData( QStringLiteral( "text/html" ), html.toUtf8(), text );
+  }
 }
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
 {
-  if ( !mLayer || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
+  if ( !mLayer || mFieldExpressionWidget->currentField().isEmpty() || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
   {
     mStatisticsTable->setRowCount( 0 );
     return;
   }
 
-  // non numeric field?
-  bool isNumeric = true;
-  QVariant::Type fieldType = QVariant::Double;
+  // determine field type
+  mFieldType = DataType::Numeric;
   if ( !mFieldExpressionWidget->isExpression() )
   {
-    QString field = mFieldExpressionWidget->currentField();
-    fieldType = mLayer->fields().field( mLayer->fields().fieldNameIndex( field ) ).type();
-    if ( fieldType == QVariant::String || fieldType == QVariant::Date || fieldType == QVariant::DateTime )
-    {
-      isNumeric = false;
-    }
+    mFieldType = fieldType( mFieldExpressionWidget->currentField() );
   }
 
+  if ( mFieldType != mPreviousFieldType )
+  {
+    refreshStatisticsMenu();
+    mPreviousFieldType = mFieldType;
+  }
+
+  QString sourceFieldExp = mFieldExpressionWidget->currentField();
   bool selectedOnly = mSelectedOnlyCheckBox->isChecked();
 
-  if ( isNumeric )
+  if ( mGatherer )
   {
-    updateNumericStatistics( selectedOnly );
+    mGatherer->cancel();
   }
-  else
+
+  bool ok;
+  QgsFeatureIterator fit = QgsVectorLayerUtils::getValuesIterator( mLayer, sourceFieldExp, ok, selectedOnly );
+  if ( ok )
   {
-    switch ( fieldType )
+    long featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
+    std::unique_ptr< QgsStatisticsValueGatherer > gatherer = qgis::make_unique< QgsStatisticsValueGatherer >( mLayer, fit, featureCount, sourceFieldExp );
+    switch ( mFieldType )
     {
-      case QVariant::String:
-        updateStringStatistics( selectedOnly );
+      case DataType::Numeric:
+        connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateNumericStatistics );
         break;
-      case QVariant::Date:
-      case QVariant::DateTime:
-        updateDateTimeStatistics( selectedOnly );
+      case DataType::String:
+        connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateStringStatistics );
         break;
+      case DataType::DateTime:
+        connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateDateTimeStatistics );
+        break;
+#if 0 // not required for now - we can handle all known types
       default:
-        break;
+        //don't know how to handle stats for this field!
+        mStatisticsTable->setRowCount( 0 );
+        return;
+#endif
     }
+    connect( gatherer.get(), &QgsStatisticsValueGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
+    connect( gatherer.get(), &QgsStatisticsValueGatherer::taskTerminated, this, &QgsStatisticalSummaryDockWidget::gathererFinished );
+    connect( mCancelButton, &QPushButton::clicked, gatherer.get(), &QgsStatisticsValueGatherer::cancel );
+    mCalculatingProgressBar->setMinimum( 0 );
+    mCalculatingProgressBar->setMaximum( featureCount > 0 ? 100 : 0 );
+    mCalculatingProgressBar->setValue( 0 );
+    mCancelButton->show();
+    mCalculatingProgressBar->show();
+
+    mGatherer = gatherer.get();
+    QgsApplication::taskManager()->addTask( gatherer.release() );
   }
 }
 
-void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly )
+void QgsStatisticalSummaryDockWidget::gathererFinished()
 {
-  QString sourceFieldExp = mFieldExpressionWidget->currentField();
-
-  bool ok;
-  int missingValues = 0;
-  QList< double > values = mLayer->getDoubleValues( sourceFieldExp, ok, selectedOnly, &missingValues );
-
-  if ( ! ok )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer == mGatherer )
   {
+    mGatherer = nullptr;
+    mCalculatingProgressBar->setValue( -1 );
+    mCancelButton->hide();
+    mCalculatingProgressBar->hide();
+  }
+}
+
+void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
+{
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
+
+  QList< QVariant > variantValues = mGatherer->values();
+
+  QList<double> values;
+  bool convertOk;
+  int missingValues = 0;
+  Q_FOREACH ( const QVariant &value, variantValues )
+  {
+    double val = value.toDouble( &convertOk );
+    if ( convertOk )
+      values << val;
+    else if ( value.isNull() )
+    {
+      missingValues += 1;
+    }
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
   QgsStatisticalSummary::Statistics statsToCalc = nullptr;
-  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
+  Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
     {
@@ -206,8 +284,9 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   int row = 0;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, statsToDisplay )
   {
+    double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
-            QString::number( stats.statistic( stat ) ),
+            std::isnan( val ) ? QString() : QString::number( val ),
             stats.count() != 0 );
     row++;
   }
@@ -219,53 +298,77 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
             stats.count() != 0 || missingValues != 0 );
     row++;
   }
+
+  mStatisticsTable->resizeColumnsToContents();
+
+  gathererFinished();
 }
 
-void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly )
+void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 {
-  QString field = mFieldExpressionWidget->currentField();
-
-  bool ok;
-  QVariantList values = mLayer->getValues( field, ok, selectedOnly );
-
-  if ( ! ok )
-  {
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
+
+  QVariantList values = mGatherer->values();
+
+  QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
+  QgsStringStatisticalSummary::Statistics statsToCalc = nullptr;
+  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
+  {
+    if ( mStatsActions.value( stat )->isChecked() )
+    {
+      statsToDisplay << stat;
+      statsToCalc |= stat;
+    }
   }
 
   QgsStringStatisticalSummary stats;
-  stats.setStatistics( QgsStringStatisticalSummary::All );
+  stats.setStatistics( statsToCalc );
   stats.calculateFromVariants( values );
 
-  mStatisticsTable->setRowCount( mDisplayStringStats.count() );
+  mStatisticsTable->setRowCount( statsToDisplay.count() );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, mDisplayStringStats )
+  Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, statsToDisplay )
   {
     addRow( row, QgsStringStatisticalSummary::displayName( stat ),
             stats.statistic( stat ).toString(),
             stats.count() != 0 );
     row++;
   }
+
+  mStatisticsTable->resizeColumnsToContents();
+
+  gathererFinished();
 }
 
 void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer* newLayer = dynamic_cast< QgsVectorLayer* >( layer );
+  QgsVectorLayer *newLayer = qobject_cast< QgsVectorLayer * >( layer );
   if ( mLayer && mLayer != newLayer )
   {
-    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
   }
 
   mLayer = newLayer;
 
+  // clear expression, so that we don't force an unwanted recalculation
+  mFieldExpressionWidget->setExpression( QString() );
+  mFieldExpressionWidget->setLayer( mLayer );
+
   if ( mLayer )
   {
-    connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
   }
 
-  mFieldExpressionWidget->setLayer( mLayer );
+  if ( mGatherer )
+  {
+    mGatherer->cancel();
+  }
 
   if ( mFieldExpressionWidget->currentField().isEmpty() )
   {
@@ -279,26 +382,41 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 
 void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
 {
-  refreshStatistics();
-  QAction* action = dynamic_cast<QAction*>( sender() );
+  QAction *action = dynamic_cast<QAction *>( sender() );
   int stat = action->data().toInt();
 
-  QSettings settings;
+  QString settingsKey;
+  switch ( mFieldType )
+  {
+    case DataType::Numeric:
+      settingsKey = QStringLiteral( "numeric" );
+      break;
+    case DataType::String:
+      settingsKey = QStringLiteral( "string" );
+      break;
+    case DataType::DateTime:
+      settingsKey = QStringLiteral( "datetime" );
+      break;
+  }
+
+  QgsSettings settings;
   if ( stat >= 0 )
   {
-    settings.setValue( QString( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/%1_%2" ).arg( settingsKey ).arg( stat ), checked );
   }
   else if ( stat == MISSING_VALUES )
   {
-    settings.setValue( QString( "/StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/numeric_missing_values" ), checked );
   }
+
+  refreshStatistics();
 }
 
-void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList& layers )
+void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList &layers )
 {
   if ( mLayer && layers.contains( mLayer->id() ) )
   {
-    disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
+    disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
     mLayer = nullptr;
   }
 }
@@ -309,27 +427,37 @@ void QgsStatisticalSummaryDockWidget::layerSelectionChanged()
     refreshStatistics();
 }
 
-void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics( bool selectedOnly )
+void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 {
-  QString field = mFieldExpressionWidget->currentField();
-
-  bool ok;
-  QVariantList values = mLayer->getValues( field, ok, selectedOnly );
-
-  if ( ! ok )
-  {
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
+
+  QVariantList values = mGatherer->values();
+
+  QList< QgsDateTimeStatisticalSummary::Statistic > statsToDisplay;
+  QgsDateTimeStatisticalSummary::Statistics statsToCalc = nullptr;
+  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
+  {
+    if ( mStatsActions.value( stat )->isChecked() )
+    {
+      statsToDisplay << stat;
+      statsToCalc |= stat;
+    }
   }
 
+
   QgsDateTimeStatisticalSummary stats;
-  stats.setStatistics( QgsDateTimeStatisticalSummary::All );
+  stats.setStatistics( statsToCalc );
   stats.calculate( values );
 
-  mStatisticsTable->setRowCount( mDisplayDateTimeStats.count() );
+  mStatisticsTable->setRowCount( statsToDisplay.count() );
   mStatisticsTable->setColumnCount( 2 );
 
   int row = 0;
-  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, mDisplayDateTimeStats )
+  Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, statsToDisplay )
   {
     QString value = ( stat == QgsDateTimeStatisticalSummary::Range
                       ? tr( "%1 seconds" ).arg( stats.range().seconds() )
@@ -340,17 +468,21 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics( bool selectedOnl
             stats.count() != 0 );
     row++;
   }
+
+  mStatisticsTable->resizeColumnsToContents();
+
+  gathererFinished();
 }
 
-void QgsStatisticalSummaryDockWidget::addRow( int row, const QString& name, const QString& value,
+void QgsStatisticalSummaryDockWidget::addRow( int row, const QString &name, const QString &value,
     bool showValue )
 {
-  QTableWidgetItem* nameItem = new QTableWidgetItem( name );
+  QTableWidgetItem *nameItem = new QTableWidgetItem( name );
   nameItem->setToolTip( name );
   nameItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   mStatisticsTable->setItem( row, 0, nameItem );
 
-  QTableWidgetItem* valueItem = new QTableWidgetItem();
+  QTableWidgetItem *valueItem = new QTableWidgetItem();
   if ( showValue )
   {
     valueItem->setText( value );
@@ -360,3 +492,137 @@ void QgsStatisticalSummaryDockWidget::addRow( int row, const QString& name, cons
   mStatisticsTable->setItem( row, 1, valueItem );
 }
 
+void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
+{
+  mStatisticsMenu->clear();
+  mStatsActions.clear();
+
+  QgsSettings settings;
+  switch ( mFieldType )
+  {
+    case DataType::Numeric:
+    {
+      Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
+      {
+        QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mStatisticsMenu );
+        action->setCheckable( true );
+        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_%1" ).arg( stat ), true ).toBool();
+        action->setChecked( checked );
+        action->setData( stat );
+        mStatsActions.insert( stat, action );
+        connect( action, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
+        mStatisticsMenu->addAction( action );
+      }
+
+      //count of null values statistic
+      QAction *nullCountAction = new QAction( tr( "Missing (null) values" ), mStatisticsMenu );
+      nullCountAction->setCheckable( true );
+      bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_missing_values" ), true ).toBool();
+      nullCountAction->setChecked( checked );
+      nullCountAction->setData( MISSING_VALUES );
+      mStatsActions.insert( MISSING_VALUES, nullCountAction );
+      connect( nullCountAction, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
+      mStatisticsMenu->addAction( nullCountAction );
+
+      break;
+    }
+    case DataType::String:
+    {
+      Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
+      {
+        QAction *action = new QAction( QgsStringStatisticalSummary::displayName( stat ), mStatisticsMenu );
+        action->setCheckable( true );
+        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/string_%1" ).arg( stat ), true ).toBool();
+        action->setChecked( checked );
+        action->setData( stat );
+        mStatsActions.insert( stat, action );
+        connect( action, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
+        mStatisticsMenu->addAction( action );
+      }
+      break;
+    }
+    case DataType::DateTime:
+    {
+      Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
+      {
+        QAction *action = new QAction( QgsDateTimeStatisticalSummary::displayName( stat ), mStatisticsMenu );
+        action->setCheckable( true );
+        bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/datetime_%1" ).arg( stat ), true ).toBool();
+        action->setChecked( checked );
+        action->setData( stat );
+        mStatsActions.insert( stat, action );
+        connect( action, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
+        mStatisticsMenu->addAction( action );
+      }
+      break;
+    }
+  }
+}
+
+QgsStatisticalSummaryDockWidget::DataType QgsStatisticalSummaryDockWidget::fieldType( const QString &fieldName )
+{
+  QgsField field = mLayer->fields().field( mLayer->fields().lookupField( fieldName ) );
+  if ( field.isNumeric() )
+  {
+    return DataType::Numeric;
+  }
+
+  switch ( field.type() )
+  {
+    case QVariant::String:
+      return DataType::String;
+    case QVariant::Date:
+    case QVariant::DateTime:
+      return DataType::DateTime;
+    default:
+      break;
+  }
+
+  return DataType::Numeric;
+}
+
+QgsStatisticsValueGatherer::QgsStatisticsValueGatherer( QgsVectorLayer *layer, const QgsFeatureIterator &fit, long featureCount, const QString &sourceFieldExp )
+  : QgsTask( tr( "Fetching statistic values" ) )
+  , mFeatureIterator( fit )
+  , mFeatureCount( featureCount )
+  , mFieldExpression( sourceFieldExp )
+{
+  mFieldIndex = layer->fields().lookupField( mFieldExpression );
+  if ( mFieldIndex == -1 )
+  {
+    // use expression, already validated
+    mExpression.reset( new QgsExpression( mFieldExpression ) );
+    mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  }
+}
+
+bool QgsStatisticsValueGatherer::run()
+{
+  QgsFeature f;
+  int current = 0;
+  while ( mFeatureIterator.nextFeature( f ) )
+  {
+    if ( mExpression )
+    {
+      mContext.setFeature( f );
+      QVariant v = mExpression->evaluate( &mContext );
+      mValues << v;
+    }
+    else
+    {
+      mValues << f.attribute( mFieldIndex );
+    }
+
+    if ( isCanceled() )
+    {
+      return false;
+    }
+
+    current++;
+    if ( mFeatureCount > 0 )
+    {
+      setProgress( 100.0 * static_cast< double >( current ) / mFeatureCount );
+    }
+  }
+  return true;
+}

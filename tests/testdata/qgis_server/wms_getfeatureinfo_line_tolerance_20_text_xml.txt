@@ -1,0 +1,10 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="ls2d">
+  <Feature id="1">
+   <Attribute value="1" name="id"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

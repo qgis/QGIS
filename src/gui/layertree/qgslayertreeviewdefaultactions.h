@@ -17,6 +17,8 @@
 #define QGSLAYERTREEVIEWDEFAULTACTIONS_H
 
 #include <QObject>
+#include "qgis.h"
+#include "qgis_gui.h"
 
 class QAction;
 
@@ -27,60 +29,130 @@ class QgsMapLayer;
 
 
 /**
+ * \ingroup gui
  * The QgsLayerTreeViewDefaultActions class serves as a factory of actions
  * that can be used together with a layer tree view.
  *
- * @see QgsLayerTreeView
- * @note added in 2.4
+ * \see QgsLayerTreeView
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT
   public:
-    QgsLayerTreeViewDefaultActions( QgsLayerTreeView* view );
+    QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
 
-    QAction* actionAddGroup( QObject* parent = nullptr );
-    QAction* actionRemoveGroupOrLayer( QObject* parent = nullptr );
-    QAction* actionShowInOverview( QObject* parent = nullptr );
-    QAction* actionRenameGroupOrLayer( QObject* parent = nullptr );
-    QAction* actionShowFeatureCount( QObject* parent = nullptr );
+    QAction *actionAddGroup( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionRemoveGroupOrLayer( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionShowInOverview( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionRenameGroupOrLayer( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionShowFeatureCount( QObject *parent = nullptr ) SIP_FACTORY;
 
-    QAction* actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent = nullptr );
-    QAction* actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent = nullptr );
-    // TODO: zoom to selected
+    //! Action to check a group and all its children
+    QAction *actionCheckAndAllChildren( QObject *parent = nullptr );
 
-    QAction* actionMakeTopLevel( QObject* parent = nullptr );
-    QAction* actionGroupSelected( QObject* parent = nullptr );
-    //! Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
-    //! @note added in 2.12
-    QAction* actionMutuallyExclusiveGroup( QObject* parent = nullptr );
+    //! Action to uncheck a group and all its children
+    QAction *actionUncheckAndAllChildren( QObject *parent = nullptr );
 
-    void zoomToLayer( QgsMapCanvas* canvas );
-    void zoomToGroup( QgsMapCanvas* canvas );
+    //! Action to check a group and all its parents
+    QAction *actionCheckAndAllParents( QObject *parent = nullptr );
+
+    QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Action to zoom to selected features of a vector layer
+     * \since QGIS 3.2
+     */
+    QAction *actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * \deprecated since QGIS 3.2, use actionMoveOutOfGroup()
+     */
+    Q_DECL_DEPRECATED QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * \see moveOutOfGroup()
+     * \since QGIS 3.2
+     */
+    QAction *actionMoveOutOfGroup( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * \see moveToTop()
+     * \since QGIS 3.2
+     */
+    QAction *actionMoveToTop( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionGroupSelected( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
+     * \since QGIS 2.12
+     */
+    QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
+
+    void zoomToLayer( QgsMapCanvas *canvas );
+
+    /**
+     * \see zoomToSelection()
+     * \since QGIS 3.2
+     */
+    void zoomToSelection( QgsMapCanvas *canvas );
+    void zoomToGroup( QgsMapCanvas *canvas );
 
   public slots:
     void showInOverview();
+    void addGroup();
 
   protected slots:
-    void addGroup();
     void removeGroupOrLayer();
     void renameGroupOrLayer();
     void showFeatureCount();
     void zoomToLayer();
+
+    /**
+     * Slot to zoom to selected features of a vector layer
+     * \since QGIS 3.2
+     */
+    void zoomToSelection();
     void zoomToGroup();
-    void makeTopLevel();
+
+    /**
+     * \deprecated since QGIS 3.2, use moveOutOfGroup()
+     */
+    Q_DECL_DEPRECATED void makeTopLevel();
+
+    /**
+     * Moves selected layer(s) out of the group(s) and places this/these above the group(s)
+     * \since QGIS 3.2
+     */
+    void moveOutOfGroup();
+
+    /**
+     * Moves selected layer(s) and/or group(s) to the top of the layer panel
+     * or the top of the group if the layer/group is placed within a group.
+     * \since QGIS 3.2
+     */
+    void moveToTop();
     void groupSelected();
-    //! Slot to enable/disable mutually exclusive group flag
-    //! @note added in 2.12
+
+    /**
+     * Slot to enable/disable mutually exclusive group flag
+     * \since QGIS 2.12
+     */
     void mutuallyExclusiveGroup();
 
-  protected:
-    void zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers );
+  private slots:
+    void checkAndAllChildren();
+    void uncheckAndAllChildren();
+    void checkAndAllParents();
 
-    QString uniqueGroupName( QgsLayerTreeGroup* parentGroup );
+  protected:
+    void zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers );
+
+    QString uniqueGroupName( QgsLayerTreeGroup *parentGroup );
 
   protected:
-    QgsLayerTreeView* mView;
+    QgsLayerTreeView *mView = nullptr;
 };
 
 

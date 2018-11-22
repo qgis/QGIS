@@ -21,19 +21,19 @@
 #include "qgsoptionsdialogbase.h"
 
 #include "ui_qgsgrassoptionsbase.h"
+#include "qgis_grass_lib.h"
 
 class GRASS_LIB_EXPORT QgsGrassOptions : public QgsOptionsDialogBase, private Ui::QgsGrassOptionsBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsGrassOptions( QWidget *parent = 0 );
-    ~QgsGrassOptions();
+    explicit QgsGrassOptions( QWidget *parent = nullptr );
 
   private slots:
-    void on_mGisbaseBrowseButton_clicked();
+    void mGisbaseBrowseButton_clicked();
     void gisbaseChanged();
-    void on_mModulesConfigBrowseButton_clicked();
+    void mModulesConfigBrowseButton_clicked();
     void saveOptions();
 
   private:

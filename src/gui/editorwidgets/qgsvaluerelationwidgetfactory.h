@@ -17,28 +17,33 @@
 #define QGSVALUERELATIONWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
-#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QMap>
+#include "qgis_gui.h"
 
-/** \class QgsValueRelationWidgetFactory
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
+ * \class QgsValueRelationWidgetFactory
  * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsValueRelationWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    explicit QgsValueRelationWidgetFactory( const QString& name );
+
+    /**
+     * Constructor for QgsValueRelationWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
+    explicit QgsValueRelationWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
-    void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
-    QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 };
 
 #endif // QGSVALUERELATIONWIDGETFACTORY_H

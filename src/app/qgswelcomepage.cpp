@@ -18,55 +18,67 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsfileutils.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
-#include <QSettings>
+#include <QDesktopServices>
 
-QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
-    : QWidget( parent )
+QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
+  : QWidget( parent )
 {
-  QSettings settings;
+  QgsSettings settings;
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
+  QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );
+  mainLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( mainLayout );
 
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setMargin( 9 );
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setMargin( 0 );
 
   mainLayout->addLayout( layout );
 
-  QWidget* recentProjctsContainer = new QWidget;
-  recentProjctsContainer->setLayout( new QVBoxLayout );
-  recentProjctsContainer->layout()->setContentsMargins( 3, 3, 3, 0 );
-  QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "Recent Projects" ) ) );
-  recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
+  QWidget *recentProjectsContainer = new QWidget;
+  recentProjectsContainer->setLayout( new QVBoxLayout );
+  recentProjectsContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
+  recentProjectsContainer->layout()->setMargin( 0 );
 
-  QListView* recentProjectsListView = new QListView();
-  recentProjectsListView->setResizeMode( QListView::Adjust );
+  int titleSize = QApplication::fontMetrics().height() * 1.4;
+  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
+  recentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
 
-  mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
-  recentProjectsListView->setModel( mModel );
-  recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
+  recentProjectsContainer->layout()->addWidget( recentProjectsTitle );
 
-  recentProjctsContainer->layout()->addWidget( recentProjectsListView );
+  mRecentProjectsListView = new QListView();
+  mRecentProjectsListView->setResizeMode( QListView::Adjust );
+  mRecentProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mRecentProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForProjects );
 
-  layout->addWidget( recentProjctsContainer );
+  mModel = new QgsWelcomePageItemsModel( mRecentProjectsListView );
+  mRecentProjectsListView->setModel( mModel );
+  mRecentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( mRecentProjectsListView ) );
+
+  recentProjectsContainer->layout()->addWidget( mRecentProjectsListView );
+
+  layout->addWidget( recentProjectsContainer );
 
   mVersionInformation = new QLabel;
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( "/qgis/checkVersion", true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
   {
-    connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
+    connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomePage::versionInfoReceived );
     mVersionInfo->checkVersion();
   }
 
-  connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
+  connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::itemActivated );
 }
 
 QgsWelcomePage::~QgsWelcomePage()
@@ -74,25 +86,25 @@ QgsWelcomePage::~QgsWelcomePage()
   delete mVersionInfo;
 }
 
-void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects )
+void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects )
 {
   mModel->setRecentProjects( recentProjects );
 }
 
-void QgsWelcomePage::itemActivated( const QModelIndex& index )
+void QgsWelcomePage::itemActivated( const QModelIndex &index )
 {
   QgisApp::instance()->openProject( mModel->data( index, Qt::ToolTipRole ).toString() );
 }
 
 void QgsWelcomePage::versionInfoReceived()
 {
-  QgsVersionInfo* versionInfo = qobject_cast<QgsVersionInfo*>( sender() );
+  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
   Q_ASSERT( versionInfo );
 
   if ( versionInfo->newVersionAvailable() )
   {
     mVersionInformation->setVisible( true );
-    mVersionInformation->setText( QString( "<b>%1</b>: %2" )
+    mVersionInformation->setText( QStringLiteral( "<b>%1</b>: %2" )
                                   .arg( tr( "There is a new QGIS version available" ),
                                         versionInfo->downloadInfo() ) );
     mVersionInformation->setStyleSheet( "QLabel{"
@@ -100,4 +112,78 @@ void QgsWelcomePage::versionInfoReceived()
                                         "  padding: 5px;"
                                         "}" );
   }
+}
+
+void QgsWelcomePage::showContextMenuForProjects( QPoint point )
+{
+  QModelIndex index = mRecentProjectsListView->indexAt( point );
+  if ( !index.isValid() )
+    return;
+
+  bool pin = mModel->data( index, QgsWelcomePageItemsModel::PinRole ).toBool();
+  QString path = mModel->data( index, QgsWelcomePageItemsModel::PathRole ).toString();
+  if ( path.isEmpty() )
+    return;
+
+  bool enabled = mModel->flags( index ) & Qt::ItemIsEnabled;
+
+  QMenu *menu = new QMenu( this );
+
+  if ( enabled )
+  {
+    if ( !pin )
+    {
+      QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
+      connect( pinAction, &QAction::triggered, this, [this, index]
+      {
+        mModel->pinProject( index );
+        emit projectPinned( index.row() );
+      } );
+      menu->addAction( pinAction );
+    }
+    else
+    {
+      QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
+      connect( pinAction, &QAction::triggered, this, [this, index]
+      {
+        mModel->unpinProject( index );
+        emit projectUnpinned( index.row() );
+      } );
+      menu->addAction( pinAction );
+    }
+    QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
+    connect( openFolderAction, &QAction::triggered, this, [path]
+    {
+      QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
+    } );
+    menu->addAction( openFolderAction );
+  }
+  else
+  {
+    QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
+    connect( rescanAction, &QAction::triggered, this, [this, index]
+    {
+      mModel->recheckProject( index );
+    } );
+    menu->addAction( rescanAction );
+
+    // add an entry to open the closest existing path to the original project file location
+    // to help users re-find moved/renamed projects!
+    const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
+    QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
+    connect( openFolderAction, &QAction::triggered, this, [closestPath]
+    {
+      QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
+    } );
+    menu->addAction( openFolderAction );
+  }
+  QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
+  connect( removeProjectAction, &QAction::triggered, this, [this, index]
+  {
+    mModel->removeProject( index );
+    emit projectRemoved( index.row() );
+  } );
+  menu->addAction( removeProjectAction );
+
+  menu->popup( mapToGlobal( point ) );
 }

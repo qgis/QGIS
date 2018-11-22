@@ -25,56 +25,106 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsGeometry, QgsFeatureRequest
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsFeatureRequest,
+                       QgsProcessingException,
+                       QgsFeatureSink,
+                       QgsSpatialIndex,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class DeleteDuplicateGeometries(GeoAlgorithm):
+class DeleteDuplicateGeometries(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete duplicate geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def group(self):
+        return self.tr('Vector general')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+    def groupId(self):
+        return 'vectorgeneral'
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def __init__(self):
+        super().__init__()
 
-        fields = layer.pendingFields()
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned')))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
+    def name(self):
+        return 'deleteduplicategeometries'
 
-        features = vector.features(layer)
+    def displayName(self):
+        return self.tr('Delete duplicate geometries')
 
-        total = 100.0 / len(features)
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
+
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         geoms = dict()
+        index = QgsSpatialIndex()
         for current, f in enumerate(features):
-            geoms[f.id()] = QgsGeometry(f.geometry())
-            progress.setPercentage(int(current * total))
+            if feedback.isCanceled():
+                break
 
-        cleaned = dict(geoms)
+            geoms[f.id()] = f.geometry()
+            index.addFeature(f)
 
-        for i, g in geoms.iteritems():
-            for j in cleaned.keys():
-                if i == j or i not in cleaned:
+            feedback.setProgress(int(0.10 * current * total)) # takes about 10% of time
+
+        # start by assuming everything is unique, and chop away at this list
+        unique_features = dict(geoms)
+
+        current = 0
+        for feature_id, geometry in geoms.items():
+            if feedback.isCanceled():
+                break
+
+            if feature_id not in unique_features:
+                # feature was already marked as a duplicate
+                continue
+
+            candidates = index.intersects(geometry.boundingBox())
+            candidates.remove(feature_id)
+
+            for candidate_id in candidates:
+                if candidate_id not in unique_features:
+                    # candidate already marked as a duplicate (not sure if this is possible,
+                    # since it would mean the current feature would also have to be a duplicate!
+                    # but let's be safe!)
                     continue
-                if g.isGeosEqual(cleaned[j]):
-                    del cleaned[j]
 
-        total = 100.0 / len(cleaned)
-        request = QgsFeatureRequest().setFilterFids(cleaned.keys())
-        for current, f in enumerate(layer.getFeatures(request)):
-            writer.addFeature(f)
-            progress.setPercentage(int(current * total))
+                if geometry.isGeosEqual(geoms[candidate_id]):
+                    # candidate is a duplicate of feature
+                    del unique_features[candidate_id]
 
-        del writer
+            current += 1
+            feedback.setProgress(int(0.80 * current * total) + 10)  # takes about 80% of time
+
+        total = 100.0 / len(unique_features) if unique_features else 1
+
+        # now, fetch all the feature attributes for the unique features only
+        # be super-smart and don't re-fetch geometries
+        request = QgsFeatureRequest().setFilterFids(list(unique_features.keys())).setFlags(QgsFeatureRequest.NoGeometry)
+        for current, f in enumerate(source.getFeatures(request)):
+            if feedback.isCanceled():
+                break
+
+            # use already fetched geometry
+            f.setGeometry(unique_features[f.id()])
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
+
+            feedback.setProgress(int(0.10 * current * total) + 90) # takes about 10% of time
+
+        return {self.OUTPUT: dest_id}

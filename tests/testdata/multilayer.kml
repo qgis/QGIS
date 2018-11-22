@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:kml="http://www.opengis.net/kml/2.2">
+    <Document> 
+        <name>Test</name>
+        <Folder id="Layer1">
+            <name>Layer1</name>
+            <Placemark>
+                <name>Placemark1</name>
+                <Point>
+                    <coordinates>2,49,0</coordinates>
+                </Point>
+            </Placemark>
+        </Folder>
+        <Folder id="Layer2">
+            <name>Layer2</name>
+            <Placemark>
+                <name>Placemark2</name>
+                <Point>
+                    <coordinates>3,50,0</coordinates>
+                </Point>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>

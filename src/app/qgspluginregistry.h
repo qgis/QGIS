@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include "qgspluginmetadata.h"
+#include "qgis_app.h"
 
 class QgsPythonUtils;
 class QgisPlugin;
@@ -40,76 +41,81 @@ class APP_EXPORT QgsPluginRegistry
 {
   public:
     //! Returns the instance pointer, creating the object on the first call
-    static QgsPluginRegistry* instance();
+    static QgsPluginRegistry *instance();
 
-    //! set pointer to qgis interface passed to plugins (used by QgisApp)
-    void setQgisInterface( QgisInterface* iface );
+    //! Sets pointer to qgis interface passed to plugins (used by QgisApp)
+    void setQgisInterface( QgisInterface *iface );
 
     //! Check whether this module is loaded
-    bool isLoaded( const QString& key ) const;
+    bool isLoaded( const QString &key ) const;
 
     //! Retrieve library of the plugin
-    QString library( const QString& key );
+    QString library( const QString &key );
 
     //! Retrieve a pointer to a loaded plugin
-    QgisPlugin * plugin( const QString& key );
+    QgisPlugin *plugin( const QString &key );
 
-    //! Return whether the plugin is pythonic
-    bool isPythonPlugin( const QString& key ) const;
+    //! Returns whether the plugin is pythonic
+    bool isPythonPlugin( const QString &key ) const;
 
     //! Add a plugin to the map of loaded plugins
-    void addPlugin( const QString& key, const QgsPluginMetadata& metadata );
+    void addPlugin( const QString &key, const QgsPluginMetadata &metadata );
 
     //! Remove a plugin from the list of loaded plugins
-    void removePlugin( const QString& key );
+    void removePlugin( const QString &key );
 
     //! Unload plugins
     void unloadAll();
 
-    //! Save pointer for python utils (needed for unloading python plugins)
-    void setPythonUtils( QgsPythonUtils* pythonUtils );
+    //! Save pointer for Python utils (needed for unloading Python plugins)
+    void setPythonUtils( QgsPythonUtils *pythonUtils );
 
     //! Dump list of plugins
     void dump();
 
     //! C++ plugin loader
-    void loadCppPlugin( const QString& mFullPath );
+    void loadCppPlugin( const QString &mFullPath );
     //! Python plugin loader
-    void loadPythonPlugin( const QString& packageName );
+    void loadPythonPlugin( const QString &packageName );
 
     //! C++ plugin unloader
-    void unloadCppPlugin( const QString& theFullPathName );
+    void unloadCppPlugin( const QString &fullPathName );
     //! Python plugin unloader
-    void unloadPythonPlugin( const QString& packageName );
+    void unloadPythonPlugin( const QString &packageName );
 
     //! Overloaded version of the next method that will load from multiple directories not just one
-    void restoreSessionPlugins( const QStringList& thePluginDirList );
+    void restoreSessionPlugins( const QStringList &pluginDirList );
     //! Load any plugins used in the last qgis session
-    void restoreSessionPlugins( const QString& thePluginDirString );
+    void restoreSessionPlugins( const QString &pluginDirString );
 
     //! Check whether plugin is compatible with current version of QGIS
-    bool isPythonPluginCompatible( const QString& packageName ) const;
+    bool isPythonPluginCompatible( const QString &packageName ) const;
 
     //! Returns metadata of all loaded plugins
-    QList<QgsPluginMetadata*> pluginData();
+    QList<QgsPluginMetadata *> pluginData();
 
   protected:
     //! protected constructor
-    QgsPluginRegistry();
+    QgsPluginRegistry() = default;
 
     //! Try to load and get metadata from c++ plugin, return true on success
-    bool checkCppPlugin( const QString& pluginFullPath );
+    bool checkCppPlugin( const QString &pluginFullPath );
     //! Try to load and get metadata from Python plugin, return true on success
-    bool checkPythonPlugin( const QString& packageName );
+    bool checkPythonPlugin( const QString &packageName );
 
-    //! Check current QGIS version against requested minimal and optionally maximal QGIS version
-    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.99.99
-    bool checkQgisVersion( const QString& minVersion, const QString& maxVersion = "" ) const;
+    /**
+     * Check current QGIS version against requested minimal and optionally maximal QGIS version
+     * if maxVersion not specified, the default value is assumed: std::floor(minVersion) + 0.99.99
+     */
+    bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = QString() ) const;
 
   private:
-    static QgsPluginRegistry* _instance;
+    static QgsPluginRegistry *sInstance;
     QMap<QString, QgsPluginMetadata> mPlugins;
-    QgsPythonUtils* mPythonUtils;
-    QgisInterface* mQgisInterface;
+    QgsPythonUtils *mPythonUtils = nullptr;
+    QgisInterface *mQgisInterface = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
+
 #endif //QgsPluginRegistry_H

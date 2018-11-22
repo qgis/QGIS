@@ -1,0 +1,8 @@
+splash.png ->
+    - used on the splash screen during app startup for released QGIS versions
+    - typically a group photo from the last hackfest for unreleased QGIS versions
+    - typically a pleasing map motif from a previous hackfest venue
+dev-splash.png ->
+    - used in the about dialog, typically a group photo from the last hackfest
+    - migrates to the about photo when there is a release
+    - used on the splash screen during app startup for unreleased QGIS versions

@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Animation3DWidget</class>
+ <widget class="QWidget" name="Animation3DWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1301</width>
+    <height>138</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Keyframe</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboKeyframe"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnAddKeyframe">
+       <property name="toolTip">
+        <string>Add keyframe</string>
+       </property>
+       <property name="text">
+        <string> + </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnRemoveKeyframe">
+       <property name="toolTip">
+        <string>Remove keyframe</string>
+       </property>
+       <property name="text">
+        <string> - </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnEditKeyframe">
+       <property name="toolTip">
+        <string>Edit keyframe</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnDuplicateKeyframe">
+       <property name="toolTip">
+        <string>Duplicate keyframe</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Interpolation</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboInterpolation">
+       <item>
+        <property name="text">
+         <string>Linear</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InCirc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutCirc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutCirc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInCirc</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QToolButton" name="btnPlayPause">
+       <property name="text">
+        <string>&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="sliderTime">
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBothSides</enum>
+       </property>
+       <property name="tickInterval">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnRepeat">
+       <property name="toolTip">
+        <string>Repeat</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>cboKeyframe</tabstop>
+  <tabstop>btnAddKeyframe</tabstop>
+  <tabstop>btnRemoveKeyframe</tabstop>
+  <tabstop>btnEditKeyframe</tabstop>
+  <tabstop>btnDuplicateKeyframe</tabstop>
+  <tabstop>cboInterpolation</tabstop>
+  <tabstop>btnPlayPause</tabstop>
+  <tabstop>sliderTime</tabstop>
+  <tabstop>btnRepeat</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

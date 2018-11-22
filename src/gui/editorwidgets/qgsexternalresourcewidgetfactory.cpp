@@ -16,111 +16,28 @@
 
 #include "qgsexternalresourcewidgetfactory.h"
 #include "qgsfilewidget.h"
+#include "qgsexternalresourcewidgetwrapper.h"
+#include "qgsexternalresourceconfigdlg.h"
 
-QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsExternalResourceWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsExternalResourceWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsExternalResourceWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsExternalResourceWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsExternalResourceWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsExternalResourceConfigDlg( vl, fieldIdx, parent );
 }
 
-void QgsExternalResourceWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  configElement.setAttribute( "FileWidget", config.value( "FileWidget", true ).toBool() );
-  configElement.setAttribute( "FileWidgetButton", config.value( "FileWidgetButton", true ).toBool() );
-
-
-  // Non mandatory options are not saved into project file (to save some space).
-  if ( config.contains( "UseLink" ) )
-    configElement.setAttribute( "UseLink", config.value( "UseLink" ).toBool() );
-
-  if ( config.contains( "FullUrl" ) )
-    configElement.setAttribute( "FullUrl", config.value( "FullUrl" ).toBool() );
-
-  if ( config.contains( "DefaultRoot" ) )
-    configElement.setAttribute( "DefaultRoot", config.value( "DefaultRoot" ).toString() );
-
-  if ( config.contains( "RelativeStorage" ) )
-    configElement.setAttribute( "RelativeStorage" , config.value( "RelativeStorage" ).toString() );
-
-  if ( config.contains( "DocumentViewer" ) )
-    configElement.setAttribute( "DocumentViewer", config.value( "DocumentViewer" ).toInt() );
-
-  if ( config.contains( "DocumentViewerWidth" ) )
-    configElement.setAttribute( "DocumentViewerWidth", config.value( "DocumentViewerWidth" ).toInt() );
-
-  if ( config.contains( "DocumentViewerHeight" ) )
-    configElement.setAttribute( "DocumentViewerHeight", config.value( "DocumentViewerHeight" ).toInt() );
-
-  if ( config.contains( "FileWidgetFilter" ) )
-    configElement.setAttribute( "FileWidgetFilter", config.value( "FileWidgetFilter" ).toString() );
-
-  configElement.setAttribute( "StorageMode", config.value( "StorageMode" ).toString() );
-}
-
-QgsEditorWidgetConfig QgsExternalResourceWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QgsEditorWidgetConfig cfg;
-
-  if ( configElement.hasAttribute( "FileWidgetButton" ) )
-    cfg.insert( "FileWidgetButton", configElement.attribute( "FileWidgetButton" ) == "1" );
-
-  if ( configElement.hasAttribute( "FileWidget" ) )
-    cfg.insert( "FileWidget", configElement.attribute( "FileWidget" ) == "1" );
-
-  if ( configElement.hasAttribute( "UseLink" ) )
-    cfg.insert( "UseLink", configElement.attribute( "UseLink" ) == "1" );
-
-  if ( configElement.hasAttribute( "FullUrl" ) )
-    cfg.insert( "FullUrl", configElement.attribute( "FullUrl" ) == "1" );
-
-  if ( configElement.hasAttribute( "DefaultRoot" ) )
-    cfg.insert( "DefaultRoot", configElement.attribute( "DefaultRoot" ) );
-
-  if ( configElement.hasAttribute( "RelativeStorage" ) )
-  {
-    if (( configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeDefaultPath && configElement.hasAttribute( "DefaultRoot" ) ) ||
-        configElement.attribute( "RelativeStorage" ).toInt() == QgsFileWidget::RelativeProject )
-      cfg.insert( "RelativeStorage" , configElement.attribute( "RelativeStorage" ).toInt() );
-  }
-
-  if ( configElement.hasAttribute( "DocumentViewer" ) )
-    cfg.insert( "DocumentViewer", configElement.attribute( "DocumentViewer" ) );
-
-  if ( configElement.hasAttribute( "DocumentViewerWidth" ) )
-    cfg.insert( "DocumentViewerWidth", configElement.attribute( "DocumentViewerWidth" ) );
-
-  if ( configElement.hasAttribute( "DocumentViewerHeight" ) )
-    cfg.insert( "DocumentViewerHeight", configElement.attribute( "DocumentViewerHeight" ) );
-
-  if ( configElement.hasAttribute( "FileWidgetFilter" ) )
-    cfg.insert( "FileWidgetFilter", configElement.attribute( "FileWidgetFilter" ) );
-
-
-  cfg.insert( "StorageMode", configElement.attribute( "StorageMode", "Files" ) );
-
-  return cfg;
-}
-
-bool QgsExternalResourceWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
+unsigned int QgsExternalResourceWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   if ( vl->fields().at( fieldIdx ).type() == QVariant::String )
-    return true;
+    return 5;
 
-  return false;
+  return 0;
 }

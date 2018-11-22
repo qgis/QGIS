@@ -19,18 +19,18 @@
 #
 ###############################################################################
 
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import getpass
 import os
 import shutil
 import xml.etree.ElementTree as etree
-import xmlrpclib
+import xmlrpc.client
 import zipfile
 
 from paver.easy import (call_task, cmdopts, error, info, options, path,
                         sh, task, Bunch)
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.csw import CatalogueServiceWeb  # spellok
 
 PLUGIN_NAME = 'MetaSearch'
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -46,7 +46,7 @@ options(
         home=BASEDIR,
         plugin=path(BASEDIR),
         ui=path(BASEDIR) / 'plugin' / PLUGIN_NAME / 'ui',
-        install=path('%s/.qgis2/python/plugins/MetaSearch' % USERDIR),
+        install=path('%s/.qgis3/python/plugins/MetaSearch' % USERDIR),
         ext_libs=path('plugin/MetaSearch/ext-libs'),
         tmp=path(path('%s/MetaSearch-dist' % USERDIR)),
         version=VERSION
@@ -83,7 +83,7 @@ def clean():
 def install():
     """install plugin into user QGIS environment"""
 
-    plugins_dir = path(USERDIR) / '.qgis2/python/plugins'
+    plugins_dir = path(USERDIR) / '.qgis3/python/plugins'
 
     if os.path.exists(options.base.install):
         if os.path.islink(options.base.install):
@@ -154,19 +154,19 @@ def upload():
     info('Uploading to http://%s/%s' % (options.upload.host,
                                         options.upload.endpoint))
 
-    server = xmlrpclib.ServerProxy(url, verbose=False)
+    server = xmlrpc.client.ServerProxy(url, verbose=False)
 
     try:
         with open(zipf) as zfile:
             plugin_id, version_id = \
-                server.plugin.upload(xmlrpclib.Binary(zfile.read()))
+                server.plugin.upload(xmlrpc.client.Binary(zfile.read()))
             info('Plugin ID: %s', plugin_id)
             info('Version ID: %s', version_id)
-    except xmlrpclib.Fault as err:
+    except xmlrpc.client.Fault as err:
         error('ERROR: fault error')
         error('Fault code: %d', err.faultCode)
         error('Fault string: %s', err.faultString)
-    except xmlrpclib.ProtocolError as err:
+    except xmlrpc.client.ProtocolError as err:
         error('Error: Protocol error')
         error("%s : %s", err.errcode, err.errmsg)
         if err.errcode == 403:
@@ -184,7 +184,7 @@ def test_default_csw_connections():
 
     for conn in conns.findall('csw'):
         try:
-            csw = CatalogueServiceWeb(conn.attrib.get('url'))
+            csw = CatalogueServiceWeb(conn.attrib.get('url'))  # spellok
             info('Success: %s', csw.identification.title)
             csw.getrecords2()
         except Exception as err:
@@ -212,8 +212,8 @@ def generate_csw_connections_file():
             if not url:  # blank line
                 continue
             try:
-                csw = CatalogueServiceWeb(url)
-                title = unicode(csw.identification.title)
+                csw = CatalogueServiceWeb(url)  # spellok
+                title = str(csw.identification.title)
                 etree.SubElement(conns, 'csw', name=title, url=url)
             except Exception as err:
                 error('ERROR on CSW %s: %s', url, err)

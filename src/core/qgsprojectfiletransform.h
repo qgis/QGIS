@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class to convert from older project file versions to newer.
  * This class provides possibility to store a project file as a QDomDocument,
  * and provides the ability to specify version of the project file, and
@@ -26,39 +27,44 @@
 #ifndef QGSPROJECTFILETRANSFORM_H
 #define QGSPROJECTFILETRANSFORM_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QDomDocument>
-#include <vector>
 #include "qgsprojectversion.h"
+
 
 class QgsRasterLayer;
 
+/**
+ * \ingroup core
+ */
 class CORE_EXPORT QgsProjectFileTransform
 {
   public:
     //Default constructor
     //QgsProjectfiletransform() {}
-    ~QgsProjectFileTransform() {}
 
-    /** Create an instance from a Dom and a supplied version
-     * @param domDocument The Dom document to use as content
-     * @param version Version number
+    /**
+     * Create an instance from a Dom and a supplied version
+     * \param domDocument The Dom document to use as content
+     * \param version Version number
      */
-    QgsProjectFileTransform( QDomDocument & domDocument,
-                             const QgsProjectVersion& version )
+    QgsProjectFileTransform( QDomDocument &domDocument,
+                             const QgsProjectVersion &version )
     {
       mDom = domDocument;
       mCurrentVersion = version;
     }
 
 
-    bool updateRevision( const QgsProjectVersion& version );
+    bool updateRevision( const QgsProjectVersion &version );
 
-    /** Prints the contents via QgsDebugMsg()
+    /**
+     * Prints the contents via QgsDebugMsg()
      */
     void dump();
 
-    static void convertRasterProperties( QDomDocument& doc, QDomNode& parentNode, QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer );
+    static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
   private:
 
@@ -67,9 +73,9 @@ class CORE_EXPORT QgsProjectFileTransform
       QgsProjectVersion from;
       QgsProjectVersion to;
       void ( QgsProjectFileTransform::* transformFunc )();
-    } transform;
+    } TransformItem;
 
-    static transform transformers[];
+    static TransformItem sTransformers[];
 
     QDomDocument mDom;
     QgsProjectVersion mCurrentVersion;
@@ -86,11 +92,12 @@ class CORE_EXPORT QgsProjectFileTransform
     void transform1400to1500();
     void transform1800to1900();
     void transform2200to2300();
+    void transform3000();
 
     //helper functions
     static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );
     static void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem );
-    static void transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem );
+    static void transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem );
 };
 
 

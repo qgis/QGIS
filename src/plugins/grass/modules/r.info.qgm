@@ -4,5 +4,5 @@
 <qgisgrassmodule label="Outputs basic information about a raster map" module="r.info">
 	<option key="map"/>
 	<flag key="h"/>
-	<flag key="e" version_min="7"/>
+	<flag key="e"/>
 </qgisgrassmodule>

@@ -26,17 +26,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
+from qgis.core import QgsApplication
+from qgis.gui import QgsGui
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
-from processing.core.ProcessingLog import ProcessingLog
+from processing.core.ProcessingLog import ProcessingLog, LOG_SEPARATOR
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgHistory.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgHistory.ui'))
 
 
 class HistoryDialog(BASE, WIDGET):
@@ -45,20 +51,17 @@ class HistoryDialog(BASE, WIDGET):
         super(HistoryDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+        QgsGui.instance().enableAutoGeometryRestore(self)
 
-        self.keyIcon = QIcon()
-        self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
+
+        self.keyIcon = self.style().standardIcon(QStyle.SP_FileIcon)
 
         self.clearButton = QPushButton(self.tr('Clear'))
         self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
-        self.saveButton = QPushButton(self.tr('Save As...'))
+        self.saveButton = QPushButton(QCoreApplication.translate('HistoryDialog', 'Save As…'))
         self.saveButton.setToolTip(self.tr('Save history'))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
 
@@ -84,8 +87,8 @@ class HistoryDialog(BASE, WIDGET):
             self.fillTree()
 
     def saveLog(self):
-        fileName = QFileDialog.getSaveFileName(self,
-                                               self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+        fileName, filter = QFileDialog.getSaveFileName(self,
+                                                       self.tr('Save File'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return
@@ -97,30 +100,31 @@ class HistoryDialog(BASE, WIDGET):
 
     def fillTree(self):
         self.tree.clear()
-        elements = ProcessingLog.getLogEntries()
-        for category in elements.keys():
-            groupItem = QTreeWidgetItem()
-            groupItem.setText(0, category)
-            groupItem.setIcon(0, self.groupIcon)
-            for entry in elements[category]:
-                item = TreeLogEntryItem(entry, category
-                                        == ProcessingLog.LOG_ALGORITHM)
-                item.setIcon(0, self.keyIcon)
-                groupItem.insertChild(0, item)
-            self.tree.addTopLevelItem(groupItem)
+        entries = ProcessingLog.getLogEntries()
+        groupItem = QTreeWidgetItem()
+        groupItem.setText(0, 'ALGORITHM')
+        groupItem.setIcon(0, self.groupIcon)
+        for entry in entries:
+            item = TreeLogEntryItem(entry, True)
+            item.setIcon(0, self.keyIcon)
+            groupItem.insertChild(0, item)
+        self.tree.addTopLevelItem(groupItem)
+        groupItem.setExpanded(True)
 
     def executeAlgorithm(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 script = 'import processing\n'
-                script += item.entry.text.replace('runalg(', 'runandload(')
+                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem\n'
+                script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
+                self.close()
                 exec(script)
 
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            self.text.setText(item.entry.text.replace('|', '\n'))
+            self.text.setText(item.entry.text.replace(LOG_SEPARATOR, '\n'))
 
     def createTest(self):
         item = self.tree.currentItem()
@@ -133,7 +137,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 popupmenu = QMenu()
-                createTestAction = QAction(self.tr('Create test'), self.tree)
+                createTestAction = QAction(QCoreApplication.translate('HistoryDialog', 'Create Test…'), self.tree)
                 createTestAction.triggered.connect(self.createTest)
                 popupmenu.addAction(createTestAction)
                 popupmenu.exec_(self.tree.mapToGlobal(point))
@@ -145,4 +149,4 @@ class TreeLogEntryItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, '[' + entry.date + '] ' + entry.text.split('|')[0])
+        self.setText(0, '[' + entry.date + '] ' + entry.text.split(LOG_SEPARATOR)[0])

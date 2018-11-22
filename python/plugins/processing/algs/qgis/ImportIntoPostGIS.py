@@ -25,22 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceURI, QgsVectorLayerImport
+from qgis.core import (QgsVectorLayerExporter,
+                       QgsSettings,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterBoolean,
+                       QgsWkbTypes)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects
-from processing.algs.qgis import postgis_utils
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import postgis
 
 
-class ImportIntoPostGIS(GeoAlgorithm):
-
+class ImportIntoPostGIS(QgisAlgorithm):
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'
     SCHEMA = 'SCHEMA'
@@ -50,73 +50,111 @@ class ImportIntoPostGIS(GeoAlgorithm):
     GEOMETRY_COLUMN = 'GEOMETRY_COLUMN'
     LOWERCASE_NAMES = 'LOWERCASE_NAMES'
     DROP_STRING_LENGTH = 'DROP_STRING_LENGTH'
+    FORCE_SINGLEPART = 'FORCE_SINGLEPART'
     PRIMARY_KEY = 'PRIMARY_KEY'
+    ENCODING = 'ENCODING'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Import into PostGIS')
-        self.group, self.i18n_group = self.trAlgorithm('Database')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Layer to import')))
+    def group(self):
+        return self.tr('Database')
 
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
-        self.addParameter(ParameterString(self.SCHEMA,
-                                          self.tr('Schema (schema name)'), 'public'))
-        self.addParameter(ParameterString(self.TABLENAME,
-                                          self.tr('Table to import to (leave blank to use layer name)')))
-        self.addParameter(ParameterTableField(self.PRIMARY_KEY,
-                                              self.tr('Primary key field'), self.INPUT, optional=True))
-        self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
-                                          self.tr('Geometry column'), 'geom'))
-        self.addParameter(ParameterBoolean(self.OVERWRITE,
-                                           self.tr('Overwrite'), True))
-        self.addParameter(ParameterBoolean(self.CREATEINDEX,
-                                           self.tr('Create spatial index'), True))
-        self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES,
-                                           self.tr('Convert field names to lowercase'), True))
-        self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH,
-                                           self.tr('Drop length constraints on character fields'), False))
+    def groupId(self):
+        return 'database'
 
-    def processAlgorithm(self, progress):
-        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
-        schema = self.getParameterValue(self.SCHEMA)
-        overwrite = self.getParameterValue(self.OVERWRITE)
-        createIndex = self.getParameterValue(self.CREATEINDEX)
-        convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
-        dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
-        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
-        settings = QSettings()
-        mySettings = '/PostgreSQL/connections/' + connection
-        try:
-            database = settings.value(mySettings + '/database')
-            username = settings.value(mySettings + '/username')
-            host = settings.value(mySettings + '/host')
-            port = settings.value(mySettings + '/port', type=int)
-            password = settings.value(mySettings + '/password')
-        except Exception as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Wrong database connection name: %s' % connection))
+    def __init__(self):
+        super().__init__()
 
-        layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(layerUri)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Layer to import'),
+                                                              types=[QgsProcessing.TypeVector]))
 
-        table = self.getParameterValue(self.TABLENAME).strip()
-        if table == '':
-            table = layer.name()
+        db_param = QgsProcessingParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'))
+        db_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+        self.addParameter(db_param)
+
+        schema_param = QgsProcessingParameterString(
+            self.SCHEMA,
+            self.tr('Schema (schema name)'), 'public', False, True)
+        schema_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
+                'connection_param': self.DATABASE}})
+        self.addParameter(schema_param)
+
+        table_param = QgsProcessingParameterString(
+            self.TABLENAME,
+            self.tr('Table to import to (leave blank to use layer name)'), '', False, True)
+        table_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
+                'schema_param': self.SCHEMA}})
+        self.addParameter(table_param)
+
+        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY,
+                                                      self.tr('Primary key field'), None, self.INPUT,
+                                                      QgsProcessingParameterField.Any, False, True))
+        self.addParameter(QgsProcessingParameterString(self.GEOMETRY_COLUMN,
+                                                       self.tr('Geometry column'), 'geom'))
+        self.addParameter(QgsProcessingParameterString(self.ENCODING,
+                                                       self.tr('Encoding'), 'UTF-8',
+                                                       False, True))
+        self.addParameter(QgsProcessingParameterBoolean(self.OVERWRITE,
+                                                        self.tr('Overwrite'), True))
+        self.addParameter(QgsProcessingParameterBoolean(self.CREATEINDEX,
+                                                        self.tr('Create spatial index'), True))
+        self.addParameter(QgsProcessingParameterBoolean(self.LOWERCASE_NAMES,
+                                                        self.tr('Convert field names to lowercase'), True))
+        self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH,
+                                                        self.tr('Drop length constraints on character fields'), False))
+        self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART,
+                                                        self.tr('Create single-part geometries instead of multi-part'),
+                                                        False))
+
+    def name(self):
+        return 'importintopostgis'
+
+    def displayName(self):
+        return self.tr('Export to PostgreSQL')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to a PostgreSQL database')
+
+    def tags(self):
+        return self.tr('import,postgis,table,layer,into,copy').split(',')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        db = postgis.GeoDB.from_name(connection)
+
+        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
+        createIndex = self.parameterAsBool(parameters, self.CREATEINDEX, context)
+        convertLowerCase = self.parameterAsBool(parameters, self.LOWERCASE_NAMES, context)
+        dropStringLength = self.parameterAsBool(parameters, self.DROP_STRING_LENGTH, context)
+        forceSinglePart = self.parameterAsBool(parameters, self.FORCE_SINGLEPART, context)
+        primaryKeyField = self.parameterAsString(parameters, self.PRIMARY_KEY, context) or 'id'
+        encoding = self.parameterAsString(parameters, self.ENCODING, context)
+
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        table = self.parameterAsString(parameters, self.TABLENAME, context)
+        if table:
+            table.strip()
+        if not table or table == '':
+            table = source.sourceName()
+            table = table.replace('.', '_')
         table = table.replace(' ', '').lower()[0:62]
         providerName = 'postgres'
 
-        try:
-            db = postgis_utils.GeoDB(host=host, port=port, dbname=database,
-                                     user=username, passwd=password)
-        except postgis_utils.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s") % unicode(e))
-
-        geomColumn = self.getParameterValue(self.GEOMETRY_COLUMN)
+        geomColumn = self.parameterAsString(parameters, self.GEOMETRY_COLUMN, context)
         if not geomColumn:
-            geomColumn = 'the_geom'
+            geomColumn = 'geom'
 
         options = {}
         if overwrite:
@@ -126,37 +164,50 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = geomColumn.lower()
         if dropStringLength:
             options['dropStringConstraints'] = True
+        if forceSinglePart:
+            options['forceSinglePartGeometryType'] = True
 
         # Clear geometry column for non-geometry tables
-        if not layer.hasGeometryType():
+        if source.wkbType() == QgsWkbTypes.NoGeometry:
             geomColumn = None
 
-        uri = QgsDataSourceURI()
-        uri.setConnection(host, unicode(port), database, username, password)
-        if primaryKeyField:
-            uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
-        else:
-            uri.setDataSource(schema, table, geomColumn, '')
+        uri = db.uri
+        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
 
-        (ret, errMsg) = QgsVectorLayerImport.importLayer(
-            layer,
-            uri.uri(),
-            providerName,
-            self.crs,
-            False,
-            False,
-            options,
-        )
-        if ret != 0:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Error importing to PostGIS\n%s' % errMsg))
+        if encoding:
+            options['fileEncoding'] = encoding
+
+        exporter = QgsVectorLayerExporter(uri.uri(), providerName, source.fields(),
+                                          source.wkbType(), source.sourceCrs(), overwrite, options)
+
+        if exporter.errorCode() != QgsVectorLayerExporter.NoError:
+            raise QgsProcessingException(
+                self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
+
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            if not exporter.addFeature(f, QgsFeatureSink.FastInsert):
+                feedback.reportError(exporter.errorMessage())
+
+            feedback.setProgress(int(current * total))
+
+        exporter.flushBuffer()
+        if exporter.errorCode() != QgsVectorLayerExporter.NoError:
+            raise QgsProcessingException(
+                self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
         if geomColumn and createIndex:
             db.create_spatial_index(table, schema, geomColumn)
 
         db.vacuum_analyze(table, schema)
 
+        return {}
+
     def dbConnectionNames(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()

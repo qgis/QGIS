@@ -17,32 +17,18 @@
 #include "qgsmimedatautils.h"
 
 #include "qgsdataitem.h"
+#include "qgslayertree.h"
 #include "qgslogger.h"
+#include "qgspluginlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
-static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
+static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
-QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
-    : providerKey( layerItem->providerKey() )
-    , name( layerItem->layerName() )
-    , uri( layerItem->uri() )
-    , supportedCrs( layerItem->supportedCRS() )
-    , supportedFormats( layerItem->supportedFormats() )
-{
-  switch ( layerItem->mapLayerType() )
-  {
-    case QgsMapLayer::VectorLayer:
-      layerType = "vector";
-      break;
-    case QgsMapLayer::RasterLayer:
-      layerType = "raster";
-      break;
-    case QgsMapLayer::PluginLayer:
-      layerType = "plugin";
-      break;
-  }
-}
-
-QgsMimeDataUtils::Uri::Uri( QString& encData )
+QgsMimeDataUtils::Uri::Uri( QString &encData )
 {
   QgsDebugMsg( "encData: " + encData );
   QStringList decoded = decode( encData );
@@ -54,7 +40,7 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
   name = decoded[2];
   uri = decoded[3];
 
-  if ( layerType == "raster" && decoded.size() == 6 )
+  if ( layerType == QLatin1String( "raster" ) && decoded.size() == 6 )
   {
     supportedCrs = decode( decoded[4] );
     supportedFormats = decode( decoded[5] );
@@ -65,7 +51,7 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
     supportedFormats.clear();
   }
 
-  QgsDebugMsg( QString( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
+  QgsDebugMsg( QStringLiteral( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
                .arg( layerType, providerKey, name, uri,
                      supportedCrs.join( ", " ),
                      supportedFormats.join( ", " ) ) );
@@ -76,30 +62,82 @@ QString QgsMimeDataUtils::Uri::data() const
   return encode( QStringList() << layerType << providerKey << name << uri << encode( supportedCrs ) << encode( supportedFormats ) );
 }
 
+QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "vector" ) )
+  {
+    error = QObject::tr( "%1: Not a vector layer." ).arg( name );
+    return nullptr;
+  }
+  if ( providerKey == QLatin1String( "memory" ) )
+  {
+    QUrl url = QUrl::fromEncoded( uri.toUtf8() );
+    if ( !url.hasQueryItem( QStringLiteral( "pid" ) ) || !url.hasQueryItem( QStringLiteral( "layerid" ) ) )
+    {
+      error = QObject::tr( "Memory layer uri does not contain process or layer id." );
+      return nullptr;
+    }
+    qint64 pid = url.queryItemValue( QStringLiteral( "pid" ) ).toLongLong();
+    if ( pid != QCoreApplication::applicationPid() )
+    {
+      error = QObject::tr( "Memory layer from another QGIS instance." );
+      return nullptr;
+    }
+    QString layerId = url.queryItemValue( QStringLiteral( "layerid" ) );
+    QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+    if ( !vectorLayer )
+    {
+      error = QObject::tr( "Cannot get memory layer." );
+      return nullptr;
+    }
+    return vectorLayer;
+  }
+  owner = true;
+  return new QgsVectorLayer( uri, name, providerKey );
+}
+
+QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "raster" ) )
+  {
+    error = QObject::tr( "%1: Not a raster layer." ).arg( name );
+    return nullptr;
+  }
+  owner = true;
+  return new QgsRasterLayer( uri, name, providerKey );
+}
+
+QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "mesh" ) )
+  {
+    error = QObject::tr( "%1: Not a mesh layer." ).arg( name );
+    return nullptr;
+  }
+  owner = true;
+  return new QgsMeshLayer( uri, name, providerKey );
+}
+
 // -----
 
-bool QgsMimeDataUtils::isUriList( const QMimeData* data )
+bool QgsMimeDataUtils::isUriList( const QMimeData *data )
 {
   return data->hasFormat( QGIS_URILIST_MIMETYPE );
 }
 
-QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& layers )
+QMimeData *QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList &layers )
 {
   QMimeData *mimeData = new QMimeData();
-  QByteArray encodedData;
 
-  QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  Q_FOREACH ( const Uri& u, layers )
-  {
-    stream << u.data();
-  }
-
-  mimeData->setData( QGIS_URILIST_MIMETYPE, encodedData );
+  mimeData->setData( QGIS_URILIST_MIMETYPE, uriListToByteArray( layers ) );
   return mimeData;
 }
 
 
-QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data )
+QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData *data )
 {
   QByteArray encodedData = data->data( QGIS_URILIST_MIMETYPE );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
@@ -114,20 +152,73 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data
   return list;
 }
 
-QString QgsMimeDataUtils::encode( const QStringList& items )
+
+static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils::UriList &uris )
+{
+  if ( QgsLayerTree::isGroup( node ) )
+  {
+    Q_FOREACH ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+      _addLayerTreeNodeToUriList( child, uris );
+  }
+  else if ( QgsLayerTree::isLayer( node ) )
+  {
+    QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+    QgsMapLayer *layer = nodeLayer->layer();
+    if ( !layer )
+      return;
+
+    QgsMimeDataUtils::Uri uri;
+    uri.name = layer->name();
+    uri.uri = layer->dataProvider()->dataSourceUri();
+    uri.providerKey = layer->dataProvider()->name();
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      uri.layerType = QStringLiteral( "vector" );
+      if ( uri.providerKey == QStringLiteral( "memory" ) )
+      {
+        QUrl url = QUrl::fromEncoded( uri.uri.toUtf8() );
+        url.addQueryItem( QStringLiteral( "pid" ), QString::number( QCoreApplication::applicationPid() ) );
+        url.addQueryItem( QStringLiteral( "layerid" ), layer->id() );
+        uri.uri = QString( url.toEncoded() );
+      }
+    }
+    else if ( layer->type() == QgsMapLayer::RasterLayer )
+    {
+      uri.layerType = QStringLiteral( "raster" );
+    }
+    else
+    {
+      // plugin layers do not have a standard way of storing their URI...
+      return;
+    }
+    uris << uri;
+  }
+}
+
+QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes )
+{
+  UriList uris;
+  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+    _addLayerTreeNodeToUriList( node, uris );
+  return uriListToByteArray( uris );
+}
+
+QString QgsMimeDataUtils::encode( const QStringList &items )
 {
   QString encoded;
-  Q_FOREACH ( const QString& item, items )
+  // Do not escape colon twice
+  QRegularExpression re( "(?<!\\\\):" );
+  Q_FOREACH ( const QString &item, items )
   {
     QString str = item;
-    str.replace( '\\', "\\\\" );
-    str.replace( ':', "\\:" );
+    str.replace( '\\', QLatin1String( "\\\\" ) );
+    str.replace( re, QLatin1String( "\\:" ) );
     encoded += str + ':';
   }
   return encoded.left( encoded.length() - 1 );
 }
 
-QStringList QgsMimeDataUtils::decode( const QString& encoded )
+QStringList QgsMimeDataUtils::decode( const QString &encoded )
 {
   QStringList items;
   QString item;
@@ -145,7 +236,7 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
     else if ( c == ':' && !inEscape )
     {
       items.append( item );
-      item = "";
+      item.clear();
     }
     else
     {
@@ -157,3 +248,15 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
   return items;
 }
 
+
+QByteArray QgsMimeDataUtils::uriListToByteArray( const QgsMimeDataUtils::UriList &layers )
+{
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+  Q_FOREACH ( const Uri &u, layers )
+  {
+    stream << u.data();
+  }
+  return encodedData;
+}

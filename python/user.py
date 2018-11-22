@@ -29,7 +29,7 @@ import glob
 import traceback
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication, QgsMessageLog
+from qgis.core import Qgis, QgsApplication, QgsMessageLog
 
 
 def load_user_expressions(path):
@@ -50,18 +50,13 @@ def load_user_expressions(path):
             error = traceback.format_exc()
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
             msg = QCoreApplication.translate("UserExpressions", "The user expression {0} is not valid").format(name)
-            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, QgsMessageLog.WARNING)
+            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, Qgis.Warning)
 
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
 expressionspath = os.path.join(userpythonhome, "expressions")
-startuppy = os.path.join(userpythonhome, "startup.py")
 
 sys.path.append(userpythonhome)
-
-# exec startup script
-if os.path.exists(startuppy):
-    exec(compile(open(startuppy).read(), startuppy, 'exec'), locals(), globals())
 
 if not os.path.exists(expressionspath):
     os.makedirs(expressionspath)
@@ -70,18 +65,23 @@ initfile = os.path.join(expressionspath, "__init__.py")
 if not os.path.exists(initfile):
     open(initfile, "w").close()
 
-template = """\"\"\"
-Define new functions using @qgsfunction. feature and parent must always be the
-last args. Use args=-1 to pass a list of values as arguments
-\"\"\"
-
-from qgis.core import *
+template = """from qgis.core import *
 from qgis.gui import *
 
 @qgsfunction(args='auto', group='Custom')
-def func(value1, feature, parent):
-    return value1
+def my_sum(value1, value2, feature, parent):
+    \"\"\"
+    Calculates the sum of the two parameters value1 and value2.
+    <h2>Example usage:</h2>
+    <ul>
+      <li>my_sum(5, 8) -> 13</li>
+      <li>my_sum(\"field1\", \"field2\") -> 42</li>
+    </ul>
+    \"\"\"
+    return value1 + value2
 """
+
+default_expression_template = template
 
 
 try:

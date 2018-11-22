@@ -25,16 +25,16 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from r_li import checkMovingWindow, configFile, moveOutputTxtFile
+from .r_li import checkMovingWindow, configFile, moveOutputTxtFile
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    return checkMovingWindow(alg, True)
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    return checkMovingWindow(alg, parameters, context, True)
 
 
-def processCommand(alg):
-    configFile(alg, True)
+def processCommand(alg, parameters, context, feedback):
+    configFile(alg, parameters, context, feedback, True)
 
 
-def processOutputs(alg):
-    moveOutputTxtFile(alg)
+def processOutputs(alg, parameters, context, feedback):
+    moveOutputTxtFile(alg, parameters, context)

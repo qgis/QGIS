@@ -1,0 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgsscalebarrenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsScaleBarRenderer
+{
+%Docstring
+Abstract base class for scale bar renderers.
+
+Scalebar renderer subclasses implement custom drawing logic, with the possibility to implement
+custom labeling.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsscalebarrenderer.h"
+%End
+  public:
+
+    struct ScaleBarContext
+    {
+
+      double segmentWidth;
+
+      QSizeF size;
+
+      double scale;
+
+    };
+
+    QgsScaleBarRenderer();
+%Docstring
+Constructor for QgsScaleBarRenderer.
+%End
+    virtual ~QgsScaleBarRenderer();
+
+    virtual QString name() const = 0;
+%Docstring
+Returns the unique name for this style.
+%End
+
+    virtual void draw( QgsRenderContext &context,
+                       const QgsScaleBarSettings &settings,
+                       const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const = 0;
+%Docstring
+Draws the scalebar using the specified ``settings`` and ``scaleContext`` to a destination render ``context``.
+%End
+
+    virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+                                     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+%Docstring
+Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
+%End
+
+  protected:
+
+    void drawDefaultLabels( QgsRenderContext &context,
+                            const QgsScaleBarSettings &settings,
+                            const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+%Docstring
+Draws default scalebar labels using the specified ``settings`` and ``scaleContext`` to a destination render ``context``.
+%End
+
+    QString firstLabelString( const QgsScaleBarSettings &settings ) const;
+%Docstring
+Returns the text used for the first label in the scalebar.
+%End
+
+ double firstLabelXOffset( const QgsScaleBarSettings &settings ) const /Deprecated/;
+%Docstring
+Returns the x-offset (in millimeters) used for the first label in the scalebar.
+
+.. deprecated:: Use the version with QgsRenderContext instead.
+%End
+
+    double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context ) const;
+%Docstring
+Returns the x-offset (in render context painter units) used for the first label in the scalebar.
+
+.. versionadded:: 3.2
+%End
+
+    QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+%Docstring
+Returns a list of positions for each segment within the scalebar.
+%End
+
+    QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+%Docstring
+Returns a list of widths of each segment of the scalebar.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgsscalebarrenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

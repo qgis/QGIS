@@ -4,8 +4,8 @@
 ***************************************************************************
     ZonalStatistics.py
     ---------------------
-    Date                 : August 2013
-    Copyright            : (C) 2013 by Alexander Bruy
+    Date                 : September 2016
+    Copyright            : (C) 2016 by Alexander Bruy
     Email                : alexander dot bruy at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,244 +18,131 @@
 """
 
 __author__ = 'Alexander Bruy'
-__date__ = 'August 2013'
-__copyright__ = '(C) 2013, Alexander Bruy'
+__date__ = 'September 2016'
+__copyright__ = '(C) 2016, Alexander Bruy'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
-import numpy
+import os
+from collections import OrderedDict
 
-try:
-    from scipy.stats.mstats import mode
-    hasSciPy = True
-except:
-    hasSciPy = False
+from qgis.PyQt.QtGui import QIcon
 
-from osgeo import gdal, ogr, osr
-from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+from qgis.analysis import QgsZonalStatistics
+from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingOutputVectorLayer)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputVector
-from processing.tools.raster import mapToPixel
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ZonalStatistics(GeoAlgorithm):
+class ZonalStatistics(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'
     COLUMN_PREFIX = 'COLUMN_PREFIX'
-    GLOBAL_EXTENT = 'GLOBAL_EXTENT'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    STATISTICS = 'STATS'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
 
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Raster layer')))
-        self.addParameter(ParameterNumber(self.RASTER_BAND,
-                                          self.tr('Raster band'), 1, 999, 1))
-        self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer containing zones'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterString(self.COLUMN_PREFIX,
-                                          self.tr('Output column prefix'), '_'))
-        self.addParameter(ParameterBoolean(self.GLOBAL_EXTENT,
-                                           self.tr('Load whole raster in memory')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics')))
+    def group(self):
+        return self.tr('Raster analysis')
 
-    def processAlgorithm(self, progress):
-        """ Based on code by Matthew Perry
-            https://gist.github.com/perrygeo/5667173
-        """
+    def groupId(self):
+        return 'rasteranalysis'
 
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
-        bandNumber = self.getParameterValue(self.RASTER_BAND)
-        columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
-        useGlobalExtent = self.getParameterValue(self.GLOBAL_EXTENT)
+    def __init__(self):
+        super().__init__()
+        self.bandNumber = None
+        self.columnPrefix = None
+        self.selectedStats = None
+        self.vectorLayer = None
+        self.raster_interface = None
+        self.raster_crs = None
+        self.raster_units_per_pixel_x = None
+        self.raster_units_per_pixel_y = None
 
-        rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
-        geoTransform = rasterDS.GetGeoTransform()
-        rasterBand = rasterDS.GetRasterBand(bandNumber)
-        noData = rasterBand.GetNoDataValue()
+    def initAlgorithm(self, config=None):
+        self.STATS = OrderedDict([(self.tr('Count'), QgsZonalStatistics.Count),
+                                  (self.tr('Sum'), QgsZonalStatistics.Sum),
+                                  (self.tr('Mean'), QgsZonalStatistics.Mean),
+                                  (self.tr('Median'), QgsZonalStatistics.Median),
+                                  (self.tr('Std. dev.'), QgsZonalStatistics.StDev),
+                                  (self.tr('Min'), QgsZonalStatistics.Min),
+                                  (self.tr('Max'), QgsZonalStatistics.Max),
+                                  (self.tr('Range'), QgsZonalStatistics.Range),
+                                  (self.tr('Minority'), QgsZonalStatistics.Minority),
+                                  (self.tr('Majority (mode)'), QgsZonalStatistics.Majority),
+                                  (self.tr('Variety'), QgsZonalStatistics.Variety),
+                                  (self.tr('Variance'), QgsZonalStatistics.Variance),
+                                  (self.tr('All'), QgsZonalStatistics.All)])
 
-        cellXSize = abs(geoTransform[1])
-        cellYSize = abs(geoTransform[5])
-        rasterXSize = rasterDS.RasterXSize
-        rasterYSize = rasterDS.RasterYSize
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER,
+                                                            self.tr('Raster layer')))
+        self.addParameter(QgsProcessingParameterBand(self.RASTER_BAND,
+                                                     self.tr('Raster band'),
+                                                     1,
+                                                     self.INPUT_RASTER))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_VECTOR,
+                                                            self.tr('Vector layer containing zones'),
+                                                            [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterString(self.COLUMN_PREFIX,
+                                                       self.tr('Output column prefix'), '_'))
+        keys = list(self.STATS.keys())
+        self.addParameter(QgsProcessingParameterEnum(self.STATISTICS,
+                                                     self.tr('Statistics to calculate'),
+                                                     keys,
+                                                     allowMultiple=True, defaultValue=[0, 1, 2]))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT_VECTOR,
+                                                      self.tr('Zonal statistics'),
+                                                      QgsProcessing.TypeVectorPolygon))
 
-        rasterBBox = QgsRectangle(geoTransform[0], geoTransform[3] - cellYSize
-                                  * rasterYSize, geoTransform[0] + cellXSize
-                                  * rasterXSize, geoTransform[3])
+    def name(self):
+        return 'zonalstatistics'
 
-        rasterGeom = QgsGeometry.fromRect(rasterBBox)
+    def displayName(self):
+        return self.tr('Zonal statistics')
 
-        crs = osr.SpatialReference()
-        crs.ImportFromProj4(str(layer.crs().toProj4()))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)
+        self.columnPrefix = self.parameterAsString(parameters, self.COLUMN_PREFIX, context)
+        st = self.parameterAsEnums(parameters, self.STATISTICS, context)
 
-        if useGlobalExtent:
-            xMin = rasterBBox.xMinimum()
-            xMax = rasterBBox.xMaximum()
-            yMin = rasterBBox.yMinimum()
-            yMax = rasterBBox.yMaximum()
+        keys = list(self.STATS.keys())
+        self.selectedStats = 0
+        for i in st:
+            self.selectedStats |= self.STATS[keys[i]]
 
-            (startColumn, startRow) = mapToPixel(xMin, yMax, geoTransform)
-            (endColumn, endRow) = mapToPixel(xMax, yMin, geoTransform)
+        self.vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT_VECTOR, context)
+        rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        self.raster_interface = rasterLayer.dataProvider().clone()
+        self.raster_crs = rasterLayer.crs()
+        self.raster_units_per_pixel_x = rasterLayer.rasterUnitsPerPixelX()
+        self.raster_units_per_pixel_y = rasterLayer.rasterUnitsPerPixelY()
+        return True
 
-            width = endColumn - startColumn
-            height = endRow - startRow
-
-            srcOffset = (startColumn, startRow, width, height)
-            srcArray = rasterBand.ReadAsArray(*srcOffset)
-            srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
-
-            newGeoTransform = (
-                geoTransform[0] + srcOffset[0] * geoTransform[1],
-                geoTransform[1],
-                0.0,
-                geoTransform[3] + srcOffset[1] * geoTransform[5],
-                0.0,
-                geoTransform[5],
-            )
-
-        memVectorDriver = ogr.GetDriverByName('Memory')
-        memRasterDriver = gdal.GetDriverByName('MEM')
-
-        fields = layer.pendingFields()
-        (idxMin, fields) = vector.findOrCreateField(layer, fields,
-                                                    columnPrefix + 'min', 21, 6)
-        (idxMax, fields) = vector.findOrCreateField(layer, fields,
-                                                    columnPrefix + 'max', 21, 6)
-        (idxSum, fields) = vector.findOrCreateField(layer, fields,
-                                                    columnPrefix + 'sum', 21, 6)
-        (idxCount, fields) = vector.findOrCreateField(layer, fields,
-                                                      columnPrefix + 'count', 21, 6)
-        (idxMean, fields) = vector.findOrCreateField(layer, fields,
-                                                     columnPrefix + 'mean', 21, 6)
-        (idxStd, fields) = vector.findOrCreateField(layer, fields,
-                                                    columnPrefix + 'std', 21, 6)
-        (idxUnique, fields) = vector.findOrCreateField(layer, fields,
-                                                       columnPrefix + 'unique', 21, 6)
-        (idxRange, fields) = vector.findOrCreateField(layer, fields,
-                                                      columnPrefix + 'range', 21, 6)
-        (idxVar, fields) = vector.findOrCreateField(layer, fields,
-                                                    columnPrefix + 'var', 21, 6)
-        (idxMedian, fields) = vector.findOrCreateField(layer, fields,
-                                                       columnPrefix + 'median', 21, 6)
-        if hasSciPy:
-            (idxMode, fields) = vector.findOrCreateField(layer, fields,
-                                                         columnPrefix + 'mode', 21, 6)
-
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
-
-        outFeat = QgsFeature()
-
-        outFeat.initAttributes(len(fields))
-        outFeat.setFields(fields)
-
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, f in enumerate(features):
-            geom = f.geometry()
-
-            intersectedGeom = rasterGeom.intersection(geom)
-            ogrGeom = ogr.CreateGeometryFromWkt(intersectedGeom.exportToWkt())
-
-            if not useGlobalExtent:
-                bbox = intersectedGeom.boundingBox()
-
-                xMin = bbox.xMinimum()
-                xMax = bbox.xMaximum()
-                yMin = bbox.yMinimum()
-                yMax = bbox.yMaximum()
-
-                (startColumn, startRow) = mapToPixel(xMin, yMax, geoTransform)
-                (endColumn, endRow) = mapToPixel(xMax, yMin, geoTransform)
-
-                width = endColumn - startColumn
-                height = endRow - startRow
-
-                if width == 0 or height == 0:
-                    continue
-
-                srcOffset = (startColumn, startRow, width, height)
-                srcArray = rasterBand.ReadAsArray(*srcOffset)
-                srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
-
-                newGeoTransform = (
-                    geoTransform[0] + srcOffset[0] * geoTransform[1],
-                    geoTransform[1],
-                    0.0,
-                    geoTransform[3] + srcOffset[1] * geoTransform[5],
-                    0.0,
-                    geoTransform[5],
-                )
-
-            # Create a temporary vector layer in memory
-            memVDS = memVectorDriver.CreateDataSource('out')
-            memLayer = memVDS.CreateLayer('poly', crs, ogr.wkbPolygon)
-
-            ft = ogr.Feature(memLayer.GetLayerDefn())
-            ft.SetGeometry(ogrGeom)
-            memLayer.CreateFeature(ft)
-            ft.Destroy()
-
-            # Rasterize it
-            rasterizedDS = memRasterDriver.Create('', srcOffset[2],
-                                                  srcOffset[3], 1, gdal.GDT_Byte)
-            rasterizedDS.SetGeoTransform(newGeoTransform)
-            gdal.RasterizeLayer(rasterizedDS, [1], memLayer, burn_values=[1])
-            rasterizedArray = rasterizedDS.ReadAsArray()
-
-            srcArray = numpy.nan_to_num(srcArray)
-            masked = numpy.ma.MaskedArray(srcArray,
-                                          mask=numpy.logical_or(srcArray == noData,
-                                                                numpy.logical_not(rasterizedArray)))
-
-            outFeat.setGeometry(geom)
-
-            attrs = f.attributes()
-            v = float(masked.min())
-            attrs.insert(idxMin, None if numpy.isnan(v) else v)
-            v = float(masked.max())
-            attrs.insert(idxMax, None if numpy.isnan(v) else v)
-            v = float(masked.sum())
-            attrs.insert(idxSum, None if numpy.isnan(v) else v)
-            attrs.insert(idxCount, int(masked.count()))
-            v = float(masked.mean())
-            attrs.insert(idxMean, None if numpy.isnan(v) else v)
-            v = float(masked.std())
-            attrs.insert(idxStd, None if numpy.isnan(v) else v)
-            attrs.insert(idxUnique, numpy.unique(masked.compressed()).size)
-            v = float(masked.max()) - float(masked.min())
-            attrs.insert(idxRange, None if numpy.isnan(v) else v)
-            v = float(masked.var())
-            attrs.insert(idxVar, None if numpy.isnan(v) else v)
-            v = float(numpy.ma.median(masked))
-            attrs.insert(idxMedian, None if numpy.isnan(v) else v)
-            if hasSciPy:
-                attrs.insert(idxMode, float(mode(masked, axis=None)[0][0]))
-
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
-
-            memVDS = None
-            rasterizedDS = None
-
-            progress.setPercentage(int(current * total))
-
-        rasterDS = None
-
-        del writer
+    def processAlgorithm(self, parameters, context, feedback):
+        zs = QgsZonalStatistics(self.vectorLayer,
+                                self.raster_interface,
+                                self.raster_crs,
+                                self.raster_units_per_pixel_x,
+                                self.raster_units_per_pixel_y,
+                                self.columnPrefix,
+                                self.bandNumber,
+                                QgsZonalStatistics.Statistics(self.selectedStats))
+        zs.calculateStatistics(feedback)
+        return {self.INPUT_VECTOR: self.vectorLayer}

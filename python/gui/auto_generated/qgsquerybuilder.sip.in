@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsquerybuilder.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsQueryBuilder : QDialog
+{
+%Docstring
+Query Builder for layers.
+
+The query builder allows interactive creation of a SQL for limiting the
+features displayed in a vector layer.  The fields in the table are
+displayed and sample values (or all values) can be viewed to aid in
+constructing the query. A test function returns the number of features that
+will be returned.
+%End
+
+%TypeHeaderCode
+#include "qgsquerybuilder.h"
+%End
+  public:
+
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0,
+                     Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+This constructor is used when the query builder is called from the
+vector layer properties dialog
+
+:param layer: existing vector layer
+:param parent: Parent widget
+:param fl: dialog flags
+%End
+
+    ~QgsQueryBuilder();
+
+    virtual void showEvent( QShowEvent *event );
+
+
+    QString sql();
+    void setSql( const QString &sqlStatement );
+
+  public slots:
+    virtual void accept();
+
+    virtual void reject();
+
+    void clear();
+
+    void test();
+%Docstring
+Test the constructed sql statement to see if the vector layer data provider likes it.
+The number of rows that would be returned is displayed in a message box.
+The test uses a "select count(*) from ..." query to test the SQL
+statement.
+%End
+
+    void setDatasourceDescription( const QString &uri );
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsquerybuilder.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

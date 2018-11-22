@@ -25,7 +25,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter (prefix with 'the')
+ *   variableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -35,28 +35,28 @@
 #ifndef COORDINATECAPTURE_H
 #define COORDINATECAPTURE_H
 
-//QT4 includes
+//QT includes
 #include <QObject>
 #include <QPointer>
 
 //QGIS includes
 #include "../qgisplugin.h"
 #include "coordinatecapturemaptool.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgscoordinatetransform.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 //forward declarations
 class QAction;
 class QToolBar;
 class QToolButton;
 class QPushButton;
-class QDockWidget;
+class QgsDockWidget;
 class QLineEdit;
 class QIcon;
 class QLabel;
 
 class QgisInterface;
-class QgsPoint;
+class QgsPointXY;
 
 /**
 * \class Plugin
@@ -77,15 +77,13 @@ class CoordinateCapture: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisInterface pointer is passed by
     * QGIS when it attempts to instantiate the plugin.
-    * @param theInterface Pointer to the QgisInterface object.
+    * \param interface Pointer to the QgisInterface object.
      */
-    explicit CoordinateCapture( QgisInterface * theInterface );
-    //! Destructor
-    virtual ~CoordinateCapture();
+    explicit CoordinateCapture( QgisInterface *interface );
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin
@@ -94,25 +92,27 @@ class CoordinateCapture: public QObject, public QgisPlugin
     void showOrHide();
     //! show the help document
     void help();
-    //! Set the Coordinate Reference System used for displaying non canvas CRS coord
+    //! Sets the Coordinate Reference System used for displaying non canvas CRS coord
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
-    void mouseClicked( const QgsPoint& thePoint );
-    /** Called when mouse moved over the canvas. If the tracking button is toggled,
+    void mouseClicked( const QgsPointXY &point );
+
+    /**
+     * Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
-    void mouseMoved( const QgsPoint& thePoint );
+    void mouseMoved( const QgsPointXY &point );
     //! Called when mouse is clicked on the canvas
-    void update( const QgsPoint& thePoint );
+    void update( const QgsPointXY &point );
     //! Called when user clicks the copy button
     void copy();
     //! called when the project's CRS is changed
     void setSourceCrs();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( const QString& theThemeName );
+    void setCurrentTheme( const QString &themeName );
 
   private:
     //! Container for the coordinate info
-    QPointer<QDockWidget> mpDockWidget;
+    QPointer<QgsDockWidget> mpDockWidget;
 
     //!output display for user defined Coordinate Reference System
     QPointer<QLineEdit> mpUserCrsEdit;
@@ -121,17 +121,17 @@ class CoordinateCapture: public QObject, public QgisPlugin
     QPointer<QLineEdit> mpCanvasEdit;
 
     //!Our custom map tool to capture clicks
-    CoordinateCaptureMapTool * mpMapTool;
+    CoordinateCaptureMapTool *mpMapTool = nullptr;
 
     //!A two buttons to track and capture coordinates
-    QToolButton * mpTrackMouseButton;
-    QPushButton * mpCaptureButton;
+    QToolButton *mpTrackMouseButton = nullptr;
+    QPushButton *mpCaptureButton = nullptr;
 
     //! A toolbutton to select crs to display the coordinates
-    QToolButton * mypUserCrsToolButton;
+    QToolButton *mypUserCrsToolButton = nullptr;
 
     //! A label for coordinates in the project crs
-    QLabel * mypCRSLabel;
+    QLabel *mypCRSLabel = nullptr;
 
     //! transform object
     QgsCoordinateTransform mTransform;
@@ -145,8 +145,8 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! user coordinate display precision
     int mUserCrsDisplayPrecision;
 
-    //! Get the path to the icon from the best available theme
-    QString getIconPath( const QString& theName );
+    //! Gets the path to the icon from the best available theme
+    QString getIconPath( const QString &name );
 
     ////////////////////////////////////////////////////////////////////
     //
@@ -155,9 +155,9 @@ class CoordinateCapture: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
+    QAction *mQActionPointer = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....

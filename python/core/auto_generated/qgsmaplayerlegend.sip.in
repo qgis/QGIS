@@ -1,0 +1,229 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerlegend.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsMapLayerLegend : QObject
+{
+%Docstring
+The QgsMapLayerLegend class is abstract interface for implementations
+of legends for one map layer.
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+
+    explicit QgsMapLayerLegend( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMapLayerLegend
+%End
+
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from a DOM element previously written by writeXml()
+
+.. versionadded:: 3.2
+%End
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a DOM element, to be used later with readXml()
+
+.. versionadded:: 3.2
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
+%Docstring
+Returns list of legend nodes to be used for a particular layer tree layer node.
+Ownership is transferred to the caller.
+%End
+
+
+    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Create new legend implementation for vector layer
+%End
+
+    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) /Factory/;
+%Docstring
+Create new legend implementation for raster layer
+%End
+
+    static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) /Factory/;
+%Docstring
+Create new legend implementation for mesh layer
+%End
+
+  signals:
+    void itemsChanged();
+%Docstring
+Emitted when existing items/nodes got invalid and should be replaced by new ones
+%End
+};
+
+
+class QgsMapLayerLegendUtils
+{
+%Docstring
+Miscellaneous utility functions for handling of map layer legend
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    static void setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order );
+    static QList<int> legendNodeOrder( QgsLayerTreeLayer *nodeLayer );
+    static bool hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer );
+
+    static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
+    static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+    static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
+%Docstring
+update according to layer node's custom properties (order of items, user labels for items)
+%End
+};
+
+
+
+
+class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
+{
+%Docstring
+Default legend implementation for vector layers
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
+
+    bool textOnSymbolEnabled() const;
+%Docstring
+Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+may have extra text rendered on top. The content of labels and their style is controlled
+by textOnSymbolContent() and textOnSymbolTextFormat().
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolEnabled( bool enabled );
+%Docstring
+Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+may have extra text rendered on top. The content of labels and their style is controlled
+by textOnSymbolContent() and textOnSymbolTextFormat().
+
+.. versionadded:: 3.2
+%End
+
+    QgsTextFormat textOnSymbolTextFormat() const;
+%Docstring
+Returns text format of symbol labels for "text on symbol" functionality.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets text format of symbol labels for "text on symbol" functionality.
+
+.. versionadded:: 3.2
+%End
+
+    QHash<QString, QString> textOnSymbolContent() const;
+%Docstring
+Returns per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+the keys are rule keys of legend items, the values are labels to be shown.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolContent( const QHash<QString, QString> &content );
+%Docstring
+Sets per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+the keys are rule keys of legend items, the values are labels to be shown.
+
+.. versionadded:: 3.2
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+};
+
+
+class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
+{
+%Docstring
+Default legend implementation for raster layers
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+
+class QgsDefaultMeshLayerLegend : QgsMapLayerLegend
+{
+%Docstring
+Default legend implementation for mesh layers
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
+%Docstring
+Creates an instance for the given mesh layer
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerlegend.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

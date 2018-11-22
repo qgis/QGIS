@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgslogger.h>
 #include <qgssqlcomposerdialog.h>
@@ -41,113 +41,113 @@ bool TestQgsSQLComposerDialog::runTest()
   //const char* travis = getenv( "TRAVIS_OS_NAME" );
   //if ( travis && strcmp( travis, "osx" ) == 0 )
   //{
-  //  QgsDebugMsg( "Test disabled" );
+  //  QgsDebugMsg( QStringLiteral( "Test disabled" ) );
   //  return false;
   //}
   return true;
 }
 
-static QWidget* getQueryEdit( QgsSQLComposerDialog& d )
+static QWidget *getQueryEdit( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mQueryEdit" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mQueryEdit" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getColumnsEditor( QgsSQLComposerDialog& d )
+static QWidget *getColumnsEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mColumnsEditor" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mColumnsEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getTablesEditor( QgsSQLComposerDialog& d )
+static QWidget *getTablesEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mTablesEditor" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mTablesEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getWhereEditor( QgsSQLComposerDialog& d )
+static QWidget *getWhereEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mWhereEditor" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mWhereEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getOrderEditor( QgsSQLComposerDialog& d )
+static QWidget *getOrderEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mOrderEditor" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mOrderEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getTablesCombo( QgsSQLComposerDialog& d )
+static QComboBox *getTablesCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( "mTablesCombo" );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mTablesCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getColumnsCombo( QgsSQLComposerDialog& d )
+static QComboBox *getColumnsCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( "mColumnsCombo" );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mColumnsCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getFunctionsCombo( QgsSQLComposerDialog& d )
+static QComboBox *getFunctionsCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( "mFunctionsCombo" );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mFunctionsCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getSpatialPredicatesCombo( QgsSQLComposerDialog& d )
+static QComboBox *getSpatialPredicatesCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( "mSpatialPredicatesCombo" );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mSpatialPredicatesCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getOperatorsCombo( QgsSQLComposerDialog& d )
+static QComboBox *getOperatorsCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( "mOperatorsCombo" );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mOperatorsCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getResetButton( QgsSQLComposerDialog& d )
+static QWidget *getResetButton( QgsSQLComposerDialog &d )
 {
-  QDialogButtonBox* mButtonBox = d.findChild<QDialogButtonBox*>( "mButtonBox" );
+  QDialogButtonBox *mButtonBox = d.findChild<QDialogButtonBox *>( QStringLiteral( "mButtonBox" ) );
   Q_ASSERT( mButtonBox );
-  QPushButton* button = mButtonBox->button( QDialogButtonBox::Reset );
+  QPushButton *button = mButtonBox->button( QDialogButtonBox::Reset );
   Q_ASSERT( button );
   return button;
 }
 
-static QTableWidget* getTableJoins( QgsSQLComposerDialog& d )
+static QTableWidget *getTableJoins( QgsSQLComposerDialog &d )
 {
-  QTableWidget* widget = d.findChild<QTableWidget*>( "mTableJoins" );
+  QTableWidget *widget = d.findChild<QTableWidget *>( QStringLiteral( "mTableJoins" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getAddJoinButton( QgsSQLComposerDialog& d )
+static QWidget *getAddJoinButton( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mAddJoinButton" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mAddJoinButton" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getRemoveJoinButton( QgsSQLComposerDialog& d )
+static QWidget *getRemoveJoinButton( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( "mRemoveJoinButton" );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mRemoveJoinButton" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static void gotoEndOfLine( QWidget* w )
+static void gotoEndOfLine( QWidget *w )
 {
 #ifdef Q_OS_MAC
   QTest::keyPress( w, Qt::Key_Right, Qt::ControlModifier );
@@ -161,25 +161,25 @@ void TestQgsSQLComposerDialog::testReciprocalEditorsUpdate()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  QString oriSql( "SELECT a_column FROM my_table JOIN join_table ON cond WHERE where_expr ORDER BY column DESC" );
+  QString oriSql( QStringLiteral( "SELECT a_column FROM my_table JOIN join_table ON cond WHERE where_expr ORDER BY column DESC" ) );
   d.setSql( oriSql );
   QCOMPARE( d.sql(), oriSql );
 
   gotoEndOfLine( getColumnsEditor( d ) );
-  QTest::keyClicks( getColumnsEditor( d ), ", another_column" );
+  QTest::keyClicks( getColumnsEditor( d ), QStringLiteral( ", another_column" ) );
   gotoEndOfLine( getTablesEditor( d ) );
-  QTest::keyClicks( getTablesEditor( d ), ", another_from_table" );
+  QTest::keyClicks( getTablesEditor( d ), QStringLiteral( ", another_from_table" ) );
   gotoEndOfLine( getWhereEditor( d ) );
-  QTest::keyClicks( getWhereEditor( d ), " AND another_cond" );
+  QTest::keyClicks( getWhereEditor( d ), QStringLiteral( " AND another_cond" ) );
   gotoEndOfLine( getOrderEditor( d ) );
-  QTest::keyClicks( getOrderEditor( d ), ", another_column_asc" );
+  QTest::keyClicks( getOrderEditor( d ), QStringLiteral( ", another_column_asc" ) );
   QCOMPARE( d.sql(), QString( "SELECT a_column, another_column FROM my_table, another_from_table JOIN join_table ON cond WHERE where_expr AND another_cond ORDER BY column DESC, another_column_asc" ) );
 
   QTest::mouseClick( getResetButton( d ), Qt::LeftButton );
   QCOMPARE( d.sql(), oriSql );
 }
 
-static void setFocusIn( QWidget* widget )
+static void setFocusIn( QWidget *widget )
 {
   QFocusEvent focusInEvent( QEvent::FocusIn );
   QApplication::sendEvent( widget, &focusInEvent );
@@ -190,13 +190,13 @@ void TestQgsSQLComposerDialog::testSelectTable()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  d.addTableNames( QStringList() << "my_table" );
-  d.addTableNames( QList<QgsSQLComposerDialog::PairNameTitle>() << QgsSQLComposerDialog::PairNameTitle( "another_table", "title" ) );
+  d.addTableNames( QStringList() << QStringLiteral( "my_table" ) );
+  d.addTableNames( QList<QgsSQLComposerDialog::PairNameTitle>() << QgsSQLComposerDialog::PairNameTitle( QStringLiteral( "another_table" ), QStringLiteral( "title" ) ) );
 
   QCOMPARE( getTablesCombo( d )->itemText( 1 ), QString( "my_table" ) );
   QCOMPARE( getTablesCombo( d )->itemText( 2 ), QString( "another_table (title)" ) );
 
-  d.setSql( "SELECT * FROM " );
+  d.setSql( QStringLiteral( "SELECT * FROM " ) );
   gotoEndOfLine( getQueryEdit( d ) );
 
   // Set focus in SQL zone
@@ -225,13 +225,13 @@ void TestQgsSQLComposerDialog::testSelectColumn()
     return;
   QgsSQLComposerDialog d;
   d.addColumnNames( QList<QgsSQLComposerDialog::PairNameType>() <<
-                    QgsSQLComposerDialog::PairNameType( "a", "" ) <<
-                    QgsSQLComposerDialog::PairNameType( "b", "type" ), "my_table" );
+                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QString() ) <<
+                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "b" ), QStringLiteral( "type" ) ), QStringLiteral( "my_table" ) );
 
   QCOMPARE( getColumnsCombo( d )->itemText( 1 ), QString( "a" ) );
   QCOMPARE( getColumnsCombo( d )->itemText( 2 ), QString( "b (type)" ) );
 
-  d.setSql( "SELECT " );
+  d.setSql( QStringLiteral( "SELECT " ) );
   gotoEndOfLine( getQueryEdit( d ) );
 
   // Set focus in SQL zone
@@ -246,7 +246,7 @@ void TestQgsSQLComposerDialog::testSelectColumn()
   QCOMPARE( d.sql(), QString( "SELECT a" ) );
 
   gotoEndOfLine( getQueryEdit( d ) );
-  QTest::keyClicks( getQueryEdit( d ), " FROM my_table" );
+  QTest::keyClicks( getQueryEdit( d ), QStringLiteral( " FROM my_table" ) );
 
   QCOMPARE( d.sql(), QString( "SELECT a FROM my_table" ) );
 
@@ -281,49 +281,49 @@ void TestQgsSQLComposerDialog::testSelectFunction()
   QList<QgsSQLComposerDialog::Function> functions;
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "first_func";
+    f.name = QStringLiteral( "first_func" );
     functions << f;
   }
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "second_func";
-    f.returnType = "xs:int";
+    f.name = QStringLiteral( "second_func" );
+    f.returnType = QStringLiteral( "xs:int" );
     functions << f;
   }
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "third_func";
+    f.name = QStringLiteral( "third_func" );
     f.minArgs = 1;
     f.maxArgs = 1;
     functions << f;
   }
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "fourth_func";
+    f.name = QStringLiteral( "fourth_func" );
     f.minArgs = 1;
     f.maxArgs = 2;
     functions << f;
   }
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "fifth_func";
+    f.name = QStringLiteral( "fifth_func" );
     f.minArgs = 1;
     functions << f;
   }
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "sixth_func";
-    f.argumentList << QgsSQLComposerDialog::Argument( "arg1", "" );
-    f.argumentList << QgsSQLComposerDialog::Argument( "arg2", "xs:double" );
-    f.argumentList << QgsSQLComposerDialog::Argument( "arg3", "gml:AbstractGeometryType" );
-    f.argumentList << QgsSQLComposerDialog::Argument( "number", "xs:int" );
+    f.name = QStringLiteral( "sixth_func" );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg1" ), QString() );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg2" ), QStringLiteral( "xs:double" ) );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg3" ), QStringLiteral( "gml:AbstractGeometryType" ) );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "number" ), QStringLiteral( "xs:int" ) );
     functions << f;
   }
   {
     QgsSQLComposerDialog::Function f;
-    f.name = "seventh_func";
-    f.argumentList << QgsSQLComposerDialog::Argument( "arg1", "" );
-    f.argumentList << QgsSQLComposerDialog::Argument( "arg2", "xs:double" );
+    f.name = QStringLiteral( "seventh_func" );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg1" ), QString() );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg2" ), QStringLiteral( "xs:double" ) );
     f.minArgs = 1;
     functions << f;
   }
@@ -337,7 +337,7 @@ void TestQgsSQLComposerDialog::testSelectFunction()
   QCOMPARE( getFunctionsCombo( d )->itemText( 6 ), QString( "sixth_func(arg1, arg2: double, arg3: geometry, int)" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 7 ), QString( "seventh_func(arg1[, arg2: double])" ) );
 
-  d.setSql( "SELECT * FROM my_table" );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table" ) );
 
   // Set focus in where editor
   setFocusIn( getWhereEditor( d ) );
@@ -348,7 +348,7 @@ void TestQgsSQLComposerDialog::testSelectFunction()
   QCOMPARE( d.sql(), QString( "SELECT * FROM my_table WHERE first_func(" ) );
 
   // Set focus in SQL zone
-  d.setSql( "SELECT * FROM my_table WHERE " );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table WHERE " ) );
   setFocusIn( getQueryEdit( d ) );
   gotoEndOfLine( getQueryEdit( d ) );
   getFunctionsCombo( d )->setCurrentIndex( 0 );
@@ -362,9 +362,9 @@ void TestQgsSQLComposerDialog::testSelectSpatialPredicate()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  d.addSpatialPredicates( QList<QgsSQLComposerDialog::Function>() << QgsSQLComposerDialog::Function( "predicate", 2 ) );
+  d.addSpatialPredicates( QList<QgsSQLComposerDialog::Function>() << QgsSQLComposerDialog::Function( QStringLiteral( "predicate" ), 2 ) );
 
-  d.setSql( "SELECT * FROM my_table" );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table" ) );
 
   // Set focus in where editor
   setFocusIn( getWhereEditor( d ) );
@@ -374,7 +374,7 @@ void TestQgsSQLComposerDialog::testSelectSpatialPredicate()
   QCOMPARE( d.sql(), QString( "SELECT * FROM my_table WHERE predicate(" ) );
 
   // Set focus in SQL zone
-  d.setSql( "SELECT * FROM my_table WHERE " );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table WHERE " ) );
   setFocusIn( getQueryEdit( d ) );
   gotoEndOfLine( getQueryEdit( d ) );
   getSpatialPredicatesCombo( d )->setCurrentIndex( 0 );
@@ -389,7 +389,7 @@ void TestQgsSQLComposerDialog::testSelectOperator()
     return;
   QgsSQLComposerDialog d;
 
-  d.setSql( "SELECT * FROM my_table" );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table" ) );
 
   // Set focus in where editor
   setFocusIn( getWhereEditor( d ) );
@@ -399,7 +399,7 @@ void TestQgsSQLComposerDialog::testSelectOperator()
   QCOMPARE( d.sql(), QString( "SELECT * FROM my_table WHERE AND" ) );
 
   // Set focus in SQL zone
-  d.setSql( "SELECT * FROM my_table WHERE " );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table WHERE " ) );
   setFocusIn( getQueryEdit( d ) );
   gotoEndOfLine( getQueryEdit( d ) );
   getOperatorsCombo( d )->setCurrentIndex( 0 );
@@ -413,29 +413,29 @@ void TestQgsSQLComposerDialog::testJoins()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  d.setSql( "SELECT * FROM my_table" );
+  d.setSql( QStringLiteral( "SELECT * FROM my_table" ) );
   d.setSupportMultipleTables( true );
 
-  QTableWidget* table = getTableJoins( d );
+  QTableWidget *table = getTableJoins( d );
   QCOMPARE( table->rowCount(), 1 );
-  QCOMPARE( table->item( 0, 0 ) != nullptr, true );
-  table->item( 0, 0 )->setText( "join_table" );
-  table->item( 0, 1 )->setText( "join_expr" );
+  QVERIFY( table->item( 0, 0 ) );
+  table->item( 0, 0 )->setText( QStringLiteral( "join_table" ) );
+  table->item( 0, 1 )->setText( QStringLiteral( "join_expr" ) );
 
   QCOMPARE( d.sql(), QString( "SELECT * FROM my_table JOIN join_table ON join_expr" ) );
 
   QTest::mouseClick( getAddJoinButton( d ), Qt::LeftButton );
   QCOMPARE( table->rowCount(), 2 );
-  table->item( 1, 0 )->setText( "join2_table" );
-  table->item( 1, 1 )->setText( "join2_expr" );
+  table->item( 1, 0 )->setText( QStringLiteral( "join2_table" ) );
+  table->item( 1, 1 )->setText( QStringLiteral( "join2_expr" ) );
 
   QCOMPARE( d.sql(), QString( "SELECT * FROM my_table JOIN join_table ON join_expr JOIN join2_table ON join2_expr" ) );
 
   table->setCurrentCell( 0, 0 );
   QTest::mouseClick( getAddJoinButton( d ), Qt::LeftButton );
   QCOMPARE( table->rowCount(), 3 );
-  table->item( 1, 0 )->setText( "join15_table" );
-  table->item( 1, 1 )->setText( "join15_expr" );
+  table->item( 1, 0 )->setText( QStringLiteral( "join15_table" ) );
+  table->item( 1, 1 )->setText( QStringLiteral( "join15_expr" ) );
 
   QCOMPARE( d.sql(), QString( "SELECT * FROM my_table JOIN join_table ON join_expr JOIN join15_table ON join15_expr JOIN join2_table ON join2_expr" ) );
 
@@ -461,8 +461,8 @@ void TestQgsSQLComposerDialog::testJoins()
 
   QTest::mouseClick( getAddJoinButton( d ), Qt::LeftButton );
   QCOMPARE( table->rowCount(), 1 );
-  QCOMPARE( table->item( 0, 0 ) != nullptr, true );
+  QVERIFY( table->item( 0, 0 ) );
 }
 
-QTEST_MAIN( TestQgsSQLComposerDialog )
+QGSTEST_MAIN( TestQgsSQLComposerDialog )
 #include "testqgssqlcomposerdialog.moc"

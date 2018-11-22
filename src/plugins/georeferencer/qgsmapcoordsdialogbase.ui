@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Enter map coordinates</string>
+   <string>Enter Map Coordinates</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

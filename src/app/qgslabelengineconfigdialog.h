@@ -17,18 +17,23 @@
 
 #include <QDialog>
 
-#include "ui_qgsengineconfigdialog.h"
+#include "ui_qgslabelengineconfigdialog.h"
+#include "qgis_app.h"
 
 
-class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEngineConfigDialog
+class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLabelEngineConfigDialog
 {
     Q_OBJECT
   public:
-    QgsLabelEngineConfigDialog( QWidget* parent = nullptr );
+    QgsLabelEngineConfigDialog( QWidget *parent = nullptr );
 
   public slots:
     void onOK();
     void setDefaults();
+
+
+  private slots:
+    void showHelp();
 
   protected:
 };

@@ -17,55 +17,64 @@
 #define QGSOGRCONNPOOL_H
 
 #include "qgsconnectionpool.h"
-#include <ogr_api.h>
+#include "qgsogrprovider.h"
+#include <gdal.h>
 
 
 struct QgsOgrConn
 {
   QString path;
-  OGRDataSourceH ds;
+  GDALDatasetH ds;
   bool valid;
 };
 
-inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn* c )
+inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c )
 {
   return c->path;
 }
 
-inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsOgrConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrConn *&c )
 {
   c = new QgsOgrConn;
-  QString filePath = connInfo.left( connInfo.indexOf( "|" ) );
-  c->ds = OGROpen( filePath.toUtf8().constData(), false, nullptr );
+  QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
+  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), false, nullptr, nullptr );
   c->path = connInfo;
   c->valid = true;
 }
 
-inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn* c )
+inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn *c )
 {
-  OGR_DS_Destroy( c->ds );
+  QgsOgrProviderUtils::GDALCloseWrapper( c->ds );
   delete c;
 }
 
-inline void qgsConnectionPool_InvalidateConnection( QgsOgrConn* c )
+inline void qgsConnectionPool_InvalidateConnection( QgsOgrConn *c )
 {
   c->valid = false;
 }
 
-inline bool qgsConnectionPool_ConnectionIsValid( QgsOgrConn* c )
+inline bool qgsConnectionPool_ConnectionIsValid( QgsOgrConn *c )
 {
   return c->valid;
 }
 
-class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgrConn*>
+class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgrConn *>
 {
     Q_OBJECT
 
   public:
-    explicit QgsOgrConnPoolGroup( QString name )
-        : QgsConnectionPoolGroup<QgsOgrConn*>( name )
-        , mRefCount( 0 )
-    { initTimer( this ); }
+    explicit QgsOgrConnPoolGroup( const QString &name )
+      : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+    {
+      initTimer( this );
+    }
+
+    //! QgsOgrConnPoolGroup cannot be copied
+    QgsOgrConnPoolGroup( const QgsOgrConnPoolGroup &other ) = delete;
+
+    //! QgsOgrConnPoolGroup cannot be copied
+    QgsOgrConnPoolGroup &operator=( const QgsOgrConnPoolGroup &other ) = delete;
+
     void ref() { ++mRefCount; }
     bool unref()
     {
@@ -78,16 +87,13 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }
 
-  protected:
-    Q_DISABLE_COPY( QgsOgrConnPoolGroup )
-
   private:
-    int mRefCount;
+    int mRefCount = 0;
 
 };
 
-/** Ogr connection pool - singleton */
-class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>
+//! Ogr connection pool - singleton
+class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGroup>
 {
   public:
 
@@ -97,7 +103,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
     //          in multiple instances being created, and memory
     //          leaking at exit.
     //
-    static QgsOgrConnPool* instance();
+    static QgsOgrConnPool *instance();
 
     // Singleton cleanup
     //
@@ -109,30 +115,36 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
     //
     static void cleanupInstance();
 
+    //! QgsOgrConnPool cannot be copied
+    QgsOgrConnPool( const QgsOgrConnPool &other ) = delete;
+
+    //! QgsOgrConnPool cannot be copied
+    QgsOgrConnPool &operator=( const QgsOgrConnPool &other ) = delete;
+
     /**
-     * @brief Increases the reference count on the connection pool for the specified connection.
-     * @param connInfo The connection string.
-     * @note
+     * \brief Increases the reference count on the connection pool for the specified connection.
+     * \param connInfo The connection string.
+     * \note
      *     Any user of the connection pool needs to increase the reference count
      *     before it acquires any connections and decrease the reference count after
      *     releasing all acquired connections to ensure that all open OGR handles
      *     are freed when and only when no one is using the pool anymore.
      */
-    void ref( const QString& connInfo )
+    void ref( const QString &connInfo )
     {
       mMutex.lock();
-      T_Groups::const_iterator it = mGroups.constFind( connInfo );
-      if ( it == mGroups.constEnd() )
+      T_Groups::iterator it = mGroups.find( connInfo );
+      if ( it == mGroups.end() )
         it = mGroups.insert( connInfo, new QgsOgrConnPoolGroup( connInfo ) );
       it.value()->ref();
       mMutex.unlock();
     }
 
     /**
-     * @brief Decrease the reference count on the connection pool for the specified connection.
-     * @param connInfo The connection string.
+     * \brief Decrease the reference count on the connection pool for the specified connection.
+     * \param connInfo The connection string.
      */
-    void unref( const QString& connInfo )
+    void unref( const QString &connInfo )
     {
       mMutex.lock();
       T_Groups::iterator it = mGroups.find( connInfo );
@@ -150,13 +162,10 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
       mMutex.unlock();
     }
 
-  protected:
-    Q_DISABLE_COPY( QgsOgrConnPool )
-
   private:
     QgsOgrConnPool();
-    ~QgsOgrConnPool();
-    static QgsOgrConnPool *mInstance;
+    ~QgsOgrConnPool() override;
+    static QgsOgrConnPool *sInstance;
 };
 
 

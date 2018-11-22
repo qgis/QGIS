@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptoolselect.cpp  -  map tool for selecting features by single click
+    qgsmaptoolselect.cpp  -  map tool for selecting features
     ----------------------
     begin                : January 2006
     copyright            : (C) 2006 by Martin Dobias
@@ -20,7 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis.h"
 
 #include <QMouseEvent>
@@ -28,30 +28,63 @@
 #include <QColor>
 
 
-QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
-  mToolName = tr( "Select" );
-  mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mToolName = tr( "Select features" );
+
+  mSelectionHandler = qgis::make_unique<QgsMapToolSelectionHandler>( canvas );
+  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelect::selectFeatures );
+  setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
 }
 
-void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelect::setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( !vlayer )
+  mSelectionHandler->setSelectionMode( selectionMode );
+  if ( selectionMode == QgsMapToolSelectionHandler::SelectSimple )
+    mCursor = QgsApplication::getThemeCursor( QgsApplication::Cursor::Select );
+  else
+    mCursor = Qt::ArrowCursor;
+}
+
+void QgsMapToolSelect::canvasPressEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->canvasPressEvent( e );
+}
+
+void QgsMapToolSelect::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->canvasMoveEvent( e );
+}
+
+void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->canvasReleaseEvent( e );
+}
+
+void QgsMapToolSelect::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mSelectionHandler->keyReleaseEvent( e ) )
     return;
 
-  QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
-  rubberBand.setFillColor( mFillColor );
-  rubberBand.setBorderColor( mBorderColour );
-  QRect selectRect( 0, 0, 0, 0 );
-  QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QgsGeometry* selectGeom = rubberBand.asGeometry();
-  bool doDifference = e->modifiers() & Qt::ControlModifier;
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
-  delete selectGeom;
-  rubberBand.reset( QGis::Polygon );
+  QgsMapTool::keyReleaseEvent( e );
+}
+
+void QgsMapToolSelect::deactivate()
+{
+  mSelectionHandler->deactivate();
+  QgsMapTool::deactivate();
+}
+
+void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
+{
+  if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
+       mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+  {
+    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+    QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );
+    QgsMapToolSelectUtils::selectSingleFeature( mCanvas, QgsGeometry::fromRect( r ), modifiers );
+  }
+  else
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers );
 }

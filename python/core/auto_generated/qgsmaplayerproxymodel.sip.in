@@ -1,0 +1,192 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapLayerProxyModel : QSortFilterProxyModel
+{
+%Docstring
+The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
+
+.. versionadded:: 2.3
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerproxymodel.h"
+%End
+  public:
+    enum Filter
+    {
+      RasterLayer,
+      NoGeometry,
+      PointLayer,
+      LineLayer,
+      PolygonLayer,
+      HasGeometry,
+      VectorLayer,
+      PluginLayer,
+      WritableLayer,
+      All
+    };
+    typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
+
+
+    explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
+It can be used to filter the layers list in a widget.
+%End
+
+    QgsMapLayerModel *sourceLayerModel() const;
+%Docstring
+layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
+%End
+
+    QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
+%Docstring
+Sets ``filter`` flags which affect how layers are filtered within the model.
+
+.. seealso:: :py:func:`filters`
+
+.. versionadded:: 2.3
+%End
+
+    const Filters &filters() const;
+%Docstring
+Returns the filter flags which affect how layers are filtered within the model.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 2.3
+%End
+
+    void setLayerWhitelist( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets a whitelist of ``layers`` to include within the model. Only layers
+from this list will be shown.
+
+An empty list indicates that no whitelisting should be performed.
+
+.. seealso:: :py:func:`layerWhitelist`
+
+.. seealso:: :py:func:`setExceptedLayerList`
+
+.. versionadded:: 3.4
+%End
+
+    QList<QgsMapLayer *> layerWhitelist();
+%Docstring
+Returns the list of layers which are excluded from the model.
+
+An empty list indicates that no whitelisting should be performed.
+
+.. seealso:: :py:func:`setLayerWhitelist`
+
+.. seealso:: :py:func:`exceptedLayerList`
+
+.. versionadded:: 3.4
+%End
+
+    void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
+%Docstring
+Sets a blacklist of layers to exclude from the model.
+
+.. seealso:: :py:func:`exceptedLayerList`
+
+.. seealso:: :py:func:`setExceptedLayerIds`
+
+.. seealso:: :py:func:`setLayerWhitelist`
+%End
+
+    QList<QgsMapLayer *> exceptedLayerList();
+%Docstring
+Returns the blacklist of layers which are excluded from the model.
+
+.. seealso:: :py:func:`setExceptedLayerList`
+
+.. seealso:: :py:func:`exceptedLayerIds`
+
+.. seealso:: :py:func:`layerWhitelist`
+%End
+
+    void setExceptedLayerIds( const QStringList &ids );
+%Docstring
+Sets a blacklist of layers (by layer ID) to exclude from the model.
+
+.. seealso:: :py:func:`exceptedLayerIds`
+
+.. seealso:: :py:func:`setExceptedLayerList`
+%End
+
+    QStringList exceptedLayerIds() const;
+%Docstring
+Returns the blacklist of layer IDs which are excluded from the model.
+
+.. seealso:: :py:func:`setExceptedLayerIds`
+
+.. seealso:: :py:func:`exceptedLayerList`
+%End
+
+    void setExcludedProviders( const QStringList &providers );
+%Docstring
+Sets a blacklist of data providers which should be excluded from the model.
+
+.. seealso:: :py:func:`excludedProviders`
+
+.. versionadded:: 3.0
+%End
+
+    QStringList excludedProviders() const;
+%Docstring
+Returns the blacklist of data providers which are excluded from the model.
+
+.. seealso:: :py:func:`setExcludedProviders`
+
+.. versionadded:: 3.0
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+
+.. versionadded:: 3.4
+%End
+
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layers with names matching the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+
+.. versionadded:: 3.4
+%End
+
+};
+
+QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1, QFlags<QgsMapLayerProxyModel::Filter> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

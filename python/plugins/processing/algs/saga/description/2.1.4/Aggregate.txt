@@ -1,5 +1,0 @@
-Aggregate
-grid_tools
-ParameterRaster|INPUT|Grid|False
-ParameterNumber|SIZE|Aggregation Size|None|None|3
-ParameterSelection|METHOD|Method|[0] Sum;[1] Min;[2] Max

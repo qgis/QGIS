@@ -17,66 +17,66 @@
 #define QGSGRASSEDITRENDERER_H
 
 #include "qgis.h"
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
 
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgsrendererv2widget.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsrendererwidget.h"
 
-class QgsGrassEditRenderer : public QgsFeatureRendererV2
+class QgsGrassEditRenderer : public QgsFeatureRenderer
 {
   public:
 
     QgsGrassEditRenderer();
 
-    virtual ~QgsGrassEditRenderer();
+    ~QgsGrassEditRenderer() override;
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
-    virtual void stopRender( QgsRenderContext& context ) override;
+    void stopRender( QgsRenderContext &context ) override;
 
-    virtual QList<QString> usedAttributes() override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    virtual QgsFeatureRendererV2* clone() const override;
+    QgsFeatureRenderer *clone() const override;
 
-    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
-    virtual QString dump() const override;
+    QString dump() const override;
 
-    QgsFeatureRendererV2 *lineRenderer() const { return mLineRenderer; }
-    QgsFeatureRendererV2 *pointRenderer() const { return mMarkerRenderer; }
+    QgsFeatureRenderer *lineRenderer() const { return mLineRenderer; }
+    QgsFeatureRenderer *pointRenderer() const { return mMarkerRenderer; }
 
-    void setLineRenderer( QgsFeatureRendererV2 *renderer );
-    void setMarkerRenderer( QgsFeatureRendererV2 *renderer );
+    void setLineRenderer( QgsFeatureRenderer *renderer );
+    void setMarkerRenderer( QgsFeatureRenderer *renderer );
 
-    virtual QDomElement save( QDomDocument& doc ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context );
 
   protected:
-    QgsFeatureRendererV2 *mLineRenderer;
-    QgsFeatureRendererV2 *mMarkerRenderer;
+    QgsFeatureRenderer *mLineRenderer = nullptr;
+    QgsFeatureRenderer *mMarkerRenderer = nullptr;
 };
 
-class QgsGrassEditRendererWidget : public QgsRendererV2Widget
+class QgsGrassEditRendererWidget : public QgsRendererWidget
 {
     Q_OBJECT
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    ~QgsGrassEditRendererWidget();
+    QgsGrassEditRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    ~QgsGrassEditRendererWidget() override;
 
-    virtual QgsFeatureRendererV2* renderer() override;
+    QgsFeatureRenderer *renderer() override;
 
   protected:
-    QgsGrassEditRenderer* mRenderer;
+    QgsGrassEditRenderer *mRenderer = nullptr;
 
-    QgsRendererV2Widget* mLineRendererWidget;
-    QgsRendererV2Widget* mPointRendererWidget;
+    QgsRendererWidget *mLineRendererWidget = nullptr;
+    QgsRendererWidget *mPointRendererWidget = nullptr;
 };
 
 #endif // QGSGRASSEDITRENDERER_H

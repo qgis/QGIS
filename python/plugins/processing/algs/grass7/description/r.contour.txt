@@ -1,0 +1,10 @@
+r.contour
+Produces a vector map of specified contours from a raster map. 
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster|None|False
+QgsProcessingParameterNumber|step|Increment between contour levels|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterString|levels|List of contour levels|None|False|True
+QgsProcessingParameterNumber|minlevel|Minimum contour level|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|maxlevel|Maximum contour level|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|cut|Minimum number of points for a contour line (0 -> no limit)|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterVectorDestination|output|Contours

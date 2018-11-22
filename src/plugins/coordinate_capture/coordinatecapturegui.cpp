@@ -10,18 +10,13 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "coordinatecapturegui.h"
-#include "qgscontexthelp.h"
 
 //qt includes
 
 //standard includes
 
-CoordinateCaptureGui::CoordinateCaptureGui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-{
-}
-
-CoordinateCaptureGui::~CoordinateCaptureGui()
+CoordinateCaptureGui::CoordinateCaptureGui( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
 }
 

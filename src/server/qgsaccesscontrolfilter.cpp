@@ -26,61 +26,56 @@
 #include <QStringList>
 
 
-/** Constructor */
-QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface* serverInterface ):
-    mServerInterface( serverInterface )
+//! Constructor
+QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *serverInterface ):
+  mServerInterface( serverInterface )
 {
 }
 
-/** Destructor */
-QgsAccessControlFilter::~QgsAccessControlFilter()
+//! Returns an additional layer expression filter
+QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *layer ) const
 {
-}
-
-/** Return an additional layer expression filter */
-QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* layer ) const
-{
-  QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerFilterExpression called", "AccessControlFilter", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   return QString();
 }
 
-/** Return an additional layer subset string (typically SQL) filter */
-QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* layer ) const
+//! Returns an additional layer subset string (typically SQL) filter
+QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *layer ) const
 {
-  QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerFilterSQL called", "AccessControlFilter", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   return QString();
 }
 
-/** Return the layer permissions */
-QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer* layer ) const
+//! Returns the layer permissions
+QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer *layer ) const
 {
-  QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerPermissions called", "AccessControlFilter", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   LayerPermissions permissions = QgsAccessControlFilter::LayerPermissions();
   permissions.canRead = permissions.canUpdate = permissions.canInsert = permissions.canDelete = true;
   return permissions;
 }
 
-/** Return the authorized layer attributes */
-QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const
+//! Returns the authorized layer attributes
+QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
 {
   Q_UNUSED( layer );
-  QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default authorizedLayerAttributes called", "AccessControlFilter", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default authorizedLayerAttributes called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   return attributes;
 }
 
-/** Are we authorized to modify the feature */
-bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const
+//! Are we authorized to modify the feature
+bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const
 {
-  QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default allowToEdit called", "AccessControlFilter", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default allowToEdit called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer );
   Q_UNUSED( feature );
   return true;
 }
 
-/** Cache key to used to create the capabilities cache, "" for no cache */
+//! Cache key to used to create the capabilities cache, "" for no cache
 QString QgsAccessControlFilter::cacheKey() const
 {
   return QString();

@@ -16,27 +16,28 @@
  ***************************************************************************/
 
 #include "qgsgeometryfactory.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
-#include "qgscurvepolygonv2.h"
-#include "qgspointv2.h"
-#include "qgspolygonv2.h"
-#include "qgslinestringv2.h"
-#include "qgsmulticurvev2.h"
-#include "qgsmultilinestringv2.h"
-#include "qgsmultipointv2.h"
-#include "qgsmultipolygonv2.h"
-#include "qgsmultisurfacev2.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscurvepolygon.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsmultisurface.h"
+#include "qgstriangle.h"
 #include "qgswkbtypes.h"
 #include "qgslogger.h"
 
-QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
     return nullptr;
 
   //find out type (bytes 2-5)
-  QgsWKBTypes::Type type = QgsWKBTypes::Unknown;
+  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
   try
   {
     type = wkbPtr.readHeader();
@@ -49,215 +50,238 @@ QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr wkbPtr )
   }
   wkbPtr -= 1 + sizeof( int );
 
-  QgsAbstractGeometryV2* geom = nullptr;
-
-  geom = geomFromWkbType( type );
+  std::unique_ptr< QgsAbstractGeometry > geom = geomFromWkbType( type );
 
   if ( geom )
   {
     try
     {
-      geom->fromWkb( wkbPtr );
+      geom->fromWkb( wkbPtr );  // also updates wkbPtr
     }
     catch ( const QgsWkbException &e )
     {
       Q_UNUSED( e );
       QgsDebugMsg( "WKB exception: " + e.what() );
-      delete geom;
-      geom = nullptr;
+      geom.reset();
     }
   }
 
   return geom;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QString &text )
 {
-  QgsAbstractGeometryV2* geom = nullptr;
-  if ( text.startsWith( "Point", Qt::CaseInsensitive ) )
+  QString trimmed = text.trimmed();
+  std::unique_ptr< QgsAbstractGeometry> geom;
+  if ( trimmed.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsPointV2();
+    geom = qgis::make_unique< QgsPoint >();
   }
-  else if ( text.startsWith( "LineString", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "LineString" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsLineStringV2();
+    geom = qgis::make_unique< QgsLineString >();
   }
-  else if ( text.startsWith( "CircularString", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "CircularString" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsCircularStringV2();
+    geom = qgis::make_unique< QgsCircularString >();
   }
-  else if ( text.startsWith( "CompoundCurve" , Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "CompoundCurve" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsCompoundCurveV2();
+    geom = qgis::make_unique< QgsCompoundCurve>();
   }
-  else if ( text.startsWith( "Polygon", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsPolygonV2();
+    geom = qgis::make_unique< QgsPolygon >();
   }
-  else if ( text.startsWith( "CurvePolygon", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsCurvePolygonV2();
+    geom = qgis::make_unique< QgsCurvePolygon >();
   }
-  else if ( text.startsWith( "MultiPoint", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiPointV2();
+    geom = qgis::make_unique< QgsMultiPoint >();
   }
-  else if ( text.startsWith( "MultiCurve", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiCurve" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiCurveV2();
+    geom = qgis::make_unique< QgsMultiCurve >();
   }
-  else if ( text.startsWith( "MultiLineString", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiLineString" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiLineStringV2();
+    geom = qgis::make_unique< QgsMultiLineString >();
   }
-  else if ( text.startsWith( "MultiSurface", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiSurface" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiSurfaceV2();
+    geom = qgis::make_unique< QgsMultiSurface >();
   }
-  else if ( text.startsWith( "MultiPolygon", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiPolygonV2();
+    geom = qgis::make_unique< QgsMultiPolygon >();
   }
-  else if ( text.startsWith( "GeometryCollection", Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsGeometryCollectionV2();
+    geom = qgis::make_unique< QgsGeometryCollection >();
   }
 
   if ( geom )
   {
     if ( !geom->fromWkt( text ) )
     {
-      delete geom;
       return nullptr;
     }
   }
   return geom;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromPoint( const QgsPoint& point )
+std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPointXY( const QgsPointXY &point )
 {
-  return new QgsPointV2( point.x(), point.y() );
+  return qgis::make_unique< QgsPoint >( point.x(), point.y() );
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint& multipoint )
+std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 {
-  QgsMultiPointV2* mp = new QgsMultiPointV2();
-  QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
+  std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
+  QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
   {
-    QgsPointV2* pt = new QgsPointV2( ptIt->x(), ptIt->y() );
+    QgsPoint *pt = new QgsPoint( ptIt->x(), ptIt->y() );
     mp->addGeometry( pt );
   }
   return mp;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromPolyline( const QgsPolyline& polyline )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   return linestringFromPolyline( polyline );
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline& multiline )
+std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
-  QgsMultiLineStringV2* mLine = new QgsMultiLineStringV2();
+  std::unique_ptr< QgsMultiLineString > mLine = qgis::make_unique< QgsMultiLineString >();
   for ( int i = 0; i < multiline.size(); ++i )
   {
-    mLine->addGeometry( fromPolyline( multiline.at( i ) ) );
+    mLine->addGeometry( fromPolylineXY( multiline.at( i ) ).release() );
   }
   return mLine;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromPolygon( const QgsPolygon& polygon )
+std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonXY &polygon )
 {
-  QgsPolygonV2* poly = new QgsPolygonV2();
+  std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
 
-  QList<QgsCurveV2*> holes;
+  QVector<QgsCurve *> holes;
+  holes.reserve( polygon.size() );
   for ( int i = 0; i < polygon.size(); ++i )
   {
-    QgsLineStringV2* l = linestringFromPolyline( polygon.at( i ) );
+    std::unique_ptr< QgsLineString > l = linestringFromPolyline( polygon.at( i ) );
     l->close();
 
     if ( i == 0 )
     {
-      poly->setExteriorRing( l );
+      poly->setExteriorRing( l.release() );
     }
     else
     {
-      holes.push_back( l );
+      holes.push_back( l.release() );
     }
   }
   poly->setInteriorRings( holes );
   return poly;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon& multipoly )
+std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
-  QgsMultiPolygonV2* mp = new QgsMultiPolygonV2();
+  std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
   for ( int i = 0; i < multipoly.size(); ++i )
   {
-    mp->addGeometry( fromPolygon( multipoly.at( i ) ) );
+    mp->addGeometry( fromPolygonXY( multipoly.at( i ) ).release() );
   }
   return mp;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::fromRect( const QgsRectangle& rect )
+std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolylineXY &polyline )
 {
-  QgsPolyline ring;
-  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  ring.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
-  ring.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
-  ring.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
-  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-
-  QgsPolygon polygon;
-  polygon.append( ring );
-
-  return fromPolygon( polygon );
-}
-
-QgsLineStringV2* QgsGeometryFactory::linestringFromPolyline( const QgsPolyline& polyline )
-{
-  QgsLineStringV2* line = new QgsLineStringV2();
-
-  QgsPointSequenceV2 points;
-  QgsPolyline::const_iterator it = polyline.constBegin();
+  QVector< double > x;
+  x.reserve( polyline.size() );
+  QVector< double > y;
+  y.reserve( polyline.size() );
+  QgsPolylineXY::const_iterator it = polyline.constBegin();
   for ( ; it != polyline.constEnd(); ++it )
   {
-    points.append( QgsPointV2( it->x(), it->y() ) );
+    x << it->x();
+    y << it->y();
   }
-  line->setPoints( points );
+  std::unique_ptr< QgsLineString > line = qgis::make_unique< QgsLineString >( x, y );
   return line;
 }
 
-QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::Type t )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
 {
-  QgsWKBTypes::Type type = QgsWKBTypes::flatType( t );
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( t );
   switch ( type )
   {
-    case QgsWKBTypes::Point:
-      return new QgsPointV2();
-    case QgsWKBTypes::LineString:
-      return new QgsLineStringV2();
-    case QgsWKBTypes::CircularString:
-      return new QgsCircularStringV2();
-    case QgsWKBTypes::CompoundCurve:
-      return new QgsCompoundCurveV2();
-    case QgsWKBTypes::Polygon:
-      return new QgsPolygonV2();
-    case QgsWKBTypes::CurvePolygon:
-      return new QgsCurvePolygonV2();
-    case QgsWKBTypes::MultiLineString:
-      return new QgsMultiLineStringV2();
-    case QgsWKBTypes::MultiPolygon:
-      return new QgsMultiPolygonV2();
-    case QgsWKBTypes::MultiPoint:
-      return new QgsMultiPointV2();
-    case QgsWKBTypes::MultiCurve:
-      return new QgsMultiCurveV2();
-    case QgsWKBTypes::MultiSurface:
-      return new QgsMultiSurfaceV2();
-    case QgsWKBTypes::GeometryCollection:
-      return new QgsGeometryCollectionV2();
+    case QgsWkbTypes::Point:
+      return qgis::make_unique< QgsPoint >();
+    case QgsWkbTypes::LineString:
+      return qgis::make_unique< QgsLineString >();
+    case QgsWkbTypes::CircularString:
+      return qgis::make_unique< QgsCircularString >();
+    case QgsWkbTypes::CompoundCurve:
+      return qgis::make_unique< QgsCompoundCurve >();
+    case QgsWkbTypes::Polygon:
+      return qgis::make_unique< QgsPolygon >();
+    case QgsWkbTypes::CurvePolygon:
+      return qgis::make_unique< QgsCurvePolygon >();
+    case QgsWkbTypes::MultiLineString:
+      return qgis::make_unique< QgsMultiLineString >();
+    case QgsWkbTypes::MultiPolygon:
+      return qgis::make_unique< QgsMultiPolygon >();
+    case QgsWkbTypes::MultiPoint:
+      return qgis::make_unique< QgsMultiPoint >();
+    case QgsWkbTypes::MultiCurve:
+      return qgis::make_unique< QgsMultiCurve >();
+    case QgsWkbTypes::MultiSurface:
+      return qgis::make_unique< QgsMultiSurface >();
+    case QgsWkbTypes::GeometryCollection:
+      return qgis::make_unique< QgsGeometryCollection >();
+    case QgsWkbTypes::Triangle:
+      return qgis::make_unique< QgsTriangle >();
     default:
       return nullptr;
   }
+}
+
+std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::Type t )
+{
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( QgsWkbTypes::multiType( t ) );
+  std::unique_ptr< QgsGeometryCollection > collect;
+  switch ( type )
+  {
+    case QgsWkbTypes::MultiPoint:
+      collect = qgis::make_unique< QgsMultiPoint >();
+      break;
+    case QgsWkbTypes::MultiLineString:
+      collect = qgis::make_unique< QgsMultiLineString >();
+      break;
+    case QgsWkbTypes::MultiCurve:
+      collect = qgis::make_unique< QgsMultiCurve >();
+      break;
+    case QgsWkbTypes::MultiPolygon:
+      collect = qgis::make_unique< QgsMultiPolygon >();
+      break;
+    case QgsWkbTypes::MultiSurface:
+      collect = qgis::make_unique< QgsMultiSurface >();
+      break;
+    case QgsWkbTypes::GeometryCollection:
+      collect = qgis::make_unique< QgsGeometryCollection >();
+      break;
+    default:
+      // should not be possible
+      return nullptr;
+  }
+  if ( QgsWkbTypes::hasM( t ) )
+    collect->addMValue();
+  if ( QgsWkbTypes::hasZ( t ) )
+    collect->addZValue();
+
+  return collect;
 }

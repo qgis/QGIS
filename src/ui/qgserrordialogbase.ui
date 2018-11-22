@@ -28,7 +28,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../../images/themes/default/mIconWarn.png</pixmap>
+        <pixmap>:/images/themes/default/mIconWarning.svg</pixmap>
        </property>
       </widget>
      </item>

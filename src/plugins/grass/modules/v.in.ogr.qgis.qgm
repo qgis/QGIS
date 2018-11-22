@@ -2,12 +2,12 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import loaded vector" module="v.in.ogr">
-        <ogr key="dsn" layeroption="layer" whereoption="where" label="Loaded layer" version_max="6.4"/>
-		<ogr key="input" layeroption="layer" whereoption="where" label="Loaded layer" version_min="7.0"/>
+
+		<ogr key="input" layeroption="layer" whereoption="where" label="Loaded layer"/>
         <option key="output" />
         <option key="type" advanced="yes"/>
-        <flag key="z" answer="off" hidden="no" advanced="yes" version_max="6.4"/>
-        <flag key="2" answer="off" hidden="no" advanced="yes" version_min="7.0"/>
+
+        <flag key="2" answer="off" hidden="no" advanced="yes"/>
         <flag key="t" answer="off" hidden="no" advanced="yes"/>
         <flag key="o" answer="off" hidden="no" advanced="yes"/>
         <flag key="r" answer="off" hidden="no" advanced="yes"/>

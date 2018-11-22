@@ -78,25 +78,25 @@ Q_OBJECT
 public:
   /** Constructs a new emulation */
   Vt102Emulation();
-  ~Vt102Emulation();
+  ~Vt102Emulation() override;
 
   // reimplemented from Emulation
-  virtual void clearEntireScreen();
-  virtual void reset();
-  virtual char eraseChar() const;
+  void clearEntireScreen() override;
+  void reset() override;
+  char eraseChar() const override;
 
 public slots:
   // reimplemented from Emulation
-  virtual void sendString(const char*,int length = -1);
-  virtual void sendText(const QString& text);
-  virtual void sendKeyEvent(QKeyEvent*);
-  virtual void sendMouseEvent(int buttons, int column, int line, int eventType);
+  void sendString(const char*,int length = -1) override;
+  void sendText(const QString& text) override;
+  void sendKeyEvent(QKeyEvent*) override;
+  void sendMouseEvent(int buttons, int column, int line, int eventType) override;
 
 protected:
   // reimplemented from Emulation
-  virtual void setMode(int mode);
-  virtual void resetMode(int mode);
-  virtual void receiveChar(int cc);
+  void setMode(int mode) override;
+  void resetMode(int mode) override;
+  void receiveChar(int cc) override;
 
 private slots:
   //causes changeTitle() to be emitted for each (int,QString) pair in pendingTitleUpdates

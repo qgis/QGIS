@@ -1,9 +1,0 @@
-<h3>Identify Features</h3>
-<p>
-The result dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
-</p>
-<p>
-The search radius can be set in the options dialog <label>Settings > Options > Map tools</label>, Identify section, as a percentage of map width. In this section you may also set identify mode to <label>Current layer</label>, <label>Top down, stop at first</label>, <label>Top down</label>. <br>
-You may also tick an <label>Open feature form, if a single feature is identified</label> option.<br>
-Identifiable layers can be set in the Project Properties dialog <label>Settings > Project Properties > Identifiable layers</label> where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
-</p>

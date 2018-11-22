@@ -1,0 +1,925 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsGeometryCheckerSetupTab</class>
+ <widget class="QWidget" name="QgsGeometryCheckerSetupTab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>726</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_7">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QgsVScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>656</width>
+        <height>960</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QWidget" name="widgetInputs" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>2</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBoxInputLayers">
+            <property name="title">
+             <string>Input vector layers</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item>
+              <widget class="QListWidget" name="listWidgetInputLayers"/>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
+               <property name="text">
+                <string>Only selected features</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxGeometryTypes" native="true">
+            <property name="title" stdset="0">
+             <string>Allowed geometry types</string>
+            </property>
+            <property name="flat" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxPoint">
+               <property name="text">
+                <string>Point</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBoxMultipoint">
+               <property name="text">
+                <string>Multipoint</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="checkBoxLine">
+               <property name="text">
+                <string>Line</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="checkBoxMultiline">
+               <property name="text">
+                <string>Multiline</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QCheckBox" name="checkBoxPolygon">
+               <property name="text">
+                <string>Polygon</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QCheckBox" name="checkBoxMultipolygon">
+               <property name="text">
+                <string>Multipolygon</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsCollapsibleGroupBox" name="groupBox_2" native="true">
+            <property name="title" stdset="0">
+             <string>Geometry validity</string>
+            </property>
+            <property name="flat" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxSelfIntersections">
+               <property name="text">
+                <string>Self intersections</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBoxDuplicateNodes">
+               <property name="text">
+                <string>Duplicate nodes</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="checkBoxDegeneratePolygon">
+               <property name="text">
+                <string>Polygon with less than 3 nodes</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="checkBoxSelfContacts">
+               <property name="text">
+                <string>Self contacts</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxGeometryProperties" native="true">
+            <property name="title" stdset="0">
+             <string>Geometry properties</string>
+            </property>
+            <property name="flat" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item>
+              <widget class="QCheckBox" name="checkBoxNoHoles">
+               <property name="text">
+                <string>Polygons and multipolygons may not contain any holes</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxMultipart">
+               <property name="text">
+                <string>Multipart objects must consist of more that one part</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxDangle">
+               <property name="text">
+                <string>Lines must not have dangles</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxGeometryConditions" native="true">
+            <property name="title" stdset="0">
+             <string>Geometry conditions</string>
+            </property>
+            <property name="flat" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <item row="1" column="2">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxAngle">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>360.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBoxAngle">
+               <property name="text">
+                <string>Minimum angle between segments (deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxSegmentLength">
+               <property name="text">
+                <string>Minimal segment length (map units)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxSegmentLength">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="checkBoxArea">
+               <property name="text">
+                <string>Minimal polygon area (map units sqr.)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="checkBoxSliverPolygons">
+               <property name="text">
+                <string>No sliver polygons</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QWidget" name="widgetSliverThreshold" native="true">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_6">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item row="1" column="2">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBoxSliverArea">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="decimals">
+                   <number>6</number>
+                  </property>
+                  <property name="maximum">
+                   <double>1000.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelSliverThinness">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Maximum thinness</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="labelSliverThinnessHelp">
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Thinness is the ratio between the area of the minimum square containing the polygon and the area of the polygon itself. A square has thinness 1. Default: 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="pluginres.qrc">:/geometrychecker/icons/tooltip.png</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBoxSliverThinness">
+                  <property name="decimals">
+                   <number>0</number>
+                  </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10000.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>20.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" colspan="2">
+                 <widget class="QCheckBox" name="checkBoxSliverArea">
+                  <property name="text">
+                   <string>Max. area (map units sqr.)</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxTopology" native="true">
+            <property name="title" stdset="0">
+             <string>Topology checks</string>
+            </property>
+            <property name="flat" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxDuplicates">
+               <property name="text">
+                <string>Check for duplicates</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="comboLineLayerIntersection">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QCheckBox" name="checkLineIntersection">
+               <property name="text">
+                <string>Lines must not intersect any other lines</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="checkBoxGaps">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Check for gaps smaller than (map units sqr.)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBoxCovered">
+               <property name="text">
+                <string>Check for features within other features</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="checkPointCoveredByLine">
+               <property name="text">
+                <string>Points must be covered by lines</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QCheckBox" name="checkLineLayerIntersection">
+               <property name="text">
+                <string>Lines must not intersect with features of layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="checkBoxOverlaps">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Check for overlaps smaller than (map units sqr.)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="checkPointInPolygon">
+               <property name="text">
+                <string>Points must properly lie inside a polygon</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0" colspan="2">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>&lt;i&gt;Note: Topology checks are performed in the current map CRS.&lt;/i&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QCheckBox" name="checkBoxFollowBoundaries">
+               <property name="text">
+                <string>Polygons must follow boundaries of layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QComboBox" name="comboBoxFollowBoundaries">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_10">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="spinBoxTolerance">
+              <property name="prefix">
+               <string notr="true">1E-</string>
+              </property>
+              <property name="minimum">
+               <number>3</number>
+              </property>
+              <property name="maximum">
+               <number>16</number>
+              </property>
+              <property name="value">
+               <number>8</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="labelTolerance">
+              <property name="text">
+               <string>Tolerance</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxOutputLayers">
+            <property name="title">
+             <string>Output vector layers</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <property name="spacing">
+              <number>2</number>
+             </property>
+             <item row="1" column="0">
+              <widget class="QRadioButton" name="radioButtonOutputNew">
+               <property name="text">
+                <string>Create &amp;new layers</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroupOutput</string>
+               </attribute>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="3">
+              <widget class="QRadioButton" name="radioButtonOutputModifyInput">
+               <property name="text">
+                <string>&amp;Modify input layers</string>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroupOutput</string>
+               </attribute>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QFrame" name="frameOutput">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_9">
+                <property name="leftMargin">
+                 <number>2</number>
+                </property>
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="rightMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <property name="spacing">
+                 <number>2</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelOutputFormat">
+                  <property name="text">
+                   <string>Format</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelOutputDirectory">
+                  <property name="text">
+                   <string>Output directory</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="lineEditOutputDirectory">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QPushButton" name="pushButtonOutputDirectory">
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1" colspan="2">
+                 <widget class="QComboBox" name="comboBoxOutputFormat"/>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="labelFilenamePrefix">
+                  <property name="text">
+                   <string>Filename prefix</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1" colspan="2">
+                 <widget class="QLineEdit" name="lineEditFilenamePrefix">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+         <zorder>groupBoxInputLayers</zorder>
+         <zorder>groupBox_2</zorder>
+         <zorder>groupBoxGeometryConditions</zorder>
+         <zorder>line</zorder>
+         <zorder>groupBoxGeometryProperties</zorder>
+         <zorder>groupBoxTopology</zorder>
+         <zorder>groupBoxOutputLayers</zorder>
+         <zorder>line_2</zorder>
+         <zorder>line_3</zorder>
+         <zorder>groupBoxGeometryTypes</zorder>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="widgetProgress" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QProgressBar" name="progressBar">
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelStatus">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDialogButtonBox" name="buttonBox">
+            <property name="standardButtons">
+             <set>QDialogButtonBox::NoButton</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsVScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsvscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QWidget</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>listWidgetInputLayers</tabstop>
+  <tabstop>checkBoxInputSelectedOnly</tabstop>
+  <tabstop>checkBoxPoint</tabstop>
+  <tabstop>checkBoxMultipoint</tabstop>
+  <tabstop>checkBoxLine</tabstop>
+  <tabstop>checkBoxMultiline</tabstop>
+  <tabstop>checkBoxPolygon</tabstop>
+  <tabstop>checkBoxMultipolygon</tabstop>
+  <tabstop>checkBoxSelfIntersections</tabstop>
+  <tabstop>checkBoxDuplicateNodes</tabstop>
+  <tabstop>checkBoxSelfContacts</tabstop>
+  <tabstop>checkBoxDegeneratePolygon</tabstop>
+  <tabstop>checkBoxNoHoles</tabstop>
+  <tabstop>checkBoxMultipart</tabstop>
+  <tabstop>checkBoxDangle</tabstop>
+  <tabstop>checkBoxSegmentLength</tabstop>
+  <tabstop>doubleSpinBoxSegmentLength</tabstop>
+  <tabstop>checkBoxAngle</tabstop>
+  <tabstop>doubleSpinBoxAngle</tabstop>
+  <tabstop>checkBoxArea</tabstop>
+  <tabstop>doubleSpinBoxArea</tabstop>
+  <tabstop>checkBoxSliverPolygons</tabstop>
+  <tabstop>doubleSpinBoxSliverThinness</tabstop>
+  <tabstop>checkBoxSliverArea</tabstop>
+  <tabstop>doubleSpinBoxSliverArea</tabstop>
+  <tabstop>checkBoxDuplicates</tabstop>
+  <tabstop>checkBoxCovered</tabstop>
+  <tabstop>checkBoxOverlaps</tabstop>
+  <tabstop>doubleSpinBoxOverlapArea</tabstop>
+  <tabstop>checkBoxGaps</tabstop>
+  <tabstop>doubleSpinBoxGapArea</tabstop>
+  <tabstop>checkPointCoveredByLine</tabstop>
+  <tabstop>checkPointInPolygon</tabstop>
+  <tabstop>checkLineIntersection</tabstop>
+  <tabstop>checkLineLayerIntersection</tabstop>
+  <tabstop>comboLineLayerIntersection</tabstop>
+  <tabstop>checkBoxFollowBoundaries</tabstop>
+  <tabstop>comboBoxFollowBoundaries</tabstop>
+  <tabstop>spinBoxTolerance</tabstop>
+  <tabstop>radioButtonOutputModifyInput</tabstop>
+  <tabstop>radioButtonOutputNew</tabstop>
+  <tabstop>comboBoxOutputFormat</tabstop>
+  <tabstop>lineEditOutputDirectory</tabstop>
+  <tabstop>pushButtonOutputDirectory</tabstop>
+  <tabstop>lineEditFilenamePrefix</tabstop>
+ </tabstops>
+ <resources>
+  <include location="pluginres.qrc"/>
+ </resources>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroupOutput"/>
+ </buttongroups>
+</ui>

@@ -32,15 +32,15 @@ from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsSingleSymbolRendererV2,
-    QgsLineSymbolV2,
-    QgsFillSymbolV2,
-    QgsMapLayerRegistry,
+    QgsSingleSymbolRenderer,
+    QgsLineSymbol,
+    QgsFillSymbol,
+    QgsProject,
     QgsRectangle,
     QgsArrowSymbolLayer,
-    QgsSymbolV2,
     QgsMultiRenderChecker,
-    QgsDataDefined
+    QgsProperty,
+    QgsSymbolLayer
 )
 
 from qgis.testing import start_app, unittest
@@ -60,11 +60,11 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
         self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.lines_layer)
+        QgsProject.instance().addMapLayer(self.lines_layer)
 
         # Create style
-        sym2 = QgsLineSymbolV2.createSimple({'color': '#fdbf6f'})
-        self.lines_layer.setRendererV2(QgsSingleSymbolRendererV2(sym2))
+        sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
+        self.lines_layer.setRenderer(QgsSingleSymbolRenderer(sym2))
 
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
@@ -73,20 +73,22 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.mapsettings.setBackgroundColor(QColor("white"))
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_1(self):
-        sym = self.lines_layer.rendererV2().symbol()
-        sym_layer = QgsArrowSymbolLayer.create({'head_size': '6.5'})
-        dd = QgsDataDefined("(@geometry_point_num % 4) * 2")
-        sym_layer.setDataDefinedProperty("arrow_width", dd)
-        dd2 = QgsDataDefined("(@geometry_point_num % 4) * 2")
-        sym_layer.setDataDefinedProperty("head_size", dd2)
-        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        sym = self.lines_layer.renderer().symbol()
+        sym_layer = QgsArrowSymbolLayer.create({'head_length': '6.5', 'head_thickness': '6.5'})
+        dd = QgsProperty.fromExpression("(@geometry_point_num % 4) * 2")
+        sym_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyArrowWidth, dd)
+        dd2 = QgsProperty.fromExpression("(@geometry_point_num % 4) * 2")
+        sym_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyArrowHeadLength, dd2)
+        dd3 = QgsProperty.fromExpression("(@geometry_point_num % 4) * 2")
+        sym_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyArrowHeadThickness, dd3)
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
@@ -95,20 +97,58 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_1'))
 
     def test_2(self):
-        sym = self.lines_layer.rendererV2().symbol()
+        sym = self.lines_layer.renderer().symbol()
         # double headed
-        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '5', 'head_size': '6.5', 'head_type': '2'})
-        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '5', 'head_length': '4', 'head_thickness': '6', 'head_type': '2'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
-        rendered_layers = [self.lines_layer.id()]
+        rendered_layers = [self.lines_layer]
         self.mapsettings.setLayers(rendered_layers)
 
         renderchecker = QgsMultiRenderChecker()
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_arrowsymbollayer_2')
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_2'))
+
+    def test_3(self):
+        sym = self.lines_layer.renderer().symbol()
+        # double headed
+        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_length': '6', 'head_thickness': '8', 'head_type': '0', 'arrow_type': '1', 'is_curved': '0'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        sym_layer.setSubSymbol(fill_sym)
+        sym.changeSymbolLayer(0, sym_layer)
+
+        rendered_layers = [self.lines_layer]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        ms = self.mapsettings
+        ms.setExtent(QgsRectangle(-101, 35, -99, 37))
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlName('expected_arrowsymbollayer_3')
+        self.assertTrue(renderchecker.runTest('arrowsymbollayer_3'))
+
+    def test_unrepeated(self):
+        sym = self.lines_layer.renderer().symbol()
+        # double headed
+        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_length': '6', 'head_thickness': '8', 'head_type': '0', 'arrow_type': '0'})
+        # no repetition
+        sym_layer.setIsRepeated(False)
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        sym_layer.setSubSymbol(fill_sym)
+        sym.changeSymbolLayer(0, sym_layer)
+
+        rendered_layers = [self.lines_layer]
+        self.mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        ms = self.mapsettings
+        ms.setExtent(QgsRectangle(-119, 17, -82, 50))
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlName('expected_arrowsymbollayer_4')
+        self.assertTrue(renderchecker.runTest('arrowsymbollayer_4'))
 
     def testColors(self):
         """

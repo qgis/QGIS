@@ -29,6 +29,7 @@ import os
 import sys
 import inspect
 
+from qgis.core import QgsApplication
 from processing.core.Processing import Processing
 from exampleprovider.ExampleAlgorithmProvider import ExampleAlgorithmProvider
 
@@ -44,7 +45,7 @@ class ProcessingExampleProviderPlugin:
         self.provider = ExampleAlgorithmProvider()
 
     def initGui(self):
-        Processing.addProvider(self.provider)
+        QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):
-        Processing.removeProvider(self.provider)
+        QgsApplication.processingRegistry().removeProvider(self.provider)

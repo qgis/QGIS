@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import map
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
@@ -115,7 +116,7 @@ spatialite_functions = [  # from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql
                           # SQL functions for Spatial-MetaData and Spatial-Index handling
                           "*initspatialmetadata", "*addgeometrycolumn", "*recovergeometrycolumn", "*discardgeometrycolumn",
                           "*createspatialindex", "*creatembrcache", "*disablespatialindex",
-                          # SQL functions implementing FDO/OGR compatibily
+                          # SQL functions implementing FDO/OGR compatibility
                           "*checkspatialmetadata", "*autofdostart", "*autofdostop", "*initfdospatialmetadata",
                           "*addfdogeometrycolumn", "*recoverfdogeometrycolumn", "*discardfdogeometrycolumn",
                           # SQL functions for MbrCache-based queries
@@ -141,7 +142,7 @@ def getSqlDictionary(spatial=True):
         f += spatialite_functions
         c += spatialite_constants
 
-    return {'keyword': map(strip_star, k), 'constant': map(strip_star, c), 'function': map(strip_star, f)}
+    return {'keyword': list(map(strip_star, k)), 'constant': list(map(strip_star, c)), 'function': list(map(strip_star, f))}
 
 
 def getQueryBuilderDictionary():

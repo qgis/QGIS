@@ -19,26 +19,24 @@
 
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsapplication.h"
 
 
-QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg , bool allowEmpty )
-    : QWidget( parent )
-    , mAuthCfgOrig( authcfg )
-    , mValid( false )
-    , mAllowEmpty( allowEmpty )
+QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
+  : QWidget( parent )
+  , mAuthCfgOrig( authcfg )
+  , mAllowEmpty( allowEmpty )
 {
   setupUi( this );
+  connect( btnLock, &QToolButton::toggled, this, &QgsAuthConfigIdEdit::btnLock_toggled );
+  connect( leAuthCfg, &QLineEdit::textChanged, this, &QgsAuthConfigIdEdit::leAuthCfg_textChanged );
 
   leAuthCfg->setReadOnly( true );
 
-  connect( this, SIGNAL( validityChanged( bool ) ), this, SLOT( updateValidityStyle( bool ) ) );
+  connect( this, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigIdEdit::updateValidityStyle );
 
   leAuthCfg->setText( authcfg );
   updateValidityStyle( validate() );
-}
-
-QgsAuthConfigIdEdit::~QgsAuthConfigIdEdit()
-{
 }
 
 const QString QgsAuthConfigIdEdit::configId()
@@ -53,12 +51,12 @@ const QString QgsAuthConfigIdEdit::configId()
 bool QgsAuthConfigIdEdit::validate()
 {
   QString authcfg( leAuthCfg->text() );
-  bool curvalid = (( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
-                   || ( mAllowEmpty && authcfg.isEmpty() ) );
+  bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
+                    || ( mAllowEmpty && authcfg.isEmpty() ) );
 
-  if ( !QgsAuthManager::instance()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
+  if ( !QgsApplication::authManager()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
   {
-    curvalid = QgsAuthManager::instance()->configIdUnique( authcfg );
+    curvalid = QgsApplication::authManager()->configIdUnique( authcfg );
   }
 
   if ( mValid != curvalid )
@@ -94,15 +92,15 @@ void QgsAuthConfigIdEdit::clear()
 
 void QgsAuthConfigIdEdit::updateValidityStyle( bool valid )
 {
-  QString ss( "QLineEdit{" );
-  ss += valid ? "" : QString( "color: %1;" ).arg( QgsAuthGuiUtils::redColor().name() );
-  ss += !btnLock->isChecked() ? "" : QString( "background-color: %1;" ).arg( QgsAuthGuiUtils::yellowColor().name() );
+  QString ss( QStringLiteral( "QLineEdit{" ) );
+  ss += valid ? QString() : QStringLiteral( "color: %1;" ).arg( QgsAuthGuiUtils::redColor().name() );
+  ss += !btnLock->isChecked() ? QString() : QStringLiteral( "background-color: %1;" ).arg( QgsAuthGuiUtils::yellowColor().name() );
   ss += '}';
 
   leAuthCfg->setStyleSheet( ss );
 }
 
-void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
+void QgsAuthConfigIdEdit::btnLock_toggled( bool checked )
 {
   leAuthCfg->setReadOnly( !checked );
   if ( checked )
@@ -111,7 +109,7 @@ void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
   updateValidityStyle( validate() );
 }
 
-void QgsAuthConfigIdEdit::on_leAuthCfg_textChanged( const QString &txt )
+void QgsAuthConfigIdEdit::leAuthCfg_textChanged( const QString &txt )
 {
   Q_UNUSED( txt );
   validate();

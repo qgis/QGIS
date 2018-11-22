@@ -14,114 +14,136 @@
  ***************************************************************************/
 
 #include "qgssublayersdialog.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QTableWidgetItem>
 #include <QPushButton>
 
+//! @cond
+class SubLayerItem : public QTreeWidgetItem
+{
+  public:
+    SubLayerItem( const QStringList &strings, int type = QTreeWidgetItem::Type )
+      :  QTreeWidgetItem( strings, type )
+    {}
 
-QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString& name,
-                                        QWidget* parent, const Qt::WindowFlags& fl )
-    : QDialog( parent, fl )
-    , mName( name )
+    bool operator <( const QTreeWidgetItem &other ) const override
+    {
+      QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
+      int col = treeWidget()->sortColumn();
+
+      if ( col == 0 || ( col > 0 && d->countColumn() == col ) )
+        return text( col ).toInt() < other.text( col ).toInt();
+      else
+        return text( col ) < other.text( col );
+    }
+};
+//! @endcond
+
+QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
+                                        QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mName( name )
 {
   setupUi( this );
 
   if ( providerType == QgsSublayersDialog::Ogr )
   {
-    setWindowTitle( tr( "Select vector layers to add..." ) );
+    setWindowTitle( tr( "Select Vector Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) );
+    mShowCount = true;
+    mShowType = true;
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
-    setWindowTitle( tr( "Select raster layers to add..." ) );
+    setWindowTitle( tr( "Select Raster Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
   }
   else
   {
-    setWindowTitle( tr( "Select layers to add..." ) );
+    setWindowTitle( tr( "Select Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
+    mShowType = true;
   }
 
   // add a "Select All" button - would be nicer with an icon
-  QPushButton* button = new QPushButton( tr( "Select All" ) );
+  QPushButton *button = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( button, QDialogButtonBox::ActionRole );
-  connect( button, SIGNAL( pressed() ), layersTable, SLOT( selectAll() ) );
+  connect( button, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
   // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/" + mName + "SubLayers/geometry" ).toByteArray() );
+
+  // Checkbox about adding sublayers to a group
+  mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ), this );
+  buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
+  mCheckboxAddToGroup->setVisible( false );
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "/Windows/" + mName + "SubLayers/geometry", saveGeometry() );
   settings.setValue( "/Windows/" + mName + "SubLayers/headerState",
                      layersTable->header()->saveState() );
 }
 
-QStringList QgsSublayersDialog::selectionNames()
+static bool _isLayerIdUnique( int layerId, QTreeWidget *layersTable )
 {
-  QStringList list;
+  int count = 0;
+  for ( int j = 0; j < layersTable->topLevelItemCount(); j++ )
+  {
+    if ( layersTable->topLevelItem( j )->text( 0 ).toInt() == layerId )
+    {
+      count++;
+    }
+  }
+  return count == 1;
+}
+
+QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
+{
+  LayerDefinitionList list;
   for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
   {
-    // If there are more sub layers of the same name (virtual for geometry types),
-    // add geometry type
+    QTreeWidgetItem *item = layersTable->selectedItems().at( i );
 
-    QString name = layersTable->selectedItems().at( i )->text( 1 );
-    int count = 0;
-    for ( int j = 0; j < layersTable->topLevelItemCount(); j++ )
+    LayerDefinition def;
+    def.layerId = item->text( 0 ).toInt();
+    def.layerName = item->text( 1 );
+    if ( mShowType )
     {
-      if ( layersTable->topLevelItem( j )->text( 1 ) == name )
-      {
-        count++;
-      }
+      // If there are more sub layers of the same name (virtual for geometry types),
+      // add geometry type
+      if ( !_isLayerIdUnique( def.layerId, layersTable ) )
+        def.type = item->text( mShowCount ? 3 : 2 );
     }
 
-    if ( count > 1 )
-    {
-      name += ':' + layersTable->selectedItems().at( i )->text( 3 );
-    }
-    else
-    {
-      name += ":any";
-    }
-
-    list << name;
+    list << def;
   }
   return list;
 }
 
-QList<int> QgsSublayersDialog::selectionIndexes()
-{
-  QList<int> list;
-  for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
-  {
-    list << layersTable->selectedItems().at( i )->text( 0 ).toInt();
-  }
-  return list;
-}
 
-void QgsSublayersDialog::populateLayerTable( const QStringList& theList, const QString& delim )
+void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefinitionList &list )
 {
-  Q_FOREACH ( const QString& item, theList )
+  Q_FOREACH ( const LayerDefinition &item, list )
   {
-    QStringList elements = item.split( delim );
-    while ( elements.size() > 4 )
-    {
-      elements[1] += delim + elements[2];
-      elements.removeAt( 2 );
-    }
-    layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
+    QStringList elements;
+    elements << QString::number( item.layerId ) << item.layerName;
+    if ( mShowCount )
+      elements << ( item.count == -1 ? tr( "Unknown" ) : QString::number( item.count ) );
+    if ( mShowType )
+      elements << item.type;
+    layersTable->addTopLevelItem( new SubLayerItem( elements ) );
   }
 
   // resize columns
-  QSettings settings;
+  QgsSettings settings;
   QByteArray ba = settings.value( "/Windows/" + mName + "SubLayers/headerState" ).toByteArray();
   if ( ! ba.isNull() )
   {
@@ -140,17 +162,17 @@ void QgsSublayersDialog::populateLayerTable( const QStringList& theList, const Q
 // TODO alert the user when dialog is not opened
 int QgsSublayersDialog::exec()
 {
-  QSettings settings;
-  QString promptLayers = settings.value( "/qgis/promptForSublayers", 1 ).toString();
+  QgsSettings settings;
+  QString promptLayers = settings.value( QStringLiteral( "qgis/promptForSublayers" ), 1 ).toString();
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
     return QDialog::Rejected;
 
   // check promptForSublayers settings - perhaps this should be in QgsDataSource instead?
-  if ( promptLayers == "no" )
+  if ( promptLayers == QLatin1String( "no" ) )
     return QDialog::Rejected;
-  else if ( promptLayers == "all" )
+  else if ( promptLayers == QLatin1String( "all" ) )
   {
     layersTable->selectAll();
     return QDialog::Accepted;
@@ -175,8 +197,20 @@ int QgsSublayersDialog::exec()
     cursor = QCursor( * QApplication::overrideCursor() );
     QApplication::restoreOverrideCursor();
   }
+
+  // Checkbox about adding sublayers to a group
+  if ( mShowAddToGroupCheckbox )
+  {
+    mCheckboxAddToGroup->setVisible( true );
+    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+    mCheckboxAddToGroup->setChecked( addToGroup );
+  }
+
   int ret = QDialog::exec();
   if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
+
+  if ( mShowAddToGroupCheckbox )
+    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
   return ret;
 }

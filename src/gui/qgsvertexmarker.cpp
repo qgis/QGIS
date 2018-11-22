@@ -18,14 +18,9 @@
 #include "qgsvertexmarker.h"
 
 
-QgsVertexMarker::QgsVertexMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
-{
-  mIconSize = 10;
-  mIconType = ICON_X;
-  mColor = QColor( 255, 0, 0 );
-  mPenWidth = 1;
-}
+QgsVertexMarker::QgsVertexMarker( QgsMapCanvas *mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
+{}
 
 void QgsVertexMarker::setIconType( int type )
 {
@@ -37,16 +32,23 @@ void QgsVertexMarker::setIconSize( int iconSize )
   mIconSize = iconSize;
 }
 
-void QgsVertexMarker::setCenter( const QgsPoint& point )
+void QgsVertexMarker::setCenter( const QgsPointXY &point )
 {
   mCenter = point;
   QPointF pt = toCanvasCoordinates( mCenter );
   setPos( pt );
 }
 
-void QgsVertexMarker::setColor( const QColor& color )
+void QgsVertexMarker::setColor( const QColor &color )
 {
   mColor = color;
+  update();
+}
+
+void QgsVertexMarker::setFillColor( const QColor &color )
+{
+  mFillColor = color;
+  update();
 }
 
 void QgsVertexMarker::setPenWidth( int width )
@@ -54,13 +56,15 @@ void QgsVertexMarker::setPenWidth( int width )
   mPenWidth = width;
 }
 
-void QgsVertexMarker::paint( QPainter* p )
+void QgsVertexMarker::paint( QPainter *p )
 {
   qreal s = ( mIconSize - 1 ) / 2.0;
 
   QPen pen( mColor );
   pen.setWidth( mPenWidth );
   p->setPen( pen );
+  QBrush brush( mFillColor );
+  p->setBrush( brush );
 
   switch ( mIconType )
   {
@@ -87,6 +91,13 @@ void QgsVertexMarker::paint( QPainter* p )
     case ICON_CIRCLE:
       p->drawEllipse( QPointF( 0, 0 ), s, s );
       break;
+
+    case ICON_DOUBLE_TRIANGLE:
+      p->drawLine( QLineF( -s, -s,  s, -s ) );
+      p->drawLine( QLineF( -s,  s,  s,  s ) );
+      p->drawLine( QLineF( -s, -s,  s,  s ) );
+      p->drawLine( QLineF( s, -s, -s,  s ) );
+      break;
   }
 }
 
@@ -94,7 +105,7 @@ void QgsVertexMarker::paint( QPainter* p )
 QRectF QgsVertexMarker::boundingRect() const
 {
   qreal s = qreal( mIconSize + mPenWidth ) / 2.0;
-  return QRectF( -s, -s, 2.0*s, 2.0*s );
+  return QRectF( -s, -s, 2.0 * s, 2.0 * s );
 }
 
 void QgsVertexMarker::updatePosition()

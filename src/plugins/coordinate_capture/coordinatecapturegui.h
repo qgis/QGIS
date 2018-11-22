@@ -13,23 +13,20 @@
 #define CoordinateCaptureGUI_H
 
 #include <QDialog>
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 /**
-@author Tim Sutton
 */
 class CoordinateCaptureGui : public QDialog
 {
     Q_OBJECT
 
   public:
-    CoordinateCaptureGui( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
-    ~CoordinateCaptureGui();
+    CoordinateCaptureGui( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 #endif

@@ -20,9 +20,9 @@ class FixUiimport(fixer_base.BaseFix):
         imp = results.get('imp')
 
         if node.type == syms.import_from:
-            # Some imps are top-level (eg: 'import ham')
-            # some are first level (eg: 'import ham.eggs')
-            # some are third level (eg: 'import ham.eggs as spam')
+            # Some imps are top-level (e.g., 'import ham')
+            # some are first level (e.g., 'import ham.eggs')
+            # some are third level (e.g., 'import ham.eggs as spam')
             # Hence, the loop
             while not hasattr(imp, 'value'):
                 imp = imp.children[0]

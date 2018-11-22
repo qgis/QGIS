@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SearchBar</string>
+   <string>Search Bar</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -63,7 +63,7 @@
    <item>
     <widget class="QToolButton" name="optionsButton">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="icon">
       <iconset>

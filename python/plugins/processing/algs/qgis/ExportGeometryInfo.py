@@ -26,73 +26,110 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField
-from qgis.utils import iface
+from qgis.core import (NULL,
+                       QgsApplication,
+                       QgsCoordinateTransform,
+                       QgsField,
+                       QgsFields,
+                       QgsWkbTypes,
+                       QgsPointXY,
+                       QgsFeatureSink,
+                       QgsDistanceArea,
+                       QgsProcessingUtils,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExportGeometryInfo(GeoAlgorithm):
+class ExportGeometryInfo(QgisAlgorithm):
 
     INPUT = 'INPUT'
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
+    def tags(self):
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity,fields').split(',')
+
+    def group(self):
+        return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
+
+    def __init__(self):
+        super().__init__()
+        self.export_z = False
+        self.export_m = False
+        self.distance_area = None
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Calculate using'), self.calc_methods, 0))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Calculate using'), options=self.calc_methods, defaultValue=0))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Added geom info')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
+    def name(self):
+        return 'exportaddgeometrycolumns'
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        method = self.getParameterValue(self.METHOD)
+    def displayName(self):
+        return self.tr('Add geometry attributes')
 
-        geometryType = layer.geometryType()
-        fields = layer.pendingFields()
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        if geometryType == QGis.Polygon:
-            areaName = vector.createUniqueFieldName('area', fields)
-            fields.append(QgsField(areaName, QVariant.Double))
-            perimeterName = vector.createUniqueFieldName('perimeter', fields)
-            fields.append(QgsField(perimeterName, QVariant.Double))
-        elif geometryType == QGis.Line:
-            lengthName = vector.createUniqueFieldName('length', fields)
-            fields.append(QgsField(lengthName, QVariant.Double))
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+
+        wkb_type = source.wkbType()
+        fields = source.fields()
+
+        new_fields = QgsFields()
+        if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.PolygonGeometry:
+            new_fields.append(QgsField('area', QVariant.Double))
+            new_fields.append(QgsField('perimeter', QVariant.Double))
+        elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.LineGeometry:
+            new_fields.append(QgsField('length', QVariant.Double))
+            if not QgsWkbTypes.isMultiType(source.wkbType()):
+                new_fields.append(QgsField('straightdis', QVariant.Double))
+                new_fields.append(QgsField('sinuosity', QVariant.Double))
         else:
-            xName = vector.createUniqueFieldName('xcoord', fields)
-            fields.append(QgsField(xName, QVariant.Double))
-            yName = vector.createUniqueFieldName('ycoord', fields)
-            fields.append(QgsField(yName, QVariant.Double))
+            new_fields.append(QgsField('xcoord', QVariant.Double))
+            new_fields.append(QgsField('ycoord', QVariant.Double))
+            if QgsWkbTypes.hasZ(source.wkbType()):
+                self.export_z = True
+                new_fields.append(QgsField('zcoord', QVariant.Double))
+            if QgsWkbTypes.hasM(source.wkbType()):
+                self.export_m = True
+                new_fields.append(QgsField('mvalue', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+        fields = QgsProcessingUtils.combineFields(fields, new_fields)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, wkb_type, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        ellips = None
-        crs = None
         coordTransform = None
 
         # Calculate with:
@@ -100,39 +137,78 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 1 - project CRS
         # 2 - ellipsoidal
 
+        self.distance_area = QgsDistanceArea()
         if method == 2:
-            ellips = QgsProject.instance().readEntry('Measure', '/Ellipsoid',
-                                                     'NONE')[0]
-            crs = layer.crs().srsid()
+            self.distance_area.setSourceCrs(source.sourceCrs(), context.transformContext())
+            self.distance_area.setEllipsoid(context.project().ellipsoid())
         elif method == 1:
-            mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
-            layCRS = layer.crs()
-            coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
+            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-
-        outFeat.initAttributes(len(fields))
-        outFeat.setFields(fields)
-
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
-            inGeom = f.geometry()
+            if feedback.isCanceled():
+                break
 
-            if method == 1:
-                inGeom.transform(coordTransform)
-
-            (attr1, attr2) = vector.simpleMeasure(inGeom, method, ellips, crs)
-
-            outFeat.setGeometry(inGeom)
+            outFeat = f
             attrs = f.attributes()
-            attrs.append(attr1)
-            if attr2 is not None:
-                attrs.append(attr2)
+            inGeom = f.geometry()
+            if inGeom:
+                if coordTransform is not None:
+                    inGeom.transform(coordTransform)
+
+                if inGeom.type() == QgsWkbTypes.PointGeometry:
+                    attrs.extend(self.point_attributes(inGeom))
+                elif inGeom.type() == QgsWkbTypes.PolygonGeometry:
+                    attrs.extend(self.polygon_attributes(inGeom))
+                else:
+                    attrs.extend(self.line_attributes(inGeom))
+
+            # ensure consistent count of attributes - otherwise null
+            # geometry features will have incorrect attribute length
+            # and provider may reject them
+            if len(attrs) < len(fields):
+                attrs += [NULL] * (len(fields) - len(attrs))
+
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
+
+    def point_attributes(self, geometry):
+        pt = None
+        if not geometry.isMultipart():
+            pt = geometry.constGet()
+        else:
+            if geometry.numGeometries() > 0:
+                pt = geometry.geometryN(0)
+        attrs = []
+        if pt:
+            attrs.append(pt.x())
+            attrs.append(pt.y())
+            # add point z/m
+            if self.export_z:
+                attrs.append(pt.z())
+            if self.export_m:
+                attrs.append(pt.m())
+        return attrs
+
+    def line_attributes(self, geometry):
+        if geometry.isMultipart():
+            return [self.distance_area.measureLength(geometry)]
+        else:
+            curve = geometry.constGet()
+            p1 = curve.startPoint()
+            p2 = curve.endPoint()
+            straight_distance = self.distance_area.measureLine(QgsPointXY(p1), QgsPointXY(p2))
+            sinuosity = curve.sinuosity()
+            if math.isnan(sinuosity):
+                sinuosity = NULL
+            return [self.distance_area.measureLength(geometry), straight_distance, sinuosity]
+
+    def polygon_attributes(self, geometry):
+        area = self.distance_area.measureArea(geometry)
+        perimeter = self.distance_area.measurePerimeter(geometry)
+        return [area, perimeter]

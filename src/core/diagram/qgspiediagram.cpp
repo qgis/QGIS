@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspiediagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 
@@ -26,16 +26,12 @@ QgsPieDiagram::QgsPieDiagram()
   mPen.setStyle( Qt::SolidLine );
 }
 
-QgsPieDiagram::~QgsPieDiagram()
-{
-}
-
-QgsPieDiagram* QgsPieDiagram::clone() const
+QgsPieDiagram *QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   Q_UNUSED( c );
 
@@ -43,16 +39,16 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
   if ( is.classificationAttributeIsExpression )
   {
     QgsExpressionContext expressionContext = c.expressionContext();
-    if ( feature.fields() )
-      expressionContext.setFields( *feature.fields() );
+    if ( !feature.fields().isEmpty() )
+      expressionContext.setFields( feature.fields() );
     expressionContext.setFeature( feature );
 
-    QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    QgsExpression *expression = getExpression( is.classificationAttributeExpression, expressionContext );
     attrVal = expression->evaluate( &expressionContext );
   }
   else
   {
-    attrVal = feature.attributes().at( is.classificationAttribute );
+    attrVal = feature.attribute( is.classificationField );
   }
 
   bool ok = false;
@@ -68,19 +64,24 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
 double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
   QSizeF size = sizeForValue( value, s, is );
-  return qMax( size.width(), size.height() );
+  return std::max( size.width(), size.height() );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+QString QgsPieDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_PIE;
+}
+
+QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );
   Q_UNUSED( attributes );
   return s.size;
 }
 
-void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
+void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position )
 {
-  QPainter* p = c.painter();
+  QPainter *p = c.painter();
   if ( !p )
   {
     return;
@@ -94,13 +95,13 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
   QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
   for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )
   {
-    QgsExpression* expression = getExpression( *catIt, expressionContext );
+    QgsExpression *expression = getExpression( *catIt, expressionContext );
     currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
@@ -142,7 +143,7 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
         }
         else
         {
-          p->drawPie( baseX, baseY, w, h, totalAngle + s.angleOffset, currentAngle );
+          p->drawPie( baseX, baseY, w, h, totalAngle - s.rotationOffset * 16.0, currentAngle );
         }
         totalAngle += currentAngle;
       }

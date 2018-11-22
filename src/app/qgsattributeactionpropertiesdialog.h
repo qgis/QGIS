@@ -19,17 +19,18 @@
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
 
 #include "qgsaction.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 
-class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttributeActionPropertiesDialogBase
+class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttributeActionPropertiesDialogBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, bool showInAttributeTable, QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    QgsAttributeActionPropertiesDialog( QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     QgsAction::ActionType type() const;
 
@@ -41,18 +42,28 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
 
     QString actionText() const;
 
-    bool showInAttributeTable() const;
+    QSet<QString> actionScopes() const;
+
+    QString notificationMessage() const;
+
+    bool isEnabledOnlyWhenEditable() const;
 
     bool capture() const;
+
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void browse();
     void insertExpressionOrField();
     void chooseIcon();
     void updateButtons();
+    void showHelp();
 
   private:
-    QgsVectorLayer* mLayer;
+    void init( const QSet<QString> &actionScopes );
+
+    QgsVectorLayer *mLayer = nullptr;
+    QList<QCheckBox *> mActionScopeCheckBoxes;
 };
 
 #endif // QGSATTRIBUTEACTIONPROPERTIESDIALOG_H

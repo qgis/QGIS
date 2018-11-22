@@ -17,23 +17,23 @@
 
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
-#include <pal/feature.h>
+#include "pal/feature.h"
 
-#include "qgslabelingenginev2.h"
+#include "qgslabelingengine.h"
 
 /**
  * Class that adds extra information to QgsLabelFeature for text labels
  *
- * @note not part of public API
- * @note not available in Python bindings
+ * \note not part of public API
+ * \note not available in Python bindings
  */
 class QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
     //! Construct text label feature
-    QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, const QSizeF& size )
-        : QgsLabelFeature( id, geometry, size )
-        , mFontMetrics( nullptr )
+    QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, const QSizeF &size )
+      : QgsLabelFeature( id, geometry, size )
+      , mFontMetrics( nullptr )
     {
       mDefinedFont = QFont();
     }
@@ -44,10 +44,11 @@ class QgsTextLabelFeature : public QgsLabelFeature
       delete mFontMetrics;
     }
 
-    /** Returns the text component corresponding to a specified label part
-     * @param partId Set to -1 for labels which are not broken into parts (eg, non-curved labels), or the required
+    /**
+     * Returns the text component corresponding to a specified label part
+     * \param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     QString text( int partId ) const
     {
@@ -58,7 +59,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     }
 
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
+    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double fontScale, double maxinangle, double maxoutangle )
     {
       if ( mInfo )
         return;
@@ -122,18 +123,18 @@ class QgsTextLabelFeature : public QgsLabelFeature
       }
     }
 
-    //! Get data-defined values
-    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& dataDefinedValues() const { return mDataDefinedValues; }
-    //! Set data-defined values
-    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& values ) { mDataDefinedValues = values; }
+    //! Gets data-defined values
+    const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
+    //! Sets data-defined values
+    void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > &values ) { mDataDefinedValues = values; }
 
-    //! Set font to be used for rendering
-    void setDefinedFont( const QFont& f ) { mDefinedFont = f; }
+    //! Sets font to be used for rendering
+    void setDefinedFont( const QFont &f ) { mDefinedFont = f; }
     //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }
 
     //! Metrics of the font for rendering
-    QFontMetricsF* labelFontMetrics() { return mFontMetrics; }
+    QFontMetricsF *labelFontMetrics() { return mFontMetrics; }
 
   protected:
     //! List of graphemes (used for curved labels)
@@ -141,8 +142,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Font for rendering
     QFont mDefinedFont;
     //! Metrics of the font for rendering
-    QFontMetricsF* mFontMetrics;
-    /** Stores attribute values for data defined properties*/
+    QFontMetricsF *mFontMetrics = nullptr;
+    //! Stores attribute values for data defined properties
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
 };

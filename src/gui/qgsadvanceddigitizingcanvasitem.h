@@ -19,17 +19,19 @@
 #include <QPen>
 
 #include "qgsmapcanvasitem.h"
+#include "qgis_gui.h"
+#include "qgssnapindicator.h"
 
 class QgsAdvancedDigitizingDockWidget;
 
 /**
- * @brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (@see QgsAdvancedDigitizingDock) on the map canvas.
+ * \ingroup gui
+ * \brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (\see QgsAdvancedDigitizingDockWidget) on the map canvas.
  */
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
   public:
-    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
-    ~QgsAdvancedDigitizingCanvasItem();
+    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void paint( QPainter *painter ) override;
 
@@ -40,9 +42,11 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
     QPen mSnapPen;
     QPen mSnapLinePen;
     QPen mCursorPen;
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
   private:
-    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget;
+    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
 };
 
 #endif // QGSADVANCEDDIGITIZINGCANVASITEM_H

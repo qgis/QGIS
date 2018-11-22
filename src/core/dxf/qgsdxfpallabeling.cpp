@@ -22,46 +22,46 @@
 #include "qgslogger.h"
 
 
-QgsDxfLabelProvider::QgsDxfLabelProvider( QgsVectorLayer* layer, const QString& providerId, QgsDxfExport* dxf, const QgsPalLayerSettings *settings )
-    : QgsVectorLayerLabelProvider( layer, providerId, false, settings )
-    , mDxfExport( dxf )
+QgsDxfLabelProvider::QgsDxfLabelProvider( QgsVectorLayer *layer, const QString &providerId, QgsDxfExport *dxf, const QgsPalLayerSettings *settings )
+  : QgsVectorLayerLabelProvider( layer, providerId, false, settings )
+  , mDxfExport( dxf )
 {
 }
 
-void QgsDxfLabelProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
+void QgsDxfLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
   Q_ASSERT( mDxfExport );
   mDxfExport->drawLabel( layerId(), context, label, mSettings );
 }
 
-void QgsDxfLabelProvider::registerDxfFeature( QgsFeature& feature, QgsRenderContext& context, const QString& dxfLayerName )
+void QgsDxfLabelProvider::registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName )
 {
   registerFeature( feature, context );
   mDxfExport->registerDxfLayer( layerId(), feature.id(), dxfLayerName );
 }
 
-QgsDxfRuleBasedLabelProvider::QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer* layer, QgsDxfExport* dxf )
-    : QgsRuleBasedLabelProvider( rules, layer, false )
-    , mDxfExport( dxf )
+QgsDxfRuleBasedLabelProvider::QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, QgsDxfExport *dxf )
+  : QgsRuleBasedLabelProvider( rules, layer, false )
+  , mDxfExport( dxf )
 {
 }
 
-void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer* layer )
+void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer *layer )
 {
-  QgsDebugMsg( "Entering." );
-  mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
+  mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
-QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
+QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   Q_UNUSED( withFeatureLoop );
   return new QgsDxfLabelProvider( layer, providerId, mDxfExport, settings );
 }
 
 void QgsDxfRuleBasedLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   Q_ASSERT( mDxfExport );
   mDxfExport->drawLabel( layerId(), context, label, mSettings );
 }

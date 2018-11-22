@@ -25,25 +25,14 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.parameters import getParameterFromString
-from .v_net import incorporatePoints
+from .v_net import incorporatePoints, variableOutput
+from qgis.core import QgsProcessingParameterDefinition
 
 
-def processCommand(alg):
-    # We temporary remove the output 'sequence'
-    sequence = alg.getOutputFromName(u'sequence')
-    sequenceFile = alg.getOutputValue(u'sequence')
-    alg.exportedLayers[sequence.value] = sequence.name + alg.uniqueSufix
-    alg.removeOutputFromName(u'sequence')
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
 
-    # We create a new parameter with the same name
-    param = getParameterFromString(u"ParameterString|sequence|sequence|None|False|False")
-    param.setValue(sequenceFile)
-    alg.addParameter(param)
 
-    # Let's do the incorporation and command generation
-    incorporatePoints(alg)
-
-    # then we delete the input parameter and add the old output
-    alg.parameters.remove(param)
-    alg.addOutput(sequence)
+def processOutputs(alg, parameters, context, feedback):
+    outputParameter = {'output': ['output', 'line', 1, True]}
+    variableOutput(alg, outputParameter, parameters, context)

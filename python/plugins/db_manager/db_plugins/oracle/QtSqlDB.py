@@ -19,6 +19,8 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import range
+from builtins import object
 
 from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery, QSqlField
@@ -58,16 +60,16 @@ def TimestampFromTicks(ticks):
 class ConnectionError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super(ConnectionError, self).__init__(*args, **kwargs)
 
 
 class ExecError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super(ExecError, self).__init__(*args, **kwargs)
 
 
-class QtSqlDBCursor:
+class QtSqlDBCursor(object):
 
     def __init__(self, conn):
         self.qry = QSqlQuery(conn)
@@ -108,9 +110,9 @@ class QtSqlDBCursor:
             elif f.type() == QVariant.Int:
                 t = int
             elif f.type() == QVariant.String:
-                t = unicode
+                t = str
             elif f.type() == QVariant.ByteArray:
-                t = unicode
+                t = str
             else:
                 continue
 
@@ -148,9 +150,9 @@ class QtSqlDBCursor:
         row = []
         for i in range(len(self.description)):
             value = self.qry.value(i)
-            if (isinstance(value, QDate)
-                    or isinstance(value, QTime)
-                    or isinstance(value, QDateTime)):
+            if (isinstance(value, QDate) or
+                    isinstance(value, QTime) or
+                    isinstance(value, QDateTime)):
                 value = value.toString()
             elif isinstance(value, QByteArray):
                 value = u"GEOMETRY"
@@ -187,7 +189,7 @@ class QtSqlDBCursor:
         raise ExecError("nyi")
 
 
-class QtSqlDBConnection:
+class QtSqlDBConnection(object):
     connections = 0
 
     def __init__(self, driver, dbname, user, passwd):

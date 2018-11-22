@@ -19,6 +19,8 @@
 #include <qnamespace.h>
 #include <QList>
 #include <QPair>
+#include <QDomNodeList>
+#include "qgis_core.h"
 
 class QDomElement;
 class QDomDocument;
@@ -28,58 +30,91 @@ class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsMapLayer;
+class QgsProject;
 
 /**
+ * \ingroup core
  * Assorted functions for dealing with layer trees.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeUtils
 {
   public:
 
     //! Try to load layer tree from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
-    static bool readOldLegend( QgsLayerTreeGroup* root, const QDomElement& legendElem );
+    static bool readOldLegend( QgsLayerTreeGroup *root, const QDomElement &legendElem );
     //! Try to load custom layer order from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
-    static bool readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order );
-    //! Return \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
-    static QDomElement writeOldLegend( QDomDocument& doc, QgsLayerTreeGroup* root, bool hasCustomOrder, const QStringList& order );
+    static bool readOldLegendLayerOrder( const QDomElement &legendElem, bool &hasCustomOrder, QStringList &order );
+    //! Returns \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
+    static QDomElement writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QList<QgsMapLayer *> &order );
 
     //! Convert Qt::CheckState to QString
     static QString checkStateToXml( Qt::CheckState state );
     //! Convert QString to Qt::CheckState
-    static Qt::CheckState checkStateFromXml( const QString& txt );
+    static Qt::CheckState checkStateFromXml( const QString &txt );
 
-    //! Return true if any of the layers is editable
-    static bool layersEditable( const QList<QgsLayerTreeLayer*>& layerNodes );
-    //! Return true if any of the layers is modified
-    static bool layersModified( const QList<QgsLayerTreeLayer*>& layerNodes );
+    //! Returns true if any of the layers is editable
+    static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
+    //! Returns true if any of the layers is modified
+    static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 
-    //! Remove layer nodes that refer to invalid layers
-    static void removeInvalidLayers( QgsLayerTreeGroup* group );
+    //! Removes layer nodes that refer to invalid layers
+    static void removeInvalidLayers( QgsLayerTreeGroup *group );
+
+    /**
+     * Stores in a layer's originalXmlProperties the layer properties information
+     * \since 3.6
+     */
+    static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
-    static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
+    static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
 
-    //! @note not available in python bindings
-    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
+    /**
+     * Updates an embedded \a group from a \a project.
+     */
+    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
 
-    //! get invisible layers
+    //! Gets invisible layers
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );
 
-    //! Set the expression filter of a legend layer
-    static void setLegendFilterByExpression( QgsLayerTreeLayer& layer, const QString& expr, bool enabled = true );
-    //! Return the expression filter of a legend layer
-    static QString legendFilterByExpression( const QgsLayerTreeLayer& layer, bool* enabled = nullptr );
+    //! Sets the expression filter of a legend layer
+    static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );
+    //! Returns the expression filter of a legend layer
+    static QString legendFilterByExpression( const QgsLayerTreeLayer &layer, bool *enabled = nullptr );
     //! Test if one of the layers in a group has an expression filter
-    static bool hasLegendFilterExpression( const QgsLayerTreeGroup& group );
+    static bool hasLegendFilterExpression( const QgsLayerTreeGroup &group );
 
-    //! Insert a QgsMapLayer just below another one
-    //! @param group the tree group where layers are (can be the root group)
-    //! @param refLayer the reference layer
-    //! @param layerToInsert the new layer to insert just below the reference layer
-    //! @returns the new tree layer
-    static QgsLayerTreeLayer* insertLayerBelow( QgsLayerTreeGroup* group, const QgsMapLayer* refLayer, QgsMapLayer* layerToInsert );
+    /**
+     * Insert a QgsMapLayer just below another one
+     * \param group the tree group where layers are (can be the root group)
+     * \param refLayer the reference layer
+     * \param layerToInsert the new layer to insert just below the reference layer
+     * \returns the new tree layer
+     */
+    static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
+
+    /**
+     * Returns map layers from the given list of layer tree nodes. Also recursively visits
+     * child nodes of groups.
+     * \since QGIS 3.4
+     */
+    static QSet<QgsMapLayer *> collectMapLayersRecursive( const QList<QgsLayerTreeNode *> &nodes );
+
+    /**
+     * Returns how many occurrences of a map layer are there in a layer tree.
+     * In normal situations there is at most one occurrence, but sometimes there
+     * may be temporarily more: for example, during drag&drop, upon drop a new layer
+     * node is created while the original dragged node is still in the tree, resulting
+     * in two occurrences.
+     *
+     * This is useful when deciding whether to start or stop listening to a signal
+     * of a map layer within a layer tree and only connecting/disconnecting when
+     * there is only one occurrence of that layer.
+     * \since QGIS 3.4
+     */
+    static int countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer *layer );
 };
 
 #endif // QGSLAYERTREEUTILS_H

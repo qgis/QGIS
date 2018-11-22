@@ -18,42 +18,34 @@
 
 #include <QTextStream>
 
-QgsCredentials *QgsCredentials::smInstance = nullptr;
+QgsCredentials *QgsCredentials::sInstance = nullptr;
 
-void QgsCredentials::setInstance( QgsCredentials *theInstance )
+void QgsCredentials::setInstance( QgsCredentials *instance )
 {
-  if ( smInstance )
+  if ( sInstance )
   {
-    QgsDebugMsg( "already registered an instance of QgsCredentials" );
+    QgsDebugMsg( QStringLiteral( "already registered an instance of QgsCredentials" ) );
   }
 
-  smInstance = theInstance;
+  sInstance = instance;
 }
 
 QgsCredentials *QgsCredentials::instance()
 {
-  if ( smInstance )
-    return smInstance;
+  if ( sInstance )
+    return sInstance;
 
   return new QgsCredentialsNone();
 }
 
-QgsCredentials::QgsCredentials()
-{
-}
-
-QgsCredentials::~QgsCredentials()
-{
-}
-
-bool QgsCredentials::get( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message )
 {
   if ( mCredentialCache.contains( realm ) )
   {
     QPair<QString, QString> credentials = mCredentialCache.take( realm );
     username = credentials.first;
     password = credentials.second;
-    QgsDebugMsg( QString( "retrieved realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+    QgsDebugMsg( QStringLiteral( "retrieved realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
 
     if ( !password.isNull() )
       return true;
@@ -61,27 +53,27 @@ bool QgsCredentials::get( const QString& realm, QString &username, QString &pass
 
   if ( request( realm, username, password, message ) )
   {
-    QgsDebugMsg( QString( "requested realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+    QgsDebugMsg( QStringLiteral( "requested realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
     return true;
   }
   else
   {
-    QgsDebugMsg( QString( "unset realm:%1" ).arg( realm ) );
+    QgsDebugMsg( QStringLiteral( "unset realm:%1" ).arg( realm ) );
     return false;
   }
 }
 
-void QgsCredentials::put( const QString& realm, const QString& username, const QString& password )
+void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
-  QgsDebugMsg( QString( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+  QgsDebugMsg( QStringLiteral( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
-bool QgsCredentials::getMasterPassword( QString &password , bool stored )
+bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 {
   if ( requestMasterPassword( password, stored ) )
   {
-    QgsDebugMsg( "requested master password" );
+    QgsDebugMsg( QStringLiteral( "requested master password" ) );
     return true;
   }
   return false;
@@ -106,7 +98,7 @@ QgsCredentialsNone::QgsCredentialsNone()
   setInstance( this );
 }
 
-bool QgsCredentialsNone::request( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentialsNone::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
   Q_UNUSED( realm );
   Q_UNUSED( username );
@@ -130,7 +122,7 @@ QgsCredentialsConsole::QgsCredentialsConsole()
   setInstance( this );
 }
 
-bool QgsCredentialsConsole::request( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentialsConsole::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
   QTextStream in( stdin, QIODevice::ReadOnly );
   QTextStream out( stdout, QIODevice::WriteOnly );

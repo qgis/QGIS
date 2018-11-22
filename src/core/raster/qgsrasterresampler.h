@@ -19,19 +19,49 @@
 #define QGSRASTERRESAMPLER_H
 
 #include <QString>
+#include "qgis.h"
 
 class QImage;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Interface for resampling rasters (e.g. to have a smoother appearance)
   */
-class QgsRasterResampler
+class CORE_EXPORT QgsRasterResampler
 {
+#ifdef SIP_RUN
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsBilinearRasterResampler *>( sipCpp ) != NULL )
+      sipType = sipType_QgsBilinearRasterResampler;
+    else if ( dynamic_cast<QgsCubicRasterResampler *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCubicRasterResampler;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
-    virtual ~QgsRasterResampler() {}
-    virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
+    virtual ~QgsRasterResampler() = default;
+    virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0;
+
+    /**
+     * Gets a descriptive type identifier for this raster resampler.
+     * Needs to be implemented by subclasses.
+     */
     virtual QString type() const = 0;
-    virtual QgsRasterResampler * clone() const = 0;
+
+    /**
+     * Gets a deep copy of this object.
+     * Needs to be reimplemented by subclasses.
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsRasterResampler *clone() const = 0 SIP_FACTORY;
 };
 
 #endif // QGSRASTERRESAMPLER_H

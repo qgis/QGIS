@@ -19,32 +19,34 @@
 #define QgsJoinDIALOG_H
 
 #include "ui_qgsjoindialogbase.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
-struct QgsVectorJoinInfo;
+class QgsVectorLayerJoinInfo;
 
 class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 {
     Q_OBJECT
   public:
-    QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsJoinDialog();
+    QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alreadyJoinedLayers, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    /** Configure the dialog for an existing join */
-    void setJoinInfo( const QgsVectorJoinInfo& joinInfo );
+    //! Configure the dialog for an existing join
+    void setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo );
 
-    /** Returns the join info */
-    QgsVectorJoinInfo joinInfo() const;
+    //! Returns the join info
+    QgsVectorLayerJoinInfo joinInfo() const;
 
-    /** Returns true if user wants to create an attribute index on the join field*/
+    //! Returns true if user wants to create an attribute index on the join field
     bool createAttributeIndex() const;
 
   private slots:
-    void joinedLayerChanged( QgsMapLayer* layer );
+    void joinedLayerChanged( QgsMapLayer *layer );
+
+    void checkDefinitionValid();
 
   private:
-    /** Target layer*/
-    QgsVectorLayer* mLayer;
+    //! Target layer
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 

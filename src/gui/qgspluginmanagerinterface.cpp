@@ -15,12 +15,3 @@
  ***************************************************************************/
 
 #include "qgspluginmanagerinterface.h"
-
-QgsPluginManagerInterface::QgsPluginManagerInterface()
-{
-}
-
-QgsPluginManagerInterface::~QgsPluginManagerInterface()
-{
-}
-

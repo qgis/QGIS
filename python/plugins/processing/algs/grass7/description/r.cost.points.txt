@@ -1,9 +1,0 @@
-r.cost
-r.cost.points - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.
-Raster (r.*)
-ParameterRaster|input|Unit cost layer|False
-ParameterVector|start_points|Start points|0|False
-ParameterVector|stop_points|Stop points|0|True
-ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
-ParameterBoolean|-n|Keep null values in output raster layer|True
-OutputRaster|output|Cumulative cost

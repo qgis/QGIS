@@ -25,9 +25,20 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .v_net import variableOutput
+from .v_net import incorporatePoints, variableOutput
 
 
-def processOutputs(alg):
-    outputParameter = {u"output": [u"line", 1]}
-    variableOutput(alg, outputParameter)
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
+
+
+def processOutputs(alg, parameters, context, feedback):
+    idx = alg.parameterAsInt(parameters, 'method', context)
+    operations = alg.parameterDefinition('method').options()
+    operation = operations[idx]
+
+    if operation == 'articulation':
+        outputParameter = {'output': ['output', 'point', 2, True]}
+    elif operation == 'bridge':
+        outputParameter = {'output': ['output', 'line', 1, False]}
+    variableOutput(alg, outputParameter, parameters, context)

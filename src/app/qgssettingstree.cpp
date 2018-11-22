@@ -39,16 +39,16 @@
 ****************************************************************************/
 
 #include <QHeaderView>
-#include <QSettings>
 #include <QEvent>
 
 #include "qgssettingstree.h"
 #include "qgsvariantdelegate.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsapplication.h"
 
 QgsSettingsTree::QgsSettingsTree( QWidget *parent )
-    : QTreeWidget( parent )
+  : QTreeWidget( parent )
 {
   setItemDelegate( new QgsVariantDelegate( this ) );
 
@@ -59,37 +59,34 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   // header()->setResizeMode( 2, QHeaderView::Stretch );
   header()->resizeSection( 0, 250 );
   header()->resizeSection( 1, 100 );
-  header()->resizeSection( 2, 100 );
+  header()->resizeSection( 2, 250 );
 
-  settings = nullptr;
-  refreshTimer.setInterval( 2000 );
-  autoRefresh = false;
+  mRefreshTimer.setInterval( 2000 );
 
-  groupIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirClosedIcon ),
-                       QIcon::Normal, QIcon::Off );
-  groupIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirOpenIcon ),
-                       QIcon::Normal, QIcon::On );
-  keyIcon.addPixmap( style()->standardPixmap( QStyle::SP_FileIcon ) );
+  mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
+  mKeyIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconDeselected.svg" ) );
 
-  connect( &refreshTimer, SIGNAL( timeout() ), this, SLOT( maybeRefresh() ) );
+  setEditTriggers( QAbstractItemView::AllEditTriggers );
+
+  connect( &mRefreshTimer, &QTimer::timeout, this, &QgsSettingsTree::maybeRefresh );
 }
 
-void QgsSettingsTree::setSettingsObject( QSettings *settings )
+void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
 {
-  delete this->settings;
-  this->settings = settings;
+  delete this->mSettings;
+  this->mSettings = settings;
   clear();
 
   if ( settings )
   {
     settings->setParent( this );
     refresh();
-    if ( autoRefresh )
-      refreshTimer.start();
+    if ( mAutoRefresh )
+      mRefreshTimer.start();
   }
   else
   {
-    refreshTimer.stop();
+    mRefreshTimer.stop();
   }
 }
 
@@ -100,27 +97,18 @@ QSize QgsSettingsTree::sizeHint() const
 
 void QgsSettingsTree::setAutoRefresh( bool autoRefresh )
 {
-  this->autoRefresh = autoRefresh;
-  if ( settings )
+  this->mAutoRefresh = autoRefresh;
+  if ( mSettings )
   {
     if ( autoRefresh )
     {
       maybeRefresh();
-      refreshTimer.start();
+      mRefreshTimer.start();
     }
     else
     {
-      refreshTimer.stop();
+      mRefreshTimer.stop();
     }
-  }
-}
-
-void QgsSettingsTree::setFallbacksEnabled( bool enabled )
-{
-  if ( settings )
-  {
-    settings->setFallbacksEnabled( enabled );
-    refresh();
   }
 }
 
@@ -132,39 +120,36 @@ void QgsSettingsTree::maybeRefresh()
 
 void QgsSettingsTree::refresh()
 {
-  if ( !settings )
+  if ( !mSettings )
     return;
 
-  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
-              this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
+  disconnect( this, &QTreeWidget::itemChanged,
+              this, &QgsSettingsTree::updateSetting );
 
-  settings->sync();
+  mSettings->sync();
 
-  // add any settings not in QSettings object, so it will show up in the tree view
-  if ( settings )
+  // add any settings not in QgsSettings object, so it will show up in the tree view
+  QMap<QString, QStringList>::const_iterator it = mSettingsMap.constBegin();
+  while ( it != mSettingsMap.constEnd() )
   {
-    QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();
-    while ( it != settingsMap.constEnd() )
+    if ( ! mSettings->contains( it.key() ) )
     {
-      if ( ! settings->contains( it.key() ) )
-      {
-        settings->setValue( it.key(), it.value().at( 3 ) );
-      }
-      ++it;
+      mSettings->setValue( it.key(), it.value().at( 3 ) );
     }
+    ++it;
   }
 
   updateChildItems( nullptr );
 
-  connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
-           this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
+  connect( this, &QTreeWidget::itemChanged,
+           this, &QgsSettingsTree::updateSetting );
 }
 
 bool QgsSettingsTree::event( QEvent *event )
 {
   if ( event->type() == QEvent::WindowActivate )
   {
-    if ( isActiveWindow() && autoRefresh )
+    if ( isActiveWindow() && mAutoRefresh )
       maybeRefresh();
   }
   return QTreeWidget::event( event );
@@ -176,8 +161,8 @@ void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
   if ( key.isNull() )
     return;
 
-  settings->setValue( key, item->data( 2, Qt::UserRole ) );
-  if ( autoRefresh )
+  mSettings->setValue( key, item->data( 2, Qt::UserRole ) );
+  if ( mAutoRefresh )
     refresh();
 }
 
@@ -185,15 +170,15 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 {
   int dividerIndex = 0;
 
-  Q_FOREACH ( const QString& group, settings->childGroups() )
+  Q_FOREACH ( const QString &group, mSettings->childGroups() )
   {
-    QTreeWidgetItem *child;
+    QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, group, dividerIndex );
     if ( childIndex != -1 )
     {
       child = childAt( parent, childIndex );
-      child->setText( 1, "" );
-      child->setText( 2, "" );
+      child->setText( 1, QString() );
+      child->setText( 2, QString() );
       child->setData( 2, Qt::UserRole, QVariant() );
       moveItemForward( parent, childIndex, dividerIndex );
     }
@@ -201,17 +186,17 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     {
       child = createItem( group, parent, dividerIndex );
     }
-    child->setIcon( 0, groupIcon );
+    child->setIcon( 0, mGroupIcon );
     ++dividerIndex;
 
-    settings->beginGroup( group );
+    mSettings->beginGroup( group );
     updateChildItems( child );
-    settings->endGroup();
+    mSettings->endGroup();
   }
 
-  Q_FOREACH ( const QString& key, settings->childKeys() )
+  Q_FOREACH ( const QString &key, mSettings->childKeys() )
   {
-    QTreeWidgetItem *child;
+    QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, key, 0 );
 
     if ( childIndex == -1 || childIndex >= dividerIndex )
@@ -227,7 +212,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
       {
         child = createItem( key, parent, dividerIndex );
       }
-      child->setIcon( 0, keyIcon );
+      child->setIcon( 0, mKeyIcon );
       ++dividerIndex;
     }
     else
@@ -235,10 +220,10 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
       child = childAt( parent, childIndex );
     }
 
-    QVariant value = settings->value( key );
+    QVariant value = mSettings->value( key );
     if ( value.type() == QVariant::Invalid )
     {
-      child->setText( 1, "Invalid" );
+      child->setText( 1, QStringLiteral( "Invalid" ) );
     }
     else
     {
@@ -259,7 +244,7 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   if ( index != 0 )
     after = childAt( parent, index - 1 );
 
-  QTreeWidgetItem *item;
+  QTreeWidgetItem *item = nullptr;
   if ( parent )
     item = new QTreeWidgetItem( parent, after );
   else
@@ -269,11 +254,11 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   item->setFlags( item->flags() | Qt::ItemIsEditable );
 
   QString key = itemKey( item );
-  QgsDebugMsg( key );
-  if ( settingsMap.contains( key ) )
+  QgsDebugMsgLevel( key, 4 );
+  if ( mSettingsMap.contains( key ) )
   {
-    QgsDebugMsg( "contains!!!!" );
-    QStringList values = settingsMap[ key ];
+    QgsDebugMsgLevel( QStringLiteral( "contains!!!!" ), 4 );
+    QStringList values = mSettingsMap[ key ];
     item->setText( 3, values.at( 0 ) );
     item->setToolTip( 0, values.at( 1 ) );
     item->setToolTip( 2, values.at( 1 ) );

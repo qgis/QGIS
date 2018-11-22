@@ -1,37 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="transport_bus_stop2.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<sodipodi:namedview  showgrid="false" inkscape:cy="275.01097" inkscape:cx="325.30506" inkscape:zoom="1.3034483" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1005">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective3653" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="355.02399 : 217.53 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 217.53 : 1" sodipodi:type="inkscape:persp3d" id="perspective2512" inkscape:persp3d-origin="177.51199 : 145.02 : 1">
-		</inkscape:perspective>
-</defs>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M363.66,65.067c-12.98-5.408-44.089-11.872-67.041-12.052
-	c-22.952,0.182-54.047,6.645-67.026,12.052c-13.165,5.485-21.944,10.974-24.687,24.687l-9.872,76.032v104.751h17.01v16.428
-	c0,20.031,29.302,20.031,29.302,0v-16.428h54.123h0.164h56.259v16.428c0,20.031,29.317,20.031,29.317,0v-16.428h17.01V165.786
-	l-9.871-76.032C385.604,76.041,376.825,70.553,363.66,65.067z M254.832,72.206h40.801h42.788c8.229,0,8.229,12.336,0,12.336h-42.877
-	h-40.712C246.604,84.542,246.604,72.206,254.832,72.206z M226.71,239.696c-7.765,0-16.068-8.289-16.068-16.053
-	c0-7.765,8.303-16.069,16.068-16.069c7.765,0,16.053,8.304,16.053,16.069C242.764,231.408,234.475,239.696,226.71,239.696z
-	 M225.05,173.791c-7.302,0-8.826-5.244-8.109-10.529l7.691-55.138c1.055-6.699,3.315-11.111,12.007-11.111h58.905h59.055
-	c8.692,0,10.967,4.412,12.022,11.111l7.691,55.138c0.717,5.285-0.822,10.529-8.124,10.529h-70.556H225.05z M366.543,239.696
-	c-7.765,0-16.068-8.289-16.068-16.053c0-7.765,8.304-16.069,16.068-16.069s16.054,8.304,16.054,16.069
-	C382.597,231.408,374.308,239.696,366.543,239.696z"/>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M295.633,53c0.324,0,0.66,0.012,0.986,0.015
-	c0.328-0.002,0.66-0.015,0.985-0.015H295.633z"/>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M421.915,8.049H166.688c-15.212,0-27.588,12.376-27.588,27.588
-	V318.5c0,15.212,12.376,27.588,27.588,27.588h113.515v190.203h-77.651c-8.284,0-15,6.716-15,15s6.716,15,15,15h181.032
-	c8.284,0,15-6.716,15-15s-6.716-15-15-15h-74.582V346.088h112.912c15.212,0,27.588-12.376,27.588-27.588V35.637
-	C449.503,20.425,437.127,8.049,421.915,8.049z M434.503,318.5c0,6.941-5.646,12.588-12.588,12.588H166.688
-	c-6.941,0-12.588-5.646-12.588-12.588V35.637c0-6.941,5.647-12.588,12.588-12.588h255.227c6.941,0,12.588,5.647,12.588,12.588V318.5
-	z"/>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m363.66 65.067c-12.98-5.408-44.089-11.872-67.041-12.052-22.952.182-54.047 6.645-67.026 12.052-13.165 5.485-21.944 10.974-24.687 24.687l-9.872 76.032v104.751h17.01v16.428c0 20.031 29.302 20.031 29.302 0v-16.428h54.123.164 56.259v16.428c0 20.031 29.317 20.031 29.317 0v-16.428h17.01v-104.751l-9.871-76.032c-2.744-13.713-11.523-19.201-24.688-24.687zm-108.828 7.139h40.801 42.788c8.229 0 8.229 12.336 0 12.336h-42.877-40.712c-8.228 0-8.228-12.336 0-12.336zm-28.122 167.49c-7.765 0-16.068-8.289-16.068-16.053 0-7.765 8.303-16.069 16.068-16.069 7.765 0 16.053 8.304 16.053 16.069.001 7.765-8.288 16.053-16.053 16.053zm-1.66-65.905c-7.302 0-8.826-5.244-8.109-10.529l7.691-55.138c1.055-6.699 3.315-11.111 12.007-11.111h58.905 59.055c8.692 0 10.967 4.412 12.022 11.111l7.691 55.138c.717 5.285-.822 10.529-8.124 10.529h-70.556zm141.493 65.905c-7.765 0-16.068-8.289-16.068-16.053 0-7.765 8.304-16.069 16.068-16.069s16.054 8.304 16.054 16.069c0 7.765-8.289 16.053-16.054 16.053z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
+<path d="m295.633 53c .324 0 .66.012.986.015.328-.002.66-.015.985-.015z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
+<path d="m421.915 8.049h-255.227c-15.212 0-27.588 12.376-27.588 27.588v282.863c0 15.212 12.376 27.588 27.588 27.588h113.515v190.203h-77.651c-8.284 0-15 6.716-15 15s6.716 15 15 15h181.032c8.284 0 15-6.716 15-15s-6.716-15-15-15h-74.582v-190.203h112.912c15.212 0 27.588-12.376 27.588-27.588v-282.863c.001-15.212-12.375-27.588-27.587-27.588zm12.588 310.451c0 6.941-5.646 12.588-12.588 12.588h-255.227c-6.941 0-12.588-5.646-12.588-12.588v-282.863c0-6.941 5.647-12.588 12.588-12.588h255.227c6.941 0 12.588 5.647 12.588 12.588z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

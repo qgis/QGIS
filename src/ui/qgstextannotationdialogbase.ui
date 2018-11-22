@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>517</width>
+    <width>519</width>
     <height>364</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Annotation text</string>
+   <string>Annotation Text</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -68,7 +68,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsColorButtonV2" name="mFontColorButton">
+      <widget class="QgsColorButton" name="mFontColorButton">
        <property name="minimumSize">
         <size>
          <width>100</width>
@@ -97,7 +97,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -117,9 +117,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

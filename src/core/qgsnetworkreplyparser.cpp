@@ -26,10 +26,9 @@
 #include <QStringList>
 
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
-    : mReply( reply )
-    , mValid( false )
+  : mReply( reply )
+  , mValid( false )
 {
-  QgsDebugMsg( "Entered." );
   if ( !mReply ) return;
 
   // Content type examples:
@@ -60,24 +59,24 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     }
 
     QString boundary = re.cap( 1 );
-    QgsDebugMsg( QString( "boundary = %1 size = %2" ).arg( boundary ).arg( boundary.size() ) );
+    QgsDebugMsg( QStringLiteral( "boundary = %1 size = %2" ).arg( boundary ).arg( boundary.size() ) );
     boundary = "--" + boundary;
 
     // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
     QByteArray data = mReply->readAll();
     int from, to;
-    from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1;
+    from = data.indexOf( boundary.toLatin1(), 0 ) + boundary.length() + 1;
     //QVector<QByteArray> partHeaders;
     //QVector<QByteArray> partBodies;
     while ( true )
     {
       // 'to' is not really 'to', but index of the next byte after the end of part
-      to = data.indexOf( boundary.toAscii(), from );
+      to = data.indexOf( boundary.toLatin1(), from );
       if ( to < 0 )
       {
-        QgsDebugMsg( QString( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
+        QgsDebugMsg( QStringLiteral( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
         // It may be end, last boundary is followed by '--'
-        if ( data.size() - from - 1 == 2 && QString( data.mid( from, 2 ) ) == "--" ) // end
+        if ( data.size() - from - 1 == 2 && QString( data.mid( from, 2 ) ) == QLatin1String( "--" ) ) // end
         {
           break;
         }
@@ -93,7 +92,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
           break;
         }
       }
-      QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
+      QgsDebugMsg( QStringLiteral( "part %1 - %2" ).arg( from ).arg( to ) );
       QByteArray part = data.mid( from, to - from );
       // Remove possible new line from beginning
       while ( !part.isEmpty() && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
@@ -119,11 +118,11 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      Q_FOREACH ( const QString& row, headerRows )
+      Q_FOREACH ( const QString &row, headerRows )
       {
         QgsDebugMsg( "row = " + row );
-        QStringList kv = row.split( ": " );
-        headersMap.insert( kv.value( 0 ).toAscii(), kv.value( 1 ).toAscii() );
+        QStringList kv = row.split( QStringLiteral( ": " ) );
+        headersMap.insert( kv.value( 0 ).toLatin1(), kv.value( 1 ).toLatin1() );
       }
       mHeaders.append( headersMap );
 
@@ -145,5 +144,5 @@ bool QgsNetworkReplyParser::isMultipart( QNetworkReply *reply )
   // Multipart content type examples:
   //   multipart/mixed; boundary=wcs
   //   multipart/mixed; boundary="wcs"\n
-  return contentType.startsWith( "multipart/", Qt::CaseInsensitive );
+  return contentType.startsWith( QLatin1String( "multipart/" ), Qt::CaseInsensitive );
 }

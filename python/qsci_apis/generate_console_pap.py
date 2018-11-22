@@ -71,7 +71,7 @@ class PrepareAPIs(QObject):
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print 'Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>'
+        print('Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>')
         sys.exit(1)
     pap_file = sys.argv[1]
     api_src_dir = sys.argv[2]
@@ -79,10 +79,10 @@ if __name__ == '__main__':
 
     api_files = [
         os.path.join(api_bin_dir, 'PyQGIS.api'),
-        os.path.join(api_src_dir, 'Python-2.7.api'),
-        os.path.join(api_src_dir, 'PyQt4-4.7.4.api'),
-        os.path.join(api_src_dir, 'OSGeo_GEOS-3.4.2.api'),
-        os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-1.10.0.api')
+        os.path.join(api_src_dir, 'Python-3.6.api'),
+        os.path.join(api_src_dir, 'PyQt5.api'),
+        os.path.join(api_src_dir, 'OSGeo_GEOS-3.6.2.api'),
+        os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-2.2.3.api')
     ]
     # print api_files.__repr__()
     # print pap_file.__repr__()

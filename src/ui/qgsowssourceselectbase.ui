@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -25,14 +24,14 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="mDialogButtonBox">
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="mStatusLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
@@ -71,6 +70,9 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="toolTip">
+            <string>Connect to selected service</string>
+           </property>
            <property name="text">
             <string>C&amp;onnect</string>
            </property>
@@ -78,6 +80,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="mNewButton">
+           <property name="toolTip">
+            <string>Create a new service connection</string>
+           </property>
            <property name="text">
             <string>&amp;New</string>
            </property>
@@ -87,6 +92,9 @@
           <widget class="QPushButton" name="mEditButton">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Edit selected service connection</string>
            </property>
            <property name="text">
             <string>Edit</string>
@@ -98,8 +106,11 @@
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="toolTip">
+            <string>Remove connection to selected service</string>
+           </property>
            <property name="text">
-            <string>Delete</string>
+            <string>Remove</string>
            </property>
           </widget>
          </item>
@@ -145,7 +156,7 @@
             <string comment="Adds several example WMS servers to the list"/>
            </property>
            <property name="text">
-            <string>Add default servers</string>
+            <string>Add Default Servers</string>
            </property>
           </widget>
          </item>
@@ -190,7 +201,16 @@
        <item>
         <widget class="QWidget" name="mTimeWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -219,13 +239,22 @@
        <item>
         <widget class="QWidget" name="mCRSWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
            <widget class="QLabel" name="mCRSLabel">
             <property name="text">
-             <string>Coordinate Reference System:</string>
+             <string>Coordinate Reference System</string>
             </property>
            </widget>
           </item>
@@ -251,7 +280,7 @@
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>Change...</string>
+             <string>Change…</string>
             </property>
            </widget>
           </item>
@@ -261,7 +290,16 @@
        <item>
         <widget class="QWidget" name="mFormatWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -338,7 +376,16 @@
        <item>
         <widget class="QWidget" name="mCacheWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -535,7 +582,7 @@ Always network: always load from network and do not check if the cache has a val
        <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="mSearchAddButton">
          <property name="text">
-          <string>Add selected row to WMS list</string>
+          <string>Add Selected Row to WMS List</string>
          </property>
         </widget>
        </item>
@@ -573,12 +620,12 @@ Always network: always load from network and do not check if the cache has a val
   <tabstop>mSearchButton</tabstop>
   <tabstop>mSearchTableWidget</tabstop>
   <tabstop>mSearchAddButton</tabstop>
-  <tabstop>mDialogButtonBox</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>mDialogButtonBox</sender>
+   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsOWSSourceSelectBase</receiver>
    <slot>reject()</slot>

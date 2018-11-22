@@ -16,23 +16,28 @@
 #ifndef QGSMAPRENDERERCACHE_H
 #define QGSMAPRENDERERCACHE_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QImage>
 #include <QMutex>
 
 #include "qgsrectangle.h"
+#include "qgsmaplayer.h"
 
 
 /**
- * This class is responsible for keeping cache of rendered images of individual layers.
+ * \ingroup core
+ * This class is responsible for keeping cache of rendered images resulting from
+ * a map rendering job.
  *
- * Once a layer has rendered image stored in the cache (using setCacheImage(...)),
- * the cache listens to repaintRequested() signals from layer. If triggered, the cache
- * removes the rendered image (and disconnects from the layer).
+ * Once a job has a rendered image stored in the cache (using setCacheImage(...)),
+ * the cache listens to repaintRequested() signals from dependent layers.
+ * If triggered, the cache removes the rendered image (and disconnects from the
+ * layers).
  *
  * The class is thread-safe (multiple classes can access the same instance safely).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCache : public QObject
 {
@@ -41,35 +46,85 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     QgsMapRendererCache();
 
-    //! invalidate the cache contents
+    /**
+     * Invalidates the cache contents, clearing all cached images.
+     * \see clearCacheImage()
+     */
     void clear();
 
-    //! initialize cache: set new parameters and erase cache if parameters have changed
-    //! @return flag whether the parameters are the same as last time
-    bool init( const QgsRectangle& extent, double scale );
+    /**
+     * Initialize cache: set new parameters and clears the cache if any
+     * parameters have changed since last initialization.
+     * \returns flag whether the parameters are the same as last time
+     */
+    bool init( const QgsRectangle &extent, double scale );
 
-    //! set cached image for the specified layer ID
-    void setCacheImage( const QString& layerId, const QImage& img );
+    /**
+     * Set the cached \a image for a particular \a cacheKey. The \a cacheKey usually
+     * matches the QgsMapLayer::id() which the image is a render of.
+     * A list of \a dependentLayers should be passed containing all layer
+     * on which this cache image is dependent. If any of these layers triggers a
+     * repaint then the cache image will be cleared.
+     * \see cacheImage()
+     */
+    void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
-    //! get cached image for the specified layer ID. Returns null image if it is not cached.
-    QImage cacheImage( const QString& layerId );
+    /**
+     * Returns true if the cache contains an image with the specified \a cacheKey.
+     * \see cacheImage()
+     * \since QGIS 3.0
+     */
+    bool hasCacheImage( const QString &cacheKey ) const;
 
-    //! remove layer from the cache
-    void clearCacheImage( const QString& layerId );
+    /**
+     * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually
+     * matches the QgsMapLayer::id() which the image is a render of.
+     * Returns a null image if it is not cached.
+     * \see setCacheImage()
+     * \see hasCacheImage()
+     */
+    QImage cacheImage( const QString &cacheKey ) const;
 
-  protected slots:
-    //! remove layer (that emitted the signal) from the cache
+    /**
+     * Returns a list of map layers on which an image in the cache depends.
+     * \since QGIS 3.0
+     */
+    QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
+
+    /**
+     * Removes an image from the cache with matching \a cacheKey.
+     * \see clear()
+     */
+    void clearCacheImage( const QString &cacheKey );
+
+  private slots:
+    //! Remove layer (that emitted the signal) from the cache
     void layerRequestedRepaint();
 
-  protected:
-    //! invalidate cache contents (without locking)
+  private:
+
+    struct CacheParameters
+    {
+      QImage cachedImage;
+      QgsWeakMapLayerPointerList dependentLayers;
+    };
+
+    //! Invalidate cache contents (without locking)
     void clearInternal();
 
-  protected:
-    QMutex mMutex;
+    //! Disconnects from layers we no longer care about
+    void dropUnusedConnections();
+
+    QSet< QgsWeakMapLayerPointer > dependentLayers() const;
+
+    mutable QMutex mMutex;
     QgsRectangle mExtent;
-    double mScale;
-    QMap<QString, QImage> mCachedImages;
+    double mScale = 0;
+
+    //! Map of cache key to cache parameters
+    QMap<QString, CacheParameters> mCachedImages;
+    //! List of all layers on which this cache is currently connected
+    QSet< QgsWeakMapLayerPointer > mConnectedLayers;
 };
 
 

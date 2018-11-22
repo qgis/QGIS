@@ -18,51 +18,64 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUALLAYER_FEATURE_ITERATOR_H
 
 
-#include <qgsvirtuallayerprovider.h>
-#include <qgsfeatureiterator.h>
+#include "qgsvirtuallayerprovider.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometryengine.h"
+
+#include <memory>
+#include <QPointer>
 
 class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider* p );
-    ~QgsVirtualLayerFeatureSource();
+    QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-    const QgsVirtualLayerProvider* provider() const { return mProvider; }
   private:
-    const QgsVirtualLayerProvider* mProvider;
+
+    // NOTE: this is really bad and should be removed.
+    // it's only here to guard mSqlite - because if the provider is removed
+    // then mSqlite will be meaningless.
+    // this needs to be totally reworked so that mSqlite no longer depends on the provider
+    // and can be fully encapsulated here
+    QPointer< const QgsVirtualLayerProvider  > mProvider;
+
+    QString mPath;
+    QgsVirtualLayerDefinition mDefinition;
+    QgsFields mFields;
+    sqlite3 *mSqlite = nullptr;
+    QString mTableName;
+    QString mSubset;
+    QgsCoordinateReferenceSystem mCrs;
+
+    friend class QgsVirtualLayerFeatureIterator;
 };
 
 class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
 {
   public:
-    QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
-    ~QgsVirtualLayerFeatureIterator();
+    QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
+    ~QgsVirtualLayerFeatureIterator() override;
 
-    //! reset the iterator to the starting position
-    virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
-    QScopedPointer<Sqlite::Query> mQuery;
+  private:
 
-    QgsFeatureId mFid;
-
-    QString mPath;
-    sqlite3* mSqlite;
-    QgsVirtualLayerDefinition mDefinition;
-    QgsFields mFields;
-
-    QString mSqlQuery;
+    std::unique_ptr<Sqlite::Query> mQuery;
 
     QgsAttributeList mAttributes;
+    QString mSqlQuery;
+    QgsFeatureId mFid = 0;
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
+
+    std::unique_ptr< QgsGeometryEngine > mRectEngine;
 };
 
 #endif

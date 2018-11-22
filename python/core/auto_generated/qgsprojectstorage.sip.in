@@ -1,0 +1,117 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectstorage.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProjectStorage
+{
+%Docstring
+Abstract interface for project storage - to be implemented by various backends
+and registered in QgsProjectStorageRegistry.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstorage.h"
+%End
+  public:
+
+    class Metadata
+{
+%Docstring
+Metadata associated with a project
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstorage.h"
+%End
+      public:
+        QString name;
+        QDateTime lastModified;
+    };
+
+    virtual ~QgsProjectStorage();
+
+    virtual QString type() = 0;
+%Docstring
+Unique identifier of the project storage type. If type() returns "memory", all project file names
+starting with "memory:" will have read/write redirected through that storage implementation.
+%End
+
+    virtual QStringList listProjects( const QString &uri ) = 0;
+%Docstring
+Returns list of all projects for given URI (specific to each storage backend)
+%End
+
+    virtual bool readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads project file content stored in the backend at the specified URI to the given device
+(could be e.g. a temporary file or a memory buffer). The device is expected to be empty
+when passed to readProject() so that the method can write all data to it and then rewind
+it using seek(0) to make it ready for reading in :py:class:`QgsProject`.
+%End
+
+    virtual bool writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
+%Docstring
+Writes project file content stored in given device (could be e.g. a temporary file or a memory buffer)
+using the backend to the specified URI. The device is expected to contain all project file data
+and having position at the start of the content when passed to writeProject() so that the method
+can read all data from it until it reaches its end.
+%End
+
+    virtual bool removeProject( const QString &uri ) = 0;
+%Docstring
+Removes an existing project at the given URI. Returns true if the removal
+was successful.
+%End
+
+    virtual bool renameProject( const QString &uri, const QString &uriNew );
+%Docstring
+Rename an existing project at the given URI to a different URI. Returns true if renaming
+was successful.
+%End
+
+    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata /Out/ );
+%Docstring
+Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
+Returns true if the metadata were read with success.
+%End
+
+    virtual QString visibleName();
+%Docstring
+Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
+indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
+The name may be translatable and ideally unique as well.
+%End
+
+    virtual QString showLoadGui();
+%Docstring
+Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
+Returns project URI if user has picked a project or empty string if the GUI was canceled.
+%End
+
+    virtual QString showSaveGui();
+%Docstring
+Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
+Returns project URI if user has picked a destination or empty string if the GUI was canceled.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectstorage.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

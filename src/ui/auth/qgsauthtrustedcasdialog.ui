@@ -45,50 +45,26 @@
        </property>
        <item>
         <widget class="QToolButton" name="btnInfoCa">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
          </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnGroupByOrg">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Group by organization</string>
          </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>

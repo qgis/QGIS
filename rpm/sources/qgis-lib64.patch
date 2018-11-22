@@ -1,0 +1,13 @@
+
+diff -up cmake/PyQtMacros.cmake cmake/PyQtMacros.cmake.lib64
+--- cmake/PyQtMacros.cmake	2017-09-29 17:55:02.000000000 +0200
++++ cmake/PyQtMacros.cmake.lib64	2017-09-30 18:32:30.277970717 +0200
+@@ -36,7 +36,7 @@ MACRO(PYQT_WRAP_UI outfiles )
+   ELSE(WIN32)
+     # TODO osx
+     SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.sh")
+-    SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/lib")
++    SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/lib${LIB_SUFFIX}")
+   ENDIF(WIN32)
+ 
+   FOREACH(it ${ARGN})

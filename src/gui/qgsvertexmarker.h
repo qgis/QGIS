@@ -17,15 +17,33 @@
 #define QGSVERTEXMARKER_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
+#include "qgis_gui.h"
 
 class QPainter;
 
-/** \ingroup gui
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsvertexmarker.h>
+% End
+#endif
+
+/**
+ * \ingroup gui
  * A class for marking vertices of features using e.g. circles or 'x'.
  */
 class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsVertexMarker *>( sipCpp ) )
+      sipType = sipType_QgsVertexMarker;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
 
     //! Icons
@@ -35,43 +53,79 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_CROSS,
       ICON_X,
       ICON_BOX,
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      ICON_DOUBLE_TRIANGLE,    //!< Added in QGIS 3.0
     };
 
-    QgsVertexMarker( QgsMapCanvas* mapCanvas );
+    QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
-    void setCenter( const QgsPoint& point );
+    void setCenter( const QgsPointXY &point );
 
     void setIconType( int iconType );
 
     void setIconSize( int iconSize );
 
-    void setColor( const QColor& color );
+    /**
+     * Sets the stroke \a color for the marker.
+     * \see color()
+     * \see setFillColor()
+     */
+    void setColor( const QColor &color );
+
+    /**
+     * Returns the stroke color for the marker.
+     * \see setColor()
+     * \see fillColor()
+     * \since QGIS 3.0
+     */
+    QColor color() const { return mColor; }
+
+    /**
+     * Sets the fill \a color for the marker. This setting only
+     * applies to some icon types.
+     * \see fillColor()
+     * \see setColor()
+     * \since QGIS 3.0
+     */
+    void setFillColor( const QColor &color );
+
+    /**
+     * Returns the fill \a color for the marker. This setting only
+     * applies to some icon types.
+     * \see setFillColor()
+     * \see color()
+     * \since QGIS 3.0
+     */
+    QColor fillColor() const { return mFillColor; }
 
     void setPenWidth( int width );
 
-    void paint( QPainter* p ) override;
+    void paint( QPainter *p ) override;
 
     QRectF boundingRect() const override;
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
-  protected:
+  private:
 
     //! icon to be shown
-    int mIconType;
+    int mIconType = ICON_X;
 
     //! size
-    int mIconSize;
+    int mIconSize = 10;
 
     //! coordinates of the point in the center
-    QgsPoint mCenter;
+    QgsPointXY mCenter;
 
     //! color of the marker
-    QColor mColor;
+    QColor mColor = QColor( 255, 0, 0 );
 
     //! pen width
-    int mPenWidth;
+    int mPenWidth = 1;
+
+    //! Fill color
+    QColor mFillColor = QColor( 0, 0, 0, 0 );
+
 };
 
 #endif

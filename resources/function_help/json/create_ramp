@@ -1,0 +1,8 @@
+{
+  "name": "create_ramp",
+  "type": "function",
+  "description": "Returns a gradient ramp from a map of color strings and steps.",
+  "arguments": [ {"arg":"map","description":"a map of color strings and steps"},
+                 {"arg":"discrete","optional":true,"description":"declare whether the color ramp is discrete"}],
+  "examples": [ { "expression":"ramp_color(create_array(map(0,'0,0,0',1,'255,0,0')),1)", "returns":"'255,0,0,255'"} ]
+}

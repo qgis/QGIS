@@ -6,16 +6,35 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>566</width>
-    <height>476</height>
+    <width>347</width>
+    <height>402</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Effects</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QListView" name="mEffectsList">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLabel" name="lblPreview">
        <property name="sizePolicy">
@@ -37,7 +56,7 @@
         </size>
        </property>
        <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Sunken</enum>
@@ -56,94 +75,81 @@
        </property>
       </widget>
      </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="pushBtnBox">
+     <property name="spacing">
+      <number>6</number>
+     </property>
      <item>
-      <widget class="QListView" name="mEffectsList">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QPushButton" name="mAddButton">
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
        </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
+       <property name="toolTip">
+        <string>Add new effect</string>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="pushBtnBox">
-       <property name="spacing">
-        <number>6</number>
+      <widget class="QPushButton" name="mRemoveButton">
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
        </property>
-       <item>
-        <widget class="QPushButton" name="mAddButton">
-         <property name="maximumSize">
-          <size>
-           <width>50</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Add symbol layer</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mRemoveButton">
-         <property name="maximumSize">
-          <size>
-           <width>50</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Remove symbol layer</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mUpButton">
-         <property name="maximumSize">
-          <size>
-           <width>50</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Move up</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mDownButton">
-         <property name="maximumSize">
-          <size>
-           <width>50</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Move down</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
+       <property name="toolTip">
+        <string>Remove effect</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mUpButton">
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Move up</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mDownButton">
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Move down</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
-   <item row="0" column="1" colspan="2">
+   <item>
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -161,16 +167,7 @@
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>

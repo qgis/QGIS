@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -27,14 +27,15 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
+#include <qgsproject.h>
+#include <qgssymbol.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for raster fill types.
  */
 class TestQgsRasterFill : public QObject
@@ -42,13 +43,7 @@ class TestQgsRasterFill : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRasterFill()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mRasterFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
-    {}
+    TestQgsRasterFill() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,14 +58,14 @@ class TestQgsRasterFill : public QObject
     void width();
 
   private:
-    bool mTestHasError;
-    bool setQml( const QString& theType );
-    bool imageCheck( const QString& theType );
+    bool mTestHasError =  false ;
+    bool setQml( const QString &type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsRasterFillSymbolLayer* mRasterFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsRasterFillSymbolLayer *mRasterFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -94,29 +89,29 @@ void TestQgsRasterFill::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup raster fill
   mRasterFill = new QgsRasterFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbolV2();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mRasterFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Raster Fill Renderer Tests</h1>\n";
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  mReport += QLatin1String( "<h1>Raster Fill Renderer Tests</h1>\n" );
 
 }
 void TestQgsRasterFill::cleanupTestCase()
@@ -135,11 +130,11 @@ void TestQgsRasterFill::cleanupTestCase()
 
 void TestQgsRasterFill::init()
 {
-  mRasterFill->setImageFilePath( mTestDataDir + QLatin1String( "sample_image.png" ) );
+  mRasterFill->setImageFilePath( mTestDataDir + QStringLiteral( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
-  mRasterFill->setWidthUnit( QgsSymbolV2::Pixel );
+  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
-  mRasterFill->setAlpha( 1.0 );
+  mRasterFill->setOpacity( 1.0 );
   mRasterFill->setOffset( QPointF( 0, 0 ) );
 }
 
@@ -150,41 +145,41 @@ void TestQgsRasterFill::cleanup()
 
 void TestQgsRasterFill::rasterFillSymbol()
 {
-  mReport += "<h2>Raster fill symbol renderer test</h2>\n";
-  bool result = imageCheck( "rasterfill" );
+  mReport += QLatin1String( "<h2>Raster fill symbol renderer test</h2>\n" );
+  bool result = imageCheck( QStringLiteral( "rasterfill" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::coordinateMode()
 {
-  mReport += "<h2>Raster fill viewport mode</h2>\n";
+  mReport += QLatin1String( "<h2>Raster fill viewport mode</h2>\n" );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
-  bool result = imageCheck( "rasterfill_viewport" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_viewport" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::alpha()
 {
-  mReport += "<h2>Raster fill alpha</h2>\n";
-  mRasterFill->setAlpha( 0.5 );
-  bool result = imageCheck( "rasterfill_alpha" );
+  mReport += QLatin1String( "<h2>Raster fill alpha</h2>\n" );
+  mRasterFill->setOpacity( 0.5 );
+  bool result = imageCheck( QStringLiteral( "rasterfill_alpha" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::offset()
 {
-  mReport += "<h2>Raster fill offset</h2>\n";
+  mReport += QLatin1String( "<h2>Raster fill offset</h2>\n" );
   mRasterFill->setOffset( QPointF( 5, 10 ) );
-  bool result = imageCheck( "rasterfill_offset" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_offset" ) );
   QVERIFY( result );
 }
 
 void TestQgsRasterFill::width()
 {
-  mReport += "<h2>Raster fill width</h2>\n";
-  mRasterFill->setWidthUnit( QgsSymbolV2::MM );
+  mReport += QLatin1String( "<h2>Raster fill width</h2>\n" );
+  mRasterFill->setWidthUnit( QgsUnitTypes::RenderMillimeters );
   mRasterFill->setWidth( 5.0 );
-  bool result = imageCheck( "rasterfill_width" );
+  bool result = imageCheck( QStringLiteral( "rasterfill_width" ) );
   QVERIFY( result );
 }
 
@@ -192,12 +187,12 @@ void TestQgsRasterFill::width()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRasterFill::setQml( const QString& theType )
+bool TestQgsRasterFill::setQml( const QString &type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  QString myFileName = mTestDataDir + "polys_" + theType + "_symbol.qml";
+  QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   bool myStyleFlag = false;
   QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
@@ -207,21 +202,21 @@ bool TestQgsRasterFill::setQml( const QString& theType )
   return myStyleFlag;
 }
 
-bool TestQgsRasterFill::imageCheck( const QString& theTestType )
+bool TestQgsRasterFill::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_rasterfill" );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_rasterfill" ) );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( theTestType, 500 );
+  bool myResultFlag = myChecker.runTest( testType, 500 );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsRasterFill )
+QGSTEST_MAIN( TestQgsRasterFill )
 #include "testqgsrasterfill.moc"

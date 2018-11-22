@@ -17,33 +17,36 @@
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsfieldmodel.h"
 
 QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
-    : QComboBox( parent )
+  : QComboBox( parent )
 {
   mFieldProxyModel = new QgsFieldProxyModel( this );
   setModel( mFieldProxyModel );
 
-  connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
+  connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsFieldComboBox::indexChanged );
 }
 
-void QgsFieldComboBox::setFilters( const QgsFieldProxyModel::Filters& filters )
+void QgsFieldComboBox::setFilters( QgsFieldProxyModel::Filters filters )
 {
   mFieldProxyModel->setFilters( filters );
 }
 
-void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
+void QgsFieldComboBox::setAllowEmptyFieldName( bool allowEmpty )
 {
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
-  if ( vl )
-  {
-    setLayer( vl );
-  }
+  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( allowEmpty );
 }
 
-void QgsFieldComboBox::setLayer( QgsVectorLayer *layer )
+bool QgsFieldComboBox::allowEmptyFieldName() const
 {
-  mFieldProxyModel->sourceFieldModel()->setLayer( layer );
+  return mFieldProxyModel->sourceFieldModel()->allowEmptyFieldName();
+}
+
+void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
+{
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  mFieldProxyModel->sourceFieldModel()->setLayer( vl );
 }
 
 QgsVectorLayer *QgsFieldComboBox::layer() const
@@ -51,7 +54,7 @@ QgsVectorLayer *QgsFieldComboBox::layer() const
   return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
-void QgsFieldComboBox::setField( const QString& fieldName )
+void QgsFieldComboBox::setField( const QString &fieldName )
 {
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( idx.isValid() )
@@ -59,7 +62,7 @@ void QgsFieldComboBox::setField( const QString& fieldName )
     QModelIndex proxyIdx = mFieldProxyModel->mapFromSource( idx );
     if ( proxyIdx.isValid() )
     {
-      setCurrentIndex( idx.row() );
+      setCurrentIndex( proxyIdx.row() );
       emit fieldChanged( currentField() );
       return;
     }
@@ -74,7 +77,7 @@ QString QgsFieldComboBox::currentField() const
   const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
   if ( !proxyIndex.isValid() )
   {
-    return "";
+    return QString();
   }
 
   QString name = mFieldProxyModel->data( proxyIndex, QgsFieldModel::FieldNameRole ).toString();

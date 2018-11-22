@@ -19,16 +19,18 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgswfscapabilities.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
+#include "qgssqlcomposerdialog.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
-class QgsGenericProjectionSelector;
-class QgsWFSCapabilities;
-class QgsSQLComposerDialog;
+class QgsProjectionSelectionDialog;
+class QgsWfsCapabilities;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
@@ -37,72 +39,106 @@ class QgsWFSItemDelegate : public QItemDelegate
   public:
     explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
-class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
+class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+{
+    Q_OBJECT
+
+  public:
+    QgsWFSValidatorCallback( QObject *parent,
+                             const QgsWFSDataSourceURI &uri, const QString &allSql,
+                             const QgsWfsCapabilities::Capabilities &caps );
+    bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
+  private:
+    QgsWFSDataSourceURI mURI;
+    QString mAllSql;
+    const QgsWfsCapabilities::Capabilities &mCaps;
+};
+
+class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
-    QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
-    ~QgsWFSSourceSelect();
-
-  signals:
-    void addWfsLayer( const QString& uri, const QString& layerName );
-    void connectionsChanged();
+    QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsWFSSourceSelect() override;
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
-    QgsGenericProjectionSelector* mProjectionSelector;
-    /** Stores the available CRS for a server connections.
+    QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
+
+    /**
+     * Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
-    QgsWFSCapabilities* mCapabilities;
+    QgsWfsCapabilities *mCapabilities = nullptr;
     QString mUri;            // data source URI
-    QgsWFSItemDelegate* mItemDelegate;
-    QStandardItemModel* mModel;
-    QSortFilterProxyModel* mModelProxy;
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
-    QgsWFSCapabilities::Capabilities mCaps;
+    QgsWFSItemDelegate *mItemDelegate = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QSortFilterProxyModel *mModelProxy = nullptr;
+    QPushButton *mBuildQueryButton = nullptr;
+    QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
-    QgsSQLComposerDialog* mSQLComposerDialog;
+    QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
 
-    /** Returns the best suited CRS from a set of authority ids
+    /**
+     * Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else
-    @return the authority id of the crs or an empty string in case of error*/
-    QString getPreferredCrs( const QSet<QString>& crsSet ) const;
+    \returns the authority id of the crs or an empty string in case of error*/
+    QString getPreferredCrs( const QSet<QString> &crsSet ) const;
+
+    void showHelp();
+
+  public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+    void addButtonClicked() override;
 
   private slots:
     void addEntryToServerList();
     void modifyEntryOfServerList();
     void deleteEntryOfServerList();
     void connectToServer();
-    void addLayer();
-    void buildQuery( const QModelIndex& index );
+    void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();
-    void on_cmbConnections_activated( int index );
+    void cmbConnections_activated( int index );
     void capabilitiesReplyFinished();
-    void on_btnSave_clicked();
-    void on_btnLoad_clicked();
-    void treeWidgetItemDoubleClicked( const QModelIndex & index );
-    void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
+    void btnSave_clicked();
+    void btnLoad_clicked();
+    void treeWidgetItemDoubleClicked( const QModelIndex &index );
+    void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void buildQueryButtonClicked();
-    void filterChanged( const QString& text );
+    void filterChanged( const QString &text );
     void updateSql();
 
     void populateConnectionList();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
 };
 
+
+class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+{
+    Q_OBJECT
+
+  public:
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
+                                 const QgsWFSDataSourceURI &uri,
+                                 const QgsWfsCapabilities::Capabilities &caps );
+    void tableSelected( const QString &name ) override;
+
+  private:
+    QgsSQLComposerDialog *mDialog = nullptr;
+    QgsWFSDataSourceURI mURI;
+    const QgsWfsCapabilities::Capabilities &mCaps;
+};
 
 #endif

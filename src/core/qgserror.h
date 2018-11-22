@@ -20,35 +20,37 @@
 #include <QString>
 #include <QList>
 
+#include "qgis_core.h"
+
 // Macro to create Error message including info about where it was created.
 #define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsErrorMessage represents single error message.
 */
 class CORE_EXPORT QgsErrorMessage
 {
   public:
-    /** Format */
+    //! Format
     enum Format
     {
       Text, // Plain text
       Html
     };
 
-    QgsErrorMessage()
-        : mLine( 0 )
-        , mFormat( Text )
-    {}
+    //! Constructor for QgsErrorMessage
+    QgsErrorMessage() = default;
 
-    /** Constructor.
-     *  @param theMessage error message string
-     *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
-     *  @param theFile the file where error was created
-     *  @param theFunction the function where error was created
-     *  @param theLine the line where error was created
+    /**
+     * Constructor.
+     *  \param message error message string
+     *  \param tag error label, for example GDAL, GDAL Provider, Raster layer
+     *  \param file the file where error was created
+     *  \param function the function where error was created
+     *  \param line the line where error was created
      */
-    QgsErrorMessage( const QString & theMessage, const QString & theTag = QString::null, const QString & theFile = QString::null, const QString & theFunction = QString::null, int theLine = 0 );
+    QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 
     QString message() const { return mMessage; }
     QString tag() const { return mTag; }
@@ -57,22 +59,20 @@ class CORE_EXPORT QgsErrorMessage
     int line() const { return mLine; }
 
   private:
-    /** Error messages */
+    //! Error messages
     QString mMessage;
 
-    /** Short description */
+    //! Short description
     QString mTag;
 
-    /** Detailed debug info */
+    //! Detailed debug info
     QString mFile;
     QString mFunction;
-    int mLine;
-
-    /** Message format */
-    Format mFormat;
+    int mLine = 0;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsError is container for error messages (report). It may contain chain
  * (sort of traceback) of error messages (e.g. GDAL - provider - layer).
  * Higher level messages are appended at the end.
@@ -81,46 +81,68 @@ class CORE_EXPORT QgsError
 {
   public:
 
-    QgsError() {}
+    //! Constructor for QgsError
+    QgsError() = default;
 
-    /** Constructor with single message.
-     *  @param theMessage error message
-     *  @param theTag short description, e.g. GDAL, Provider, Layer
+    /**
+     * Constructor with single message.
+     *  \param message error message
+     *  \param tag short description, e.g. GDAL, Provider, Layer
      */
-    QgsError( const QString & theMessage, const QString & theTag );
+    QgsError( const QString &message, const QString &tag );
 
-    /** Append new error message.
-     *  @param theMessage error message string
-     *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
+    /**
+     * Append new error message.
+     *  \param message error message string
+     *  \param tag error label, for example GDAL, GDAL Provider, Raster layer
      */
-    void append( const QString & theMessage, const QString & theTag );
+    void append( const QString &message, const QString &tag );
 
-    /** Append new error message.
-     *  @param theMessage error message
+    /**
+     * Append new error message.
+     *  \param message error message
      */
-    void append( const QgsErrorMessage & theMessage );
+    void append( const QgsErrorMessage &message );
 
-    /** Test if any error is set.
-     *  @return true if contains error
+    /**
+     * Test if any error is set.
+     *  \returns true if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 
-    /** Full error messages description
-     *  @param theFormat output format
-     *  @return error report
+    /**
+     * Full error messages description
+     *  \param format output format
+     *  \returns error report
      */
-    QString message( QgsErrorMessage::Format theFormat = QgsErrorMessage::Html ) const;
+    QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 
-    /** Short error description, usually the first error in chain, the real error.
-     *  @return error description
+    /**
+     * Short error description, usually the first error in chain, the real error.
+     *  \returns error description
      */
     QString summary() const;
 
-    /** Clear error messages */
+    //! Clear error messages
     void clear() { mMessageList.clear(); }
 
+    /**
+     * \brief messageList return the list of current error messages
+     * \return current list of error messages
+     */
+    QList<QgsErrorMessage> messageList() const { return mMessageList; }
+
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
-    /** List of messages */
+    //! List of messages
     QList<QgsErrorMessage> mMessageList;
 };
 

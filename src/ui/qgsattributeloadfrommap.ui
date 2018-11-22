@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Load values from layer</string>
+   <string>Load Values from Layer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

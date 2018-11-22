@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : TopoViewer plugin for DB Manager
-Description          : Create a project to display topology schema on QGis
+Description          : Create a project to display topology schema on Qgis
 Date                 : Sep 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -20,10 +20,12 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QGis
+from qgis.core import Qgis, QgsProject, QgsVectorLayer, QgsWkbTypes, QgsLayerTreeGroup
 from qgis.gui import QgsMessageBar
 
 import os
@@ -69,7 +71,7 @@ def run(item, action, mainwindow):
     isTopoSchema = False
 
     if not hasattr(item, 'schema'):
-        mainwindow.infoBar.pushMessage("Invalid topology", u'Select a topology schema to continue.', QgsMessageBar.INFO,
+        mainwindow.infoBar.pushMessage("Invalid topology", u'Select a topology schema to continue.', Qgis.Info,
                                        mainwindow.iface.messageTimeout())
         return False
 
@@ -83,44 +85,40 @@ def run(item, action, mainwindow):
     if not isTopoSchema:
         mainwindow.infoBar.pushMessage("Invalid topology",
                                        u'Schema "{0}" is not registered in topology.topology.'.format(
-                                           item.schema().name), QgsMessageBar.WARNING,
+                                           item.schema().name), Qgis.Warning,
                                        mainwindow.iface.messageTimeout())
         return False
 
     if (res[0] < 0):
-        mainwindow.infoBar.pushMessage("WARNING", u'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), QgsMessageBar.WARNING, mainwindow.iface.messageTimeout())
+        mainwindow.infoBar.pushMessage("WARNING", u'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), Qgis.Warning, mainwindow.iface.messageTimeout())
         toposrid = '0'
     else:
-        toposrid = unicode(res[0])
+        toposrid = str(res[0])
 
     # load layers into the current project
     toponame = item.schema().name
     template_dir = os.path.join(current_path, 'templates')
-    registry = QgsMapLayerRegistry.instance()
-    legend = iface.legendInterface()
 
     # do not refresh the canvas until all the layers are added
-    prevRenderFlagState = iface.mapCanvas().renderFlag()
-    iface.mapCanvas().setRenderFlag(False)
+    wasFrozen = iface.mapCanvas().isFrozen()
+    iface.mapCanvas().freeze()
     try:
-        supergroup = legend.addGroup(u'Topology "%s"' % toponame, False)
         provider = db.dbplugin().providerName()
         uri = db.uri()
 
+        # Force use of estimated metadata (topologies can be big)
+        uri.setUseEstimatedMetadata(True)
+
         # FACES
-        group = legend.addGroup(u'Faces', False, supergroup)
 
         # face mbr
         uri.setDataSource(toponame, 'face', 'mbr', '', 'face_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBPolygon)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.face_mbr' % toponame, provider)
-        layer.loadNamedStyle(os.path.join(template_dir, 'face_mbr.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
-        face_extent = layer.extent()
+        uri.setWkbType(QgsWkbTypes.Polygon)
+        layerFaceMbr = QgsVectorLayer(uri.uri(False), u'%s.face_mbr' % toponame, provider)
+        layerFaceMbr.loadNamedStyle(os.path.join(template_dir, 'face_mbr.qml'))
+
+        face_extent = layerFaceMbr.extent()
 
         # face geometry
         sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s,' \
@@ -129,14 +127,10 @@ def run(item, action, mainwindow):
               (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s\n)' % sql, 'geom', '', 'face_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBPolygon)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.face' % toponame, provider)
-        layer.setExtent(face_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.Polygon)
+        layerFaceGeom = QgsVectorLayer(uri.uri(False), u'%s.face' % toponame, provider)
+        layerFaceGeom.setExtent(face_extent)
+        layerFaceGeom.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
 
         # face_seed
         sql = u'SELECT face_id, ST_PointOnSurface(' \
@@ -146,129 +140,120 @@ def run(item, action, mainwindow):
               (quoteStr(toponame), toposrid, quoteId(toponame))
         uri.setDataSource('', u'(%s)' % sql, 'geom', '', 'face_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBPoint)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.face_seed' % toponame, provider)
-        layer.setExtent(face_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.Point)
+        layerFaceSeed = QgsVectorLayer(uri.uri(False), u'%s.face_seed' % toponame, provider)
+        layerFaceSeed.setExtent(face_extent)
+        layerFaceSeed.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
 
         # TODO: add polygon0, polygon1 and polygon2 ?
 
         # NODES
-        group = legend.addGroup(u'Nodes', False, supergroup)
 
         # node
         uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBPoint)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.node' % toponame, provider)
-        layer.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
-        node_extent = layer.extent()
+        uri.setWkbType(QgsWkbTypes.Point)
+        layerNode = QgsVectorLayer(uri.uri(False), u'%s.node' % toponame, provider)
+        layerNode.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
+        node_extent = layerNode.extent()
 
         # node labels
         uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBPoint)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.node_id' % toponame, provider)
-        layer.setExtent(node_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.Point)
+        layerNodeLabel = QgsVectorLayer(uri.uri(False), u'%s.node_id' % toponame, provider)
+        layerNodeLabel.setExtent(node_extent)
+        layerNodeLabel.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
 
         # EDGES
-        group = legend.addGroup(u'Edges', False, supergroup)
 
         # edge
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.edge' % toponame, provider)
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
-        edge_extent = layer.extent()
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerEdge = QgsVectorLayer(uri.uri(False), u'%s.edge' % toponame, provider)
+        edge_extent = layerEdge.extent()
 
         # directed edge
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.directed_edge' % toponame, provider)
-        layer.setExtent(edge_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerDirectedEdge = QgsVectorLayer(uri.uri(False), u'%s.directed_edge' % toponame, provider)
+        layerDirectedEdge.setExtent(edge_extent)
+        layerDirectedEdge.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
 
         # edge labels
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.edge_id' % toponame, provider)
-        layer.setExtent(edge_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerEdgeLabel = QgsVectorLayer(uri.uri(False), u'%s.edge_id' % toponame, provider)
+        layerEdgeLabel.setExtent(edge_extent)
+        layerEdgeLabel.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
 
         # face_left
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.face_left' % toponame, provider)
-        layer.setExtent(edge_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerFaceLeft = QgsVectorLayer(uri.uri(False), u'%s.face_left' % toponame, provider)
+        layerFaceLeft.setExtent(edge_extent)
+        layerFaceLeft.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
 
         # face_right
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.face_right' % toponame, provider)
-        layer.setExtent(edge_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerFaceRight = QgsVectorLayer(uri.uri(False), u'%s.face_right' % toponame, provider)
+        layerFaceRight.setExtent(edge_extent)
+        layerFaceRight.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
 
         # next_left
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.next_left' % toponame, provider)
-        layer.setExtent(edge_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerNextLeft = QgsVectorLayer(uri.uri(False), u'%s.next_left' % toponame, provider)
+        layerNextLeft.setExtent(edge_extent)
+        layerNextLeft.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
 
         # next_right
         uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
-        uri.setWkbType(QGis.WKBLineString)
-        layer = QgsVectorLayer(uri.uri(False), u'%s.next_right' % toponame, provider)
-        layer.setExtent(edge_extent)
-        layer.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
-        registry.addMapLayers([layer])
-        legend.moveLayer(layer, group)
-        legend.setLayerVisible(layer, False)
-        legend.setLayerExpanded(layer, False)
+        uri.setWkbType(QgsWkbTypes.LineString)
+        layerNextRight = QgsVectorLayer(uri.uri(False), u'%s.next_right' % toponame, provider)
+        layerNextRight.setExtent(edge_extent)
+        layerNextRight.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
+
+        # Add layers to the layer tree
+
+        faceLayers = [layerFaceMbr, layerFaceGeom, layerFaceSeed]
+        nodeLayers = [layerNode, layerNodeLabel]
+        edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel
+                      # , layerEdgeFaceLeft, layerEdgeFaceRight, layerEdgeNextLeft, layerEdgeNextRight
+                      ]
+
+        QgsProject.instance().addMapLayers(faceLayers, False)
+
+        groupFaces = QgsLayerTreeGroup(u'Faces')
+        for layer in faceLayers:
+            nodeLayer = groupFaces.addLayer(layer)
+            nodeLayer.setItemVisibilityChecked(False)
+            nodeLayer.setExpanded(False)
+
+        groupNodes = QgsLayerTreeGroup(u'Nodes')
+        for layer in nodeLayers:
+            nodeLayer = groupNodes.addLayer(layer)
+            nodeLayer.setItemVisibilityChecked(False)
+            nodeLayer.setExpanded(False)
+
+        groupEdges = QgsLayerTreeGroup(u'Edges')
+        for layer in edgeLayers:
+            nodeLayer = groupEdges.addLayer(layer)
+            nodeLayer.setItemVisibilityChecked(False)
+            nodeLayer.setExpanded(False)
+
+        supergroup = QgsLayerTreeGroup(u'Topology "%s"' % toponame)
+        supergroup.insertChildNodes(-1, [groupFaces, groupNodes, groupEdges])
+
+        QgsProject.instance().layerTreeRoot().addChildNode(supergroup)
 
     finally:
 
@@ -278,10 +263,11 @@ def run(item, action, mainwindow):
             ext = node_extent
             ext.combineExtentWith(edge_extent)
             # Grow by 1/20 of largest side
-            ext = ext.buffer(max(ext.width(), ext.height()) / 20)
+            ext = ext.buffered(max(ext.width(), ext.height()) / 20)
             canvas.setExtent(ext)
 
         # restore canvas render flag
-        iface.mapCanvas().setRenderFlag(prevRenderFlagState)
+        if not wasFrozen:
+            iface.mapCanvas().freeze(False)
 
     return True

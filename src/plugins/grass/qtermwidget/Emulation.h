@@ -128,7 +128,7 @@ public:
 
    /** Constructs a new terminal emulation */
    Emulation();
-  ~Emulation();
+  ~Emulation() override;
 
   /**
    * Creates a new window onto the output from this emulation.  The contents
@@ -164,11 +164,11 @@ public:
    * into @p stream, using @p decoder to convert the terminal
    * characters into text.
    *
-   * @param decoder A decoder which converts lines of terminal characters with
+   * \param decoder A decoder which converts lines of terminal characters with
    * appearance attributes into output text.  PlainTextDecoder is the most commonly
    * used decoder.
-   * @param startLine Index of first line to copy
-   * @param endLine Index of last line to copy
+   * \param startLine Index of first line to copy
+   * \param endLine Index of last line to copy
    */
   virtual void writeToStream(TerminalCharacterDecoder* decoder,int startLine,int endLine);
 
@@ -244,8 +244,8 @@ public slots:
   /**
    * Sends a string of characters to the foreground terminal process.
    *
-   * @param string The characters to send.
-   * @param length Length of @p string or if set to a negative value, @p string will
+   * \param string The characters to send.
+   * \param length Length of @p string or if set to a negative value, @p string will
    * be treated as a null-terminated string and its length will be determined automatically.
    */
   virtual void sendString(const char* string, int length = -1) = 0;
@@ -259,8 +259,8 @@ public slots:
    * to be emitted when it expires.  The timer allows multiple updates in quick
    * succession to be buffered into a single outputChanged() signal emission.
    *
-   * @param buffer A string of characters received from the terminal program.
-   * @param len The length of @p buffer
+   * \param buffer A string of characters received from the terminal program.
+   * \param len The length of @p buffer
    */
   void receiveData(const char* buffer,int len);
 
@@ -270,8 +270,8 @@ signals:
    * Emitted when a buffer of data is ready to send to the
    * standard input of the terminal.
    *
-   * @param data The buffer of data ready to be sent
-   * @param len The length of @p data in bytes
+   * \param data The buffer of data ready to be sent
+   * \param len The length of @p data in bytes
    */
   void sendData(const char* data,int len);
 
@@ -279,7 +279,7 @@ signals:
    * Requests that sending of input to the emulation
    * from the terminal process be suspended or resumed.
    *
-   * @param suspend If true, requests that sending of
+   * \param suspend If true, requests that sending of
    * input from the terminal process' stdout be
    * suspended.  Otherwise requests that sending of
    * input be resumed.
@@ -297,7 +297,7 @@ signals:
   /**
    * Emitted when the activity state of the emulation is set.
    *
-   * @param state The new activity state, one of NOTIFYNORMAL, NOTIFYACTIVITY
+   * \param state The new activity state, one of NOTIFYNORMAL, NOTIFYACTIVITY
    * or NOTIFYBELL
    */
   void stateSet(int state);
@@ -320,7 +320,7 @@ signals:
    * This is emitted when the program running in the shell indicates whether or
    * not it is interested in mouse events.
    *
-   * @param usesMouse This will be true if the program wants to be informed about
+   * \param usesMouse This will be true if the program wants to be informed about
    * mouse events or false otherwise.
    */
   void programUsesMouseChanged(bool usesMouse);
@@ -352,23 +352,23 @@ signals:
    * is used to perform a whole range of tasks besides just setting
    * the user-title of the session.
    *
-   * @param title Specifies what to change.
+   * \param title Specifies what to change.
    * <ul>
    * <li>0 - Set window icon text and session title to @p newTitle</li>
    * <li>1 - Set window icon text to @p newTitle</li>
    * <li>2 - Set session title to @p newTitle</li>
    * <li>11 - Set the session's default background color to @p newTitle,
    *         where @p newTitle can be an HTML-style string ("#RRGGBB") or a named
-   *         color (eg 'red', 'blue').
+   *         color (e.g., 'red', 'blue').
    *         See http://doc.trolltech.com/4.2/qcolor.html#setNamedColor for more
    *         details.
    * </li>
    * <li>31 - Supposedly treats @p newTitle as a URL and opens it (NOT IMPLEMENTED)</li>
    * <li>32 - Sets the icon associated with the session.  @p newTitle is the name
    *    of the icon to use, which can be the name of any icon in the current KDE icon
-   *    theme (eg: 'konsole', 'kate', 'folder_home')</li>
+   *    theme (e.g., 'konsole', 'kate', 'folder_home')</li>
    * </ul>
-   * @param newTitle Specifies the new title
+   * \param newTitle Specifies the new title
    */
 
   void titleChanged(int title,const QString& newTitle);
@@ -387,14 +387,14 @@ signals:
    * by a string containing a series of name and value pairs is received.
    * This string can be parsed using a ProfileCommandParser instance.
    *
-   * @param text A string expected to contain a series of key and value pairs in
+   * \param text A string expected to contain a series of key and value pairs in
    * the form:  name=value;name2=value2 ...
    */
   void profileChangeCommandReceived(const QString& text);
 
   /**
    * Emitted when a flow control key combination ( Ctrl+S or Ctrl+Q ) is pressed.
-   * @param suspendKeyPressed True if Ctrl+S was pressed to suspend output or Ctrl+Q to
+   * \param suspendKeyPressed True if Ctrl+S was pressed to suspend output or Ctrl+Q to
    * resume output.
    */
   void flowControlKeyPressed(bool suspendKeyPressed);
@@ -414,7 +414,7 @@ protected:
    * The primary screen is used by default.  When certain interactive programs such
    * as Vim are run, they trigger a switch to the alternate screen.
    *
-   * @param index 0 to switch to the primary screen, or 1 to switch to the alternate screen
+   * \param index 0 to switch to the primary screen, or 1 to switch to the alternate screen
    */
   void setScreen(int index);
 

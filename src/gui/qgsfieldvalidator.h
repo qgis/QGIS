@@ -23,19 +23,23 @@
 #include <QValidator>
 #include <QVariant>
 #include <QSettings>
-#include "qgsfield.h"
+#include "qgsfields.h"
+#include "qgis_gui.h"
 
-
+/**
+ * \ingroup gui
+ * \class QgsFieldValidator
+ */
 class GUI_EXPORT QgsFieldValidator : public QValidator
 {
     Q_OBJECT
 
   public:
-    QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat = "yyyy-MM-dd" );
-    ~QgsFieldValidator();
+    QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat = "yyyy-MM-dd" );
+    ~QgsFieldValidator() override;
 
-    virtual State validate( QString &, int & ) const override;
-    virtual void fixup( QString & ) const override;
+    State validate( QString &s SIP_CONSTRAINED SIP_INOUT, int &i SIP_INOUT ) const override;
+    void fixup( QString &s SIP_CONSTRAINED ) const override;
 
     QString dateFormat() const { return mDateFormat; }
 
@@ -43,11 +47,13 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     // Disables copy constructing
     Q_DISABLE_COPY( QgsFieldValidator )
 
-    QValidator *mValidator;
+    QValidator *mValidator = nullptr;
     QgsField mField;
     QString mNullValue;
     QString mDefaultValue;
     QString mDateFormat;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSFIELDVALIDATOR_H

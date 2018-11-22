@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------
 #
@@ -51,11 +51,11 @@ class Test:
 
     def __init__(self):
         if "GISBASE" not in os.environ or "GISRC" not in os.environ:
-            print "This script must be run in GRASS shell."
+            print("This script must be run in GRASS shell.")
             sys.exit(1)
 
         if "QGIS_PREFIX_PATH" not in os.environ:
-            print "QGIS_PREFIX_PATH environment variable not set."
+            print("QGIS_PREFIX_PATH environment variable not set.")
             sys.exit(1)
 
         self.size = 10
@@ -67,28 +67,28 @@ class Test:
         self.reportStr += msg + "\n"
 
     def writeReport(self):
-        print self.reportStr
+        print(self.reportStr)
 
     def test(self):
-        print "GRASS Direct test"
+        print("GRASS Direct test")
 
         tmp_dir = os.path.abspath("qgis-grass-test-%s" % time.strftime('%y%m%d-%H%M%S'))
         tmp_dir = os.path.abspath("qgis-grass-test-debug") # debug
-        print "Output will be written to %s" % tmp_dir
+        print("Output will be written to %s" % tmp_dir)
 
         files_dir = "%s/tif" % tmp_dir
-        #os.makedirs( files_dir )
+        # os.makedirs( files_dir )
 
         # get list of raster layers
-        print "Getting list of rasters ..."
+        print("Getting list of rasters ...")
         rasters = self.srun(["g.mlist", "type=rast"]).splitlines()
         max_rasters = 1
-        print "%s rasters found, using first %s" % (len(rasters), max_rasters)
+        print("%s rasters found, using first %s" % (len(rasters), max_rasters))
         rasters = rasters[0:1]
 
-        print "Exporting rasters"
+        print("Exporting rasters")
         for raster in rasters:
-            print raster
+            print(raster)
             output = "%s/%s.tif" % (files_dir, raster)
             self.srun(["g.region", "rast=%s" % raster, "cols=%s" % self.size, "rows=%s" % self.size])
             self.srun(["r.out.gdal", "input=%s" % raster, "output=%s" % output])
@@ -126,7 +126,7 @@ class Test:
                 longlat = True if proj.find("+proj=longlat") != -1 else False
                 proj = proj.splitlines()
                 proj = " ".join(proj)
-                print proj
+                print(proj)
                 env['QGIS_GRASS_CRS'] = proj
 
                 # set GRASS region as environment variable
@@ -144,20 +144,20 @@ class Test:
                     if k in reg_var:
                         kn = reg_var[k]
                     region += ";%s:%s" % (kn, v)
-                print region
+                print(region)
                 env['GRASS_REGION'] = region
 
                 # add path to fake GRASS gis library
                 env['LD_LIBRARY_PATH'] = "%s/lib/qgis/plugins/:%s" % (env['QGIS_PREFIX_PATH'], env['LD_LIBRARY_PATH'])
                 (code, out, err) = self.run(direct_args, env)
-                print "code = %s" % code
+                print("code = %s" % code)
                 if code != 0:
                     self.report("Direct failed: %s\n%s\n%s" % (" ".join(direct_args), out, err))
                 # TODO: compare native x direct output
 
     def run(self, args, env=None, input=None, exit_on_error=False):
         cmd = " ".join(args)
-        print cmd
+        print(cmd)
         p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, env=env)
         com = p.communicate(input)
         p.wait()
@@ -179,6 +179,7 @@ class Test:
             "r.slope.aspect elevation=R1 aspect=RO1"
         ]
         return modules
+
 
 if __name__ == '__main__':
     test = Test()

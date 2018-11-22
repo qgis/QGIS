@@ -1,0 +1,40 @@
+
+== Building on Linux with mxe ==
+
+With this approach you can cross build a Windows binary on Linux using MXE (M cross environment).
+You can find the build script and a README.md file in the ms-windows/mxe directory.
+
+For now, Python buildings cannot be built with mxe.
+
+=== Building with Docker ===
+
+This is the simplest way, but you need to have Docker installed
+on your system.
+
+You can use a Docker image to cross build QGIS by calling
+the script ms-windows/mxe/build.sh from the root directory of QGIS repository.
+
+=== Building without Docker ====
+
+This requires to install mxe toolchain on your system and build
+all dependencies by yourself.
+
+==== Initial setup ====
+
+Please follow the instructions on mxe website to setup your building toolchain http://mxe.cc/,
+take note of the path where you have installed mxe.
+
+==== Building the dependencies ====
+
+Please see README.md under ms-windows/mxe for detailed instructions and for the
+list of dependencies that need to be built in mxe before attempting to build QGIS.
+
+==== Cross-Building QGIS ====
+
+Edit the build-mxe.sh script and optionally adjust the path where your mxe installation is located, you
+can also change the build and release directories.
+
+=== Testing QGIS ===
+
+Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
+is required.

@@ -23,7 +23,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 
 class QSqlDatabase;
 
@@ -31,19 +31,21 @@ class QgsOracleRootItem;
 class QgsOracleConnectionItem;
 class QgsOracleOwnerItem;
 class QgsOracleLayerItem;
+class QgsProxyProgressTask;
 
 class QgsOracleRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsOracleRootItem();
+    QgsOracleRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren() override;
 
-    virtual QWidget * paramWidget();
+    QVariant sortKey() const override { return 5; }
 
-    virtual QList<QAction*> actions();
+    QWidget *paramWidget() override;
+
+    QList<QAction *> actions( QWidget *parent ) override;
 
     static QMainWindow *sMainWindow;
 
@@ -56,17 +58,17 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleConnectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsOracleConnectionItem();
+    QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
+    ~QgsOracleConnectionItem() override;
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
-    virtual QList<QAction*> actions();
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
-    void refresh();
+    void refresh() override;
 
   signals:
     void addGeometryColumn( QgsOracleLayerProperty );
@@ -76,7 +78,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     void deleteConnection();
     void refreshConnection();
 
-    void setLayerType( QgsOracleLayerProperty layerProperty );
+    void setLayerType( const QgsOracleLayerProperty &layerProperty );
 
     void threadStarted();
     void threadFinished();
@@ -84,19 +86,20 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
   private:
     void stop();
     QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
-    QgsOracleColumnTypeThread *mColumnTypeThread;
+    QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
+    QgsProxyProgressTask *mColumnTypeTask = nullptr;
+    void setAllAsPopulated();
 };
 
 class QgsOracleOwnerItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleOwnerItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsOracleOwnerItem();
+    QgsOracleOwnerItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren() override;
 
-    void addLayer( QgsOracleLayerProperty layerProperty );
+    void addLayer( const QgsOracleLayerProperty &layerProperty );
 };
 
 class QgsOracleLayerItem : public QgsLayerItem
@@ -104,12 +107,11 @@ class QgsOracleLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsOracleLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsOracleLayerProperty layerProperties );
-    ~QgsOracleLayerItem();
+    QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsOracleLayerProperty &layerProperties );
 
     QString createUri();
 
-    virtual QList<QAction*> actions();
+    QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
     void deleteLayer();

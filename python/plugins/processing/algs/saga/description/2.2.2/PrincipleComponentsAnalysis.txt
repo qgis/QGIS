@@ -1,6 +1,0 @@
-Principle Components Analysis
-table_calculus
-ParameterTable|TABLE|Table|False
-ParameterSelection|METHOD|Method|[0] correlation matrix;[1] variance-covariance matrix;[2] sums-of-squares-and-cross-products matrix
-ParameterNumber|NFIRST|Number of Components|None|None|3
-OutputTable|PCA|Principle Components

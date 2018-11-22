@@ -16,35 +16,43 @@
 #ifndef QGSSQLITEEXPRESSIONCOMPILER_H
 #define QGSSQLITEEXPRESSIONCOMPILER_H
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
+#include "qgis_core.h"
 #include "qgssqlexpressioncompiler.h"
-#include "qgsexpression.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSQLiteExpressionCompiler
  * \brief Expression compiler for translation to SQlite SQL WHERE clauses.
  *
- * This class is designed to be used by spatialite and OGR providers.
- * \note Added in version 2.16
+ * This class is designed to be used by SpatiaLite and OGR providers.
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    /** Constructor for expression compiler.
-     * @param fields fields from provider
+    /**
+     * Constructor for expression compiler.
+     * \param fields fields from provider
      */
-    explicit QgsSQLiteExpressionCompiler( const QgsFields& fields );
+    explicit QgsSQLiteExpressionCompiler( const QgsFields &fields );
 
   protected:
 
-    virtual Result compileNode( const QgsExpression::Node* node, QString& str ) override;
-    virtual QString quotedIdentifier( const QString& identifier ) override;
-    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+    Result compileNode( const QgsExpressionNode *node, QString &str ) override;
+    QString quotedIdentifier( const QString &identifier ) override;
+    QString quotedValue( const QVariant &value, bool &ok ) override;
+    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    QString castToReal( const QString &value ) const override;
+    QString castToInt( const QString &value ) const override;
+    QString castToText( const QString &value ) const override;
 
 };
 

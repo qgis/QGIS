@@ -17,43 +17,46 @@
 
 #include "qgssvgannotationdialog.h"
 #include "qgsannotationwidget.h"
-#include "qgssvgannotationitem.h"
+#include "qgssvgannotation.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+
 {
   setupUi( this );
-  setWindowTitle( tr( "SVG annotation" ) );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsSvgAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsSvgAnnotationDialog::mButtonBox_clicked );
+  setWindowTitle( tr( "SVG Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mFileLineEdit->setText( mItem->filePath() );
+    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
+    mFileLineEdit->setText( annotation->filePath() );
   }
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSvgAnnotationDialog::applySettingsToItem );
+  QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsSvgAnnotationDialog::showHelp );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog(): QDialog(), mItem( nullptr ), mEmbeddedWidget( nullptr )
-{
-
-}
-
-QgsSvgAnnotationDialog::~QgsSvgAnnotationDialog()
-{
-
-}
-
-void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -72,9 +75,10 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
     mEmbeddedWidget->apply();
   }
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mItem->setFilePath( mFileLineEdit->text() );
+    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
+    annotation->setFilePath( mFileLineEdit->text() );
     mItem->update();
   }
 
@@ -82,11 +86,20 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
 
 void QgsSvgAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
+}
+
+void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
+}
+
+void QgsSvgAnnotationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
 }

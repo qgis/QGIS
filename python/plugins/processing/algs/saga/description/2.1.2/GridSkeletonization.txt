@@ -1,9 +1,0 @@
-Grid Skeletonization
-imagery_segmentation
-ParameterRaster|INPUT|Grid|False
-ParameterSelection|METHOD|Method|[0] Standard;[1] Hilditch's Algorithm;[2] Channel Skeleton
-ParameterSelection|INIT_METHOD|Initialisation|[0] Less than;[1] Greater than
-ParameterNumber|INIT_THRESHOLD|Threshold (Init.)|None|None|0.0
-ParameterNumber|CONVERGENCE|Convergence|None|None|3.0
-OutputRaster|RESULT|Skeleton
-OutputVector|VECTOR|Skeleton

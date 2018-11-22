@@ -50,14 +50,8 @@ Building QGIS from source - step by step
 %apply vim formatting to the whole document as it screws up some formatting
 %rather apply it selectively to paragraphs where needed.
 
-% To generate the text version of this document:
-% txt2tags -t txt -o INSTALL INSTALL.t2t
-% To generate the mediawiki version of this document:
-% txt2tags -t wiki --no-enum-title -o INSTALL.wiki INSTALL.t2t
-% To generate the html version of this document:
-% txt2tags -t html -o INSTALL.html INSTALL.t2t
-% To generate the LaTeX version of this document:
-% txt2tags -t tex -o INSTALL.tex INSTALL.t2t; pdflatex INSTALL.tex
+% To generate output files from this document:
+% cmake --build $YOURBUILDDIR --target t2tdoc
 
 % End of comments
 % -------------------
@@ -85,14 +79,12 @@ liable to any duties or guarantees. The editors and publishers do not take
 any responsibility or liability for failures and their consequences. You are 
 always welcome for indicating possible mistakes.
 
-You can download this document as part of the QGIS 'User and 
-Installation Guide' in HTML and PDF format via http://qgis.org. A current 
-version is also available at:
-http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html
-
-Translations of this document can also be downloaded at the documentation area 
-of the QGIS project at http://qgis.org. More information is 
-available via http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources. 
+Because the code of QGIS evolves from release to release, These instructions are
+regularly updated to match the corresponding release. Instructions for the current
+master branch are available at
+http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html.
+If you wish to build another version of QGIS, ensure to checkout the appropriate
+release branch. The QGIS source code can be found [in the repository https://github.com/qgis/QGIS].
 
 Please visit http://qgis.org for information on joining our mailing lists 
 and getting involved in the project further.
@@ -100,7 +92,7 @@ and getting involved in the project further.
 /!\ **Note to document writers:** Please use this document as the central
 place for describing build procedures. Please do not remove this notice. 
 
-/!\ **Note to document writers:** This documented is generated from 
+/!\ **Note to document writers:** This document is generated from 
 doc/INSTALL.t2t - if you need to edit this document, be sure to edit that 
 file rather than the generated INSTALL document found in the root of the 
 source directory.
@@ -112,6 +104,7 @@ source directory.
 = Building on Windows =
 %!include: msvc.t2t
 %!include: msys.t2t
+%!include: mxe.t2t
 
 %!include: osx.t2t
 

@@ -29,5 +29,6 @@ class TestPyQgsApplication(unittest.TestCase):
                      (myExpectedResult, myResult))
         assert myExpectedResult == myResult, myMessage
 
+
 if __name__ == '__main__':
     unittest.main()

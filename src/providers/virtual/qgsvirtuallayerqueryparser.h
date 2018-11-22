@@ -17,16 +17,18 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_QUERY_PARSER_H
 #define QGSVIRTUALLAYER_QUERY_PARSER_H
 
-#include <qgis.h>
-#include <qgswkbtypes.h>
-#include <qgsvectorlayer.h>
+#include "qgis.h"
+#include "qgswkbtypes.h"
+
+struct sqlite3;
 
 namespace QgsVirtualLayerQueryParser
 {
 
-  //!
-  //! Return the list of tables referenced in the SQL query
-  QStringList referencedTables( const QString& q );
+  /**
+   * Returns the list of tables referenced in the SQL query
+   */
+  QStringList referencedTables( const QString &q );
 
   /**
    * Type used to define a column
@@ -37,57 +39,55 @@ namespace QgsVirtualLayerQueryParser
   class ColumnDef
   {
     public:
-      ColumnDef()
-          : mType( QVariant::Invalid )
-          , mWkbType( QgsWKBTypes::Unknown )
-          , mSrid( -1 )
+      ColumnDef() = default;
+      ColumnDef( const QString &name, QgsWkbTypes::Type aWkbType, long aSrid )
+        : mName( name )
+        , mType( QVariant::UserType )
+        , mWkbType( aWkbType )
+        , mSrid( aSrid )
       {}
-      ColumnDef( const QString& name, QgsWKBTypes::Type aWkbType, long aSrid )
-          : mName( name )
-          , mType( QVariant::UserType )
-          , mWkbType( aWkbType )
-          , mSrid( aSrid )
-      {}
-      ColumnDef( const QString& name, QVariant::Type aType )
-          : mName( name )
-          , mType( aType )
-          , mWkbType( QgsWKBTypes::NoGeometry )
-          , mSrid( -1 )
+      ColumnDef( const QString &name, QVariant::Type aType )
+        : mName( name )
+        , mType( aType )
+        , mWkbType( QgsWkbTypes::NoGeometry )
       {}
 
       QString name() const { return mName; }
-      void setName( QString name ) { mName = name; }
+      void setName( const QString &name ) { mName = name; }
 
       bool isGeometry() const { return mType == QVariant::UserType; }
-      void setGeometry( QgsWKBTypes::Type wkbType ) { mType = QVariant::UserType; mWkbType = wkbType; }
+      void setGeometry( QgsWkbTypes::Type wkbType ) { mType = QVariant::UserType; mWkbType = wkbType; }
       long srid() const { return mSrid; }
       void setSrid( long srid ) { mSrid = srid; }
 
-      void setScalarType( QVariant::Type t ) { mType = t; mWkbType = QgsWKBTypes::NoGeometry; }
+      void setScalarType( QVariant::Type t ) { mType = t; mWkbType = QgsWkbTypes::NoGeometry; }
       QVariant::Type scalarType() const { return mType; }
-      QgsWKBTypes::Type wkbType() const { return mWkbType; }
+      QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
     private:
       QString mName;
-      QVariant::Type mType;
-      QgsWKBTypes::Type mWkbType;
-      long mSrid;
+      QVariant::Type mType = QVariant::Invalid;
+      QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+      long mSrid = -1;
   };
 
-  //!
-  //! Type used by the parser to type a query. It is slightly different from a QgsVirtualLayerDefinition since more than one geometry column can be represented
+  /**
+   * Type used by the parser to type a query. It is slightly different from a QgsVirtualLayerDefinition since more than one geometry column can be represented
+   */
   typedef QList<ColumnDef> TableDef;
 
-  //! Get the column names and types that can be deduced from the query, using SQLite introspection
-  //! Special comments can also be used in the query to type columns
-  //! Comments should be set after the name of the column and are introduced by "/*:"
-  //! For instance 'SELECT t+1 /*:int*/ FROM table' will type the column 't' as integer
-  //! A geometry column can also be set by specifying a type and an SRID
-  //! For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /*:point:4326*/
-  TableDef columnDefinitionsFromQuery( sqlite3* db, const QString& query );
+  /**
+   * Gets the column names and types that can be deduced from the query, using SQLite introspection
+   * Special comments can also be used in the query to type columns
+   * Comments should be set after the name of the column and are introduced by "/\htmlonly\endhtmlonly*:"
+   * For instance 'SELECT t+1 /\htmlonly\endhtmlonly*:int*\htmlonly\endhtmlonly/ FROM table' will type the column 't' as integer
+   * A geometry column can also be set by specifying a type and an SRID
+   * For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /\htmlonly\endhtmlonly*:point:4326*\htmlonly\endhtmlonly/
+   */
+  TableDef columnDefinitionsFromQuery( sqlite3 *db, const QString &query );
 
-  //! Get the column types of a virtual table
-  TableDef tableDefinitionFromVirtualTable( sqlite3* db, const QString& tableName );
+  //! Gets the column types of a virtual table
+  TableDef tableDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName );
 
 }
 

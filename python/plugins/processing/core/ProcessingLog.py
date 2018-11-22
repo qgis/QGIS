@@ -30,100 +30,61 @@ import codecs
 import datetime
 from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
-from qgis.core import QgsMessageLog
 from qgis.PyQt.QtCore import QCoreApplication
+
+LOG_SEPARATOR = '|~|'
 
 
 class ProcessingLog:
 
-    LOG_ERROR = 'ERROR'
-    LOG_INFO = 'INFO'
-    LOG_WARNING = 'WARNING'
-    LOG_ALGORITHM = 'ALGORITHM'
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-    recentAlgs = []
 
     @staticmethod
     def logFilename():
         logFilename = userFolder() + os.sep + 'processing.log'
         if not os.path.isfile(logFilename):
-            logfile = codecs.open(logFilename, 'w', encoding='utf-8')
-            logfile.write('Started logging at ' +
-                          datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT) + '\n')
-            logfile.close()
+            with codecs.open(logFilename, 'w', encoding='utf-8') as logfile:
+                logfile.write('Started logging at ' +
+                              datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT) + '\n')
 
         return logFilename
 
     @staticmethod
-    def addToLog(msgtype, msg):
+    def addToLog(msg):
         try:
             # It seems that this fails sometimes depending on the msg
             # added. To avoid it stopping the normal functioning of the
             # algorithm, we catch all errors, assuming that is better
             # to miss some log info than breaking the algorithm.
-            if msgtype == ProcessingLog.LOG_ALGORITHM:
-                line = msgtype + '|' + datetime.datetime.now().strftime(
-                    ProcessingLog.DATE_FORMAT) + '|' \
-                    + msg + '\n'
-                logfile = codecs.open(ProcessingLog.logFilename(), 'a',
-                                      encoding='utf-8')
+            line = 'ALGORITHM' + LOG_SEPARATOR + datetime.datetime.now().strftime(
+                ProcessingLog.DATE_FORMAT) + LOG_SEPARATOR \
+                + msg + '\n'
+            with codecs.open(ProcessingLog.logFilename(), 'a',
+                             encoding='utf-8') as logfile:
                 logfile.write(line)
-                logfile.close()
-                algname = msg[len('Processing.runalg("'):]
-                algname = algname[:algname.index('"')]
-                if algname not in ProcessingLog.recentAlgs:
-                    ProcessingLog.recentAlgs.append(algname)
-                    recentAlgsString = ';'.join(ProcessingLog.recentAlgs[-6:])
-                    ProcessingConfig.setSettingValue(
-                        ProcessingConfig.RECENT_ALGORITHMS,
-                        recentAlgsString)
-            else:
-                if isinstance(msg, list):
-                    msg = '\n'.join([m for m in msg])
-                msgtypes = {ProcessingLog.LOG_ERROR: QgsMessageLog.CRITICAL,
-                            ProcessingLog.LOG_INFO: QgsMessageLog.INFO,
-                            ProcessingLog.LOG_WARNING: QgsMessageLog.WARNING, }
-                QgsMessageLog.logMessage(msg, ProcessingLog.tr("Processing"), msgtypes[msgtype])
         except:
             pass
 
     @staticmethod
     def getLogEntries():
-        entries = {}
-        errors = []
-        algorithms = []
-        warnings = []
-        info = []
+        entries = []
 
         with open(ProcessingLog.logFilename()) as f:
             lines = f.readlines()
         for line in lines:
             line = line.strip('\n').strip()
-            tokens = line.split('|')
+            tokens = line.split(LOG_SEPARATOR)
+            if len(tokens) <= 1:
+                # try old format log separator
+                tokens = line.split('|')
+
             text = ''
             for i in range(2, len(tokens)):
-                text += tokens[i] + '|'
-            if line.startswith(ProcessingLog.LOG_ERROR):
-                errors.append(LogEntry(tokens[1], text))
-            elif line.startswith(ProcessingLog.LOG_ALGORITHM):
-                algorithms.append(LogEntry(tokens[1], tokens[2]))
-            elif line.startswith(ProcessingLog.LOG_WARNING):
-                warnings.append(LogEntry(tokens[1], text))
-            elif line.startswith(ProcessingLog.LOG_INFO):
-                info.append(LogEntry(tokens[1], text))
+                text += tokens[i] + LOG_SEPARATOR
+            if line.startswith('ALGORITHM'):
+                entries.append(LogEntry(tokens[1], tokens[2]))
 
-        entries[ProcessingLog.LOG_ALGORITHM] = algorithms
         return entries
-
-    @staticmethod
-    def getRecentAlgorithms():
-        recentAlgsSetting = ProcessingConfig.getSetting(
-            ProcessingConfig.RECENT_ALGORITHMS)
-        try:
-            ProcessingLog.recentAlgs = recentAlgsSetting.split(';')
-        except:
-            pass
-        return ProcessingLog.recentAlgs
 
     @staticmethod
     def clearLog():
@@ -133,9 +94,8 @@ class ProcessingLog:
     def saveLog(fileName):
         entries = ProcessingLog.getLogEntries()
         with codecs.open(fileName, 'w', encoding='utf-8') as f:
-            for k, v in entries.iteritems():
-                for entry in v:
-                    f.write('%s|%s|%s\n' % (k, entry.date, entry.text))
+            for entry in entries:
+                f.write('ALGORITHM{}{}{}{}\n'.format(LOG_SEPARATOR, entry.date, LOG_SEPARATOR, entry.text))
 
     @staticmethod
     def tr(string, context=''):

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsLayoutManagerBase</class>
+ <widget class="QDialog" name="QgsLayoutManagerBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>425</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>425</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Layout Manager</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../../images/images.qrc">
+    <normaloff>:/images/themes/default/mActionLayoutManager.svg</normaloff>:/images/themes/default/mActionLayoutManager.svg</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="1">
+      <widget class="QToolButton" name="mDuplicateButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&amp;Duplicate…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QToolButton" name="mRenameButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Re&amp;name…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="mRemoveButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&amp;Remove…</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="4">
+      <widget class="QListView" name="mLayoutListView">
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QToolButton" name="mShowButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&amp;Show</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mTemplateGrpBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title">
+      <string>New from Template</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="mAddButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Create…</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QgsFileWidget" name="mTemplateFileWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Open template directory</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mTemplatesUserDirBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>User</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mTemplatesDefaultDirBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Default</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="mTemplate"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mLayoutListView</tabstop>
+  <tabstop>mShowButton</tabstop>
+  <tabstop>mDuplicateButton</tabstop>
+  <tabstop>mRemoveButton</tabstop>
+  <tabstop>mRenameButton</tabstop>
+  <tabstop>mTemplateGrpBox</tabstop>
+  <tabstop>mTemplate</tabstop>
+  <tabstop>mAddButton</tabstop>
+  <tabstop>mTemplateFileWidget</tabstop>
+  <tabstop>mTemplatesUserDirBtn</tabstop>
+  <tabstop>mTemplatesDefaultDirBtn</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsLayoutManagerBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsLayoutManagerBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

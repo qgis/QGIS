@@ -13,57 +13,128 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolpan.h"
-#include "qgsmapcanvas.h"
-#include "qgscursors.h"
-#include "qgsmaptopixel.h"
 #include <QBitmap>
 #include <QCursor>
-#include <QMouseEvent>
+
+#include "qgsmaptoolpan.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptopixel.h"
+#include "qgsmapmouseevent.h"
 
 
-QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+
+QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mToolName = tr( "Pan" );
   // set cursor
   mCursor = QCursor( Qt::OpenHandCursor );
 }
 
-void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent* e )
+QgsMapToolPan::~QgsMapToolPan()
+{
+  mCanvas->ungrabGesture( Qt::PinchGesture );
+}
+
+void QgsMapToolPan::activate()
+{
+  mCanvas->grabGesture( Qt::PinchGesture );
+  QgsMapTool::activate();
+}
+
+void QgsMapToolPan::deactivate()
+{
+  mCanvas->ungrabGesture( Qt::PinchGesture );
+  QgsMapTool::deactivate();
+}
+
+void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() == Qt::LeftButton )
     mCanvas->setCursor( QCursor( Qt::ClosedHandCursor ) );
 }
 
 
-void QgsMapToolPan::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolPan::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if (( e->buttons() & Qt::LeftButton ) )
+  if ( !mPinching )
   {
-    mDragging = true;
-    // move map and other canvas items
-    mCanvas->panAction( e );
+    if ( ( e->buttons() & Qt::LeftButton ) )
+    {
+      mDragging = true;
+      // move map and other canvas items
+      mCanvas->panAction( e );
+    }
   }
 }
 
-void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( e->button() == Qt::LeftButton )
+  if ( !mPinching )
   {
-    if ( mDragging )
+    if ( e->button() == Qt::LeftButton )
     {
-      mCanvas->panActionEnd( e->pos() );
-      mDragging = false;
-    }
-    else // add pan to mouse cursor
-    {
-      // transform the mouse pos to map coordinates
-      QgsPoint center = mCanvas->getCoordinateTransform()->toMapPoint( e->x(), e->y() );
-      mCanvas->setCenter( center );
-      mCanvas->refresh();
+      if ( mDragging )
+      {
+        mCanvas->panActionEnd( e->pos() );
+        mDragging = false;
+      }
+      else // add pan to mouse cursor
+      {
+        // transform the mouse pos to map coordinates
+        QgsPointXY center = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+        mCanvas->setCenter( center );
+        mCanvas->refresh();
+      }
     }
   }
   mCanvas->setCursor( mCursor );
+}
+
+void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent *e )
+{
+  if ( !QTouchDevice::devices().isEmpty() && !mPinching )
+  {
+    mCanvas->zoomWithCenter( e->x(), e->y(), true );
+  }
+}
+
+bool QgsMapToolPan::gestureEvent( QGestureEvent *event )
+{
+  if ( QTouchDevice::devices().isEmpty() )
+    return true; // no touch support
+
+  qDebug() << "gesture " << event;
+  if ( QGesture *gesture = event->gesture( Qt::PinchGesture ) )
+  {
+    mPinching = true;
+    pinchTriggered( static_cast<QPinchGesture *>( gesture ) );
+  }
+  return true;
+}
+
+void QgsMapToolPan::pinchTriggered( QPinchGesture *gesture )
+{
+  if ( gesture->state() == Qt::GestureFinished )
+  {
+    //a very small totalScaleFactor indicates a two finger tap (pinch gesture without pinching)
+    if ( 0.98 < gesture->totalScaleFactor()  && gesture->totalScaleFactor() < 1.02 )
+    {
+      mCanvas->zoomOut();
+    }
+    else
+    {
+      //Transfor global coordinates to widget coordinates
+      QPoint pos = gesture->centerPoint().toPoint();
+      pos = mCanvas->mapFromGlobal( pos );
+      // transform the mouse pos to map coordinates
+      QgsPointXY center  = mCanvas->getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+      QgsRectangle r = mCanvas->extent();
+      r.scale( 1 / gesture->totalScaleFactor(), &center );
+      mCanvas->setExtent( r );
+      mCanvas->refresh();
+    }
+    mPinching = false;
+  }
 }

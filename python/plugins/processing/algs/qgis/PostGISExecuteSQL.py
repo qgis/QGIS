@@ -25,48 +25,55 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterString
-from processing.algs.qgis import postgis_utils
+from qgis.core import (QgsProcessingException, QgsProcessingParameterString)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import postgis
 
 
-class PostGISExecuteSQL(GeoAlgorithm):
+class PostGISExecuteSQL(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('PostGIS execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('Database')
-        self.addParameter(ParameterString(self.DATABASE, self.tr('Database')))
-        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+    def group(self):
+        return self.tr('Database')
 
-    def processAlgorithm(self, progress):
-        connection = self.getParameterValue(self.DATABASE)
-        settings = QSettings()
-        mySettings = '/PostgreSQL/connections/' + connection
-        try:
-            database = settings.value(mySettings + '/database')
-            username = settings.value(mySettings + '/username')
-            host = settings.value(mySettings + '/host')
-            port = settings.value(mySettings + '/port', type=int)
-            password = settings.value(mySettings + '/password')
-        except Exception as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Wrong database connection name: %s' % connection))
-        try:
-            self.db = postgis_utils.GeoDB(host=host, port=port,
-                                          dbname=database, user=username, passwd=password)
-        except postgis_utils.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr("Couldn't connect to database:\n%s") % unicode(e))
+    def groupId(self):
+        return 'database'
 
-        sql = self.getParameterValue(self.SQL).replace('\n', ' ')
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        db_param = QgsProcessingParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'))
+        db_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+        self.addParameter(db_param)
+        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), multiLine=True))
+
+    def name(self):
+        return 'postgisexecutesql'
+
+    def displayName(self):
+        return self.tr('PostgreSQL execute SQL')
+
+    def shortDescription(self):
+        return self.tr('Executes a SQL command on a PostgreSQL database')
+
+    def tags(self):
+        return self.tr('postgis,database').split(',')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        db = postgis.GeoDB.from_name(connection)
+
+        sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            self.db._exec_sql_and_commit(unicode(sql))
-        except postgis_utils.DbError as e:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Error executing SQL:\n%s') % unicode(e))
+            db._exec_sql_and_commit(str(sql))
+        except postgis.DbError as e:
+            raise QgsProcessingException(
+                self.tr('Error executing SQL:\n{0}').format(str(e)))
+        return {}

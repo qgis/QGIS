@@ -26,20 +26,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeature
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsField,
+                       QgsProcessing,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingFeatureSource)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class AddTableField(GeoAlgorithm):
+class AddTableField(QgisFeatureBasedAlgorithm):
 
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
     FIELD_TYPE = 'FIELD_TYPE'
     FIELD_LENGTH = 'FIELD_LENGTH'
@@ -47,52 +45,64 @@ class AddTableField(GeoAlgorithm):
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add field to attributes table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+    def group(self):
+        return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
+    def __init__(self):
+        super().__init__()
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
+        self.field = None
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterString(self.FIELD_NAME,
-                                          self.tr('Field name')))
-        self.addParameter(ParameterSelection(self.FIELD_TYPE,
-                                             self.tr('Field type'), self.type_names))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-                                          self.tr('Field length'), 1, 255, 10))
-        self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                                          self.tr('Field precision'), 0, 10, 0))
-        self.addOutput(OutputVector(
-            self.OUTPUT_LAYER, self.tr('Added')))
+    def flags(self):
+        return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
-    def processAlgorithm(self, progress):
-        fieldType = self.getParameterValue(self.FIELD_TYPE)
-        fieldName = self.getParameterValue(self.FIELD_NAME)
-        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
-        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
+                                                       self.tr('Field name')))
+        self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
+                                                     self.tr('Field type'), self.type_names))
+        self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
+                                                       self.tr('Field length'), QgsProcessingParameterNumber.Integer,
+                                                       10, False, 1, 255))
+        self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
+                                                       self.tr('Field precision'), QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
 
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def name(self):
+        return 'addfieldtoattributestable'
 
-        provider = layer.dataProvider()
-        fields = provider.fields()
-        fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
-                               fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, provider.geometryType(),
-                                        layer.crs())
-        outFeat = QgsFeature()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, feat in enumerate(features):
-            progress.setPercentage(int(current * total))
-            geom = feat.geometry()
-            outFeat.setGeometry(geom)
-            atMap = feat.attributes()
-            atMap.append(None)
-            outFeat.setAttributes(atMap)
-            writer.addFeature(outFeat)
-        del writer
+    def displayName(self):
+        return self.tr('Add field to attributes table')
+
+    def outputName(self):
+        return self.tr('Added')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
+
+    def prepareAlgorithm(self, parameters, context, feedback):
+        field_type = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
+        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        field_length = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
+        field_precision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
+
+        self.field = QgsField(field_name, self.TYPES[field_type], '',
+                              field_length, field_precision)
+        return True
+
+    def outputFields(self, inputFields):
+        inputFields.append(self.field)
+        return inputFields
+
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
+    def processFeature(self, feature, context, feedback):
+        attributes = feature.attributes()
+        attributes.append(None)
+        feature.setAttributes(attributes)
+        return [feature]

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 IFS=:
 cat <<EOF |
 access:accessing

@@ -16,11 +16,9 @@
 #ifndef QGSGEOREFTOOLDELETEPOINT_H
 #define QGSGEOREFTOOLDELETEPOINT_H
 
-#include <QMouseEvent>
-
 #include "qgsmaptoolemitpoint.h"
 
-class QgsPoint;
+class QgsPointXY;
 class QgsMapCanvas;
 
 class QgsGeorefToolDeletePoint : public QgsMapToolEmitPoint
@@ -28,10 +26,10 @@ class QgsGeorefToolDeletePoint : public QgsMapToolEmitPoint
     Q_OBJECT
 
   public:
-    explicit QgsGeorefToolDeletePoint( QgsMapCanvas* canvas );
+    explicit QgsGeorefToolDeletePoint( QgsMapCanvas *canvas );
 
     // Mouse events for overriding
-    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   signals:
     void deleteDataPoint( QPoint );

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Color picker</string>
+   <string>Color Picker</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -26,14 +26,14 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
   <action name="mActionImportColors">
    <property name="text">
-    <string>Import Colors...</string>
+    <string>Import Colors…</string>
    </property>
    <property name="toolTip">
     <string>Import colors from file</string>
@@ -41,7 +41,7 @@
   </action>
   <action name="mActionExportColors">
    <property name="text">
-    <string>Export Colors...</string>
+    <string>Export Colors…</string>
    </property>
    <property name="toolTip">
     <string>Export colors to file</string>
@@ -57,7 +57,7 @@
   </action>
   <action name="mActionImportPalette">
    <property name="text">
-    <string>Import Palette...</string>
+    <string>Import Palette…</string>
    </property>
    <property name="toolTip">
     <string>Import palette from file</string>
@@ -73,7 +73,7 @@
   </action>
   <action name="mActionNewPalette">
    <property name="text">
-    <string>New Palette...</string>
+    <string>New Palette…</string>
    </property>
    <property name="toolTip">
     <string>Create a new palette</string>
@@ -89,14 +89,13 @@
   </action>
  </widget>
  <customwidgets>
- <customwidget>
-  <class>QgsCompoundColorWidget</class>
-  <extends>QWidget</extends>
-  <header>qgscompoundcolorwidget.h</header>
-  <container>1</container>
- </customwidget>
-</customwidgets>
-
+  <customwidget>
+   <class>QgsCompoundColorWidget</class>
+   <extends>QWidget</extends>
+   <header>qgscompoundcolorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -1,0 +1,9 @@
+Profiles from Lines
+ta_profiles
+QgsProcessingParameterRasterLayer|DEM|DEM|None|False
+QgsProcessingParameterMultipleLayers|VALUES|Values|3|None|True
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
+QgsProcessingParameterField|NAME|Name|None|LINES|-1|False|False
+QgsProcessingParameterBoolean|SPLIT         |Each Line as new Profile|True
+QgsProcessingParameterVectorDestination|PROFILE|Profiles
+QgsProcessingParameterVectorDestination|PROFILES|Profiles

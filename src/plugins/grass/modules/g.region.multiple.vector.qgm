@@ -2,6 +2,5 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Set the region to match multiple vectors" module="g.region">
-	<option key="vect" version_max="6.4"/>
-	<option key="vector" version_min="7.0"/>
+  <option key="vector"/>
 </qgisgrassmodule>

@@ -1,0 +1,70 @@
+<Composer title="composer title" visible="1">
+ <Composition resizeToContentsMarginLeft="0" snapping="0" showPages="1" guidesVisible="1" resizeToContentsMarginTop="0" worldFileMap="" alignmentSnap="1" printResolution="305" paperWidth="297" gridVisible="0" snapGridOffsetX="0" smartGuides="1" snapGridOffsetY="0" resizeToContentsMarginRight="0" snapTolerancePixels="5" printAsRaster="0" generateWorldFile="0" paperHeight="210" numPages="1" snapGridResolution="10" resizeToContentsMarginBottom="0">
+  <symbol alpha="1" clip_to_extent="1" type="fill" name="">
+   <layer pass="0" class="SimpleFill" locked="0">
+    <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
+    <prop k="color" v="241,244,199,255"/>
+    <prop k="joinstyle" v="bevel"/>
+    <prop k="offset" v="0,0"/>
+    <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+    <prop k="offset_unit" v="MM"/>
+    <prop k="outline_color" v="175,179,138,255"/>
+    <prop k="outline_style" v="solid"/>
+    <prop k="outline_width" v="0.26"/>
+    <prop k="outline_width_unit" v="MM"/>
+    <prop k="style" v="solid"/>
+   </layer>
+  </symbol>
+  <ComposerAttributeTableV2 vectorLayerName="points" source="0" showGrid="1" maxFeatures="30" resizeMode="0" filterFeatures="false" featureFilter="" emptyTableMode="1" wrapString="" wrapBehaviour="0" headerMode="1" backgroundColor="240,33,33,255" showEmptyRows="0" emptyTableMessage="" showOnlyVisibleFeatures="1" vectorLayer="points20171212162310546" vectorLayerSource="../points.shp" composerMap="0" headerHAlignment="2" contentFontColor="115,115,115,255" headerFontColor="194,143,12,255" cellMargin="1.2" filterToAtlasIntersection="0" relationId="" gridStrokeWidth="0.7" gridColor="245,57,220,255" showUniqueRowsOnly="1" vectorLayerProvider="ogr">
+   <headerFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+   <contentFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+   <displayColumns>
+    <column width="0" vAlignment="128" attribute="Class" sortByRank="0" hAlignment="1" heading="Class" sortOrder="0">
+     <backgroundColor alpha="0" red="0" blue="0" green="0"/>
+    </column>
+    <column width="0" vAlignment="128" attribute="Heading" sortByRank="0" hAlignment="1" heading="Heading" sortOrder="0">
+     <backgroundColor alpha="0" red="0" blue="0" green="0"/>
+    </column>
+    <column width="0" vAlignment="128" attribute="Importance" sortByRank="0" hAlignment="1" heading="Importance" sortOrder="0">
+     <backgroundColor alpha="0" red="0" blue="0" green="0"/>
+    </column>
+    <column width="0" vAlignment="128" attribute="Pilots" sortByRank="0" hAlignment="1" heading="Pilots" sortOrder="0">
+     <backgroundColor alpha="0" red="0" blue="0" green="0"/>
+    </column>
+    <column width="0" vAlignment="128" attribute="Cabin Crew" sortByRank="0" hAlignment="1" heading="Cabin Crew" sortOrder="0">
+     <backgroundColor alpha="0" red="0" blue="0" green="0"/>
+    </column>
+    <column width="0" vAlignment="128" attribute="Staff" sortByRank="0" hAlignment="1" heading="Staff" sortOrder="0">
+     <backgroundColor alpha="0" red="0" blue="0" green="0"/>
+    </column>
+   </displayColumns>
+   <cellStyles>
+    <oddColumns enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <evenColumns enabled="1" cellBackgroundColor="255,255,255,255"/>
+    <oddRows enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <evenRows enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <firstColumn enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <lastColumn enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <headerRow enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <firstRow enabled="0" cellBackgroundColor="255,255,255,255"/>
+    <lastRow enabled="0" cellBackgroundColor="255,255,255,255"/>
+   </cellStyles>
+   <ComposerFrame sectionWidth="89.7078" sectionHeight="74.6091" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="0">
+    <ComposerItem pagey="16.737" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="21.5722" y="16.737" visibility="1" zValue="14" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="89.7078" outlineWidth="0.3" excludeFromExports="0" uuid="{cd165488-e216-4dcb-a56e-06cddbe0c7e7}" height="74.6091" itemRotation="0" frame="false" pagex="21.5722">
+     <FrameColor alpha="255" red="0" blue="0" green="0"/>
+     <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+     <customproperties/>
+    </ComposerItem>
+   </ComposerFrame>
+   <ComposerFrame sectionWidth="89.7078" sectionHeight="46.3787" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="74.6091">
+    <ComposerItem pagey="66.4954" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="111.28" y="66.4954" visibility="1" zValue="15" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="89.7078" outlineWidth="0.3" excludeFromExports="0" uuid="{72ab9ed3-6c68-49cb-9593-209a38f72d75}" height="46.3787" itemRotation="0" frame="false" pagex="111.28">
+     <FrameColor alpha="255" red="0" blue="0" green="0"/>
+     <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+     <customproperties/>
+    </ComposerItem>
+   </ComposerFrame>
+   <customproperties/>
+  </ComposerAttributeTableV2>
+  <customproperties/>
+ </Composition>
+</Composer>

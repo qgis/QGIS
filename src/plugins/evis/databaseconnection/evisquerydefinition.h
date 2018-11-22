@@ -42,70 +42,70 @@ class eVisQueryDefinition
 {
 
   public:
-    /** \brief Constructor */
+    //! \brief Constructor
     eVisQueryDefinition();
 
-    /** \brief Accessor for query description */
+    //! \brief Accessor for query description
     QString description() { return mDescription; }
 
-    /** \brief Accessor for query short description */
+    //! \brief Accessor for query short description
     QString shortDescription() { return mShortDescription; }
 
-    /** \brief Accessor for database type */
+    //! \brief Accessor for database type
     QString databaseType() { return mDatabaseType; }
 
-    /** \brief Accessor for database host name */
+    //! \brief Accessor for database host name
     QString databaseHost() { return mDatabaseHost; }
 
-    /** \brief Accessor for database port */
+    //! \brief Accessor for database port
     int databasePort() { return mDatabasePort; }
 
-    /** \brief Accessor for database name */
+    //! \brief Accessor for database name
     QString databaseName() { return mDatabaseName; }
 
-    /** \brief Accessor for database username */
+    //! \brief Accessor for database username
     QString databaseUsername() { return mDatabaseUsername; }
 
-    /** \brief Accessor for database password */
+    //! \brief Accessor for database password
     QString databasePassword() { return mDatabasePassword; }
 
-    /** \brief Accessor for SQL statement */
+    //! \brief Accessor for SQL statement
     QString sqlStatement() { return mSqlStatement; }
 
-    /** \brief Accessor for auto connection flag */
+    //! \brief Accessor for auto connection flag
     bool autoConnect() { return mAutoConnect; }
 
-    /** \brief Mutator for query description */
-    void setDescription( const QString& description ) { mDescription = description; }
+    //! \brief Mutator for query description
+    void setDescription( const QString &description ) { mDescription = description; }
 
-    /** \brief Mutator for query short description */
-    void setShortDescription( const QString& description ) { mShortDescription = description; }
+    //! \brief Mutator for query short description
+    void setShortDescription( const QString &description ) { mShortDescription = description; }
 
-    /** \brief Mutator for database type */
-    void setDatabaseType( const QString& type ) { mDatabaseType = type; }
+    //! \brief Mutator for database type
+    void setDatabaseType( const QString &type ) { mDatabaseType = type; }
 
-    /** \brief Mutator for database host name */
-    void setDatabaseHost( const QString& host ) { mDatabaseHost = host; }
+    //! \brief Mutator for database host name
+    void setDatabaseHost( const QString &host ) { mDatabaseHost = host; }
 
-    /** \brief Mutator for database port */
+    //! \brief Mutator for database port
     void setDatabasePort( int port ) { mDatabasePort = port; }
 
-    /** \brief Mutator for database name */
-    void setDatabaseName( const QString& name ) { mDatabaseName = name; }
+    //! \brief Mutator for database name
+    void setDatabaseName( const QString &name ) { mDatabaseName = name; }
 
-    /** \brief Mutator for database username */
-    void setDatabaseUsername( const QString& username ) { mDatabaseUsername = username; }
+    //! \brief Mutator for database username
+    void setDatabaseUsername( const QString &username ) { mDatabaseUsername = username; }
 
-    /** \brief Mutator for database password */
-    void setDatabasePassword( const QString& password ) { mDatabasePassword = password; }
+    //! \brief Mutator for database password
+    void setDatabasePassword( const QString &password ) { mDatabasePassword = password; }
 
-    /** \brief Mutator for SQL statement */
-    void setSqlStatement( const QString& statement ) { mSqlStatement = statement; }
+    //! \brief Mutator for SQL statement
+    void setSqlStatement( const QString &statement ) { mSqlStatement = statement; }
 
-    /** \brief Mutator for auto connection flag */
-    void setAutoConnect( const QString& autoconnect )
+    //! \brief Mutator for auto connection flag
+    void setAutoConnect( const QString &autoconnect )
     {
-      if ( autoconnect.startsWith( "true", Qt::CaseInsensitive ) )
+      if ( autoconnect.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) )
       {
         mAutoConnect = true;
       }
@@ -117,34 +117,34 @@ class eVisQueryDefinition
 
 
   private:
-    /** \brief Detailed description for the query */
+    //! \brief Detailed description for the query
     QString mDescription;
 
-    /** \brief Short description for the query */
+    //! \brief Short description for the query
     QString mShortDescription;
 
-    /** \brief The database type to which a connection should be made */
+    //! \brief The database type to which a connection should be made
     QString mDatabaseType;
 
-    /** \brief The database host to which a connection should be made */
+    //! \brief The database host to which a connection should be made
     QString mDatabaseHost;
 
-    /** \brief The port/socket on the database host to which a connection should be made */
-    int mDatabasePort;
+    //! \brief The port/socket on the database host to which a connection should be made
+    int mDatabasePort = -1;
 
-    /** \brief The name, or filename, of the database to which a connection should be made */
+    //! \brief The name, or filename, of the database to which a connection should be made
     QString mDatabaseName;
 
-    /** \brief Username for the database, if required */
+    //! \brief Username for the database, if required
     QString mDatabaseUsername;
 
-    /** \brief Password for the username, if require */
+    //! \brief Password for the username, if require
     QString mDatabasePassword;
 
-    /** \brief The SQL statement to execute upon successful connection to a database */
+    //! \brief The SQL statement to execute upon successful connection to a database
     QString mSqlStatement;
 
-    /** \brief Boolean to allow for automated connection to the database when query definition is successfully loaded */
-    bool mAutoConnect;
+    //! \brief Boolean to allow for automated connection to the database when query definition is successfully loaded
+    bool mAutoConnect = false;
 };
 #endif

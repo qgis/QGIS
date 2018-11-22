@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsComposition.
+"""QGIS Unit tests for QgsLogger.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ from qgis.testing import unittest
 
 # Convenience instances in case you may need them
 # not used in this test
-#from qgis.testing import start_app
-#start_app()
+# from qgis.testing import start_app
+# start_app()
 
 
 class TestQgsLogger(unittest.TestCase):
@@ -55,6 +55,7 @@ class TestQgsLogger(unittest.TestCase):
         finally:
             pass
             os.remove(myFilename)
+
 
 if __name__ == '__main__':
     unittest.main()

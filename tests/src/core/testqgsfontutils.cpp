@@ -12,12 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
 #include "qgsapplication.h"
 #include "qgsfontutils.h"
@@ -66,12 +65,12 @@ void TestQgsFontUtils::xmlMethods()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
   f1.setPointSize( 48 );
-  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, "test" );
+  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
 
   //test reading
   QFont f2;
@@ -84,8 +83,8 @@ void TestQgsFontUtils::xmlMethods()
   QCOMPARE( f2.styleName(), f1.styleName() );
 
   //test writing/reading with styles
-  f1 = QgsFontUtils::getStandardTestFont( "Bold" );
-  fontElem = QgsFontUtils::toXmlElement( f1, doc, "test" );
+  f1 = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
 #ifndef Q_OS_WIN
   QVERIFY( f2.styleName() != f1.styleName() );
 #else
@@ -104,7 +103,7 @@ void TestQgsFontUtils::xmlMethods()
 
   //test numeric weight
   f1.setWeight( 5 );
-  fontElem = QgsFontUtils::toXmlElement( f1, doc, "test" );
+  fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
   QVERIFY( f2.weight() != f1.weight() );
   QVERIFY( QgsFontUtils::setFromXmlElement( f2, fontElem ) );
   QCOMPARE( f2.weight(), f1.weight() );
@@ -120,13 +119,13 @@ void TestQgsFontUtils::fromChildNode()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
   f1.setPointSize( 48 );
-  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, "testNode" );
-  QDomElement parentElem = doc.createElement( "parent" );
+  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "testNode" ) );
+  QDomElement parentElem = doc.createElement( QStringLiteral( "parent" ) );
 
   //first try with no child element
   QFont f2;
@@ -164,5 +163,5 @@ void TestQgsFontUtils::toCss()
   QCOMPARE( QgsFontUtils::asCSS( f1, 10 ), QString( "font-family: QGIS Vera Sans;font-style: oblique;font-weight: 700;font-size: 125px;" ) );
 }
 
-QTEST_MAIN( TestQgsFontUtils )
+QGSTEST_MAIN( TestQgsFontUtils )
 #include "testqgsfontutils.moc"

@@ -1,10 +1,11 @@
 usr/lib/qgis/crssync
 usr/lib/qgis/plugins/libbasicauthmethod.so
+usr/lib/qgis/plugins/libesritokenauthmethod.so
 usr/lib/qgis/plugins/libdelimitedtextprovider.so
 usr/lib/qgis/plugins/libgdalprovider.so
+usr/lib/qgis/plugins/libgeonodeprovider.so
 usr/lib/qgis/plugins/libgpxprovider.so
 usr/lib/qgis/plugins/libidentcertauthmethod.so
-usr/lib/qgis/plugins/libmemoryprovider.so
 usr/lib/qgis/plugins/libmssqlprovider.so
 usr/lib/qgis/plugins/libdb2provider.so
 usr/lib/qgis/plugins/libogrprovider.so
@@ -17,4 +18,7 @@ usr/lib/qgis/plugins/libvirtuallayerprovider.so
 usr/lib/qgis/plugins/libwcsprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
-{QT_PLUGIN_DIR}/sqldrivers/libqsqlspatialite.so
+usr/lib/qgis/plugins/libarcgismapserverprovider.so
+usr/lib/qgis/plugins/libarcgisfeatureserverprovider.so
+usr/lib/qgis/plugins/libmdalprovider.so
+#!xenial#{QT_PLUGINS_DIR}/sqldrivers/libqsqlspatialite.so

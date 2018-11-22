@@ -1,102 +1,136 @@
+language: python # This lets us use newer python versions from virtualenv
+python: "3.5"
+compiler: clang
+dist: trusty
+sudo: false
+cache:
+  apt: true
+  pip: true
+  directories:
+    - ${HOME}/.ccache
+  timeout: 1000
+
+env:
+  global:
+    - TRAVIS_TIMESTAMP=$(date +%s)
+    - CCACHE_DIR=${HOME}/.ccache
+    # Docker hub username and passowrd
+    - secure: "b7eMDIolaAnq1voGKC1ez7Kcf+/A0WZDJEHBvNwk2KubBfrGOE83GMDrFNF4NqjIprqIAvVKj+TrX1ckCvs24re3IqUJo71TaF1IgxzDDPwSsmNh5UMmvZkeiJys9bWjqDO9wYR5ietNmIE18qyMc8ToJk8oKm6AXuAG2n6znmM="
+    - secure: "PHCp7F3nApp38Mz6b4/OLxgfBiikRGzPQDHg3R5LX+SQOll24c/DMtwpPwizNuFEiCFcRmJ9uc1t0HWEerIZe5uqm7AtE/nMXBsvDZ+hj4Tz/fEBF98a1k4WLYheN1exFidVkJgdAeiwMOOUQXw5KuIX62bxBdzsdcd0QGwxiXo="
+
 matrix:
   fast_finish: true
-  allow_failures:
-    - os: osx
   include:
-    # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
+
+##########################################################
+#
+# TESTS FOR STANDARD COMMITS
+#
+##########################################################
+
+      ##########################################################
+      # QGIS TESTS ON BIONIC
+      ##########################################################
     - os: linux
-      language: cpp
+      if: type != cron
+      services: docker
       env:
-        - BUILD=qt4
-        - QT_VERSION=4
-        - LLVM_VERSION=3.8
-      sudo: false
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      compiler: clang
+        - TRAVIS_CONFIG=linux
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - DOCKER_BUILD_QGIS_IMAGE=false
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
+
+      ##########################################################
+      # CODE LAYOUT
+      ##########################################################
+    - os: linux
+      if: type != cron
+      env:
+        - TRAVIS_CONFIG=code_layout
       addons:
-        postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
-            - george-edison55-precise-backports # doxygen 1.8.3
-          packages:
-            - bison
-            - clang-3.8
-            - doxygen
-            - flex
-            - flip
-            - libfcgi-dev
-            - libpq-dev
-            - libqscintilla2-dev
-            - libqt4-dev
-            - libqt4-opengl-dev
-            - libqt4-sql-sqlite
-            - libqtwebkit-dev
-            - libqwt-dev
-            - libspatialindex-dev
-            - libspatialite-dev
-            - libsqlite3-dev
-            - pkg-config
-            - poppler-utils
-            - pyqt4-dev-tools
-            - python
-            - python-dev
-            - python-numpy
-            - python-pip
-            - python-psycopg2
-            - python-qscintilla2
-            - python-qt4-dev
-            - python-qt4-sql
-            - python-sip
-            - python-sip-dev
-            - txt2tags
-            - xvfb
-    # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
-    - os: linux
-      language: python # This lets us use newer python versions from virtualenv
-      env:
-        - BUILD=qt5
-        - QT_VERSION=5
-        - LLVM_VERSION=3.8
-      sudo: false
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      compiler: clang
-      python: "3.3"
-      addons:
-        postgresql: "9.4"
-        apt:
-          sources:
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
-            - george-edison55-precise-backports # doxygen 1.8.3
+            - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+            - sourceline: 'ppa:sergey-dryabzhinsky/packages' # doxygen
           packages:
             - doxygen
-            - bison
-            - flex
             - graphviz
-            - libpq-dev
-            - libfcgi-dev
-            - pkg-config
-            - poppler-utils
             - txt2tags
+            - pkg-config
             - xvfb
             - flip
-            - clang-3.8
-    # OSX based build with QT4 and Python 2
-    - os: osx
+            # used for spell checks
+            - perl  # sipify, lookahead regex in spell check script
+            - silversearcher-ag
+            - expect-dev  # unbuffer
+            - coreutils
+            # dependencies for licensecheck
+            - cpanminus
+            - libyaml-tiny-perl
+            - libio-socket-ssl-perl
+            - libhttp-date-perl
+            - libgetopt-long-descriptive-perl
+            - libmoo-perl
+            - libnamespace-clean-perl
+            - libpath-tiny-perl
+            - libpod-constants-perl
+            - libscalar-list-utils-perl
+            - libsort-key-perl
+            - libstrictures-perl
+            - libstring-escape-perl
+            - libtry-tiny-perl
+
+
+
+##########################################################
+#
+#  DOCKER IMAGE BUILD JOBS ON CRON OR TAG
+#
+##########################################################
+
+
+      ##########################################################
+      # BIONIC DOCKER BUILD ON CRON OR TAG
+      ##########################################################
+    - os: linux
+      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
+      services: docker
       env:
-        - BUILD=osx
-        - IGNORE_BUILD_FAILURES=YES
+        - TRAVIS_CONFIG=linux
+        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
+        - DOCKER_BUILD_QGIS_IMAGE=true
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
+
+      ##########################################################
+      # COSMIC DOCKER BUILD ON CRON OR TAG
+      ##########################################################
+    - os: linux
+      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
+      services: docker
+      env:
+        - TRAVIS_CONFIG=linux
+        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_cosmic"
+        - DOCKER_BUILD_QGIS_IMAGE=true
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-cosmic.dockerfile
+
+
+
+    # OSX based build with QT4 and Python 2
+#    - os: osx
+#      osx_image: xcode8.3 # MacOS 10.12: Sierra
+#      cache:
+#        pip: true
+#        directories:
+#          - $HOME/.ccache
+#      env:
+#        - TRAVIS_CONFIG=macos
+#        - IGNORE_BUILD_FAILURES=YES
+#
+#  allow_failures:
+#    - os: osx
 
 git:
-  depth: 30
+  depth: 120
 
 notifications:
   irc: "chat.freenode.net#qgis-test"
@@ -104,7 +138,6 @@ notifications:
   on_success: change
   skip_join: true
 
-notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
@@ -113,16 +146,13 @@ notifications:
     on_start: never # default: never
 
 before_install:
-  - ./ci/travis/${TRAVIS_OS_NAME}/before_install.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_install.sh
 
 install:
-  - ./ci/travis/${TRAVIS_OS_NAME}/install.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/install.sh
 
 before_script:
-  - ./ci/travis/${TRAVIS_OS_NAME}/before_script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_script.sh
 
 script:
-  - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
-
-after_script:
-  - ./ci/travis/${TRAVIS_OS_NAME}/after_script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/script.sh

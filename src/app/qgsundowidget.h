@@ -19,7 +19,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QButtonGroup>
-#include <QDockWidget>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QSpacerItem>
@@ -27,45 +26,50 @@
 #include <QUndoView>
 #include <QUndoStack>
 
+#include "qgspanelwidget.h"
+#include "qgis_app.h"
+
 class QgsMapCanvas;
 class QgsMapLayer;
 
 /**
  * Class that handles undo display fo undo commands
  */
-class APP_EXPORT QgsUndoWidget : public QWidget
+class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-    QWidget *dockWidgetContents;
-    QGridLayout *gridLayout;
-    QSpacerItem *spacerItem;
-    QPushButton *undoButton;
-    QPushButton *redoButton;
-    QSpacerItem *spacerItem1;
+    QWidget *dockWidgetContents = nullptr;
+    QGridLayout *gridLayout = nullptr;
+    QSpacerItem *spacerItem = nullptr;
+    QPushButton *undoButton = nullptr;
+    QPushButton *redoButton = nullptr;
+    QSpacerItem *spacerItem1 = nullptr;
 
-    QgsUndoWidget( QWidget * parent, QgsMapCanvas* mapCanvas );
+    QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas );
     void setupUi( QWidget *UndoWidget );
     void retranslateUi( QWidget *UndoWidget );
 
     /**
      * Setting new undo stack for undo view
      */
-    void setUndoStack( QUndoStack * undoStack );
+    void setUndoStack( QUndoStack *undoStack );
+
+    /**
+     * Show or hide the undo/redo buttons on the widget.
+     * \param show Show or hide the undo/redo buttons.
+     */
+    void setButtonsVisible( bool show );
 
     /**
      * Handles destroying of stack when active layer is changed
      */
     void destroyStack();
 
-    /** Access to dock's contents */
-    QWidget* dockContents() { return dockWidgetContents; }
+    //! Access to dock's contents
+    QWidget *dockContents() { return dockWidgetContents; }
 
   public slots:
-    /**
-     * Changes undo stack which is displayed by undo view
-     */
-    void layerChanged( QgsMapLayer * layer );
 
     /**
      * Slot to handle undo changed signal
@@ -96,9 +100,9 @@ class APP_EXPORT QgsUndoWidget : public QWidget
     void undoStackChanged();
 
   private:
-    QUndoView * mUndoView;
-    QUndoStack * mUndoStack;
-    QgsMapCanvas* mMapCanvas;
+    QUndoView *mUndoView = nullptr;
+    QUndoStack *mUndoStack = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     int mPreviousIndex;
     int mPreviousCount;

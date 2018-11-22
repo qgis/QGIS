@@ -26,32 +26,29 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
+from processing.tools.system import getTempFilename
+
+
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue(u'rules') and alg.getParameterValue(u'txtrules'):
-        return alg.tr("You need to set either a rules file or write directly the rules!")
+    if (alg.parameterAsString(parameters, 'rules', context)
+            and alg.parameterAsString(parameters, 'txtrules', context)):
+        return False, alg.tr("You need to set either a rules file or write directly the rules!")
 
-    return None
+    return True, None
 
 
-def processCommand(alg):
+def processCommand(alg, parameters, context, feedback):
     """ Handle inline rules """
-    txtRules = alg.getParameterValue(u'txtrules')
+    txtRules = alg.parameterAsString(parameters, 'txtrules', context)
     if txtRules:
         # Creates a temporary txt file
-        tempRulesName = alg.getTempFilename()
+        tempRulesName = getTempFilename()
 
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
             tempRules.write(txtRules)
+        alg.removeParameter('txtrules')
+        parameters['rules'] = tempRulesName
 
-        raster = alg.getParameterValue(u'input')
-        output = alg.getOutputFromName(u'output')
-        alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
-        if raster:
-            raster = alg.exportedLayers[raster]
-        command = u"r.reclass input={} rules=- output={} --overwrite < {}".format(
-            raster, output.name + alg.uniqueSufix, tempRulesName)
-        alg.commands.append(command)
-    else:
-        alg.processCommand()
+    alg.processCommand(parameters, context, feedback)

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsStyleExportImportDialogBase</class>
+ <widget class="QDialog" name="QgsStyleExportImportDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>413</width>
+    <height>379</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Styles Import/Export</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="4" column="1" colspan="2">
+      <widget class="QLineEdit" name="mSymbolTags"/>
+     </item>
+     <item row="3" column="0" colspan="3">
+      <widget class="QCheckBox" name="mIgnoreXMLTags">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Do not import embedded tags</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QLabel" name="tagHintLabel">
+       <property name="text">
+        <string>Tip: separate multiple tags with commas</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fromLabel">
+       <property name="text">
+        <string>Import from</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mLocationLabel">
+       <property name="text">
+        <string>Location</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QCheckBox" name="mFavorite">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Add to favorites</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="importTypeCombo"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="tagLabel">
+       <property name="text">
+        <string>Additional tag(s)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QStackedWidget" name="mLocationStackedEdit">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="widget">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QgsFileWidget" name="mImportFileWidget" native="true"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page">
+        <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="mUrlLineEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="mButtonFetch">
+           <property name="text">
+            <string>Fetch Items</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Select items to export</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QListView" name="listItems">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>3</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>77</width>
+       <height>70</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="flow">
+      <enum>QListView::LeftToRight</enum>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>importTypeCombo</tabstop>
+  <tabstop>mFavorite</tabstop>
+  <tabstop>mIgnoreXMLTags</tabstop>
+  <tabstop>mSymbolTags</tabstop>
+  <tabstop>listItems</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsStyleExportImportDialogBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsStyleExportImportDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

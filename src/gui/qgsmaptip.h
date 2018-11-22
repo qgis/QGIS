@@ -19,53 +19,94 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QPoint;
 class QString;
+class QgsPointXY;
+class QgsVectorLayer;
+class QgsWebView;
 
+#include <QWidget>
+#include <QUrl>
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A maptip is a class to display a tip on a map canvas
  * when a mouse is hovered over a feature.
+ *
+ * Since QGIS 2.16 a maptip can show full html.
+ * QgsMapTip is a QgsWebView, so you can load full HTML/JS/CSS in it.
+ *
+ * The code found in the map tips tab is inserted in a inline-block div
+ * so the frame can be resized based on the content size.
+ *
+ * If no element in the html has a width attribute, the frame will squeeze down
+ * to the widest word. To avoid this you can wrap your HTML in a
+ * div style="width:300px" or similar.
+ *
+ * JS can be included using the script tag as usual, while CSS files must be
+ * linked using link rel="stylesheet" href="URL.css" the html specs
+ * discourages link rel="stylesheet" in the body, but all browsers allow it.
+ * see https://jakearchibald.com/2016/link-in-body/
  */
-class GUI_EXPORT QgsMapTip
+class GUI_EXPORT QgsMapTip : public QWidget
 {
+    Q_OBJECT
   public:
-    /** Default constructor
+
+    /**
+     * Default constructor
      */
     QgsMapTip();
-    /** Destructor
-     */
-    virtual ~QgsMapTip();
-    /** Show a maptip at a given point on the map canvas
-     * @param thepLayer a qgis vector map layer pointer that will
-     *        be used to provide the attribute data for the map tip.
-     * @param theMapPosition a reference to the position of the cursor
-     *        in map coordinatess.
-     * @param thePixelPosition a reference to the position of the cursor
-     *        in pixel coordinates.
-     * @param mpMapCanvas a map canvas on which the tip is drawn
-     */
-    void showMapTip( QgsMapLayer * thepLayer,
-                     QgsPoint & theMapPosition,
-                     QPoint & thePixelPosition,
-                     QgsMapCanvas *mpMapCanvas );
-    /** Clear the current maptip if it exists
-     * @param mpMapCanvas the canvas from which the tip should be cleared.
-     */
-    void clear( QgsMapCanvas *mpMapCanvas );
-  private:
-    // Fetch the feature to use for the maptip text. Only the first feature in the
-    // search radius is used
-    QString fetchFeature( QgsMapLayer * thepLayer,
-                          QgsPoint & theMapPosition,
-                          QgsMapCanvas *thepMapCanvas );
 
-    QString replaceText( QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
+    /**
+     * Show a maptip at a given point on the map canvas
+     * \param thepLayer a qgis vector map layer pointer that will
+     *        be used to provide the attribute data for the map tip.
+     * \param mapPosition a reference to the position of the cursor
+     *        in map coordinatess.
+     * \param pixelPosition a reference to the position of the cursor
+     *        in pixel coordinates.
+     * \param mpMapCanvas a map canvas on which the tip is drawn
+     */
+    void showMapTip( QgsMapLayer *thepLayer,
+                     QgsPointXY &mapPosition,
+                     QPoint &pixelPosition,
+                     QgsMapCanvas *mpMapCanvas );
+
+    /**
+     * Clear the current maptip if it exists
+     * \param mpMapCanvas the canvas from which the tip should be cleared.
+     */
+    void clear( QgsMapCanvas *mpMapCanvas = nullptr );
+
+    /**
+     * Apply font family and size to match user settings
+     */
+    void applyFontSettings();
+
+  private slots:
+    void onLinkClicked( const QUrl &url );
+    void resizeContent();
+
+  private:
+    // Fetch the feature to use for the maptip text.
+    // Only the first feature in the search radius is used
+    QString fetchFeature( QgsMapLayer *thepLayer,
+                          QgsPointXY &mapPosition,
+                          QgsMapCanvas *mapCanvas );
+
+    QString replaceText(
+      QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
 
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
-    // Last point on the map canvas when the maptip timer fired. This point is in widget pixel
-    // coordinates
-    QPoint mLastPosition;
 
+    QWidget *mWidget = nullptr;
+    QgsWebView *mWebView = nullptr;
+
+    QString mFontFamily;
+    int mFontSize = 8;
+
+    const int MARGIN_VALUE = 5;
 };
 #endif // QGSMAPTIP_H

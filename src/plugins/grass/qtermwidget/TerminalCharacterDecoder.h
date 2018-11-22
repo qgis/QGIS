@@ -54,9 +54,9 @@ public:
      * Converts a line of terminal characters with associated properties into a text string
      * and writes the string into an output QTextStream.
      *
-     * @param characters An array of characters of length @p count.
-     * @param count The number of characters
-     * @param properties Additional properties which affect all characters in the line
+     * \param characters An array of characters of length @p count.
+     * \param count The number of characters
+     * \param properties Additional properties which affect all characters in the line
      */
     virtual void decodeLine(const Character* const characters,
                             int count,
@@ -92,12 +92,12 @@ public:
     /** Enables recording of character positions at which new lines are added.  See linePositions() */
     void setRecordLinePositions(bool record);
 
-    virtual void begin(QTextStream* output);
-    virtual void end();
+    void begin(QTextStream* output) override;
+    void end() override;
 
-    virtual void decodeLine(const Character* const characters,
+    void decodeLine(const Character* const characters,
                             int count,
-                            LineProperty properties);
+                            LineProperty properties) override;
 
 
 private:
@@ -125,12 +125,12 @@ public:
      */
     void setColorTable( const ColorEntry* table );
 
-    virtual void decodeLine(const Character* const characters,
+    void decodeLine(const Character* const characters,
                             int count,
-                            LineProperty properties);
+                            LineProperty properties) override;
 
-    virtual void begin(QTextStream* output);
-    virtual void end();
+    void begin(QTextStream* output) override;
+    void end() override;
 
 private:
     void openSpan(QString& text , const QString& style);

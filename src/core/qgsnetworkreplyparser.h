@@ -19,9 +19,14 @@
 #ifndef QGSNETWORKREPLYPARSER_H
 #define QGSNETWORKREPLYPARSER_H
 
+#define SIP_NO_FILE
+
 #include <QNetworkReply>
 
+#include "qgis_core.h"
+
 /**
+ * \ingroup core
   \brief Multipart QNetworkReply parser.
 
   It seams that Qt does not have currently support for multipart reply
@@ -38,44 +43,50 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
   public:
     typedef QMap<QByteArray, QByteArray> RawHeaderMap;
 
-    /** Constructor
-      * @param reply */
+    /**
+     * Constructor
+      * \param reply */
     QgsNetworkReplyParser( QNetworkReply *reply );
 
-    /** Indicates if successfully parsed
-      * @return true if successfully parsed */
+    /**
+     * Indicates if successfully parsed
+      * \returns true if successfully parsed */
     bool isValid() const { return mValid; }
 
-    /** Get number of parts
-      * @return number of parts */
+    /**
+     * Gets number of parts
+      * \returns number of parts */
     int parts() const { return mHeaders.size(); }
 
-    /** Get part header
-      * @param part part index
-      * @param headerName header name
-      * @return raw header */
-    QByteArray rawHeader( int part, const QByteArray & headerName ) const { return mHeaders.value( part ).value( headerName ); }
+    /**
+     * Gets part header
+      * \param part part index
+      * \param headerName header name
+      * \returns raw header */
+    QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
-    /** Get headers */
+    //! Gets headers
     QList< RawHeaderMap > headers() const { return mHeaders; }
 
-    /** Get part part body
-      * @param part part index
-      * @return part body */
+    /**
+     * Gets part part body
+      * \param part part index
+      * \returns part body */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 
-    /** Get bodies */
+    //! Gets bodies
     QList<QByteArray> bodies() const { return mBodies; }
 
-    /** Parsing error */
+    //! Parsing error
     QString error() const { return mError; }
 
-    /** Test if reply is multipart.
-      * @return true if reply is multipart */
+    /**
+     * Test if reply is multipart.
+      * \returns true if reply is multipart */
     static bool isMultipart( QNetworkReply *reply );
 
   private:
-    QNetworkReply *mReply;
+    QNetworkReply *mReply = nullptr;
 
     bool mValid;
 

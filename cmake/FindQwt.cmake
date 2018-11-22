@@ -12,27 +12,31 @@
 #
 
 
-FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
-  /usr/include
-  /usr/local/include
-  "$ENV{LIB_DIR}/include"
-  "$ENV{INCLUDE}"
-  PATH_SUFFIXES qwt-qt4 qwt qwt5 qwt6
-  )
-
-if(ENABLE_QT5)
-  set(QWT_LIBRARY_NAMES qwt-qt5 qwt6-qt5)
-else(ENABLE_QT5)
-  set(QWT_LIBRARY_NAMES qwt qwt6 qwt5 qwt-qt4 qwt6-qt4 qwt5-qt4)
-endif(ENABLE_QT5)
+set(QWT_LIBRARY_NAMES qwt-qt5 qwt6-qt5 qwt qwt6)
 
 find_library(QWT_LIBRARY
   NAMES ${QWT_LIBRARY_NAMES}
   PATHS
     /usr/lib
     /usr/local/lib
+    /usr/local/lib/qt5
     "$ENV{LIB_DIR}/lib"
     "$ENV{LIB}"
+)
+
+set(_qwt_fw)
+if(QWT_LIBRARY MATCHES "/qwt.*\\.framework")
+  string(REGEX REPLACE "^(.*/qwt.*\\.framework).*$" "\\1" _qwt_fw "${QWT_LIBRARY}")
+endif()
+
+FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
+  "${_qwt_fw}/Headers"
+  /usr/include
+  /usr/local/include
+  /usr/local/include/qt5
+  "$ENV{LIB_DIR}/include"
+  "$ENV{INCLUDE}"
+  PATH_SUFFIXES qwt-qt5 qwt qwt6
 )
 
 IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)

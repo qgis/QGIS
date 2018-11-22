@@ -35,7 +35,7 @@ bool CostCalculator::candidateSortShrink( const LabelPosition *c1, const LabelPo
   return c1->cost() > c2->cost();
 }
 
-void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obstacle )
+void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle )
 {
   int n = 0;
   double dist;
@@ -63,7 +63,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obs
       break;
 
     case GEOS_POLYGON:
-      // behaviour depends on obstacle avoid type
+      // behavior depends on obstacle avoid type
       switch ( obstacle->layer()->obstacleType() )
       {
         case QgsPalLayerSettings::PolygonInterior:
@@ -93,7 +93,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obs
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition * > &lPos, RTree<FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
 {
   double normalizer;
   // compute raw cost
@@ -103,12 +103,13 @@ void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >
   // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
   // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
   // calculated so will have nonsense values
-  QList< LabelPosition* > toSort;
+  QList< LabelPosition * > toSort;
+  toSort.reserve( nblp );
   for ( int i = 0; i < nblp; ++i )
   {
     toSort << lPos.at( i );
   }
-  qSort( toSort.begin(), toSort.end(), candidateSortShrink );
+  std::sort( toSort.begin(), toSort.end(), candidateSortShrink );
   for ( int i = 0; i < nblp; ++i )
   {
     lPos[i] = toSort.at( i );
@@ -146,7 +147,7 @@ void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition* >
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
 {
   double amin[2];
   double amax[2];
@@ -173,14 +174,14 @@ void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <Feat
   delete pCost;
 }
 
-int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
 {
   // If candidates list is smaller than expected
   if ( max_p > feat->lPos.count() )
     max_p = feat->lPos.count();
   //
   // sort candidates list, best label to worst
-  qSort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
+  std::sort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
 
   // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
   double discrim = 0.0;
@@ -223,7 +224,7 @@ PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   px = ( lp->x[0] + lp->x[2] ) / 2.0;
   py = ( lp->y[0] + lp->y[2] ) / 2.0;
 
-  dist = DBL_MAX;
+  dist = std::numeric_limits<double>::max();
   ok = false;
 }
 
@@ -236,7 +237,7 @@ void PolygonCostCalculator::update( PointSet *pset )
   }
 }
 
-LabelPosition* PolygonCostCalculator::getLabel()
+LabelPosition *PolygonCostCalculator::getLabel()
 {
   return lp;
 }

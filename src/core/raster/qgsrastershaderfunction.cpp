@@ -19,88 +19,53 @@ email                : ersts@amnh.org
 
 #include "qgsrastershaderfunction.h"
 
-QgsRasterShaderFunction::QgsRasterShaderFunction( double theMinimumValue, double theMaximumValue )
+QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double maximumValue )
+  : mMaximumValue( maximumValue )
+  , mMinimumValue( minimumValue )
+  , mMinimumMaximumRange( mMaximumValue - mMinimumValue )
 {
-  QgsDebugMsgLevel( "entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
+}
 
-  mMinimumValue = theMinimumValue;
-  mMaximumValue = theMaximumValue;
+void QgsRasterShaderFunction::setMaximumValue( double value )
+{
+  QgsDebugMsgLevel( "value = " + QString::number( value ), 4 );
+
+  mMaximumValue = value;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
-/**
-    Set the maximum value for the raster shader.
-
-    @param theValue The new maximum value
-*/
-void QgsRasterShaderFunction::setMaximumValue( double theValue )
+void QgsRasterShaderFunction::setMinimumValue( double value )
 {
-  QgsDebugMsgLevel( "value = " + QString::number( theValue ), 4 );
+  QgsDebugMsgLevel( "value = " + QString::number( value ), 4 );
 
-  mMaximumValue = theValue;
+  mMinimumValue = value;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
-/**
-    Set the maximum value for the raster shader
-
-    @param theValue The new minimum value
-*/
-void QgsRasterShaderFunction::setMinimumValue( double theValue )
+bool QgsRasterShaderFunction::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
-  QgsDebugMsgLevel( "value = " + QString::number( theValue ), 4 );
+  Q_UNUSED( value );
 
-  mMinimumValue = theValue;
-  mMinimumMaximumRange = mMaximumValue - mMinimumValue;
-}
-
-/**
-  Generates and new RGBA value based on one input value
-
-  @param theValue The original value to base a new RGBA value on
-  @param theReturnRedValue  The red component of the new RGBA value
-  @param theReturnGreenValue  The green component of the new RGBA value
-  @param theReturnBlueValue  The blue component of the new RGBA value
-  @param theReturnAlphaValue  The blue component of the new RGBA value
-  @return True if the return values are valid otherwise false
-*/
-bool QgsRasterShaderFunction::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
-{
-  Q_UNUSED( theValue );
-
-  *theReturnRedValue = 0;
-  *theReturnGreenValue = 0;
-  *theReturnBlueValue = 0;
-  *theReturnAlphaValue = 0;
+  *returnRedValue = 0;
+  *returnGreenValue = 0;
+  *returnBlueValue = 0;
+  *returnAlphaValue = 0;
 
   return false;
 }
 
-/**
-  Generates and new RGBA value based on an original RGBA value
-
-
-  @param theRedValue The red component of the original value to base a new RGBA value on
-  @param theGreenValue The green component of the original value to base a new RGBA value on
-  @param theBlueValue The blue component of the original value to base a new RGBA value on
-  @param theAlphaValue The alpha component of the original value to base a new RGBA value on
-  @param theReturnRedValue  The red component of the new RGBA value
-  @param theReturnGreenValue  The green component of the new RGBA value
-  @param theReturnBlueValue  The blue component of the new RGBA value
-  @param theReturnAlphaValue  The alpha component of the new RGBA value
-  @return True if the return values are valid otherwise false
-*/
-bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlphaValue )
+bool QgsRasterShaderFunction::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
-  Q_UNUSED( theRedValue );
-  Q_UNUSED( theGreenValue );
-  Q_UNUSED( theBlueValue );
-  Q_UNUSED( theAlphaValue );
+  Q_UNUSED( redValue );
+  Q_UNUSED( greenValue );
+  Q_UNUSED( blueValue );
+  Q_UNUSED( alphaValue );
 
-  *theReturnRedValue = 0;
-  *theReturnGreenValue = 0;
-  *theReturnBlueValue = 0;
-  *theReturnAlphaValue = 0;
+  *returnRedValue = 0;
+  *returnGreenValue = 0;
+  *returnBlueValue = 0;
+  *returnAlphaValue = 0;
 
   return false;
 }

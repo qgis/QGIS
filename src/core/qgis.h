@@ -20,285 +20,177 @@
 
 #include <QEvent>
 #include <QString>
-#include <QRegExp>
 #include <QMetaType>
+#include <QMap>
+#include <QMetaEnum>
 #include <QVariant>
 #include <QDateTime>
 #include <QDate>
 #include <QTime>
 #include <QHash>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cfloat>
+#include <memory>
+#include <type_traits>
 #include <cmath>
 #include <qnumeric.h>
 
-#include <qgswkbtypes.h>
+#include "qgstolerance.h"
+#include "qgswkbtypes.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 
-/** \ingroup core
- * The QGis class provides global constants for use throughout the application.
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgis.h>
+% End
+
+% ModuleCode
+int QgisEvent = QEvent::User + 1;
+% End
+#endif
+
+
+/**
+ * \ingroup core
+ * The Qgis class provides global constants for use throughout the application.
  */
-class CORE_EXPORT QGis
+class CORE_EXPORT Qgis
 {
   public:
     // Version constants
     //
-    // Version string
-    static const char* QGIS_VERSION;
-    // Version number used for comparing versions using the "Check QGIS Version" function
+    //! Version string
+    static const QString QGIS_VERSION;
+    //! Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
-    // Release name
-    static const char* QGIS_RELEASE_NAME;
-    // The development version
-    static const char* QGIS_DEV_VERSION;
+    //! Release name
+    static const QString QGIS_RELEASE_NAME;
+    //! The development version
+    static const char *QGIS_DEV_VERSION;
 
     // Enumerations
     //
 
-    //! Used for symbology operations
-    // Feature types
-    // @deprecated use QgsWKBTypes::Type
-    /* Q_DECL_DEPRECATED */
-    enum WkbType
+    /**
+     * \brief Level for messages
+     * This will be used both for message log and message bar in application.
+     */
+    enum MessageLevel
     {
-      WKBUnknown = 0,
-      WKBPoint = 1,
-      WKBLineString,
-      WKBPolygon,
-      WKBMultiPoint,
-      WKBMultiLineString,
-      WKBMultiPolygon,
-      WKBNoGeometry = 100, //attributes only
-      WKBPoint25D = 0x80000001,
-      WKBLineString25D,
-      WKBPolygon25D,
-      WKBMultiPoint25D,
-      WKBMultiLineString25D,
-      WKBMultiPolygon25D,
+      Info = 0,
+      Warning = 1,
+      Critical = 2,
+      Success = 3,
+      None = 4
     };
 
-    //! Map multi to single type
-    // @deprecated use QgsWKBTypes::singleType
-    /* Q_DECL_DEPRECATED */
-    static WkbType singleType( WkbType type );
-
-    //! Map single to multitype type
-    // @deprecated use QgsWKBTypes::multiType
-    /* Q_DECL_DEPRECATED */
-    static WkbType multiType( WkbType type );
-
-    //! Map 2d+ to 2d type
-    // @deprecated use QgsWKBTypes::flatType
-    /* Q_DECL_DEPRECATED */
-    static WkbType flatType( WkbType type );
-
-    //! Return if type is a single type
-    // @deprecated use QgsWKBTypes::isSingleType
-    /* Q_DECL_DEPRECATED */
-    static bool isSingleType( WkbType type );
-
-    //! Return if type is a multi type
-    // @deprecated use QgsWKBTypes::isMultiType
-    /* Q_DECL_DEPRECATED */
-    static bool isMultiType( WkbType type );
-
-    // get dimension of points
-    // @deprecated use QgsWKBTypes::coordDimensions()
-    /* Q_DECL_DEPRECATED */
-    static int wkbDimensions( WkbType type );
-
-    //! Converts from old (pre 2.10) WKB type (OGR) to new WKB type
-    static QgsWKBTypes::Type fromOldWkbType( QGis::WkbType type );
-
-    //! Converts from new (post 2.10) WKB type (OGC) to old WKB type
-    static QGis::WkbType fromNewWkbType( QgsWKBTypes::Type type );
-
-    enum GeometryType
-    {
-      Point,
-      Line,
-      Polygon,
-      UnknownGeometry,
-      NoGeometry
-    };
-
-    //! description strings for geometry types
-    static const char *vectorGeometryType( GeometryType type );
-
-    //! description strings for feature types
-    static const char *featureType( WkbType type );
-
-    /** Raster data types.
+    /**
+     * Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
     enum DataType
     {
-      /** Unknown or unspecified type */                UnknownDataType = 0,
-      /** Eight bit unsigned integer (quint8) */        Byte = 1,
-      /** Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /** Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /** Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /** Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /** Thirty two bit floating point (float) */      Float32 = 6,
-      /** Sixty four bit floating point (double) */     Float64 = 7,
-      /** Complex Int16 */                              CInt16 = 8,
-      /** Complex Int32 */                              CInt32 = 9,
-      /** Complex Float32 */                            CFloat32 = 10,
-      /** Complex Float64 */                            CFloat64 = 11,
-      /** Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /** Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
+      UnknownDataType = 0, //!< Unknown or unspecified type
+      Byte = 1, //!< Eight bit unsigned integer (quint8)
+      UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
+      Int16 = 3, //!< Sixteen bit signed integer (qint16)
+      UInt32 = 4, //!< Thirty two bit unsigned integer (quint32)
+      Int32 = 5, //!< Thirty two bit signed integer (qint32)
+      Float32 = 6, //!< Thirty two bit floating point (float)
+      Float64 = 7, //!< Sixty four bit floating point (double)
+      CInt16 = 8, //!< Complex Int16
+      CInt32 = 9, //!< Complex Int32
+      CFloat32 = 10, //!< Complex Float32
+      CFloat64 = 11, //!< Complex Float64
+      ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
+      ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
 
-
-    /** Map units that qgis supports
-     * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-     * @note and QGIS >1.8 returns to that
-     */
-    //TODO QGIS 3.0 - clean up and move to QgsUnitTypes and rename to DistanceUnit
-    enum UnitType
-    {
-      Meters = 0, /*!< meters */
-      Feet = 1, /*!< imperial feet */
-      Degrees = 2, /*!< degrees, for planar geographic CRS distance measurements */ //for 1.0 api backwards compatibility
-      NauticalMiles = 7, /*!< nautical miles */
-      Kilometers = 8, /*!< kilometers */
-      Yards = 9, /*!< imperial yards */
-      Miles = 10, /*!< terrestial miles */
-
-      UnknownUnit = 3, /*!< unknown distance unit */
-
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees = 2,         // was 2
-      DegreesMinutesSeconds = 2,  // was 4
-      DegreesDecimalMinutes = 2,  // was 5
-    };
-
-    //! Provides the canonical name of the type value
-    //! @deprecated use QgsUnitTypes::encodeUnit() instead
-    Q_DECL_DEPRECATED static QString toLiteral( QGis::UnitType unit );
-
-    //! Converts from the canonical name to the type value
-    //! @deprecated use QgsUnitTypes::decodeDistanceUnit() instead
-    Q_DECL_DEPRECATED static UnitType fromLiteral( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
-
-    //! Provides translated version of the type value
-    //! @deprecated use QgsUnitTypes::toString() instead
-    Q_DECL_DEPRECATED static QString tr( QGis::UnitType unit );
-
-    //! Provides type value from translated version
-    //! @deprecated use QgsUnitTypes::stringToDistanceUnit() instead
-    Q_DECL_DEPRECATED static UnitType fromTr( const QString& literal, QGis::UnitType defaultType = UnknownUnit );
-
-    //! Returns the conversion factor between the specified units
-    //! @deprecated use QgsUnitTyoes::fromUnitToUnitFactor() instead
-    Q_DECL_DEPRECATED static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
-
-    /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to double if possible
-     * @note added in version 2.9
-     * @see permissiveToInt
-     */
-    static double permissiveToDouble( QString string, bool& ok );
-
-    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand separators
-     * @param string string to convert
-     * @param ok will be set to true if conversion was successful
-     * @returns string converted to int if possible
-     * @note added in version 2.9
-     * @see permissiveToDouble
-     */
-    static int permissiveToInt( QString string, bool& ok );
-
-    //! User defined event types
-    enum UserEvent
-    {
-      // These first two are useful for threads to alert their parent data providers
-
-      //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = ( QEvent::User + 1 ),
-
-      //! The row count has been calculated by a provider of a layer
-      ProviderCountCalcEvent
-    };
-
-    /** Old search radius in % of canvas width
-     *  @deprecated since 2.3, use DEFAULT_SEARCH_RADIUS_MM */
-    Q_DECL_DEPRECATED static const double DEFAULT_IDENTIFY_RADIUS;
-
-    /** Identify search radius in mm
-     *  @note added in 2.3 */
+    /**
+     * Identify search radius in mm
+     *  \since QGIS 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
-    /** Default highlight color.  The transparency is expected to only be applied to polygon
+    /**
+     * Default highlight color.  The transparency is expected to only be applied to polygon
      *  fill. Lines and outlines are rendered opaque.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
-    /** Default highlight buffer in mm.
-     *  @note added in 2.3 */
-    static double DEFAULT_HIGHLIGHT_BUFFER_MM;
+    /**
+     * Default highlight buffer in mm.
+     *  \since QGIS 2.3 */
+    static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
-    /** Default highlight line/outline minimum width in mm.
-     *  @note added in 2.3 */
-    static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+    /**
+     * Default highlight line/stroke minimum width in mm.
+     *  \since QGIS 2.3 */
+    static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
-    /** Fudge factor used to compare two scales. The code is often going from scale to scale
+    /**
+     * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * @note added in 2.15*/
-    static double SCALE_PRECISION;
+     * \since QGIS 2.15*/
+    static const double SCALE_PRECISION;
 
-  private:
-    // String representation of unit types (set in qgis.cpp)
-    static const char *qgisUnitTypes[];
+    /**
+     * Default Z coordinate value for 2.5d geometry
+     *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
+     *  \since QGIS 3.0 */
+    static const double DEFAULT_Z_COORDINATE;
 
+    /**
+     * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+     * to account for differences in the default font sizes across different platforms.
+     *  \since QGIS 3.0
+    */
+    static const double UI_SCALE_FACTOR;
+
+    /**
+     * Default snapping distance tolerance.
+     *  \since QGIS 3.0
+    */
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    /**
+     * Default snapping distance units.
+     *  \since QGIS 3.0
+    */
+    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
 // It's assumed that this works on all systems supporting
 // QLibrary
-#if QT_VERSION >= 0x050000
 #define cast_to_fptr(f) f
-#else
-inline void ( *cast_to_fptr( void *p ) )()
-{
-  union
-  {
-    void *p;
-    void ( *f )();
-  } u;
 
-  u.p = p;
-  return u.f;
-}
-#endif
 
-/** RAII signal blocking class. Used for temporarily blocking signals from a QObject
+/**
+ * \ingroup core
+ * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
- * @see whileBlocking()
- * @note added in QGIS 2.16
- * @note not available in Python bindings
+ * \see whileBlocking()
+ * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker
+template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
 {
   public:
 
-    /** Constructor for QgsSignalBlocker
-     * @param object QObject to block signals from
+    /**
+     * Constructor for QgsSignalBlocker
+     * \param object QObject to block signals from
      */
-    explicit QgsSignalBlocker( Object* object )
-        : mObject( object )
-        , mPreviousState( object->blockSignals( true ) )
+    explicit QgsSignalBlocker( Object *object )
+      : mObject( object )
+      , mPreviousState( object->blockSignals( true ) )
     {}
 
     ~QgsSignalBlocker()
@@ -307,16 +199,17 @@ template<class Object> class QgsSignalBlocker
     }
 
     //! Returns pointer to blocked QObject
-    Object* operator->() { return mObject; }
+    Object *operator->() { return mObject; }
 
   private:
 
-    Object* mObject;
+    Object *mObject = nullptr;
     bool mPreviousState;
 
 };
 
-/** Temporarily blocks signals from a QObject while calling a single method from the object.
+/**
+ * Temporarily blocks signals from a QObject while calling a single method from the object.
  *
  * Usage:
  *   whileBlocking( checkBox )->setChecked( true );
@@ -324,34 +217,79 @@ template<class Object> class QgsSignalBlocker
  *
  * No signals will be emitted when calling these methods.
  *
- * @note added in QGIS 2.16
- * @see QgsSignalBlocker
- * @note not available in Python bindings
+ * \see QgsSignalBlocker
+ * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object* object )
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
 {
   return QgsSignalBlocker<Object>( object );
 }
 
-//! Returns a string representation of a double
-//! @param a double value
-//! @param precision number of decimal places to retain
+//! Hash for QVariant
+CORE_EXPORT uint qHash( const QVariant &variant );
+
+/**
+ * Returns a string representation of a double
+ * \param a double value
+ * \param precision number of decimal places to retain
+ */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
-    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  {
+    QString str = QString::number( a, 'f', precision );
+    if ( str.contains( QLatin1Char( '.' ) ) )
+    {
+      // remove ending 0s
+      int idx = str.length() - 1;
+      while ( str.at( idx ) == '0' && idx > 1 )
+      {
+        idx--;
+      }
+      if ( idx < str.length() - 1 )
+        str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+    }
+    return str;
+  }
   else
-    return QString::number( a, 'f', precision );
+  {
+    // avoid printing -0
+    // see https://bugreports.qt.io/browse/QTBUG-71439
+    const QString str( QString::number( a, 'f', precision ) );
+    if ( str == QLatin1String( "-0" ) )
+    {
+      return QLatin1String( "0" );
+    }
+    else
+    {
+      return str;
+    }
+  }
 }
 
-//! Compare two doubles (but allow some difference)
-//! @param a first double
-//! @param b second double
-//! @param epsilon maximum difference allowable between doubles
-inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
+/**
+ * Compare two doubles (but allow some difference)
+ * \param a first double
+ * \param b second double
+ * \param epsilon maximum difference allowable between doubles
+ */
+inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
   const double diff = a - b;
+  return diff > -epsilon && diff <= epsilon;
+}
+
+/**
+ * Compare two floats (but allow some difference)
+ * \param a first float
+ * \param b second float
+ * \param epsilon maximum difference allowable between floats
+ */
+inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
+{
+  const float diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
 
@@ -364,101 +302,242 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   // has to be considered (maybe TODO)
   // Is there a better way?
   int aexp, bexp;
-  double ar = frexp( a, &aexp );
-  double br = frexp( b, &bexp );
+  double ar = std::frexp( a, &aexp );
+  double br = std::frexp( b, &bexp );
 
   return aexp == bexp &&
-         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
+         std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
 }
 
-//! A round function which returns a double to guard against overflows
-inline double qgsRound( double x )
+/**
+ * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
+ *
+ * \since QGIS 3.0
+ */
+inline double qgsRound( double number, double places )
 {
-  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+  double scaleFactor = std::pow( 10.0, places );
+  return std::trunc( number * scaleFactor + 0.5 ) / scaleFactor;
 }
 
-// Add missing qHash implementation for QDate, QTime, QDateTime
-// implementations taken from upstream Qt5 versions
-#if QT_VERSION < 0x050000
 
-//! Hash implementation for QDateTime
-//! @note not available in Python bindings
-inline uint qHash( const QDateTime &key )
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
+/**
+ * Contains "polyfills" for backporting c++ features from standards > c++11 and Qt global methods
+ * added later than our minimum version.
+ *
+ * To be removed when minimum c++ or Qt build requirement includes the std implementation
+ * for these features.
+ *
+ * \note not available in Python bindings.
+ */
+namespace qgis
 {
-  return qHash( key.toMSecsSinceEpoch() );
-}
+  // as_const
 
-//! Hash implementation for QDate
-//! @note not available in Python bindings
-inline uint qHash( const QDate &key )
-{
-  return qHash( key.toJulianDay() );
-}
+  /**
+   * Adds const to non-const objects.
+   *
+   * To be used as a proxy for std::as_const until we target c++17 minimum.
+   *
+   * \note not available in Python bindings
+   * \since QGIS 3.0
+   */
+  template <typename T> struct QgsAddConst { typedef const T Type; };
 
-//! Hash implementation for QTime
-//! @note not available in Python bindings
-inline uint qHash( const QTime &key )
-{
-  return QTime( 0, 0, 0, 0 ).msecsTo( key );
+  template <typename T>
+  constexpr typename QgsAddConst<T>::Type &as_const( T &t ) noexcept { return t; }
+
+  template <typename T>
+  void as_const( const T && ) = delete;
+
+  // make_unique - from https://stackoverflow.com/a/17902439/1861260
+
+  template<class T> struct _Unique_if
+  {
+    typedef std::unique_ptr<T> _Single_object;
+  };
+
+  template<class T> struct _Unique_if<T[]>
+  {
+    typedef std::unique_ptr<T[]> _Unknown_bound;
+  };
+
+  template<class T, size_t N> struct _Unique_if<T[N]>
+  {
+    typedef void _Known_bound;
+  };
+
+  template<class T, class... Args>
+  typename _Unique_if<T>::_Single_object
+  make_unique( Args &&... args )
+  {
+    return std::unique_ptr<T>( new T( std::forward<Args>( args )... ) );
+  }
+
+  template<class T>
+  typename _Unique_if<T>::_Unknown_bound
+  make_unique( size_t n )
+  {
+    typedef typename std::remove_extent<T>::type U;
+    return std::unique_ptr<T>( new U[n]() );
+  }
+
+  template<class T, class... Args>
+  typename _Unique_if<T>::_Known_bound
+  make_unique( Args &&... ) = delete;
+
+  /**
+   * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required
+   * in these circumstances.
+   *
+   * Example usage:
+   *
+   * connect( mSpinBox, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &MyClass::mySlot );
+   *
+   * This is an alternative to qOverload, which was implemented in Qt 5.7.
+   *
+   * See https://stackoverflow.com/a/16795664/1861260
+   */
+  template<typename... Args> struct overload
+  {
+    template<typename C, typename R>
+    static constexpr auto of( R( C::*pmf )( Args... ) ) -> decltype( pmf )
+    {
+      return pmf;
+    }
+  };
 }
+///@endcond
 #endif
 
-//! Compares two QVariant values and returns whether the first is less than the second.
-//! Useful for sorting lists of variants, correctly handling sorting of the various
-//! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantGreaterThan()
-CORE_EXPORT bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
-
-//! Compares two QVariant values and returns whether the first is greater than the second.
-//! Useful for sorting lists of variants, correctly handling sorting of the various
-//! QVariant data types (such as strings, numeric values, dates and times)
-//! @see qgsVariantLessThan()
-CORE_EXPORT bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
-
-CORE_EXPORT QString qgsVsiPrefix( const QString& path );
-
-/** Allocates size bytes and returns a pointer to the allocated  memory.
-    Works like C malloc() but prints debug message by QgsLogger if allocation fails.
-    @param size size in bytes
+/**
+ * Returns a map of all enum entries.
+ * The map has the enum values (int) as keys and the enum keys (QString) as values.
+ * The enum must have been declared using Q_ENUM or Q_FLAG.
  */
-void CORE_EXPORT *qgsMalloc( size_t size );
+template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  QMap<T, QString> enumMap;
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const char *enumKey = metaEnum.key( idx );
+    enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
+  }
+  return enumMap;
+};
 
-/** Allocates  memory for an array of nmemb elements of size bytes each and returns
+/**
+ * Converts a string to a double in a permissive way, e.g., allowing for incorrect
+ * numbers of digits between thousand separators
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to double if possible
+ * \see permissiveToInt
+ * \since QGIS 2.9
+ */
+CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
+
+/**
+ * Converts a string to an integer in a permissive way, e.g., allowing for incorrect
+ * numbers of digits between thousand separators
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to int if possible
+ * \see permissiveToDouble
+ * \since QGIS 2.9
+ */
+CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
+
+/**
+ * Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
+ * numbers of digits between thousand separators
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to int if possible
+ * \see permissiveToInt
+ * \since QGIS 3.4
+ */
+CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
+
+/**
+ * Compares two QVariant values and returns whether the first is less than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
+ * \see qgsVariantGreaterThan()
+ */
+CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
+
+/**
+ * Compares two QVariant values and returns whether they are equal, NULL values are treated as equal.
+ *
+ * \param lhs first value
+ * \param rhs second value
+ * \return true if values are equal
+ */
+CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
+
+
+/**
+ * Compares two QVariant values and returns whether the first is greater than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ * \see qgsVariantLessThan()
+ */
+CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
+
+CORE_EXPORT QString qgsVsiPrefix( const QString &path );
+
+/**
+ * Allocates size bytes and returns a pointer to the allocated  memory.
+    Works like C malloc() but prints debug message by QgsLogger if allocation fails.
+    \param size size in bytes
+ */
+void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
+
+/**
+ * Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
     by QgsLogger if allocation fails.
-    @param nmemb number of elements
-    @param size size of element in bytes
+    \param nmemb number of elements
+    \param size size of element in bytes
  */
-void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
+void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
 
-/** Frees the memory space  pointed  to  by  ptr. Works like C free().
-    @param ptr pointer to memory space
+/**
+ * Frees the memory space  pointed  to  by  ptr. Works like C free().
+    \param ptr pointer to memory space
  */
-void CORE_EXPORT qgsFree( void *ptr );
+void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
-/** Wkt string that represents a geographic coord sys
- * @note added to replace GEOWkt
+/**
+ * Wkt string that represents a geographic coord sys
+ * \since QGIS GEOWkt
  */
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;
 
-/** PROJ4 string that represents a geographic coord sys */
+//! PROJ4 string that represents a geographic coord sys
 extern CORE_EXPORT const QString GEOPROJ4;
-/** Magic number for a geographic coord sys in POSTGIS SRID */
+//! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
-/** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
+//! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID = 3452;
-/** Magic number for a geographic coord sys in EpsgCrsId ID format */
+//! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
-/** Geographic coord sys from EPSG authority */
+//! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-/** The length of the string "+proj=" */
-const int PROJ_PREFIX_LEN = 6;
-/** The length of the string "+ellps=" */
-const int ELLPS_PREFIX_LEN = 7;
-/** The length of the string "+lat_1=" */
-const int LAT_PREFIX_LEN = 7;
-/** Magick number that determines whether a projection crsid is a system (srs.db)
+
+/**
+ * Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
 
@@ -469,18 +548,29 @@ extern CORE_EXPORT const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the minimum allowable point size for point symbols */
-const double MINIMUM_POINT_SIZE = 0.1;
-/** Magic number that determines the default point size for point symbols */
+//! Magic number that determines the default point size for point symbols
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** Default snapping tolerance for segments */
+//! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
-typedef QMap<QString, QString> QgsStringMap;
+///@cond PRIVATE
+#ifndef SIP_RUN
 
-/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
+//! Delay between the scheduling of 2 preview jobs
+const int PREVIEW_JOB_DELAY_MS = 250;
+
+//! Maximum rendering time for a layer of a preview job
+const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
+#endif
+
+///@endcond
+
+typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
+
+/**
+ * Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.
@@ -488,28 +578,45 @@ typedef QMap<QString, QString> QgsStringMap;
  *  KEEP IN SYNC WITH qgssize defined in SIP! */
 typedef unsigned long long qgssize;
 
+#ifndef SIP_RUN
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
   _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
   _Pragma("GCC diagnostic pop");
+#define Q_NOWARN_UNREACHABLE_PUSH
+#define Q_NOWARN_UNREACHABLE_POP
+
 #elif defined(_MSC_VER)
+
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
   __pragma(warning(disable:4996))
 #define Q_NOWARN_DEPRECATED_POP \
   __pragma(warning(pop))
+#define Q_NOWARN_UNREACHABLE_PUSH \
+  __pragma(warning(push)) \
+  __pragma(warning(disable:4702))
+#define Q_NOWARN_UNREACHABLE_POP \
+  __pragma(warning(pop))
+
 #else
+
 #define Q_NOWARN_DEPRECATED_PUSH
 #define Q_NOWARN_DEPRECATED_POP
+#define Q_NOWARN_UNREACHABLE_PUSH
+#define Q_NOWARN_UNREACHABLE_POP
+
+#endif
 #endif
 
 #ifndef QGISEXTERN
 #ifdef Q_OS_WIN
 #  define QGISEXTERN extern "C" __declspec( dllexport )
 #  ifdef _MSC_VER
-// do not warn about C bindings returing QString
+// do not warn about C bindings returning QString
 #    pragma warning(disable:4190)
 #  endif
 #else
@@ -522,8 +629,53 @@ typedef unsigned long long qgssize;
 #endif
 #endif
 
-#if defined(__clang__)
-#define FALLTHROUGH [[clang::fallthrough]]
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
+#define FALLTHROUGH [[clang::fallthrough]];
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define FALLTHROUGH [[gnu::fallthrough]];
 #else
 #define FALLTHROUGH
 #endif
+
+// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
+#if __cplusplus >= 201703L
+#define NODISCARD [[nodiscard]]
+#elif defined(__clang__)
+#define NODISCARD [[nodiscard]]
+#elif defined(_MSC_VER)
+#define NODISCARD // no support
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(nodiscard)
+#define NODISCARD [[nodiscard]]
+#elif __has_cpp_attribute(gnu::warn_unused_result)
+#define NODISCARD [[gnu::warn_unused_result]]
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
+
+#if __cplusplus >= 201703L
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(__clang__)
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(_MSC_VER)
+#define MAYBE_UNUSED // no support
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(gnu::unused)
+#define MAYBE_UNUSED [[gnu::unused]]
+#else
+#define MAYBE_UNUSED
+#endif
+#else
+#define MAYBE_UNUSED
+#endif
+
+#ifndef FINAL
+#define FINAL final
+#endif
+
+

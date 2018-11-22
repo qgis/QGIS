@@ -1,0 +1,15 @@
+i.vi
+Calculates different types of vegetation indices.
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|red|Name of input red channel surface reflectance map [0.0-1.0]|None|True
+QgsProcessingParameterEnum|viname|Type of vegetation index|arvi;dvi;evi;evi2;gvi;gari;gemi;ipvi;msavi;msavi2;ndvi;pvi;savi;sr;vari;wdvi|False|10|False
+QgsProcessingParameterRasterLayer|nir|Name of input nir channel surface reflectance map [0.0-1.0]|None|True
+QgsProcessingParameterRasterLayer|green|Name of input green channel surface reflectance map [0.0-1.0]|None|True
+QgsProcessingParameterRasterLayer|blue|Name of input blue channel surface reflectance map [0.0-1.0]|None|True
+QgsProcessingParameterRasterLayer|band5|Name of input 5th channel surface reflectance map [0.0-1.0]|None|True
+QgsProcessingParameterRasterLayer|band7|Name of input 7th channel surface reflectance map [0.0-1.0]|None|True
+QgsProcessingParameterNumber|soil_line_slope|Value of the slope of the soil line (MSAVI2 only)|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|soil_line_intercept|Value of the factor of reduction of soil noise (MSAVI2 only)|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|soil_noise_reduction|Value of the slope of the soil line (MSAVI2 only)|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterEnum|storage_bit|Maximum bits for digital numbers|7;8;9;10;16|False|1|True
+QgsProcessingParameterRasterDestination|output|Vegetation Index

@@ -18,9 +18,12 @@
 #define QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis.h"
 #include "qgsauthcertutils.h"
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
  */
 class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
@@ -28,29 +31,29 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * Construct a combo box for defining certificate trust policy
-     * @param parent Parent widget
-     * @param policy Defined trust policy
-     * @param defaultpolicy Default trust policy
+     * \param parent Parent widget
+     * \param policy Defined trust policy
+     * \param defaultpolicy Default trust policy
      */
     explicit QgsAuthCertTrustPolicyComboBox(
-      QWidget *parent = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
-    ~QgsAuthCertTrustPolicyComboBox();
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 
-    /** Get currently set trust policy */
+    //! Gets currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
 
-    /** Get trust policy for a given index of combobox */
+    //! Gets trust policy for a given index of combobox
     QgsAuthCertUtils::CertTrustPolicy trustPolicyForIndex( int indx );
 
   public slots:
-    /** Set current trust policy */
+    //! Sets current trust policy
     void setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 
-    /** Set default trust policy */
+    //! Sets default trust policy
     void setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy );
 
   private slots:
@@ -58,7 +61,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 
   private:
     const QString defaultTrustText(
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 };
 
 #endif // QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H

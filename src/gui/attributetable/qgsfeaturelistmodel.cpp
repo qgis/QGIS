@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturelistmodel.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeaturelistmodel.h"
@@ -9,33 +23,17 @@
 #include <QSettings>
 
 QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
-    : QAbstractProxyModel( parent )
-    , mInjectNull( false )
+  : QSortFilterProxyModel( parent )
 {
   setSourceModel( sourceModel );
-  mExpression = new QgsExpression( "" );
-}
-
-QgsFeatureListModel::~QgsFeatureListModel()
-{
-  delete mExpression;
 }
 
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
-  QAbstractProxyModel::setSourceModel( sourceModel );
+  QSortFilterProxyModel::setSourceModel( sourceModel );
+  mExpressionContext = sourceModel->layer()->createExpressionContext();
   mFilterModel = sourceModel;
-  if ( mFilterModel )
-  {
-    // rewire (filter-)change events in the source model so this proxy reflects the changes
-    connect( mFilterModel, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), SLOT( onBeginRemoveRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex&, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( onEndInsertRows( const QModelIndex&, int, int ) ) );
-    // propagate sort order changes from source model to views connected to this model
-    connect( mFilterModel, SIGNAL( layoutAboutToBeChanged() ), this, SIGNAL( layoutAboutToBeChanged() ) );
-    connect( mFilterModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-  }
+
 }
 
 QgsVectorLayerCache *QgsFeatureListModel::layerCache()
@@ -50,7 +48,7 @@ QgsFeatureId QgsFeatureListModel::idxToFid( const QModelIndex &index ) const
 
 QModelIndex QgsFeatureListModel::fidToIdx( const QgsFeatureId fid ) const
 {
-  return mFilterModel->mapFromMaster( mFilterModel->masterModel()->idToIndex( fid ) );
+  return mapFromMaster( mFilterModel->masterModel()->idToIndex( fid ) );
 }
 
 QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
@@ -59,11 +57,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   {
     if ( role == Qt::DisplayRole )
     {
-      return QSettings().value( "qgis/nullValue", "NULL" ).toString();
-    }
-    else if ( role == QgsAttributeTableModel::FeatureIdRole )
-    {
-      return QVariant( QVariant::Int );
+      return QgsApplication::nullRepresentation();
     }
     else
     {
@@ -77,12 +71,8 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-    << QgsExpressionContextUtils::projectScope()
-    << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
-    context.setFeature( feat );
-    return mExpression->evaluate( &context );
+    mExpressionContext.setFeature( feat );
+    return mDisplayExpression.evaluate( &mExpressionContext );
   }
 
   if ( role == FeatureInfoRole )
@@ -93,18 +83,15 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsVectorLayerEditBuffer* editBuffer = mFilterModel->layer()->editBuffer();
+    QgsVectorLayerEditBuffer *editBuffer = mFilterModel->layer()->editBuffer();
 
     if ( editBuffer )
     {
-      const QList<QgsFeatureId> addedFeatures = editBuffer->addedFeatures().keys();
-      const QList<QgsFeatureId> changedFeatures = editBuffer->changedAttributeValues().keys();
-
-      if ( addedFeatures.contains( feat.id() ) )
+      if ( editBuffer->isFeatureAdded( feat.id() ) )
       {
         featInfo.isNew = true;
       }
-      if ( changedFeatures.contains( feat.id() ) )
+      if ( editBuffer->isFeatureAttributesChanged( feat.id() ) )
       {
         featInfo.isEdited = true;
       }
@@ -119,6 +106,60 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
     return QVariant::fromValue( feat );
+  }
+  else if ( role == Qt::TextAlignmentRole )
+  {
+    return Qt::AlignLeft;
+  }
+
+  if ( role == Qt::BackgroundColorRole
+       || role == Qt::TextColorRole
+       || role == Qt::DecorationRole
+       || role == Qt::FontRole )
+  {
+    QgsVectorLayer *layer = mFilterModel->layer();
+    QgsFeature feat;
+    QgsFeatureId fid = idxToFid( index );
+    mFilterModel->layerCache()->featureAtId( fid, feat );
+    mExpressionContext.setFeature( feat );
+    QList<QgsConditionalStyle> styles;
+
+    if ( mRowStylesMap.contains( fid ) )
+    {
+      styles = mRowStylesMap.value( fid );
+    }
+    else
+    {
+      styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+      mRowStylesMap.insert( fid, styles );
+    }
+
+    QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+
+    if ( mDisplayExpression.isField() )
+    {
+      QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+      styles = layer->conditionalStyles()->fieldStyles( fieldName );
+      styles = QgsConditionalStyle::matchingConditionalStyles( styles, feat.attribute( fieldName ),  mExpressionContext );
+    }
+
+    styles.insert( 0, rowstyle );
+
+    QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
+
+    if ( style.isValid() )
+    {
+      if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+        return style.backgroundColor();
+      if ( role == Qt::TextColorRole && style.validTextColor() )
+        return style.textColor();
+      if ( role == Qt::DecorationRole )
+        return style.icon();
+      if ( role == Qt::FontRole )
+        return style.font();
+    }
+
+    return QVariant();
   }
 
   return sourceModel()->data( mapToSource( index ), role );
@@ -138,12 +179,15 @@ Qt::ItemFlags QgsFeatureListModel::flags( const QModelIndex &index ) const
 
 void QgsFeatureListModel::setInjectNull( bool injectNull )
 {
-  if ( mInjectNull != injectNull )
-  {
-    emit beginResetModel();
-    mInjectNull = injectNull;
-    emit endResetModel();
-  }
+  if ( mInjectNull == injectNull )
+    return;
+
+  if ( injectNull )
+    setSortByDisplayExpression( false );
+
+  beginResetModel();
+  mInjectNull = injectNull;
+  endResetModel();
 }
 
 bool QgsFeatureListModel::injectNull()
@@ -151,33 +195,31 @@ bool QgsFeatureListModel::injectNull()
   return mInjectNull;
 }
 
-QgsAttributeTableModel* QgsFeatureListModel::masterModel()
+QgsAttributeTableModel *QgsFeatureListModel::masterModel()
 {
   return mFilterModel->masterModel();
 }
 
-bool QgsFeatureListModel::setDisplayExpression( const QString& expression )
+bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
 {
-  QgsExpression* exp = new QgsExpression( expression );
+  QgsExpression exp = QgsExpression( expression );
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mFilterModel->layer() );
+  exp.prepare( &mExpressionContext );
 
-  exp->prepare( &context );
-
-  if ( exp->hasParserError() )
+  if ( exp.hasParserError() )
   {
-    mParserErrorString = exp->parserErrorString();
-    delete exp;
+    mParserErrorString = exp.parserErrorString();
     return false;
   }
 
-  delete mExpression;
-  mExpression = exp;
+  mDisplayExpression = exp;
+
+  if ( mSortByDisplayExpression )
+    masterModel()->prefetchSortData( expression, 1 );
 
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
+
+  invalidate();
   return true;
 }
 
@@ -188,7 +230,7 @@ QString QgsFeatureListModel::parserErrorString()
 
 QString QgsFeatureListModel::displayExpression() const
 {
-  return mExpression->expression();
+  return mDisplayExpression.expression();
 }
 
 bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &feat )
@@ -196,12 +238,12 @@ bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &
   return mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 }
 
-void QgsFeatureListModel::onBeginRemoveRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onBeginRemoveRows( const QModelIndex &parent, int first, int last )
 {
   beginRemoveRows( parent, first, last );
 }
 
-void QgsFeatureListModel::onEndRemoveRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onEndRemoveRows( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
   Q_UNUSED( first )
@@ -209,12 +251,12 @@ void QgsFeatureListModel::onEndRemoveRows( const QModelIndex& parent, int first,
   endRemoveRows();
 }
 
-void QgsFeatureListModel::onBeginInsertRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onBeginInsertRows( const QModelIndex &parent, int first, int last )
 {
   beginInsertRows( parent, first, last );
 }
 
-void QgsFeatureListModel::onEndInsertRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onEndInsertRows( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
   Q_UNUSED( first )
@@ -222,32 +264,71 @@ void QgsFeatureListModel::onEndInsertRows( const QModelIndex& parent, int first,
   endInsertRows();
 }
 
+bool QgsFeatureListModel::sortByDisplayExpression() const
+{
+  return mSortByDisplayExpression;
+}
+
+void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression )
+{
+  mSortByDisplayExpression = sortByDisplayExpression;
+
+  // If we are sorting by display expression, we do not support injected null
+  if ( sortByDisplayExpression )
+    setInjectNull( false );
+
+  setSortRole( QgsAttributeTableModel::SortRole + 1 );
+  setDynamicSortFilter( mSortByDisplayExpression );
+  sort( 0 );
+}
+
 QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) const
 {
-  if ( !proxyIndex.isValid() )
-    return QModelIndex();
+  QModelIndex masterIndex;
 
-  int offset = mInjectNull ? 1 : 0;
+  if ( proxyIndex.isValid() )
+  {
+    if ( mSortByDisplayExpression )
+    {
+      masterIndex = mFilterModel->mapToMaster( mapToSource( proxyIndex ) );
+    }
+    else
+    {
+      int offset = mInjectNull ? 1 : 0;
 
-  return mFilterModel->mapToMaster( mFilterModel->index( proxyIndex.row() - offset, proxyIndex.column() ) );
+      masterIndex = mFilterModel->mapToMaster( mFilterModel->index( proxyIndex.row() - offset, proxyIndex.column() ) );
+    }
+  }
+  return masterIndex;
 }
 
-QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &sourceIndex ) const
+QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &masterIndex ) const
 {
-  if ( !sourceIndex.isValid() )
-    return QModelIndex();
+  QModelIndex proxyIndex;
 
-  int offset = mInjectNull ? 1 : 0;
+  if ( masterIndex.isValid() )
+  {
+    if ( mSortByDisplayExpression )
+    {
+      proxyIndex = mapFromSource( mFilterModel->mapFromMaster( masterIndex ) );
+    }
+    else
+    {
+      int offset = mInjectNull ? 1 : 0;
 
-  return createIndex( mFilterModel->mapFromMaster( sourceIndex ).row() + offset, 0 );
+      return createIndex( mFilterModel->mapFromMaster( masterIndex ).row() + offset, 0 );
+    }
+  }
+
+  return proxyIndex;
 }
 
-QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection& selection ) const
+QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection &selection ) const
 {
   return mapSelectionFromSource( mFilterModel->mapSelectionFromSource( selection ) );
 }
 
-QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection& selection ) const
+QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection &selection ) const
 {
   return mFilterModel->mapSelectionToSource( mapSelectionToSource( selection ) );
 }
@@ -256,42 +337,55 @@ QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection& 
 
 QModelIndex QgsFeatureListModel::mapToSource( const QModelIndex &proxyIndex ) const
 {
-  if ( !proxyIndex.isValid() )
-    return QModelIndex();
+  QModelIndex sourceIndex;
 
-  int offset = mInjectNull ? 1 : 0;
+  if ( mSortByDisplayExpression )
+  {
+    sourceIndex = QSortFilterProxyModel::mapToSource( proxyIndex );
+  }
+  else
+  {
+    if ( !proxyIndex.isValid() )
+      return QModelIndex();
 
-  return sourceModel()->index( proxyIndex.row() - offset, proxyIndex.column() );
+    int offset = mInjectNull ? 1 : 0;
+
+    sourceIndex = sourceModel()->index( proxyIndex.row() - offset, proxyIndex.column() );
+  }
+
+  return sourceIndex;
 }
 
 QModelIndex QgsFeatureListModel::mapFromSource( const QModelIndex &sourceIndex ) const
 {
-  if ( !sourceIndex.isValid() )
-    return QModelIndex();
+  QModelIndex proxyIndex;
 
-  return createIndex( sourceIndex.row(), 0 );
+  if ( mSortByDisplayExpression )
+  {
+    proxyIndex = QSortFilterProxyModel::mapFromSource( sourceIndex );
+  }
+  else
+  {
+    if ( sourceIndex.isValid() )
+      proxyIndex = createIndex( sourceIndex.row(), 0 );
+  }
+
+  return proxyIndex;
 }
 
-QModelIndex QgsFeatureListModel::index( int row, int column, const QModelIndex& parent ) const
-{
-  Q_UNUSED( parent )
-
-  return createIndex( row, column );
-}
-
-QModelIndex QgsFeatureListModel::parent( const QModelIndex& child ) const
+QModelIndex QgsFeatureListModel::parent( const QModelIndex &child ) const
 {
   Q_UNUSED( child )
   return QModelIndex();
 }
 
-int QgsFeatureListModel::columnCount( const QModelIndex&parent ) const
+int QgsFeatureListModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return 1;
 }
 
-int QgsFeatureListModel::rowCount( const QModelIndex& parent ) const
+int QgsFeatureListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 

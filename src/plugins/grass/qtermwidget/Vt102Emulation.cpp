@@ -63,7 +63,7 @@ Vt102Emulation::Vt102Emulation()
      _titleUpdateTimer(new QTimer(this))
 {
   _titleUpdateTimer->setSingleShot(true);
-  QObject::connect(_titleUpdateTimer , SIGNAL(timeout()) , this , SLOT(updateTitle()));
+  QObject::connect(_titleUpdateTimer , &QTimer::timeout , this , &Vt102Emulation::updateTitle);
 
   initTokenizer();
   reset();
@@ -150,7 +150,7 @@ void Vt102Emulation::reset()
 
 */
 
-#define TY_CONSTRUCT(T,A,N) ( ((((int)N) & 0xffff) << 16) | ((((int)A) & 0xff) << 8) | (((int)T) & 0xff) )
+#define TY_CONSTRUCT(T,A,N) ( (((static_cast<int>(N)) & 0xffff) << 16) | (((static_cast<int>(A)) & 0xff) << 8) | ((static_cast<int>(T)) & 0xff) )
 
 #define TY_CHR(   )     TY_CONSTRUCT(0,0,0)
 #define TY_CTL(A  )     TY_CONSTRUCT(1,A,0)
@@ -192,14 +192,14 @@ void Vt102Emulation::addDigit(int digit)
 
 void Vt102Emulation::addArgument()
 {
-  argc = qMin(argc+1,MAXARGS-1);
+  argc = std::min(argc+1,MAXARGS-1);
   argv[argc] = 0;
 }
 
 void Vt102Emulation::addToCurrentToken(int cc)
 {
   tokenBuffer[tokenBufferPos] = cc;
-  tokenBufferPos = qMin(tokenBufferPos+1,MAX_TOKEN_LENGTH-1);
+  tokenBufferPos = std::min(tokenBufferPos+1,MAX_TOKEN_LENGTH-1);
 }
 
 // Character Class flags used while decoding
@@ -238,7 +238,7 @@ void Vt102Emulation::initTokenizer()
   resetTokenizer();
 }
 
-/* Ok, here comes the nasty part of the decoder.
+/* OK, here comes the nasty part of the decoder.
 
    Instead of keeping an explicit state, we deduce it from the
    token scanned so far. It is then immediately combined with
@@ -263,9 +263,9 @@ void Vt102Emulation::initTokenizer()
 #define eec(C)     (p >=  3  && cc == (C))
 #define ees(C)     (p >=  3  && cc < 256 && (charClass[cc] & (C)) == (C))
 #define eps(C)     (p >=  3  && s[2] != '?' && s[2] != '!' && s[2] != '>' && cc < 256 && (charClass[cc] & (C)) == (C))
-#define epp( )     (p >=  3  && s[2] == '?')
-#define epe( )     (p >=  3  && s[2] == '!')
-#define egt( )     (p >=  3  && s[2] == '>')
+#define epp()     (p >=  3  && s[2] == '?')
+#define epe()     (p >=  3  && s[2] == '!')
+#define egt()     (p >=  3  && s[2] == '>')
 #define Xpe        (tokenBufferPos >= 2 && tokenBuffer[1] == ']')
 #define Xte        (Xpe      && cc ==  7 )
 #define ces(C)     (cc < 256 && (charClass[cc] & (C)) == (C) && !Xte)

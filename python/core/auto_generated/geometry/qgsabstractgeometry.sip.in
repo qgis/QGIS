@@ -1,0 +1,930 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsabstractgeometry.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+typedef QVector< QgsPoint > QgsPointSequence;
+typedef QVector< QVector< QgsPoint > > QgsRingSequence;
+typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
+
+class QgsAbstractGeometry
+{
+%Docstring
+Abstract base class for all geometries
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+%ConvertToSubClassCode
+    if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPoint;
+    else if ( qgsgeometry_cast<QgsLineString *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsLineString;
+    else if ( qgsgeometry_cast<QgsCircularString *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsCircularString;
+    else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsCompoundCurve;
+    else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsTriangle;
+    else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolygon;
+    else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsCurvePolygon;
+    else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPoint;
+    else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiLineString;
+    else if ( qgsgeometry_cast<QgsMultiPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPolygon;
+    else if ( qgsgeometry_cast<QgsMultiSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiSurface;
+    else if ( qgsgeometry_cast<QgsMultiCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiCurve;
+    else if ( qgsgeometry_cast<QgsGeometryCollection *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsGeometryCollection;
+    else
+      sipType = 0;
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum SegmentationToleranceType
+    {
+
+      MaximumAngle,
+
+      MaximumDifference
+    };
+
+    enum AxisOrder
+    {
+
+      XY,
+
+      YX
+    };
+
+    QgsAbstractGeometry();
+%Docstring
+Constructor for QgsAbstractGeometry.
+%End
+    virtual ~QgsAbstractGeometry();
+    QgsAbstractGeometry( const QgsAbstractGeometry &geom );
+
+    virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
+
+    virtual QgsAbstractGeometry *clone() const = 0 /Factory/;
+%Docstring
+Clones the geometry by performing a deep copy
+%End
+
+    virtual void clear() = 0;
+%Docstring
+Clears the geometry, ie reset it to a null geometry
+%End
+
+    virtual QgsRectangle boundingBox() const = 0;
+%Docstring
+Returns the minimal bounding box for the geometry
+%End
+
+
+    virtual int dimension() const = 0;
+%Docstring
+Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
+1 for a linestring and 2 for a polygon.
+%End
+
+    virtual QString geometryType() const = 0;
+%Docstring
+Returns a unique string representing the geometry type.
+
+.. seealso:: :py:func:`wkbType`
+
+.. seealso:: :py:func:`wktTypeStr`
+%End
+
+    QgsWkbTypes::Type wkbType() const;
+%Docstring
+Returns the WKB type of the geometry.
+
+.. seealso:: :py:func:`geometryType`
+
+.. seealso:: :py:func:`wktTypeStr`
+%End
+
+    QString wktTypeStr() const;
+%Docstring
+Returns the WKT type string of the geometry.
+
+.. seealso:: :py:func:`geometryType`
+
+.. seealso:: :py:func:`wkbType`
+%End
+
+    bool is3D() const;
+%Docstring
+Returns true if the geometry is 3D and contains a z-value.
+
+.. seealso:: :py:func:`isMeasure`
+%End
+
+    bool isMeasure() const;
+%Docstring
+Returns true if the geometry contains m values.
+
+.. seealso:: :py:func:`is3D`
+%End
+
+    virtual QgsAbstractGeometry *boundary() const = 0 /Factory/;
+%Docstring
+Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
+For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
+
+:return: boundary for geometry. May be null for some geometry types.
+
+.. versionadded:: 3.0
+%End
+
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb ) = 0;
+%Docstring
+Sets the geometry from a WKB string.
+After successful read the wkb argument will be at the position where the reading has stopped.
+
+.. seealso:: :py:func:`fromWkt`
+%End
+
+    virtual bool fromWkt( const QString &wkt ) = 0;
+%Docstring
+Sets the geometry from a WKT string.
+
+.. seealso:: :py:func:`fromWkb`
+%End
+
+
+    virtual QByteArray asWkb() const = 0;
+%Docstring
+Returns a WKB representation of the geometry.
+
+.. seealso:: :py:func:`asWkt`
+
+.. seealso:: :py:func:`asGml2`
+
+.. seealso:: :py:func:`asGml3`
+
+.. seealso:: :py:func:`asJson`
+
+.. versionadded:: 3.0
+%End
+
+    virtual QString asWkt( int precision = 17 ) const = 0;
+%Docstring
+Returns a WKT representation of the geometry.
+
+:param precision: number of decimal places for coordinates
+
+.. seealso:: :py:func:`asWkb`
+
+.. seealso:: :py:func:`asGml2`
+
+.. seealso:: :py:func:`asGml3`
+
+.. seealso:: :py:func:`asJson`
+%End
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
+%Docstring
+Returns a GML2 representation of the geometry.
+
+:param doc: DOM document
+:param precision: number of decimal places for coordinates
+:param ns: XML namespace
+:param axisOrder: Axis order for generated GML
+
+.. seealso:: :py:func:`asWkb`
+
+.. seealso:: :py:func:`asWkt`
+
+.. seealso:: :py:func:`asGml3`
+
+.. seealso:: :py:func:`asJson`
+%End
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
+%Docstring
+Returns a GML3 representation of the geometry.
+
+:param doc: DOM document
+:param precision: number of decimal places for coordinates
+:param ns: XML namespace
+:param axisOrder: Axis order for generated GML
+
+.. seealso:: :py:func:`asWkb`
+
+.. seealso:: :py:func:`asWkt`
+
+.. seealso:: :py:func:`asGml2`
+
+.. seealso:: :py:func:`asJson`
+%End
+
+    virtual QString asJson( int precision = 17 ) const = 0;
+%Docstring
+Returns a GeoJSON representation of the geometry.
+
+:param precision: number of decimal places for coordinates
+
+.. seealso:: :py:func:`asWkb`
+
+.. seealso:: :py:func:`asWkt`
+
+.. seealso:: :py:func:`asGml2`
+
+.. seealso:: :py:func:`asGml3`
+%End
+
+
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;
+%Docstring
+Transforms the geometry using a coordinate transform
+
+:param ct: coordinate transform
+:param d: transformation direction
+:param transformZ: set to true to also transform z coordinates. This requires that
+                   the z coordinates in the geometry represent height relative to the vertical datum
+                   of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
+                   units (generally meters). If false, then z coordinates will not be changed by the
+                   transform.
+%End
+
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
+                            double mTranslate = 0.0, double mScale = 1.0 ) = 0;
+%Docstring
+Transforms the x and y components of the geometry using a QTransform object ``t``.
+
+Optionally, the geometry's z values can be scaled via ``zScale`` and translated via ``zTranslate``.
+Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate``.
+%End
+
+    virtual void draw( QPainter &p ) const = 0;
+%Docstring
+Draws the geometry using the specified QPainter.
+
+:param p: destination QPainter
+%End
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
+%Docstring
+Returns the vertex number corresponding to a vertex ``id``.
+
+The vertex numbers start at 0, so a return value of 0 corresponds
+to the first vertex.
+
+Returns -1 if a corresponding vertex could not be found.
+
+.. versionadded:: 3.0
+%End
+
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
+%Docstring
+Returns next vertex id and coordinates
+
+:param id: initial value should be the starting vertex id. The next vertex id will be stored
+           in this variable if found.
+:param vertex: container for found node
+
+:return: false if at end
+%End
+
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
+%Docstring
+Returns the vertices adjacent to a specified ``vertex`` within a geometry.
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsCoordinateSequence coordinateSequence() const = 0;
+%Docstring
+Retrieves the sequence of geometries, rings and nodes.
+
+:return: coordinate sequence
+%End
+
+    virtual int nCoordinates() const;
+%Docstring
+Returns the number of nodes contained in the geometry
+%End
+
+    virtual QgsPoint vertexAt( QgsVertexId id ) const = 0;
+%Docstring
+Returns the point corresponding to a specified vertex id
+%End
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
+                                   QgsVertexId &vertexAfter /Out/,
+                                   int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const = 0;
+%Docstring
+Searches for the closest segment of the geometry to a given point.
+
+:param pt: specifies the point to find closest segment to
+:param segmentPt: storage for the closest point within the geometry
+:param vertexAfter: storage for the ID of the vertex at the end of the closest segment
+:param leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left
+               of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+               be determined, e.g. point exactly on a line)
+               false if point is to right of segment)
+:param epsilon: epsilon for segment snapping
+
+:return: squared distance to closest segment or negative value on error
+%End
+
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) = 0;
+%Docstring
+Inserts a vertex into the geometry
+
+:param position: vertex id for position of inserted vertex
+:param vertex: vertex to insert
+
+:return: true if insert was successful
+
+.. seealso:: :py:func:`moveVertex`
+
+.. seealso:: :py:func:`deleteVertex`
+%End
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) = 0;
+%Docstring
+Moves a vertex within the geometry
+
+:param position: vertex id for vertex to move
+:param newPos: new position of vertex
+
+:return: true if move was successful
+
+.. seealso:: :py:func:`insertVertex`
+
+.. seealso:: :py:func:`deleteVertex`
+%End
+
+    virtual bool deleteVertex( QgsVertexId position ) = 0;
+%Docstring
+Deletes a vertex within the geometry
+
+:param position: vertex id for vertex to delete
+
+:return: true if delete was successful
+
+.. seealso:: :py:func:`insertVertex`
+
+.. seealso:: :py:func:`moveVertex`
+%End
+
+    virtual double length() const;
+%Docstring
+Returns the length of the geometry.
+
+.. seealso:: :py:func:`area`
+
+.. seealso:: :py:func:`perimeter`
+%End
+
+    virtual double perimeter() const;
+%Docstring
+Returns the perimeter of the geometry.
+
+.. seealso:: :py:func:`area`
+
+.. seealso:: :py:func:`length`
+%End
+
+    virtual double area() const;
+%Docstring
+Returns the area of the geometry.
+
+.. seealso:: :py:func:`length`
+
+.. seealso:: :py:func:`perimeter`
+%End
+
+    virtual double segmentLength( QgsVertexId startVertex ) const = 0;
+%Docstring
+Returns the length of the segment of the geometry which begins at ``startVertex``.
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsPoint centroid() const;
+%Docstring
+Returns the centroid of the geometry
+%End
+
+    virtual bool isEmpty() const;
+%Docstring
+Returns true if the geometry is empty
+%End
+
+    virtual bool hasCurvedSegments() const;
+%Docstring
+Returns true if the geometry contains curved segments
+%End
+
+    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+%Docstring
+Returns a version of the geometry without curves. Caller takes ownership of
+the returned geometry.
+
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+%End
+
+    virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
+%Docstring
+Returns the geometry converted to the more generic curve type.
+E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPolygon` -> QgsCurvePolygon,
+:py:class:`QgsMultiLineString` -> :py:class:`QgsMultiCurve`, :py:class:`QgsMultiPolygon` -> :py:class:`QgsMultiSurface`
+
+:return: the converted geometry. Caller takes ownership
+%End
+
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 /Factory/;
+%Docstring
+Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
+Ownership is transferred to the caller.
+
+If the gridified geometry could not be calculated a None will be returned.
+It may generate an invalid geometry (in some corner cases).
+It can also be thought as rounding the edges and it may be useful for removing errors.
+Example:
+
+In this case we use a 2D grid of 1x1 to gridify.
+In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
+
+:param hSpacing: Horizontal spacing of the grid (x axis). 0 to disable.
+:param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
+:param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
+:param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+
+.. versionadded:: 3.0
+%End
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
+%Docstring
+Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
+degenerate geometry.
+
+The ``epsilon`` parameter specifies the tolerance for coordinates when determining that
+vertices are identical.
+
+By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
+with the same x and y coordinate but different z values will still be considered
+duplicate and one will be removed. If ``useZValues`` is true, then the z values are
+also tested and nodes with the same x and y but different z will be maintained.
+
+Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
+a multipoint geometry with overlapping points will not be changed by this method.
+
+The function will return true if nodes were removed, or false if no duplicate nodes
+were found.
+
+.. versionadded:: 3.0
+%End
+
+    virtual double vertexAngle( QgsVertexId vertex ) const = 0;
+%Docstring
+Returns approximate angle at a vertex. This is usually the average angle between adjacent
+segments, and can be pictured as the orientation of a line following the curvature of the
+geometry at the specified vertex.
+
+:param vertex: the vertex id
+
+:return: rotation in radians, clockwise from north
+%End
+
+    virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
+%Docstring
+Returns the number of vertices of which this geometry is built.
+%End
+
+    virtual int ringCount( int part = 0 ) const = 0;
+%Docstring
+Returns the number of rings of which this geometry is built.
+%End
+
+    virtual int partCount() const = 0;
+%Docstring
+Returns count of parts contained in the geometry.
+
+.. seealso:: :py:func:`vertexCount`
+
+.. seealso:: :py:func:`ringCount`
+%End
+
+    virtual bool addZValue( double zValue = 0 ) = 0;
+%Docstring
+Adds a z-dimension to the geometry, initialized to a preset value.
+
+:param zValue: initial z-value for all nodes
+
+:return: true on success
+
+.. seealso:: :py:func:`dropZValue`
+
+.. seealso:: :py:func:`addMValue`
+
+.. versionadded:: 2.12
+%End
+
+    virtual bool addMValue( double mValue = 0 ) = 0;
+%Docstring
+Adds a measure to the geometry, initialized to a preset value.
+
+:param mValue: initial m-value for all nodes
+
+:return: true on success
+
+.. seealso:: :py:func:`dropMValue`
+
+.. seealso:: :py:func:`addZValue`
+
+.. versionadded:: 2.12
+%End
+
+    virtual bool dropZValue() = 0;
+%Docstring
+Drops any z-dimensions which exist in the geometry.
+
+:return: true if Z values were present and have been removed
+
+.. seealso:: :py:func:`addZValue`
+
+.. seealso:: :py:func:`dropMValue`
+
+.. versionadded:: 2.14
+%End
+
+    virtual bool dropMValue() = 0;
+%Docstring
+Drops any measure values which exist in the geometry.
+
+:return: true if m-values were present and have been removed
+
+.. seealso:: :py:func:`addMValue`
+
+.. seealso:: :py:func:`dropZValue`
+
+.. versionadded:: 2.14
+%End
+
+    virtual void swapXy() = 0;
+%Docstring
+Swaps the x and y coordinates from the geometry. This can be used
+to repair geometries which have accidentally had their latitude and longitude
+coordinates reversed.
+
+.. versionadded:: 3.2
+%End
+
+    virtual bool convertTo( QgsWkbTypes::Type type );
+%Docstring
+Converts the geometry to a specified type.
+
+:return: true if conversion was successful
+
+.. versionadded:: 2.14
+%End
+
+
+    QgsGeometryPartIterator parts();
+%Docstring
+Returns Java-style iterator for traversal of parts of the geometry. This iterator
+can safely be used to modify parts of the geometry.
+
+* Example:
+.. code-block:: python
+
+       # print the WKT representation of each part in a multi-point geometry
+       geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+       for part in geometry.parts():
+           print(part.asWkt())
+
+       # single part geometries only have one part - this loop will iterate once only
+       geometry = QgsLineString.fromWkt( 'LineString( 0 0, 10 10 )' )
+       for part in geometry.parts():
+           print(part.asWkt())
+
+       # parts can be modified during the iteration
+       geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+       for part in geometry.parts():
+           part.transform(ct)
+
+       # part iteration can also be combined with vertex iteration
+       geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+       for part in geometry.parts():
+           for v in part.vertices():
+               print(v.x(), v.y())
+
+.. seealso:: :py:func:`vertices`
+
+.. versionadded:: 3.6
+%End
+
+
+    QgsVertexIterator vertices() const;
+%Docstring
+Returns a read-only, Java-style iterator for traversal of vertices of all the geometry, including all geometry parts and rings.
+
+.. warning::
+
+   The iterator returns a copy of individual vertices, and accordingly geometries cannot be
+   modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+
+* Example:
+.. code-block:: python
+
+       # print the x and y coordinate for each vertex in a LineString
+       geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+       for v in geometry.vertices():
+           print(v.x(), v.y())
+
+       # vertex iteration includes all parts and rings
+       geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+       for v in geometry.vertices():
+           print(v.x(), v.y())
+
+.. seealso:: :py:func:`parts`
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
+%Docstring
+Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
+To create it, the geometry is default constructed and then the WKB is changed.
+
+.. seealso:: :py:func:`clone`
+
+.. versionadded:: 3.0
+%End
+
+  protected:
+
+    virtual bool hasChildGeometries() const;
+%Docstring
+Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+
+.. note::
+
+   used for vertex_iterator implementation
+
+.. versionadded:: 3.0
+%End
+
+    virtual int childCount() const;
+%Docstring
+Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
+
+.. note::
+
+   used for vertex_iterator implementation
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+%Docstring
+Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
+
+.. note::
+
+   used for vertex_iterator implementation
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsPoint childPoint( int index ) const;
+%Docstring
+Returns point at index (for geometries without child geometries - i.e. curve / point)
+
+.. note::
+
+   used for vertex_iterator implementation
+
+.. versionadded:: 3.0
+%End
+
+  protected:
+
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
+%Docstring
+Updates the geometry type based on whether sub geometries contain z or m values.
+%End
+
+    virtual QgsRectangle calculateBoundingBox() const;
+%Docstring
+Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
+if a more efficient bounding box calculation is available.
+%End
+
+    virtual void clearCache() const;
+%Docstring
+Clears any cached parameters associated with the geometry, e.g., bounding boxes
+%End
+
+};
+
+
+struct QgsVertexId
+{
+  enum VertexType
+  {
+    SegmentVertex,
+    CurveVertex
+  };
+
+  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
+
+  bool isValid() const;
+%Docstring
+Returns true if the vertex id is valid
+%End
+
+  bool operator==( QgsVertexId other ) const;
+  bool operator!=( QgsVertexId other ) const;
+  bool partEqual( QgsVertexId o ) const;
+  bool ringEqual( QgsVertexId o ) const;
+  bool vertexEqual( QgsVertexId o ) const;
+  bool isValid( const QgsAbstractGeometry *geom ) const;
+
+  int part;
+  int ring;
+  int vertex;
+  VertexType type;
+};
+
+
+
+class QgsVertexIterator
+{
+%Docstring
+Java-style iterator for traversal of vertices of a geometry
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsVertexIterator();
+%Docstring
+Constructor for QgsVertexIterator
+%End
+
+    QgsVertexIterator( const QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more vertices
+%End
+
+    QgsPoint next();
+%Docstring
+Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+%End
+
+    QgsVertexIterator *__iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__();
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
+
+class QgsGeometryPartIterator
+{
+%Docstring
+Java-style iterator for traversal of parts of a geometry
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsGeometryPartIterator();
+%Docstring
+Constructor for QgsGeometryPartIterator
+%End
+
+    QgsGeometryPartIterator( QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more parts
+%End
+
+    QgsAbstractGeometry *next();
+%Docstring
+Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+%End
+
+    QgsGeometryPartIterator *__iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__();
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
+
+
+class QgsGeometryConstPartIterator
+{
+%Docstring
+Java-style iterator for const traversal of parts of a geometry
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsGeometryConstPartIterator();
+%Docstring
+Constructor for QgsGeometryConstPartIterator
+%End
+
+    QgsGeometryConstPartIterator( const QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more parts
+%End
+
+    const QgsAbstractGeometry *next();
+%Docstring
+Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+%End
+
+    QgsGeometryConstPartIterator *__iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__();
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsabstractgeometry.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -29,119 +29,187 @@ import os
 import math
 
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFeatureRequest, QgsDistanceArea
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
+                       QgsField,
+                       QgsFields,
+                       QgsProject,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsDistanceArea,
+                       QgsFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex,
+                       QgsWkbTypes)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputTable
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointDistance(GeoAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
+class PointDistance(QgisAlgorithm):
+    INPUT = 'INPUT'
     INPUT_FIELD = 'INPUT_FIELD'
-    TARGET_LAYER = 'TARGET_LAYER'
+    TARGET = 'TARGET'
     TARGET_FIELD = 'TARGET_FIELD'
     MATRIX_TYPE = 'MATRIX_TYPE'
     NEAREST_POINTS = 'NEAREST_POINTS'
-    DISTANCE_MATRIX = 'DISTANCE_MATRIX'
+    OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDistanceMatrix.svg")
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Distance matrix')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDistanceMatrix.svg")
 
+    def group(self):
+        return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
                           self.tr('Standard (N x T) distance matrix'),
                           self.tr('Summary distance matrix (mean, std. dev., min, max)')]
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterTableField(self.INPUT_FIELD,
-                                              self.tr('Input unique ID field'), self.INPUT_LAYER,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterVector(self.TARGET_LAYER,
-                                          self.tr('Target point layer'), ParameterVector.VECTOR_TYPE_POINT))
-        self.addParameter(ParameterTableField(self.TARGET_FIELD,
-                                              self.tr('Target unique ID field'), self.TARGET_LAYER,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterSelection(self.MATRIX_TYPE,
-                                             self.tr('Output matrix type'), self.mat_types, 0))
-        self.addParameter(ParameterNumber(self.NEAREST_POINTS,
-                                          self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input point layer'),
+                                                              [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterField(self.INPUT_FIELD,
+                                                      self.tr('Input unique ID field'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.TARGET,
+                                                              self.tr('Target point layer'),
+                                                              [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterField(self.TARGET_FIELD,
+                                                      self.tr('Target unique ID field'),
+                                                      parentLayerParameterName=self.TARGET,
+                                                      type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterEnum(self.MATRIX_TYPE,
+                                                     self.tr('Output matrix type'), options=self.mat_types, defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.NEAREST_POINTS,
+                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Integer, minValue=0, defaultValue=0))
 
-        self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Distance matrix'), QgsProcessing.TypeVectorPoint))
 
-    def processAlgorithm(self, progress):
-        inLayer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
-        inField = self.getParameterValue(self.INPUT_FIELD)
-        targetLayer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.TARGET_LAYER))
-        targetField = self.getParameterValue(self.TARGET_FIELD)
-        matType = self.getParameterValue(self.MATRIX_TYPE)
-        nPoints = self.getParameterValue(self.NEAREST_POINTS)
+    def name(self):
+        return 'distancematrix'
 
-        outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
+    def displayName(self):
+        return self.tr('Distance matrix')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        source_field = self.parameterAsString(parameters, self.INPUT_FIELD, context)
+        target_source = self.parameterAsSource(parameters, self.TARGET, context)
+        if target_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.TARGET))
+
+        target_field = self.parameterAsString(parameters, self.TARGET_FIELD, context)
+        same_source_and_target = parameters[self.INPUT] == parameters[self.TARGET]
+        matType = self.parameterAsEnum(parameters, self.MATRIX_TYPE, context)
+        nPoints = self.parameterAsInt(parameters, self.NEAREST_POINTS, context)
 
         if nPoints < 1:
-            nPoints = len(vector.features(targetLayer))
-
-        self.writer = outputFile.getTableWriter([])
+            nPoints = target_source.featureCount()
 
         if matType == 0:
             # Linear distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField,
-                              matType, nPoints, progress)
+            return self.linearMatrix(parameters, context, source, source_field, target_source, target_field, same_source_and_target,
+                                     matType, nPoints, feedback)
         elif matType == 1:
             # Standard distance matrix
-            self.regularMatrix(inLayer, inField, targetLayer, targetField,
-                               nPoints, progress)
+            return self.regularMatrix(parameters, context, source, source_field, target_source, target_field,
+                                      nPoints, feedback)
         elif matType == 2:
             # Summary distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField,
-                              matType, nPoints, progress)
+            return self.linearMatrix(parameters, context, source, source_field, target_source, target_field, same_source_and_target,
+                                     matType, nPoints, feedback)
 
-    def linearMatrix(self, inLayer, inField, targetLayer, targetField,
-                     matType, nPoints, progress):
+    def linearMatrix(self, parameters, context, source, inField, target_source, targetField, same_source_and_target,
+                     matType, nPoints, feedback):
+
+        if same_source_and_target:
+            # need to fetch an extra point from the index, since the closest match will always be the same
+            # as the input feature
+            nPoints += 1
+
+        inIdx = source.fields().lookupField(inField)
+        outIdx = target_source.fields().lookupField(targetField)
+
+        fields = QgsFields()
+        input_id_field = source.fields()[inIdx]
+        input_id_field.setName('InputID')
+        fields.append(input_id_field)
         if matType == 0:
-            self.writer.addRecord(['InputID', 'TargetID', 'Distance'])
+            target_id_field = target_source.fields()[outIdx]
+            target_id_field.setName('TargetID')
+            fields.append(target_id_field)
+            fields.append(QgsField('Distance', QVariant.Double))
         else:
-            self.writer.addRecord(['InputID', 'MEAN', 'STDDEV', 'MIN', 'MAX'])
+            fields.append(QgsField('MEAN', QVariant.Double))
+            fields.append(QgsField('STDDEV', QVariant.Double))
+            fields.append(QgsField('MIN', QVariant.Double))
+            fields.append(QgsField('MAX', QVariant.Double))
 
-        index = vector.spatialindex(targetLayer)
+        out_wkb = QgsWkbTypes.multiType(source.wkbType()) if matType == 0 else source.wkbType()
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, out_wkb, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        inIdx = inLayer.fieldNameIndex(inField)
-        outIdx = targetLayer.fieldNameIndex(targetField)
+        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
         distArea = QgsDistanceArea()
+        distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
+        distArea.setEllipsoid(context.project().ellipsoid())
 
-        features = vector.features(inLayer)
-        total = 100.0 / len(features)
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([inIdx]))
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             inGeom = inFeat.geometry()
-            inID = unicode(inFeat.attributes()[inIdx])
+            inID = str(inFeat[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
-            for i in featList:
-                request = QgsFeatureRequest().setFilterFid(i)
-                outFeat = targetLayer.getFeatures(request).next()
-                outID = outFeat.attributes()[outIdx]
+            request = QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([outIdx]).setDestinationCrs(source.sourceCrs(), context.transformContext())
+            for outFeat in target_source.getFeatures(request):
+                if feedback.isCanceled():
+                    break
+
+                if same_source_and_target and inFeat.id() == outFeat.id():
+                    continue
+
+                outID = outFeat[outIdx]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
+
                 if matType == 0:
-                    self.writer.addRecord([inID, unicode(outID), unicode(dist)])
+                    out_feature = QgsFeature()
+                    out_geom = QgsGeometry.unaryUnion([inFeat.geometry(), outFeat.geometry()])
+                    out_feature.setGeometry(out_geom)
+                    out_feature.setAttributes([inID, outID, dist])
+                    sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
                 else:
                     distList.append(float(dist))
 
@@ -150,42 +218,66 @@ class PointDistance(GeoAlgorithm):
                 for i in distList:
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
-                self.writer.addRecord([inID, unicode(mean),
-                                       unicode(vari), unicode(min(distList)),
-                                       unicode(max(distList))])
 
-            progress.setPercentage(int(current * total))
+                out_feature = QgsFeature()
+                out_feature.setGeometry(inFeat.geometry())
+                out_feature.setAttributes([inID, mean, vari, min(distList), max(distList)])
+                sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
 
-    def regularMatrix(self, inLayer, inField, targetLayer, targetField,
-                      nPoints, progress):
-        index = vector.spatialindex(targetLayer)
+            feedback.setProgress(int(current * total))
 
-        inIdx = inLayer.fieldNameIndex(inField)
+        return {self.OUTPUT: dest_id}
+
+    def regularMatrix(self, parameters, context, source, inField, target_source, targetField,
+                      nPoints, feedback):
 
         distArea = QgsDistanceArea()
+        distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
+        distArea.setEllipsoid(context.project().ellipsoid())
+
+        inIdx = source.fields().lookupField(inField)
+        targetIdx = target_source.fields().lookupField(targetField)
+
+        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
         first = True
-        features = vector.features(inLayer)
-        total = 100.0 / len(features)
+        sink = None
+        dest_id = None
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([inIdx]))
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
-            inGeom = inFeat.geometry()
-            inID = unicode(inFeat.attributes()[inIdx])
-            featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
-            if first:
-                first = False
-                data = ['ID']
-                for i in range(len(featList)):
-                    data.append('DIST_{0}'.format(i + 1))
-                self.writer.addRecord(data)
+            if feedback.isCanceled():
+                break
 
-            data = [inID]
-            for i in featList:
-                request = QgsFeatureRequest().setFilterFid(i)
-                outFeat = targetLayer.getFeatures(request).next()
-                outGeom = outFeat.geometry()
+            inGeom = inFeat.geometry()
+            if first:
+                featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
+                first = False
+                fields = QgsFields()
+                input_id_field = source.fields()[inIdx]
+                input_id_field.setName('ID')
+                fields.append(input_id_field)
+                for f in target_source.getFeatures(QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([targetIdx]).setDestinationCrs(source.sourceCrs(), context.transformContext())):
+                    fields.append(QgsField(str(f[targetField]), QVariant.Double))
+
+                (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                       fields, source.wkbType(), source.sourceCrs())
+                if sink is None:
+                    raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+            data = [inFeat[inField]]
+            for target in target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setFilterFids(featList).setDestinationCrs(source.sourceCrs(), context.transformContext())):
+                if feedback.isCanceled():
+                    break
+                outGeom = target.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
-                data.append(unicode(float(dist)))
-            self.writer.addRecord(data)
+                data.append(dist)
 
-            progress.setPercentage(int(current * total))
+            out_feature = QgsFeature()
+            out_feature.setGeometry(inGeom)
+            out_feature.setAttributes(data)
+            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+            feedback.setProgress(int(current * total))
+
+        return {self.OUTPUT: dest_id}

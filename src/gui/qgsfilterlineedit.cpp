@@ -17,90 +17,118 @@
 
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsanimatedicon.h"
 
+#include <QAction>
 #include <QToolButton>
 #include <QStyle>
 #include <QFocusEvent>
+#include <QPainter>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
-    : QLineEdit( parent )
-    , mNullValue( nullValue )
-    , mFocusInEvent( false )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
+  : QLineEdit( parent )
+  , mNullValue( nullValue )
 {
-  btnClear = new QToolButton( this );
-  btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
-  btnClear->setCursor( Qt::ArrowCursor );
-  btnClear->setFocusPolicy( Qt::NoFocus );
-  btnClear->setStyleSheet( "QToolButton { border: none; padding: 0px; }" );
-  btnClear->hide();
+  // icon size is about 2/3 height of text, but minimum size of 16
+  int iconSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.75, 16.0 ) );
 
-  connect( btnClear, SIGNAL( clicked() ), this, SLOT( clear() ) );
-  connect( btnClear, SIGNAL( clicked() ), this, SIGNAL( cleared() ) );
-  connect( this, SIGNAL( textChanged( const QString& ) ), this,
-           SLOT( onTextChanged( const QString& ) ) );
+  mClearIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconClearText.svg" ).pixmap( QSize( iconSize, iconSize ) ), QIcon::Normal, QIcon::On );
+  mClearIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" ).pixmap( QSize( iconSize, iconSize ) ), QIcon::Selected, QIcon::On );
 
-  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mStyleSheet = QString( "QLineEdit { padding-right: %1px; } " )
-                .arg( btnClear->sizeHint().width() + frameWidth + 1 );
-
-  QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ),
-                  qMax( msz.height(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ) );
+  connect( this, &QLineEdit::textChanged, this,
+           &QgsFilterLineEdit::onTextChanged );
 }
 
-void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
+void QgsFilterLineEdit::setShowClearButton( bool visible )
 {
-  if ( !mFocusInEvent )
-    QLineEdit::mousePressEvent( e );
-  else
-    mFocusInEvent = false;
+  mClearButtonVisible = visible;
+  updateClearIcon();
 }
 
-void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
+void QgsFilterLineEdit::setShowSearchIcon( bool visible )
+{
+  if ( visible && !mSearchAction )
+  {
+    QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
+    mSearchAction = new QAction( searchIcon, QString(), this );
+    mSearchAction->setCheckable( false );
+    addAction( mSearchAction, QLineEdit::LeadingPosition );
+  }
+  else if ( !visible && mSearchAction )
+  {
+    mSearchAction->deleteLater();
+    mSearchAction = nullptr;
+  }
+}
+
+void QgsFilterLineEdit::updateClearIcon()
+{
+  bool showClear = shouldShowClear();
+  if ( showClear && !mClearAction )
+  {
+    mClearAction = new QAction( mClearIcon, QString(), this );
+    mClearAction->setCheckable( false );
+    addAction( mClearAction, QLineEdit::TrailingPosition );
+    connect( mClearAction, &QAction::triggered, this, &QgsFilterLineEdit::clearValue );
+  }
+  else if ( !showClear && mClearAction )
+  {
+    // pretty freakin weird... seems the deleteLater call on the mClearAction
+    // isn't sufficient to actually remove the action from the line edit, and
+    // a kind of "ghost" action gets left behind... resulting in duplicate
+    // clear actions appearing if later we re-create the action.
+    // in summary: don't remove this "removeAction" call!
+    removeAction( mClearAction );
+    mClearAction->deleteLater();
+    mClearAction = nullptr;
+  }
+}
+
+void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
 {
   QLineEdit::focusInEvent( e );
-  if ( e->reason() == Qt::MouseFocusReason && isNull() )
+  if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
-    mFocusInEvent = true;
+    mWaitingForMouseRelease = true;
+  }
+}
+
+void QgsFilterLineEdit::mouseReleaseEvent( QMouseEvent *e )
+{
+  QLineEdit::mouseReleaseEvent( e );
+  if ( mWaitingForMouseRelease )
+  {
+    mWaitingForMouseRelease = false;
     selectAll();
   }
 }
 
-void QgsFilterLineEdit::resizeEvent( QResizeEvent * )
+void QgsFilterLineEdit::clearValue()
 {
-  QSize sz = btnClear->sizeHint();
-  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  btnClear->move( rect().right() - frameWidth - sz.width(),
-                  ( rect().bottom() + 1 - sz.height() ) / 2 );
-}
+  switch ( mClearMode )
+  {
+    case ClearToNull:
+      setText( mNullValue );
+      selectAll();
+      break;
 
-void QgsFilterLineEdit::clear()
-{
-  setText( mNullValue );
+    case ClearToDefault:
+      setText( mDefaultValue );
+      break;
+  }
+
   setModified( true );
+  emit cleared();
 }
-
-void QgsFilterLineEdit::changeEvent( QEvent *e )
-{
-  QLineEdit::changeEvent( e );
-  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
-}
-
-void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
-{
-  QLineEdit::paintEvent( e );
-  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
-}
-
 
 void QgsFilterLineEdit::onTextChanged( const QString &text )
 {
-  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
+  updateClearIcon();
 
   if ( isNull() )
   {
-    setStyleSheet( QString( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
-    emit valueChanged( QString::null );
+    setStyleSheet( QStringLiteral( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
+    emit valueChanged( QString() );
   }
   else
   {
@@ -108,3 +136,90 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
     emit valueChanged( text );
   }
 }
+
+void QgsFilterLineEdit::updateBusySpinner()
+{
+  if ( !mBusySpinnerAction )
+  {
+    mBusySpinnerAction = addAction( mBusySpinnerAnimatedIcon->icon(), QLineEdit::TrailingPosition );
+  }
+  mBusySpinnerAction->setIcon( mBusySpinnerAnimatedIcon->icon() );
+}
+
+bool QgsFilterLineEdit::selectOnFocus() const
+{
+  return mSelectOnFocus;
+}
+
+void QgsFilterLineEdit::setSelectOnFocus( bool selectOnFocus )
+{
+  if ( mSelectOnFocus == selectOnFocus )
+    return;
+
+  mSelectOnFocus = selectOnFocus;
+  emit selectOnFocusChanged();
+}
+
+bool QgsFilterLineEdit::showSpinner() const
+{
+  return mShowSpinner;
+}
+
+void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
+{
+
+  if ( showSpinner == mShowSpinner )
+    return;
+
+  if ( showSpinner )
+  {
+    if ( !mBusySpinnerAnimatedIcon )
+      mBusySpinnerAnimatedIcon = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), this );
+
+    mBusySpinnerAnimatedIcon->connectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
+  }
+  else
+  {
+    mBusySpinnerAnimatedIcon->disconnectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
+    removeAction( mBusySpinnerAction );
+    mBusySpinnerAction = nullptr;
+  }
+
+  mShowSpinner = showSpinner;
+  emit showSpinnerChanged();
+}
+
+bool QgsFilterLineEdit::shouldShowClear() const
+{
+  if ( !isEnabled() || isReadOnly() || !mClearButtonVisible )
+    return false;
+
+  switch ( mClearMode )
+  {
+    case ClearToNull:
+      return !isNull();
+
+    case ClearToDefault:
+      return value() != mDefaultValue;
+  }
+  return false; //avoid warnings
+}
+
+bool QgsFilterLineEdit::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ReadOnlyChange || event->type() == QEvent::EnabledChange )
+    updateClearIcon();
+
+  return QLineEdit::event( event );;
+}
+
+/// @cond PRIVATE
+void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
+{
+  QLineEdit::focusInEvent( e );
+  if ( isNull() )
+  {
+    clear();
+  }
+}
+/// @endcond

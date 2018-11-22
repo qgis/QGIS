@@ -18,14 +18,15 @@
 class QgsGrassTools;
 class QTabWidget;
 class QTermWidget;
+class QEvent;
 
 class QgsGrassShell : public QFrame
 {
     Q_OBJECT
 
   public:
-    QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = 0, const char *name = 0 );
-    virtual ~QgsGrassShell();
+    QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = nullptr, const char *name = nullptr );
+    bool event( QEvent * ) override;
 
   private slots:
     void closeShell();
@@ -33,8 +34,8 @@ class QgsGrassShell : public QFrame
   private:
     void initTerminal( QTermWidget *terminal );
 
-    QTermWidget *mTerminal;
-    QgsGrassTools *mTools;
-    QTabWidget *mTabWidget;
+    QTermWidget *mTerminal = nullptr;
+    QgsGrassTools *mTools = nullptr;
+    QTabWidget *mTabWidget = nullptr;
     QString mLockFilename;
 };

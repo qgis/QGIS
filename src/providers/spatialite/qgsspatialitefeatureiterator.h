@@ -16,6 +16,7 @@
 #define QGSSPATIALITEFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 
 extern "C"
 {
@@ -29,12 +30,11 @@ class QgsSpatiaLiteProvider;
 class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
-    ~QgsSpatiaLiteFeatureSource();
+    explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QString mGeometryColumn;
     QString mSubsetString;
     QgsFields mFields;
@@ -48,6 +48,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     bool mSpatialIndexRTree;
     bool mSpatialIndexMbrCache;
     QString mSqlitePath;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsSpatiaLiteFeatureIterator;
     friend class QgsSpatiaLiteExpressionCompiler;
@@ -56,57 +57,54 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
 class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
-    QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsSpatiaLiteFeatureIterator();
-
-    //! reset the iterator to the starting position
-    virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
-    virtual bool close() override;
+    ~QgsSpatiaLiteFeatureIterator() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+  private:
 
     QString whereClauseRect();
     QString whereClauseFid();
     QString whereClauseFids();
-    QString mbr( const QgsRectangle& rect );
-    bool prepareStatement( const QString& whereClause, long limit = -1 , const QString& orderBy = QString() );
+    QString mbr( const QgsRectangle &rect );
+    bool prepareStatement( const QString &whereClause, long limit = -1, const QString &orderBy = QString() );
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
-    QString fieldName( const QgsField& fld );
-    QVariant getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type );
-    void getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature );
+    QString fieldName( const QgsField &fld );
+    QVariant getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType );
+    void getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature );
 
     //! wrapper of the SQLite database connection
-    QgsSqliteHandle* mHandle;
+    QgsSqliteHandle *mHandle = nullptr;
 
     /**
       * SQLite statement handle
      */
-    sqlite3_stmt *sqliteStatement;
+    sqlite3_stmt *sqliteStatement = nullptr;
 
-    /** Geometry column index used when fetching geometry */
-    int mGeomColIdx;
+    //! Geometry column index used when fetching geometry
+    int mGeomColIdx = 1;
 
-    //! Set to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    //! Sets to true, if geometry is in the requested columns
+    bool mFetchGeometry = true;
 
     bool mHasPrimaryKey;
     QgsFeatureId mRowNumber;
 
-  private:
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
-    bool mOrderByCompiled;
-    bool mExpressionCompiled;
+    bool mOrderByCompiled = false;
+    bool mExpressionCompiled = false;
+
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

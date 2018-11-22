@@ -32,25 +32,19 @@ extern "C"
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
 #include <grass/raster.h>
-#endif
 }
 
-QgsGrassVectorLayer::QgsGrassVectorLayer( QObject * parent )
-    : QObject( parent )
-    , mNumber( 0 )
+QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
+  : QObject( parent )
 {
 }
 
-QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject * parent )
-    : QObject( parent )
-    , mGrassObject( grassObject )
-    , mNumber( number )
+QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( grassObject )
+  , mNumber( number )
 {
   if ( fieldInfo )
   {
@@ -62,18 +56,14 @@ QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int
   }
 }
 
-QgsGrassVectorLayer::~QgsGrassVectorLayer()
-{
-}
-
 int QgsGrassVectorLayer::typeCount( int type ) const
 {
   int count = 0;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( t & type )
+    if ( it.key() & type )
     {
-      count += mTypeCounts.value( t );
+      count += it.value();
     }
   }
   return count;
@@ -82,11 +72,11 @@ int QgsGrassVectorLayer::typeCount( int type ) const
 int QgsGrassVectorLayer::type() const
 {
   int type = 0;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( mTypeCounts.value( t ) > 0 )
+    if ( it.value() > 0 )
     {
-      type |= t;
+      type |= it.key();
     }
   }
   return type;
@@ -95,11 +85,11 @@ int QgsGrassVectorLayer::type() const
 QList<int> QgsGrassVectorLayer::types() const
 {
   QList<int> types;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( mTypeCounts.value( t ) > 0 )
+    if ( it.value() > 0 )
     {
-      types << t;
+      types << it.key();
     }
   }
   return types;
@@ -128,7 +118,7 @@ QgsFields QgsGrassVectorLayer::fields()
     QgsDebugMsg( "open database " + mDatabase + " by driver " + mDriver );
     QgsGrass::lock();
     QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(),  mGrassObject.mapset() );
-    dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().data(), mDatabase.toUtf8().data() );
+    dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().constData(), mDatabase.toUtf8().constData() );
 
     if ( !driver )
     {
@@ -141,9 +131,9 @@ QgsFields QgsGrassVectorLayer::fields()
 
       dbString tableName;
       db_init_string( &tableName );
-      db_set_string( &tableName, mTable.toUtf8().data() );
+      db_set_string( &tableName, mTable.toUtf8().constData() );
 
-      dbTable *table;
+      dbTable *table = nullptr;
       if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
       {
         mError = QObject::tr( "Cannot describe table %1" ).arg( mTable );
@@ -163,19 +153,19 @@ QgsFields QgsGrassVectorLayer::fields()
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
-              type = "int";
+              type = QStringLiteral( "int" );
               qtype = QVariant::Int;
               break;
             case DB_C_TYPE_DOUBLE:
-              type = "double";
+              type = QStringLiteral( "double" );
               qtype = QVariant::Double;
               break;
             case DB_C_TYPE_STRING:
-              type = "string";
+              type = QStringLiteral( "string" );
               qtype = QVariant::String;
               break;
             case DB_C_TYPE_DATETIME:
-              type = "datetime";
+              type = QStringLiteral( "datetime" );
               qtype = QVariant::String;
               break;
           }
@@ -192,18 +182,18 @@ QgsFields QgsGrassVectorLayer::fields()
 
 
 /*********************** QgsGrassVector ***********************/
-QgsGrassVector::QgsGrassVector( const QString& gisdbase, const QString& location, const QString& mapset,
-                                const QString& name, QObject *parent )
-    : QObject( parent )
-    , mGrassObject( gisdbase, location, mapset, name )
-    , mNodeCount( 0 )
+QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
+                                const QString &name, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( gisdbase, location, mapset, name )
+  , mNodeCount( 0 )
 {
 }
 
-QgsGrassVector::QgsGrassVector( const QgsGrassObject& grassObject, QObject *parent )
-    : QObject( parent )
-    , mGrassObject( grassObject )
-    , mNodeCount( 0 )
+QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( grassObject )
+  , mNodeCount( 0 )
 {
 }
 
@@ -229,7 +219,7 @@ bool QgsGrassVector::openHead()
   // TODO: We are currently using vectDestroyMapStruct in G_CATCH blocks because we know
   // that it cannot call another G_fatal_error, but once we switch to hypothetical Vect_destroy_map_struct
   // it should be verified if it can still be in G_CATCH
-  struct Map_info *map = 0;
+  struct Map_info *map = nullptr;
   int level = -1;
 
   // Vect_open_old_head GRASS is raising fatal error if topo exists but it is in different (older) version.
@@ -239,9 +229,9 @@ bool QgsGrassVector::openHead()
   G_TRY
   {
     map = QgsGrass::vectNewMapStruct();
-    level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().data(), ( char * ) mGrassObject.mapset().toUtf8().data() );
+    level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().constData(), ( char * ) mGrassObject.mapset().toUtf8().constData() );
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     QgsDebugMsg( QString( "Cannot open GRASS vectvectorTypesor: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );
@@ -294,13 +284,14 @@ bool QgsGrassVector::openHead()
       struct field_info *fieldInfo = Vect_get_field( map, field ); // should work also with field = 0
 
       QgsGrassVectorLayer *layer = new QgsGrassVectorLayer( mGrassObject, field, fieldInfo, this );
-      Q_FOREACH ( int type, QgsGrass::vectorTypeMap().keys() )
+      const auto typeMap = QgsGrass::vectorTypeMap();
+      for ( auto it = typeMap.constBegin(); it != typeMap.constEnd(); ++it )
       {
-        int count = Vect_cidx_get_type_count( map, field, type );
+        int count = Vect_cidx_get_type_count( map, field, it.key() );
         if ( count > 0 )
         {
-          QgsDebugMsg( QString( "type = %1 count = %2" ).arg( type ).arg( count ) );
-          layer->setTypeCount( type, count );
+          QgsDebugMsg( QString( "type = %1 count = %2" ).arg( it.key() ).arg( count ) );
+          layer->setTypeCount( it.key(), count );
         }
       }
       mLayers.append( layer );
@@ -308,17 +299,18 @@ bool QgsGrassVector::openHead()
     QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 
     // Get primitives
-    Q_FOREACH ( int type, QgsGrass::vectorTypeMap().keys() )
+    const auto typeMap = QgsGrass::vectorTypeMap();
+    for ( auto it = typeMap.constBegin(); it != typeMap.constEnd(); ++it )
     {
-      if ( type == GV_AREA )
+      if ( it.key() == GV_AREA )
       {
         continue;
       }
-      int count = Vect_get_num_primitives( map, type );
+      int count = Vect_get_num_primitives( map, it.key() );
       if ( count > 0 )
       {
-        QgsDebugMsg( QString( "primitive type = %1 count = %2" ).arg( type ).arg( count ) );
-        mTypeCounts[type] = count;
+        QgsDebugMsg( QString( "primitive type = %1 count = %2" ).arg( it.key() ).arg( count ) );
+        mTypeCounts[it.key()] = count;
       }
     }
     mNodeCount = Vect_get_num_nodes( map );
@@ -328,7 +320,7 @@ bool QgsGrassVector::openHead()
     QgsGrass::vectDestroyMapStruct( map );
     QgsGrass::unlock();
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     QgsDebugMsg( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );
@@ -342,11 +334,11 @@ bool QgsGrassVector::openHead()
 int QgsGrassVector::typeCount( int type ) const
 {
   int count = 0;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( t & type )
+    if ( it.key() & type )
     {
-      count += mTypeCounts.value( t );
+      count += it.value();
     }
   }
   return count;
@@ -357,7 +349,7 @@ int QgsGrassVector::maxLayerNumber() const
   int max = 0;
   Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
   {
-    max = qMax( max, layer->number() );
+    max = std::max( max, layer->number() );
   }
   return max;
 }

@@ -18,98 +18,96 @@
 
 #include "qgsnetworkdiskcache.h"
 
-QgsNetworkDiskCache::ExpirableNetworkDiskCache QgsNetworkDiskCache::smDiskCache;
-QMutex QgsNetworkDiskCache::smDiskCacheMutex;
+///@cond PRIVATE
+ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
+///@endcond
+QMutex QgsNetworkDiskCache::sDiskCacheMutex;
 
 QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
-    : QNetworkDiskCache( parent )
-{
-}
-
-QgsNetworkDiskCache::~QgsNetworkDiskCache()
+  : QNetworkDiskCache( parent )
 {
 }
 
 QString QgsNetworkDiskCache::cacheDirectory() const
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.cacheDirectory();
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.cacheDirectory();
 }
 
 void QgsNetworkDiskCache::setCacheDirectory( const QString &cacheDir )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  smDiskCache.setCacheDirectory( cacheDir );
+  QMutexLocker lock( &sDiskCacheMutex );
+  sDiskCache.setCacheDirectory( cacheDir );
 }
 
 qint64 QgsNetworkDiskCache::maximumCacheSize() const
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.maximumCacheSize();
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.maximumCacheSize();
 }
 
 void QgsNetworkDiskCache::setMaximumCacheSize( qint64 size )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  smDiskCache.setMaximumCacheSize( size );
+  QMutexLocker lock( &sDiskCacheMutex );
+  sDiskCache.setMaximumCacheSize( size );
 }
 
 qint64 QgsNetworkDiskCache::cacheSize() const
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.cacheSize();
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.cacheSize();
 }
 
 QNetworkCacheMetaData QgsNetworkDiskCache::metaData( const QUrl &url )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.metaData( url );
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.metaData( url );
 }
 
 void QgsNetworkDiskCache::updateMetaData( const QNetworkCacheMetaData &metaData )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  smDiskCache.updateMetaData( metaData );
+  QMutexLocker lock( &sDiskCacheMutex );
+  sDiskCache.updateMetaData( metaData );
 }
 
 QIODevice *QgsNetworkDiskCache::data( const QUrl &url )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.data( url );
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.data( url );
 }
 
 bool QgsNetworkDiskCache::remove( const QUrl &url )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.remove( url );
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.remove( url );
 }
 
 QIODevice *QgsNetworkDiskCache::prepare( const QNetworkCacheMetaData &metaData )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.prepare( metaData );
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.prepare( metaData );
 }
 
 void QgsNetworkDiskCache::insert( QIODevice *device )
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  smDiskCache.insert( device );
+  QMutexLocker lock( &sDiskCacheMutex );
+  sDiskCache.insert( device );
 }
 
 QNetworkCacheMetaData QgsNetworkDiskCache::fileMetaData( const QString &fileName ) const
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.fileMetaData( fileName );
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.fileMetaData( fileName );
 }
 
 qint64 QgsNetworkDiskCache::expire()
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.runExpire();
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.runExpire();
 }
 
 void QgsNetworkDiskCache::clear()
 {
-  QMutexLocker lock( &smDiskCacheMutex );
-  return smDiskCache.clear();
+  QMutexLocker lock( &sDiskCacheMutex );
+  return sDiskCache.clear();
 }

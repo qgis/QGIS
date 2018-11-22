@@ -16,23 +16,19 @@
 #include "qgsmultiedittoolbutton.h"
 #include "qgsapplication.h"
 #include <QMenu>
-QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget* parent )
-    : QToolButton( parent )
-    , mIsMixedValues( false )
-    , mIsChanged( false )
-    , mState( Default )
-    , mMenu( nullptr )
+QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
+  : QToolButton( parent )
 {
   setFocusPolicy( Qt::StrongFocus );
 
   // set default tool button icon properties
   setFixedSize( 22, 22 );
-  setStyleSheet( QString( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
+  setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
   setIconSize( QSize( 16, 16 ) );
   setPopupMode( QToolButton::InstantPopup );
 
   mMenu = new QMenu( this );
-  connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowMenu() ) );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsMultiEditToolButton::aboutToShowMenu );
   setMenu( mMenu );
 
   // sets initial appearance
@@ -47,22 +43,22 @@ void QgsMultiEditToolButton::aboutToShowMenu()
   {
     case Default:
     {
-      QAction* noAction = mMenu->addAction( tr( "No changes to commit" ) );
+      QAction *noAction = mMenu->addAction( tr( "No Changes to Commit" ) );
       noAction->setEnabled( false );
       break;
     }
     case MixedValues:
     {
-      QString title = !mField.name().isEmpty() ? tr( "Set %1 for all selected features" ).arg( mField.name() )
+      QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() )
                       : tr( "Set field for all selected features" );
-      QAction* setFieldAction = mMenu->addAction( title );
-      connect( setFieldAction, SIGNAL( triggered( bool ) ), this, SLOT( setFieldTriggered() ) );
+      QAction *setFieldAction = mMenu->addAction( title );
+      connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
       break;
     }
     case Changed:
     {
-      QAction* resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
-      connect( resetFieldAction, SIGNAL( triggered( bool ) ), this, SLOT( resetFieldTriggered() ) );
+      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to Original Values" ) );
+      connect( resetFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::resetFieldTriggered );
       break;
     }
   }
@@ -97,15 +93,15 @@ void QgsMultiEditToolButton::updateState()
   switch ( mState )
   {
     case Default:
-      icon = QgsApplication::getThemeIcon( "/multieditSameValues.svg" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
       tooltip = tr( "All features in selection have equal value for '%1'" ).arg( mField.name() );
       break;
     case MixedValues:
-      icon = QgsApplication::getThemeIcon( "/multieditMixedValues.svg" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
       tooltip = tr( "Some features in selection have different values for '%1'" ).arg( mField.name() );
       break;
     case Changed:
-      icon = QgsApplication::getThemeIcon( "/multieditChangedValues.svg" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditChangedValues.svg" ) );
       tooltip = tr( "Values for '%1' have unsaved changes" ).arg( mField.name() );
       break;
   }

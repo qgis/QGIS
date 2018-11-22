@@ -22,21 +22,33 @@
 
 class QgsPostgresConn;
 
+
 class QgsPostgresTransaction : public QgsTransaction
 {
     Q_OBJECT
 
   public:
-    explicit QgsPostgresTransaction( const QString& connString );
-    bool executeSql( const QString& sql, QString& error ) override;
-    QgsPostgresConn* connection() const { return mConn; }
+    explicit QgsPostgresTransaction( const QString &connString );
+
+    /**
+     * Executes the SQL query in database.
+     *
+     * \param sql The SQL query to execute
+     * \param error The error or an empty string if none
+     * \param isDirty True to add an undo/redo command in the edition buffer, false otherwise
+     * \param name Name of the operation ( only used if `isDirty` is true)
+     */
+    bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
+
+    QgsPostgresConn *connection() const { return mConn; }
+
 
   private:
-    QgsPostgresConn* mConn;
+    QgsPostgresConn *mConn = nullptr;
 
-    bool beginTransaction( QString& error, int statementTimeout ) override;
-    bool commitTransaction( QString& error ) override;
-    bool rollbackTransaction( QString& error ) override;
+    bool beginTransaction( QString &error, int statementTimeout ) override;
+    bool commitTransaction( QString &error ) override;
+    bool rollbackTransaction( QString &error ) override;
 
 };
 

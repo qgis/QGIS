@@ -20,11 +20,11 @@
 #include "offline_editing_plugin_gui.h"
 #include "offline_editing_progress_dialog.h"
 
-#include <qgisinterface.h>
-#include <qgisgui.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsproject.h>
-#include <qgsmessagebar.h>
+#include "qgisinterface.h"
+#include "qgsguiutils.h"
+#include "qgsproject.h"
+#include "qgsmessagebar.h"
+#include "qgsmapcanvas.h"
 
 #include <QAction>
 
@@ -32,16 +32,12 @@ static const QString sName = QObject::tr( "OfflineEditing" );
 static const QString sDescription = QObject::tr( "Allow offline editing and synchronizing with database" );
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = QStringLiteral( ":/offline_editing/offline_editing_copy.png" );
 
-QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mActionConvertProject( nullptr )
-    , mActionSynchronize( nullptr )
-    , mOfflineEditing( nullptr )
-    , mProgressDialog( nullptr )
+QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
 {
 }
 
@@ -55,46 +51,46 @@ void QgsOfflineEditingPlugin::initGui()
   delete mActionConvertProject;
 
   // Create the action for tool
-  mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to offline project" ), this );
-  mActionConvertProject->setObjectName( "mActionConvertProject" );
+  mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to Offline Project…" ), this );
+  mActionConvertProject->setObjectName( QStringLiteral( "mActionConvertProject" ) );
   // Set the what's this text
   mActionConvertProject->setWhatsThis( tr( "Create offline copies of selected layers and save as offline project" ) );
   // Connect the action to the run
-  connect( mActionConvertProject, SIGNAL( triggered() ), this, SLOT( convertProject() ) );
+  connect( mActionConvertProject, &QAction::triggered, this, &QgsOfflineEditingPlugin::convertProject );
   // Add the icon to the toolbar
   mQGisIface->addDatabaseToolBarIcon( mActionConvertProject );
   mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
   mActionConvertProject->setEnabled( false );
 
   mActionSynchronize = new QAction( QIcon( ":/offline_editing/offline_editing_sync.png" ), tr( "Synchronize" ), this );
-  mActionSynchronize->setObjectName( "mActionSynchronize" );
+  mActionSynchronize->setObjectName( QStringLiteral( "mActionSynchronize" ) );
   mActionSynchronize->setWhatsThis( tr( "Synchronize offline project with remote layers" ) );
-  connect( mActionSynchronize, SIGNAL( triggered() ), this, SLOT( synchronize() ) );
+  connect( mActionSynchronize, &QAction::triggered, this, &QgsOfflineEditingPlugin::synchronize );
   mQGisIface->addDatabaseToolBarIcon( mActionSynchronize );
   mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionSynchronize );
   mActionSynchronize->setEnabled( false );
 
   mOfflineEditing = new QgsOfflineEditing();
-  mProgressDialog = new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  mProgressDialog = new QgsOfflineEditingProgressDialog( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
 
-  connect( mOfflineEditing, SIGNAL( progressStarted() ), this, SLOT( showProgress() ) );
-  connect( mOfflineEditing, SIGNAL( layerProgressUpdated( int, int ) ), this, SLOT( setLayerProgress( int, int ) ) );
-  connect( mOfflineEditing, SIGNAL( progressModeSet( QgsOfflineEditing::ProgressMode, int ) ), this, SLOT( setProgressMode( QgsOfflineEditing::ProgressMode, int ) ) );
-  connect( mOfflineEditing, SIGNAL( progressUpdated( int ) ), this, SLOT( updateProgress( int ) ) );
-  connect( mOfflineEditing, SIGNAL( progressStopped() ), this, SLOT( hideProgress() ) );
-  connect( mOfflineEditing, SIGNAL( warning( QString, QString ) ), mQGisIface->messageBar(), SLOT( pushWarning( QString, QString ) ) );
+  connect( mOfflineEditing, &QgsOfflineEditing::progressStarted, this, &QgsOfflineEditingPlugin::showProgress );
+  connect( mOfflineEditing, &QgsOfflineEditing::layerProgressUpdated, this, &QgsOfflineEditingPlugin::setLayerProgress );
+  connect( mOfflineEditing, &QgsOfflineEditing::progressModeSet, this, &QgsOfflineEditingPlugin::setProgressMode );
+  connect( mOfflineEditing, &QgsOfflineEditing::progressUpdated, this, &QgsOfflineEditingPlugin::updateProgress );
+  connect( mOfflineEditing, &QgsOfflineEditing::progressStopped, this, &QgsOfflineEditingPlugin::hideProgress );
+  connect( mOfflineEditing, &QgsOfflineEditing::warning, mQGisIface->messageBar(), &QgsMessageBar::pushWarning );
 
-  connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
-  connect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateActions() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateActions() ) );
+  connect( mQGisIface, &QgisInterface::projectRead, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsOfflineEditingPlugin::updateActions );
   updateActions();
 }
 
 void QgsOfflineEditingPlugin::convertProject()
 {
-  QgsOfflineEditingPluginGui* myPluginGui = new QgsOfflineEditingPluginGui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  QgsOfflineEditingPluginGui *myPluginGui = new QgsOfflineEditingPluginGui( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
   myPluginGui->show();
 
   if ( myPluginGui->exec() == 1 )
@@ -107,10 +103,12 @@ void QgsOfflineEditingPlugin::convertProject()
       return;
     }
 
-    mProgressDialog->setTitle( tr( "Converting to offline project" ) );
-    if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds ) )
+    mProgressDialog->setTitle( tr( "Converting to Offline Project" ) );
+    if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds, myPluginGui->onlySelected(), myPluginGui->dbContainerType() ) )
     {
       updateActions();
+      // Redraw, to make the offline layer visible
+      mQGisIface->mapCanvas()->refreshAllLayers();
     }
   }
 
@@ -119,16 +117,16 @@ void QgsOfflineEditingPlugin::convertProject()
 
 void QgsOfflineEditingPlugin::synchronize()
 {
-  mProgressDialog->setTitle( tr( "Synchronizing to remote layers" ) );
+  mProgressDialog->setTitle( tr( "Synchronizing to Remote Layers" ) );
   mOfflineEditing->synchronize();
   updateActions();
 }
 
 void QgsOfflineEditingPlugin::unload()
 {
-  disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( updateActions() ) );
-  disconnect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( updateActions() ) );
-  disconnect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
+  disconnect( mQGisIface, &QgisInterface::projectRead, this, &QgsOfflineEditingPlugin::updateActions );
+  disconnect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
+  disconnect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
 
   // remove the GUI
   mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
@@ -146,7 +144,7 @@ void QgsOfflineEditingPlugin::help()
 
 void QgsOfflineEditingPlugin::updateActions()
 {
-  bool hasLayers = QgsMapLayerRegistry::instance()->count() > 0;
+  bool hasLayers = QgsProject::instance()->count() > 0;
   bool isOfflineProject = mOfflineEditing->isOfflineProject();
   mActionConvertProject->setEnabled( hasLayers && !isOfflineProject );
   mActionSynchronize->setEnabled( hasLayers && isOfflineProject );
@@ -164,7 +162,7 @@ void QgsOfflineEditingPlugin::setLayerProgress( int layer, int numLayers )
 
 void QgsOfflineEditingPlugin::setProgressMode( QgsOfflineEditing::ProgressMode mode, int maximum )
 {
-  QString format = "";
+  QString format;
   switch ( mode )
   {
     case QgsOfflineEditing::CopyFeatures:
@@ -212,9 +210,9 @@ void QgsOfflineEditingPlugin::hideProgress()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new QgsOfflineEditingPlugin( theQgisInterfacePointer );
+  return new QgsOfflineEditingPlugin( qgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -254,7 +252,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

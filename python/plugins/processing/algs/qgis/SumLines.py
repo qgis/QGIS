@@ -28,19 +28,28 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (QgsApplication,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsDistanceArea,
+                       QgsProject,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex)
 
-from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SumLines(GeoAlgorithm):
+class SumLines(QgisAlgorithm):
 
     LINES = 'LINES'
     POLYGONS = 'POLYGONS'
@@ -48,84 +57,116 @@ class SumLines(GeoAlgorithm):
     COUNT_FIELD = 'COUNT_FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumLengthLines.svg")
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Sum line lengths')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumLengthLines.svg")
 
-        self.addParameter(ParameterVector(self.LINES,
-                                          self.tr('Lines'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterString(self.LEN_FIELD,
-                                          self.tr('Lines length field name', 'LENGTH')))
-        self.addParameter(ParameterString(self.COUNT_FIELD,
-                                          self.tr('Lines count field name', 'COUNT')))
+    def group(self):
+        return self.tr('Vector analysis')
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length')))
+    def groupId(self):
+        return 'vectoranalysis'
 
-    def processAlgorithm(self, progress):
-        lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        lengthFieldName = self.getParameterValue(self.LEN_FIELD)
-        countFieldName = self.getParameterValue(self.COUNT_FIELD)
+    def __init__(self):
+        super().__init__()
 
-        polyProvider = polyLayer.dataProvider()
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.LINES,
+                                                              self.tr('Lines'), [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.POLYGONS,
+                                                              self.tr('Polygons'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterString(self.LEN_FIELD,
+                                                       self.tr('Lines length field name'), defaultValue='LENGTH'))
+        self.addParameter(QgsProcessingParameterString(self.COUNT_FIELD,
+                                                       self.tr('Lines count field name'), defaultValue='COUNT'))
 
-        (idxLength, fieldList) = vector.findOrCreateField(polyLayer,
-                                                          polyLayer.pendingFields(), lengthFieldName)
-        (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
-                                                         countFieldName)
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Line length'), QgsProcessing.TypeVectorPolygon))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList.toList(), polyProvider.geometryType(), polyProvider.crs())
+    def name(self):
+        return 'sumlinelengths'
 
-        spatialIndex = vector.spatialindex(lineLayer)
+    def displayName(self):
+        return self.tr('Sum line lengths')
 
-        ftLine = QgsFeature()
-        ftPoly = QgsFeature()
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
+    def processAlgorithm(self, parameters, context, feedback):
+        line_source = self.parameterAsSource(parameters, self.LINES, context)
+        if line_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.LINES))
+
+        poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
+
+        length_field_name = self.parameterAsString(parameters, self.LEN_FIELD, context)
+        count_field_name = self.parameterAsString(parameters, self.COUNT_FIELD, context)
+
+        fields = poly_source.fields()
+        if fields.lookupField(length_field_name) < 0:
+            fields.append(QgsField(length_field_name, QVariant.Double))
+        length_field_index = fields.lookupField(length_field_name)
+        if fields.lookupField(count_field_name) < 0:
+            fields.append(QgsField(count_field_name, QVariant.Int))
+        count_field_index = fields.lookupField(count_field_name)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+        spatialIndex = QgsSpatialIndex(line_source.getFeatures(
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
+
         distArea = QgsDistanceArea()
+        distArea.setSourceCrs(poly_source.sourceCrs(), context.transformContext())
+        distArea.setEllipsoid(context.project().ellipsoid())
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
-        hasIntersections = False
-        for current, ftPoly in enumerate(features):
-            inGeom = QgsGeometry(ftPoly.geometry())
-            attrs = ftPoly.attributes()
+        features = poly_source.getFeatures()
+        total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0
+        for current, poly_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            output_feature = QgsFeature()
             count = 0
             length = 0
-            hasIntersections = False
-            lines = spatialIndex.intersects(inGeom.boundingBox())
-            if len(lines) > 0:
-                hasIntersections = True
+            if poly_feature.hasGeometry():
+                poly_geom = poly_feature.geometry()
+                has_intersections = False
+                lines = spatialIndex.intersects(poly_geom.boundingBox())
+                engine = None
+                if len(lines) > 0:
+                    has_intersections = True
+                    # use prepared geometries for faster intersection tests
+                    engine = QgsGeometry.createGeometryEngine(poly_geom.constGet())
+                    engine.prepareGeometry()
 
-            if hasIntersections:
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    ftLine = lineLayer.getFeatures(request).next()
-                    tmpGeom = QgsGeometry(ftLine.geometry())
-                    if inGeom.intersects(tmpGeom):
-                        outGeom = inGeom.intersection(tmpGeom)
-                        length += distArea.measure(outGeom)
-                        count += 1
+                if has_intersections:
+                    request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
+                    for line_feature in line_source.getFeatures(request):
+                        if feedback.isCanceled():
+                            break
 
-            outFeat.setGeometry(inGeom)
-            if idxLength == len(attrs):
+                        if engine.intersects(line_feature.geometry().constGet()):
+                            outGeom = poly_geom.intersection(line_feature.geometry())
+                            length += distArea.measureLength(outGeom)
+                            count += 1
+
+                output_feature.setGeometry(poly_geom)
+
+            attrs = poly_feature.attributes()
+            if length_field_index == len(attrs):
                 attrs.append(length)
             else:
-                attrs[idxLength] = length
-            if idxCount == len(attrs):
+                attrs[length_field_index] = length
+            if count_field_index == len(attrs):
                 attrs.append(count)
             else:
-                attrs[idxCount] = count
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+                attrs[count_field_index] = count
+            output_feature.setAttributes(attrs)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

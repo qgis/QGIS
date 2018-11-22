@@ -7,7 +7,6 @@ SET(WFS_SRCS
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
   qgswfsfeatureiterator.cpp
-  qgswfssourceselect.cpp
   qgswfsrequest.cpp
   qgswfsconnection.cpp
   qgswfsdatasourceuri.cpp
@@ -20,10 +19,10 @@ SET(WFS_SRCS
 
 SET (WFS_MOC_HDRS
   qgswfscapabilities.h
+  qgswfsconnection.h
   qgswfsdataitems.h
   qgswfsprovider.h
   qgswfsfeatureiterator.h
-  qgswfssourceselect.h
   qgswfsrequest.h
   qgswfsdescribefeaturetype.h
   qgswfstransactionrequest.h
@@ -31,38 +30,64 @@ SET (WFS_MOC_HDRS
   qgswfsutils.h
 )
 
+IF (WITH_GUI)
+  SET(WFS_SRCS ${WFS_SRCS}
+    qgswfssourceselect.cpp
+    qgswfsnewconnection.cpp
+  )
+  SET(WFS_MOC_HDRS ${WFS_MOC_HDRS}
+    qgswfssourceselect.h
+    qgswfsnewconnection.h
+  )
+ENDIF ()
+
 ########################################################
 # Build
 
-QT4_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
+QT5_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
-  ../../core
-  ../../core/auth
-  ../../core/geometry
-  ../../core/symbology-ng  # needed by qgsvectorfilewriter.h
-  ../../gui
-  ../../gui/auth
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/symbology  # needed by qgsvectorfilewriter.h
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${GEOS_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}/geos
   ${EXPAT_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR} # needed by qgsvectorfilewriter.h
   ${SQLITE3_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+ENDIF ()
 
 ADD_LIBRARY (wfsprovider MODULE ${WFS_SRCS} ${WFS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (wfsprovider
   ${EXPAT_LIBRARY}
   qgis_core
-  qgis_gui
 )
 
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (wfsprovider
+    qgis_gui
+  )
+ENDIF ()
 
 ########################################################
 # Install

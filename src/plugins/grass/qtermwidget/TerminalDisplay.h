@@ -82,7 +82,7 @@ class KONSOLEPRIVATE_EXPORT TerminalDisplay : public QWidget
 public:
     /** Constructs a new terminal display widget with the specified parent. */
     TerminalDisplay(QWidget *parent=0);
-    virtual ~TerminalDisplay();
+    ~TerminalDisplay() override;
 
     /** Returns the terminal color palette used by the display. */
     const ColorEntry* colorTable() const;
@@ -123,8 +123,8 @@ public:
     /**
      * Sets the current position and range of the display's scroll bar.
      *
-     * @param cursor The position of the scroll bar's thumb.
-     * @param lines The maximum value of the scroll bar.
+     * \param cursor The position of the scroll bar's thumb.
+     * \param lines The maximum value of the scroll bar.
      */
     void setScroll(int cursor, int lines);
 
@@ -156,8 +156,8 @@ public:
      * TODO - This API does not really allow efficient usage.  Revise it so
      * that the processing can be done in a better way.
      *
-     * eg:
-     *      - Area of interest may be known ( eg. mouse cursor hovering
+     * e.g.:
+     *      - Area of interest may be known (e.g., mouse cursor hovering
      *      over an area )
      */
     void processFilters();
@@ -241,11 +241,11 @@ public:
      * The keyboard cursor defaults to using the foreground color of the character
      * underneath it.
      *
-     * @param useForegroundColor If true, the cursor color will change to match
+     * \param useForegroundColor If true, the cursor color will change to match
      * the foreground color of the character underneath it as it is moved, in this
      * case, the @p color parameter is ignored and the color of the character
      * under the cursor is inverted to ensure that it is still readable.
-     * @param color The color to use to draw the cursor.  This is only taken into
+     * \param color The color to use to draw the cursor.  This is only taken into
      * account if @p useForegroundColor is false.
      */
     void setKeyboardCursorColor(bool useForegroundColor , const QColor& color);
@@ -287,7 +287,7 @@ public:
     void setFixedSize(int cols, int lins);
 
     // reimplemented
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     /**
      * Sets which characters, in addition to letters and numbers,
@@ -297,7 +297,7 @@ public:
      * The word boundaries occur at the first and last characters which
      * are either a letter, number, or a character in @p wc
      *
-     * @param wc An array of characters which are to be considered parts
+     * \param wc An array of characters which are to be considered parts
      * of a word ( in addition to letters and numbers ).
      */
     void setWordCharacters(const QString& wc);
@@ -305,7 +305,7 @@ public:
      * Returns the characters which are considered part of a word for the
      * purpose of selecting words in the display with the mouse.
      *
-     * @see setWordCharacters()
+     * \see setWordCharacters()
      */
     QString wordCharacters() { return _wordCharacters; }
 
@@ -339,7 +339,7 @@ public:
          * or perform some other action depending on the user's settings.
          */
         NotifyBell=1,
-        /** A silent, visual bell (eg. inverting the display's colors briefly) */
+        /** A silent, visual bell (e.g., inverting the display's colors briefly) */
         VisualBell=2,
         /** No bell effects */
         NoBell=3
@@ -480,7 +480,7 @@ public slots:
      * Causes the widget to display or hide a message informing the user that terminal
      * output has been suspended (by using the flow control key combination Ctrl+S)
      *
-     * @param suspended True if terminal output has been suspended and the warning message should
+     * \param suspended True if terminal output has been suspended and the warning message should
      *                     be shown or false to indicate that terminal output has been resumed and that
      *                     the warning message should disappear.
      */
@@ -497,7 +497,7 @@ public slots:
      * view area - since the program running in the terminal is being allowed to handle normal mouse
      * events itself.
      *
-     * @param usesMouse Set to true if the program running in the terminal is interested in mouse events
+     * \param usesMouse Set to true if the program running in the terminal is interested in mouse events
      * or false otherwise.
      */
     void setUsesMouse(bool usesMouse);
@@ -513,13 +513,13 @@ public slots:
 
     /**
      * Sets the background of the display to the specified color.
-     * @see setColorTable(), setForegroundColor()
+     * \see setColorTable(), setForegroundColor()
      */
     void setBackgroundColor(const QColor& color);
 
     /**
      * Sets the text of the display to the specified color.
-     * @see setColorTable(), setBackgroundColor()
+     * \see setColorTable(), setBackgroundColor()
      */
     void setForegroundColor(const QColor& color);
 
@@ -534,10 +534,10 @@ signals:
 
     /**
      * A mouse event occurred.
-     * @param button The mouse button (0 for left button, 1 for middle button, 2 for right button, 3 for release)
-     * @param column The character column where the event occurred
-     * @param line The character row where the event occurred
-     * @param eventType The type of event.  0 for a mouse press / release or 1 for mouse motion
+     * \param button The mouse button (0 for left button, 1 for middle button, 2 for right button, 3 for release)
+     * \param column The character column where the event occurred
+     * \param line The character row where the event occurred
+     * \param eventType The type of event.  0 for a mouse press / release or 1 for mouse motion
      */
     void mouseSignal(int button, int column, int line, int eventType);
     void changedFontMetricSignal(int height, int width);
@@ -574,30 +574,30 @@ signals:
     void usesMouseChanged();
 
 protected:
-    virtual bool event( QEvent * );
+    bool event( QEvent * ) override;
 
-    virtual void paintEvent( QPaintEvent * );
+    void paintEvent( QPaintEvent * ) override;
 
-    virtual void showEvent(QShowEvent*);
-    virtual void hideEvent(QHideEvent*);
-    virtual void resizeEvent(QResizeEvent*);
+    void showEvent(QShowEvent*) override;
+    void hideEvent(QHideEvent*) override;
+    void resizeEvent(QResizeEvent*) override;
 
     virtual void fontChange(const QFont &font);
-    virtual void focusInEvent(QFocusEvent* event);
-    virtual void focusOutEvent(QFocusEvent* event);
-    virtual void keyPressEvent(QKeyEvent* event);
-    virtual void mouseDoubleClickEvent(QMouseEvent* ev);
-    virtual void mousePressEvent( QMouseEvent* );
-    virtual void mouseReleaseEvent( QMouseEvent* );
-    virtual void mouseMoveEvent( QMouseEvent* );
+    void focusInEvent(QFocusEvent* event) override;
+    void focusOutEvent(QFocusEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* ev) override;
+    void mousePressEvent( QMouseEvent* ) override;
+    void mouseReleaseEvent( QMouseEvent* ) override;
+    void mouseMoveEvent( QMouseEvent* ) override;
     virtual void extendSelection( const QPoint& pos );
-    virtual void wheelEvent( QWheelEvent* );
+    void wheelEvent( QWheelEvent* ) override;
 
-    virtual bool focusNextPrevChild( bool next );
+    bool focusNextPrevChild( bool next ) override;
 
     // drag and drop
-    virtual void dragEnterEvent(QDragEnterEvent* event);
-    virtual void dropEvent(QDropEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
     void doDrag();
     enum DragState { diNone, diPending, diDragging };
 
@@ -620,8 +620,8 @@ protected:
     void mouseTripleClickEvent(QMouseEvent* ev);
 
     // reimplemented
-    virtual void inputMethodEvent ( QInputMethodEvent* event );
-    virtual QVariant inputMethodQuery( Qt::InputMethodQuery query ) const;
+    void inputMethodEvent ( QInputMethodEvent* event ) override;
+    QVariant inputMethodQuery( Qt::InputMethodQuery query ) const override;
 
 protected slots:
 
@@ -851,8 +851,8 @@ Q_OBJECT
 public:
     AutoScrollHandler(QWidget* parent);
 protected:
-    virtual void timerEvent(QTimerEvent* event);
-    virtual bool eventFilter(QObject* watched,QEvent* event);
+    void timerEvent(QTimerEvent* event) override;
+    bool eventFilter(QObject* watched,QEvent* event) override;
 private:
     QWidget* widget() const { return static_cast<QWidget*>(parent()); }
     int _timerId;

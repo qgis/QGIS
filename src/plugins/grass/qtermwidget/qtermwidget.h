@@ -45,12 +45,12 @@ public:
     QTermWidget(int startnow, // 1 = start shell programm immediatelly
                 QWidget * parent = 0);
     // A dummy constructor for Qt Designer. startnow is 1 by default
-    QTermWidget(QWidget *parent = 0);
+    QTermWidget(QWidget *parent = nullptr);
 
-    virtual ~QTermWidget();
+    ~QTermWidget() override;
 
     //Initial size
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     //start shell program if it was not started in constructor
     void startShellProgram();
@@ -91,9 +91,9 @@ public:
     //Text codec, default is UTF-8
     void setTextCodec(QTextCodec * codec);
 
-    /** @brief Sets the color scheme, default is white on black
+    /** \brief Sets the color scheme, default is white on black
      *
-     * @param[in] name The name of the color scheme, either returned from
+     * \param[in] name The name of the color scheme, either returned from
      * availableColorSchemes() or a full path to a color scheme.
      */
     void setColorScheme(const QString & name);
@@ -130,12 +130,12 @@ public:
      */
     static QStringList availableKeyBindings();
 
-    //! Return current key bindings
+    //! Returns current key bindings
     QString keyBindings();
 
     void setMotionAfterPasting(int);
 
-    /** Return the number of lines in the history buffer. */
+    /** Returns the number of lines in the history buffer. */
     int historyLinesCount();
 
     int screenColumnsCount();
@@ -148,7 +148,7 @@ public:
 
     /**
      * Returns the currently selected text.
-     * @param preserveLineBreaks Specifies whether new line characters should
+     * \param preserveLineBreaks Specifies whether new line characters should
      * be inserted into the returned text at the end of each terminal line.
      */
     QString selectedText(bool preserveLineBreaks = true);
@@ -161,14 +161,14 @@ public:
      *
      * This method may return a nullptr if no hotspot is available.
      *
-     * @param[in] pos The point of interest in the QTermWidget coordinates.
-     * @return Hotspot for the given position, or nullptr if no hotspot.
+     * \param[in] pos The point of interest in the QTermWidget coordinates.
+     * \returns Hotspot for the given position, or nullptr if no hotspot.
      */
     Filter::HotSpot* getHotSpotAt(const QPoint& pos) const;
 
     /** Returns the available hotspots for the given row and column.
      *
-     * @return Hotspot for the given position, or nullptr if no hotspot.
+     * \returns Hotspot for the given position, or nullptr if no hotspot.
      */
     Filter::HotSpot* getHotSpotAt(int row, int column) const;
 
@@ -227,7 +227,7 @@ public slots:
     void toggleShowSearchBar();
 
 protected:
-    virtual void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *) override;
 
 protected slots:
     void sessionFinished();

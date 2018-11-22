@@ -26,12 +26,12 @@
 SearchBar::SearchBar(QWidget *parent) : QWidget(parent)
 {
     widget.setupUi(this);
-    connect(widget.closeButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(widget.searchTextEdit, SIGNAL(textChanged(QString)), this, SIGNAL(searchCriteriaChanged()));
-    connect(widget.findPreviousButton, SIGNAL(clicked()), this, SIGNAL(findPrevious()));
-    connect(widget.findNextButton, SIGNAL(clicked()), this, SIGNAL(findNext()));
+    connect(widget.closeButton, &QAbstractButton::clicked, this, &QWidget::hide);
+    connect(widget.searchTextEdit, &QLineEdit::textChanged, this, &SearchBar::searchCriteriaChanged);
+    connect(widget.findPreviousButton, &QAbstractButton::clicked, this, &SearchBar::findPrevious);
+    connect(widget.findNextButton, &QAbstractButton::clicked, this, &SearchBar::findNext);
 
-    connect(this, SIGNAL(searchCriteriaChanged()), this, SLOT(clearBackgroundColor()));
+    connect(this, &SearchBar::searchCriteriaChanged, this, &SearchBar::clearBackgroundColor);
 
     QMenu *optionsMenu = new QMenu(widget.optionsButton);
     widget.optionsButton->setMenu(optionsMenu);
@@ -39,17 +39,17 @@ SearchBar::SearchBar(QWidget *parent) : QWidget(parent)
     m_matchCaseMenuEntry = optionsMenu->addAction(tr("Match case"));
     m_matchCaseMenuEntry->setCheckable(true);
     m_matchCaseMenuEntry->setChecked(true);
-    connect(m_matchCaseMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(searchCriteriaChanged()));
+    connect(m_matchCaseMenuEntry, &QAction::toggled, this, &SearchBar::searchCriteriaChanged);
 
 
     m_useRegularExpressionMenuEntry = optionsMenu->addAction(tr("Regular expression"));
     m_useRegularExpressionMenuEntry->setCheckable(true);
-    connect(m_useRegularExpressionMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(searchCriteriaChanged()));
+    connect(m_useRegularExpressionMenuEntry, &QAction::toggled, this, &SearchBar::searchCriteriaChanged);
 
     m_highlightMatchesMenuEntry = optionsMenu->addAction(tr("Highlight all matches"));
     m_highlightMatchesMenuEntry->setCheckable(true);
     m_highlightMatchesMenuEntry->setChecked(true);
-    connect(m_highlightMatchesMenuEntry, SIGNAL(toggled(bool)), this, SIGNAL(highlightMatchesChanged(bool)));
+    connect(m_highlightMatchesMenuEntry, &QAction::toggled, this, &SearchBar::highlightMatchesChanged);
 }
 
 SearchBar::~SearchBar() {

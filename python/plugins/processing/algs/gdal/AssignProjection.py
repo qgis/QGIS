@@ -29,10 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingOutputRasterLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
@@ -46,36 +47,57 @@ class AssignProjection(GdalAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS,
+                                                    self.tr('Desired CRS')))
+
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT,
+                                                      self.tr('Layer with projection')))
+
+    def name(self):
+        return 'assignprojection'
+
+    def displayName(self):
+        return self.tr('Assign projection')
+
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-add.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Assign projection')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+    def group(self):
+        return self.tr('Raster projections')
 
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterCrs(self.CRS,
-                                       self.tr('Desired CRS'), ''))
+    def groupId(self):
+        return 'rasterprojections'
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Layer with projection'), True))
+    def commandName(self):
+        return 'gdal_edit'
 
-    def getConsoleCommands(self):
-        fileName = self.getParameterValue(self.INPUT)
-        crs = self.getParameterValue(self.CRS)
-        output = self.getOutputValue(self.OUTPUT)  # NOQA
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        fileName = inLayer.source()
+
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = []
         arguments.append('-a_srs')
-        arguments.append(crs)
+        arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append(fileName)
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_edit.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_edit.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         self.setOutputValue(self.OUTPUT, fileName)
         return commands

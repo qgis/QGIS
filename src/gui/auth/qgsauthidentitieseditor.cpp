@@ -19,8 +19,8 @@
 
 #include <QMenu>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
@@ -31,42 +31,42 @@
 
 
 QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
-    : QWidget( parent )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
-    , mRootCertIdentItem( nullptr )
+  : QWidget( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( btnAddIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnAddIdentity_clicked );
+    connect( btnRemoveIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked );
+    connect( btnInfoIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnInfoIdentity_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthIdentitiesEditor::btnGroupByOrg_toggled );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
+             this, &QgsAuthIdentitiesEditor::authMessageOut );
 
-    connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
-             this, SLOT( refreshIdentitiesView() ) );
+    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
+             this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     setupIdentitiesTree();
 
-    connect( treeIdentities->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-             this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+    connect( treeIdentities->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthIdentitiesEditor::selectionChanged );
 
-    connect( treeIdentities, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeIdentities, &QTreeWidget::itemDoubleClicked,
+             this, &QgsAuthIdentitiesEditor::handleDoubleClick );
 
-    connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshIdentitiesView() ) );
+    connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QString( "identitiessortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -75,11 +75,7 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   }
 }
 
-QgsAuthIdentitiesEditor::~QgsAuthIdentitiesEditor()
-{
-}
-
-static void setItemBold_( QTreeWidgetItem* item )
+static void setItemBold_( QTreeWidgetItem *item )
 {
   item->setFirstColumnSpanned( true );
   QFont secf( item->font( 0 ) );
@@ -101,16 +97,16 @@ void QgsAuthIdentitiesEditor::setupIdentitiesTree()
   mRootCertIdentItem = new QTreeWidgetItem(
     treeIdentities,
     QStringList( tr( "Certificate Bundles" ) ),
-    ( int )QgsAuthIdentitiesEditor::Section );
+    static_cast<int>( QgsAuthIdentitiesEditor::Section ) );
   setItemBold_( mRootCertIdentItem );
   mRootCertIdentItem->setFlags( Qt::ItemIsEnabled );
   mRootCertIdentItem->setExpanded( true );
   treeIdentities->insertTopLevelItem( 0, mRootCertIdentItem );
 }
 
-static void removeChildren_( QTreeWidgetItem* item )
+static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem* child, item->takeChildren() )
+  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
   {
     delete child;
   }
@@ -121,7 +117,7 @@ void QgsAuthIdentitiesEditor::populateIdentitiesView()
   removeChildren_( mRootCertIdentItem );
 
   populateIdentitiesSection( mRootCertIdentItem,
-                             QgsAuthManager::instance()->getCertIdentities(),
+                             QgsApplication::authManager()->certIdentities(),
                              QgsAuthIdentitiesEditor::CertIdentity );
 }
 
@@ -130,7 +126,7 @@ void QgsAuthIdentitiesEditor::refreshIdentitiesView()
   populateIdentitiesView();
 }
 
-void QgsAuthIdentitiesEditor::populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+void QgsAuthIdentitiesEditor::populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
     QgsAuthIdentitiesEditor::IdentityType identype )
 {
   if ( btnGroupByOrg->isChecked() )
@@ -143,11 +139,11 @@ void QgsAuthIdentitiesEditor::populateIdentitiesSection( QTreeWidgetItem *item, 
   }
 }
 
-void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertificate>& certs,
+void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertificate> &certs,
     QgsAuthIdentitiesEditor::IdentityType identype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -162,9 +158,9 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
   QMap< QString, QList<QSslCertificate> >::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
   {
-    QTreeWidgetItem * grpitem( new QTreeWidgetItem( parent,
-                               QStringList() << it.key(),
-                               ( int )QgsAuthIdentitiesEditor::OrgName ) );
+    QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
+                              QStringList() << it.key(),
+                              static_cast<int>( QgsAuthIdentitiesEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -182,11 +178,11 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
   parent->sortChildren( 0, Qt::AscendingOrder );
 }
 
-void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificate>& certs,
+void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificate> &certs,
     QgsAuthIdentitiesEditor::IdentityType identype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -197,7 +193,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
   QBrush redb( QgsAuthGuiUtils::redColor() );
 
   // Columns: Common Name, Serial #, Expiry Date
-  Q_FOREACH ( const QSslCertificate& cert, certs )
+  Q_FOREACH ( const QSslCertificate &cert, certs )
   {
     QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
@@ -206,13 +202,13 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
     coltxts << QString( cert.serialNumber() );
     coltxts << cert.expiryDate().toString();
 
-    QTreeWidgetItem * item( new QTreeWidgetItem( parent, coltxts, ( int )identype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( identype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificate.svg" ) );
-    if ( !cert.isValid() )
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( "/mIconCertificateUntrusted.svg" ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -228,22 +224,22 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   QString digest( item->data( 0, Qt::UserRole ).toString() );
 
-  if ( !QgsAuthManager::instance()->existsCertIdentity( digest ) )
+  if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugMsg( "Certificate identity does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "Certificate identity does not exist in database" ) );
     return;
   }
 
-  QSslCertificate cert( QgsAuthManager::instance()->getCertIdentity( digest ) );
+  QSslCertificate cert( QgsApplication::authManager()->certIdentity( digest ) );
 
-  QgsAuthCertInfoDialog * dlg = new QgsAuthCertInfoDialog( cert, false, this );
+  QgsAuthCertInfoDialog *dlg = new QgsAuthCertInfoDialog( cert, false, this );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
   dlg->exec();
   dlg->deleteLater();
 }
 
-void QgsAuthIdentitiesEditor::selectionChanged( const QItemSelection& selected , const QItemSelection& deselected )
+void QgsAuthIdentitiesEditor::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
@@ -255,9 +251,9 @@ void QgsAuthIdentitiesEditor::checkSelection()
   bool iscert = false;
   if ( treeIdentities->selectionModel()->selection().length() > 0 )
   {
-    QTreeWidgetItem* item( treeIdentities->currentItem() );
+    QTreeWidgetItem *item( treeIdentities->currentItem() );
 
-    switch (( QgsAuthIdentitiesEditor::IdentityType )item->type() )
+    switch ( ( QgsAuthIdentitiesEditor::IdentityType )item->type() )
     {
       case QgsAuthIdentitiesEditor::CertIdentity:
         iscert = true;
@@ -276,7 +272,7 @@ void QgsAuthIdentitiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col 
   Q_UNUSED( col );
   bool iscert = true;
 
-  switch (( QgsAuthIdentitiesEditor::IdentityType )item->type() )
+  switch ( ( QgsAuthIdentitiesEditor::IdentityType )item->type() )
   {
     case QgsAuthIdentitiesEditor::Section:
       iscert = false;
@@ -294,7 +290,7 @@ void QgsAuthIdentitiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col 
   }
 }
 
-void QgsAuthIdentitiesEditor::on_btnAddIdentity_clicked()
+void QgsAuthIdentitiesEditor::btnAddIdentity_clicked()
 {
   QgsAuthImportIdentityDialog *dlg = new QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::CertIdentity, this );
   dlg->setWindowModality( Qt::WindowModal );
@@ -303,11 +299,11 @@ void QgsAuthIdentitiesEditor::on_btnAddIdentity_clicked()
   {
     if ( dlg->identityType() == QgsAuthImportIdentityDialog::CertIdentity )
     {
-      const QPair<QSslCertificate, QSslKey>& bundle( dlg->certBundleToImport() );
-      if ( !QgsAuthManager::instance()->storeCertIdentity( bundle.first, bundle.second ) )
+      const QPair<QSslCertificate, QSslKey> &bundle( dlg->certBundleToImport() );
+      if ( !QgsApplication::authManager()->storeCertIdentity( bundle.first, bundle.second ) )
       {
-        messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication database" ),
-                                   QgsMessageBar::CRITICAL );
+        messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication database." ),
+                                   Qgis::Critical );
       }
       populateIdentitiesView();
       mRootCertIdentItem->setExpanded( true );
@@ -316,13 +312,13 @@ void QgsAuthIdentitiesEditor::on_btnAddIdentity_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthIdentitiesEditor::on_btnRemoveIdentity_clicked()
+void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 {
-  QTreeWidgetItem* item( treeIdentities->currentItem() );
+  QTreeWidgetItem *item( treeIdentities->currentItem() );
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -330,14 +326,14 @@ void QgsAuthIdentitiesEditor::on_btnRemoveIdentity_clicked()
 
   if ( digest.isEmpty() )
   {
-    messageBar()->pushMessage( tr( "Certificate id missing" ),
-                               QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "Certificate id missing." ),
+                               Qgis::Warning );
     return;
   }
 
-  if ( !QgsAuthManager::instance()->existsCertIdentity( digest ) )
+  if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugMsg( "Certificate identity does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "Certificate identity does not exist in database" ) );
     return;
   }
 
@@ -352,10 +348,10 @@ void QgsAuthIdentitiesEditor::on_btnRemoveIdentity_clicked()
     return;
   }
 
-  if ( !QgsAuthManager::instance()->removeCertIdentity( digest ) )
+  if ( !QgsApplication::authManager()->removeCertIdentity( digest ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing cert identity from authentication database for id %1:" ).arg( digest ),
-                               QgsMessageBar::CRITICAL );
+                               Qgis::Critical );
     return;
   }
 
@@ -363,33 +359,33 @@ void QgsAuthIdentitiesEditor::on_btnRemoveIdentity_clicked()
   delete item;
 }
 
-void QgsAuthIdentitiesEditor::on_btnInfoIdentity_clicked()
+void QgsAuthIdentitiesEditor::btnInfoIdentity_clicked()
 {
   if ( treeIdentities->selectionModel()->selection().length() > 0 )
   {
-    QTreeWidgetItem* item( treeIdentities->currentItem() );
+    QTreeWidgetItem *item( treeIdentities->currentItem() );
     handleDoubleClick( item, 0 );
   }
 }
 
-void QgsAuthIdentitiesEditor::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QString( "identitiessortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference" ),
+    authMessageOut( QObject::tr( "Could not store sort by preference." ),
                     QObject::tr( "Authentication Identities" ),
                     QgsAuthManager::WARNING );
   }
   populateIdentitiesView();
 }
 
-void QgsAuthIdentitiesEditor::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthIdentitiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = ( int )level;
-  messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
+  int levelint = static_cast<int>( level );
+  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 
-void QgsAuthIdentitiesEditor::showEvent( QShowEvent * e )
+void QgsAuthIdentitiesEditor::showEvent( QShowEvent *e )
 {
   if ( !mDisabled )
   {
@@ -398,13 +394,13 @@ void QgsAuthIdentitiesEditor::showEvent( QShowEvent * e )
   QWidget::showEvent( e );
 }
 
-QgsMessageBar * QgsAuthIdentitiesEditor::messageBar()
+QgsMessageBar *QgsAuthIdentitiesEditor::messageBar()
 {
   return msgBar;
 }
 
 int QgsAuthIdentitiesEditor::messageTimeout()
 {
-  QSettings settings;
-  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

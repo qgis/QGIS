@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -24,16 +24,20 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbollayer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsproperty.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the Marker Line symbol
  */
 class TestQgsMarkerLineSymbol : public QObject
@@ -41,13 +45,11 @@ class TestQgsMarkerLineSymbol : public QObject
     Q_OBJECT
   public:
     TestQgsMarkerLineSymbol()
-        : mLinesLayer( 0 )
-        , mMapSettings( 0 )
     {
-      mTestDataDir = QString( TEST_DATA_DIR ) + '/';
+      mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
 
-    ~TestQgsMarkerLineSymbol();
+    ~TestQgsMarkerLineSymbol() override;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -56,13 +58,16 @@ class TestQgsMarkerLineSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void lineOffset();
+    void pointNumInterval();
+    void pointNumVertex();
+    void ringFilter();
 
   private:
-    bool render( const QString& theFileName );
+    bool render( const QString &fileName );
 
     QString mTestDataDir;
-    QgsVectorLayer* mLinesLayer;
-    QgsMapSettings *mMapSettings;
+    QgsVectorLayer *mLinesLayer = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
 
@@ -81,26 +86,23 @@ void TestQgsMarkerLineSymbol::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
-                                    myLinesFileInfo.completeBaseName(), "ogr" );
+                                    myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mapLayers << mLinesLayer;
 
   // Register all layers with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( mapLayers );
+  QgsProject::instance()->addMapLayers( mapLayers );
 
   // This is needed to correctly set rotation center,
   // the actual size doesn't matter as QgsRenderChecker will
   // re-set it to the size of the expected image
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
 
-  mReport += "<h1>Line Marker Symbol Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Line Marker Symbol Tests</h1>\n" );
 
-  QgsFontUtils::loadStandardTestFonts( QStringList() << "Bold" );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
-TestQgsMarkerLineSymbol::~TestQgsMarkerLineSymbol()
-{
-
-}
+TestQgsMarkerLineSymbol::~TestQgsMarkerLineSymbol() = default;
 
 //runs after all tests
 void TestQgsMarkerLineSymbol::cleanupTestCase()
@@ -120,10 +122,10 @@ void TestQgsMarkerLineSymbol::cleanupTestCase()
 
 void TestQgsMarkerLineSymbol::lineOffset()
 {
-  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
 
   // Negative offset on marker line
-  // See http://hub.qgis.org/issues/13811
+  // See https://issues.qgis.org/issues/13811
 
   QString qml = mTestDataDir + "marker_line_offset.qml";
   bool success = false;
@@ -134,21 +136,109 @@ void TestQgsMarkerLineSymbol::lineOffset()
   QVERIFY( render( "line_offset" ) );
 
   // TODO: -0.0 offset, see
-  // http://hub.qgis.org/issues/13811#note-1
+  // https://issues.qgis.org/issues/13811#note-1
 }
 
-bool TestQgsMarkerLineSymbol::render( const QString& theTestType )
+void TestQgsMarkerLineSymbol::pointNumInterval()
 {
-  mReport += "<h2>" + theTestType + "</h2>\n";
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
+
+  QgsMarkerLineSymbolLayer *ml = new QgsMarkerLineSymbolLayer();
+  ml->setPlacement( QgsMarkerLineSymbolLayer::Interval );
+  ml->setInterval( 4 );
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol();
+  lineSymbol->changeSymbolLayer( 0, ml );
+  QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( lineSymbol );
+
+  // make sub-symbol
+  QgsStringMap props;
+  props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
+  props[QStringLiteral( "size" )] = QStringLiteral( "2" );
+  props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
+  QgsSimpleMarkerSymbolLayer *marker = static_cast< QgsSimpleMarkerSymbolLayer * >( QgsSimpleMarkerSymbolLayer::create( props ) );
+
+  marker->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
+
+  QgsMarkerSymbol *subSymbol = new QgsMarkerSymbol();
+  subSymbol->changeSymbolLayer( 0, marker );
+  ml->setSubSymbol( subSymbol );
+
+  mLinesLayer->setRenderer( r );
+
+  mMapSettings->setExtent( QgsRectangle( -140, -140, 140, 140 ) );
+  QVERIFY( render( "point_num_interval" ) );
+}
+
+void TestQgsMarkerLineSymbol::pointNumVertex()
+{
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
+
+  QgsMarkerLineSymbolLayer *ml = new QgsMarkerLineSymbolLayer();
+  ml->setPlacement( QgsMarkerLineSymbolLayer::Vertex );
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol();
+  lineSymbol->changeSymbolLayer( 0, ml );
+  QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( lineSymbol );
+
+  // make sub-symbol
+  QgsStringMap props;
+  props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
+  props[QStringLiteral( "size" )] = QStringLiteral( "2" );
+  props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
+  QgsSimpleMarkerSymbolLayer *marker = static_cast< QgsSimpleMarkerSymbolLayer * >( QgsSimpleMarkerSymbolLayer::create( props ) );
+
+  marker->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
+
+  QgsMarkerSymbol *subSymbol = new QgsMarkerSymbol();
+  subSymbol->changeSymbolLayer( 0, marker );
+  ml->setSubSymbol( subSymbol );
+
+  mLinesLayer->setRenderer( r );
+
+  mMapSettings->setExtent( QgsRectangle( -140, -140, 140, 140 ) );
+  QVERIFY( render( "point_num_vertex" ) );
+}
+
+void TestQgsMarkerLineSymbol::ringFilter()
+{
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
+
+  QgsMarkerLineSymbolLayer *ml = new QgsMarkerLineSymbolLayer();
+  ml->setPlacement( QgsMarkerLineSymbolLayer::Vertex );
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol();
+  lineSymbol->changeSymbolLayer( 0, ml );
+  QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( lineSymbol );
+
+  // make sub-symbol
+  QgsStringMap props;
+  props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
+  props[QStringLiteral( "size" )] = QStringLiteral( "2" );
+  props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
+  QgsSimpleMarkerSymbolLayer *marker = static_cast< QgsSimpleMarkerSymbolLayer * >( QgsSimpleMarkerSymbolLayer::create( props ) );
+
+  marker->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
+
+  QgsMarkerSymbol *subSymbol = new QgsMarkerSymbol();
+  subSymbol->changeSymbolLayer( 0, marker );
+  ml->setSubSymbol( subSymbol );
+
+  mLinesLayer->setRenderer( r );
+
+  mMapSettings->setExtent( QgsRectangle( -140, -140, 140, 140 ) );
+  QVERIFY( render( "point_num_vertex" ) );
+}
+
+bool TestQgsMarkerLineSymbol::render( const QString &testType )
+{
+  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( "symbol_markerline" );
-  checker.setControlName( "expected_" + theTestType );
+  checker.setControlPathPrefix( QStringLiteral( "symbol_markerline" ) );
+  checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
-  bool result = checker.runTest( theTestType );
+  bool result = checker.runTest( testType );
   mReport += "\n\n\n" + checker.report();
   return result;
 }
 
-QTEST_MAIN( TestQgsMarkerLineSymbol )
+QGSTEST_MAIN( TestQgsMarkerLineSymbol )
 #include "testqgsmarkerlinesymbol.moc"

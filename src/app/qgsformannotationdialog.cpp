@@ -14,36 +14,43 @@
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
 #include "qgsannotationwidget.h"
+#include "qgsformannotation.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
-QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mItem( item )
-    , mEmbeddedWidget( nullptr )
+QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+
 {
   setupUi( this );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsFormAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsFormAnnotationDialog::mButtonBox_clicked );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-  if ( item )
+  if ( item && item->annotation() )
   {
-    mFileLineEdit->setText( item->designerForm() );
+    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( item->annotation() );
+    mFileLineEdit->setText( annotation->designerForm() );
   }
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsFormAnnotationDialog::applySettingsToItem );
+  QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFormAnnotationDialog::showHelp );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsFormAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
-}
 
-QgsFormAnnotationDialog::~QgsFormAnnotationDialog()
-{
-
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsFormAnnotationDialog::applySettingsToItem()
@@ -54,20 +61,15 @@ void QgsFormAnnotationDialog::applySettingsToItem()
     mEmbeddedWidget->apply();
   }
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mItem->setDesignerForm( mFileLineEdit->text() );
-    QgsVectorLayer* layer = mItem->vectorLayer();
-    if ( layer )
-    {
-      //set last used annotation form as default for the layer
-      layer->setAnnotationForm( mFileLineEdit->text() );
-    }
+    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
+    annotation->setDesignerForm( mFileLineEdit->text() );
     mItem->update();
   }
 }
 
-void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -75,18 +77,26 @@ void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, "*.ui" );
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
   mFileLineEdit->setText( filename );
 }
 
 void QgsFormAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 
+void QgsFormAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
+}
+
+void QgsFormAnnotationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
+}

@@ -18,17 +18,16 @@
 #include "qgis.h"
 #include "ui_qgsgeometrycheckersetuptab.h"
 
-class QgsFeaturePool;
+struct QgsGeometryCheckContext;
 class QgsGeometryCheck;
-class QgsMapSettings;
 
 class QgsGeometryCheckFactory
 {
   public:
-    virtual ~QgsGeometryCheckFactory() {}
-    virtual void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const = 0;
-    virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& /*ui*/, QGis::GeometryType /*geomType*/ ) const = 0;
-    virtual QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const = 0;
+    virtual ~QgsGeometryCheckFactory() = default;
+    virtual void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const = 0;
+    virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, int /*nPoint*/, int /*nLineString*/, int /*nPolygon*/ ) const = 0;
+    virtual QgsGeometryCheck *createInstance( QgsGeometryCheckContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const = 0;
 
   protected:
     static QString sSettingsGroup;
@@ -37,32 +36,32 @@ class QgsGeometryCheckFactory
 template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
-    void restorePrevious( Ui::QgsGeometryCheckerSetupTab& /*ui*/ ) const override;
-    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab& ui, QGis::GeometryType geomType ) const override;
-    QgsGeometryCheck* createInstance( QgsFeaturePool* featurePool, const Ui::QgsGeometryCheckerSetupTab& ui, double mapToLayerUnits ) const override;
+    void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const override;
+    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const override;
+    QgsGeometryCheck *createInstance( QgsGeometryCheckContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const override;
 };
 
 class QgsGeometryCheckFactoryRegistry
 {
   public:
-    static bool registerCheckFactory( const QgsGeometryCheckFactory* factory )
+    static bool registerCheckFactory( const QgsGeometryCheckFactory *factory )
     {
       instance()->mFactories.append( factory );
       return true;
     }
-    static const QList<const QgsGeometryCheckFactory*>& getCheckFactories()
+    static const QList<const QgsGeometryCheckFactory *> &getCheckFactories()
     {
       return instance()->mFactories;
     }
   private:
-    QList<const QgsGeometryCheckFactory*> mFactories;
-    QgsGeometryCheckFactoryRegistry() {}
+    QList<const QgsGeometryCheckFactory *> mFactories;
+    QgsGeometryCheckFactoryRegistry() = default;
     ~QgsGeometryCheckFactoryRegistry() { qDeleteAll( mFactories ); }
 
-    static QgsGeometryCheckFactoryRegistry* instance()
+    static QgsGeometryCheckFactoryRegistry *instance()
     {
-      static QgsGeometryCheckFactoryRegistry reg;
-      return &reg;
+      static QgsGeometryCheckFactoryRegistry sReg;
+      return &sReg;
     }
 };
 

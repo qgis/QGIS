@@ -15,6 +15,8 @@
 
 #include "qgsgradientstopeditor.h"
 #include "qgsapplication.h"
+#include "qgssymbollayerutils.h"
+
 #include <QPainter>
 #include <QStyleOptionFrameV3>
 #include <QMouseEvent>
@@ -27,9 +29,8 @@
 #define FRAME_MARGIN 2
 #define CLICK_THRESHOLD ( MARKER_WIDTH / 2 + 3 )
 
-QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsVectorGradientColorRampV2 *ramp )
-    : QWidget( parent )
-    , mSelectedStop( 0 )
+QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
+  : QWidget( parent )
 {
   if ( ramp )
     mGradient = *ramp;
@@ -38,25 +39,25 @@ QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsVectorGradient
   if ( sOuterTriangle.isEmpty() )
   {
     sOuterTriangle << QPointF( 0, MARKER_HEIGHT ) << QPointF( MARKER_WIDTH, MARKER_HEIGHT )
-    << QPointF( MARKER_WIDTH, MARKER_WIDTH / 2.0 )
-    << QPointF( MARKER_WIDTH / 2.0, 0 )
-    << QPointF( 0, MARKER_WIDTH / 2.0 )
-    << QPointF( 0, MARKER_HEIGHT );
+                   << QPointF( MARKER_WIDTH, MARKER_WIDTH / 2.0 )
+                   << QPointF( MARKER_WIDTH / 2.0, 0 )
+                   << QPointF( 0, MARKER_WIDTH / 2.0 )
+                   << QPointF( 0, MARKER_HEIGHT );
   }
   if ( sInnerTriangle.isEmpty() )
   {
     sInnerTriangle << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP ) << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_HEIGHT - MARKER_GAP )
-    << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
-    << QPointF( MARKER_WIDTH / 2.0, MARKER_GAP )
-    << QPointF( MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
-    << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP );
+                   << QPointF( MARKER_WIDTH - MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
+                   << QPointF( MARKER_WIDTH / 2.0, MARKER_GAP )
+                   << QPointF( MARKER_GAP, MARKER_WIDTH / 2.0 + 1 )
+                   << QPointF( MARKER_GAP, MARKER_HEIGHT - MARKER_GAP );
   }
 
   setFocusPolicy( Qt::StrongFocus );
   setAcceptDrops( true );
 }
 
-void QgsGradientStopEditor::setGradientRamp( const QgsVectorGradientColorRampV2 &ramp )
+void QgsGradientStopEditor::setGradientRamp( const QgsGradientColorRamp &ramp )
 {
   mGradient = ramp;
   mStops = mGradient.stops();
@@ -81,7 +82,7 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
                    rect().height() - MARGIN_BOTTOM );
 
   //draw frame
-  QStyleOptionFrameV3 option;
+  QStyleOptionFrame option;
   option.initFrom( this );
   option.state = hasFocus() ? QStyle::State_KeyboardFocusChange : QStyle::State_None;
   option.rect = frameRect;
@@ -121,7 +122,7 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
   drawStopMarker( painter, QPoint( box.left(), markerTop ), mGradient.color1(), mSelectedStop == 0 );
   drawStopMarker( painter, QPoint( box.right(), markerTop ), mGradient.color2(), mSelectedStop == mGradient.count() - 1 );
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop& stop, mStops )
+  Q_FOREACH ( const QgsGradientStop &stop, mStops )
   {
     int x = stop.offset * box.width() + box.left();
     drawStopMarker( painter, QPoint( x, markerTop ), stop.color, mSelectedStop == i );
@@ -138,7 +139,7 @@ void QgsGradientStopEditor::selectStop( int index )
     // need to map original stop index across to cached, possibly out of order stop index
     QgsGradientStop selectedStop = mGradient.stops().at( index - 1 );
     index = 1;
-    Q_FOREACH ( const QgsGradientStop& stop, mStops )
+    Q_FOREACH ( const QgsGradientStop &stop, mStops )
     {
       if ( stop == selectedStop )
       {
@@ -274,17 +275,17 @@ void QgsGradientStopEditor::mouseMoveEvent( QMouseEvent *e )
 int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
 {
   int closestStop = -1;
-  int closestDiff = INT_MAX;
-  int currentDiff = INT_MAX;
+  int closestDiff = std::numeric_limits<int>::max();
+  int currentDiff = std::numeric_limits<int>::max();
 
   // check for matching stops first, so that they take precedence
   // otherwise it's impossible to select a stop which sits above the first/last stop, making
   // it impossible to move or delete these
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop& stop, mGradient.stops() )
+  Q_FOREACH ( const QgsGradientStop &stop, mGradient.stops() )
   {
-    currentDiff = qAbs( relativePositionToPoint( stop.offset ) + 1 - x );
-    if (( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
+    currentDiff = std::abs( relativePositionToPoint( stop.offset ) + 1 - x );
+    if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
     {
       closestStop = i;
       closestDiff = currentDiff;
@@ -293,19 +294,18 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   }
 
   //first stop
-  currentDiff = qAbs( relativePositionToPoint( 0.0 ) + 1 - x );
-  if (( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
+  currentDiff = std::abs( relativePositionToPoint( 0.0 ) + 1 - x );
+  if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = 0;
     closestDiff = currentDiff;
   }
 
   //last stop
-  currentDiff = qAbs( relativePositionToPoint( 1.0 ) + 1 - x );
-  if (( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
+  currentDiff = std::abs( relativePositionToPoint( 1.0 ) + 1 - x );
+  if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = mGradient.count() - 1;
-    closestDiff = currentDiff;
   }
 
   return closestStop;
@@ -343,7 +343,7 @@ void QgsGradientStopEditor::mouseDoubleClickEvent( QMouseEvent *e )
 
 void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
 {
-  if (( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
     deleteSelectedStop();
     e->accept();
@@ -374,24 +374,24 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
   QWidget::keyPressEvent( e );
 }
 
-const QPixmap& QgsGradientStopEditor::transparentBackground()
+QPixmap QgsGradientStopEditor::transparentBackground()
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
-void QgsGradientStopEditor::drawStopMarker( QPainter& painter, QPoint topMiddle, const QColor &color, bool selected )
+void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle, const QColor &color, bool selected )
 {
   painter.save();
   painter.setRenderHint( QPainter::Antialiasing );
   painter.setBrush( selected ?  QColor( 150, 150, 150 ) : Qt::white );
   painter.setPen( selected ? Qt::black : QColor( 150, 150, 150 ) );
   // 0.5 offsets to make edges pixel grid aligned
-  painter.translate( qRound( topMiddle.x() - MARKER_WIDTH / 2.0 ) + 0.5, topMiddle.y() + 0.5 );
+  painter.translate( std::round( topMiddle.x() - MARKER_WIDTH / 2.0 ) + 0.5, topMiddle.y() + 0.5 );
   painter.drawPolygon( sOuterTriangle );
 
   // draw the checkerboard background for marker
@@ -442,7 +442,7 @@ void QgsGradientStopEditor::dragEnterEvent( QDragEnterEvent *e )
 {
   //is dragged data valid color data?
   bool hasAlpha;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( e->mimeData(), hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -455,7 +455,7 @@ void QgsGradientStopEditor::dropEvent( QDropEvent *e )
 {
   //is dropped data valid color data?
   bool hasAlpha = false;
-  QColor mimeColor = QgsSymbolLayerV2Utils::colorFromMimeData( e->mimeData(), hasAlpha );
+  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( e->mimeData(), hasAlpha );
 
   if ( mimeColor.isValid() )
   {

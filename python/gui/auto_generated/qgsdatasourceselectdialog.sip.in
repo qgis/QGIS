@@ -1,0 +1,90 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatasourceselectdialog.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDataSourceSelectDialog: QDialog
+{
+%Docstring
+The QgsDataSourceSelectDialog class embeds the browser view to
+select an existing data source.
+
+By default any layer type can be chosen, the valid layer
+type can be restricted by setting a layer type filter with
+setLayerTypeFilter(layerType) or by activating the filter
+directly from the constructor.
+
+To retrieve the selected data source, uri() can be called and it
+will return a (possibly invalid) QgsMimeDataUtils.Uri.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdatasourceselectdialog.h"
+%End
+  public:
+
+    QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = 0,
+                               bool setFilterByLayerType = false,
+                               const QgsMapLayer::LayerType &layerType = QgsMapLayer::LayerType::VectorLayer,
+                               QWidget *parent = 0 );
+%Docstring
+Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
+
+:param browserModel: an existing browser model (typically from app), if null an instance will be created
+:param setFilterByLayerType: activates filtering by layer type
+:param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
+:param parent: the object
+%End
+
+
+    ~QgsDataSourceSelectDialog();
+
+    void setLayerTypeFilter( QgsMapLayer::LayerType layerType );
+%Docstring
+Sets layer type filter to ``layerType`` and activates the filtering
+%End
+
+    QgsMimeDataUtils::Uri uri() const;
+%Docstring
+Returns the (possibly invalid) uri of the selected data source
+%End
+
+    void showFilterWidget( bool visible );
+%Docstring
+Show/hide filter widget
+%End
+    void setFilterSyntax( QAction * );
+%Docstring
+Sets filter syntax
+%End
+    void setCaseSensitive( bool caseSensitive );
+%Docstring
+Sets filter case sensitivity
+%End
+    void setFilter();
+%Docstring
+Apply filter to the model
+%End
+    virtual void showEvent( QShowEvent *e );
+
+%Docstring
+Scroll to last selected index and expand it's children
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatasourceselectdialog.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

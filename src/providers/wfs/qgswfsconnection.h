@@ -18,21 +18,24 @@
 
 #include "qgsowsconnection.h"
 
-class QgsWFSConnection : public QgsOWSConnection
+class QgsWfsConnection : public QgsOwsConnection
 {
+    Q_OBJECT
+
   public:
+
     /**
      * Constructor
-     * @param theConnName connection name
+     * \param connName connection name
      */
-    explicit QgsWFSConnection( const QString & theConnName );
+    explicit QgsWfsConnection( const QString &connName );
 
     static QStringList connectionList();
 
-    static void deleteConnection( const QString & name );
+    static void deleteConnection( const QString &name );
 
     static QString selectedConnection();
-    static void setSelectedConnection( const QString & name );
+    static void setSelectedConnection( const QString &name );
 };
 
 #endif

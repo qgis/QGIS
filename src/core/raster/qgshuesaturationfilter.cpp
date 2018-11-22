@@ -22,27 +22,16 @@
 #include <QDomElement>
 
 
-QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
-    , mSaturation( 0 )
-    , mSaturationScale( 1 )
-    , mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
-    , mColorizeOn( false )
-    , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-    , mColorizeH( 0 )
-    , mColorizeS( 50 )
-    , mColorizeStrength( 100 )
+QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface *input )
+  : QgsRasterInterface( input )
+  , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
 {
 }
 
-QgsHueSaturationFilter::~QgsHueSaturationFilter()
+QgsHueSaturationFilter *QgsHueSaturationFilter::clone() const
 {
-}
-
-QgsHueSaturationFilter* QgsHueSaturationFilter::clone() const
-{
-  QgsDebugMsgLevel( "Entered hue/saturation filter", 4 );
-  QgsHueSaturationFilter * filter = new QgsHueSaturationFilter( nullptr );
+  QgsDebugMsgLevel( QStringLiteral( "Entered hue/saturation filter" ), 4 );
+  QgsHueSaturationFilter *filter = new QgsHueSaturationFilter( nullptr );
   filter->setSaturation( mSaturation );
   filter->setGrayscaleMode( mGrayscaleMode );
   filter->setColorizeOn( mColorizeOn );
@@ -66,11 +55,11 @@ int QgsHueSaturationFilter::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
+Qgis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
 {
   if ( mOn )
   {
-    return QGis::ARGB32_Premultiplied;
+    return Qgis::ARGB32_Premultiplied;
   }
 
   if ( mInput )
@@ -78,78 +67,75 @@ QGis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
     return mInput->dataType( bandNo );
   }
 
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
-bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
+bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   // Hue/saturation filter can only work with single band ARGB32_Premultiplied
   if ( !input )
   {
-    QgsDebugMsg( "No input" );
+    QgsDebugMsg( QStringLiteral( "No input" ) );
     return false;
   }
 
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsgLevel( "OK", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
     mInput = input;
     return true;
   }
 
   if ( input->bandCount() < 1 )
   {
-    QgsDebugMsg( "No input band" );
+    QgsDebugMsg( QStringLiteral( "No input band" ) );
     return false;
   }
 
-  if ( input->dataType( 1 ) != QGis::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != QGis::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != Qgis::ARGB32 )
   {
-    QgsDebugMsg( "Unknown input data type" );
+    QgsDebugMsg( QStringLiteral( "Unknown input data type" ) );
     return false;
   }
 
   mInput = input;
-  QgsDebugMsgLevel( "OK", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
   return true;
 }
 
-QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, width, height );
+  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
-    return outputBlock;
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
+    return outputBlock.release();
   }
 
   if ( mSaturation == 0 && mGrayscaleMode == GrayscaleOff && !mColorizeOn )
   {
-    QgsDebugMsgLevel( "No hue/saturation change.", 4 );
-    delete outputBlock;
-    return inputBlock;
+    QgsDebugMsgLevel( QStringLiteral( "No hue/saturation change." ), 4 );
+    return inputBlock.release();
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   // adjust image
@@ -160,7 +146,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
   int r, g, b, alpha;
   double alphaFactor = 1.0;
 
-  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
+  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {
@@ -185,7 +171,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     myColor.getRgb( &r, &g, &b );
     if ( alpha != 255 )
     {
-      // Semi-transparent pixel. We need to adjust the colors since we are using QGis::ARGB32_Premultiplied
+      // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::ARGB32_Premultiplied
       // and color values have been premultiplied by alpha
       alphaFactor = alpha / 255.;
       r /= alphaFactor;
@@ -197,7 +183,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     myColor.getHsl( &h, &s, &l );
 
     // Changing saturation?
-    if (( mGrayscaleMode != GrayscaleOff ) || ( mSaturationScale != 1 ) )
+    if ( ( mGrayscaleMode != GrayscaleOff ) || ( mSaturationScale != 1 ) )
     {
       processSaturation( r, g, b, h, s, l );
     }
@@ -220,8 +206,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     outputBlock->setColor( i, qRgba( r, g, b, alpha ) );
   }
 
-  delete inputBlock;
-  return outputBlock;
+  return outputBlock.release();
 }
 
 // Process a colorization and update resultant HSL & RGB values
@@ -309,13 +294,13 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
       if ( mSaturationScale < 1 )
       {
         // Lowering the saturation. Use a simple linear relationship
-        s = qMin(( int )( s * mSaturationScale ), 255 );
+        s = std::min( ( int )( s * mSaturationScale ), 255 );
       }
       else
       {
         // Raising the saturation. Use a saturation curve to prevent
         // clipping at maximum saturation with ugly results.
-        s = qMin(( int )( 255. * ( 1 - pow( 1 - ( s / 255. ), pow( mSaturationScale, 2 ) ) ) ), 255 );
+        s = std::min( ( int )( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturationScale, 2 ) ) ) ), 255 );
       }
 
       // Saturation changed, so update rgb values
@@ -331,10 +316,10 @@ void QgsHueSaturationFilter::setSaturation( int saturation )
   mSaturation = qBound( -100, saturation, 100 );
 
   // Scale saturation value to [0-2], where 0 = desaturated
-  mSaturationScale = (( double ) mSaturation / 100 ) + 1;
+  mSaturationScale = ( ( double ) mSaturation / 100 ) + 1;
 }
 
-void QgsHueSaturationFilter::setColorizeColor( const QColor& colorizeColor )
+void QgsHueSaturationFilter::setColorizeColor( const QColor &colorizeColor )
 {
   mColorizeColor = colorizeColor;
 
@@ -343,41 +328,41 @@ void QgsHueSaturationFilter::setColorizeColor( const QColor& colorizeColor )
   mColorizeS = mColorizeColor.saturation();
 }
 
-void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsHueSaturationFilter::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
   {
     return;
   }
 
-  QDomElement filterElem = doc.createElement( "huesaturation" );
+  QDomElement filterElem = doc.createElement( QStringLiteral( "huesaturation" ) );
 
-  filterElem.setAttribute( "saturation", QString::number( mSaturation ) );
-  filterElem.setAttribute( "grayscaleMode", QString::number( mGrayscaleMode ) );
-  filterElem.setAttribute( "colorizeOn", QString::number( mColorizeOn ) );
-  filterElem.setAttribute( "colorizeRed", QString::number( mColorizeColor.red() ) );
-  filterElem.setAttribute( "colorizeGreen", QString::number( mColorizeColor.green() ) );
-  filterElem.setAttribute( "colorizeBlue", QString::number( mColorizeColor.blue() ) );
-  filterElem.setAttribute( "colorizeStrength", QString::number( mColorizeStrength ) );
+  filterElem.setAttribute( QStringLiteral( "saturation" ), QString::number( mSaturation ) );
+  filterElem.setAttribute( QStringLiteral( "grayscaleMode" ), QString::number( mGrayscaleMode ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeOn" ), QString::number( mColorizeOn ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeRed" ), QString::number( mColorizeColor.red() ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeGreen" ), QString::number( mColorizeColor.green() ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeBlue" ), QString::number( mColorizeColor.blue() ) );
+  filterElem.setAttribute( QStringLiteral( "colorizeStrength" ), QString::number( mColorizeStrength ) );
 
   parentElem.appendChild( filterElem );
 }
 
-void QgsHueSaturationFilter::readXML( const QDomElement& filterElem )
+void QgsHueSaturationFilter::readXml( const QDomElement &filterElem )
 {
   if ( filterElem.isNull() )
   {
     return;
   }
 
-  setSaturation( filterElem.attribute( "saturation", "0" ).toInt() );
-  mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( "grayscaleMode", "0" ).toInt();
+  setSaturation( filterElem.attribute( QStringLiteral( "saturation" ), QStringLiteral( "0" ) ).toInt() );
+  mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( QStringLiteral( "grayscaleMode" ), QStringLiteral( "0" ) ).toInt();
 
-  mColorizeOn = ( bool )filterElem.attribute( "colorizeOn", "0" ).toInt();
-  int mColorizeRed = filterElem.attribute( "colorizeRed", "255" ).toInt();
-  int mColorizeGreen = filterElem.attribute( "colorizeGreen", "128" ).toInt();
-  int mColorizeBlue = filterElem.attribute( "colorizeBlue", "128" ).toInt();
+  mColorizeOn = ( bool )filterElem.attribute( QStringLiteral( "colorizeOn" ), QStringLiteral( "0" ) ).toInt();
+  int mColorizeRed = filterElem.attribute( QStringLiteral( "colorizeRed" ), QStringLiteral( "255" ) ).toInt();
+  int mColorizeGreen = filterElem.attribute( QStringLiteral( "colorizeGreen" ), QStringLiteral( "128" ) ).toInt();
+  int mColorizeBlue = filterElem.attribute( QStringLiteral( "colorizeBlue" ), QStringLiteral( "128" ) ).toInt();
   setColorizeColor( QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue ) );
-  mColorizeStrength = filterElem.attribute( "colorizeStrength", "100" ).toInt();
+  mColorizeStrength = filterElem.attribute( QStringLiteral( "colorizeStrength" ), QStringLiteral( "100" ) ).toInt();
 
 }

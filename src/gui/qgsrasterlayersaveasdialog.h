@@ -19,11 +19,17 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterrange.h"
+#include "qgis_gui.h"
+#include "qgshelp.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
 
+/**
+ * \ingroup gui
+ * \class QgsRasterLayerSaveAsDialog
+ */
 class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {
     Q_OBJECT
@@ -45,11 +51,15 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
-                                QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
-                                const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent = nullptr, const Qt::WindowFlags& f = nullptr );
-    ~QgsRasterLayerSaveAsDialog();
+    //! Constructor for QgsRasterLayerSaveAsDialog
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
+                                QgsRasterDataProvider *sourceProvider,
+                                const QgsRectangle &currentExtent,
+                                const QgsCoordinateReferenceSystem &layerCrs,
+                                const QgsCoordinateReferenceSystem &currentCrs,
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                Qt::WindowFlags f = nullptr );
+    ~QgsRasterLayerSaveAsDialog() override;
 
     Mode mode() const;
     int nColumns() const;
@@ -59,8 +69,29 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     int maximumTileSizeX() const;
     int maximumTileSizeY() const;
     bool tileMode() const;
+
+    /**
+     * Returns true if the "add to canvas" checkbox is checked.
+     *
+     * \see setAddToCanvas()
+     */
     bool addToCanvas() const;
+
+    /**
+     * Sets whether the  "add to canvas" checkbox should be \a checked.
+     *
+     * \see addToCanvas()
+     * \since QGIS 3.6
+     */
+    void setAddToCanvas( bool checked );
+
     QString outputFileName() const;
+
+    /**
+     * Name of the output layer within GeoPackage file
+     * \since QGIS 3.4
+     */
+    QString outputLayerName() const;
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
@@ -77,35 +108,35 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void hideOutput();
 
   public slots:
-    virtual void accept() override { if ( validate() ) return QDialog::accept(); }
+    void accept() override;
 
   private slots:
-    void on_mRawModeRadioButton_toggled( bool );
-    void on_mBrowseButton_clicked();
-    void on_mSaveAsLineEdit_textChanged( const QString& text );
-    void on_mFormatComboBox_currentIndexChanged( const QString& text );
-    void on_mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
-    void on_mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
-    void on_mXResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
-    void on_mYResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
+    void mRawModeRadioButton_toggled( bool );
+    void mFormatComboBox_currentIndexChanged( const QString &text );
+    void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
+    void mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
+    void mXResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
+    void mYResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
 
-    void on_mOriginalSizePushButton_clicked() { setOriginalSize(); }
-    void on_mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
-    void on_mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
+    void mOriginalSizePushButton_clicked() { setOriginalSize(); }
+    void mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
+    void mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
 
-    void on_mAddNoDataManuallyToolButton_clicked();
-    void on_mLoadTransparentNoDataToolButton_clicked();
-    void on_mRemoveSelectedNoDataToolButton_clicked();
-    void on_mRemoveAllNoDataToolButton_clicked();
-    void noDataCellTextEdited( const QString & text );
-    void on_mTileModeCheckBox_toggled( bool toggled );
-    void on_mPyramidsGroupBox_toggled( bool toggled );
+    void mAddNoDataManuallyToolButton_clicked();
+    void mLoadTransparentNoDataToolButton_clicked();
+    void mRemoveSelectedNoDataToolButton_clicked();
+    void mRemoveAllNoDataToolButton_clicked();
+    void noDataCellTextEdited( const QString &text );
+    void mTileModeCheckBox_toggled( bool toggled );
+    void mPyramidsGroupBox_toggled( bool toggled );
     void populatePyramidsLevels();
     void extentChanged();
+    void crsChanged();
+    void showHelp();
 
   private:
-    QgsRasterLayer* mRasterLayer;
-    QgsRasterDataProvider* mDataProvider;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsRasterDataProvider *mDataProvider = nullptr;
     QgsRectangle mCurrentExtent;
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
@@ -115,7 +146,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void setValidators();
     void toggleResolutionSize();
-    void setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem& srcCrs );
+    void setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem &srcCrs );
     void setOriginalResolution();
     void setOriginalSize();
     void recalcSize();
@@ -128,9 +159,10 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
+    // Returns true if the output layer already exists.
+    bool outputLayerExists() const;
 
-  private slots:
-    void crsChanged();
+    void insertAvailableOutputFormats();
 };
 
 

@@ -24,11 +24,16 @@ import zipfile
 import os
 
 
-def unzip(file, targetDir):
+def unzip(file, targetDir, password=None):
     """ Creates directory structure and extracts the zip contents to it.
-        file - the zip file to extract
-        targetDir - target location
+        file (file object) - the zip file to extract
+        targetDir (str) - target location
+        password (str; optional) - password to decrypt the zip file (if encrypted)
     """
+
+    # convert password to bytes
+    if isinstance(password, str):
+        password = bytes(password, 'utf8')
 
     # create destination directory if doesn't exist
     if not targetDir.endswith(':') and not os.path.exists(targetDir):
@@ -36,15 +41,24 @@ def unzip(file, targetDir):
 
     zf = zipfile.ZipFile(file)
     for name in zf.namelist():
+        # Skip directories - they will be created when necessary by os.makedirs
+        if name.endswith('/'):
+            continue
+
+        # Read the source file before creating any output,
+        # so no directories are created if user doesn't know the password
+        memberContent = zf.read(name, password)
+
         # create directory if doesn't exist
         localDir = os.path.split(name)[0]
         fullDir = os.path.normpath(os.path.join(targetDir, localDir))
         if not os.path.exists(fullDir):
             os.makedirs(fullDir)
         # extract file
-        if not name.endswith('/'):
-            fullPath = os.path.normpath(os.path.join(targetDir, name))
-            outfile = open(fullPath, 'wb')
-            outfile.write(zf.read(name))
-            outfile.flush()
-            outfile.close()
+        fullPath = os.path.normpath(os.path.join(targetDir, name))
+        outfile = open(fullPath, 'wb')
+        outfile.write(memberContent)
+        outfile.flush()
+        outfile.close()
+
+    zf.close()

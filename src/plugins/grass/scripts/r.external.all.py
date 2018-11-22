@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -101,6 +101,7 @@ def main():
     recursive = flags['r']
 
     import_directory_of_rasters(input, recursive)
+
 
 if __name__ == "__main__":
     options, flags = grass.parser()

@@ -1,0 +1,13 @@
+i.cluster
+Generates spectral signatures for land cover types in an image using a clustering algorithm.
+Imagery (i.*)
+QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+QgsProcessingParameterNumber|classes|Initial number of classes (1-255)|QgsProcessingParameterNumber.Integer|None|False|1|255
+QgsProcessingParameterFile|seed|Name of file containing initial signatures|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterString|sample|Sampling intervals (by row and col)|None|False|True
+QgsProcessingParameterNumber|iterations|Maximum number of iterations|QgsProcessingParameterNumber.Integer|30|True|1|None
+QgsProcessingParameterNumber|convergence|Percent convergence|QgsProcessingParameterNumber.Double|98.0|True|0.0|100.0
+QgsProcessingParameterNumber|separation|Cluster separation|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterNumber|min_size|Minimum number of pixels in a class|QgsProcessingParameterNumber.Integer|17|True|1|None
+QgsProcessingParameterFileDestination|signaturefile|Signature File|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|reportfile|Final Report File|Txt files (*.txt)|None|True

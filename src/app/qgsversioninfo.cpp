@@ -15,36 +15,34 @@
 
 #include "qgsversioninfo.h"
 #include "qgis.h"
-
+#include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
-    : QObject( parent )
-    , mLatestVersion( 0 )
-    , mError( QNetworkReply::NoError )
+  : QObject( parent )
 {
 
 }
 
 void QgsVersionInfo::checkVersion()
 {
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "https://ubuntu.qgis.org/version.txt" ) ) );
-  connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://version.qgis.org/version.txt" ) ) ) );
+  connect( reply, &QNetworkReply::finished, this, &QgsVersionInfo::versionReplyFinished );
 }
 
 bool QgsVersionInfo::newVersionAvailable() const
 {
-  return mLatestVersion > QGis::QGIS_VERSION_INT;
+  return mLatestVersion > Qgis::QGIS_VERSION_INT;
 }
 
 bool QgsVersionInfo::isDevelopmentVersion() const
 {
-  return QGis::QGIS_VERSION_INT > mLatestVersion;
+  return Qgis::QGIS_VERSION_INT > mLatestVersion;
 }
 
 void QgsVersionInfo::versionReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   Q_ASSERT( reply );
 
   mError = reply->error();
@@ -55,7 +53,7 @@ void QgsVersionInfo::versionReplyFinished()
     QString versionMessage = reply->readAll();
 
     // strip the header
-    QString contentFlag = "#QGIS Version";
+    QString contentFlag = QStringLiteral( "#QGIS Version" );
     int pos = versionMessage.indexOf( contentFlag );
 
     if ( pos > -1 )
@@ -81,7 +79,7 @@ void QgsVersionInfo::versionReplyFinished()
       mErrorString = tr( "The host name %1 could not be resolved. Check your DNS settings or contact your system administrator." ).arg( reply->request().url().host() );
       break;
     case QNetworkReply::NoError:
-      mErrorString = "";
+      mErrorString.clear();
       break;
     default:
       mErrorString = reply->errorString();

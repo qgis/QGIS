@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="5.28" height="5.28" viewBox="0, 0, 22, 22">
+  <g id="Background">
+    <rect x="0" y="0" width="22" height="22" fill="#000000" fill-opacity="0"/>
+  </g>
+  <defs>
+    <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="16.734" y1="20.11" x2="16.45" y2="1.378" gradientTransform="matrix(1, 0, 0, 1, 0, 0)">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+    <linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="11.153" y1="20.403" x2="10.87" y2="1.827" gradientTransform="matrix(1, 0, 0, 1, 0, 0)">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1">
+    <path d="M11.757,11.278 L14.47,11.278 L12.174,9.008 L9.361,9.008 L9.361,11.711 L11.757,14.099 z" fill="#EE7913" id="polygon3"/>
+    <path d="M20.458,17.199 L15.618,12.413 L12.892,12.413 L12.892,15.23 L17.53,19.854 L20.458,19.854 z" fill="url(#Gradient_1)" id="polygon10"/>
+    <path d="M12.892,12.413 L15.618,12.413 L14.47,11.278 L11.757,11.278 L11.757,14.099 L12.892,15.23 z" fill="#F0E64A" id="polygon12"/>
+    <path d="M12.326,16.194 C11.915,16.289 11.487,16.34 11.046,16.34 C7.893,16.34 5.211,13.747 5.211,10.385 C5.211,7.023 7.863,4.487 11.046,4.487 C14.229,4.487 16.764,7.023 16.764,10.385 C16.764,10.932 16.696,11.458 16.57,11.957 L19.488,14.875 C20.241,13.556 20.662,12.023 20.662,10.363 C20.662,5.181 16.526,1.301 10.987,1.301 C5.473,1.301 1.338,5.155 1.338,10.363 C1.338,15.596 5.474,19.527 10.987,19.527 C12.411,19.527 13.741,19.265 14.933,18.788 L12.326,16.194 z" fill="url(#Gradient_2)" id="path19"/>
+    <path d="M9.361,9.008 L20.458,19.854 L20.458,17.198 L15.618,12.413 L14.47,11.278 L12.174,9.008 z" fill="#FFFFFF" fill-opacity="0.172" id="polygon4153"/>
+  </g>
+</svg>

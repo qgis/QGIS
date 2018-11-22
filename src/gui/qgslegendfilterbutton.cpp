@@ -18,36 +18,31 @@
 #include <QMenu>
 #include <QAction>
 
-#include <qgsapplication.h>
-#include <qgsexpressionbuilderdialog.h>
+#include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
 
-QgsLegendFilterButton::QgsLegendFilterButton( QWidget* parent )
-    : QToolButton( parent )
-    , mMenu( nullptr )
-    , mLayer( nullptr )
+QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
+  : QToolButton( parent )
+
 {
   mMenu = new QMenu( this );
-  mSetExpressionAction = new QAction( tr( "Edit filter expression" ), mMenu );
-  connect( mSetExpressionAction, SIGNAL( triggered( bool ) ), this, SLOT( onSetLegendFilterExpression() ) );
+  mSetExpressionAction = new QAction( tr( "Edit Filter Expression…" ), mMenu );
+  connect( mSetExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onSetLegendFilterExpression );
 
-  mClearExpressionAction = new QAction( tr( "Clear filter expression" ), mMenu );
-  connect( mClearExpressionAction, SIGNAL( triggered( bool ) ), this, SLOT( onClearFilterExpression() ) );
+  mClearExpressionAction = new QAction( tr( "Clear Filter Expression" ), mMenu );
+  connect( mClearExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onClearFilterExpression );
   mClearExpressionAction->setEnabled( false );
 
   mMenu->addAction( mSetExpressionAction );
   mMenu->addAction( mClearExpressionAction );
 
   setCheckable( true );
-  setIcon( QgsApplication::getThemeIcon( "/mIconExpressionFilter.svg" ) );
+  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionFilter.svg" ) ) );
   setPopupMode( QToolButton::MenuButtonPopup );
 
   setMenu( mMenu );
 
-  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( onToggle( bool ) ) );
-}
-
-QgsLegendFilterButton::~QgsLegendFilterButton()
-{
+  connect( this, &QAbstractButton::toggled, this, &QgsLegendFilterButton::onToggle );
 }
 
 void QgsLegendFilterButton::onToggle( bool checked )
@@ -87,7 +82,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
 void QgsLegendFilterButton::onClearFilterExpression()
 {
   mClearExpressionAction->setEnabled( false );
-  setExpressionText( "" );
+  setExpressionText( QString() );
 
   setChecked( false );
 }
@@ -111,18 +106,18 @@ QString QgsLegendFilterButton::expressionText() const
   return mExpression;
 }
 
-void QgsLegendFilterButton::setExpressionText( const QString& expression )
+void QgsLegendFilterButton::setExpressionText( const QString &expression )
 {
   mExpression = expression;
   updateMenu();
 }
 
-QgsVectorLayer* QgsLegendFilterButton::vectorLayer() const
+QgsVectorLayer *QgsLegendFilterButton::vectorLayer() const
 {
   return mLayer;
 }
 
-void QgsLegendFilterButton::setVectorLayer( QgsVectorLayer* layer )
+void QgsLegendFilterButton::setVectorLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
 }

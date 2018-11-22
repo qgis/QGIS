@@ -17,18 +17,20 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYERDEFINITION_UTILS_H
 #define QGSVIRTUALLAYERDEFINITION_UTILS_H
 
-#include "qgsvirtuallayerdefinition.h"
+#include "qgis_core.h"
 
 class QgsVectorLayer;
+class QgsVirtualLayerDefinition;
 
 /**
+ * \ingroup core
  * Utils class for QgsVirtualLayerDefinition
  */
 class CORE_EXPORT QgsVirtualLayerDefinitionUtils
 {
   public:
-    //! Get a virtual layer definition from a vector layer where vector joins are replaced by SQL LEFT JOINs
-    static QgsVirtualLayerDefinition fromJoinedLayer( QgsVectorLayer* joinedLayer );
+    //! Gets a virtual layer definition from a vector layer where vector joins are replaced by SQL LEFT JOINs
+    static QgsVirtualLayerDefinition fromJoinedLayer( QgsVectorLayer *joinedLayer );
 };
 
 #endif

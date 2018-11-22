@@ -18,19 +18,18 @@
 
 #include "qgis.h"
 #include "qgsmaptoolidentify.h"
-#include "qgspoint.h"
-#include "qgsfeature.h"
-#include "qgsfeaturestore.h"
-#include "qgsfield.h"
-#include "qgsdistancearea.h"
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_app.h"
 
+class QgisInterface;
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
+class QgsMapToolSelectionHandler;
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsFeatureStore;
 
 /**
   \brief Map tool for identifying features layers and showing results
@@ -45,44 +44,59 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
-    QgsMapToolIdentifyAction( QgsMapCanvas * canvas );
+    QgsMapToolIdentifyAction( QgsMapCanvas *canvas );
 
-    ~QgsMapToolIdentifyAction();
+    ~QgsMapToolIdentifyAction() override;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void activate() override;
+    void activate() override;
 
-    virtual void deactivate() override;
+    void deactivate() override;
+
+    //! Triggers map identification of at the given location and outputs results in GUI
+    void identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits );
+    //! Clears any previous results from the GUI
+    void clearResults();
+    //! Looks up feature by its ID and outputs the result in GUI
+    void showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt );
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
-    void handleChangedRasterResults( QList<IdentifyResult>& results );
+    void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   signals:
-    void identifyProgress( int, int );
-    void identifyMessage( const QString& );
+
     void copyToClipboard( QgsFeatureStore & );
 
   private slots:
-    void showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
+    void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+
+    void identifyFromGeometry();
 
   private:
     //! Pointer to the identify results dialog for name/value pairs
     QPointer<QgsIdentifyResultsDialog> mResultsDialog;
 
+    QgsMapToolSelectionHandler *mSelectionHandler = nullptr;
+    bool mShowExtendedMenu = false;
+
     QgsIdentifyResultsDialog *resultsDialog();
 
-    virtual QGis::UnitType displayDistanceUnits() const override;
-    virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;
+    QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
+    QgsUnitTypes::AreaUnit displayAreaUnits() const override;
+    void setClickContextScope( const QgsPointXY &point );
 
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
+    friend class TestQgsMapToolIdentifyAction;
 };
 
 #endif

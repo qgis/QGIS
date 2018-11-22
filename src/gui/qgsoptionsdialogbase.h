@@ -17,18 +17,31 @@
 #ifndef QGSOPTIONSDIALOGBASE_H
 #define QGSOPTIONSDIALOGBASE_H
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
+#include "qgis_gui.h"
+
+#include <functional>
 
 #include <QDialog>
 #include <QPointer>
-#include <QSettings>
+#include <QStyledItemDelegate>
 
 class QDialogButtonBox;
 class QListWidget;
+class QModelIndex;
+class QPalette;
+class QPainter;
 class QStackedWidget;
+class QStyleOptionViewItem;
 class QSplitter;
 
-/** \ingroup gui
+class QgsFilterLineEdit;
+class QgsOptionsDialogHighlightWidget;
+
+
+/**
+ * \ingroup gui
  * \class QgsOptionsDialogBase
  * A base dialog for options and properties dialogs that offers vertical tabs.
  * It handles saving/restoring of geometry, splitter and current tab states,
@@ -50,57 +63,85 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
-    /** Constructor
-     * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
-     * @param parent parent object (owner)
-     * @param fl widget flags
-     * @param settings custom QSettings pointer
+
+    /**
+     * Constructor
+     * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+     * \param parent parent object (owner)
+     * \param fl widget flags
+     * \param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, const Qt::WindowFlags& fl = nullptr, QSettings* settings = nullptr );
-    ~QgsOptionsDialogBase();
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = nullptr, QgsSettings *settings = nullptr );
+    ~QgsOptionsDialogBase() override;
 
-    /** Set up the base ui connections for vertical tabs.
-     * @param restoreUi Whether to restore the base ui at this time.
-     * @param title the window title
+    /**
+     * Set up the base ui connections for vertical tabs.
+     * \param restoreUi Whether to restore the base ui at this time.
+     * \param title the window title
      */
-    void initOptionsBase( bool restoreUi = true, const QString& title = QString() );
+    void initOptionsBase( bool restoreUi = true, const QString &title = QString() );
 
-    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
-    void setSettings( QSettings* settings );
+    // set custom QgsSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QgsSettings *settings );
 
-    /** Restore the base ui.
+    /**
+     * Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
-     * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
+     * \param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
-    void restoreOptionsBaseUi( const QString& title = QString() );
+    void restoreOptionsBaseUi( const QString &title = QString() );
 
-    /** Determine if the options list is in icon only mode
+    /**
+     * Determine if the options list is in icon only mode
      */
     bool iconOnly() {return mIconOnly;}
 
+  public slots:
+
+    /**
+     * searchText searches for a text in all the pages of the stacked widget and highlight the results
+     * \param text the text to search
+     * \since QGIS 3.0
+     */
+    void searchText( const QString &text );
+
   protected slots:
-    void updateOptionsListVerticalTabs();
-    void optionsStackedWidget_CurrentChanged( int indx );
-    void optionsStackedWidget_WidgetRemoved( int indx );
+    //! Update tabs on the splitter move
+    virtual void updateOptionsListVerticalTabs();
+    //! Select relevant tab on current page change
+    virtual void optionsStackedWidget_CurrentChanged( int index );
+    //! Remove tab and unregister widgets on page remove
+    virtual void optionsStackedWidget_WidgetRemoved( int index );
+
     void warnAboutMissingObjects();
 
   protected:
-    void showEvent( QShowEvent* e ) override;
-    void paintEvent( QPaintEvent* e ) override;
+    void showEvent( QShowEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
     virtual void updateWindowTitle();
 
+    /**
+     * register widgets in the dialog to search for text in it
+     * it is automatically called if a line edit has "mSearchLineEdit" as object name.
+     * \since QGIS 3.0
+     */
+    void registerTextSearchWidgets();
+
+    QList< QPair< QgsOptionsDialogHighlightWidget *, int > > mRegisteredSearchWidgets;
+
     QString mOptsKey;
     bool mInit;
-    QListWidget* mOptListWidget;
-    QStackedWidget* mOptStackedWidget;
-    QSplitter* mOptSplitter;
-    QDialogButtonBox* mOptButtonBox;
+    QListWidget *mOptListWidget = nullptr;
+    QStackedWidget *mOptStackedWidget = nullptr;
+    QSplitter *mOptSplitter = nullptr;
+    QDialogButtonBox *mOptButtonBox = nullptr;
+    QgsFilterLineEdit *mSearchLineEdit = nullptr;
     QString mDialogTitle;
     bool mIconOnly;
-    // pointer to app or custom, external QSettings
+    // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while dialog is open
-    QPointer<QSettings> mSettings;
+    QPointer<QgsSettings> mSettings;
     bool mDelSettings;
 };
 

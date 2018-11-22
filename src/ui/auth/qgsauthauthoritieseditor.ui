@@ -14,16 +14,7 @@
    <string>Certificate Authorities Editor</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -82,30 +73,12 @@
          </item>
          <item>
           <widget class="QToolButton" name="btnCaFileClear">
-           <property name="minimumSize">
-            <size>
-             <width>26</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>26</width>
-             <height>22</height>
-            </size>
-           </property>
            <property name="text">
             <string/>
            </property>
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
-             <normaloff>:/images/themes/default/mIconClose.png</normaloff>:/images/themes/default/mIconClose.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>14</width>
-             <height>14</height>
-            </size>
+             <normaloff>:/images/themes/default/mIconClose.svg</normaloff>:/images/themes/default/mIconClose.svg</iconset>
            </property>
           </widget>
          </item>
@@ -113,20 +86,8 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnCaFile">
-         <property name="minimumSize">
-          <size>
-           <width>26</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>26</width>
-           <height>22</height>
-          </size>
-         </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
         </widget>
        </item>
@@ -145,12 +106,6 @@
        </property>
        <item>
         <widget class="QToolButton" name="btnAddCa">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Import certificate(s) to authentication database</string>
          </property>
@@ -159,24 +114,12 @@
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnRemoveCa">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Remove certificate from authentication database</string>
          </property>
@@ -185,24 +128,12 @@
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnInfoCa">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Show information for certificate</string>
          </property>
@@ -212,12 +143,6 @@
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
          </property>
         </widget>
        </item>
@@ -236,27 +161,15 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnGroupByOrg">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Group by organization</string>
          </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -268,12 +181,6 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnViewRefresh">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="toolTip">
           <string>Refresh certificate tree view</string>
          </property>
@@ -282,36 +189,18 @@
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionRefresh.png</normaloff>:/images/themes/default/mActionRefresh.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
+           <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnUtilities">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
          </property>
          <property name="popupMode">
           <enum>QToolButton::InstantPopup</enum>

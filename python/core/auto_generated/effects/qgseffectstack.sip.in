@@ -1,0 +1,162 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/effects/qgseffectstack.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsEffectStack : QgsPaintEffect
+{
+%Docstring
+A paint effect which consists of a stack of other chained paint effects
+
+Effect stacks can be used to apply multiple paint effects to a QPicture. For
+instance, an effect stack may blur then apply a drop shadow.
+
+The way in which effects apply to a stack is controlled by the effect's drawMode.
+Effects can either render their results onto the destination paint device,
+or just modify the source picture which is drawn by subsequent effects in the
+stack. For instance, a blur effect with a Modifier drawMode will blur the source
+picture for the following drop shadow effect without actually drawing the blurred
+picture to the paint device. If the blur effect had a Render drawMode then the
+blurred picture will be drawn on the paint device, but the following drop shadow
+effect will be drawn using the original picture, not the blurred version.
+
+.. versionadded:: 2.9
+%End
+
+%TypeHeaderCode
+#include "qgseffectstack.h"
+%End
+  public:
+
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
+%Docstring
+Creates a new QgsEffectStack effect. This method ignores
+the map parameter, and always returns an empty effect stack.
+
+:param map: unused encoded properties string map
+
+:return: new QgsEffectStack
+%End
+
+    QgsEffectStack();
+%Docstring
+Constructor for empty QgsEffectStack.
+%End
+
+    QgsEffectStack( const QgsEffectStack &other );
+
+    explicit QgsEffectStack( const QgsPaintEffect &effect );
+%Docstring
+Creates a new QgsEffectStack effect from a single initial effect.
+
+:param effect: initial effect to add to the stack. The effect will
+               be cloned, so ownership is not transferred to the stack.
+
+:return: new QgsEffectStack containing initial effect
+%End
+
+    ~QgsEffectStack();
+
+    virtual QString type() const;
+    virtual QgsEffectStack *clone() const /Factory/;
+
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
+
+    virtual bool readProperties( const QDomElement &element );
+
+
+    virtual QgsStringMap properties() const;
+
+%Docstring
+Unused for QgsEffectStack, will always return an empty string map
+%End
+
+    virtual void readProperties( const QgsStringMap &props );
+
+%Docstring
+Unused for QgsEffectStack, props parameter will be ignored
+%End
+
+    void appendEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Appends an effect to the end of the stack.
+
+:param effect: QgsPaintEffect to append. Ownership of the effect will be
+               transferred to the stack object.
+
+.. seealso:: :py:func:`insertEffect`
+%End
+
+    bool insertEffect( int index, QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Inserts an effect at a specified index within the stack.
+
+:param index: position to insert the effect
+:param effect: QgsPaintEffect to insert. Ownership of the effect will be
+               transferred to the stack object.
+
+.. seealso:: :py:func:`appendEffect`
+%End
+
+    bool changeEffect( int index, QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Replaces the effect at a specified position within the stack.
+
+:param index: position of effect to replace
+:param effect: QgsPaintEffect to replace with. Ownership of the effect will be
+               transferred to the stack object.
+%End
+
+    QgsPaintEffect *takeEffect( int index /TransferBack/ );
+%Docstring
+Removes an effect from the stack and returns a pointer to it.
+
+:param index: position of effect to take
+%End
+
+    QList< QgsPaintEffect * > *effectList();
+%Docstring
+Returns a pointer to the list of effects currently contained by
+the stack
+
+:return: list of QgsPaintEffects within the stack
+%End
+
+    int count() const;
+%Docstring
+Returns count of effects contained by the stack
+
+:return: count of effects
+%End
+
+    QgsPaintEffect *effect( int index ) const;
+%Docstring
+Returns a pointer to the effect at a specified index within the stack
+
+:param index: position of effect to return
+
+:return: QgsPaintEffect at specified position
+%End
+
+
+  protected:
+
+    virtual void draw( QgsRenderContext &context );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/effects/qgseffectstack.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

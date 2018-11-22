@@ -1,0 +1,139 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscontrastenhancement.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsContrastEnhancement
+{
+%Docstring
+Manipulates raster pixel values so that they enhanceContrast or clip into a
+specified numerical range according to the specified
+ContrastEnhancementAlgorithm.
+%End
+
+%TypeHeaderCode
+#include "qgscontrastenhancement.h"
+%End
+  public:
+
+    enum ContrastEnhancementAlgorithm
+    {
+      NoEnhancement,
+      StretchToMinimumMaximum,
+      StretchAndClipToMinimumMaximum,
+      ClipToMinimumMaximum,
+      UserDefinedEnhancement
+    };
+
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement &ce );
+    ~QgsContrastEnhancement();
+
+
+
+    static double maximumValuePossible( Qgis::DataType );
+%Docstring
+Helper function that returns the maximum possible value for a GDAL data type.
+%End
+
+    static double minimumValuePossible( Qgis::DataType );
+%Docstring
+Helper function that returns the minimum possible value for a GDAL data type.
+%End
+
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+%Docstring
+Returns a string to serialize ContrastEnhancementAlgorithm.
+%End
+
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
+%Docstring
+Deserialize ContrastEnhancementAlgorithm.
+%End
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value for the contrast enhancement range.
+%End
+
+    double minimumValue() const;
+%Docstring
+Returns the minimum value for the contrast enhancement range.
+%End
+
+    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
+
+
+    int enhanceContrast( double value );
+%Docstring
+Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
+%End
+
+    bool isValueInDisplayableRange( double value );
+%Docstring
+Returns true if a pixel ``value`` is in displayable range, false if pixel
+is outside of range (i.e. clipped).
+%End
+
+    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm algorithm, bool generateTable = true );
+%Docstring
+Sets the contrast enhancement ``algorithm``.
+
+The ``generateTable`` parameter is optional and is for performance improvements.
+If you know you are immediately going to set the Minimum or Maximum value, you
+can elect to not generate the lookup tale. By default it will be generated.
+%End
+
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction *function /Transfer/ );
+%Docstring
+Allows the user to set their own custom contrast enhancement ``function``. Ownership of
+``function`` is transferred.
+%End
+
+    void setMaximumValue( double value, bool generateTable = true );
+%Docstring
+Sets the maximum ``value`` for the contrast enhancement range.
+
+The ``generateTable`` parameter is optional and is for performance improvements.
+If you know you are immediately going to set the minimum value or the contrast
+enhancement algorithm, you can elect to not generate the lookup table.
+By default it will be generated.
+
+.. seealso:: :py:func:`setMinimumValue`
+%End
+
+    void setMinimumValue( double value, bool generateTable = true );
+%Docstring
+Sets the minimum ``value`` for the contrast enhancement range.
+
+The ``generateTable`` parameter is optional and is for performance improvements.
+If you know you are immediately going to set the maximum value or the contrast
+enhancement algorithm, you can elect to not generate the lookup table.
+By default it will be generated.
+
+.. seealso:: :py:func:`setMaximumValue`
+%End
+
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+    void readXml( const QDomElement &elem );
+
+  private:
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscontrastenhancement.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

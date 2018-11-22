@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsRendererPropsDialogBase</class>
+ <widget class="QDialog" name="QgsRendererPropsDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>370</width>
+    <height>501</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Renderer Settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_5">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QStackedWidget" name="mainStack">
+     <widget class="QWidget" name="page">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QComboBox" name="cboRenderers"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QStackedWidget" name="stackedWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>4</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <widget class="QWidget" name="pageNoWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>This renderer doesn't implement a graphical interface.</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsCollapsibleGroupBox" name="mLayerRenderingGroupBox">
+           <property name="title">
+            <string>Layer Rendering</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="collapsed" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="saveCollapsedState" stdset="0">
+            <bool>false</bool>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <item row="1" column="1" colspan="2">
+             <layout class="QGridLayout" name="gridLayout_1">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="spacing">
+               <number>1</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="lblLayerBlend">
+                <property name="text">
+                 <string>Layer</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="lblFeatureBlend">
+                <property name="text">
+                 <string>Feature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>4</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>4</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblTransparency">
+              <property name="text">
+               <string>Opacity</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="3">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QCheckBox" name="checkboxEnableOrderBy">
+                <property name="text">
+                 <string>Control feature rendering order</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="btnOrderBy">
+                <property name="text">
+                 <string>…</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/sort.svg</normaloff>:/images/themes/default/sort.svg</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0" colspan="3">
+             <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblBlend">
+              <property name="text">
+               <string>Blending mode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="2">
+             <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDialogButtonBox" name="buttonBox">
+           <property name="standardButtons">
+            <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsEffectStackCompactWidget</class>
+   <extends>QWidget</extends>
+   <header>effects/qgseffectstackpropertieswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>cboRenderers</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mFeatureBlendComboBox</tabstop>
+  <tabstop>checkboxEnableOrderBy</tabstop>
+  <tabstop>btnOrderBy</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

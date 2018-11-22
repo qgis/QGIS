@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgssinglebandpseudocolorrendererwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
+{
+%Docstring
+
+Single band pseudo color renderer widget consists of a color ramp shader widget,
+a raster min max widget and a band selector.
+%End
+
+%TypeHeaderCode
+#include "qgssinglebandpseudocolorrendererwidget.h"
+%End
+  public:
+
+    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Creates new raster renderer widget
+%End
+
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
+%Docstring
+Creates new raster renderer widget
+%End
+
+    virtual QgsRasterRenderer *renderer();
+
+    virtual void setMapCanvas( QgsMapCanvas *canvas );
+
+    virtual void doComputations();
+
+    virtual QgsRasterMinMaxWidget *minMaxWidget();
+
+
+    int currentBand() const;
+%Docstring
+Returns the current raster band number
+%End
+
+    void setFromRenderer( const QgsRasterRenderer *r );
+%Docstring
+Set state of the widget from renderer settings
+%End
+
+  public slots:
+    void loadMinMax( int bandNo, double min, double max );
+%Docstring
+called when new min/max values are loaded
+%End
+    void loadMinMaxFromTree( double min, double max );
+%Docstring
+called when the color ramp tree has changed
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgssinglebandpseudocolorrendererwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

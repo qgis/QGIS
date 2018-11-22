@@ -17,16 +17,18 @@
 #ifndef QGSMAPTOPIXEL
 #define QGSMAPTOPIXEL
 
-#include "qgspoint.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QTransform>
 #include <vector>
-
+#include "qgsunittypes.h"
 #include <cassert>
 
-class QgsPoint;
+class QgsPointXY;
 class QPoint;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Perform transforms between map coordinates and device coordinates.
   *
   * This class can convert device coordinates to map coordinates and vice versa.
@@ -34,33 +36,34 @@ class QPoint;
 class CORE_EXPORT QgsMapToPixel
 {
   public:
-    /**
-     * Constructor
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param height Map canvas height, in pixels
-     * @param ymin Minimum y value of the map canvas
-     * @param xmin Minimum x value of the map canvas
-     * @deprecated in 2.8, use version with all parameters
-     */
-    Q_DECL_DEPRECATED QgsMapToPixel( double mapUnitsPerPixel, double height, double ymin = 0, double xmin = 0 );
 
     /**
      * Constructor
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param xc X ordinate of map center, in geographical units
-     * @param yc Y ordinate of map center, in geographical units
-     * @param width Output width, in pixels
-     * @param height Output height, in pixels
-     * @param rotation clockwise rotation in degrees
-     * @note added in 2.8
+     * \param mapUnitsPerPixel Map units per pixel
+     * \param centerX X coordinate of map center, in geographical units
+     * \param centerY Y coordinate of map center, in geographical units
+     * \param widthPixels Output width, in pixels
+     * \param heightPixels Output height, in pixels
+     * \param rotation clockwise rotation in degrees
+     * \since QGIS 2.8
      */
-    QgsMapToPixel( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+    QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
     /**
      * Constructor
-     * @param mapUnitsPerPixel Map units per pixel
+     * \param mapUnitsPerPixel Map units per pixel
      */
     QgsMapToPixel( double mapUnitsPerPixel );
+
+    /**
+     * Returns a new QgsMapToPixel created using a specified \a scale and distance unit.
+     * \param scale map scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \param dpi screen DPI
+     * \param mapUnits map units
+     * \returns matching QgsMapToPixel
+     * \since QGIS 3.0
+     */
+    static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
 
     /**
      * Constructor
@@ -71,153 +74,145 @@ class CORE_EXPORT QgsMapToPixel
 
     /**
      * Transform the point from map (world) coordinates to device coordinates
-     * @param p Point to transform
-     * @return QgsPoint in device coordinates
+     * \param p Point to transform
+     * \returns QgsPointXY in device coordinates
      */
-    QgsPoint transform( const QgsPoint& p ) const;
+    QgsPointXY transform( const QgsPointXY &p ) const;
 
-    void transform( QgsPoint* p ) const;
+    void transform( QgsPointXY *p ) const;
 
     /**
      * Transform the point specified by x,y from map (world)
      * coordinates to device coordinates
-     * @param x x cordinate o point to transform
-     * @param y y coordinate of point to transform
-     * @return QgsPoint in device coordinates
+     * \param x x cordinate o point to transform
+     * \param y y coordinate of point to transform
+     * \returns QgsPointXY in device coordinates
      */
-    QgsPoint transform( qreal x, qreal y ) const;
+    QgsPointXY transform( qreal x, qreal y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
      * given coordinates in place. Intended as a fast way to do the
      * transform.
      */
-    void transformInPlace( double& x, double& y ) const;
+    void transformInPlace( double &x, double &y ) const;
 
-    // @note not available in python bindings
-    void transformInPlace( float& x, float& y ) const;
+    //! \note not available in Python bindings
+    void transformInPlace( float &x, float &y ) const SIP_SKIP;
+
+#ifndef SIP_RUN
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
      * given coordinates in place. Intended as a fast way to do the
      * transform.
-     * @note not available in python bindings
+     * \note not available in Python bindings
      */
-    template <class T>
-    void transformInPlace( QVector<T>& x, QVector<T>& y ) const
+    template <class T> SIP_SKIP
+    void transformInPlace( QVector<T> &x, QVector<T> &y ) const
     {
       assert( x.size() == y.size() );
       for ( int i = 0; i < x.size(); ++i )
         transformInPlace( x[i], y[i] );
     }
-
-    QgsPoint toMapCoordinates( int x, int y ) const;
+#endif
 
     //! Transform device coordinates to map (world) coordinates
-    QgsPoint toMapCoordinatesF( double x, double y ) const;
+    QgsPointXY toMapCoordinates( int x, int y ) const;
+
+    //! Transform device coordinates to map (world) coordinates
+    QgsPointXY toMapCoordinates( double x, double y ) const SIP_PYNAME( toMapCoordinatesF );
 
     /**
      * Transform device coordinates to map (world) coordinates
-     * @param p Point to be converted to map cooordinates
-     * @return QgsPoint in map coorndiates
+     * \param p Point to be converted to map cooordinates
+     * \returns QgsPointXY in map coorndiates
      */
-    QgsPoint toMapCoordinates( QPoint p ) const;
+    QgsPointXY toMapCoordinates( QPoint p ) const;
 
-    QgsPoint toMapPoint( double x, double y ) const;
+    /**
+     * Transform device coordinates to map (world) coordinates
+     * \deprecated since QGIS 3.4 use toMapCoordinates instead
+     */
+    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const SIP_DEPRECATED;
 
     /**
      * Set map units per pixel
-     * @param mapUnitsPerPixel Map units per pixel
+     * \param mapUnitsPerPixel Map units per pixel
      */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
 
-    //! Return current map units per pixel
+    //! Returns current map units per pixel
     double mapUnitsPerPixel() const;
 
     /**
-     * Return current map width in pixels
+     * Returns current map width in pixels
      * The information is only known if setRotation was used
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     int mapWidth() const;
 
     /**
-     * Return current map height in pixels
-     * @note added in 2.8
+     * Returns current map height in pixels
+     * \since QGIS 2.8
      */
     int mapHeight() const;
 
     /**
      * Set map rotation in degrees (clockwise)
-     * @param degrees clockwise rotation in degrees
-     * @param cx X ordinate of map center in geographical units
-     * @param cy Y ordinate of map center in geographical units
-     * @note added in 2.8
+     * \param degrees clockwise rotation in degrees
+     * \param cx X ordinate of map center in geographical units
+     * \param cy Y ordinate of map center in geographical units
+     * \since QGIS 2.8
      */
     void setMapRotation( double degrees, double cx, double cy );
 
     /**
-     * Return current map rotation in degrees
-     * @note added in 2.8
+     * Returns current map rotation in degrees
+     * \since QGIS 2.8
      */
     double mapRotation() const;
 
     /**
-     * Set maximum y value
-     * @deprecated in 2.8, use setParameters
-     * @note this really sets the viewport height, not ymax
-     */
-    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = static_cast< int >( yMax ); }
-
-    /**
-     * Set minimum y value
-     * @deprecated in 2.8, use setParameters
-     */
-    Q_DECL_DEPRECATED void setYMinimum( double ymin );
-
-    /**
-     * set minimum x value
-     * @deprecated in 2.8, use setParameters
-     */
-    Q_DECL_DEPRECATED void setXMinimum( double xmin );
-
-    /**
      * Set parameters for use in transforming coordinates
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param xmin Minimum x value
-     * @param ymin Minimum y value
-     * @param height Map height, in pixels
-     * @deprecated in 2.8, use the version with full parameters
-     * @note not available in python bindings
+     * \param mapUnitsPerPixel Map units per pixel
+     * \param centerX X coordinate of map center, in geographical units
+     * \param centerY Y coordinate of map center, in geographical units
+     * \param widthPixels Output width, in pixels
+     * \param heightPixels Output height, in pixels
+     * \param rotation clockwise rotation in degrees
+     * \since QGIS 2.8
      */
-    Q_DECL_DEPRECATED void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
-
-    /**
-     * Set parameters for use in transforming coordinates
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param xc X ordinate of map center, in geographical units
-     * @param yc Y ordinate of map center, in geographical units
-     * @param width Output width, in pixels
-     * @param height Output height, in pixels
-     * @param rotation clockwise rotation in degrees
-     * @note added in 2.8
-     */
-    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+    void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
     //! String representation of the parameters used in the transform
     QString showParameters() const;
 
     QTransform transform() const;
 
+    /**
+     * Returns the center x-coordinate for the transform.
+     * \see yCenter()
+     * \since QGIS 3.0
+     */
+    double xCenter() const { return mXCenter; }
+
+    /**
+     * Returns the center y-coordinate for the transform.
+     * \see xCenter()
+     * \since QGIS 3.0
+     */
+    double yCenter() const { return mYCenter; }
+
   private:
-    double mMapUnitsPerPixel;
-    int mWidth;
-    int mHeight;
-    double mRotation;
-    double xCenter;
-    double yCenter;
-    double xMin; //!< @deprecated in 2.8
-    double yMin; //!< @deprecated in 2.8
+    double mMapUnitsPerPixel = 1;
+    int mWidth = 1;
+    int mHeight = 1;
+    double mRotation = 0.0;
+    double mXCenter = 0.5;
+    double mYCenter = 0.5;
+    double xMin = 0;
+    double yMin = 0;
     QTransform mMatrix;
 
     bool updateMatrix();

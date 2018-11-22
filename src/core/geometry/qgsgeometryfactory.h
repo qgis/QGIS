@@ -18,60 +18,75 @@
 #ifndef QGSGEOMETRYFACTORY_H
 #define QGSGEOMETRYFACTORY_H
 
-#include "qgsrectangle.h"
-#include "qgswkbtypes.h"
-#include "qgswkbptr.h"
+#define SIP_NO_FILE
 
+#include "qgis_core.h"
 #include <QString>
+#include <memory>
 
-class QgsAbstractGeometryV2;
-class QgsLineStringV2;
+class QgsAbstractGeometry;
+class QgsLineString;
+class QgsConstWkbPtr;
+class QgsRectangle;
+class QgsGeometryCollection;
+class QgsMultiPoint;
+class QgsMultiLineString;
+class QgsPolygon;
+class QgsMultiPolygon;
 
 //compatibility with old classes
-#include "qgspoint.h"
-typedef QVector<QgsPoint> QgsPolyline;
-typedef QVector<QgsPolyline> QgsPolygon;
-typedef QVector<QgsPoint> QgsMultiPoint;
-typedef QVector<QgsPolyline> QgsMultiPolyline;
-typedef QVector<QgsPolygon> QgsMultiPolygon;
+#include "qgspointxy.h"
+typedef QVector<QgsPointXY> QgsPolylineXY;
+typedef QVector<QgsPolylineXY> QgsPolygonXY;
+typedef QVector<QgsPointXY> QgsMultiPointXY;
+typedef QVector<QgsPolylineXY> QgsMultiPolylineXY;
+typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryFactory
  * \brief Contains geometry creation routines.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
-    /** Construct geometry from a WKB string.
-     */
-    static QgsAbstractGeometryV2* geomFromWkb( QgsConstWkbPtr wkb );
 
-    /** Construct geometry from a WKT string.
+    /**
+     * Construct geometry from a WKB string.
+     * Updates position of the passed WKB pointer.
      */
-    static QgsAbstractGeometryV2* geomFromWkt( const QString& text );
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkb( QgsConstWkbPtr &wkb );
 
-    /** Construct geometry from a point */
-    static QgsAbstractGeometryV2* fromPoint( const QgsPoint& point );
-    /** Construct geometry from a multipoint */
-    static QgsAbstractGeometryV2* fromMultiPoint( const QgsMultiPoint& multipoint );
-    /** Construct geometry from a polyline */
-    static QgsAbstractGeometryV2* fromPolyline( const QgsPolyline& polyline );
-    /** Construct geometry from a multipolyline*/
-    static QgsAbstractGeometryV2* fromMultiPolyline( const QgsMultiPolyline& multiline );
-    /** Construct geometry from a polygon */
-    static QgsAbstractGeometryV2* fromPolygon( const QgsPolygon& polygon );
-    /** Construct geometry from a multipolygon */
-    static QgsAbstractGeometryV2* fromMultiPolygon( const QgsMultiPolygon& multipoly );
-    /** Construct geometry from a rectangle */
-    static QgsAbstractGeometryV2* fromRect( const QgsRectangle& rect );
-    /** Return empty geometry from wkb type*/
-    static QgsAbstractGeometryV2* geomFromWkbType( QgsWKBTypes::Type t );
+    /**
+     * Construct geometry from a WKT string.
+     */
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkt( const QString &text );
+
+    //! Construct geometry from a point
+    static std::unique_ptr< QgsAbstractGeometry > fromPointXY( const QgsPointXY &point );
+    //! Construct geometry from a multipoint
+    static std::unique_ptr<QgsMultiPoint> fromMultiPointXY( const QgsMultiPointXY &multipoint );
+    //! Construct geometry from a polyline
+    static std::unique_ptr< QgsAbstractGeometry > fromPolylineXY( const QgsPolylineXY &polyline );
+    //! Construct geometry from a multipolyline
+    static std::unique_ptr<QgsMultiLineString> fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
+    //! Construct geometry from a polygon
+    static std::unique_ptr<QgsPolygon> fromPolygonXY( const QgsPolygonXY &polygon );
+    //! Construct geometry from a multipolygon
+    static std::unique_ptr<QgsMultiPolygon> fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
+    //! Returns empty geometry from wkb type
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
+
+    /**
+     * Returns a new geometry collection matching a specified WKB \a type. For instance, if
+     * type is PolygonM the returned geometry will be a QgsMultiPolygon with M values.
+     */
+    static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( QgsWkbTypes::Type type );
 
   private:
-    static QgsLineStringV2* linestringFromPolyline( const QgsPolyline& polyline );
+    static std::unique_ptr< QgsLineString > linestringFromPolyline( const QgsPolylineXY &polyline );
 };
 
 #endif // QGSGEOMETRYFACTORY_H

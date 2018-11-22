@@ -32,31 +32,37 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
-     * @param qI Pointer to the QgisInterface object
+     * \param interface pointer to the QgisInterface object
      */
-    explicit QgsCompassPlugin( QgisInterface * );
+    explicit QgsCompassPlugin( QgisInterface *interface );
+
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
      * of installable plugins to the user
      */
     virtual QString name();
+
     /**
      * Virtual function to return the version of the plugin.
      */
     virtual QString version();
+
     /**
      * Virtual function to return a description of the plugins functions
      */
     virtual QString description();
+
     /**
      * Virtual function to return a plugin category
      */
     virtual QString category();
+
     /**
-     * Return the plugin type
+     * Returns the plugin type
      */
     virtual int type();
     //! Destructor
@@ -71,8 +77,8 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    void setCurrentTheme( QString themeName );
+    QIcon getThemeIcon( const QString &themeName );
     void about();
   private:
 
@@ -86,13 +92,13 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! Category of the plugin
     QString pluginCategoryQString;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *mActionRunCompass;
-    QAction *mActionAboutCompass;
+    QAction *mActionRunCompass = nullptr;
+    QAction *mActionAboutCompass = nullptr;
 
-    QDockWidget *mDock;
-    QgsCompassPluginGui *mQgsCompassPluginGui;
+    QDockWidget *mDock = nullptr;
+    QgsCompassPluginGui *mQgsCompassPluginGui = nullptr;
 };
 
 #endif

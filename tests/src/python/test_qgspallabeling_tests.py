@@ -20,10 +20,10 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QPointF
+from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
 
-from qgis.core import QgsPalLayerSettings
+from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings
 
 from utilities import svgSymbolsPath
 
@@ -37,8 +37,6 @@ class TestPointBase(object):
         """:type: QgsPalLayerSettings"""
         # noinspection PyArgumentList
         self._TestFont = QFont()  # will become a standard test font
-        self._Pal = None
-        """:type: QgsPalLabeling"""
         self._Canvas = None
         """:type: QgsMapCanvas"""
         # custom mismatches per group/test (should not mask any needed anomaly)
@@ -64,10 +62,13 @@ class TestPointBase(object):
 
     def test_text_size_map_unit(self):
         # Label text size in map units
-        self.lyr.fontSizeInMapUnits = True
+        format = self.lyr.format()
+
+        format.setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.setSize(460)
         font = QFont(self._TestFont)
-        font.setPointSizeF(460)
-        self.lyr.textFont = font
+        format.setFont(font)
+        self.lyr.setFormat(format)
         self._Mismatches['TestCanvasPoint'] = 776
         self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
@@ -76,13 +77,17 @@ class TestPointBase(object):
         self._Mismatches['TestCanvasPoint'] = 774
         self._ColorTols['TestComposerPdfPoint'] = 2
         # Label color change
-        self.lyr.textColor = Qt.blue
+        format = self.lyr.format()
+        format.setColor(Qt.blue)
+        self.lyr.setFormat(format)
         self.checkTest()
 
     def test_background_rect(self):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
-        self.lyr.shapeDraw = True
+        format = self.lyr.format()
+        format.background().setEnabled(True)
+        self.lyr.setFormat(format)
         self._Mismatches['TestCanvasPoint'] = 776
         self._ColorTols['TestComposerPdfPoint'] = 1
         self.checkTest()
@@ -92,16 +97,20 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
-        #   http://hub.qgis.org/issues/9057
+        #   https://issues.qgis.org/issues/9057
         #   http://gis.stackexchange.com/questions/86900
-        self.lyr.fontSizeInMapUnits = True
-        font = QFont(self._TestFont)
-        font.setPointSizeF(460)
-        self.lyr.textFont = font
 
-        self.lyr.shapeDraw = True
-        self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
-        self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
+        format = self.lyr.format()
+        format.setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.setSize(460)
+        font = QFont(self._TestFont)
+        format.setFont(font)
+
+        format.background().setEnabled(True)
+        format.background().setOffsetUnit(QgsUnitTypes.RenderMapUnits)
+        format.background().setOffset(QPointF(-2900.0, -450.0))
+
+        self.lyr.setFormat(format)
 
         self._Mismatches['TestCanvasPoint'] = 774
         self._ColorTols['TestComposerPdfPoint'] = 2
@@ -109,19 +118,22 @@ class TestPointBase(object):
 
     def test_background_svg(self):
         # Label SVG background
-        self.lyr.fontSizeInMapUnits = True
+        format = self.lyr.format()
+        format.setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.setSize(460)
         font = QFont(self._TestFont)
-        font.setPointSizeF(460)
-        self.lyr.textFont = font
+        format.setFont(font)
 
-        self.lyr.shapeDraw = True
-        self.lyr.shapeType = QgsPalLayerSettings.ShapeSVG
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
         svg = os.path.join(
             svgSymbolsPath(), 'backgrounds', 'background_square.svg')
-        self.lyr.shapeSVGFile = svg
-        self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
-        self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
-        self.lyr.shapeSize = QPointF(100.0, 0.0)
+        format.background().setSvgFile(svg)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSize(QSizeF(100.0, 0.0))
+        self.lyr.setFormat(format)
+
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 580
         self._Mismatches['TestCanvasPoint'] = 776
         self._ColorTols['TestComposerPdfPoint'] = 2
@@ -129,22 +141,25 @@ class TestPointBase(object):
 
     def test_background_svg_w_offset(self):
         # Label SVG background
-        self.lyr.fontSizeInMapUnits = True
+        format = self.lyr.format()
+        format.setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.setSize(460)
         font = QFont(self._TestFont)
-        font.setPointSizeF(460)
-        self.lyr.textFont = font
+        format.setFont(font)
 
-        self.lyr.shapeDraw = True
-        self.lyr.shapeType = QgsPalLayerSettings.ShapeSVG
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
         svg = os.path.join(
             svgSymbolsPath(), 'backgrounds', 'background_square.svg')
-        self.lyr.shapeSVGFile = svg
-        self.lyr.shapeSizeUnits = QgsPalLayerSettings.MapUnits
-        self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
-        self.lyr.shapeSize = QPointF(100.0, 0.0)
+        format.background().setSvgFile(svg)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSize(QSizeF(100.0, 0.0))
+        format.background().setOffsetUnit(QgsUnitTypes.RenderMapUnits)
+        format.background().setOffset(QPointF(-2850.0, 500.0))
 
-        self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
-        self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
+        self.lyr.setFormat(format)
+
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 760
         self._Mismatches['TestCanvasPoint'] = 776
         self._ColorTols['TestComposerPdfPoint'] = 2
@@ -152,37 +167,67 @@ class TestPointBase(object):
 
     def test_partials_labels_enabled(self):
         # Set Big font size
+        format = self.lyr.format()
         font = QFont(self._TestFont)
-        font.setPointSizeF(84)
-        self.lyr.textFont = font
+        format.setFont(font)
+        format.setSize(84)
+        self.lyr.setFormat(format)
         # Enable partials labels
-        self._Pal.setShowingPartialsLabels(True)
-        self._Pal.saveEngineSettings()
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, True)
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self._Mismatches['TestCanvasPoint'] = 779
         self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_disabled(self):
         # Set Big font size
+        format = self.lyr.format()
         font = QFont(self._TestFont)
-        font.setPointSizeF(84)
-        self.lyr.textFont = font
+        format.setFont(font)
+        format.setSize(84)
+        self.lyr.setFormat(format)
         # Disable partials labels
-        self._Pal.setShowingPartialsLabels(False)
-        self._Pal.saveEngineSettings()
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self.checkTest()
 
     def test_buffer(self):
         # Label with buffer
-        self.lyr.bufferDraw = True
-        self.lyr.bufferSize = 2
+        format = self.lyr.format()
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        self.lyr.setFormat(format)
         self.checkTest()
 
     def test_shadow(self):
         # Label with shadow
-        self.lyr.shadowDraw = True
-        self.lyr.shadowOffsetDist = 2
-        self.lyr.shadowTransparency = 0
+        format = self.lyr.format()
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(2)
+        format.shadow().setOpacity(1)
+        self.lyr.setFormat(format)
+        self.checkTest()
+
+    def test_letter_spacing(self):
+        # Modified letter spacing
+        format = self.lyr.format()
+        font = QFont(self._TestFont)
+        font.setLetterSpacing(QFont.AbsoluteSpacing, 3.5)
+        format.setFont(font)
+        format.setSize(30)
+        self.lyr.setFormat(format)
+        self.checkTest()
+
+    def test_word_spacing(self):
+        # Modified word spacing
+        format = self.lyr.format()
+        font = QFont(self._TestFont)
+        font.setWordSpacing(20.5)
+        format.setFont(font)
+        format.setSize(30)
+        self.lyr.setFormat(format)
         self.checkTest()
 
 # noinspection PyPep8Naming
@@ -263,12 +308,13 @@ class TestLineBase(object):
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
-
 # noinspection PyPep8Naming
+
+
 def suiteTests():
     """
     Use to define which tests are run when PAL_SUITE is set.
-    Use sp_vs_suite for comparison of server and composer outputs to canvas
+    Use sp_vs_suite for comparison of server and layout outputs to canvas
     """
     sp_suite = [
         # 'test_default_label',

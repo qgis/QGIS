@@ -16,26 +16,16 @@
  ***************************************************************************/
 
 #include "qgsmaptoolsvgannotation.h"
-#include "qgssvgannotationitem.h"
+#include "qgssvgannotation.h"
 #include "qgsproject.h"
 #include <QMouseEvent>
 
-QgsMapToolSvgAnnotation::QgsMapToolSvgAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
+QgsMapToolSvgAnnotation::QgsMapToolSvgAnnotation( QgsMapCanvas *canvas ): QgsMapToolAnnotation( canvas )
 {
 
 }
 
-QgsMapToolSvgAnnotation::~QgsMapToolSvgAnnotation()
+QgsAnnotation *QgsMapToolSvgAnnotation::createItem() const
 {
-
-}
-
-QgsAnnotationItem* QgsMapToolSvgAnnotation::createItem( QMouseEvent* e )
-{
-  QgsSvgAnnotationItem* svgItem = new QgsSvgAnnotationItem( mCanvas );
-  svgItem->setMapPosition( toMapCoordinates( e->pos() ) );
-  svgItem->setSelected( true );
-  svgItem->setFrameSize( QSizeF( 200, 100 ) );
-  QgsProject::instance()->setDirty( true );
-  return svgItem;
+  return new QgsSvgAnnotation();
 }

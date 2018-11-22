@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "qgsunittypes.h"
-#include <QCoreApplication>
+#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -23,22 +23,24 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( QGis::UnitType unit )
+QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( DistanceUnit unit )
 {
   switch ( unit )
   {
-    case QGis::Meters:
-    case QGis::Feet:
-    case QGis::NauticalMiles:
-    case QGis::Yards:
-    case QGis::Miles:
-    case QGis::Kilometers:
+    case DistanceMeters:
+    case DistanceFeet:
+    case DistanceNauticalMiles:
+    case DistanceYards:
+    case DistanceMiles:
+    case DistanceKilometers:
+    case DistanceCentimeters:
+    case DistanceMillimeters:
       return Standard;
 
-    case QGis::Degrees:
+    case DistanceDegrees:
       return Geographic;
 
-    case QGis::UnknownUnit:
+    case DistanceUnknownUnit:
       return UnknownType;
   }
   return UnknownType;
@@ -48,53 +50,61 @@ QgsUnitTypes::DistanceUnitType QgsUnitTypes::unitType( QgsUnitTypes::AreaUnit un
 {
   switch ( unit )
   {
-    case SquareMeters:
-    case SquareKilometers:
-    case SquareFeet:
-    case SquareYards:
-    case SquareMiles:
-    case Hectares:
-    case Acres:
-    case SquareNauticalMiles:
+    case AreaSquareMeters:
+    case AreaSquareKilometers:
+    case AreaSquareFeet:
+    case AreaSquareYards:
+    case AreaSquareMiles:
+    case AreaHectares:
+    case AreaAcres:
+    case AreaSquareNauticalMiles:
+    case AreaSquareCentimeters:
+    case AreaSquareMillimeters:
       return Standard;
 
-    case SquareDegrees:
+    case AreaSquareDegrees:
       return Geographic;
 
-    case UnknownAreaUnit:
+    case AreaUnknownUnit:
       return UnknownType;
   }
 
   return UnknownType;
 }
 
-QString QgsUnitTypes::encodeUnit( QGis::UnitType unit )
+QString QgsUnitTypes::encodeUnit( DistanceUnit unit )
 {
   switch ( unit )
   {
-    case QGis::Meters:
-      return "meters";
+    case DistanceMeters:
+      return QStringLiteral( "meters" );
 
-    case QGis::Kilometers:
-      return "km";
+    case DistanceKilometers:
+      return QStringLiteral( "km" );
 
-    case QGis::Feet:
-      return "feet";
+    case DistanceFeet:
+      return QStringLiteral( "feet" );
 
-    case QGis::Yards:
-      return "yd";
+    case DistanceYards:
+      return QStringLiteral( "yd" );
 
-    case QGis::Miles:
-      return "mi";
+    case DistanceMiles:
+      return QStringLiteral( "mi" );
 
-    case QGis::Degrees:
-      return "degrees";
+    case DistanceDegrees:
+      return QStringLiteral( "degrees" );
 
-    case QGis::UnknownUnit:
-      return "<unknown>";
+    case DistanceUnknownUnit:
+      return QStringLiteral( "<unknown>" );
 
-    case QGis::NauticalMiles:
-      return "nautical miles";
+    case DistanceNauticalMiles:
+      return QStringLiteral( "nautical miles" );
+
+    case DistanceCentimeters:
+      return QStringLiteral( "cm" );
+
+    case DistanceMillimeters:
+      return QStringLiteral( "mm" );
   }
   return QString();
 }
@@ -105,63 +115,110 @@ QString QgsUnitTypes::encodeUnit( QGis::UnitType unit )
  * See details in QEP #17
  ****************************************************************************/
 
-QGis::UnitType QgsUnitTypes::decodeDistanceUnit( const QString& string, bool* ok )
+QgsUnitTypes::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == encodeUnit( QGis::Meters ) )
-    return QGis::Meters;
-  if ( normalized == encodeUnit( QGis::Feet ) )
-    return QGis::Feet;
-  if ( normalized == encodeUnit( QGis::Degrees ) )
-    return QGis::Degrees;
-  if ( normalized == encodeUnit( QGis::NauticalMiles ) )
-    return QGis::NauticalMiles;
-  if ( normalized == encodeUnit( QGis::Kilometers ) )
-    return QGis::Kilometers;
-  if ( normalized == encodeUnit( QGis::Yards ) )
-    return QGis::Yards;
-  if ( normalized == encodeUnit( QGis::Miles ) )
-    return QGis::Miles;
-  if ( normalized == encodeUnit( QGis::UnknownUnit ) )
-    return QGis::UnknownUnit;
+  if ( normalized == encodeUnit( DistanceMeters ) )
+    return DistanceMeters;
+  if ( normalized == encodeUnit( DistanceFeet ) )
+    return DistanceFeet;
+  if ( normalized == encodeUnit( DistanceDegrees ) )
+    return DistanceDegrees;
+  if ( normalized == encodeUnit( DistanceNauticalMiles ) )
+    return DistanceNauticalMiles;
+  if ( normalized == encodeUnit( DistanceKilometers ) )
+    return DistanceKilometers;
+  if ( normalized == encodeUnit( DistanceYards ) )
+    return DistanceYards;
+  if ( normalized == encodeUnit( DistanceMiles ) )
+    return DistanceMiles;
+  if ( normalized == encodeUnit( DistanceCentimeters ) )
+    return DistanceCentimeters;
+  if ( normalized == encodeUnit( DistanceMillimeters ) )
+    return DistanceMillimeters;
+  if ( normalized == encodeUnit( DistanceUnknownUnit ) )
+    return DistanceUnknownUnit;
 
   if ( ok )
     *ok = false;
 
-  return QGis::UnknownUnit;
+  return DistanceUnknownUnit;
 }
 
-QString QgsUnitTypes::toString( QGis::UnitType unit )
+QString QgsUnitTypes::toString( DistanceUnit unit )
 {
   switch ( unit )
   {
-    case QGis::Meters:
-      return QCoreApplication::translate( "QGis::UnitType", "meters" );
+    case DistanceMeters:
+      return QObject::tr( "meters", "distance" );
 
-    case QGis::Kilometers:
-      return QCoreApplication::translate( "QGis::UnitType", "kilometers" );
+    case DistanceKilometers:
+      return QObject::tr( "kilometers", "distance" );
 
-    case QGis::Feet:
-      return QCoreApplication::translate( "QGis::UnitType", "feet" );
+    case DistanceFeet:
+      return QObject::tr( "feet", "distance" );
 
-    case QGis::Yards:
-      return QCoreApplication::translate( "QGis::UnitType", "yards" );
+    case DistanceYards:
+      return QObject::tr( "yards", "distance" );
 
-    case QGis::Miles:
-      return QCoreApplication::translate( "QGis::UnitType", "miles" );
+    case DistanceMiles:
+      return QObject::tr( "miles", "distance" );
 
-    case QGis::Degrees:
-      return QCoreApplication::translate( "QGis::UnitType", "degrees" );
+    case DistanceDegrees:
+      return QObject::tr( "degrees", "distance" );
 
-    case QGis::UnknownUnit:
-      return QCoreApplication::translate( "QGis::UnitType", "<unknown>" );
+    case DistanceCentimeters:
+      return QObject::tr( "centimeters", "distance" );
 
-    case QGis::NauticalMiles:
-      return QCoreApplication::translate( "QGis::UnitType", "nautical miles" );
+    case DistanceMillimeters:
+      return QObject::tr( "millimeters", "distance" );
+
+    case DistanceUnknownUnit:
+      return QObject::tr( "<unknown>", "distance" );
+
+    case DistanceNauticalMiles:
+      return QObject::tr( "nautical miles", "distance" );
+  }
+  return QString();
+}
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
+{
+  switch ( unit )
+  {
+    case DistanceMeters:
+      return QObject::tr( "m", "distance" );
+
+    case DistanceKilometers:
+      return QObject::tr( "km", "distance" );
+
+    case DistanceFeet:
+      return QObject::tr( "ft", "distance" );
+
+    case DistanceYards:
+      return QObject::tr( "yd", "distance" );
+
+    case DistanceMiles:
+      return QObject::tr( "mi", "distance" );
+
+    case DistanceDegrees:
+      return QObject::tr( "deg", "distance" );
+
+    case DistanceCentimeters:
+      return QObject::tr( "cm", "distance" );
+
+    case DistanceMillimeters:
+      return QObject::tr( "mm", "distance" );
+
+    case DistanceUnknownUnit:
+      return QString();
+
+    case DistanceNauticalMiles:
+      return QObject::tr( "NM", "distance" );
   }
   return QString();
 }
@@ -172,34 +229,38 @@ QString QgsUnitTypes::toString( QGis::UnitType unit )
  * See details in QEP #17
  ****************************************************************************/
 
-QGis::UnitType QgsUnitTypes::stringToDistanceUnit( const QString& string, bool* ok )
+QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == toString( QGis::Meters ) )
-    return QGis::Meters;
-  if ( normalized == toString( QGis::Kilometers ) )
-    return QGis::Kilometers;
-  if ( normalized == toString( QGis::Feet ) )
-    return QGis::Feet;
-  if ( normalized == toString( QGis::Yards ) )
-    return QGis::Yards;
-  if ( normalized == toString( QGis::Miles ) )
-    return QGis::Miles;
-  if ( normalized == toString( QGis::Degrees ) )
-    return QGis::Degrees;
-  if ( normalized == toString( QGis::NauticalMiles ) )
-    return QGis::NauticalMiles;
-  if ( normalized == toString( QGis::UnknownUnit ) )
-    return QGis::UnknownUnit;
+  if ( normalized == toString( DistanceMeters ) )
+    return DistanceMeters;
+  if ( normalized == toString( DistanceKilometers ) )
+    return DistanceKilometers;
+  if ( normalized == toString( DistanceFeet ) )
+    return DistanceFeet;
+  if ( normalized == toString( DistanceYards ) )
+    return DistanceYards;
+  if ( normalized == toString( DistanceMiles ) )
+    return DistanceMiles;
+  if ( normalized == toString( DistanceDegrees ) )
+    return DistanceDegrees;
+  if ( normalized == toString( DistanceCentimeters ) )
+    return DistanceCentimeters;
+  if ( normalized == toString( DistanceMillimeters ) )
+    return DistanceMillimeters;
+  if ( normalized == toString( DistanceNauticalMiles ) )
+    return DistanceNauticalMiles;
+  if ( normalized == toString( DistanceUnknownUnit ) )
+    return DistanceUnknownUnit;
 
   if ( ok )
     *ok = false;
 
-  return QGis::UnknownUnit;
+  return DistanceUnknownUnit;
 }
 
 /***************************************************************************
@@ -208,194 +269,274 @@ QGis::UnitType QgsUnitTypes::stringToDistanceUnit( const QString& string, bool* 
  * See details in QEP #17
  ****************************************************************************/
 
-double QgsUnitTypes::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
+double QgsUnitTypes::fromUnitToUnitFactor( DistanceUnit fromUnit, DistanceUnit toUnit )
 {
 #define DEGREE_TO_METER 111319.49079327358
 #define FEET_TO_METER 0.3048
 #define NMILE_TO_METER 1852.0
 #define KILOMETERS_TO_METER 1000.0
+#define CENTIMETERS_TO_METER 0.01
+#define MILLIMETERS_TO_METER 0.001
 #define YARDS_TO_METER 0.9144
 #define YARDS_TO_FEET 3.0
 #define MILES_TO_METER 1609.344
-  // Unify degree units
-  // remove for QGIS 3.0, as extra degree types will be removed
-  if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes )
-    fromUnit = QGis::Degrees;
-  if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes )
-    toUnit = QGis::Degrees;
 
   // Calculate the conversion factor between the specified units
   switch ( fromUnit )
   {
-    case QGis::Meters:
+    case DistanceMeters:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return 1.0;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return 1.0 / KILOMETERS_TO_METER;
-        case QGis::Feet:
+        case DistanceMillimeters:
+          return 1.0 / MILLIMETERS_TO_METER;
+        case DistanceCentimeters:
+          return 1.0 / CENTIMETERS_TO_METER;
+        case DistanceFeet:
           return 1.0 / FEET_TO_METER;
-        case QGis::Yards:
+        case DistanceYards:
           return 1.0 / YARDS_TO_METER;
-        case QGis::Miles:
+        case DistanceMiles:
           return 1.0 / MILES_TO_METER;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return 1.0 / DEGREE_TO_METER;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return 1.0 / NMILE_TO_METER;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::Kilometers:
+    case DistanceKilometers:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return KILOMETERS_TO_METER;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return 1.0;
-        case QGis::Feet:
+        case DistanceCentimeters:
+          return KILOMETERS_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return KILOMETERS_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
           return KILOMETERS_TO_METER / FEET_TO_METER;
-        case QGis::Yards:
+        case DistanceYards:
           return KILOMETERS_TO_METER / YARDS_TO_METER;
-        case QGis::Miles:
+        case DistanceMiles:
           return KILOMETERS_TO_METER / MILES_TO_METER;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return KILOMETERS_TO_METER / DEGREE_TO_METER;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return KILOMETERS_TO_METER / NMILE_TO_METER;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::Feet:
+    case DistanceFeet:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return FEET_TO_METER;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return FEET_TO_METER / KILOMETERS_TO_METER;
-        case QGis::Feet:
+        case DistanceCentimeters:
+          return FEET_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return FEET_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
           return 1.0;
-        case QGis::Yards:
+        case DistanceYards:
           return 1.0 / YARDS_TO_FEET;
-        case QGis::Miles:
+        case DistanceMiles:
           return FEET_TO_METER / MILES_TO_METER;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return FEET_TO_METER / DEGREE_TO_METER;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return FEET_TO_METER / NMILE_TO_METER;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::Yards:
+    case DistanceYards:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return YARDS_TO_METER;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return YARDS_TO_METER / KILOMETERS_TO_METER;
-        case QGis::Feet:
+        case DistanceCentimeters:
+          return YARDS_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return YARDS_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
           return YARDS_TO_FEET;
-        case QGis::Yards:
+        case DistanceYards:
           return 1.0;
-        case QGis::Miles:
+        case DistanceMiles:
           return YARDS_TO_METER / MILES_TO_METER;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return YARDS_TO_METER / DEGREE_TO_METER;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return YARDS_TO_METER / NMILE_TO_METER;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::Miles:
+    case DistanceMiles:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return MILES_TO_METER;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return MILES_TO_METER / KILOMETERS_TO_METER;
-        case QGis::Feet:
+        case DistanceCentimeters:
+          return MILES_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return MILES_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
           return MILES_TO_METER / FEET_TO_METER;
-        case QGis::Yards:
+        case DistanceYards:
           return MILES_TO_METER / YARDS_TO_METER;
-        case QGis::Miles:
+        case DistanceMiles:
           return 1.0;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return MILES_TO_METER / DEGREE_TO_METER;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return MILES_TO_METER / NMILE_TO_METER;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::Degrees:
+    case DistanceDegrees:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return DEGREE_TO_METER;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return DEGREE_TO_METER / KILOMETERS_TO_METER;
-        case QGis::Feet:
+        case DistanceCentimeters:
+          return DEGREE_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return DEGREE_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
           return DEGREE_TO_METER / FEET_TO_METER;
-        case QGis::Yards:
+        case DistanceYards:
           return DEGREE_TO_METER / YARDS_TO_METER;
-        case QGis::Miles:
+        case DistanceMiles:
           return DEGREE_TO_METER / MILES_TO_METER;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return 1.0;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return DEGREE_TO_METER / NMILE_TO_METER;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::NauticalMiles:
+    case DistanceNauticalMiles:
     {
       switch ( toUnit )
       {
-        case QGis::Meters:
+        case DistanceMeters:
           return NMILE_TO_METER;
-        case QGis::Kilometers:
+        case DistanceKilometers:
           return NMILE_TO_METER / KILOMETERS_TO_METER;
-        case QGis::Feet:
+        case DistanceCentimeters:
+          return NMILE_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return NMILE_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
           return NMILE_TO_METER / FEET_TO_METER;
-        case QGis::Yards:
+        case DistanceYards:
           return NMILE_TO_METER / YARDS_TO_METER;
-        case QGis::Miles:
+        case DistanceMiles:
           return NMILE_TO_METER / MILES_TO_METER;
-        case QGis::Degrees:
+        case DistanceDegrees:
           return NMILE_TO_METER / DEGREE_TO_METER;
-        case QGis::NauticalMiles:
+        case DistanceNauticalMiles:
           return 1.0;
-        case QGis::UnknownUnit:
+        case DistanceUnknownUnit:
           break;
       }
 
       break;
     }
-    case QGis::UnknownUnit:
+    case DistanceCentimeters:
+    {
+      switch ( toUnit )
+      {
+        case DistanceMeters:
+          return CENTIMETERS_TO_METER;
+        case DistanceKilometers:
+          return CENTIMETERS_TO_METER / KILOMETERS_TO_METER;;
+        case DistanceCentimeters:
+          return 1.0;
+        case DistanceMillimeters:
+          return CENTIMETERS_TO_METER / MILLIMETERS_TO_METER;
+        case DistanceFeet:
+          return CENTIMETERS_TO_METER / FEET_TO_METER;
+        case DistanceYards:
+          return CENTIMETERS_TO_METER / YARDS_TO_METER;
+        case DistanceMiles:
+          return CENTIMETERS_TO_METER / MILES_TO_METER;
+        case DistanceDegrees:
+          return CENTIMETERS_TO_METER / DEGREE_TO_METER;
+        case DistanceNauticalMiles:
+          return CENTIMETERS_TO_METER / NMILE_TO_METER;
+        case DistanceUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case DistanceMillimeters:
+    {
+      switch ( toUnit )
+      {
+        case DistanceMeters:
+          return MILLIMETERS_TO_METER;
+        case DistanceKilometers:
+          return MILLIMETERS_TO_METER / KILOMETERS_TO_METER;
+        case DistanceCentimeters:
+          return MILLIMETERS_TO_METER / CENTIMETERS_TO_METER;
+        case DistanceMillimeters:
+          return 1.0;
+        case DistanceFeet:
+          return MILLIMETERS_TO_METER / FEET_TO_METER;
+        case DistanceYards:
+          return MILLIMETERS_TO_METER / YARDS_TO_METER;
+        case DistanceMiles:
+          return MILLIMETERS_TO_METER / MILES_TO_METER;
+        case DistanceDegrees:
+          return MILLIMETERS_TO_METER / DEGREE_TO_METER;
+        case DistanceNauticalMiles:
+          return MILLIMETERS_TO_METER / NMILE_TO_METER;
+        case DistanceUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case DistanceUnknownUnit:
       break;
   }
   return 1.0;
@@ -405,128 +546,178 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaUnit unit )
 {
   switch ( unit )
   {
-    case SquareMeters:
-      return "m2";
-    case SquareKilometers:
-      return "km2";
-    case SquareFeet:
-      return "ft2";
-    case SquareYards:
-      return "y2";
-    case SquareMiles:
-      return "mi2";
-    case Hectares:
-      return "ha";
-    case Acres:
-      return "ac";
-    case SquareNauticalMiles:
-      return "nm2";
-    case SquareDegrees:
-      return "deg2";
-    case UnknownAreaUnit:
-      return "<unknown>";
+    case AreaSquareMeters:
+      return QStringLiteral( "m2" );
+    case AreaSquareKilometers:
+      return QStringLiteral( "km2" );
+    case AreaSquareFeet:
+      return QStringLiteral( "ft2" );
+    case AreaSquareYards:
+      return QStringLiteral( "y2" );
+    case AreaSquareMiles:
+      return QStringLiteral( "mi2" );
+    case AreaHectares:
+      return QStringLiteral( "ha" );
+    case AreaAcres:
+      return QStringLiteral( "ac" );
+    case AreaSquareNauticalMiles:
+      return QStringLiteral( "nm2" );
+    case AreaSquareDegrees:
+      return QStringLiteral( "deg2" );
+    case AreaSquareCentimeters:
+      return QStringLiteral( "cm2" );
+    case AreaSquareMillimeters:
+      return QStringLiteral( "mm2" );
+    case AreaUnknownUnit:
+      return QStringLiteral( "<unknown>" );
   }
   return QString();
 }
 
-QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString& string, bool* ok )
+QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == encodeUnit( SquareMeters ) )
-    return SquareMeters;
-  if ( normalized == encodeUnit( SquareKilometers ) )
-    return SquareKilometers;
-  if ( normalized == encodeUnit( SquareFeet ) )
-    return SquareFeet;
-  if ( normalized == encodeUnit( SquareYards ) )
-    return SquareYards;
-  if ( normalized == encodeUnit( SquareMiles ) )
-    return SquareMiles;
-  if ( normalized == encodeUnit( Hectares ) )
-    return Hectares;
-  if ( normalized == encodeUnit( Acres ) )
-    return Acres;
-  if ( normalized == encodeUnit( SquareNauticalMiles ) )
-    return SquareNauticalMiles;
-  if ( normalized == encodeUnit( SquareDegrees ) )
-    return SquareDegrees;
-  if ( normalized == encodeUnit( UnknownAreaUnit ) )
-    return UnknownAreaUnit;
+  if ( normalized == encodeUnit( AreaSquareMeters ) )
+    return AreaSquareMeters;
+  if ( normalized == encodeUnit( AreaSquareKilometers ) )
+    return AreaSquareKilometers;
+  if ( normalized == encodeUnit( AreaSquareFeet ) )
+    return AreaSquareFeet;
+  if ( normalized == encodeUnit( AreaSquareYards ) )
+    return AreaSquareYards;
+  if ( normalized == encodeUnit( AreaSquareMiles ) )
+    return AreaSquareMiles;
+  if ( normalized == encodeUnit( AreaHectares ) )
+    return AreaHectares;
+  if ( normalized == encodeUnit( AreaAcres ) )
+    return AreaAcres;
+  if ( normalized == encodeUnit( AreaSquareNauticalMiles ) )
+    return AreaSquareNauticalMiles;
+  if ( normalized == encodeUnit( AreaSquareDegrees ) )
+    return AreaSquareDegrees;
+  if ( normalized == encodeUnit( AreaSquareCentimeters ) )
+    return AreaSquareCentimeters;
+  if ( normalized == encodeUnit( AreaSquareMillimeters ) )
+    return AreaSquareMillimeters;
+  if ( normalized == encodeUnit( AreaUnknownUnit ) )
+    return AreaUnknownUnit;
 
   if ( ok )
     *ok = false;
 
-  return UnknownAreaUnit;
+  return AreaUnknownUnit;
 }
 
 QString QgsUnitTypes::toString( QgsUnitTypes::AreaUnit unit )
 {
   switch ( unit )
   {
-    case SquareMeters:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square meters" );
-    case SquareKilometers:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square kilometers" );
-    case SquareFeet:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square feet" );
-    case SquareYards:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square yards" );
-    case SquareMiles:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square miles" );
-    case Hectares:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "hectares" );
-    case Acres:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "acres" );
-    case SquareNauticalMiles:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square nautical miles" );
-    case SquareDegrees:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "square degrees" );
-    case UnknownAreaUnit:
-      return QCoreApplication::translate( "QgsUnitTypes::AreaUnit", "<unknown>" );
+    case AreaSquareMeters:
+      return QObject::tr( "square meters", "area" );
+    case AreaSquareKilometers:
+      return QObject::tr( "square kilometers", "area" );
+    case AreaSquareFeet:
+      return QObject::tr( "square feet", "area" );
+    case AreaSquareYards:
+      return QObject::tr( "square yards", "area" );
+    case AreaSquareMiles:
+      return QObject::tr( "square miles", "area" );
+    case AreaHectares:
+      return QObject::tr( "hectares", "area" );
+    case AreaAcres:
+      return QObject::tr( "acres", "area" );
+    case AreaSquareNauticalMiles:
+      return QObject::tr( "square nautical miles", "area" );
+    case AreaSquareDegrees:
+      return QObject::tr( "square degrees", "area" );
+    case AreaSquareMillimeters:
+      return QObject::tr( "square millimeters", "area" );
+    case AreaSquareCentimeters:
+      return QObject::tr( "square centimeters", "area" );
+    case AreaUnknownUnit:
+      return QObject::tr( "<unknown>", "area" );
   }
   return QString();
 }
 
-QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString& string, bool* ok )
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
+{
+  switch ( unit )
+  {
+    case AreaSquareMeters:
+      return QObject::tr( "m²", "area" );
+    case AreaSquareKilometers:
+      return QObject::tr( "km²", "area" );
+    case AreaSquareFeet:
+      return QObject::tr( "ft²", "area" );
+    case AreaSquareYards:
+      return QObject::tr( "yd²", "area" );
+    case AreaSquareMiles:
+      return QObject::tr( "mi²", "area" );
+    case AreaHectares:
+      return QObject::tr( "ha", "area" );
+    case AreaAcres:
+      return QObject::tr( "ac²", "area" );
+    case AreaSquareNauticalMiles:
+      return QObject::tr( "NM²", "area" );
+    case AreaSquareDegrees:
+      return QObject::tr( "deg²", "area" );
+    case AreaSquareCentimeters:
+      return QObject::tr( "cm²", "area" );
+    case AreaSquareMillimeters:
+      return QObject::tr( "mm²", "area" );
+    case AreaUnknownUnit:
+      return QString();
+  }
+  return QString();
+}
+
+QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == toString( SquareMeters ) )
-    return SquareMeters;
-  if ( normalized == toString( SquareKilometers ) )
-    return SquareKilometers;
-  if ( normalized == toString( SquareFeet ) )
-    return SquareFeet;
-  if ( normalized == toString( SquareYards ) )
-    return SquareYards;
-  if ( normalized == toString( SquareMiles ) )
-    return SquareMiles;
-  if ( normalized == toString( Hectares ) )
-    return Hectares;
-  if ( normalized == toString( Acres ) )
-    return Acres;
-  if ( normalized == toString( SquareNauticalMiles ) )
-    return SquareNauticalMiles;
-  if ( normalized == toString( SquareDegrees ) )
-    return SquareDegrees;
-  if ( normalized == toString( UnknownAreaUnit ) )
-    return UnknownAreaUnit;
+  if ( normalized == toString( AreaSquareMeters ) )
+    return AreaSquareMeters;
+  if ( normalized == toString( AreaSquareKilometers ) )
+    return AreaSquareKilometers;
+  if ( normalized == toString( AreaSquareFeet ) )
+    return AreaSquareFeet;
+  if ( normalized == toString( AreaSquareYards ) )
+    return AreaSquareYards;
+  if ( normalized == toString( AreaSquareMiles ) )
+    return AreaSquareMiles;
+  if ( normalized == toString( AreaHectares ) )
+    return AreaHectares;
+  if ( normalized == toString( AreaAcres ) )
+    return AreaAcres;
+  if ( normalized == toString( AreaSquareNauticalMiles ) )
+    return AreaSquareNauticalMiles;
+  if ( normalized == toString( AreaSquareDegrees ) )
+    return AreaSquareDegrees;
+  if ( normalized == toString( AreaSquareMillimeters ) )
+    return AreaSquareMillimeters;
+  if ( normalized == toString( AreaSquareCentimeters ) )
+    return AreaSquareCentimeters;
+  if ( normalized == toString( AreaUnknownUnit ) )
+    return AreaUnknownUnit;
   if ( ok )
     *ok = false;
 
-  return UnknownAreaUnit;
+  return AreaUnknownUnit;
 }
 
 double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsUnitTypes::AreaUnit toUnit )
 {
 #define KM2_TO_M2 1000000.0
+#define CM2_TO_M2 0.0001
+#define MM2_TO_M2 0.000001
 #define FT2_TO_M2 0.09290304
 #define YD2_TO_M2 0.83612736
 #define MI2_TO_M2 2589988.110336
@@ -538,300 +729,406 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
   // Calculate the conversion factor between the specified units
   switch ( fromUnit )
   {
-    case SquareMeters:
+    case AreaSquareMeters:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return 1.0;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return 1.0 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return 1.0 / FT2_TO_M2;
-        case SquareYards:
+        case AreaSquareYards:
           return 1.0 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return 1.0 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return 1.0 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return 1.0 / AC_TO_FT2 / FT2_TO_M2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return 1.0 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return 1.0 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return 1.0 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return 1.0 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
-    case SquareKilometers:
+    case AreaSquareKilometers:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return KM2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return 1.0;
-        case SquareFeet:
-          return KM2_TO_M2 / FT2_TO_M2 ;
-        case SquareYards:
+        case AreaSquareFeet:
+          return KM2_TO_M2 / FT2_TO_M2;
+        case AreaSquareYards:
           return KM2_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return KM2_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return KM2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return KM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return KM2_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return KM2_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return KM2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return KM2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
-    case SquareFeet:
+    case AreaSquareFeet:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return FT2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return FT2_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return 1.0;
-        case SquareYards:
+        case AreaSquareYards:
           return FT2_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return FT2_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return FT2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return 1.0 / AC_TO_FT2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return FT2_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return FT2_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return FT2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return FT2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
 
-    case SquareYards:
+    case AreaSquareYards:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return YD2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return YD2_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return YD2_TO_M2 / FT2_TO_M2;
-        case SquareYards:
+        case AreaSquareYards:
           return 1.0;
-        case SquareMiles:
+        case AreaSquareMiles:
           return YD2_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return YD2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return YD2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return YD2_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return YD2_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return YD2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return YD2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
       break;
     }
 
-    case SquareMiles:
+    case AreaSquareMiles:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return MI2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return MI2_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return MI2_TO_M2 / FT2_TO_M2;
-        case SquareYards:
+        case AreaSquareYards:
           return MI2_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return 1.0;
-        case Hectares:
+        case AreaHectares:
           return MI2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return MI2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return MI2_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return MI2_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return MI2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return MI2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
 
-    case Hectares:
+    case AreaHectares:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return HA_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return HA_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return HA_TO_M2 / FT2_TO_M2;
-        case SquareYards:
+        case AreaSquareYards:
           return HA_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return HA_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return 1.0;
-        case Acres:
+        case AreaAcres:
           return HA_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return HA_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return HA_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return HA_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return HA_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
 
-    case Acres:
+    case AreaAcres:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return AC_TO_FT2 * FT2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return AC_TO_FT2 * FT2_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return AC_TO_FT2;
-        case SquareYards:
+        case AreaSquareYards:
           return AC_TO_FT2 * FT2_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return AC_TO_FT2 * FT2_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return AC_TO_FT2 * FT2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return 1.0;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return AC_TO_FT2 * FT2_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return AC_TO_FT2 * FT2_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return AC_TO_FT2 * FT2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return AC_TO_FT2 * FT2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
 
-    case SquareNauticalMiles:
+    case AreaSquareNauticalMiles:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return NM2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return NM2_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return NM2_TO_M2 / FT2_TO_M2;
-        case SquareYards:
+        case AreaSquareYards:
           return NM2_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return NM2_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return NM2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return NM2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return 1.0;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return NM2_TO_M2 / DEG2_TO_M2;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return NM2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return NM2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
 
-    case SquareDegrees:
+    case AreaSquareDegrees:
     {
       switch ( toUnit )
       {
-        case SquareMeters:
+        case AreaSquareMeters:
           return DEG2_TO_M2;
-        case SquareKilometers:
+        case AreaSquareKilometers:
           return DEG2_TO_M2 / KM2_TO_M2;
-        case SquareFeet:
+        case AreaSquareFeet:
           return DEG2_TO_M2 / FT2_TO_M2;
-        case SquareYards:
+        case AreaSquareYards:
           return DEG2_TO_M2 / YD2_TO_M2;
-        case SquareMiles:
+        case AreaSquareMiles:
           return DEG2_TO_M2 / MI2_TO_M2;
-        case Hectares:
+        case AreaHectares:
           return DEG2_TO_M2 / HA_TO_M2;
-        case Acres:
+        case AreaAcres:
           return DEG2_TO_M2 / FT2_TO_M2 / AC_TO_FT2;
-        case SquareNauticalMiles:
+        case AreaSquareNauticalMiles:
           return DEG2_TO_M2 / NM2_TO_M2;
-        case SquareDegrees:
+        case AreaSquareDegrees:
           return 1.0;
-        case UnknownAreaUnit:
+        case AreaSquareCentimeters:
+          return DEG2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return DEG2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
           break;
       }
 
       break;
     }
 
-    case UnknownAreaUnit:
+    case AreaSquareMillimeters:
+    {
+      switch ( toUnit )
+      {
+        case AreaSquareMeters:
+          return MM2_TO_M2;
+        case AreaSquareKilometers:
+          return MM2_TO_M2 / KM2_TO_M2;
+        case AreaSquareFeet:
+          return MM2_TO_M2 / FT2_TO_M2;
+        case AreaSquareYards:
+          return MM2_TO_M2 / YD2_TO_M2;
+        case AreaSquareMiles:
+          return MM2_TO_M2 / MI2_TO_M2;
+        case AreaHectares:
+          return MM2_TO_M2 / HA_TO_M2;
+        case AreaAcres:
+          return MM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2;
+        case AreaSquareNauticalMiles:
+          return MM2_TO_M2 / NM2_TO_M2;
+        case AreaSquareDegrees:
+          return MM2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return MM2_TO_M2 / CM2_TO_M2;
+        case AreaSquareMillimeters:
+          return 1.0;
+        case AreaUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case AreaSquareCentimeters:
+    {
+      switch ( toUnit )
+      {
+        case AreaSquareMeters:
+          return CM2_TO_M2;
+        case AreaSquareKilometers:
+          return CM2_TO_M2 / KM2_TO_M2;
+        case AreaSquareFeet:
+          return CM2_TO_M2 / FT2_TO_M2;
+        case AreaSquareYards:
+          return CM2_TO_M2 / YD2_TO_M2;
+        case AreaSquareMiles:
+          return CM2_TO_M2 / MI2_TO_M2;
+        case AreaHectares:
+          return CM2_TO_M2 / HA_TO_M2;
+        case AreaAcres:
+          return CM2_TO_M2 / AC_TO_FT2 / FT2_TO_M2;
+        case AreaSquareNauticalMiles:
+          return CM2_TO_M2 / NM2_TO_M2;
+        case AreaSquareDegrees:
+          return CM2_TO_M2 / DEG2_TO_M2;
+        case AreaSquareCentimeters:
+          return 1.0;
+        case AreaSquareMillimeters:
+          return CM2_TO_M2 / MM2_TO_M2;
+        case AreaUnknownUnit:
+          break;
+      }
+
+      break;
+    }
+    case AreaUnknownUnit:
       break;
   }
   return 1.0;
 }
 
-QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( QGis::UnitType distanceUnit )
+QgsUnitTypes::AreaUnit QgsUnitTypes::distanceToAreaUnit( DistanceUnit distanceUnit )
 {
   switch ( distanceUnit )
   {
-    case QGis::Meters:
-      return SquareMeters;
+    case DistanceMeters:
+      return AreaSquareMeters;
 
-    case QGis::Kilometers:
-      return SquareKilometers;
+    case DistanceKilometers:
+      return AreaSquareKilometers;
 
-    case QGis::Feet:
-      return SquareFeet;
+    case DistanceCentimeters:
+      return AreaSquareCentimeters;
 
-    case QGis::Yards:
-      return SquareYards;
+    case DistanceMillimeters:
+      return AreaSquareCentimeters;
 
-    case QGis::Miles:
-      return SquareMiles;
+    case DistanceFeet:
+      return AreaSquareFeet;
 
-    case QGis::Degrees:
-      return SquareDegrees;
+    case DistanceYards:
+      return AreaSquareYards;
 
-    case QGis::UnknownUnit:
-      return UnknownAreaUnit;
+    case DistanceMiles:
+      return AreaSquareMiles;
 
-    case QGis::NauticalMiles:
-      return SquareNauticalMiles;
+    case DistanceDegrees:
+      return AreaSquareDegrees;
+
+    case DistanceUnknownUnit:
+      return AreaUnknownUnit;
+
+    case DistanceNauticalMiles:
+      return AreaSquareNauticalMiles;
   }
 
-  return UnknownAreaUnit;
+  return AreaUnknownUnit;
 }
 
 QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
@@ -839,24 +1136,24 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
   switch ( unit )
   {
     case AngleDegrees:
-      return "degrees";
-    case Radians:
-      return "radians";
-    case Gon:
-      return "gon";
-    case MinutesOfArc:
-      return "moa";
-    case SecondsOfArc:
-      return "soa";
-    case Turn:
-      return "tr";
-    case UnknownAngleUnit:
-      return "<unknown>";
+      return QStringLiteral( "degrees" );
+    case AngleRadians:
+      return QStringLiteral( "radians" );
+    case AngleGon:
+      return QStringLiteral( "gon" );
+    case AngleMinutesOfArc:
+      return QStringLiteral( "moa" );
+    case AngleSecondsOfArc:
+      return QStringLiteral( "soa" );
+    case AngleTurn:
+      return QStringLiteral( "tr" );
+    case AngleUnknownUnit:
+      return QStringLiteral( "<unknown>" );
   }
   return QString();
 }
 
-QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString& string, bool* ok )
+QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
@@ -865,22 +1162,22 @@ QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString& string, bo
 
   if ( normalized == encodeUnit( AngleDegrees ) )
     return AngleDegrees;
-  if ( normalized == encodeUnit( Radians ) )
-    return Radians;
-  if ( normalized == encodeUnit( Gon ) )
-    return Gon;
-  if ( normalized == encodeUnit( MinutesOfArc ) )
-    return MinutesOfArc;
-  if ( normalized == encodeUnit( SecondsOfArc ) )
-    return SecondsOfArc;
-  if ( normalized == encodeUnit( Turn ) )
-    return Turn;
-  if ( normalized == encodeUnit( UnknownAngleUnit ) )
-    return UnknownAngleUnit;
+  if ( normalized == encodeUnit( AngleRadians ) )
+    return AngleRadians;
+  if ( normalized == encodeUnit( AngleGon ) )
+    return AngleGon;
+  if ( normalized == encodeUnit( AngleMinutesOfArc ) )
+    return AngleMinutesOfArc;
+  if ( normalized == encodeUnit( AngleSecondsOfArc ) )
+    return AngleSecondsOfArc;
+  if ( normalized == encodeUnit( AngleTurn ) )
+    return AngleTurn;
+  if ( normalized == encodeUnit( AngleUnknownUnit ) )
+    return AngleUnknownUnit;
   if ( ok )
     *ok = false;
 
-  return UnknownAngleUnit;
+  return AngleUnknownUnit;
 }
 
 QString QgsUnitTypes::toString( QgsUnitTypes::AngleUnit unit )
@@ -888,19 +1185,19 @@ QString QgsUnitTypes::toString( QgsUnitTypes::AngleUnit unit )
   switch ( unit )
   {
     case AngleDegrees:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "degrees" );
-    case Radians:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "radians" );
-    case Gon:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "gon" );
-    case MinutesOfArc:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "minutes of arc" );
-    case SecondsOfArc:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "seconds of arc" );
-    case Turn:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "turns" );
-    case UnknownAngleUnit:
-      return QCoreApplication::translate( "QgsUnitTypes::AngleUnit", "<unknown>" );
+      return QObject::tr( "degrees", "angle" );
+    case AngleRadians:
+      return QObject::tr( "radians", "angle" );
+    case AngleGon:
+      return QObject::tr( "gon", "angle" );
+    case AngleMinutesOfArc:
+      return QObject::tr( "minutes of arc", "angle" );
+    case AngleSecondsOfArc:
+      return QObject::tr( "seconds of arc", "angle" );
+    case AngleTurn:
+      return QObject::tr( "turns", "angle" );
+    case AngleUnknownUnit:
+      return QObject::tr( "<unknown>", "angle" );
   }
   return QString();
 }
@@ -916,127 +1213,127 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, Qgs
       {
         case AngleDegrees:
           return 1.0;
-        case Radians:
+        case AngleRadians:
           return M_PI / 180.0;
-        case Gon:
+        case AngleGon:
           return 400.0 / 360.0;
-        case MinutesOfArc:
+        case AngleMinutesOfArc:
           return 60;
-        case SecondsOfArc:
+        case AngleSecondsOfArc:
           return 3600;
-        case Turn:
+        case AngleTurn:
           return 1.0 / 360.0;
-        case UnknownAngleUnit:
+        case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case Radians:
+    case AngleRadians:
     {
       switch ( toUnit )
       {
         case AngleDegrees:
           return 180.0 / M_PI;
-        case Radians:
+        case AngleRadians:
           return 1.0;
-        case Gon:
+        case AngleGon:
           return 200.0 / M_PI;
-        case MinutesOfArc:
+        case AngleMinutesOfArc:
           return 60 * 180.0 / M_PI;
-        case SecondsOfArc:
+        case AngleSecondsOfArc:
           return 3600 * 180.0 / M_PI;
-        case Turn:
+        case AngleTurn:
           return 0.5 / M_PI;
-        case UnknownAngleUnit:
+        case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case Gon:
+    case AngleGon:
     {
       switch ( toUnit )
       {
         case AngleDegrees:
           return 360.0 / 400.0;
-        case Radians:
+        case AngleRadians:
           return M_PI / 200.0;
-        case Gon:
+        case AngleGon:
           return 1.0;
-        case MinutesOfArc:
+        case AngleMinutesOfArc:
           return 60 * 360.0 / 400.0;
-        case SecondsOfArc:
+        case AngleSecondsOfArc:
           return 3600 * 360.0 / 400.0;
-        case Turn:
+        case AngleTurn:
           return 1.0 / 400.0;
-        case UnknownAngleUnit:
+        case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case MinutesOfArc:
+    case AngleMinutesOfArc:
     {
       switch ( toUnit )
       {
         case AngleDegrees:
           return 1 / 60.0;
-        case Radians:
+        case AngleRadians:
           return M_PI / 180.0 / 60.0;
-        case Gon:
+        case AngleGon:
           return 400.0 / 360.0 / 60.0;
-        case MinutesOfArc:
+        case AngleMinutesOfArc:
           return 1.0;
-        case SecondsOfArc:
+        case AngleSecondsOfArc:
           return 60.0;
-        case Turn:
+        case AngleTurn:
           return 1.0 / 360.0 / 60.0;
-        case UnknownAngleUnit:
+        case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case SecondsOfArc:
+    case AngleSecondsOfArc:
     {
       switch ( toUnit )
       {
         case AngleDegrees:
           return 1 / 3600.0;
-        case Radians:
+        case AngleRadians:
           return M_PI / 180.0 / 3600.0;
-        case Gon:
+        case AngleGon:
           return 400.0 / 360.0 / 3600.0;
-        case MinutesOfArc:
+        case AngleMinutesOfArc:
           return 1.0 / 60.0;
-        case SecondsOfArc:
+        case AngleSecondsOfArc:
           return 1.0;
-        case Turn:
+        case AngleTurn:
           return 1.0 / 360.0 / 3600.0;
-        case UnknownAngleUnit:
+        case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case Turn:
+    case AngleTurn:
     {
       switch ( toUnit )
       {
         case AngleDegrees:
           return 360.0;
-        case Radians:
+        case AngleRadians:
           return 2 * M_PI;
-        case Gon:
+        case AngleGon:
           return 400.0;
-        case MinutesOfArc:
+        case AngleMinutesOfArc:
           return 360.0 * 60.0;
-        case SecondsOfArc:
+        case AngleSecondsOfArc:
           return 360.0 * 3600.0;
-        case Turn:
+        case AngleTurn:
           return 1.0;
-        case UnknownAngleUnit:
+        case AngleUnknownUnit:
           break;
       }
       break;
     }
-    case UnknownAngleUnit:
+    case AngleUnknownUnit:
       break;
   }
   return 1.0;
@@ -1049,71 +1346,566 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
   switch ( unit )
   {
     case AngleDegrees:
-      unitLabel = QObject::trUtf8( "°" );
+      unitLabel = QObject::tr( "°", "angle" );
       break;
-    case Radians:
-      unitLabel = QObject::trUtf8( " rad" );
+    case AngleRadians:
+      unitLabel = QObject::tr( " rad", "angle" );
       break;
-    case Gon:
-      unitLabel = QObject::trUtf8( " gon" );
+    case AngleGon:
+      unitLabel = QObject::tr( " gon", "angle" );
       break;
-    case MinutesOfArc:
-      unitLabel = QObject::trUtf8( "′" );
+    case AngleMinutesOfArc:
+      unitLabel = QObject::tr( "′", "angle minutes" );
       break;
-    case SecondsOfArc:
-      unitLabel = QObject::trUtf8( "″" );
+    case AngleSecondsOfArc:
+      unitLabel = QObject::tr( "″", "angle seconds" );
       break;
-    case Turn:
-      unitLabel = QObject::trUtf8( " tr" );
+    case AngleTurn:
+      unitLabel = QObject::tr( " tr", "angle turn" );
       break;
-    case UnknownAngleUnit:
+    case AngleUnknownUnit:
       break;
   }
 
-  return QString( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
+  return QStringLiteral( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
 }
 
-// enable for QGIS 3.0
-#if 0
 
-QString QgsUnitTypes::encodeUnit( QgsSymbolV2::OutputUnit unit )
+QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit )
+{
+  DistanceValue result;
+
+  switch ( unit )
+  {
+    case DistanceMeters:
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceMeters;
+      }
+      else if ( std::fabs( distance ) > 1000.0 )
+      {
+        result.value = qgsRound( distance / 1000, decimals );
+        result.unit = QgsUnitTypes::DistanceKilometers;
+      }
+      else if ( std::fabs( distance ) < 0.01 )
+      {
+        result.value = qgsRound( distance * 1000, decimals );
+        result.unit = QgsUnitTypes::DistanceMillimeters;
+      }
+      else if ( std::fabs( distance ) < 0.1 )
+      {
+
+        result.value = qgsRound( distance * 100, decimals );
+        result.unit = QgsUnitTypes::DistanceCentimeters;
+      }
+      else
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceMeters;
+      }
+      break;
+
+    case DistanceKilometers:
+      if ( keepBaseUnit || std::fabs( distance ) >= 1.0 )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceKilometers;
+      }
+      else
+      {
+        result.value = qgsRound( distance * 1000, decimals );
+        result.unit = QgsUnitTypes::DistanceMeters;
+      }
+      break;
+
+    case DistanceFeet:
+      if ( std::fabs( distance ) <= 5280.0 || keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceFeet;
+      }
+      else
+      {
+        result.value = qgsRound( distance / 5280.0, decimals );
+        result.unit = QgsUnitTypes::DistanceMiles;
+      }
+      break;
+
+    case DistanceYards:
+      if ( std::fabs( distance ) <= 1760.0 || keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceYards;
+      }
+      else
+      {
+        result.value = qgsRound( distance / 1760.0, decimals );
+        result.unit = QgsUnitTypes::DistanceMiles;
+      }
+      break;
+
+    case DistanceMiles:
+      if ( std::fabs( distance ) >= 1.0 || keepBaseUnit )
+      {
+        result.value = qgsRound( distance, decimals );
+        result.unit = QgsUnitTypes::DistanceMiles;
+      }
+      else
+      {
+        result.value = qgsRound( distance * 5280.0, decimals );
+        result.unit = QgsUnitTypes::DistanceFeet;
+      }
+      break;
+
+    case DistanceNauticalMiles:
+      result.value = qgsRound( distance, decimals );
+      result.unit = QgsUnitTypes::DistanceNauticalMiles;
+      break;
+
+    case DistanceDegrees:
+      result.value = qgsRound( distance, decimals );
+      result.unit = QgsUnitTypes::DistanceDegrees;
+      break;
+
+    case DistanceUnknownUnit:
+      result.value = qgsRound( distance, decimals );
+      result.unit = QgsUnitTypes::DistanceUnknownUnit;
+      break;
+
+    default:
+      result.value = qgsRound( distance, decimals );
+      result.unit = unit;
+      break;
+  }
+
+  return result;
+}
+
+QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit )
+{
+  AreaValue result;
+  result.value = -1.0;
+  result.unit = AreaUnknownUnit;
+
+  // If we are not forced to keep the base units, switch to meter calculation
+  if ( unit == AreaSquareMillimeters )
+  {
+    if ( keepBaseUnit )
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareMillimeters;
+    }
+    else
+    {
+      area /= 1000000.0;
+      unit = QgsUnitTypes::AreaSquareMeters;
+    }
+  }
+  else if ( unit == AreaSquareCentimeters )
+  {
+    if ( keepBaseUnit )
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareCentimeters;
+    }
+    else
+    {
+      area /= 10000.0;
+      unit = QgsUnitTypes::AreaSquareMeters;
+    }
+  }
+
+  switch ( unit )
+  {
+    case AreaSquareCentimeters:
+      // handled in the if above
+      break;
+    case AreaSquareMillimeters:
+      // handled in the if above
+      break;
+    case AreaSquareMeters:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareMeters;
+      }
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaSquareMeters ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaSquareKilometers ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareKilometers;
+      }
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareMeters ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMeters, QgsUnitTypes::AreaHectares ), decimals );
+        result.unit = QgsUnitTypes::AreaHectares;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareMeters;
+      }
+      break;
+    }
+
+    case AreaSquareKilometers:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareKilometers;
+      break;
+    }
+
+    case AreaSquareFeet:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareFeet;
+      }
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareFeet ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareFeet, QgsUnitTypes::AreaSquareMiles ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareMiles;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareFeet;
+      }
+      break;
+    }
+
+    case AreaSquareYards:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareYards;
+      }
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaSquareYards ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareYards, QgsUnitTypes::AreaSquareMiles ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareMiles;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaSquareYards;
+      }
+      break;
+    }
+
+    case AreaSquareMiles:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareMiles;
+      break;
+    }
+
+    case AreaHectares:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaHectares;
+      }
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareKilometers, QgsUnitTypes::AreaHectares ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaHectares, QgsUnitTypes::AreaSquareKilometers ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareKilometers;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaHectares;
+      }
+      break;
+    }
+
+    case AreaAcres:
+    {
+      if ( keepBaseUnit )
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaAcres;
+      }
+      else if ( std::fabs( area ) > QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaSquareMiles, QgsUnitTypes::AreaAcres ) )
+      {
+        result.value = qgsRound( area * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaAcres, QgsUnitTypes::AreaSquareMiles ), decimals );
+        result.unit = QgsUnitTypes::AreaSquareMiles;
+      }
+      else
+      {
+        result.value = qgsRound( area, decimals );
+        result.unit = QgsUnitTypes::AreaAcres;
+      }
+      break;
+    }
+
+    case AreaSquareNauticalMiles:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareNauticalMiles;
+      break;
+    }
+
+    case AreaSquareDegrees:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaSquareDegrees;
+      break;
+    }
+
+    case AreaUnknownUnit:
+    {
+      result.value = qgsRound( area, decimals );
+      result.unit = QgsUnitTypes::AreaUnknownUnit;
+      break;
+    }
+  }
+  return result;
+}
+
+
+QString QgsUnitTypes::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )
+{
+  DistanceValue dist = scaledDistance( distance, unit, decimals, keepBaseUnit );
+
+  QString unitText;
+
+  if ( dist.unit != DistanceUnknownUnit )
+    unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( dist.unit );
+
+  return QStringLiteral( "%L1%2" ).arg( dist.value, 0, 'f', decimals ).arg( unitText );
+}
+
+QString QgsUnitTypes::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
+{
+  AreaValue areaValue = scaledArea( area, unit, decimals, keepBaseUnit );
+
+  QString unitText;
+
+  if ( areaValue.unit != AreaUnknownUnit )
+    unitText = QChar( ' ' ) + QgsUnitTypes::toAbbreviatedString( areaValue.unit );
+
+  return QStringLiteral( "%L1%2" ).arg( areaValue.value, 0, 'f', decimals ).arg( unitText );
+}
+
+QString QgsUnitTypes::encodeUnit( RenderUnit unit )
 {
   switch ( unit )
   {
-    case QgsSymbolV2::MM:
-      return "MM";
-    case QgsSymbolV2::MapUnit:
-      return "MapUnit";
-    case QgsSymbolV2::Pixel:
-      return "Pixel";
-    case QgsSymbolV2::Percentage:
-      return "Percentage";
-    default:
-      return "MM";
+    case RenderMillimeters:
+      return QStringLiteral( "MM" );
+    case RenderMetersInMapUnits:
+      return QStringLiteral( "RenderMetersInMapUnits" );
+    case RenderMapUnits:
+      return QStringLiteral( "MapUnit" );
+    case RenderPixels:
+      return QStringLiteral( "Pixel" );
+    case RenderPercentage:
+      return QStringLiteral( "Percentage" );
+    case RenderPoints:
+      return QStringLiteral( "Point" );
+    case RenderInches:
+      return QStringLiteral( "Inch" );
+    case RenderUnknownUnit:
+      return QString();
   }
+  return QString();
 }
 
-QgsSymbolV2::OutputUnit QgsUnitTypes::decodeSymbolUnit( const QString& string, bool* ok )
+QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, bool *ok )
 {
   QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
 
-  if ( normalized == encodeUnit( QgsSymbolV2::MM ).toLower() )
-    return QgsSymbolV2::MM;
-  if ( normalized == encodeUnit( QgsSymbolV2::MapUnit ).toLower() )
-    return QgsSymbolV2::MapUnit;
-  if ( normalized == encodeUnit( QgsSymbolV2::Pixel ).toLower() )
-    return QgsSymbolV2::Pixel;
-  if ( normalized == encodeUnit( QgsSymbolV2::Percentage ).toLower() )
-    return QgsSymbolV2::Percentage;
+  if ( normalized == encodeUnit( RenderMillimeters ).toLower() )
+    return RenderMillimeters;
+  if ( normalized == encodeUnit( RenderMetersInMapUnits ).toLower() )
+    return RenderMetersInMapUnits;
+  if ( normalized == QLatin1String( "meters" ) )
+    return RenderMetersInMapUnits;
+  if ( normalized == encodeUnit( RenderMapUnits ).toLower() )
+    return RenderMapUnits;
+  if ( normalized == QLatin1String( "mapunits" ) )
+    return RenderMapUnits;
+  if ( normalized == encodeUnit( RenderPixels ).toLower() )
+    return RenderPixels;
+  if ( normalized == encodeUnit( RenderPercentage ).toLower() )
+    return RenderPercentage;
+  if ( normalized == QLatin1String( "percent" ) )
+    return RenderPercentage;
+  if ( normalized == encodeUnit( RenderPoints ).toLower() )
+    return RenderPoints;
+  if ( normalized == QLatin1String( "points" ) )
+    return RenderPoints;
+  if ( normalized == encodeUnit( RenderInches ).toLower() )
+    return RenderInches;
 
   if ( ok )
     *ok = false;
 
   // millimeters are default
-  return QgsSymbolV2::MM;
+  return RenderMillimeters;
 }
 
-#endif
+QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
+{
+  switch ( unit )
+  {
+    case RenderMillimeters:
+      return QObject::tr( "millimeters", "render" );
+
+    case RenderMetersInMapUnits:
+      return QObject::tr( "meters at scale", "render" );
+
+    case RenderMapUnits:
+      return QObject::tr( "map units", "render" );
+
+    case RenderPixels:
+      return QObject::tr( "pixels", "render" );
+
+    case RenderPercentage:
+      return QObject::tr( "percent", "render" );
+
+    case RenderPoints:
+      return QObject::tr( "points", "render" );
+
+    case RenderInches:
+      return QObject::tr( "inches", "render" );
+
+    case RenderUnknownUnit:
+      return QObject::tr( "<unknown>", "render" );
+
+  }
+  return QString();
+}
+
+
+
+QString QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutCentimeters:
+      return QStringLiteral( "cm" );
+    case LayoutMeters:
+      return QStringLiteral( "m" );
+    case LayoutInches:
+      return QStringLiteral( "in" );
+    case LayoutFeet:
+      return QStringLiteral( "ft" );
+    case LayoutPoints:
+      return QStringLiteral( "pt" );
+    case LayoutPicas:
+      return QStringLiteral( "pi" );
+    case LayoutPixels:
+      return QStringLiteral( "px" );
+    case  LayoutMillimeters:
+      return QStringLiteral( "mm" );
+  }
+  return QString();
+}
+
+QgsUnitTypes::LayoutUnit QgsUnitTypes::decodeLayoutUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnit( LayoutMillimeters ).toLower() )
+    return LayoutMillimeters;
+  if ( normalized == encodeUnit( LayoutCentimeters ).toLower() )
+    return LayoutCentimeters;
+  if ( normalized == encodeUnit( LayoutMeters ).toLower() )
+    return LayoutMeters;
+  if ( normalized == encodeUnit( LayoutInches ).toLower() )
+    return LayoutInches;
+  if ( normalized == encodeUnit( LayoutFeet ).toLower() )
+    return LayoutFeet;
+  if ( normalized == encodeUnit( LayoutPoints ).toLower() )
+    return LayoutPoints;
+  if ( normalized == encodeUnit( LayoutPicas ).toLower() )
+    return LayoutPicas;
+  if ( normalized == encodeUnit( LayoutPixels ).toLower() )
+    return LayoutPixels;
+
+  if ( ok )
+    *ok = false;
+
+  // millimeters are default
+  return LayoutMillimeters;
+}
+
+QgsUnitTypes::LayoutUnitType QgsUnitTypes::unitType( const QgsUnitTypes::LayoutUnit units )
+{
+  switch ( units )
+  {
+    case LayoutPixels:
+      return LayoutScreenUnits;
+    case  LayoutMillimeters:
+    case LayoutCentimeters:
+    case LayoutMeters:
+    case LayoutInches:
+    case LayoutFeet:
+    case LayoutPoints:
+    case LayoutPicas:
+      return LayoutPaperUnits;
+  }
+
+  // avoid warnings
+  return LayoutPaperUnits;
+}
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutPixels:
+      return QObject::tr( "px" );
+    case  LayoutMillimeters:
+      return QObject::tr( "mm" );
+    case LayoutCentimeters:
+      return QObject::tr( "cm" );
+    case LayoutMeters:
+      return QObject::tr( "m" );
+    case LayoutInches:
+      return QObject::tr( "in", "unit inch" );
+    case LayoutFeet:
+      return QObject::tr( "ft" );
+    case LayoutPoints:
+      return QObject::tr( "pt" );
+    case LayoutPicas:
+      return QObject::tr( "pica" );
+  }
+  return QString(); // no warnings
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutPixels:
+      return QObject::tr( "pixels" );
+    case  LayoutMillimeters:
+      return QObject::tr( "millimeters" );
+    case LayoutCentimeters:
+      return QObject::tr( "centimeters" );
+    case LayoutMeters:
+      return QObject::tr( "meters" );
+    case LayoutInches:
+      return QObject::tr( "inches" );
+    case LayoutFeet:
+      return QObject::tr( "feet" );
+    case LayoutPoints:
+      return QObject::tr( "points" );
+    case LayoutPicas:
+      return QObject::tr( "picas" );
+  }
+  return QString(); // no warnings
+}

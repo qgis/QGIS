@@ -27,8 +27,10 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from processing.modeler.ModelerUtils import ModelerUtils
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from copy import deepcopy
 import json
 
 
@@ -40,28 +42,27 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
             self.description = json.load(f)
         GeoAlgorithm.__init__(self)
 
-    def getCopy(self):
-        newone = PreconfiguredAlgorithm(self.descriptionFile)
-        newone.outputs = []
-        newone.provider = self.provider
-        newone.name = self.name
-        newone.group = self.group
-        return newone
+        self._name = self.description["name"]
+        self._group = self.description["group"]
 
-    def commandLineName(self):
-        return 'preconfigured:' + os.path.splitext(os.path.basename(self.descriptionFile))[0].lower()
+    def group(self):
+        return self._group
 
-    def defineCharacteristics(self):
-        self.name = self.description["name"]
-        self.group = self.description["group"]
-        self.canRunInBatchMode = False
-        self.showInModeler = False
+    def displayName(self):
+        return self._name
 
-    def execute(self, progress):
-        self.alg = ModelerUtils.getAlgorithm(self.description["algname"]).getCopy()
-        for name, value in self.description["parameters"].iteritems():
-            self.alg.setParameterValue(name, value)
-        for name, value in self.description["outputs"].iteritems():
+    def name(self):
+        return os.path.splitext(os.path.basename(self.descriptionFile))[0].lower()
+
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagHideFromModeler
+
+    def execute(self, parameters, context=None, feedback=None, model=None):
+        new_parameters = deepcopy(parameters)
+        self.alg = QgsApplication.processingRegistry().createAlgorithmById(self.description["algname"])
+        for name, value in list(self.description["parameters"].items()):
+            new_parameters[name] = value
+        for name, value in list(self.description["outputs"].items()):
             self.alg.setOutputValue(name, value)
-        self.alg.execute(progress)
+        self.alg.execute(new_parameters, feedback)
         self.outputs = self.alg.outputs

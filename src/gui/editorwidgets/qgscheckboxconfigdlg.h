@@ -19,8 +19,13 @@
 #include "ui_qgscheckboxconfigdlgbase.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
-/** \class QgsCheckBoxConfigDlg
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
+ * \class QgsCheckBoxConfigDlg
  * \note not available in Python bindings
  */
 class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui::QgsCheckBoxConfigDlgBase
@@ -28,12 +33,12 @@ class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-    explicit QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 };
 
 #endif // QGSCHECKBOXCONFIGDLG_H

@@ -25,31 +25,28 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPicture>
-#include <QSettings>
 #include <QUrl>
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & theConnName )
-    : mConnName( theConnName )
-    , mService( theService )
+QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connName )
+  : mConnName( connName )
+  , mService( service )
 {
-  QgsDebugMsg( "theConnName = " + theConnName );
+  QgsDebugMsg( "theConnName = " + connName );
 
-  QSettings settings;
+  QgsSettings settings;
 
-  QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
-  QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
-
-  QStringList connStringParts;
+  QString key = "qgis/connections-" + mService.toLower() + '/' + mConnName;
+  QString credentialsKey = "qgis/" + mService + '/' + mConnName;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
-  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
+  mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -57,78 +54,137 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
-    mUri.setParam( "username", username );
-    mUri.setParam( "password", password );
+    mUri.setParam( QStringLiteral( "username" ), username );
+    mUri.setParam( QStringLiteral( "password" ), password );
   }
 
   QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
   if ( !authcfg.isEmpty() )
   {
-    mUri.setParam( "authcfg", authcfg );
+    mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
-  bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
-  bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
-  bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
-  bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
-  if ( ignoreGetMap )
+  if ( mService.compare( QLatin1String( "WMS" ), Qt::CaseInsensitive ) == 0
+       || mService.compare( QLatin1String( "WCS" ), Qt::CaseInsensitive ) == 0 )
   {
-    mUri.setParam( "IgnoreGetMapUrl", "1" );
+    addWmsWcsConnectionSettings( mUri, key );
   }
-  if ( ignoreGetFeatureInfo )
+  else if ( mService.compare( QLatin1String( "WFS" ), Qt::CaseInsensitive ) == 0 )
   {
-    mUri.setParam( "IgnoreGetFeatureInfoUrl", "1" );
-  }
-  if ( ignoreAxisOrientation )
-  {
-    mUri.setParam( "IgnoreAxisOrientation", "1" );
-  }
-  if ( invertAxisOrientation )
-  {
-    mUri.setParam( "InvertAxisOrientation", "1" );
+    addWfsConnectionSettings( mUri, key );
   }
 
-  QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+  QgsDebugMsg( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
-QgsOWSConnection::~QgsOWSConnection()
+QString QgsOwsConnection::connectionName() const
 {
-
+  return mConnName;
 }
 
-QString QgsOWSConnection::connectionInfo()
+QString QgsOwsConnection::connectionInfo() const
 {
   return mConnectionInfo;
 }
 
-QgsDataSourceURI QgsOWSConnection::uri()
+QString QgsOwsConnection::service() const
+{
+  return mService;
+}
+
+QgsDataSourceUri QgsOwsConnection::uri() const
 {
   return mUri;
 }
 
-QStringList QgsOWSConnection::connectionList( const QString & theService )
+QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
 {
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + theService.toLower() );
+  addCommonConnectionSettings( uri, settingsKey );
+
+  QgsSettings settings;
+  QString referer = settings.value( settingsKey + "/referer" ).toString();
+  if ( !referer.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "referer" ), referer );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetMapURI" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetFeatureInfoURI" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/smoothPixmapTransform" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
+  }
+  QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
+  if ( !dpiMode.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+  }
+
+  return uri;
+}
+
+QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
+{
+  addCommonConnectionSettings( uri, settingsKey );
+
+  QgsSettings settings;
+  QString version = settings.value( settingsKey + "/version" ).toString();
+  if ( !version.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "version" ), version );
+  }
+
+  QString maxnumfeatures = settings.value( settingsKey + QStringLiteral( "/maxnumfeatures" ) ).toString();
+  if ( !maxnumfeatures.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumfeatures );
+  }
+
+  return uri;
+}
+
+QStringList QgsOwsConnection::connectionList( const QString &service )
+{
+  QgsSettings settings;
+  settings.beginGroup( "qgis/connections-" + service.toLower() );
   return settings.childGroups();
 }
 
-QString QgsOWSConnection::selectedConnection( const QString & theService )
+QString QgsOwsConnection::selectedConnection( const QString &service )
 {
-  QSettings settings;
-  return settings.value( "/Qgis/connections-" + theService.toLower() + "/selected" ).toString();
+  QgsSettings settings;
+  return settings.value( "qgis/connections-" + service.toLower() + "/selected" ).toString();
 }
 
-void QgsOWSConnection::setSelectedConnection( const QString & theService, const QString & name )
+void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
-  QSettings settings;
-  settings.setValue( "/Qgis/connections-" + theService.toLower() + "/selected", name );
+  QgsSettings settings;
+  settings.setValue( "qgis/connections-" + service.toLower() + "/selected", name );
 }
 
-void QgsOWSConnection::deleteConnection( const QString & theService, const QString & name )
+void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )
 {
-  QSettings settings;
-  settings.remove( "/Qgis/connections-" + theService.toLower() + '/' + name );
-  settings.remove( "/Qgis/" + theService + '/' + name );
+  QgsSettings settings;
+
+  if ( settings.value( key + QStringLiteral( "/ignoreAxisOrientation" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( key + QStringLiteral( "/invertAxisOrientation" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
+  }
+}
+
+void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
+{
+  QgsSettings settings;
+  settings.remove( "qgis/connections-" + service.toLower() + '/' + name );
+  settings.remove( "qgis/" + service + '/' + name );
 }

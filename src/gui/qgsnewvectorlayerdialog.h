@@ -18,45 +18,86 @@
 #define qgsnewvectorlayerdialog_H
 
 #include "ui_qgsnewvectorlayerdialogbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
+/**
+ * \ingroup gui
+ * \class QgsNewVectorLayerDialog
+ */
 class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {
     Q_OBJECT
 
   public:
 
-    // run the dialog, create the layer.
-    // @return fileName on success, empty string use aborted, QString::null if creation failed
-    static QString runAndCreateLayer( QWidget* parent = nullptr, QString* enc = nullptr );
+    /**
+     * Runs the dialog and creates a layer matching the dialog parameters.
+     *
+     * If the \a initialPath argument is specified, then the dialog will default to the specified filename.
+     *
+     * \returns fileName on success, empty string use aborted, QString() if creation failed
+     */
+    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      const QString &initialPath = QString() );
 
-    QgsNewVectorLayerDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsNewVectorLayerDialog();
-    /** Returns the selected geometry type*/
-    QGis::WkbType selectedType() const;
-    /** Appends the chosen attribute names and types to at*/
-    void attributes( QList< QPair<QString, QString> >& at ) const;
-    /** Returns the file format for storage*/
+    QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    ~QgsNewVectorLayerDialog() override;
+    //! Returns the selected geometry type
+    QgsWkbTypes::Type selectedType() const;
+    //! Appends the chosen attribute names and types to at
+    void attributes( QList< QPair<QString, QString> > &at ) const;
+    //! Returns the file format for storage
     QString selectedFileFormat() const;
-    /** Returns the file format for storage*/
+    //! Returns the file format for storage
     QString selectedFileEncoding() const;
-    /** Returns the selected crs id*/
-    int selectedCrsId() const;
 
-  protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFileFormatComboBox_currentIndexChanged( int index );
-    void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void nameChanged( const QString& );
+    /**
+     * Returns the name for the new layer
+     *
+     * \see setFilename()
+     */
+    QString filename() const;
+
+    /**
+     * Sets the initial file name to show in the dialog.
+     *
+     * \see filename()
+     *
+     * \since QGIS 3.6
+     */
+    void setFilename( const QString &filename );
+
+    /**
+     * Returns the selected CRS for the new layer.
+     * \see setCrs()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * \see crs()
+     * \since QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+  private slots:
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFileFormatComboBox_currentIndexChanged( int index );
+    void mTypeBox_currentIndexChanged( int index );
+    void checkOk();
+
+    //! Open the associated help
+    void showHelp();
+    void nameChanged( const QString & );
     void selectionChanged();
 
   private:
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
 };
 
 #endif //qgsnewvectorlayerdialog_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgsdetailedlistdata.cpp  -  A data represenation for a rich QItemData subclass
+     qgsdetailedlistdata.cpp  -  A data representation for a rich QItemData subclass
                              -------------------
     begin                : Sat May 17 2008
     copyright            : (C) 2008 Tim Sutton
@@ -16,48 +16,40 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemdata.h"
-QgsDetailedItemData::QgsDetailedItemData()
-    : mCheckableFlag( false )
-    , mCheckedFlag( false )
-    , mEnabledFlag( true )
-    , mRenderAsWidgetFlag( false )
-{
 
+void QgsDetailedItemData::setTitle( const QString &title )
+{
+  mTitle = title;
 }
 
-void QgsDetailedItemData::setTitle( const QString& theTitle )
+void QgsDetailedItemData::setDetail( const QString &detail )
 {
-  mTitle = theTitle;
+  mDetail = detail;
 }
 
-void QgsDetailedItemData::setDetail( const QString& theDetail )
+void QgsDetailedItemData::setCategory( const QString &category )
 {
-  mDetail = theDetail;
+  mCategory = category;
 }
 
-void QgsDetailedItemData::setCategory( const QString& theCategory )
+void QgsDetailedItemData::setIcon( const QPixmap &icon )
 {
-  mCategory = theCategory;
+  mPixmap = icon;
 }
 
-void QgsDetailedItemData::setIcon( const QPixmap& theIcon )
+void QgsDetailedItemData::setCheckable( const bool flag )
 {
-  mPixmap = theIcon;
+  mCheckableFlag = flag;
 }
 
-void QgsDetailedItemData::setCheckable( const bool theFlag )
+void QgsDetailedItemData::setChecked( const bool flag )
 {
-  mCheckableFlag = theFlag;
+  mCheckedFlag = flag;
 }
 
-void QgsDetailedItemData::setChecked( const bool theFlag )
+void QgsDetailedItemData::setRenderAsWidget( const bool flag )
 {
-  mCheckedFlag = theFlag;
-}
-
-void QgsDetailedItemData::setRenderAsWidget( const bool theFlag )
-{
-  mRenderAsWidgetFlag = theFlag;
+  mRenderAsWidgetFlag = flag;
 }
 
 QString QgsDetailedItemData::title() const
@@ -95,9 +87,9 @@ bool QgsDetailedItemData::isRenderedAsWidget() const
   return mRenderAsWidgetFlag;
 }
 
-void QgsDetailedItemData::setEnabled( bool theFlag )
+void QgsDetailedItemData::setEnabled( bool flag )
 {
-  mEnabledFlag = theFlag;
+  mEnabledFlag = flag;
 }
 
 bool QgsDetailedItemData::isEnabled() const

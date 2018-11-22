@@ -21,7 +21,13 @@
 #include <QDialog>
 #include <QDomDocument>
 #include "ui_qgsmanageconnectionsdialogbase.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 
+/**
+ * \ingroup gui
+ * \class QgsManageConnectionsDialog
+ */
 class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase
 {
     Q_OBJECT
@@ -42,12 +48,14 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       DB2,
       WCS,
       Oracle,
+      GeoNode,
+      XyzTiles
     };
 
-    // constructor
-    // mode argument must be 0 for export and 1 for import
-    // type argument must be 0 for WMS and 1 for PostGIS
-    QgsManageConnectionsDialog( QWidget *parent = nullptr, Mode mode = Export, Type type = WMS, const QString& fileName = "" );
+    /**
+     * Constructor for QgsManageConnectionsDialog.
+     */
+    QgsManageConnectionsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );
 
   public slots:
     void doExportImport();
@@ -59,23 +67,29 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     bool populateConnections();
 
     QDomDocument saveOWSConnections( const QStringList &connections, const QString &service );
-    QDomDocument saveWFSConnections( const QStringList &connections );
-    QDomDocument savePgConnections( const QStringList & connections );
-    QDomDocument saveMssqlConnections( const QStringList & connections );
-    QDomDocument saveOracleConnections( const QStringList & connections );
-    QDomDocument saveDb2Connections( const QStringList & connections );
+    QDomDocument saveWfsConnections( const QStringList &connections );
+    QDomDocument savePgConnections( const QStringList &connections );
+    QDomDocument saveMssqlConnections( const QStringList &connections );
+    QDomDocument saveOracleConnections( const QStringList &connections );
+    QDomDocument saveDb2Connections( const QStringList &connections );
+    QDomDocument saveGeonodeConnections( const QStringList &connections );
+    QDomDocument saveXyzTilesConnections( const QStringList &connections );
 
     void loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
-    void loadWFSConnections( const QDomDocument &doc, const QStringList &items );
+    void loadWfsConnections( const QDomDocument &doc, const QStringList &items );
     void loadPgConnections( const QDomDocument &doc, const QStringList &items );
     void loadMssqlConnections( const QDomDocument &doc, const QStringList &items );
     void loadOracleConnections( const QDomDocument &doc, const QStringList &items );
     void loadDb2Connections( const QDomDocument &doc, const QStringList &items );
+    void loadGeonodeConnections( const QDomDocument &doc, const QStringList &items );
+    void loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items );
 
     QString mFileName;
     Mode mDialogMode;
     Type mConnectionType;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMANAGECONNECTIONSDIALOG_H
 

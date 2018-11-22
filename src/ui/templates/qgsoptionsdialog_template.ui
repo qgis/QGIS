@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsOpstionDialogTemplate</class>
- <widget class="QDialog" name="QgsOpstionDialogTemplate">
+ <class>QgsOptionDialogTemplate</class>
+ <widget class="QDialog" name="QgsOptionDialogTemplate">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -118,7 +118,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea">
+            <widget class="QgsScrollArea" name="scrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -209,6 +209,14 @@
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>

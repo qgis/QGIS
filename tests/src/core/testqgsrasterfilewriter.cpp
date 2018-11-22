@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -27,12 +27,15 @@
 
 //qgis includes...
 #include <qgsrasterchecker.h>
+#include "qgsrasterdataprovider.h"
 #include <qgsrasterlayer.h>
 #include <qgsrasterfilewriter.h>
 #include <qgsrasternuller.h>
+#include "qgsrasterprojector.h"
 #include <qgsapplication.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterFileWriter class.
  */
 class TestQgsRasterFileWriter: public QObject
@@ -45,10 +48,13 @@ class TestQgsRasterFileWriter: public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void writeTest();
+    void testCreateOneBandRaster();
+    void testCreateMultiBandRaster();
+    void testVrtCreation();
   private:
-    bool writeTest( const QString& rasterName );
-    void log( const QString& msg );
-    void logError( const QString& msg );
+    bool writeTest( const QString &rasterName );
+    void log( const QString &msg );
+    void logError( const QString &msg );
     QString mTestDataDir;
     QString mReport;
 };
@@ -62,11 +68,11 @@ void TestQgsRasterFileWriter::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', "<br />" );
+  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport += "<h1>Raster File Writer Tests</h1>\n";
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mReport += QLatin1String( "<h1>Raster File Writer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
 }
 //runs after all tests
@@ -88,10 +94,10 @@ void TestQgsRasterFileWriter::writeTest()
   QDir dir( mTestDataDir + "/raster" );
 
   QStringList filters;
-  filters << "*.tif";
+  filters << QStringLiteral( "*.tif" );
   QStringList rasterNames = dir.entryList( filters, QDir::Files );
   bool allOK = true;
-  Q_FOREACH ( const QString& rasterName, rasterNames )
+  Q_FOREACH ( const QString &rasterName, rasterNames )
   {
     bool ok = writeTest( "raster/" + rasterName );
     if ( !ok ) allOK = false;
@@ -100,22 +106,22 @@ void TestQgsRasterFileWriter::writeTest()
   QVERIFY( allOK );
 }
 
-bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
+bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 {
-  mReport += "<h2>" + theRasterName + "</h2>\n";
+  mReport += "<h2>" + rasterName + "</h2>\n";
 
-  QString myFileName = mTestDataDir + '/' + theRasterName;
+  QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 
-  QScopedPointer<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
+  std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
-  qDebug() << theRasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
 
   if ( !mpRasterLayer->isValid() ) return false;
 
   // Open provider only (avoid layer)?
-  QgsRasterDataProvider * provider = mpRasterLayer->dataProvider();
+  QgsRasterDataProvider *provider = mpRasterLayer->dataProvider();
 
   // I don't see any method to get only a name without opening file
   QTemporaryFile tmpFile;
@@ -128,10 +134,10 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   mReport += "temporary output file: " + tmpName + "<br>";
 
   QgsRasterFileWriter fileWriter( tmpName );
-  QgsRasterPipe* pipe = new QgsRasterPipe();
+  QgsRasterPipe *pipe = new QgsRasterPipe();
   if ( !pipe->set( provider->clone() ) )
   {
-    logError( "Cannot set pipe provider" );
+    logError( QStringLiteral( "Cannot set pipe provider" ) );
     delete pipe;
     return false;
   }
@@ -145,7 +151,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   }
   if ( !pipe->insert( 1, nuller ) )
   {
-    logError( "Cannot set pipe nuller" );
+    logError( QStringLiteral( "Cannot set pipe nuller" ) );
     delete pipe;
     return false;
   }
@@ -153,10 +159,10 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
 
   // Reprojection not really done
   QgsRasterProjector *projector = new QgsRasterProjector;
-  projector->setCRS( provider->crs(), provider->crs() );
+  projector->setCrs( provider->crs(), provider->crs() );
   if ( !pipe->insert( 2, projector ) )
   {
-    logError( "Cannot set pipe projector" );
+    logError( QStringLiteral( "Cannot set pipe projector" ) );
     delete pipe;
     return false;
   }
@@ -167,7 +173,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   delete pipe;
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( "gdal", tmpName, "gdal", myRasterFileInfo.filePath() );
+  bool ok = checker.runTest( QStringLiteral( "gdal" ), tmpName, QStringLiteral( "gdal" ), myRasterFileInfo.filePath() );
   mReport += checker.report();
 
   // All OK, we can delete the file
@@ -176,16 +182,152 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   return ok;
 }
 
-void TestQgsRasterFileWriter::log( const QString& msg )
+void TestQgsRasterFileWriter::testCreateOneBandRaster()
+{
+  // generate unique filename (need to open the file first to generate it)
+  QTemporaryFile tmpFile;
+  tmpFile.open();
+  tmpFile.close();
+  QString filename = tmpFile.fileName();
+
+  QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
+  int width = 200, height = 100;
+
+  QgsRasterFileWriter writer( filename );
+  QgsRasterDataProvider *dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QVERIFY( dp );
+  QCOMPARE( dp->xSize(), width );
+  QCOMPARE( dp->ySize(), height );
+  QCOMPARE( dp->extent(), extent );
+  QCOMPARE( dp->bandCount(), 1 );
+  QCOMPARE( dp->dataType( 1 ), Qgis::Byte );
+  QVERIFY( dp->isEditable() );
+  delete dp;
+
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rlayer->isValid() );
+  QCOMPARE( rlayer->width(), width );
+  QCOMPARE( rlayer->height(), height );
+  QCOMPARE( rlayer->extent(), extent );
+  QCOMPARE( rlayer->bandCount(), 1 );
+  QCOMPARE( rlayer->dataProvider()->dataType( 1 ), Qgis::Byte );
+  delete rlayer;
+}
+
+void TestQgsRasterFileWriter::testCreateMultiBandRaster()
+{
+  // generate unique filename (need to open the file first to generate it)
+  QTemporaryFile tmpFile;
+  tmpFile.open();
+  tmpFile.close();
+  QString filename = tmpFile.fileName();
+
+  QgsRectangle extent( 106.7, -6.2, 106.9, -6.1 );
+  int width = 200, height = 100, nBands = 1;
+
+  QgsRasterFileWriter writer( filename );
+  QgsRasterDataProvider *dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), nBands );
+  QVERIFY( dp );
+  QCOMPARE( dp->xSize(), width );
+  QCOMPARE( dp->ySize(), height );
+  QCOMPARE( dp->extent(), extent );
+  QCOMPARE( dp->bandCount(), 1 );
+  QCOMPARE( dp->dataType( 1 ), Qgis::Byte );
+  QVERIFY( dp->isEditable() );
+  delete dp;
+
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rlayer->isValid() );
+  QCOMPARE( rlayer->width(), width );
+  QCOMPARE( rlayer->height(), height );
+  QCOMPARE( rlayer->extent(), extent );
+  QCOMPARE( rlayer->bandCount(), 1 );
+  QCOMPARE( rlayer->dataProvider()->dataType( 1 ), Qgis::Byte );
+  delete rlayer;
+
+  nBands = 3;
+  dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), nBands );
+  QVERIFY( dp );
+  QCOMPARE( dp->xSize(), width );
+  QCOMPARE( dp->ySize(), height );
+  QCOMPARE( dp->extent(), extent );
+  QCOMPARE( dp->bandCount(), nBands );
+  for ( int i = 1; i <= nBands; i++ )
+  {
+    QCOMPARE( dp->dataType( i ), Qgis::Byte );
+  }
+  QVERIFY( dp->isEditable() );
+  delete dp;
+
+  rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rlayer->isValid() );
+  QCOMPARE( rlayer->width(), width );
+  QCOMPARE( rlayer->height(), height );
+  QCOMPARE( rlayer->extent(), extent );
+  QCOMPARE( rlayer->bandCount(), nBands );
+  for ( int i = 1; i <= nBands; i++ )
+  {
+    QCOMPARE( rlayer->dataProvider()->dataType( i ), Qgis::Byte );
+  }
+  delete rlayer;
+}
+
+void TestQgsRasterFileWriter::testVrtCreation()
+{
+  //create a raster layer that will be used in all tests...
+  QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
+  QFileInfo rasterFileInfo( srcFileName );
+  std::unique_ptr< QgsRasterLayer > srcRasterLayer = qgis::make_unique< QgsRasterLayer >( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
+
+  QTemporaryDir dir;
+  std::unique_ptr< QgsRasterFileWriter > rasterFileWriter = qgis::make_unique< QgsRasterFileWriter >( dir.path() + '/' + rasterFileInfo.completeBaseName() );
+
+  //2. Definition of the pyramid levels
+  QList<int> levelList;
+  levelList << 2 << 4 << 8 << 16 << 32 << 64 << 128;
+  rasterFileWriter->setPyramidsList( levelList );
+  //3. Pyramid format
+  rasterFileWriter->setPyramidsFormat( QgsRaster::PyramidsGTiff );
+  //4. Resampling method
+  rasterFileWriter->setPyramidsResampling( QStringLiteral( "NEAREST" ) );
+  //5. Tiled mode => true for vrt creation
+  rasterFileWriter->setTiledMode( true );
+  //6. Tile size
+  rasterFileWriter->setMaxTileWidth( 500 );
+  rasterFileWriter->setMaxTileHeight( 500 );
+  //7. Coordinate Reference System
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( "EPSG:3946" );
+  //8. Prepare raster pipe
+  QgsRasterPipe pipe;
+  pipe.set( srcRasterLayer->dataProvider()->clone() );
+  // Let's do it !
+  QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs );
+  QCOMPARE( res, QgsRasterFileWriter::NoError );
+
+  // Now let's compare the georef of the original raster with the georef of the generated vrt file
+  std::unique_ptr< QgsRasterLayer > vrtRasterLayer = qgis::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
+
+  double xminVrt = vrtRasterLayer->extent().xMinimum();
+  double yminVrt = vrtRasterLayer->extent().yMaximum();
+  double xminOriginal = srcRasterLayer->extent().xMinimum();
+  double yminOriginal = srcRasterLayer->extent().yMaximum();
+
+  // Let's check if the georef of the original raster with the georef of the generated vrt file
+  QGSCOMPARENEAR( xminVrt, xminOriginal, srcRasterLayer->rasterUnitsPerPixelX() / 4 );
+  QGSCOMPARENEAR( yminVrt, yminOriginal, srcRasterLayer->rasterUnitsPerPixelY() / 4 );
+}
+
+void TestQgsRasterFileWriter::log( const QString &msg )
 {
   mReport += msg + "<br>";
 }
 
-void TestQgsRasterFileWriter::logError( const QString& msg )
+void TestQgsRasterFileWriter::logError( const QString &msg )
 {
   mReport += "Error:<font color='red'>" + msg + "</font><br>";
   qDebug() << msg;
 }
 
-QTEST_MAIN( TestQgsRasterFileWriter )
+QGSTEST_MAIN( TestQgsRasterFileWriter )
 #include "testqgsrasterfilewriter.moc"

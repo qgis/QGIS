@@ -25,58 +25,64 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
-from matplotlib.pyplot import figure
+import plotly as plt
+import plotly.graph_objs as go
 import numpy as np
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
-class PolarPlot(GeoAlgorithm):
+class PolarPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polar plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def group(self):
+        return self.tr('Graphics')
 
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'), self.INPUT))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'), self.INPUT))
+    def groupId(self):
+        return 'graphics'
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT))  # FIXME unused?
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
-        output = self.getOutputValue(self.OUTPUT)
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
 
-        values = vector.values(layer, namefieldname, valuefieldname)
-        plt.close()
-        fig = figure(figsize=(8, 8))
-        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
-        N = len(values[valuefieldname])
-        theta = np.arange(0.0, 2 * np.pi, 2 * np.pi / N)
-        radii = values[valuefieldname]
-        width = 2 * np.pi / N
-        ax.bar(theta, radii, width=width, bottom=0.0)
-        plotFilename = output + '.png'
-        lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+    def name(self):
+        return 'polarplot'
+
+    def displayName(self):
+        return self.tr('Polar plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)  # NOQA  FIXME unused?
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
+
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+
+        values = vector.values(source, valuefieldname)
+
+        data = [go.Area(r=values[valuefieldname],
+                        t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
+        plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

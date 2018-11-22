@@ -125,87 +125,6 @@ License: public-domain
  is used when saving/restoring a QGIS project.
  This file is in the public domain
 
-Files: python/ext-libs/dateutil/*
-Copyright: 2003-2010, Gustavo Niemeyer <gustavo@niemeyer.net>
-License: BSD-3-Clause
-
-Files: python/ext-libs/httplib2/*
-Copyright: 2006, 2012, Joe Gregorio <joe@bitworking.org>
-License: GPL-2+
-
-Files: python/ext-libs/httplib2/socks.py
-Copyright: 2006, Dan-Haim
-License: BSD-2-Clause
-
-Files: python/ext-libs/jinja2/*
-Copyright: 2006-2010, the Jinja Team
-License: BSD-3-Clause
-
-Files: python/ext-libs/markupsafe/*
-Copyright: 2010, 2013, Armin Ronacher
-License: BSD-3-Clause
-
-Files: python/ext-libs/nose2/*
-Copyright: Jason Pellerin <jpellerin+nose@gmail.com>
-License: BSD-2-Clause
-
-Files: python/ext-libs/nose2/events.py
- python/ext-libs/nose2/exceptions.py
- python/ext-libs/nose2/loader.py
- python/ext-libs/nose2/runner.py
- python/ext-libs/nose2/tools/params.py
- python/ext-libs/nose2/util.py
-Copyright: 2001-2010, Python Software Foundation
-License: Python-2.0
-
-Files: python/ext-libs/nose2/backports/ordereddict.py
-Copyright: Python Software Foundation
-License: MIT
-
-Files: python/ext-libs/owslib/*
-Copyright: 2006, Ancient World Mapping Center
-      2008-2013, Tom Kralidis
-           2013, Christian Ledermann <christian.ledermann@gmail.com>
-           2012, Brad Hards <bradh@frogmouth.net>
-           2012, Jachym Cepicky
-      2007-2009, STFC <http://www.stfc.ac.uk>
-      2004-2006, Sean C. Gillies
-           2005, Nuxeo SARL <http://nuxeo.com>
-License: BSD-3-Clause
-
-Files: python/ext-libs/pygments/*
-Copyright: 2006-2013, the Pygments team
-License: BSD-2-Clause
-
-Files: python/ext-libs/pygments/lexers/_robotframeworklexer.py
-Copyright: 2006-2013, the Pygments team
-                2012, Nokia Siemens Networks Oyj
-License: BSD-2-Clause and Apache-2.0
-
-Files: python/ext-libs/pyspatialite/*
-Copyright: 2004-2010, Gerhard Häring <gh@ghaering.de>
-License: Zlib
-
-Files: python/ext-libs/pytz/*
-Copyright: 2003-2009, Stuart Bishop <stuart@stuartbishop.net>
-License: MIT
-
-Files: python/ext-libs/six.py
-Copyright: 2010-2015, Benjamin Peterson
-License: MIT
-
-Files: python/ext-libs/yaml/*
-Copyright: 2006, Kirill Simonov <xi@resolvent.net>
-License: MIT
-
-Files: python/plugins/fTools/*
-Copyright: 2009, Carson J.Q. Farmer
-License: MIT
-
-Files: python/plugins/GdalTools/*
-Copyright: 2009, Faunalia
-License: MIT
-
 Files: python/plugins/processing/modeler/ModelerArrowItem.py
  src/app/qgssettingstree.cpp
  src/app/qgssettingstree.h
@@ -247,9 +166,7 @@ Comment: Voronoi diagram calculator/ Delaunay triangulator
  Steve Fortune's homepage: http://netlib.bell-labs.com/cm/cs/who/sjf/index.html
 License: GPL-2+
 
-Files: src/app/gps/qwtpolar-0.1/*
- src/app/gps/qwtpolar-1.0/*
- src/app/gps/qwtpolar-1.1.1/*
+Files: external/qwtpolar-1.1.1/*
 Copyright: 2008, Uwe Rathmann
 Comment: This library is free software; you can redistribute it and/or
  modify it under the terms of the Qwt License, Version 1.0
@@ -259,30 +176,30 @@ Files: src/app/qtmain_android.cpp
 Copyright: 2009-2011, BogDan Vatra <bog_dan_ro@yahoo.com>
 License: BSD-3-Clause
 
-Files: src/astyle/*
+Files: external/astyle/*
 Copyright: Jim Pattee <jimp03@email.com>
            Tal Davidson
 Comment: Artistic Style is maintained and updated by Jim Pattee.
  The original author was Tal Davidson, Israel.
 License: LGPL-2.1+
 
-Files: src/core/gps/config.h
- src/core/gps/context.c
- src/core/gps/context.h
- src/core/gps/gmath.c
- src/core/gps/gmath.h
- src/core/gps/info.c
- src/core/gps/info.h
- src/core/gps/nmeatime.h
- src/core/gps/parse.c
- src/core/gps/parse.h
- src/core/gps/parser.h
- src/core/gps/sentence.c
- src/core/gps/sentence.h
- src/core/gps/time.c
- src/core/gps/tok.c
- src/core/gps/tok.h
- src/core/gps/units.h
+Files: external/nmea/config.h
+ external/nmea/context.c
+ external/nmea/context.h
+ external/nmea/gmath.c
+ external/nmea/gmath.h
+ external/nmea/info.c
+ external/nmea/info.h
+ external/nmea/nmeatime.h
+ external/nmea/parse.c
+ external/nmea/parse.h
+ external/nmea/parser.h
+ external/nmea/sentence.c
+ external/nmea/sentence.h
+ external/nmea/time.c
+ external/nmea/tok.c
+ external/nmea/tok.h
+ external/nmea/units.h
 Copyright: Tim <xtimor@gmail.com>
 License: LGPL-2+
 
@@ -309,7 +226,7 @@ License: public-domain
  LICENSE : Entirely free for all uses. Enjoy!
  This File is in the public domain
 
-Files: src/core/symbology-ng/qgscolorbrewerpalette.cpp
+Files: src/core/symbology/qgscolorbrewerpalette.cpp
 Copyright: 2002, Cynthia Brewer, Mark Harrower, and The Pennsylvania State University
            2009, by Martin Dobias
 License: Apache-2.0 and GPL-2+
@@ -319,41 +236,13 @@ Copyright: 1997, Josef Wilgen
            2002, Uwe Rathmann
 License: QWT-1.0
 
-Files: src/gui/symbology-ng/characterwidget.cpp
- src/gui/symbology-ng/characterwidget.h
+Files: src/gui/symbology/characterwidget.cpp
+ src/gui/symbology/characterwidget.h
 Copyright: 2009, Nokia Corporation and/or its subsidiary(-ies)
 License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
-Files: src/plugins/dxf2shp_converter/builder.cpp
- src/plugins/dxf2shp_converter/builder.h
-Copyright: 1999, Frank Warmerdam <warmerda@pobox.com>
-Comment: The code is heavily based on Christopher Michaelis' DXF to
- Shapefile Converter (http://www.wanderingidea.com/content/view/12/25/),
- released under GPL License
- .
- This code is based on two other products:
-    DXFLIB (http://www.ribbonsoft.com/dxflib.html)
- This is a library for reading DXF files, also GPL.
-    SHAPELIB (http://shapelib.maptools.org/)
- Used for the Shapefile functionality.
-License: MIT
-
-Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/*
-Copyright: 1999, 2001-2002, Frank Warmerdam
-License: MIT or LGPL-2+
-
-Files: src/plugins/dxf2shp_converter/dxflib/src/*
-Copyright: 2001-2013, RibbonSoft GmbH
-                2001, Robert J. Campbell Jr
-License: GPL-2+ or dxflib-Commercial-License
-
 Files: src/plugins/evis/*
 Copyright: 2007, American Museum of Natural History
-License: LGPL-2+
-
-Files: src/plugins/globe/osgEarthQt/ViewerWidget.cpp
- src/plugins/globe/osgEarthUtil/Controls.cpp
-Copyright: 2008-2012, Pelican Mapping
 License: LGPL-2+
 
 Files: src/plugins/grass/qtermwidget/BlockArray.*
@@ -413,10 +302,10 @@ License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
 Files: src/providers/oracle/ocispatial/qsql_ocispatial.h
  src/providers/oracle/ocispatial/qsqlcachedresult_p.h
- src/providers/spatialite/qspatialite/qsql_spatialite.cpp
- src/providers/spatialite/qspatialite/qsql_spatialite.h
- src/providers/spatialite/qspatialite/qsqlcachedresult_p.h
- src/providers/spatialite/qspatialite/smain.cpp
+ external/qspatialite/qsql_spatialite.cpp
+ external/qspatialite/qsql_spatialite.h
+ external/qspatialite/qsqlcachedresult_p.h
+ external/qspatialite/smain.cpp
 Copyright: 2012, Digia Plc and/or its subsidiary(-ies)
 License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
@@ -521,7 +410,7 @@ Files: cmake/FindQwt.cmake
 Copyright: 2010, Tim Sutton <tim at linfiniti.com>
 License: BSD-3-Clause
 
-Files: cmake/FindSPATIALITE.cmake
+Files: cmake/FindSpatiaLite.cmake
 Copyright: 2009, Sandro Furieri <a.furieri at lqt.it>
 License: BSD-3-Clause
 
@@ -627,7 +516,7 @@ License: ElvenSword
  this situation.)
  .
  * Do not remove my name on it (preview). I saw some Turkish and
- Russian forum sites delete artists names though, and they puting
+ Russian forum sites delete artists names though, and they put
  their own cursed crappy logos on the previews. It is not sharing.
  It is ...
  .
@@ -2448,4 +2337,3 @@ License: Zlib
         misrepresented as being the original software.
  .
      3. This notice may not be removed or altered from any source distribution.
-

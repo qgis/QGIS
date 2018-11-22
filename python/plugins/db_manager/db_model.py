@@ -19,9 +19,11 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from functools import partial
-from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal, pyqtSlot
+from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.PyQt.QtGui import QIcon
 
@@ -29,20 +31,21 @@ from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-from qgis.core import QgsDataSourceURI, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.core import QgsApplication, QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.utils import OverrideCursor
 
 from . import resources_rc  # NOQA
 
 try:
-    from qgis.core import QgsVectorLayerImport  # NOQA
+    from qgis.core import QgsVectorLayerExporter  # NOQA
     isImportVectorAvail = True
 except:
     isImportVectorAvail = False
 
 
 class TreeItem(QObject):
-    itemRemoved = pyqtSignal()
-    itemChanged = pyqtSignal()
+    deleted = pyqtSignal()
+    changed = pyqtSignal()
 
     def __init__(self, data, parent=None):
         QObject.__init__(self, parent)
@@ -53,13 +56,13 @@ class TreeItem(QObject):
             parent.appendChild(self)
 
     def childRemoved(self):
-        self.itemWasChanged()
+        self.itemChanged()
 
-    def itemWasChanged(self):
-        self.itemChanged.emit()
+    def itemChanged(self):
+        self.changed.emit()
 
-    def itemWasRemoved(self):
-        self.itemRemoved.emit()
+    def itemDeleted(self):
+        self.deleted.emit()
 
     def populate(self):
         self.populated = True
@@ -70,7 +73,7 @@ class TreeItem(QObject):
 
     def appendChild(self, child):
         self.childItems.append(child)
-        child.itemRemoved.connect(self.childRemoved)
+        child.deleted.connect(self.childRemoved)
 
     def child(self, row):
         return self.childItems[row]
@@ -78,7 +81,7 @@ class TreeItem(QObject):
     def removeChild(self, row):
         if row >= 0 and row < len(self.childItems):
             self.childItems[row].itemData.deleteLater()
-            self.childItems[row].itemRemoved.disconnect(self.childRemoved)
+            self.childItems[row].deleted.disconnect(self.childRemoved)
             del self.childItems[row]
 
     def childCount(self):
@@ -141,7 +144,7 @@ class ConnectionItem(TreeItem):
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
         connection.changed.connect(self.itemChanged)
-        connection.deleted.connect(self.itemRemoved)
+        connection.deleted.connect(self.itemDeleted)
 
         # load (shared) icon with first instance of table item
         if not hasattr(ConnectionItem, 'connectedIcon'):
@@ -152,6 +155,9 @@ class ConnectionItem(TreeItem):
         if column == 0:
             return self.getItemData().connectionName()
         return None
+
+    def icon(self):
+        return self.getItemData().connectionIcon()
 
     def populate(self):
         if self.populated:
@@ -170,7 +176,7 @@ class ConnectionItem(TreeItem):
 
         database = connection.database()
         database.changed.connect(self.itemChanged)
-        database.deleted.connect(self.itemRemoved)
+        database.deleted.connect(self.itemDeleted)
 
         schemas = database.schemas()
         if schemas is not None:
@@ -196,7 +202,7 @@ class SchemaItem(TreeItem):
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
         schema.changed.connect(self.itemChanged)
-        schema.deleted.connect(self.itemRemoved)
+        schema.deleted.connect(self.itemDeleted)
 
         # load (shared) icon with first instance of schema item
         if not hasattr(SchemaItem, 'schemaIcon'):
@@ -226,18 +232,18 @@ class TableItem(TreeItem):
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
         table.changed.connect(self.itemChanged)
-        table.deleted.connect(self.itemRemoved)
+        table.deleted.connect(self.itemDeleted)
         self.populate()
 
         # load (shared) icon with first instance of table item
         if not hasattr(TableItem, 'tableIcon'):
-            TableItem.tableIcon = QIcon(":/db_manager/icons/table.png")
+            TableItem.tableIcon = QgsApplication.getThemeIcon("/mIconTableLayer.svg")
             TableItem.viewIcon = QIcon(":/db_manager/icons/view.png")
             TableItem.viewMaterializedIcon = QIcon(":/db_manager/icons/view_materialized.png")
-            TableItem.layerPointIcon = QIcon(":/db_manager/icons/layer_point.png")
-            TableItem.layerLineIcon = QIcon(":/db_manager/icons/layer_line.png")
-            TableItem.layerPolygonIcon = QIcon(":/db_manager/icons/layer_polygon.png")
-            TableItem.layerRasterIcon = QIcon(":/db_manager/icons/layer_raster.png")
+            TableItem.layerPointIcon = QgsApplication.getThemeIcon("/mIconPointLayer.svg")
+            TableItem.layerLineIcon = QgsApplication.getThemeIcon("/mIconLineLayer.svg")
+            TableItem.layerPolygonIcon = QgsApplication.getThemeIcon("/mIconPolygonLayer.svg")
+            TableItem.layerRasterIcon = QgsApplication.getThemeIcon("/mIconRasterLayer.svg")
             TableItem.layerUnknownIcon = QIcon(":/db_manager/icons/layer_unknown.png")
 
     def data(self, column):
@@ -254,9 +260,9 @@ class TableItem(TreeItem):
             if geom_type is not None:
                 if geom_type.find('POINT') != -1:
                     return self.layerPointIcon
-                elif geom_type.find('LINESTRING') != -1:
+                elif geom_type.find('LINESTRING') != -1 or geom_type in ('CIRCULARSTRING', 'COMPOUNDCURVE', 'MULTICURVE'):
                     return self.layerLineIcon
-                elif geom_type.find('POLYGON') != -1:
+                elif geom_type.find('POLYGON') != -1 or geom_type == 'MULTISURFACE':
                     return self.layerPolygonIcon
                 return self.layerUnknownIcon
 
@@ -284,7 +290,7 @@ class TableItem(TreeItem):
 
 
 class DBModel(QAbstractItemModel):
-    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceURI, QModelIndex)
+    importVector = pyqtSignal(QgsVectorLayer, Database, QgsDataSourceUri, QModelIndex)
     notPopulated = pyqtSignal(QModelIndex)
 
     def __init__(self, parent=None):
@@ -298,12 +304,13 @@ class DBModel(QAbstractItemModel):
             self.importVector.connect(self.vectorImport)
 
         self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
+        self.hasGPKGSupport = "gpkg" in supportedDbTypes()
 
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
             dbpluginclass = createDbPlugin(dbtype)
             item = PluginItem(dbpluginclass, self.rootItem)
-            item.itemChanged.connect(partial(self.refreshItem, item))
+            item.changed.connect(partial(self.refreshItem, item))
 
     def refreshItem(self, item):
         if isinstance(item, TreeItem):
@@ -399,7 +406,7 @@ class DBModel(QAbstractItemModel):
                     flags |= Qt.ItemIsDropEnabled
 
             # SL/Geopackage db files can be dropped everywhere in the tree
-            if self.hasSpatialiteSupport:
+            if self.hasSpatialiteSupport or self.hasGPKGSupport:
                 flags |= Qt.ItemIsDropEnabled
 
         return flags
@@ -446,7 +453,7 @@ class DBModel(QAbstractItemModel):
             return False
 
         item = index.internalPointer()
-        new_value = unicode(value)
+        new_value = str(value)
 
         if isinstance(item, SchemaItem) or isinstance(item, TableItem):
             obj = item.getItemData()
@@ -455,17 +462,15 @@ class DBModel(QAbstractItemModel):
             if new_value == obj.name:
                 return False
 
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            try:
-                obj.rename(new_value)
-                self._onDataChanged(index)
-            except BaseError as e:
-                DlgDbError.showError(e, self.treeView)
-                return False
-            finally:
-                QApplication.restoreOverrideCursor()
-
-            return True
+            with OverrideCursor(Qt.WaitCursor):
+                try:
+                    obj.rename(new_value)
+                    self._onDataChanged(index)
+                except BaseError as e:
+                    DlgDbError.showError(e, self.treeView)
+                    return False
+                else:
+                    return True
 
         return False
 
@@ -477,27 +482,23 @@ class DBModel(QAbstractItemModel):
         self.endRemoveRows()
 
     def _refreshIndex(self, index, force=False):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            item = index.internalPointer() if index.isValid() else self.rootItem
-            prevPopulated = item.populated
-            if prevPopulated:
-                self.removeRows(0, self.rowCount(index), index)
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                item = index.internalPointer() if index.isValid() else self.rootItem
+                prevPopulated = item.populated
+                if prevPopulated:
+                    self.removeRows(0, self.rowCount(index), index)
+                    item.populated = False
+                if prevPopulated or force:
+                    if item.populate():
+                        for child in item.childItems:
+                            child.changed.connect(partial(self.refreshItem, child))
+                        self._onDataChanged(index)
+                    else:
+                        self.notPopulated.emit(index)
+
+            except BaseError:
                 item.populated = False
-            if prevPopulated or force:
-                if item.populate():
-                    for child in item.childItems:
-                        child.itemChanged.connect(partial(self.refreshItem, item))
-                    self._onDataChanged(index)
-                else:
-                    self.notPopulated.emit(index)
-
-        except BaseError:
-            item.populated = False
-            return
-
-        finally:
-            QApplication.restoreOverrideCursor()
 
     def _onDataChanged(self, indexFrom, indexTo=None):
         if indexTo is None:
@@ -556,10 +557,10 @@ class DBModel(QAbstractItemModel):
                         item = index.internalPointer()
 
                         conn_name = QFileInfo(filename).fileName()
-                        uri = QgsDataSourceURI()
+                        uri = QgsDataSourceUri()
                         uri.setDatabase(filename)
                         item.getItemData().addConnection(conn_name, uri)
-                        item.itemChanged.emit(item)
+                        item.changed.emit()
                         added += 1
                         continue
 
@@ -597,7 +598,7 @@ class DBModel(QAbstractItemModel):
 
         if not inLayer.isValid():
             # invalid layer
-            QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer %s") % inLayer.name())
+            QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer {0}").format(inLayer.name()))
             return False
 
         # retrieve information about the new table's db and schema
@@ -622,7 +623,7 @@ class DBModel(QAbstractItemModel):
 
             # default pk and geom field name value
             if providerKey in ['postgres', 'spatialite']:
-                inUri = QgsDataSourceURI(inLayer.source())
+                inUri = QgsDataSourceUri(inLayer.source())
                 pkCol = inUri.keyColumn()
                 geomCol = inUri.geometryColumn()
 

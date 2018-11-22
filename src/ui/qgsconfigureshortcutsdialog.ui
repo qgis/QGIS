@@ -11,13 +11,23 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Configure shortcuts</string>
+   <string>Keyboard Shortcuts</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QgsFilterLineEdit" name="mLeFilter">
+     <property name="placeholderText">
+      <string>Search…</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QTreeWidget" name="treeActions">
      <property name="rootIsDecorated">
       <bool>false</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
      </property>
      <property name="columnCount">
       <number>2</number>
@@ -39,7 +49,7 @@
      <item>
       <widget class="QPushButton" name="btnChangeShortcut">
        <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
+        <enum>Qt::StrongFocus</enum>
        </property>
        <property name="text">
         <string>Change</string>
@@ -55,7 +65,7 @@
      <item>
       <widget class="QPushButton" name="btnSetNoShortcut">
        <property name="text">
-        <string>Set none</string>
+        <string>Set None</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -65,7 +75,7 @@
      <item>
       <widget class="QPushButton" name="btnResetShortcut">
        <property name="text">
-        <string>Set default</string>
+        <string>Set Default</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -79,7 +89,7 @@
      <item>
       <widget class="QPushButton" name="btnLoadShortcuts">
        <property name="text">
-        <string>Load...</string>
+        <string>Load…</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -89,7 +99,7 @@
      <item>
       <widget class="QPushButton" name="btnSaveShortcuts">
        <property name="text">
-        <string>Save...</string>
+        <string>Save…</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -102,7 +112,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Close</set>
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
        </property>
       </widget>
      </item>
@@ -110,13 +120,21 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
+  <tabstop>mLeFilter</tabstop>
   <tabstop>treeActions</tabstop>
+  <tabstop>btnChangeShortcut</tabstop>
   <tabstop>btnSetNoShortcut</tabstop>
   <tabstop>btnResetShortcut</tabstop>
   <tabstop>btnLoadShortcuts</tabstop>
   <tabstop>btnSaveShortcuts</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

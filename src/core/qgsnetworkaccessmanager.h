@@ -19,16 +19,18 @@
 #define QGSNETWORKACCESSMANAGER_H
 
 #include <QList>
+#include "qgis.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
-/*
+#include "qgis_core.h"
+
+/**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core
- * \since 1.5
  *
  * This class implements the QGIS network access manager.  It's a singleton
  * that can be used across QGIS.
@@ -40,26 +42,41 @@
  * fallback proxy can be set.  There's also a exclude list that defines URLs
  * that the fallback proxy should not be used for, then no proxy will be used.
  *
+ * \since 1.5
  */
 class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 
   public:
-    //! returns a pointer to the single instance
-    // and creates that instance on the first call.
-    static QgsNetworkAccessManager* instance();
+
+    /**
+     * Returns a pointer to the active QgsNetworkAccessManager
+     * for the current thread.
+     *
+     * With the \a connectionType parameter it is possible to setup the default connection
+     * type that is used to handle signals that might require user interaction and therefore
+     * need to be handled on the main thread. See in-depth discussion below.
+     *
+     * \param connectionType In most cases the default of using a ``Qt::BlockingQueuedConnection``
+     * is ok, to make a background thread wait for the main thread to answer such a request is
+     * fine and anything else is dangerous.
+     * However, in case the request was started on the main thread, one should execute a
+     * local event loop in a helper thread and freeze the main thread for the duration of the
+     * download. In this case, if an authentication request is sent from the background thread
+     * network access manager, the background thread should be blocked, the main thread be woken
+     * up, processEvents() executed once, the main thread frozen again and the background thread
+     * continued.
+     */
+    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
-    //! destructor
-    ~QgsNetworkAccessManager();
-
     //! insert a factory into the proxy factories list
-    void insertProxyFactory( QNetworkProxyFactory *factory );
+    void insertProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFER );
 
     //! remove a factory from the proxy factories list
-    void removeProxyFactory( QNetworkProxyFactory *factory );
+    void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
@@ -68,60 +85,47 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
-    //! set fallback proxy and URL that shouldn't use it.
+    //! Sets fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
-    //! Get name for QNetworkRequest::CacheLoadControl
-    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl );
+    //! Gets name for QNetworkRequest::CacheLoadControl
+    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
-    //! Get QNetworkRequest::CacheLoadControl from name
-    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
+    //! Gets QNetworkRequest::CacheLoadControl from name
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
-    //! Setup the NAM according to the user's settings
-    void setupDefaultProxyAndCache();
-
-    //! return whether the system proxy should be used
-    bool useSystemProxy() { return mUseSystemProxy; }
-
-  public slots:
-    /** Send GET request, calls get().
-     * Emits requestSent().
-     * @param request request to be sent
-     * @deprecated use get() directly
+    /**
+     * Setup the QgsNetworkAccessManager (NAM) according to the user's settings.
+     * The \a connectionType sets up the default connection type that is used to
+     * handle signals that might require user interaction and therefore
+     * need to be handled on the main thread. See in-depth discussion in the documentation
+     * for the constructor of this class.
      */
-    Q_DECL_DEPRECATED void sendGet( const QNetworkRequest & request );
-    /** Abort and delete reply.
-     * @param reply reply to be aborted.
-     * @deprecated use abort() and deleteLayer() on the reply directly
-     */
-    Q_DECL_DEPRECATED void deleteReply( QNetworkReply * reply );
+    void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
+
+    //! Returns whether the system proxy should be used
+    bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-    /** Emitted when request was sent by request()
-     * @param reply request reply
-     * @param sender the object which called request() slot.
-     * @deprecated only emitted from deprecated sendGet
-     */
-    void requestSent( QNetworkReply * reply, QObject *sender );
 
   private slots:
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
+    QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
-    QList<QNetworkProxyFactory*> mProxyFactories;
+    QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
-    bool mUseSystemProxy;
-    bool mInitialized;
-    static QgsNetworkAccessManager *smMainNAM;
+    bool mUseSystemProxy = false;
+    bool mInitialized = false;
+    static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

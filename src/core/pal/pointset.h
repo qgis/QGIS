@@ -30,11 +30,15 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
-#include "qgsgeometry.h"
-#include "rtree.hpp"
+#define SIP_NO_FILE
+
+
 #include <cfloat>
 #include <cmath>
 #include <QLinkedList>
+#include <geos_c.h>
+
+#include "qgis_core.h"
 
 namespace pal
 {
@@ -59,6 +63,7 @@ namespace pal
   /**
    * \class pal::PointSet
    * \note not available in Python bindings
+   * \ingroup core
    */
   class CORE_EXPORT PointSet
   {
@@ -73,40 +78,44 @@ namespace pal
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
-      PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
+      PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
-      /** Tests whether point set contains a specified point.
-       * @param x x-coordinate of point
-       * @param y y-coordinate of point
-       * @returns true if point set contains a specified point
+      /**
+       * Tests whether point set contains a specified point.
+       * \param x x-coordinate of point
+       * \param y y-coordinate of point
+       * \returns true if point set contains a specified point
        */
       bool containsPoint( double x, double y ) const;
 
-      /** Tests whether a possible label candidate will fit completely within the shape.
-       * @param x x-coordinate of label candidate
-       * @param y y-coordinate of label candidate
-       * @param width label width
-       * @param height label height
-       * @param alpha label angle
-       * @returns true if point set completely contains candidate label
+      /**
+       * Tests whether a possible label candidate will fit completely within the shape.
+       * \param x x-coordinate of label candidate
+       * \param y y-coordinate of label candidate
+       * \param width label width
+       * \param height label height
+       * \param alpha label angle
+       * \returns true if point set completely contains candidate label
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
-      CHullBox * compute_chull_bbox();
+      CHullBox *compute_chull_bbox();
 
-      /** Split a concave shape into several convex shapes.
+      /**
+       * Split a concave shape into several convex shapes.
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
                                  double xrm, double yrm );
 
-      /** Returns the squared minimum distance between the point set geometry and the point (px,py)
+      /**
+       * Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
-       * @param px x coordinate of the point
-       * @param py y coordinate of the points
-       * @param rx pointer to x coorinates of the nearest point (can be NULL)
-       * @param ry pointer to y coorinates of the nearest point (can be NULL)
-       * @returns minimum distance
+       * \param px x coordinate of the point
+       * \param py y coordinate of the points
+       * \param rx pointer to x coorinates of the nearest point (can be NULL)
+       * \param ry pointer to y coorinates of the nearest point (can be NULL)
+       * \returns minimum distance
        */
       double minDistanceToPoint( double px, double py, double *rx = nullptr, double *ry = nullptr ) const;
 
@@ -122,43 +131,51 @@ namespace pal
         max[1] = ymax;
       }
 
-      /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
-      PointSet* getHoleOf() { return holeOf; }
+      //! Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset.
+      PointSet *getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
 
-      /** Get a point a set distance along a line geometry.
-       * @param d array of distances between points
-       * @param ad cumulative total distance from pt0 to each point (ad0 = pt0->pt0)
-       * @param dl distance to traverse along line
-       * @param px final x coord on line
-       * @param py final y coord on line
+      /**
+       * Gets a point a set distance along a line geometry.
+       * \param d array of distances between points
+       * \param ad cumulative total distance from pt0 to each point (ad0 = pt0->pt0)
+       * \param dl distance to traverse along line
+       * \param px final x coord on line
+       * \param py final y coord on line
       */
       void getPointByDistance( double *d, double *ad, double dl, double *px, double *py );
 
-      /** Returns the point set's GEOS geometry.
+      /**
+       * Returns the point set's GEOS geometry.
       */
-      const GEOSGeometry* geos() const;
+      const GEOSGeometry *geos() const;
 
-      /** Returns length of line geometry.
+      /**
+       * Returns length of line geometry.
        */
       double length() const;
 
+      /**
+       * Returns true if pointset is closed.
+       */
+      bool isClosed() const;
+
     protected:
-      mutable GEOSGeometry *mGeos;
-      mutable bool mOwnsGeom;
+      mutable GEOSGeometry *mGeos = nullptr;
+      mutable bool mOwnsGeom = false;
 
       int nbPoints;
-      double *x;
-      double *y;   // points order is counterclockwise
+      double *x = nullptr;
+      double *y = nullptr;   // points order is counterclockwise
 
-      int *cHull;
+      int *cHull = nullptr;
       int cHullSize;
 
       int type;
 
-      PointSet* holeOf;
-      PointSet* parent;
+      PointSet *holeOf = nullptr;
+      PointSet *parent = nullptr;
 
       PointSet( double x, double y );
 
@@ -166,17 +183,17 @@ namespace pal
 
       void deleteCoords();
       void createGeosGeom() const;
-      const GEOSPreparedGeometry* preparedGeom() const;
+      const GEOSPreparedGeometry *preparedGeom() const;
       void invalidateGeos();
 
-      double xmin;
-      double xmax;
-      double ymin;
-      double ymax;
+      double xmin = std::numeric_limits<double>::max();
+      double xmax = std::numeric_limits<double>::lowest();
+      double ymin = std::numeric_limits<double>::max();
+      double ymax = std::numeric_limits<double>::lowest();
 
     private:
 
-      mutable const GEOSPreparedGeometry* mPreparedGeom;
+      mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
   };
 

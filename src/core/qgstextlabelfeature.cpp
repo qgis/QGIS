@@ -17,12 +17,13 @@
 
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
-#include <pal/feature.h>
+#include "qgsmaptopixel.h"
+#include "pal/feature.h"
 
 
-QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
-    : QgsLabelFeature( id, geometry, size )
-    , mFontMetrics( NULL )
+QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
+  : QgsLabelFeature( id, std::move( geometry ), size )
+
 {
   mDefinedFont = QFont();
 }
@@ -43,7 +44,7 @@ QString QgsTextLabelFeature::text( int partId ) const
 }
 
 
-void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale, double maxinangle, double maxoutangle )
+void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle )
 {
   if ( mInfo )
     return;
@@ -65,7 +66,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF* fm,
 
   // create label info!
   double mapScale = xform->mapUnitsPerPixel();
-  double labelHeight = mapScale * fm->height() / fontScale;
+  double labelHeight = mapScale * fm->height();
 
   // mLetterSpacing/mWordSpacing = 0.0 is default for non-curved labels
   // (non-curved spacings handled by Qt in QgsPalLayerSettings/QgsPalLabeling)
@@ -102,7 +103,7 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF* fm,
       charWidth = fm->width( QString( mClusters[i] ) ) + wordSpaceFix;
     }
 
-    double labelWidth = mapScale * charWidth / fontScale;
+    double labelWidth = mapScale * charWidth;
     mInfo->char_info[i].width = labelWidth;
   }
 }

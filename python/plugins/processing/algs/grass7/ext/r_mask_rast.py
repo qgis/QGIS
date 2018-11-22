@@ -25,12 +25,22 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-import r_mask
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
-def processCommand(alg):
-    r_mask.processCommand(alg)
+def processCommand(alg, parameters, context, feedback):
+    # Remove input
+    alg.removeParameter('input')
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
-    r_mask.processOutputs(alg)
+def processOutputs(alg, parameters, context, feedback):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
+    # We need to export the raster with all its bands and its color table
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+    grassName = alg.exportedLayers['input']
+    alg.exportRasterLayer(grassName, fileName, True,
+                          outFormat, createOpt, metaOpt)

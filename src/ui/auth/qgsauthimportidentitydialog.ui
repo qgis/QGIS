@@ -29,16 +29,7 @@
       <string>Import Identity</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>6</number>
       </property>
       <item>
@@ -68,16 +59,7 @@
         </property>
         <widget class="QWidget" name="pagePkiPaths">
          <layout class="QGridLayout" name="gridLayout_2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>0</number>
           </property>
           <item row="4" column="0" alignment="Qt::AlignTop">
@@ -142,7 +124,7 @@
               <item>
                <widget class="QToolButton" name="btnPkiPathsKey">
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                 <property name="popupMode">
                  <enum>QToolButton::InstantPopup</enum>
@@ -188,7 +170,7 @@
             <item row="0" column="1">
              <widget class="QToolButton" name="btnPkiPathsCert">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="popupMode">
                <enum>QToolButton::InstantPopup</enum>
@@ -211,16 +193,7 @@
         </widget>
         <widget class="QWidget" name="pagePkiPkcs12">
          <layout class="QGridLayout" name="gridLayout_8">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>0</number>
           </property>
           <item row="1" column="0">
@@ -257,7 +230,7 @@
             <item row="0" column="1">
              <widget class="QToolButton" name="btnPkiPkcs12Bundle">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="popupMode">
                <enum>QToolButton::InstantPopup</enum>
@@ -348,22 +321,13 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Validation results</string>
+      <string>Validation Results</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="spacing">
        <number>12</number>
       </property>
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>6</number>
       </property>
       <item>
@@ -400,13 +364,14 @@
   <tabstop>btnPkiPkcs12Bundle</tabstop>
   <tabstop>lePkiPkcs12KeyPass</tabstop>
   <tabstop>chkPkiPkcs12PassShow</tabstop>
-  <tabstop>teValidation</tabstop>
-  <tabstop>btnPkiPathsCert</tabstop>
   <tabstop>lePkiPathsCert</tabstop>
+  <tabstop>btnPkiPathsCert</tabstop>
   <tabstop>lePkiPathsKey</tabstop>
-  <tabstop>chkPkiPathsPassShow</tabstop>
   <tabstop>btnPkiPathsKey</tabstop>
   <tabstop>lePkiPathsKeyPass</tabstop>
+  <tabstop>chkPkiPathsPassShow</tabstop>
+  <tabstop>teValidation</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -19,8 +19,9 @@
 #define QGSADDATTRDIALOG_H
 
 #include "ui_qgsaddattrdialogbase.h"
-#include "qgisgui.h"
-#include "qgsfield.h"
+#include "qgsguiutils.h"
+#include "qgsfields.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 
@@ -29,15 +30,15 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
     Q_OBJECT
   public:
     QgsAddAttrDialog( QgsVectorLayer *vlayer,
-                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    QgsAddAttrDialog( const std::list<QString>& typelist,
-                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsAddAttrDialog( const std::list<QString> &typelist,
+                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     QgsField field() const;
 
   public slots:
-    void on_mTypeBox_currentIndexChanged( int idx );
-    void on_mLength_editingFinished();
+    void mTypeBox_currentIndexChanged( int idx );
+    void mLength_editingFinished();
     void accept() override;
 
   private:

@@ -17,17 +17,17 @@
 
 #include "qgswmsprovider.h"
 #include "qgswmtsdimensions.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QComboBox>
 
 QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
   QStringList dims = layer.dimensions.keys();
-  qSort( dims );
+  std::sort( dims.begin(), dims.end() );
 
   mDimensions->setRowCount( dims.size() );
 
@@ -47,16 +47,16 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
     mDimensions->setCellWidget( i, 4, cb );
   }
 
-  QSettings settings;
-  QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( "/Windows/WMTSDimensions/geometry" ).toByteArray() );
+  QgsSettings settings;
+  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WMTSDimensions/geometry" ) ).toByteArray() );
 }
 
 QgsWmtsDimensions::~QgsWmtsDimensions()
 {
-  QSettings settings;
-  QgsDebugMsg( "saving geometry" );
-  settings.setValue( "/Windows/WmtsDimensions/geometry", saveGeometry() );
+  QgsSettings settings;
+  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
+  settings.setValue( QStringLiteral( "Windows/WmtsDimensions/geometry" ), saveGeometry() );
 }
 
 void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )

@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          date                 : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -18,28 +18,28 @@
 #include <QDebug>
 #include <QTableWidgetItem>
 
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsmaplayer.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsproviderregistry.h>
-#include <qgslogger.h>
-#include <qgisinterface.h>
-#include <qgsproject.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayer.h"
+#include "qgsproviderregistry.h"
+#include "qgslogger.h"
+#include "qgisinterface.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgshelp.h"
 #include "rulesDialog.h"
 #include "topolTest.h"
 
-rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *theQgisIface, QWidget *parent )
-    : QDialog( parent ), Ui::rulesDialog()
+rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent )
+  : QDialog( parent ), Ui::rulesDialog()
 {
   setupUi( this );
 
-  mQgisIface = theQgisIface;
+  mQgisIface = qgisIface;
 
   //setHorizontalHeaderItems();
+  mRulesTable->hideColumn( 3 );
   mRulesTable->hideColumn( 4 );
-  mRulesTable->hideColumn( 5 );
 
   mTestConfMap = testMap;
   mRulesTable->setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -48,77 +48,71 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterf
   mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
-  connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addRule() ) );
-  connect( mAddTestButton, SIGNAL( clicked() ), mRulesTable, SLOT( resizeColumnsToContents() ) );
-  // attempt to add new test when Ok clicked
+  connect( mAddTestButton, &QAbstractButton::clicked, this, &rulesDialog::addRule );
+  connect( mAddTestButton, &QAbstractButton::clicked, mRulesTable, &QTableView::resizeColumnsToContents );
+  // attempt to add new test when OK clicked
   //connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addTest() ) );
-  connect( mDeleteTestButton, SIGNAL( clicked() ), this, SLOT( deleteTest() ) );
+  connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &rulesDialog::showHelp );
 
-  connect( mLayer1Box, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( updateRuleItems( const QString& ) ) );
-  connect( mRuleBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( showControls( const QString& ) ) );
+  connect( mLayer1Box, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::updateRuleItems );
+  connect( mRuleBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &rulesDialog::showControls );
 
   mRuleBox->setCurrentIndex( 0 );
 
   //this resets this plugin up if a project is loaded
-  connect( mQgisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+  connect( mQgisIface, &QgisInterface::projectRead, this, &rulesDialog::projectRead );
   //reset plugin if new project is activated
   projectRead();
-}
-
-rulesDialog::~rulesDialog()
-{
 }
 
 void rulesDialog::setHorizontalHeaderItems()
 {
   QStringList labels;
-  labels << tr( "Test" ) << tr( "Layer #1" ) << tr( "Layer #2" ) << tr( "Tolerance" ) << "" << "";
+  labels << tr( "Test" ) << tr( "Layer #1" ) << tr( "Layer #2" ) << QString() << QString();
   mRulesTable->setHorizontalHeaderLabels( labels );
 }
 
-void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
+void rulesDialog::readTest( int index, QgsProject *project )
 {
   QString testName;
   QString layer1Id;
   QString layer2Id;
-  QString tolerance;
-  QgsProject* project = QgsProject::instance();
-  QString postfix = QString( "%1" ).arg( index );
+  QString postfix = QStringLiteral( "%1" ).arg( index );
 
-  testName = project->readEntry( "Topol", "/testname_" + postfix, "" );
-  tolerance = project->readEntry( "Topol", "/tolerance_" + postfix, "" );
-  layer1Id = project->readEntry( "Topol", "/layer1_" + postfix, "" );
-  layer2Id = project->readEntry( "Topol", "/layer2_" + postfix, "" );
+  testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
+  layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
+  layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QString() );
 
-  QgsVectorLayer* l1;
-  if ( !( QgsVectorLayer* )layerRegistry->mapLayers().contains( layer1Id ) )
+  QgsVectorLayer *l1 = nullptr;
+  if ( !( QgsVectorLayer * )project->mapLayers().contains( layer1Id ) )
     return;
 
-  l1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer1Id );
+  l1 = ( QgsVectorLayer * )project->mapLayer( layer1Id );
   if ( !l1 )
     return;
 
   QString layer1Name = l1->name();
   QString layer2Name;
-  QgsVectorLayer* l2;
+  QgsVectorLayer *l2 = nullptr;
 
   if ( mTestConfMap[testName].useSecondLayer )
   {
-    if ( !( QgsVectorLayer* )layerRegistry->mapLayers().contains( layer2Id ) )
+    if ( !( QgsVectorLayer * )project->mapLayers().contains( layer2Id ) )
       return;
     else
     {
-      l2 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer2Id );
+      l2 = ( QgsVectorLayer * )project->mapLayer( layer2Id );
       layer2Name = l2->name();
     }
   }
   else
-    layer2Name = "No layer";
+    layer2Name = QStringLiteral( "No layer" );
 
   int row = index;
   mRulesTable->insertRow( row );
 
-  QTableWidgetItem* newItem;
+  QTableWidgetItem *newItem = nullptr;
   newItem = new QTableWidgetItem( testName );
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
   mRulesTable->setItem( row, 0, newItem );
@@ -131,33 +125,25 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
   mRulesTable->setItem( row, 2, newItem );
 
-  if ( mTestConfMap[testName].useTolerance )
-    newItem = new QTableWidgetItem( tolerance );
-  else
-    newItem = new QTableWidgetItem( tr( "No tolerance" ) );
-
-  newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
-  mRulesTable->setItem( row, 3, newItem );
-
   // add layer ids to hidden columns
   newItem = new QTableWidgetItem( layer1Id );
-  mRulesTable->setItem( row, 4, newItem );
+  mRulesTable->setItem( row, 3, newItem );
   newItem = new QTableWidgetItem( layer2Id );
-  mRulesTable->setItem( row, 5, newItem );
+  mRulesTable->setItem( row, 4, newItem );
 }
 
 void rulesDialog::projectRead()
 {
   clearRules();
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  int testCount = QgsProject::instance()->readNumEntry( "Topol", "/testCount" );
+  QgsProject *project = QgsProject::instance();
+  int testCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
   mRulesTable->clearContents();
 
   for ( int i = 0; i < testCount; ++i )
-    readTest( i, layerRegistry );
+    readTest( i, project );
 }
 
-void rulesDialog::showControls( const QString& testName )
+void rulesDialog::showControls( const QString &testName )
 {
   if ( testName.isEmpty() )
   {
@@ -167,15 +153,14 @@ void rulesDialog::showControls( const QString& testName )
   mLayer2Box->clear();
   mLayer2Box->addItem( tr( "No layer" ) );
   TopologyRule topologyRule = mTestConfMap[testName];
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QList<QString> layerList = layerRegistry->mapLayers().keys();
+  QList<QString> layerList = QgsProject::instance()->mapLayers().keys();
 
   if ( topologyRule.useSecondLayer )
   {
     mLayer2Box->setVisible( true );
     for ( int i = 0; i < layerList.count(); ++i )
     {
-      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
+      QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
 
       if ( !v1 )
       {
@@ -202,19 +187,6 @@ void rulesDialog::showControls( const QString& testName )
   {
     mLayer2Box->setVisible( false );
   }
-
-
-  if ( topologyRule.useTolerance )
-  {
-    mToleranceBox->setVisible( true );
-    mToleranceLabel->setVisible( true );
-  }
-  else
-  {
-    mToleranceBox->setVisible( false );
-    mToleranceLabel->setVisible( false );
-  }
-
 }
 
 void rulesDialog::addRule()
@@ -242,7 +214,7 @@ void rulesDialog::addRule()
   int row = mRulesTable->rowCount();
   mRulesTable->insertRow( row );
 
-  QTableWidgetItem* newItem;
+  QTableWidgetItem *newItem = nullptr;
   newItem = new QTableWidgetItem( test );
   mRulesTable->setItem( row, 0, newItem );
   newItem = new QTableWidgetItem( layer1 );
@@ -255,44 +227,35 @@ void rulesDialog::addRule()
 
   mRulesTable->setItem( row, 2, newItem );
 
-  if ( mTestConfMap[test].useTolerance )
-    newItem = new QTableWidgetItem( QString( "%1" ).arg( mToleranceBox->value() ) );
-  else
-    newItem = new QTableWidgetItem( tr( "No tolerance" ) );
-
-  mRulesTable->setItem( row, 3, newItem );
-
   QString layer1ID, layer2ID;
   // add layer ids to hidden columns
   // -1 for "No layer" string
   if ( mTestConfMap[test].useSecondLayer )
-    layer2ID = mLayer2Box->itemData( mLayer2Box->currentIndex() ).toString();
+    layer2ID = mLayer2Box->currentData().toString();
   else
     layer2ID = tr( "No layer" );
 
-  layer1ID =  mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
+  layer1ID = mLayer1Box->currentData().toString();
 
   //TODO: use setItemData (or something like that) instead of hidden columns
   newItem = new QTableWidgetItem( layer1ID );
-  mRulesTable->setItem( row, 4, newItem );
+  mRulesTable->setItem( row, 3, newItem );
   newItem = new QTableWidgetItem( layer2ID );
-  mRulesTable->setItem( row, 5, newItem );
+  mRulesTable->setItem( row, 4, newItem );
 
   // save state to the project file.....
-  QString postfix = QString( "%1" ).arg( row );
-  QgsProject* project = QgsProject::instance();
+  QString postfix = QStringLiteral( "%1" ).arg( row );
+  QgsProject *project = QgsProject::instance();
 
-  project->writeEntry( "Topol", "/testCount", row + 1 );
-  project->writeEntry( "Topol", "/testname_" + postfix, test );
-  project->writeEntry( "Topol", "/tolerance_" + postfix, QString( "%1" ).arg( mToleranceBox->value() ) );
-  project->writeEntry( "Topol", "/layer1_" + postfix, layer1ID );
-  project->writeEntry( "Topol", "/layer2_" + postfix, layer2ID );
+  project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );
+  project->writeEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, test );
+  project->writeEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, layer1ID );
+  project->writeEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, layer2ID );
 
   // reset controls to default
   mRuleBox->setCurrentIndex( 0 );
   mLayer1Box->setCurrentIndex( 0 );
   mLayer2Box->setCurrentIndex( 0 );
-  mToleranceBox->setValue( 0 );
 }
 
 void rulesDialog::deleteTest()
@@ -316,10 +279,9 @@ void rulesDialog::updateRuleItems( const QString &layerName )
     return;
   }
 
-  QString layerId = mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
+  QString layerId = mLayer1Box->currentData().toString();
 
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayer( layerId );
+  QgsVectorLayer *vlayer = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerId );
 
   if ( !vlayer )
   {
@@ -329,7 +291,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
   for ( QMap<QString, TopologyRule>::iterator it = mTestConfMap.begin(); it != mTestConfMap.end(); ++it )
   {
-    TopologyRule& rule = it.value();
+    TopologyRule &rule = it.value();
     if ( rule.layer1AcceptsType( vlayer->geometryType() ) )
     {
       mRuleBox->addItem( it.key() );
@@ -340,9 +302,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
 void rulesDialog::initGui()
 {
-  QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-
-  QList<QString> layerList = layerRegistry->mapLayers().keys();
+  QList<QString> layerList = QgsProject::instance()->mapLayers().keys();
 
   mLayer1Box->clear();
   mLayer1Box->addItem( tr( "No layer" ) );
@@ -353,7 +313,7 @@ void rulesDialog::initGui()
   mLayer1Box->blockSignals( true );
   for ( int i = 0; i < layerList.size(); ++i )
   {
-    QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
+    QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes
@@ -372,4 +332,9 @@ void rulesDialog::clearRules()
   {
     mRulesTable->removeRow( 0 );
   }
+}
+
+void rulesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_topology_checker.html" ) );
 }

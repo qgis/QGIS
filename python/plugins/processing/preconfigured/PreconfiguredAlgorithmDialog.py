@@ -28,12 +28,17 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+
 from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel,\
-    QLineEdit, QWidget
+from processing.tools import dataobjects
+from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
+from qgis.PyQt.QtGui import QPalette, QColor
+
+from qgis.core import QgsApplication
+from qgis.gui import QgsMessageBar
 
 
 class PreconfiguredAlgorithmDialog(AlgorithmDialog):
@@ -41,41 +46,42 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
     def __init__(self, alg, toolbox):
         AlgorithmDialog.__init__(self, alg)
         self.toolbox = toolbox
-        self.cornerWidget.setVisible(False)
-        self.btnRun.setText(self.tr("OK"))
-        self.tabWidget.removeTab(1)
+        self.runButton().setText(self.tr("OK"))
+        self.tabWidget().removeTab(1)
         self.settingsPanel = SettingsPanel()
-        self.tabWidget.addTab(self.settingsPanel, "Description")
+        self.tabWidget().addTab(self.settingsPanel, "Description")
 
     def accept(self):
+        context = dataobjects.createContext()
         try:
-            self.setParamValues()
-            msg = self.alg._checkParameterValuesBeforeExecuting()
-            if msg:
+            parameters = self.getParameterValues()
+            self.setOutputValues()
+            ok, msg = self.algorithm().checkParameterValues(parameters, context)
+            if not ok:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
                 return
-            description = algAsDict(self.alg)
+            description = algAsDict(self.algorithm())
             description["name"] = self.settingsPanel.txtName.text().strip()
             description["group"] = self.settingsPanel.txtGroup.text().strip()
             if not (description["name"] and description["group"]):
-                self.tabWidget.setCurrentIndex(1)
+                self.tabWidget().setCurrentIndex(self.tabWidget().count() - 1)
                 return
             validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
             filename = ''.join(c for c in description["name"] if c in validChars).lower() + ".json"
             filepath = os.path.join(preconfiguredAlgorithmsFolder(), filename)
             with open(filepath, "w") as f:
                 json.dump(description, f)
-            self.toolbox.updateProvider('preconfigured')
+            QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox.accepted.connect(lambda:
-                                                e.widget.setPalette(QPalette()))
+                self.buttonBox().accepted.connect(lambda: e.widget.setPalette(QPalette()))
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.lblProgress.setText(
-                    self.tr('<b>Missing parameter value: %s</b>') % e.parameter.description)
+                self.messageBar().pushMessage("", self.tr('Missing parameter value: {0}').format(
+                    e.parameter.description()),
+                    level=Qgis.Warning, duration=5)
                 return
             except:
                 QMessageBox.critical(self,

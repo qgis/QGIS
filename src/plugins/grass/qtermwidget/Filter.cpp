@@ -364,7 +364,7 @@ void RegExpFilter::process()
 
     // ignore any regular expressions which match an empty string.
     // otherwise the while loop below will run indefinitely
-    static const QString emptyString("");
+    static const QString emptyString(QLatin1String(""));
     if ( _searchText.exactMatch(emptyString) )
         return;
 
@@ -407,7 +407,7 @@ RegExpFilter::HotSpot* UrlFilter::newHotSpot(int startLine,int startColumn,int e
 {
     HotSpot *spot = new UrlFilter::HotSpot(startLine,startColumn,
                                                endLine,endColumn);
-    connect(spot->getUrlObject(), SIGNAL(activated(QUrl)), this, SIGNAL(activated(QUrl)));
+    connect(spot->getUrlObject(), static_cast<void ( FilterObject::* )( const QUrl& )>( &FilterObject::activated ), this, &UrlFilter::activated);
     return spot;
 }
 
@@ -449,19 +449,19 @@ void UrlFilter::HotSpot::activate(const QString& actionName)
 
     const UrlType kind = urlType();
 
-    if ( actionName == "copy-action" )
+    if ( actionName == QLatin1String("copy-action") )
     {
         QApplication::clipboard()->setText(url);
         return;
     }
 
-    if ( actionName.isEmpty() || actionName == "open-action" )
+    if ( actionName.isEmpty() || actionName == QLatin1String("open-action") )
     {
         if ( kind == StandardUrl )
         {
-            // if the URL path does not include the protocol ( eg. "www.kde.org" ) then
-            // prepend http:// ( eg. "www.kde.org" --> "http://www.kde.org" )
-            if (!url.contains("://"))
+            // if the URL path does not include the protocol ( e.g., "www.kde.org" ) then
+            // prepend http:// ( e.g., "www.kde.org" --> "http://www.kde.org" )
+            if (!url.contains(QLatin1String("://")))
             {
                 url.prepend("http://");
             }
@@ -535,18 +535,18 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     }
     else if ( kind == Email )
     {
-        openAction->setText(QObject::tr("Send Email To..."));
+        openAction->setText(QObject::tr("Send Email To…"));
         copyAction->setText(QObject::tr("Copy Email Address"));
     }
 
     // object names are set here so that the hotspot performs the
     // correct action when activated() is called with the triggered
     // action passed as a parameter.
-    openAction->setObjectName( QLatin1String("open-action" ));
-    copyAction->setObjectName( QLatin1String("copy-action" ));
+    openAction->setObjectName( QStringLiteral("open-action" ));
+    copyAction->setObjectName( QStringLiteral("copy-action" ));
 
-    QObject::connect( openAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
-    QObject::connect( copyAction , SIGNAL(triggered()) , _urlObject , SLOT(activated()) );
+    QObject::connect( openAction , &QAction::triggered , _urlObject , static_cast<void ( FilterObject::* )()>( &FilterObject::activated ) );
+    QObject::connect( copyAction , &QAction::triggered , _urlObject , static_cast<void ( FilterObject::* )()>( &FilterObject::activated ) );
 
     list << openAction;
     list << copyAction;

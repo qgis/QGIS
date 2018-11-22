@@ -15,6 +15,7 @@
 #ifndef QGSRULEBASEDLABELING_H
 #define QGSRULEBASEDLABELING_H
 
+#include "qgis_core.h"
 #include <QStringList>
 #include <QMap>
 
@@ -32,29 +33,33 @@ class QgsGeometry;
 class QgsRuleBasedLabelProvider;
 
 /**
- * @class QgsRuleBasedLabeling
- * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * \ingroup core
+ * \class QgsRuleBasedLabeling
+ * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
     class Rule;
-    typedef QList<Rule*> RuleList;
-    typedef QMap<Rule*, QgsVectorLayerLabelProvider*> RuleToProviderMap;
+    typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
+    typedef QMap<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> RuleToProviderMap;
 
     /**
-     * @class QgsRuleBasedLabeling::Rule
-     * @note not available in Python bindings
-     * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+     * \ingroup core
+     * \class QgsRuleBasedLabeling::Rule
+     * \since QGIS 3.0
      */
     class CORE_EXPORT Rule
     {
       public:
-        //! takes ownership of settings
-        Rule( QgsPalLayerSettings* settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString& filterExp = QString(), const QString& description = QString(), bool elseRule = false );
+        //! takes ownership of settings, settings may be nullptr
+        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
+
+        //! Rules cannot be copied.
+        Rule( const Rule &rh ) = delete;
+        //! Rules cannot be copied.
+        Rule &operator=( const Rule &rh ) = delete;
 
         //! The result of registering a rule
         enum RegisterResult
@@ -65,197 +70,246 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         };
 
         /**
-         * Get the labeling settings. May return a null pointer.
+         * Gets the labeling settings. May return a null pointer.
          */
-        QgsPalLayerSettings* settings() const { return mSettings; }
+        QgsPalLayerSettings *settings() const { return mSettings.get(); }
 
         /**
          * Determines if scale based labeling is active
          *
-         * @return True if scale based labeling is active
+         * \returns True if scale based labeling is active
          */
-        bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
+        bool dependsOnScale() const { return !qgsDoubleNear( mMinimumScale, 0.0 ) || !qgsDoubleNear( mMaximumScale, 0 ); }
 
         /**
-         * The minimum scale at which this label rule should be applied
-         *
-         * E.g. Denominator 1000 is a scale of 1:1000, where a rule with minimum denominator
-         * of 900 will not be applied while a rule with 2000 will be applied.
-         *
-         * @return The minimum scale denominator
+         * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the label rule will be active.
+         * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A scale of 0 indicates no maximum scale visibility.
+         * \see minimumScale()
+         * \see setMaximumScale()
+         * \since QGIS 3.0
          */
-        int scaleMinDenom() const { return mScaleMinDenom; }
+        double maximumScale() const { return mMaximumScale; }
 
         /**
-         * The maximum scale denominator at which this label rule should be applied
-         *
-         * E.g. Denominator 1000 is a scale of 1:1000, where a rule with maximum denominator
-         * of 900 will be applied while a rule with 2000 will not be applied.
-         *
-         * @return The maximum scale denominator
+         * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the label rule will be active.
+         * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A scale of 0 indicates no minimum scale visibility.
+         * \see maximumScale()
+         * \see setMinimumScale()
+         * \since QGIS 3.0
          */
-        int scaleMaxDenom() const { return mScaleMaxDenom; }
+        double minimumScale() const { return mMinimumScale; }
+
         /**
          * A filter that will check if this rule applies
-         * @return An expression
+         * \returns An expression
          */
         QString filterExpression() const { return mFilterExp; }
+
         /**
          * A human readable description for this rule
          *
-         * @return Description
+         * \returns Description
          */
         QString description() const { return mDescription; }
+
         /**
          * Returns if this rule is active
          *
-         * @return True if the rule is active
+         * \returns True if the rule is active
          */
         bool active() const { return mIsActive; }
+
         /**
          * Check if this rule is an ELSE rule
          *
-         * @return True if this rule is an else rule
+         * \returns True if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! set new settings (or NULL). Deletes old settings if any.
-        void setSettings( QgsPalLayerSettings* settings );
+        //! Sets new settings (or NULL). Deletes old settings if any.
+        void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
-         * Set the minimum denominator for which this rule shall apply.
-         * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
-         * Set to 0 to disable the minimum check
-         * @param scaleMinDenom The minimum scale denominator for this rule
+         * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the label rule will be active.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A \a scale of 0 indicates no minimum scale visibility.
+         * \see minimumScale()
+         * \see setMaximumScale()
          */
-        void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+        void setMinimumScale( double scale ) { mMinimumScale = scale; }
+
         /**
-         * Set the maximum denominator for which this rule shall apply.
-         * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
-         * Set to 0 to disable the maximum check
-         * @param scaleMaxDenom maximum scale denominator for this rule
+         * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the rule will be active.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A \a scale of 0 indicates no maximum scale visibility.
+         * \see maximumScale()
+         * \see setMinimumScale()
          */
-        void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+        void setMaximumScale( double scale ) { mMaximumScale = scale; }
+
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
          *
-         * @param filterExp An expression
+         * \param filterExp An expression
          */
-        void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
+        void setFilterExpression( const QString &filterExp ) { mFilterExp = filterExp; initFilter(); }
+
         /**
          * Set a human readable description for this rule
          *
-         * @param description Description
+         * \param description Description
          */
-        void setDescription( const QString& description ) { mDescription = description; }
+        void setDescription( const QString &description ) { mDescription = description; }
+
         /**
          * Sets if this rule is active
-         * @param state Determines if the rule should be activated or deactivated
+         * \param state Determines if the rule should be activated or deactivated
          */
         void setActive( bool state ) { mIsActive = state; }
+
         /**
          * Sets if this rule is an ELSE rule
          *
-         * @param iselse If true, this rule is an ELSE rule
+         * \param iselse If true, this rule is an ELSE rule
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
         //! Override the assigned rule key (should be used just internally by rule-based labeling)
-        void setRuleKey( const QString& key ) { mRuleKey = key; }
+        void setRuleKey( const QString &key ) { mRuleKey = key; }
 
         // parent / child operations
 
         /**
-         * Return all children rules of this rule
+         * Returns all children rules of this rule
          *
-         * @return A list of rules
+         * \returns A list of rules
          */
-        const RuleList& children() const { return mChildren; }
+        const QgsRuleBasedLabeling::RuleList &children() const { return mChildren; }
+
         /**
-         * Return all children rules of this rule
+         * Returns all children rules of this rule
          *
-         * @return A list of rules
+         * \returns A list of rules
          */
-        RuleList& children() { return mChildren; }
+        QgsRuleBasedLabeling::RuleList &children() SIP_SKIP { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
-         * @return A list of descendant rules
+         * \returns A list of descendant rules
          */
-        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        QgsRuleBasedLabeling::RuleList descendants() const;
 
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \returns Parent rule
          */
-        const Rule* parent() const { return mParent; }
+        const QgsRuleBasedLabeling::Rule *parent() const SIP_SKIP { return mParent; }
+
         /**
          * The parent rule
          *
-         * @return Parent rule
+         * \returns Parent rule
          */
-        Rule* parent() { return mParent; }
+        QgsRuleBasedLabeling::Rule *parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( Rule* rule );
+        void appendChild( QgsRuleBasedLabeling::Rule *rule SIP_TRANSFER );
 
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, Rule* rule );
+        void insertChild( int i, QgsRuleBasedLabeling::Rule *rule SIP_TRANSFER );
 
         //! delete child rule
         void removeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        const Rule* findRuleByKey( const QString& key ) const;
+        const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
+
+        /**
+         * Find a labeling rule thanks to its key.
+         *
+         * \param key The key of the rule to find
+         *
+         * \returns The rule or a nullptr if not found
+         *
+         * \since QGIS 3.0
+         */
+        QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
 
         //! clone this rule, return new instance
-        Rule* clone() const;
+        QgsRuleBasedLabeling::Rule *clone() const SIP_FACTORY;
 
         // load / save
 
         /**
          * Create a rule from an XML definition
-         * @param ruleElem  The XML rule element
-         * @return A new rule
+         * \param ruleElem  The XML rule element
+         * \param context reading context
+         * \returns A new rule
          */
-        static Rule* create( const QDomElement& ruleElem );
+        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
         //! store labeling info to XML element
-        QDomElement save( QDomDocument& doc ) const;
+        QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
         // evaluation
 
-        //! add providers
-        void createSubProviders( QgsVectorLayer* layer, RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider *provider );
+        /**
+         * add providers
+         * \note not available in Python bindings
+         */
+        void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
 
-        //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
-        void subProviderIds( QStringList& list ) const;
+        /**
+         * append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
+         * \note not available in Python bindings
+         */
+        void subProviderIds( QStringList &list ) const SIP_SKIP;
 
-        //! call prepare() on sub-providers and populate attributeNames
-        void prepare( const QgsRenderContext& context, QStringList& attributeNames, RuleToProviderMap& subProviders );
+        /**
+         * call prepare() on sub-providers and populate attributeNames
+         * \note not available in Python bindings
+         */
+        void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
-        //! register individual features
-        RegisterResult registerFeature( QgsFeature& feature, QgsRenderContext& context, RuleToProviderMap& subProviders, QgsGeometry* obstacleGeometry = nullptr );
+        /**
+         * register individual features
+         * \note not available in Python bindings
+         */
+        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
 
-      protected:
+        /**
+         * Returns true if this rule or any of its children requires advanced composition effects
+         * to render.
+         */
+        bool requiresAdvancedEffects() const;
+
+      private:
+#ifdef SIP_RUN
+        Rule( const QgsRuleBasedLabeling::Rule &rh );
+#endif
+
         /**
          * Check if a given feature shall be labelled by this rule
          *
-         * @param f         The feature to test
-         * @param context   The context in which the rendering happens
-         * @return          True if the feature shall be rendered
+         * \param f         The feature to test
+         * \param context   The context in which the rendering happens
+         * \returns          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature& f, QgsRenderContext& context ) const;
+        bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
+
         /**
-         * Check if this rule applies for a given scale
-         * @param scale The scale to check. If set to 0, it will always return true.
+         * Check if this rule applies for a given \a scale.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * If set to 0, it will always return true.
          *
-         * @return If the rule will be evaluated at this scale
+         * \returns If the rule will be evaluated at this scale
          */
         bool isScaleOK( double scale ) const;
 
@@ -269,82 +323,93 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         void updateElseRules();
 
-      protected:
-        Rule* mParent; // parent rule (NULL only for root rule)
-        QgsPalLayerSettings* mSettings;
-        int mScaleMinDenom, mScaleMaxDenom;
-        QString mFilterExp, mDescription;
-        bool mElseRule;
+      private:
+        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        std::unique_ptr<QgsPalLayerSettings> mSettings;
+        double mMaximumScale = 0;
+        double mMinimumScale = 0;
+        QString mFilterExp;
+        QString mDescription;
+        bool mElseRule = false;
         RuleList mChildren;
         RuleList mElseRules;
-        bool mIsActive; // whether it is enabled or not
+        bool mIsActive = true; // whether it is enabled or not
 
-        QString mRuleKey; // string used for unique identification of rule within labeling
+        QString mRuleKey = QUuid::createUuid().toString(); // string used for unique identification of rule within labeling
 
-        // temporary
-        QgsExpression* mFilter;
+        std::unique_ptr<QgsExpression> mFilter;
 
-      private:
-
-        Rule( const Rule& rh );
-        Rule& operator=( const Rule& rh );
     };
 
 
     //! Constructs the labeling from given tree of rules (takes ownership)
-    explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule* root );
-    //! Copy constructor
-    QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other );
-    ~QgsRuleBasedLabeling();
+    explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root SIP_TRANSFER );
+    ~QgsRuleBasedLabeling() override;
 
-    Rule* rootRule() { return mRootRule; }
-    const Rule* rootRule() const { return mRootRule; }
+    QgsRuleBasedLabeling::Rule *rootRule() { return mRootRule; }
+    const Rule *rootRule() const SIP_SKIP { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration
-    static QgsRuleBasedLabeling* create( const QDomElement& element );
+    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     // implementation of parent interface
 
-    virtual QString type() const override;
-    virtual QDomElement save( QDomDocument& doc ) const override;
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer* layer ) const override;
-    virtual QStringList subProviders() const override;
-    virtual QgsPalLayerSettings settings( QgsVectorLayer* layer, const QString& providerId = QString() ) const override;
+    QString type() const override;
+    QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    //! \note not available in Python bindings
+    QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
+    QStringList subProviders() const override;
+    QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+
+    /**
+     * Set pal settings for a specific provider (takes ownership).
+     *
+     * \param settings Pal layer settings
+     * \param providerId The id of the provider
+     *
+     * \since QGIS 3.0
+     */
+    void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
+    bool requiresAdvancedEffects() const override;
+    void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
   protected:
-    Rule* mRootRule;
+    Rule *mRootRule = nullptr;
 };
 
+#ifndef SIP_RUN
 
 /**
- * @class QgsRuleBasedLabelProvider
- * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * \ingroup core
+ * \class QgsRuleBasedLabelProvider
+ * \note not available in Python bindings
+ * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
-    QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling& rules, QgsVectorLayer* layer, bool withFeatureLoop = true );
-    ~QgsRuleBasedLabelProvider();
+    QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop = true );
 
     // reimplemented
 
-    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames ) override;
+    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr ) override;
+    void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
 
     //! create a label provider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
 
-    //! return subproviders
-    virtual QList<QgsAbstractLabelProvider*> subProviders() override;
+    //! Returns subproviders
+    QList<QgsAbstractLabelProvider *> subProviders() override;
 
   protected:
     //! owned copy
-    QgsRuleBasedLabeling mRules;
+    std::unique_ptr<QgsRuleBasedLabeling> mRules;
     //! label providers are owned by labeling engine
     QgsRuleBasedLabeling::RuleToProviderMap mSubProviders;
 };
 
+#endif
 
 #endif // QGSRULEBASEDLABELING_H

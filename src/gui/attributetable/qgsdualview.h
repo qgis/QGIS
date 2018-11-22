@@ -17,22 +17,24 @@
 #define QGSDUALVIEW_H
 
 #include <QStackedWidget>
+#include "qgis.h"
 
 #include "ui_qgsdualviewbase.h"
 
-#include "qgsfieldconditionalformatwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgscachedfeatureiterator.h"
 #include "qgsdistancearea.h"
+#include "qgsattributeform.h"
+#include "qgis_gui.h"
 
-class QgsAttributeForm;
 class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
+class QgsScrollArea;
 
 /**
- * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
+ * \ingroup gui
+ * This widget is used to show the attributes of a set of features of a QgsVectorLayer.
  * The attributes can be edited.
  * It supports two different layouts: the table layout, in which the attributes for the features
  * are shown in a table and the editor layout, where the features are shown as a selectable list
@@ -41,7 +43,6 @@ class QgsMapLayerAction;
 class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBase
 {
     Q_OBJECT
-    Q_ENUMS( ViewMode )
 
   public:
 
@@ -52,10 +53,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     enum ViewMode
     {
+
       /**
        * Shows the features and attributes in a table layout
        */
       AttributeTable = 0,
+
       /**
        * Show a list of the features, where one can be chosen
        * and the according attribute dialog will be presented
@@ -64,56 +67,61 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
       AttributeEditor = 1
     };
 
+    Q_ENUM( ViewMode )
+
     /**
-     * @brief Constructor
-     * @param parent  The parent widget
+     * \brief Constructor
+     * \param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent = nullptr );
+    explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Has to be called to initialize the dual view.
      *
-     * @param layer      The layer which should be used to fetch features
-     * @param mapCanvas  The mapCanvas (used for the FilterMode
-     *                   {@link QgsAttributeTableFilterModel::ShowVisible}
-     * @param request    Use a modified request to limit the shown features
-     * @param context    The context in which this view is shown
+     * \param layer      The layer which should be used to fetch features
+     * \param mapCanvas  The mapCanvas (used for the FilterMode
+     *                   QgsAttributeTableFilterModel::ShowVisible)
+     * \param request    Use a modified request to limit the shown features
+     * \param context    The context in which this view is shown
+     * \param loadFeatures whether to initially load all features into the view. If set to
+     * false, limited features can later be loaded using setFilterMode()
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+               bool loadFeatures = true );
 
     /**
      * Change the current view mode.
      *
-     * @param view The view mode to set
-     * @see view()
+     * \param view The view mode to set
+     * \see view()
      */
     void setView( ViewMode view );
 
     /**
      * Returns the current view mode.
-     * @see setView()
-     * @note added in QGIS 2.16
+     * \see setView()
+     * \since QGIS 2.16
      */
     ViewMode view() const;
 
     /**
      * Set the filter mode
      *
-     * @param filterMode
+     * \param filterMode
      */
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
     /**
-     * Get the filter mode
+     * Gets the filter mode
      *
-     * @return the filter mode
+     * \returns the filter mode
      */
     QgsAttributeTableFilterModel::FilterMode filterMode() { return mFilterModel->filterMode(); }
 
     /**
      * Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
      *
-     * @param selectedOnTop True: Show selected features on top.
+     * \param selectedOnTop True: Show selected features on top.
      *                      False: Use defined sorting column.
      */
     void setSelectedOnTop( bool selectedOnTop );
@@ -121,7 +129,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Returns the number of features on the layer.
      *
-     * @return Number of features
+     * \returns Number of features
      */
     int featureCount();
 
@@ -129,141 +137,209 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Returns the number of features which are currently visible, according to the
      * filter restrictions
      *
-     * @return Number of features
+     * \returns Number of features
      */
     int filteredFeatureCount();
 
     /**
      * Set a list of currently visible features
      *
-     * @param filteredFeatures  A list of feature ids
+     * \param filteredFeatures  A list of feature ids
      *
      */
-    void setFilteredFeatures( const QgsFeatureIds& filteredFeatures );
+    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 
     /**
-     * Get a list of currently visible feature ids.
+     * Gets a list of currently visible feature ids.
      */
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
     /**
      * Returns the model which has the information about all features (not only filtered)
      *
-     * @return The master model
+     * \returns The master model
      */
-    QgsAttributeTableModel* masterModel() const { return mMasterModel; }
+    QgsAttributeTableModel *masterModel() const { return mMasterModel; }
 
     /**
      * Set the request
      *
-     * @param request The request
+     * \param request The request
      */
-    void setRequest( const QgsFeatureRequest& request );
+    void setRequest( const QgsFeatureRequest &request );
 
     /**
      * Set the feature selection model
      *
-     * @param featureSelectionManager the feature selection model
+     * \param featureSelectionManager the feature selection model
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
     /**
      * Returns the table view
      *
-     * @return The table view
+     * \returns The table view
      */
-    QgsAttributeTableView* tableView() { return mTableView; }
+    QgsAttributeTableView *tableView() { return mTableView; }
 
     /**
      * Set the attribute table config which should be used to control
      * the appearance of the attribute table.
      */
-    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
     /**
      * Set the expression used for sorting the table and feature list.
      */
-    void setSortExpression( const QString& sortExpression );
+    void setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
-     * Get the expression used for sorting the table and feature list.
+     * Gets the expression used for sorting the table and feature list.
      */
     QString sortExpression() const;
 
-  protected:
     /**
-     * Initializes widgets which depend on the attributes of this layer
+     * The config used for the attribute table.
+     * \returns The config used for the attribute table.
      */
-    void columnBoxInit();
+    QgsAttributeTableConfig attributeTableConfig() const;
 
   public slots:
-    /**
-     * @brief Set the current edit selection in the {@link AttributeEditor} mode.
-     *
-     * @param fids   A list of edited features (Currently only one at a time is supported)
-     */
-    void setCurrentEditSelection( const QgsFeatureIds& fids );
 
     /**
-     * @brief saveEditChanges
+     * \brief Set the current edit selection in the AttributeEditor mode.
      *
-     * @return true if the saving was ok. false is possible due to connected
+     * \param fids   A list of edited features (Currently only one at a time is supported)
+     */
+    void setCurrentEditSelection( const QgsFeatureIds &fids );
+
+    /**
+     * \brief saveEditChanges
+     *
+     * \returns true if the saving was OK. false is possible due to connected
      *         validation logic.
      */
     bool saveEditChanges();
 
     void openConditionalStyles();
 
-    /** Sets whether multi edit mode is enabled.
-     * @note added in QGIS 2.16
+    /**
+     * Sets whether multi edit mode is enabled.
+     * \since QGIS 2.16
      */
     void setMultiEditEnabled( bool enabled );
 
+    /**
+     * Toggles whether search mode should be enabled in the form.
+     * \param enabled set to true to switch on search mode
+     * \since QGIS 2.16
+     */
+    void toggleSearchMode( bool enabled );
+
+    /**
+     * Copy the content of the selected cell in the clipboard.
+     * \since QGIS 1.16
+     */
+    void copyCellContent() const;
+
+    /**
+     * Cancel the progress dialog (if any)
+     * \since QGIS 3.0
+     */
+    void cancelProgress( );
+
   signals:
+
     /**
      * Is emitted, whenever the display expression is successfully changed
-     * @param expression The expression that was applied
+     * \param expression The expression that was applied
      */
-    void displayExpressionChanged( const QString& expression );
+    void displayExpressionChanged( const QString &expression );
 
     /**
      * Is emitted, whenever the filter changes
      */
     void filterChanged();
 
+    /**
+     * Is emitted when a filter expression is set using the view.
+     * \param expression filter expression
+     * \param type filter type
+     * \since QGIS 2.16
+     */
+    void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
+
+    /**
+     * Emitted when the form changes mode.
+     * \param mode new mode
+     */
+    void formModeChanged( QgsAttributeEditorContext::Mode mode );
+
+    /**
+     * Emitted when selecting context menu on the feature list to create the context menu individually
+     * \param menu context menu
+     * \param fid feature id of the selected feature
+     */
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
+
+  protected:
+    void hideEvent( QHideEvent *event ) override;
+
   private slots:
 
-    void on_mFeatureList_aboutToChangeEditSelection( bool& ok );
+    void mFeatureList_aboutToChangeEditSelection( bool &ok );
 
     /**
      * Changes the currently visible feature within the attribute editor
      *
-     * @param feat  The newly visible feature
+     * \param feat  The newly visible feature
      */
-    void on_mFeatureList_currentEditSelectionChanged( const QgsFeature& feat );
+    void mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
 
     void previewExpressionBuilder();
 
-    void previewColumnChanged( QObject* previewAction );
+    void previewColumnChanged( QAction *previewAction, const QString &expression );
 
-    void viewWillShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
+    void viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
-    void previewExpressionChanged( const QString& expression );
+    void widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
+
+    void showViewHeaderMenu( QPoint point );
+
+    void organizeColumns();
+
+    void tableColumnResized( int column, int width );
+
+    void hideColumn();
+
+    void resizeColumn();
+
+    void autosizeColumn();
+
+    void modifySort();
+
+    void previewExpressionChanged( const QString &expression );
+
+    void onSortColumnChanged();
 
     void sortByPreviewExpression();
+
+    void updateSelectedFeatures();
+
+    void extentChanged();
 
     /**
      * Will be called whenever the currently shown feature form changes.
      * Will forward this signal to the feature list to visually represent
      * that there has been an edit event.
      */
-    void featureFormAttributeChanged();
+    void featureFormAttributeChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be called periodically, when loading layers from slow data providers.
      *
-     * @param i       The number of features already loaded
-     * @param cancel  Set to true to cancel
+     * \param i       The number of features already loaded
+     * \param cancel  Set to true to cancel
      */
     virtual void progress( int i, bool &cancel );
 
@@ -273,39 +349,73 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     virtual void finished();
 
-    /** Zooms to the active feature*/
+    //! Zooms to the active feature
     void zoomToCurrentFeature();
+    //! Pans to the active feature
+    void panToCurrentFeature();
+
+    void flashCurrentFeature();
+
+    void rebuildFullLayerCache();
 
   private:
-    void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
-    void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
+
+    /**
+     * Initializes widgets which depend on the attributes of this layer
+     */
+    void columnBoxInit();
+    void initLayerCache( bool cacheGeometry );
+    void initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, bool loadFeatures );
+    void restoreRecentDisplayExpressions();
+    void saveRecentDisplayExpressions() const;
+    void setDisplayExpression( const QString &expression );
+    void insertRecentlyUsedDisplayExpression( const QString &expression );
 
     QgsAttributeEditorContext mEditorContext;
-    QgsAttributeTableModel* mMasterModel;
-    QgsAttributeTableFilterModel* mFilterModel;
-    QgsFeatureListModel* mFeatureListModel;
-    QgsAttributeForm* mAttributeForm;
-    QSignalMapper* mPreviewActionMapper;
-    QMenu* mPreviewColumnsMenu;
-    QgsVectorLayerCache* mLayerCache;
-    QProgressDialog* mProgressDlg;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
+    QgsAttributeTableModel *mMasterModel = nullptr;
+    QgsAttributeTableFilterModel *mFilterModel = nullptr;
+    QgsFeatureListModel *mFeatureListModel = nullptr;
+    QgsAttributeForm *mAttributeForm = nullptr;
+    QMenu *mPreviewColumnsMenu = nullptr;
+    QMenu *mPreviewActionMenu = nullptr;
+    QAction *mLastDisplayExpressionAction = nullptr;
+    QMenu *mHorizontalHeaderMenu = nullptr;
+    QgsVectorLayerCache *mLayerCache = nullptr;
+    QPointer< QgsVectorLayer > mLayer = nullptr;
+    QProgressDialog *mProgressDlg = nullptr;
+    QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
+    QgsAttributeTableConfig mConfig;
+    QgsScrollArea *mAttributeEditorScrollArea = nullptr;
+    // If the current feature is set, while the form is still not initialized
+    // we will temporarily save it in here and set it on init
+    QgsFeature mTempAttributeFormFeature;
 
     friend class TestQgsDualView;
+    friend class TestQgsAttributeTable;
 };
 
+/**
+ * \ingroup gui
+ * \class QgsAttributeTableAction
+ */
 class GUI_EXPORT QgsAttributeTableAction : public QAction
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, int action, const QModelIndex &fieldIdx )
-        : QAction( name, dualView )
-        , mDualView( dualView )
-        , mAction( action )
-        , mFieldIdx( fieldIdx )
+
+    /**
+     * Create a new attribute table action.
+     *
+     * \since QGIS 3.0
+     */
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx )
+      : QAction( name, dualView )
+      , mDualView( dualView )
+      , mAction( action )
+      , mFieldIdx( fieldIdx )
     {}
 
   public slots:
@@ -313,30 +423,36 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     void featureForm();
 
   private:
-    QgsDualView* mDualView;
-    int mAction;
+    QgsDualView *mDualView = nullptr;
+    QUuid mAction;
     QModelIndex mFieldIdx;
 };
 
+/**
+ * \ingroup gui
+ * \class QgsAttributeTableMapLayerAction
+ */
 class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction* action, const QModelIndex &fieldIdx )
-        : QAction( name, dualView )
-        , mDualView( dualView )
-        , mAction( action )
-        , mFieldIdx( fieldIdx )
+    QgsAttributeTableMapLayerAction( const QString &name, QgsDualView *dualView, QgsMapLayerAction *action, const QModelIndex &fieldIdx )
+      : QAction( name, dualView )
+      , mDualView( dualView )
+      , mAction( action )
+      , mFieldIdx( fieldIdx )
     {}
 
   public slots:
     void execute();
 
   private:
-    QgsDualView* mDualView;
-    QgsMapLayerAction* mAction;
+    QgsDualView *mDualView = nullptr;
+    QgsMapLayerAction *mAction = nullptr;
     QModelIndex mFieldIdx;
 };
+
+Q_DECLARE_METATYPE( QModelIndex );
 
 #endif // QGSDUALVIEW_H

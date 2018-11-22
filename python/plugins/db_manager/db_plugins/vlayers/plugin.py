@@ -22,13 +22,11 @@ email                : hugo dot mercier at oslandia dot com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import VLayerConnector
 
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QgsApplication, QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -39,7 +37,10 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/vlayers/icon")
+        return QgsApplication.getThemeIcon("/mIconVirtualLayer.svg")
+
+    def connectionIcon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
 
     @classmethod
     def typeName(self):
@@ -47,7 +48,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'Virtual Layers'
+        return QCoreApplication.translate('db_manager', 'Virtual Layers')
 
     @classmethod
     def providerName(self):
@@ -59,7 +60,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def connections(self):
-        return [VLayerDBPlugin('QGIS layers')]
+        return [VLayerDBPlugin(QCoreApplication.translate('db_manager', 'Project layers'))]
 
     def databasesFactory(self, connection, uri):
         return FakeDatabase(connection, uri)
@@ -99,14 +100,19 @@ class FakeDatabase(Database):
         from .data_model import LSqlResultModel
         return LSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import LSqlResultModelAsync
+        return LSqlResultModelAsync(self, sql, parent)
+
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, _filter=""):
-        q = QUrl.toPercentEncoding(sql)
-        s = "?query=%s" % q
+        df = QgsVirtualLayerDefinition()
+        df.setQuery(sql)
         if uniqueCol is not None:
-            s += "&uid=" + uniqueCol
+            uniqueCol = uniqueCol.strip('"').replace('""', '"')
+            df.setUid(uniqueCol)
         if geomCol is not None:
-            s += "&geometry=" + geomCol
-        vl = QgsVectorLayer(s, layerName, "virtual")
+            df.setGeometryField(geomCol)
+        vl = QgsVectorLayer(df.toString(), layerName, "virtual")
         if _filter:
             vl.setSubsetString(_filter)
         return vl
@@ -150,7 +156,7 @@ class LVectorTable(LTable, VectorTable):
         LTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
         # SpatiaLite does case-insensitive checks for table names, but the
-        # SL provider didn't do the same in QGis < 1.9, so self.geomTableName
+        # SL provider didn't do the same in Qgis < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
         self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[
             -5:]
@@ -177,7 +183,7 @@ class LVectorTable(LTable, VectorTable):
         return
 
     def toMapLayer(self):
-        return QgsMapLayerRegistry.instance().mapLayer(self.geomTableName)
+        return QgsProject.instance().mapLayer(self.geomTableName)
 
 
 class LTableField(TableField):

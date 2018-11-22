@@ -13,31 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolcircularstringcurvepoint.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
-#include "qgspointv2.h"
-#include <QMouseEvent>
+#include "qgspoint.h"
+#include "qgsmapmouseevent.h"
+#include "qgssnapindicator.h"
 
-QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapToolCapture* parentTool,
-    QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolAddCircularString( parentTool, canvas, mode )
+
+QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapToolCapture *parentTool,
+    QgsMapCanvas *canvas, CaptureMode mode )
+  : QgsMapToolAddCircularString( parentTool, canvas, mode )
 {
 
 }
 
-QgsMapToolCircularStringCurvePoint::~QgsMapToolCircularStringCurvePoint()
+void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-}
-
-void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
-{
-  QgsPointV2 mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( mapPoint );
+    mPoints.append( point );
     if ( !mCenterPointRubberBand && mShowCenterPointRubberBand )
     {
       createCenterPointRubberBand();
@@ -47,13 +45,13 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       if ( !mTempRubberBand )
       {
-        mTempRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line, true );
+        mTempRubberBand = createGeometryRubberBand( mLayerType, true );
         mTempRubberBand->show();
       }
 
-      QgsCircularStringV2* c = new QgsCircularStringV2();
-      QgsPointSequenceV2 rubberBandPoints = mPoints.mid( mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 );
-      rubberBandPoints.append( mapPoint );
+      QgsCircularString *c = new QgsCircularString();
+      QgsPointSequence rubberBandPoints = mPoints.mid( mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 );
+      rubberBandPoints.append( point );
       c->setPoints( rubberBandPoints );
       mTempRubberBand->setGeometry( c );
     }
@@ -61,13 +59,13 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       if ( !mRubberBand )
       {
-        mRubberBand = createGeometryRubberBand(( mode() == CapturePolygon ) ? QGis::Polygon : QGis::Line );
+        mRubberBand = createGeometryRubberBand( mLayerType );
         mRubberBand->show();
       }
 
-      QgsCircularStringV2* c = new QgsCircularStringV2();
-      QgsPointSequenceV2 rubberBandPoints = mPoints;
-      rubberBandPoints.append( mapPoint );
+      QgsCircularString *c = new QgsCircularString();
+      QgsPointSequence rubberBandPoints = mPoints;
+      rubberBandPoints.append( point );
       c->setPoints( rubberBandPoints );
       mRubberBand->setGeometry( c );
       removeCenterPointRubberBand();
@@ -83,9 +81,12 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
   }
 }
 
-void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPointV2 mapPoint( e->mapPoint() );
+  QgsPoint mapPoint( e->mapPoint() );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   QgsVertexId idx( 0, 0, 1 + ( mPoints.size() + 1 ) % 2 );
   if ( mTempRubberBand )
   {

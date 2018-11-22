@@ -25,18 +25,24 @@ __copyright__ = '(C) 2014, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
-import processing
+from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 
+from qgis.core import (QgsApplication,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsWkbTypes,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFeatureSink)
+import processing
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
-class ConcaveHull(GeoAlgorithm):
+
+class ConcaveHull(QgisAlgorithm):
 
     INPUT = 'INPUT'
     ALPHA = 'ALPHA'
@@ -44,94 +50,133 @@ class ConcaveHull(GeoAlgorithm):
     NO_MULTIGEOMETRY = 'NO_MULTIGEOMETRY'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Concave hull')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.addParameter(ParameterVector(ConcaveHull.INPUT,
-                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterNumber(self.ALPHA,
-                                          self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
-                                          0, 1, 0.3))
-        self.addParameter(ParameterBoolean(self.HOLES,
-                                           self.tr('Allow holes'), True))
-        self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY,
-                                           self.tr('Split multipart geometry into singleparts geometries'), False))
-        self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull')))
+    def group(self):
+        return self.tr('Vector geometry')
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(ConcaveHull.INPUT))
-        alpha = self.getParameterValue(self.ALPHA)
-        holes = self.getParameterValue(self.HOLES)
-        no_multigeom = self.getParameterValue(self.NO_MULTIGEOMETRY)
+    def groupId(self):
+        return 'vectorgeometry'
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterNumber(self.ALPHA,
+                                                       self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
+                                                       minValue=0, maxValue=1, defaultValue=0.3, type=QgsProcessingParameterNumber.Double))
+
+        self.addParameter(QgsProcessingParameterBoolean(self.HOLES,
+                                                        self.tr('Allow holes'), defaultValue=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_MULTIGEOMETRY,
+                                                        self.tr('Split multipart geometry into singleparts geometries'), defaultValue=False))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'), type=QgsProcessing.TypeVectorPolygon))
+
+    def name(self):
+        return 'concavehull'
+
+    def displayName(self):
+        return self.tr('Concave hull (alpha shapes)')
+
+    def shortDescription(self):
+        return self.tr('Creates a concave hull using the alpha shapes algorithm.')
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmConcaveHull.svg")
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
+        if layer is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
+        holes = self.parameterAsBool(parameters, self.HOLES, context)
+        no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)
 
         # Delaunay triangulation from input point layer
-        progress.setText(self.tr('Creating Delaunay triangles...'))
-        delone_triangles = processing.runalg("qgis:delaunaytriangulation", layer, None, progress=None)['OUTPUT']
-        delaunay_layer = processing.getObject(delone_triangles)
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Creating Delaunay triangles…'))
+        delaunay_layer = processing.run("qgis:delaunaytriangulation", {'INPUT': parameters[ConcaveHull.INPUT], 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
 
         # Get max edge length from Delaunay triangles
-        progress.setText(self.tr('Computing edges max length...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Computing edges max length…'))
+
         features = delaunay_layer.getFeatures()
-        counter = 50. / delaunay_layer.featureCount()
+        count = delaunay_layer.featureCount()
+        if count == 0:
+            raise QgsProcessingException(self.tr('No Delaunay triangles created.'))
+
+        counter = 50. / count
         lengths = []
         edges = {}
         for feat in features:
+            if feedback.isCanceled():
+                break
+
             line = feat.geometry().asPolygon()[0]
             for i in range(len(line) - 1):
                 lengths.append(sqrt(line[i].sqrDist(line[i + 1])))
             edges[feat.id()] = max(lengths[-3:])
-            progress.setPercentage(feat.id() * counter)
+            feedback.setProgress(feat.id() * counter)
         max_length = max(lengths)
 
         # Get features with longest edge longer than alpha*max_length
-        progress.setText(self.tr('Removing features...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Removing features…'))
         counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in edges.iteritems():
+        for id, max_len in edges.items():
+            if feedback.isCanceled():
+                break
+
             if max_len > alpha * max_length:
                 ids.append(id)
-            progress.setPercentage(50 + i * counter)
+            feedback.setProgress(50 + i * counter)
             i += 1
 
         # Remove features
-        delaunay_layer.setSelectedFeatures(ids)
-        delaunay_layer.startEditing()
-        delaunay_layer.deleteSelectedFeatures()
-        delaunay_layer.commitChanges()
+        delaunay_layer.dataProvider().deleteFeatures(ids)
 
         # Dissolve all Delaunay triangles
-        progress.setText(self.tr('Dissolving Delaunay triangles...'))
-        dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
-                                      True, None, None, progress=None)['OUTPUT']
-        dissolved_layer = processing.getObject(dissolved)
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Dissolving Delaunay triangles…'))
+        dissolved_layer = processing.run("native:dissolve", {'INPUT': delaunay_layer, 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
 
         # Save result
-        progress.setText(self.tr('Saving data...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Saving data…'))
         feat = QgsFeature()
-        dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(0)).nextFeature(feat)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+        dissolved_layer.getFeatures().nextFeature(feat)
+
+        # Not needed anymore, free up some resources
+        del delaunay_layer
+        del dissolved_layer
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               layer.fields(), QgsWkbTypes.Polygon, layer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():
             # Only singlepart geometries are allowed
-            geom_list = geom.asMultiPolygon()
-            for single_geom_list in geom_list:
+            geom_list = geom.asGeometryCollection()
+            for single_geom in geom_list:
+                if feedback.isCanceled():
+                    break
+
                 single_feature = QgsFeature()
-                single_geom = QgsGeometry.fromPolygon(single_geom_list)
                 if not holes:
                     # Delete holes
-                    deleted = True
-                    while deleted:
-                        deleted = single_geom.deleteRing(1)
+                    single_geom = single_geom.removeInteriorRings()
                 single_feature.setGeometry(single_geom)
-                writer.addFeature(single_feature)
+                sink.addFeature(single_feature, QgsFeatureSink.FastInsert)
         else:
             # Multipart geometries are allowed
             if not holes:
                 # Delete holes
-                deleted = True
-                while deleted:
-                    deleted = geom.deleteRing(1)
-            writer.addFeature(feat)
-        del writer
+                geom = geom.removeInteriorRings()
+                feat.setGeometry(geom)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
+
+        return {self.OUTPUT: dest_id}

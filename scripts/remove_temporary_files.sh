@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    remove_git_confict_files.sh
 #    ---------------------
@@ -24,6 +24,7 @@ find . \
        -name "*.orig" \
     -o -name "*.prepare" \
     -o -name "*.sortinc" \
+    -o -name "*.unify_includes_modified" \
     -o -name "*.nocopyright" \
     -o -name "astyle*.diff" \
     -o -name "sha-*.diff" \
@@ -33,6 +34,7 @@ find . \
     -o -name "*.bak" \
     -o -name "*.rej" \
     -o -name "*.orig" \
+    -o -name "*.new" \
     -o -name "*~" \
   \) \
   -print \

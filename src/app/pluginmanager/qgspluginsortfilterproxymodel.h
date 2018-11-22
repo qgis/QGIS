@@ -29,12 +29,12 @@ const int PLUGIN_ERROR_ROLE = Qt::UserRole + 5;        // for filtering
 const int PLUGIN_STATUS_ROLE = Qt::UserRole + 6;       // for filtering and sorting
 const int PLUGIN_DOWNLOADS_ROLE = Qt::UserRole + 7;    // for sorting
 const int PLUGIN_VOTE_ROLE = Qt::UserRole + 8;         // for sorting
-const int PLUGIN_REPOSITORY_ROLE = Qt::UserRole + 9;   // for sorting
+const int PLUGIN_ISDEPRECATED_ROLE = Qt::UserRole + 9; // for styling
 const int SPACER_ROLE = Qt::UserRole + 20;  // for sorting
 
 
 
-/*!
+/**
  * \brief Proxy model for filtering and sorting items in Plugin Manager
 */
 class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
@@ -44,13 +44,13 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
   public:
     explicit QgsPluginSortFilterProxyModel( QObject *parent = nullptr );
 
-    //! (Re)configire the status filter
-    void setAcceptedStatuses( const QStringList& statuses );
+    //! (Re)configure the status filter
+    void setAcceptedStatuses( const QStringList &statuses );
 
-    //! (Re)configire the spacer filter
-    void setAcceptedSpacers( const QString& spacers = "" );
+    //! (Re)configure the spacer filter
+    void setAcceptedSpacers( const QString &spacers = QString() );
 
-    //! Return number of item with status filter matching (no other filters are considered)
+    //! Returns the number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus();
 
   public slots:
@@ -69,9 +69,14 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     //! The main filter method
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
+    //! The sort method overwritten in order to always display deprecated plugins last.
+    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
   private:
     QStringList mAcceptedStatuses;
     QString mAcceptedSpacers;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

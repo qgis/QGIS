@@ -30,75 +30,100 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import QgsProcessingException
+from processing.tools.system import getTempFilename
 
 
-def incorporatePoints(alg, pointLayerName=u'points', networkLayerName=u'input'):
+def incorporatePoints(alg, parameters, context, feedback, pointLayerName='points', networkLayerName='input'):
     """
     incorporate points with lines to form a GRASS network
     """
-    paramsToDelete = []
 
-    # Create an intermediate GRASS layer which is the combination of network + centers
-    intLayer = alg.getTempFilename()
-
-    # Grab the point layer and delete this parameter (not used by v.net.alloc)
-    pointLayer = alg.getParameterValue(pointLayerName)
+    # Grab the point layer and delete this parameter
+    pointLayer = alg.parameterAsVectorLayer(parameters, pointLayerName, context)
     if pointLayer:
-        pointLayer = alg.exportedLayers[pointLayer]
-        paramsToDelete.append(alg.getParameterFromName(u'points'))
+        # Create an intermediate GRASS layer which is the combination of network + centers
+        intLayer = 'net' + os.path.basename(getTempFilename())
 
-    # Grab the network layer and tell to v.net.alloc to use the temp layer instead
-    lineLayer = alg.getParameterValue(networkLayerName)
-    if lineLayer:
-        lineLayer = alg.exportedLayers[lineLayer]
-        alg.setParameterValue(networkLayerName, intLayer)
+        pointLayer = alg.exportedLayers[pointLayerName]
 
-    threshold = alg.getParameterValue(u'threshold')
-    paramsToDelete.append(alg.getParameterFromName(u'threshold'))
+        # Grab the network layer
+        lineLayer = alg.parameterAsVectorLayer(parameters, networkLayerName, context)
+        if lineLayer:
+            lineLayer = alg.exportedLayers[networkLayerName]
+        else:
+            raise QgsProcessingException(
+                alg.tr('GRASS GIS 7 v.net requires a lines layer!'))
 
-    # Create the v.net connect command for point layer integration
-    command = u"v.net -s input={} points={} out={} op=connect threshold={}".format(
-        lineLayer, pointLayer, intLayer, threshold)
-    alg.commands.append(command)
+        threshold = alg.parameterAsDouble(parameters, 'threshold', context)
 
-    # Connect the point layer database to the layer 2 of the network
-    command = u"v.db.connect -o map={} table={} layer=2".format(intLayer, pointLayer)
-    alg.commands.append(command)
+        # Create the v.net connect command for point layer integration
+        command = u"v.net input={} points={} output={} operation=connect threshold={}".format(
+            lineLayer, pointLayer, intLayer, threshold)
+        alg.commands.append(command)
 
-    # Delete some unnecessary parameters
-    for param in paramsToDelete:
-        alg.parameters.remove(param)
+        # Connect the point layer database to the layer 2 of the network
+        command = u"v.db.connect -o map={} table={} layer=2".format(intLayer, pointLayer)
+        alg.commands.append(command)
 
-    alg.processCommand()
+        # remove undesired parameters
+        alg.removeParameter(pointLayerName)
 
-    # Bring back the parameters:
-    for param in paramsToDelete:
-        alg.parameters.append(param)
+        # Use temp layer for input
+        alg.exportedLayers[networkLayerName] = intLayer
+
+    # Process the command
+    if 'threshold' in parameters:
+        alg.removeParameter('threshold')
+
+    alg.processCommand(parameters, context, feedback)
 
 
-def variableOutput(alg, params, nocats=True):
+def variableOutput(alg, layers, parameters, context, nocats=True):
     """ Handle variable data output for v.net modules:
-    params is like:
-    { u"output": [u"point", 1], # One output of type point from layer 1
-      u"output2": [u"line", 1], # One output of type line from layer 1
-      u"output3: [u"point", 2] # one output of type point from layer 2
+    :param layers:
+    layers is a dict of outputs:
+    { 'outputName': ['srcLayer', 'output_type', output_layer_number, nocats],
+    ...
     }
-
+    where:
+    - outputName is the name of the output in the description file.
+    - srcLayer is the grass name of the layer to export.
+    - output_type is the GRASS datatype (point/line/area/etc.).
+    - output_layer_number is the GRASS layer number for multiple layers datasets.
+    - nocats indicates weither we need to also export without categories items.
+    :param parameters:
+    :param context:
+    :param nocats: do not add categories.
     """
-
-    # Build the v.out.ogr commands
-    for outputName, typeList in params.iteritems():
+    for outputName, typeList in layers.items():
         if not isinstance(typeList, list):
             continue
 
-        out = alg.getOutputValue(outputName)
-        command = u"v.out.ogr {} type={} layer={} -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
-            u"" if typeList[0] == u"line" and nocats else u"-c",
-            typeList[0],
-            typeList[1],
-            alg.exportedLayers[out],
-            os.path.dirname(out),
-            os.path.basename(out)[:-4]
-        )
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        file_name = alg.parameterAsOutputLayer(parameters, outputName, context)
+
+        src_layer = typeList[0]
+        output_type = typeList[1]
+        output_layer_number = typeList[2]
+        no_cats = typeList[3]
+
+        grass_name = '{}{}'.format(src_layer, alg.uniqueSuffix)
+        alg.exportVectorLayer(grassName=grass_name,
+                              fileName=file_name,
+                              layer=output_layer_number,
+                              nocats=no_cats,
+                              dataType=output_type)
+
+
+def processOutputs(alg, parameters, context, feedback):
+    idx = alg.parameterAsInt(parameters, 'operation', context)
+    operations = alg.parameterDefinition('operation').options()
+    operation = operations[idx]
+
+    if operation == 'nodes':
+        outputParameter = {'output': ['output', 'point', 2, True]}
+    elif operation == 'connect':
+        outputParameter = {'output': ['output', 'line', 1, False]}
+    elif operation == 'arcs':
+        outputParameter = {'output': ['output', 'line', 1, True]}
+    variableOutput(alg, outputParameter, parameters, context)

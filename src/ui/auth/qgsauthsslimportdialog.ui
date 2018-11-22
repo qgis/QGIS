@@ -69,22 +69,13 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Import certificate</string>
+       <string>Import Certificate</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="spacing">
         <number>6</number>
        </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>6</number>
-       </property>
-       <property name="rightMargin">
-        <number>6</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>6</number>
        </property>
        <item>
@@ -151,7 +142,7 @@
            <widget class="QToolButton" name="btnConnect">
             <property name="font">
              <font>
-              <pointsize>11</pointsize>
+              <pointsize>8</pointsize>
              </font>
             </property>
             <property name="text">
@@ -170,7 +161,7 @@
            <widget class="QLabel" name="lblTimeout">
             <property name="font">
              <font>
-              <pointsize>11</pointsize>
+              <pointsize>8</pointsize>
              </font>
             </property>
             <property name="text">
@@ -182,7 +173,7 @@
            <widget class="QSpinBox" name="spinbxTimeout">
             <property name="font">
              <font>
-              <pointsize>11</pointsize>
+              <pointsize>8</pointsize>
              </font>
             </property>
             <property name="suffix">
@@ -231,7 +222,7 @@
           <item>
            <widget class="QToolButton" name="btnCertPath">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>

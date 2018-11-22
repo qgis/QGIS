@@ -19,49 +19,76 @@
 #ifndef QGSLABELSEARCHTREE_H
 #define QGSLABELSEARCHTREE_H
 
-#include "qgspoint.h"
-#include "qgsmaprenderer.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 #include <QVector>
-#include <pointset.h>
-#include <labelposition.h>
-#include "qgsrectangle.h"
+#include "qgspallabeling.h"
+#include "rtree.hpp"
 
-/** A class to query the labeling structure at a given point (small wraper around pal RTree class)*/
+class QgsPointXY;
+
+#ifndef SIP_RUN
+namespace pal
+{
+  class LabelPosition;
+}
+#endif
+
+/**
+ * \ingroup core
+ * A class to query the labeling structure at a given point (small wrapper around pal RTree class)
+ */
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:
-    QgsLabelSearchTree();
+
+    /**
+     * Constructor for QgsLabelSearchTree.
+     */
+    QgsLabelSearchTree() = default;
     ~QgsLabelSearchTree();
 
-    /** Removes and deletes all the entries*/
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree &rh ) = delete;
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree &operator=( const QgsLabelSearchTree &rh ) = delete;
+
+    //! Removes and deletes all the entries
     void clear();
 
-    /** Returns label position(s) at a given point. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
-     * @note not available in python bindings
+    /**
+     * Returns label position(s) at a given point. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
+     * \note not available in Python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void label( const QgsPoint& p, QList<QgsLabelPosition*>& posList ) const;
+    void label( const QgsPointXY &p, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
 
-    /** Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
-     * @note not available in python bindings
+    /**
+     * Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
+     * \note not available in Python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void labelsInRect( const QgsRectangle& r, QList<QgsLabelPosition*>& posList ) const;
+    void labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
 
-    /** Inserts label position. Does not take ownership of labelPos
-     * @return true in case of success
-     * @note not available in python bindings
+    /**
+     * Inserts label position. Does not take ownership of labelPos
+     * \returns true in case of success
+     * \note not available in Python bindings
      */
-    bool insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false, const QString& providerId = QString() );
+    bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() ) SIP_SKIP;
 
   private:
     // set as mutable because RTree template is not const-correct
-    mutable pal::RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
-    QList< QgsLabelPosition* > mOwnedPositions;
+    mutable pal::RTree<QgsLabelPosition *, double, 2, double> mSpatialIndex;
+    QList< QgsLabelPosition * > mOwnedPositions;
 
-    QgsLabelSearchTree( const QgsLabelSearchTree& rh );
-    QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh );
+#ifdef SIP_RUN
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree &rh );
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
+#endif
 };
 
 #endif // QGSLABELTREE_H

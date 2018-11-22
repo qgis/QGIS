@@ -19,8 +19,13 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
+#include "qgslogger.h"
+#include "qgsserverlogger.h"
+#include "qgsfcgiserverresponse.h"
+#include "qgsfcgiserverrequest.h"
 
 #include <fcgi_stdio.h>
+#include <cstdlib>
 
 int fcgi_accept()
 {
@@ -34,14 +39,46 @@ int fcgi_accept()
 #endif
 }
 
-int main( int argc, char * argv[] )
+int main( int argc, char *argv[] )
 {
-  QgsServer server( argc, argv );
+  // Test if the environ variable DISPLAY is defined
+  // if it's not, the server is running in offscreen mode
+  // Qt supports using various QPA (Qt Platform Abstraction) back ends
+  // for rendering. You can specify the back end to use with the environment
+  // variable QT_QPA_PLATFORM when invoking a Qt-based application.
+  // Available platform plugins are: directfbegl, directfb, eglfs, linuxfb,
+  // minimal, minimalegl, offscreen, wayland-egl, wayland, xcb.
+  // https://www.ics.com/blog/qt-tips-and-tricks-part-1
+  // http://doc.qt.io/qt-5/qpa.html
+  const char *display = getenv( "DISPLAY" );
+  bool withDisplay = true;
+  if ( !display )
+  {
+    withDisplay = false;
+    qputenv( "QT_QPA_PLATFORM", "offscreen" );
+    QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::Info );
+  }
+  // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
+  QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "server" ) );
+  QgsServer server;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  server.initPython();
+#endif
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )
   {
-    server.handleRequest();
+    QgsFcgiServerRequest  request;
+    QgsFcgiServerResponse response( request.method() );
+    if ( ! request.hasError() )
+    {
+      server.handleRequest( request, response );
+    }
+    else
+    {
+      response.sendError( 400, "Bad request" );
+    }
   }
+  app.exitQgis();
   return 0;
 }
 

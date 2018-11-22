@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    addcopyright.sh
 #    ---------------------
@@ -16,6 +16,8 @@
 
 # licensecheck -r src
 
+export LC_TIME=C
+
 set -e
 
 if [ $# -gt 0 ]; then
@@ -28,11 +30,11 @@ else
 fi
 
 for i in $FILES; do
-	echo $i >&2
+	echo "${i}" >&2
 	author=
 	authordate=
 	eval $(git log --reverse --pretty="export author='%an' authordate=\"\$(date --date='%ai' +'%%B %Y')\"" $i | head -1)
-	basename=$(basename $i)
+	basename=$(basename "${i}")
 	authoryear=${authordate#* }
 
         case $i in
@@ -41,15 +43,15 @@ for i in $FILES; do
 		author=volayaf
 		;;
 
-	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/gps/qextserialport/*|src/astyle/*|python/pyspatialite/*)
+	src/app/qtmain_android.cpp)
 		# Skip third party files
-                echo $f skipped
+                echo "${i} skipped"
                 continue
                 ;;
 
 	esac
 
-	case $author in
+	case "${author}" in
 	morb_au)
 		authorname="Brendan Morley"
 		authoremail="morb at ozemail dot com dot au"
@@ -155,7 +157,7 @@ for i in $FILES; do
 		authoremail="loi at faunalia dot it"
 		;;
 
-	"Nathan Woodrow")
+	"Nathan Woodrow"|Nathan)
 		authorname="Nathan Woodrow"
 		authoremail="woodrow dot nathan at gmail dot com"
 		;;
@@ -188,6 +190,46 @@ for i in $FILES; do
 	elpaso)
 		authorname="Alessandro Pasotti"
 		authoremail="elpaso at itopen dot it"
+		;;
+
+        "Patrick Valsecchi")
+		authorname="Patrick Valsecchi"
+		authoremail="patrick dot valsecchi at camptocamp dot com"
+		;;
+
+	"Stéphane Brunner")
+		authorname="Stéphane Brunner"
+		authoremail="stephane dot brunner at camptocamp dot com"
+		;;
+
+	"ersts")
+		authorname="Peter Ersts"
+		authoremail="ersts at amnh dot org"
+		;;
+
+	"Etienne Tourigny")
+		authorname="Etienne Tourigny"
+		authoremail="etourigny dot dev at gmail dot com"
+		;;
+
+	"Nyall Dawson")
+		authorname="Nyall Dawson"
+		authoremail="nyall dot dawson at gmail dot com"
+		;;
+
+	"David")
+		authorname="David Signer"
+		authoremail="david at opengis dot ch"
+		;;
+
+	"Etienne Trimaille")
+		authorname="Etienne Trimaille"
+		authoremail="etienne dot trimaille at gmail dot com"
+		;;
+
+	"David Marteau")
+		authorname="David Marteau"
+		authoremail="david at innophi dot com"
 		;;
 
 	*)

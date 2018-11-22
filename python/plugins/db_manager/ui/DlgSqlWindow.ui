@@ -6,14 +6,268 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
+    <width>679</width>
     <height>525</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>SQL window</string>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <property name="windowTitle">
+   <string>SQL Window</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="0" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QToolButton" name="queryBuilderBtn">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Saved query</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="presetCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="presetName">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="presetStore">
+           <property name="text">
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="presetDelete">
+           <property name="text">
+            <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="presetLoadFile">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load SQL file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Load File</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="presetSaveAsFile">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the query as SQL file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Save As File</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QSplitter" name="splitterHistory">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="handleWidth">
+          <number>2</number>
+         </property>
+         <widget class="QgsCodeEditorSQL" name="editSql"/>
+         <widget class="QWidget" name="queryHistoryWidget" native="true">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="queryHistoryTableWidget">
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::SingleSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Query</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Rows affected</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Duration (secs)</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="buttonLayout">
+         <item>
+          <widget class="QPushButton" name="btnExecute">
+           <property name="toolTip">
+            <string>Execute query (Ctrl+R)</string>
+           </property>
+           <property name="text">
+            <string>Execute</string>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+R</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblResult">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnCreateView">
+           <property name="text">
+            <string>Create a view</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnClear">
+           <property name="text">
+            <string>&amp;Clear</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnQueryHistory">
+           <property name="text">
+            <string>Query History</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTableView" name="viewResult">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>3</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="horizontalScrollMode">
+          <enum>QAbstractItemView::ScrollPerPixel</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QGroupBox" name="loadAsLayerGroup">
      <property name="sizePolicy">
@@ -32,131 +286,70 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="0" column="0" colspan="2">
        <widget class="QWidget" name="loadAsLayerWidget" native="true">
         <layout class="QGridLayout" name="gridLayout_3">
-         <property name="margin">
+         <property name="leftMargin">
           <number>0</number>
          </property>
-         <item row="2" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QCheckBox" name="avoidSelectById">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id. Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Avoid selecting by feature id</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="loadLayerBtn">
-             <property name="text">
-              <string>Load now!</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <widget class="QCheckBox" name="uniqueColumnCheck">
-             <property name="text">
-              <string>Column(s) with 
-unique values</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="uniqueCombo">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <property name="insertPolicy">
-              <enum>QComboBox::NoInsert</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="hasGeometryCol">
-             <property name="text">
-              <string>Geometry column</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <property name="tristate">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="geomCombo">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <property name="insertPolicy">
-              <enum>QComboBox::NoInsert</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="getColumnsBtn">
-             <property name="text">
-              <string>Retrieve 
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="3">
+          <widget class="QPushButton" name="getColumnsBtn">
+           <property name="text">
+            <string>Retrieve 
 columns</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+           </property>
+          </widget>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="1">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="3">
+          <widget class="QPushButton" name="btnSetFilter">
+           <property name="text">
+            <string>Set filter</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QPushButton" name="loadLayerBtn">
+           <property name="text">
+            <string>Load</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="avoidSelectById">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id. Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Avoid selecting by feature id</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
             <widget class="QLabel" name="label_5">
@@ -217,32 +410,66 @@ columns</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
              </layout>
             </widget>
            </item>
+          </layout>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
-            <widget class="QPushButton" name="btnSetFilter">
+            <widget class="QCheckBox" name="uniqueColumnCheck">
              <property name="text">
-              <string>Set filter</string>
+              <string>Column(s) with 
+unique values</string>
              </property>
-             <property name="autoDefault">
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="uniqueCombo">
+             <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="hasGeometryCol">
+             <property name="text">
+              <string>Geometry column</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="tristate">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="geomCombo">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
              </property>
             </widget>
            </item>
@@ -254,149 +481,29 @@ columns</string>
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <property name="bottomMargin">
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QToolButton" name="queryBuilderBtn">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Saved query:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="presetCombo"/>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="presetName">
-           <property name="text">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="presetStore">
-           <property name="text">
-            <string>Store</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="presetDelete">
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QgsCodeEditorSQL" name="editSql"/>
-       </item>
-       <item>
-        <layout class="QHBoxLayout">
-         <item>
-          <widget class="QPushButton" name="btnExecute">
-           <property name="text">
-            <string>&amp;Execute (F5)</string>
-           </property>
-           <property name="shortcut">
-            <string>F5</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="lblResult">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnCreateView">
-           <property name="text">
-            <string>Create a view</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnClear">
-           <property name="text">
-            <string>&amp;Clear</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QTableView" name="viewResult">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>3</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="horizontalScrollMode">
-          <enum>QAbstractItemView::ScrollPerPixel</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel">
+       <property name="toolTip">
+        <string>Cancel query (ESC)</string>
+       </property>
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -408,9 +515,27 @@ columns</string>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>queryBuilderBtn</tabstop>
+  <tabstop>presetCombo</tabstop>
+  <tabstop>presetName</tabstop>
+  <tabstop>presetDelete</tabstop>
+  <tabstop>editSql</tabstop>
   <tabstop>btnExecute</tabstop>
+  <tabstop>btnCreateView</tabstop>
   <tabstop>btnClear</tabstop>
   <tabstop>viewResult</tabstop>
+  <tabstop>loadAsLayerGroup</tabstop>
+  <tabstop>uniqueColumnCheck</tabstop>
+  <tabstop>uniqueCombo</tabstop>
+  <tabstop>hasGeometryCol</tabstop>
+  <tabstop>geomCombo</tabstop>
+  <tabstop>getColumnsBtn</tabstop>
+  <tabstop>layerNameEdit</tabstop>
+  <tabstop>vectorRadio</tabstop>
+  <tabstop>rasterRadio</tabstop>
+  <tabstop>btnSetFilter</tabstop>
+  <tabstop>avoidSelectById</tabstop>
+  <tabstop>loadLayerBtn</tabstop>
  </tabstops>
  <resources/>
  <connections>

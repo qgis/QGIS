@@ -15,11 +15,12 @@
 #ifndef QGSPLUGINLAYER_H
 #define QGSPLUGINLAYER_H
 
+#include "qgis_core.h"
 #include "qgsmaplayer.h"
+#include "qgsdataprovider.h"
 
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
-
-/** \ingroup core
+/**
+ * \ingroup core
   Base class for plugin layers. These can be implemented by plugins
   and registered in QgsPluginLayerRegistry.
 
@@ -32,37 +33,60 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-    QgsPluginLayer( const QString& layerType, const QString& layerName = QString() );
+    QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
+    ~QgsPluginLayer() override;
 
-    /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
+    /**
+     * Returns a new instance equivalent to this one.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    QgsPluginLayer *clone() const override = 0;
+
+    //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();
 
-    /** Set extent of the layer */
+    //! Sets extent of the layer
     void setExtent( const QgsRectangle &extent ) override;
 
-    /** Set source string. This is used for example in layer tree to show tooltip.
-     * @note added in 2.16
+    /**
+     * Set source string. This is used for example in layer tree to show tooltip.
+     * \since QGIS 2.16
      */
-    void setSource( const QString& source );
+    void setSource( const QString &source );
 
-    //! return a list of symbology items for the legend
-    //! (defult implementation returns nothing)
-    //! @note Added in v2.1
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-
-    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     *
-     * The default implementation returns map layer renderer which just calls draw().
-     * This may work, but it is unsafe for multi-threaded rendering because of the run
-     * conditions that may happen (e.g. something is changed in the layer while it is
-     * being rendered).
-     *
-     * @note added in 2.4
-     */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
+    QgsDataProvider *dataProvider() override;
+    const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
   protected:
     QString mPluginLayerType;
+    QgsDataProvider *mDataProvider;
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * A minimal data provider for plugin layers
+ */
+class QgsPluginLayerDataProvider : public QgsDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsPluginLayerDataProvider( const QString &layerType, const QgsDataProvider::ProviderOptions &options );
+    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
+    QString description() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+
+  private:
+    QString mName;
+    QgsRectangle mExtent;
+};
+///@endcond
+#endif
 
 #endif // QGSPLUGINLAYER_H

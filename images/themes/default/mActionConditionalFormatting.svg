@@ -1,0 +1,11 @@
+<svg enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<path d="m2.5 17.5h19v5h-19z" fill="#c5f7c5" overflow="visible" stroke="#619361" stroke-linecap="round"/>
+<path d="m2.5 10.5h19v5h-19z" fill="#fff" overflow="visible" stroke="#9a9a9a" stroke-linecap="round"/>
+<path d="m2.5 24.500002h19v5h-19z" fill="#fff" overflow="visible" stroke="#9a9a9a" stroke-linecap="round"/>
+<path d="m8.9999999 13h10.0000001" fill="none" stroke="#6f6f6f" stroke-width="2"/>
+<path d="m8.9999999 27h10.0000001" fill="#bd2c00" fill-rule="evenodd" stroke="#f6adad" stroke-width="2"/>
+<path d="m8.9999999 20h10.0000001" fill="none" stroke="#6f6f6f" stroke-width="2"/>
+<path d="m5 27h3" fill="none" stroke="#a20404" stroke-width="1.99999988"/>
+</g>
+</svg>

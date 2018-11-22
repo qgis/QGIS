@@ -15,7 +15,6 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
-                       QgsMapLayerRegistry,
                        QgsLayerDefinition
                        )
 
@@ -100,16 +99,17 @@ class TestQgsLayerDefinition(unittest.TestCase):
 
     def testVectorAndRaster(self):
         # Load a simple QLR containing a vector layer and a raster layer.
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
-        layers = QgsMapLayerRegistry.instance().mapLayers()
+        QgsProject.instance().removeAllMapLayers()
+        layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 0)
 
-        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance().layerTreeRoot())
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
         self.assertTrue(result)
 
-        layers = QgsMapLayerRegistry.instance().mapLayers()
+        layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 2)
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,9 +26,9 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processCommand(alg):
+def processCommand(alg, parameters, context, feedback):
     # v.in.geonames needs to use WGS84 projection
     alg.commands.append('g.proj -c epsg=4326')
 
     # Launch the algorithm
-    alg.processCommand()
+    alg.processCommand(parameters, context, feedback)

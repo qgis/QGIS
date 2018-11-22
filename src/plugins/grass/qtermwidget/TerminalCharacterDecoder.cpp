@@ -103,7 +103,7 @@ void PlainTextDecoder::decodeLine(const Character* const characters, int count, 
     for (int i=0;i<outputCount;)
     {
         plainText.append( QChar(characters[i].character) );
-        i += qMax(1,konsole_wcwidth(characters[i].character));
+        i += std::max(1,konsole_wcwidth(characters[i].character));
     }
     *_output << plainText;
 }
@@ -124,7 +124,7 @@ void HTMLDecoder::begin(QTextStream* output)
     QString text;
 
     //open monospace span
-    openSpan(text,"font-family:monospace");
+    openSpan(text,QStringLiteral("font-family:monospace"));
 
     *output << text;
 }
@@ -188,11 +188,11 @@ void HTMLDecoder::decodeLine(const Character* const characters, int count, LineP
             //colours - a colour table must have been defined first
             if ( _colorTable )
             {
-                style.append( QString("color:%1;").arg(_lastForeColor.color(_colorTable).name() ) );
+                style.append( QStringLiteral("color:%1;").arg(_lastForeColor.color(_colorTable).name() ) );
 
                 if (!characters[i].isTransparent(_colorTable))
                 {
-                    style.append( QString("background-color:%1;").arg(_lastBackColor.color(_colorTable).name() ) );
+                    style.append( QStringLiteral("background-color:%1;").arg(_lastBackColor.color(_colorTable).name() ) );
                 }
             }
 
@@ -237,7 +237,7 @@ void HTMLDecoder::decodeLine(const Character* const characters, int count, LineP
 }
 void HTMLDecoder::openSpan(QString& text , const QString& style)
 {
-    text.append( QString("<span style=\"%1\">").arg(style) );
+    text.append( QStringLiteral("<span style=\"%1\">").arg(style) );
 }
 
 void HTMLDecoder::closeSpan(QString& text)

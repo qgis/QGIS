@@ -16,32 +16,33 @@
 #include "qgswfstransactionrequest.h"
 #include "qgslogger.h"
 
-QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString& theUri )
-    : QgsWFSRequest( theUri )
+QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri )
+  : QgsWfsRequest( uri )
 {
 }
 
-bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serverResponse )
+bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
-  QUrl url( baseURL() );
+  QUrl url( mUri.requestUrl( QStringLiteral( "Transaction" ), QgsWFSDataSourceURI::Method::Post ) );
 
-  QgsDebugMsg( doc.toString() );
+  QgsDebugMsgLevel( doc.toString(), 4 );
 
-  if ( sendPOST( url, "text/xml", doc.toByteArray( -1 ) ) )
+  if ( sendPOST( url, QStringLiteral( "text/xml" ), doc.toByteArray( -1 ) ) )
   {
     QString errorMsg;
     if ( !serverResponse.setContent( mResponse, true, &errorMsg ) )
     {
-      QgsDebugMsg( mResponse );
-      QgsDebugMsg( errorMsg );
+      QgsDebugMsgLevel( mResponse, 4 );
+      QgsDebugMsgLevel( errorMsg, 4 );
       return false;
     }
+    QgsDebugMsgLevel( mResponse, 4 );
     return true;
   }
   return false;
 }
 
-QString QgsWFSTransactionRequest::errorMessageWithReason( const QString& reason )
+QString QgsWFSTransactionRequest::errorMessageWithReason( const QString &reason )
 {
   return tr( "Sending of transaction failed: %1" ).arg( reason );
 }

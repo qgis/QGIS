@@ -29,19 +29,19 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputRaster
-
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -50,156 +50,173 @@ class rasterize(GdalAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
-    DIMENSIONS = 'DIMENSIONS'
+    BURN = 'BURN'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
-    EXTRA = 'EXTRA'
-    RTYPE = 'RTYPE'
+    UNITS = 'UNITS'
+    NODATA = 'NODATA'
+    EXTENT = 'EXTENT'
+    INIT = 'INIT'
+    INVERT = 'INVERT'
+    ALL_TOUCH = 'ALL_TOUCH'
+    OPTIONS = 'OPTIONS'
+    DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    NO_DATA = 'NO_DATA'
-    TILED = 'TILED'
-    COMPRESS = 'COMPRESS'
-    JPEGCOMPRESSION = 'JPEGCOMPRESSION'
-    PREDICTOR = 'PREDICTOR'
-    ZLEVEL = 'ZLEVEL'
-    BIGTIFF = 'BIGTIFF'
-    BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
-    COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
-    TFW = 'TFW'
-    RAST_EXT = 'RAST_EXT'
 
-    def getIcon(self):
+    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.units = [self.tr("Pixels"),
+                      self.tr("Georeferenced units")]
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Field to use for a burn-in value'),
+                                                      None,
+                                                      self.INPUT,
+                                                      QgsProcessingParameterField.Numeric,
+                                                      optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.BURN,
+                                                       self.tr('A fixed value to burn'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=0.0,
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterEnum(self.UNITS,
+                                                     self.tr('Output raster size units'),
+                                                     self.units))
+        self.addParameter(QgsProcessingParameterNumber(self.WIDTH,
+                                                       self.tr('Width/Horizontal resolution'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.HEIGHT,
+                                                       self.tr('Height/Vertical resolution'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Output extent')))
+        self.addParameter(QgsProcessingParameterNumber(self.NODATA,
+                                                       self.tr('Assign a specified nodata value to output bands'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=0.0,
+                                                       optional=True))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                    self.tr('Output data type'),
+                                                    self.TYPES,
+                                                    allowMultiple=False,
+                                                    defaultValue=5)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(dataType_param)
+
+        init_param = QgsProcessingParameterNumber(self.INIT,
+                                                  self.tr('Pre-initialize the output image with value'),
+                                                  type=QgsProcessingParameterNumber.Double,
+                                                  defaultValue=0.0,
+                                                  optional=True)
+        init_param.setFlags(init_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(init_param)
+
+        invert_param = QgsProcessingParameterBoolean(self.INVERT,
+                                                     self.tr('Invert rasterization'),
+                                                     defaultValue=False)
+        invert_param.setFlags(invert_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(invert_param)
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Rasterized')))
+
+    def name(self):
+        return 'rasterize'
+
+    def displayName(self):
+        return self.tr('Rasterize (vector to raster)')
+
+    def group(self):
+        return self.tr('Vector conversion')
+
+    def groupId(self):
+        return 'vectorconversion'
+
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
-    def commandLineName(self):
-        return "gdalogr:rasterize"
+    def commandName(self):
+        return 'gdal_rasterize'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rasterize (vector to raster)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute field'), self.INPUT))
-        self.addParameter(ParameterSelection(self.DIMENSIONS,
-                                             self.tr('Set output raster size (ignored if above option is checked)'),
-                                             ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
-        self.addParameter(ParameterNumber(self.WIDTH,
-                                          self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
-        self.addParameter(ParameterNumber(self.HEIGHT,
-                                          self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
-        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent')))
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
 
-        params = []
-        params.append(ParameterSelection(self.RTYPE, self.tr('Raster type'),
-                                         self.TYPE, 5))
-        params.append(ParameterString(self.NO_DATA,
-                                      self.tr("Nodata value"),
-                                      '', optional=True))
-        params.append(ParameterSelection(self.COMPRESS,
-                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        params.append(ParameterNumber(self.JPEGCOMPRESSION,
-                                      self.tr('Set the JPEG compression level'),
-                                      1, 100, 75))
-        params.append(ParameterNumber(self.ZLEVEL,
-                                      self.tr('Set the DEFLATE compression level'),
-                                      1, 9, 6))
-        params.append(ParameterNumber(self.PREDICTOR,
-                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                      1, 3, 1))
-        params.append(ParameterBoolean(self.TILED,
-                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
-        params.append(ParameterSelection(self.BIGTIFF,
-                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
-        self.addParameter(ParameterBoolean(self.TFW,
-                                           self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
-        params.append(ParameterString(self.EXTRA,
-                                      self.tr('Additional creation parameters'), '', optional=True))
+        arguments = ['-l']
+        arguments.append(layerName)
 
-        for param in params:
-            param.isAdvanced = True
-            self.addParameter(param)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        if fieldName:
+            arguments.append('-a')
+            arguments.append(fieldName)
+        else:
+            arguments.append('-burn')
+            arguments.append(self.parameterAsDouble(parameters, self.BURN, context))
 
-        self.addOutput(OutputRaster(self.OUTPUT,
-                                    self.tr('Rasterized')))
+        units = self.parameterAsEnum(parameters, self.UNITS, context)
+        if units == 0:
+            arguments.append('-ts')
+        else:
+            arguments.append('-tr')
+        arguments.append(self.parameterAsDouble(parameters, self.WIDTH, context))
+        arguments.append(self.parameterAsDouble(parameters, self.HEIGHT, context))
 
-    def getConsoleCommands(self):
-        inLayer = self.getParameterValue(self.INPUT)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        noData = self.getParameterValue(self.NO_DATA)
-        if noData is not None:
-            noData = unicode(noData)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
-        compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
-        bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
-        out = self.getOutputValue(self.OUTPUT)
-        extra = self.getParameterValue(self.EXTRA)
-        if extra is not None:
-            extra = unicode(extra)
-        rastext = unicode(self.getParameterValue(self.RAST_EXT))
+        initValue = self.parameterAsDouble(parameters, self.INIT, context)
+        if initValue:
+            arguments.append('-init')
+            arguments.append(initValue)
 
-        arguments = []
-        arguments.append('-a')
-        arguments.append(unicode(self.getParameterValue(self.FIELD)))
+        if self.parameterAsBool(parameters, self.INVERT, context):
+            arguments.append('-i')
+
+        if self.parameterAsBool(parameters, self.ALL_TOUCH, context):
+            arguments.append('-at')
+
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+            arguments.append('-a_nodata')
+            arguments.append(nodata)
+
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        if not extent.isNull():
+            arguments.append('-te')
+            arguments.append(extent.xMinimum())
+            arguments.append(extent.yMinimum())
+            arguments.append(extent.xMaximum())
+            arguments.append(extent.yMaximum())
 
         arguments.append('-ot')
-        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        dimType = self.getParameterValue(self.DIMENSIONS)
+        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
 
-        regionCoords = rastext.split(',')
-        try:
-            rastext = []
-            rastext.append('-te')
-            rastext.append(regionCoords[0])
-            rastext.append(regionCoords[2])
-            rastext.append(regionCoords[1])
-            rastext.append(regionCoords[3])
-        except IndexError:
-            rastext = []
-        if rastext:
-            arguments.extend(rastext)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
-        if dimType == 0:
-            # size in pixels
-            arguments.append('-ts')
-            arguments.append(unicode(self.getParameterValue(self.WIDTH)))
-            arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
-        else:
-            # resolution in map units per pixel
-            arguments.append('-tr')
-            arguments.append(unicode(self.getParameterValue(self.WIDTH)))
-            arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
-
-        if noData and len(noData) > 0:
-            arguments.append('-a_nodata')
-            arguments.append(noData)
-
-        if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff"):
-            arguments.append("-co COMPRESS=" + compress)
-            if compress == 'JPEG':
-                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
-            elif (compress == 'LZW') or (compress == 'DEFLATE'):
-                arguments.append("-co PREDICTOR=" + predictor)
-            if compress == 'DEFLATE':
-                arguments.append("-co ZLEVEL=" + zlevel)
-            if tiled == "True":
-                arguments.append("-co TILED=YES")
-            if tfw == "True":
-                arguments.append("-co TFW=YES")
-            if len(bigtiff) > 0:
-                arguments.append("-co BIGTIFF=" + bigtiff)
-        if extra and len(extra) > 0:
-            arguments.append(extra)
-        arguments.append('-l')
-
-        arguments.append(ogrLayerName(inLayer))
         arguments.append(ogrLayer)
+        arguments.append(out)
 
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
-        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

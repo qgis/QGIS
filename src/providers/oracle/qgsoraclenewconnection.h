@@ -17,10 +17,11 @@
 #ifndef QGSORACLENEWCONNECTION_H
 #define QGSORACLENEWCONNECTION_H
 #include "ui_qgsoraclenewconnectionbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 
-/** \class QgsOracleNewConnection
+/**
+ * \class QgsOracleNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a Oracle database
  */
@@ -29,19 +30,20 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     Q_OBJECT
   public:
     //! Constructor
-    QgsOracleNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    //! Destructor
-    ~QgsOracleNewConnection();
+    QgsOracleNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     QString originalConnName() const { return mOriginalConnName; }
     QString connName() const { return txtName->text(); }
 
   public slots:
-    void accept();
-    void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void accept() override;
+
+  private slots:
+    void testConnection();
+
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    void showHelp();
 };
 
 #endif //  QGSORACLENEWCONNECTIONBASE_H

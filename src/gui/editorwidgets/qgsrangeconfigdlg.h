@@ -18,8 +18,13 @@
 
 #include "ui_qgsrangeconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
-/** \class QgsRangeConfigDlg
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
+ * \class QgsRangeConfigDlg
  * \note not available in Python bindings
  */
 
@@ -28,9 +33,9 @@ class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    explicit QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
-    virtual QgsEditorWidgetConfig config() override;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
+    explicit QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
   protected slots:
     void rangeWidgetChanged( int index );

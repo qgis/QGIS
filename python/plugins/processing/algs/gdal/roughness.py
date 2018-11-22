@@ -27,11 +27,16 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination)
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -42,32 +47,71 @@ class roughness(GdalAlgorithm):
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Roughness')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterNumber(self.BAND,
-                                          self.tr('Band number'), 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-                                           self.tr('Compute edges'), False))
+    def __init__(self):
+        super().__init__()
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Roughness')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
+                                                        self.tr('Compute edges'),
+                                                        defaultValue=False))
 
-    def getConsoleCommands(self):
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Roughness')))
+
+    def name(self):
+        return 'roughness'
+
+    def displayName(self):
+        return self.tr('Roughness')
+
+    def group(self):
+        return self.tr('Raster analysis')
+
+    def groupId(self):
+        return 'rasteranalysis'
+
+    def commandName(self):
+        return 'gdaldem'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['roughness']
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        output = unicode(self.getOutputValue(self.OUTPUT))
-        arguments.append(output)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(inLayer.source())
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        arguments.append(out)
 
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.getParameterValue(self.COMPUTE_EDGES):
+        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.append('-co')
+            arguments.append(options)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

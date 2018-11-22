@@ -1,9 +1,0 @@
-D8 Extreme Upslope Value (multifile)
-d8flowpathextremeup
-Stream Network Analysis tools
-ParameterFile|-p|D8 Flow Directions Grid|True|False
-ParameterFile|-sa|Upslope Values Grid|True|False
-ParameterVector|-o|Outlets Shapefile|0|True
-ParameterBoolean|-nc|Check for edge contamination|True
-ParameterBoolean|-min|Use max upslope value|True
-OutputDirectory|-ssa|Extereme Upslope Values Grid

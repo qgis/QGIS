@@ -20,7 +20,7 @@
  * 2015-02-17
  */
 
-#include <stdio.h>
+#include <cstdio>
 #include "mersenne-twister.h"
 
 /*
@@ -35,9 +35,9 @@ static const unsigned DIFF   = SIZE - PERIOD;
 static uint32_t MT[SIZE];
 static unsigned index = 0;
 
-#define M32(x) (0x80000000 & x) // 32nd Most Significant Bit
-#define L31(x) (0x7FFFFFFF & x) // 31 Least Significant Bits
-#define ODD(x) (x & 1) // Check if number is odd
+#define M32(x) (0x80000000 & (x)) // 32nd Most Significant Bit
+#define L31(x) (0x7FFFFFFF & (x)) // 31 Least Significant Bits
+#define ODD(x) ((x) & 1) // Check if number is odd
 
 #define UNROLL(expr) \
   y = M32(MT[i]) | L31(MT[i+1]); \
@@ -81,7 +81,7 @@ static inline void generate_numbers()
   }
 
   // i = 226
-  UNROLL(( i + PERIOD ) % SIZE );
+  UNROLL( ( i + PERIOD ) % SIZE );
 
   // i = [227 ... 622]
   while ( i < ( SIZE - 1 ) )
@@ -104,8 +104,8 @@ static inline void generate_numbers()
   }
 
   // i = 623
-  y = M32( MT[SIZE-1] ) | L31( MT[0] );
-  MT[SIZE-1] = MT[PERIOD-1] ^( y >> 1 ) ^ MATRIX[ODD( y )];
+  y = M32( MT[SIZE - 1] ) | L31( MT[0] );
+  MT[SIZE - 1] = MT[PERIOD - 1] ^ ( y >> 1 ) ^ MATRIX[ODD( y )];
 }
 
 extern "C" void seed( uint32_t value )
@@ -146,7 +146,7 @@ extern "C" void seed( uint32_t value )
   index = 0;
 
   for ( unsigned i = 1; i < SIZE; ++i )
-    MT[i] = 0x6c078965 * ( MT[i-1] ^ MT[i-1] >> 30 ) + i;
+    MT[i] = 0x6c078965 * ( MT[i - 1] ^ MT[i - 1] >> 30 ) + i;
 }
 
 extern "C" uint32_t rand_u32()

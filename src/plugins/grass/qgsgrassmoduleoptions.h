@@ -24,7 +24,7 @@
 //#include <QVBoxLayout>
 
 #include "qgis.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include "qgsgrassmoduleparam.h"
@@ -37,7 +37,8 @@ class QgsGrassModule;
 class QgisInterface;
 class QgsMapCanvas;
 
-/** \class QgsGrassModuleOptions
+/**
+ * \class QgsGrassModuleOptions
  *  \brief Widget with GRASS options.QgsGrassTools
  *
  */
@@ -55,10 +56,9 @@ class QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface, bool direct );
 
-    //! Destructor
-    virtual ~QgsGrassModuleOptions();
+    virtual ~QgsGrassModuleOptions() = default;
 
-    //! Get module options as list of arguments for QProcess
+    //! Gets module options as list of arguments for QProcess
     virtual QStringList arguments();
 
     //! Check if output exists
@@ -74,7 +74,7 @@ class QgsGrassModuleOptions
     //  Returns empty string or error message
     virtual QStringList ready() { return QStringList() ; }
 
-    //! Get list of current output maps
+    //! Gets list of current output maps
     virtual QStringList output( int type )
     { Q_UNUSED( type ); return QStringList(); }
 
@@ -93,10 +93,10 @@ class QgsGrassModuleOptions
     // return list of input maps (both raster and vector) outside region
     virtual QStringList checkRegion() { return QStringList() ; }
 
-    //! Get region covering all input maps
+    //! Gets region covering all input maps
     // \param all true all input maps
     // \param all false only the mas which were switched on
-    virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all )
+    virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
     { Q_UNUSED( window ); Q_UNUSED( crs ); Q_UNUSED( all ); return false; }
 
     // ! Flag names
@@ -106,16 +106,16 @@ class QgsGrassModuleOptions
 
   protected:
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Pointer to GRASS Tools
-    QgsGrassTools *mTools;
+    QgsGrassTools *mTools = nullptr;
 
     //! Pointer to GRASS module
-    QgsGrassModule *mModule;
+    QgsGrassModule *mModule = nullptr;
 
     //! Parent widget
     //QWidget *mParent;
@@ -124,7 +124,7 @@ class QgsGrassModuleOptions
     QString mAppDir;
 
     //! Region mode select box
-    QComboBox * mRegionModeComboBox;
+    QComboBox *mRegionModeComboBox = nullptr;
 
     //! Direct mode
     bool mDirect;
@@ -133,7 +133,8 @@ class QgsGrassModuleOptions
     QStringList mErrors;
 };
 
-/** \class QgsGrassModuleStandardOptions
+/**
+ * \class QgsGrassModuleStandardOptions
  *  \brief Widget with GRASS standard options.
  *
  */
@@ -147,12 +148,9 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
       QString xname, QDomElement confDocElem,
-      bool direct, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+      bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    //! Destructor
-    ~QgsGrassModuleStandardOptions();
-
-    //! Get module options as list of arguments for QProcess
+    //! Gets module options as list of arguments for QProcess
     QStringList arguments() override;
 
     // ! Get item by ID
@@ -171,7 +169,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QStringList checkRegion() override;
     bool usesRegion() override;
     bool requestsRegion() override;
-    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) override;
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all ) override;
     QStringList flagNames() override { return mFlagNames; }
 
   public slots:
@@ -179,17 +177,20 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     void switchAdvanced();
 
   private:
-    /** Read and parse module options (--interface-description).
-     * @param errors - list to which possible errors are added
-     */
-    QDomDocument readInterfaceDescription( const QString & xname, QStringList & errors );
 
-    /** Get region for currently selected map. It will show warning dialog if region could not be read.
-     * @return true if region was successfully read
+    /**
+     * Read and parse module options (--interface-description).
+     * \param errors - list to which possible errors are added
      */
-    bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
+    QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 
-    // List of providers used by layers in QgsMapLayerRegistry
+    /**
+     * Gets region for currently selected map. It will show warning dialog if region could not be read.
+     * \returns true if region was successfully read
+     */
+    bool getCurrentMapRegion( QgsGrassModuleInput *param, struct Cell_head *window );
+
+    // List of providers used by layers in QgsProject
     QList<QgsGrassProvider *> grassProviders();
     QList<QgsGrassRasterProvider *> grassRasterProviders();
 
@@ -200,7 +201,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QString mXPath;
 
     //! Option items
-    QList<QgsGrassModuleParam*> mParams;
+    QList<QgsGrassModuleParam *> mParams;
 
     //! List of all flags. Necessary for scripts.
     QStringList mFlagNames;

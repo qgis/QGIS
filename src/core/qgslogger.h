@@ -19,9 +19,14 @@
 #define QGSLOGGER_H
 
 #include <iostream>
+#include "qgis_sip.h"
 #include <sstream>
 #include <QString>
 #include <QTime>
+
+#include "qgis_core.h"
+#include "qgsconfig.h"
+
 class QFile;
 
 #ifdef QGISDEBUG
@@ -34,7 +39,8 @@ class QFile;
 #define QgsDebugMsgLevel(str, level)
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsLogger is a class to print debug/warning/error messages to the console.
  * The advantage of this class over iostream & co. is that the
  * output can be controlled with environment variables:
@@ -54,55 +60,62 @@ class CORE_EXPORT QgsLogger
 {
   public:
 
-    /** Goes to qDebug.
-    @param msg the message to be printed
-    @param debuglevel
-    @param file file name where the message comes from
-    @param function function where the message comes from
-    @param line place in file where the message comes from*/
-    static void debug( const QString& msg, int debuglevel = 1, const char* file = nullptr, const char* function = nullptr, int line = -1 );
+    /**
+     * Goes to qDebug.
+    \param msg the message to be printed
+    \param debuglevel
+    \param file file name where the message comes from
+    \param function function where the message comes from
+    \param line place in file where the message comes from*/
+    static void debug( const QString &msg, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 );
 
-    /** Similar to the previous method, but prints a variable int-value pair*/
-    static void debug( const QString& var, int val, int debuglevel = 1, const char* file = nullptr, const char* function = nullptr, int line = -1 );
+    //! Similar to the previous method, but prints a variable int-value pair
+    static void debug( const QString &var, int val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 );
 
-    /** Similar to the previous method, but prints a variable double-value pair*/
-    // @note not available in python bindings
-    static void debug( const QString& var, double val, int debuglevel = 1, const char* file = nullptr, const char* function = nullptr, int line = -1 );
+    /**
+     * Similar to the previous method, but prints a variable double-value pair
+     * \note not available in Python bindings
+     */
+    static void debug( const QString &var, double val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 ) SIP_SKIP SIP_SKIP;
 
-    /** Prints out a variable/value pair for types with overloaded operator<<*/
-    // @note not available in python bindings
-    template <typename T> static void debug( const QString& var, T val, const char* file = nullptr, const char* function = nullptr,
-        int line = -1, int debuglevel = 1 )
+    /**
+     * Prints out a variable/value pair for types with overloaded operator<<
+     * \note not available in Python bindings
+     */
+    template <typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr,
+        int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
     {
       std::ostringstream os;
       os << var.toLocal8Bit().data() << " = " << val;
       debug( var, os.str().c_str(), file, function, line, debuglevel );
     }
 
-    /** Goes to qWarning*/
-    static void warning( const QString& msg );
+    //! Goes to qWarning
+    static void warning( const QString &msg );
 
-    /** Goes to qCritical*/
-    static void critical( const QString& msg );
+    //! Goes to qCritical
+    static void critical( const QString &msg );
 
-    /** Goes to qFatal*/
-    static void fatal( const QString& msg );
+    //! Goes to qFatal
+    static void fatal( const QString &msg );
 
-    /** Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
+    /**
+     * Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
      the function returns 1 if QGISDEBUG is defined and 0 if not*/
     static int debugLevel() { init(); return sDebugLevel; }
 
-    /** Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. **/
-    static void logMessageToFile( const QString& theMessage );
+    //! Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
+    static void logMessageToFile( const QString &message );
 
-    /** Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
+    /**
+     * Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
      * otherwise returns a file name for writing log messages to.*/
     static const QString logFile() { init(); return sLogFile; }
 
   private:
     static void init();
 
-    /** Current debug level */
+    //! Current debug level
     static int sDebugLevel;
     static int sPrefixLength;
     static QString sLogFile;
@@ -110,23 +123,26 @@ class CORE_EXPORT QgsLogger
     static QTime sTime;
 };
 
-class QgsScopeLogger
+/**
+ * \ingroup core
+ */
+class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
 {
   public:
-    QgsScopeLogger( const char* file, const char* func, int line )
-        : _file( file )
-        , _func( func )
-        , _line( line )
+    QgsScopeLogger( const char *file, const char *func, int line )
+      : _file( file )
+      , _func( func )
+      , _line( line )
     {
-      QgsLogger::debug( "Entering.", 1, _file, _func, _line );
+      QgsLogger::debug( QStringLiteral( "Entering." ), 1, _file, _func, _line );
     }
     ~QgsScopeLogger()
     {
-      QgsLogger::debug( "Leaving.", 1, _file, _func, _line );
+      QgsLogger::debug( QStringLiteral( "Leaving." ), 1, _file, _func, _line );
     }
   private:
-    const char *_file;
-    const char *_func;
+    const char *_file = nullptr;
+    const char *_func = nullptr;
     int _line;
 };
 

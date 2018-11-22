@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="meshvectors.svg"
+   inkscape:export-filename="/home/martin/lutra/qgis-crayfish-plugin/plugin/list_icons_d.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="TriangleOutM"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleOutM"
+       style="overflow:visible">
+      <path
+         id="path3940"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         transform="scale(0.4)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Send"
+       style="overflow:visible;">
+      <path
+         id="path3810"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.2) rotate(180) translate(6,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mend"
+       style="overflow:visible;">
+      <path
+         id="path3804"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3816"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleOutL"
+       style="overflow:visible">
+      <path
+         id="path3937"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         transform="scale(0.8)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 8 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="16 : 8 : 1"
+       inkscape:persp3d-origin="8 : 5.3333333 : 1"
+       id="perspective3771" />
+    <linearGradient
+       id="linearGradient3755">
+      <stop
+         id="stop3767"
+         offset="0"
+         style="stop-color:#0000ff;stop-opacity:0.50196081;" />
+      <stop
+         id="stop3765"
+         offset="0.34999999"
+         style="stop-color:#00ffff;stop-opacity:0.50196081;" />
+      <stop
+         id="stop3763"
+         offset="0.5"
+         style="stop-color:#00ff00;stop-opacity:0.50196081;" />
+      <stop
+         style="stop-color:#ffff00;stop-opacity:0.50196081;"
+         offset="0.64999998"
+         id="stop3769" />
+      <stop
+         style="stop-color:#ff0000;stop-opacity:0.50980395;"
+         offset="1"
+         id="stop3759" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3755"
+       id="linearGradient3761"
+       x1="-0.044642858"
+       y1="0.071428955"
+       x2="15.955357"
+       y2="16.053572"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="31.678384"
+     inkscape:cx="-2.6207406"
+     inkscape:cy="6.2123922"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="1,0"
+       position="14.017857,5.8035714"
+       id="guide4180"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-3.5714286,1.9642857"
+       id="guide4182"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="12.053571,10.982143"
+       id="guide4186"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-9.1964286,3.9732143"
+       id="guide4188"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-5.0446429,5.9821429"
+       id="guide4190"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="10,8.3482143"
+       id="guide4192"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="12.991071,10.714286"
+       id="guide4194"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="8.9651038,2.9673231"
+       id="guide4196"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1036.3622)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-mid:none;marker-end:none;fill-opacity:0.23"
+       d="m 2.5000001,1038.8622 6.0050762,6.0051 4.9949237,4.9949"
+       id="path3789"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 14.017857,1050.3979 12.991071,1046.3801 10,1049.3949 z"
+       id="path4184"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+  </g>
+</svg>

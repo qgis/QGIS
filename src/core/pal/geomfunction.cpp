@@ -31,10 +31,12 @@
 #include "feature.h"
 #include "util.h"
 #include "qgis.h"
+#include "pal.h"
+#include "qgsmessagelog.h"
 
 using namespace pal;
 
-void heapsort( int *sid, int *id, const double* const x, int N )
+void heapsort( int *sid, int *id, const double *const x, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   int tx;
@@ -76,7 +78,7 @@ void heapsort( int *sid, int *id, const double* const x, int N )
 }
 
 
-void heapsort2( int *x, double* heap, int N )
+void heapsort2( int *x, double *heap, int N )
 {
   unsigned int n = N, i = n / 2, parent, child;
   double t;
@@ -160,7 +162,7 @@ bool GeomFunction::computeLineIntersection( double x1, double y1, double x2, dou
   return true;
 }
 
-int GeomFunction::convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull )
+int GeomFunction::convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull )
 {
   int i;
 
@@ -173,8 +175,8 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
 
   if ( n <= 3 ) return n;
 
-  int* stack = new int[n];
-  double* tan = new double [n];
+  int *stack = new int[n];
+  double *tan = new double [n];
   int ref;
 
   int second, top;
@@ -209,7 +211,7 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
     ref++;
   }
   else
-    stack[1] = cHull[ref-1];
+    stack[1] = cHull[ref - 1];
 
 
   top = 1;
@@ -264,7 +266,7 @@ int GeomFunction::convexHullId( int *id, const double* const x, const double* co
 int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
 {
   int inc = 0;
-  int *cHull;
+  int *cHull = nullptr;
   int i;
 
   int *pts = new int[nbPoints];
@@ -315,9 +317,61 @@ int GeomFunction::reorderPolygon( int nbPoints, double *x, double *y )
   return 0;
 }
 
+bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha )
+{
+  if ( !geom )
+    return false;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
+
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, y );
+  if ( !qgsDoubleNear( alpha, 0.0 ) )
+  {
+    double beta = alpha + M_PI_2;
+    double dx1 = std::cos( alpha ) * width;
+    double dy1 = std::sin( alpha ) * width;
+    double dx2 = std::cos( beta ) * height;
+    double dy2 = std::sin( beta ) * height;
+    GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );
+    GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + dx1 + dx2 );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + dy1 + dy2 );
+    GEOSCoordSeq_setX_r( geosctxt, coord, 3, x + dx2 );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + dy2 );
+  }
+  else
+  {
+    GEOSCoordSeq_setX_r( geosctxt, coord, 1, x + width );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 1, y );
+    GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + width );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 2, y + height );
+    GEOSCoordSeq_setX_r( geosctxt, coord, 3, x );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 3, y + height );
+  }
+  //close ring
+  GEOSCoordSeq_setX_r( geosctxt, coord, 4, x );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 4, y );
+
+  try
+  {
+    geos::unique_ptr bboxGeos( GEOSGeom_createLinearRing_r( geosctxt, coord ) );
+    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
+    return result;
+  }
+  catch ( GEOSException &e )
+  {
+    Q_NOWARN_UNREACHABLE_PUSH
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return false;
+    Q_NOWARN_UNREACHABLE_POP
+  }
+}
+
 void GeomFunction::findLineCircleIntersection( double cx, double cy, double radius,
     double x1, double y1, double x2, double y2,
-    double& xRes, double& yRes )
+    double &xRes, double &yRes )
 {
   double dx = x2 - x1;
   double dy = y2 - y1;
@@ -343,7 +397,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     // Two solutions.
     // Always use the 1st one
     // We only really have one solution here, as we know the line segment will start in the circle and end outside
-    double t = ( -B + sqrt( det ) ) / ( 2 * A );
+    double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }

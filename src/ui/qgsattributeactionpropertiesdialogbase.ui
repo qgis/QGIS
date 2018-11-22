@@ -7,13 +7,151 @@
     <x>0</x>
     <y>0</y>
     <width>702</width>
-    <height>547</height>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel1">
+     <property name="whatsThis">
+      <string>Enter the name of an action here. The name should be unique (QGIS will make it unique if necessary).</string>
+     </property>
+     <property name="text">
+      <string>Description</string>
+     </property>
+     <property name="buddy">
+      <cstring>mActionName</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QGroupBox" name="mActionGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Action Text</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Execute if notification matches</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mNotificationMessage">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If specified, listen to data source notification and performs action if notification message matches the specified value.&lt;/p&gt;&lt;p&gt;E.g. to match message beginning with &lt;span style=&quot; font-weight:600;&quot;&gt;whatever &lt;/span&gt;use &lt;span style=&quot; font-weight:600;&quot;&gt;^whatever&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QgsFieldExpressionWidget" name="mFieldExpression" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::TabFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mInsertFieldOrExpression">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Inserts the selected field into the action</string>
+          </property>
+          <property name="text">
+           <string>Insert</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="2" column="0">
+         <widget class="QgsCodeEditorPython" name="mActionText" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" alignment="Qt::AlignTop">
+         <widget class="QToolButton" name="mBrowseButton">
+          <property name="toolTip">
+           <string>Browse for action</string>
+          </property>
+          <property name="statusTip">
+           <string>Click to browse for an action</string>
+          </property>
+          <property name="whatsThis">
+           <string>Clicking the button will let you select an application to use as the action</string>
+          </property>
+          <property name="text">
+           <string>…</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The action text defines what happens if the action is triggered.&lt;br/&gt;The content depends on the type.&lt;br/&gt;For the type &lt;span style=&quot; font-style:italic;&quot;&gt;Python&lt;/span&gt; the content should be python code&lt;br/&gt;For other types it should be a file or application with optional parameters&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="mIsEnabledOnlyWhenEditable">
+        <property name="text">
+         <string>Enable only when editable</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Icon</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="1" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
@@ -41,99 +179,15 @@
      <item>
       <widget class="QToolButton" name="mChooseIconButton">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0" colspan="4">
-    <widget class="QGroupBox" name="mActionGroupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title">
-      <string>Action text</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QgsFieldExpressionWidget" name="mFieldExpression" native="true"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="mInsertFieldOrExpression">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Inserts the selected field into the action</string>
-          </property>
-          <property name="text">
-           <string>Insert</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="1" column="0">
-         <widget class="QgsCodeEditorPython" name="mActionText" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <widget class="QToolButton" name="mBrowseButton">
-           <property name="geometry">
-            <rect>
-             <x>630</x>
-             <y>0</y>
-             <width>30</width>
-             <height>32</height>
-            </rect>
-           </property>
-           <property name="toolTip">
-            <string>Browse for action</string>
-           </property>
-           <property name="statusTip">
-            <string>Click to browse for an action</string>
-           </property>
-           <property name="whatsThis">
-            <string>Clicking the button will let you select an application to use as the action</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The action text defines what happens if the action is triggered.&lt;br/&gt;The content depends on the type.&lt;br/&gt;For the type &lt;span style=&quot; font-style:italic;&quot;&gt;Python&lt;/span&gt; the content should be python code&lt;br/&gt;For other types it should be a file or application with optional parameters&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -142,40 +196,6 @@
      </property>
      <property name="buddy">
       <cstring>mActionType</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="textLabel1">
-     <property name="whatsThis">
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
-     </property>
-     <property name="text">
-      <string>Description</string>
-     </property>
-     <property name="buddy">
-      <cstring>mActionName</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Icon</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Short Name</string>
      </property>
     </widget>
    </item>
@@ -219,17 +239,19 @@
      </item>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QCheckBox" name="mCaptureOutput">
-     <property name="toolTip">
-      <string>Captures any output from the action</string>
+   <item row="4" column="0" colspan="3">
+    <widget class="QGroupBox" name="mActionScopesGroupBox">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
-     <property name="whatsThis">
-      <string>Captures the standard output or error generated by the action and displays it in a dialog box</string>
+     <property name="title">
+      <string>Action Scopes</string>
      </property>
-     <property name="text">
-      <string>Capture output</string>
-     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+     </layout>
     </widget>
    </item>
    <item row="1" column="1" colspan="3">
@@ -238,10 +260,17 @@
       <string>Enter the action name here</string>
      </property>
      <property name="whatsThis">
-      <string>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</string>
+      <string>Enter the name of an action here. The name should be unique (QGIS will make it unique if necessary).</string>
      </property>
      <property name="placeholderText">
       <string>Mandatory description</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Short Name</string>
      </property>
     </widget>
    </item>
@@ -252,10 +281,16 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QCheckBox" name="mShowInAttributeTable">
+   <item row="0" column="2">
+    <widget class="QCheckBox" name="mCaptureOutput">
+     <property name="toolTip">
+      <string>Captures any output from the action</string>
+     </property>
+     <property name="whatsThis">
+      <string>Captures the standard output or error generated by the action and displays it in a dialog box</string>
+     </property>
      <property name="text">
-      <string>Show in attribute table</string>
+      <string>Capture output</string>
      </property>
     </widget>
    </item>
@@ -275,7 +310,46 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mActionType</tabstop>
+  <tabstop>mCaptureOutput</tabstop>
+  <tabstop>mActionName</tabstop>
+  <tabstop>mShortTitle</tabstop>
+  <tabstop>mActionIcon</tabstop>
+  <tabstop>mChooseIconButton</tabstop>
+  <tabstop>mActionScopesGroupBox</tabstop>
+  <tabstop>mBrowseButton</tabstop>
+  <tabstop>mFieldExpression</tabstop>
+  <tabstop>mInsertFieldOrExpression</tabstop>
+ </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

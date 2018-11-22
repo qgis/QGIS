@@ -19,8 +19,9 @@
 #define QGSAUTHCERTIFICATEINFO_H
 
 #include <QFile>
+#include "qgis.h"
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QtCrypto>
 #include <QSslCertificate>
 #endif
@@ -29,8 +30,10 @@
 #include <QWidget>
 #include "ui_qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing detailed info on a certificate and its hierarchical trust chain
  */
 class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
@@ -38,28 +41,29 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     Q_OBJECT
 
   public:
-    explicit QgsAuthCertInfo( const QSslCertificate& cert,
+
+    //! Constructor for QgsAuthCertInfo
+    explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
-                              QWidget *parent = nullptr,
-                              const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthCertInfo();
+                              QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                              const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
 
   private slots:
-    void setupError( const QString& msg );
+    void setupError( const QString &msg );
 
     void currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
     void updateCurrentCert( QTreeWidgetItem *item );
 
-    void on_btnSaveTrust_clicked();
+    void btnSaveTrust_clicked();
 
     void currentPolicyIndexChanged( int indx );
 
-    void decorateCertTreeItem( const QSslCertificate& cert,
+    void decorateCertTreeItem( const QSslCertificate &cert,
                                QgsAuthCertUtils::CertTrustPolicy trustpolicy,
-                               QTreeWidgetItem * item = nullptr );
+                               QTreeWidgetItem *item = nullptr );
 
   private:
     enum DetailsType
@@ -82,7 +86,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     bool populateQcaCertCollection();
 
-    bool setQcaCertificate( const QSslCertificate& cert );
+    bool setQcaCertificate( const QSslCertificate &cert );
 
     bool populateCertChain();
 
@@ -92,10 +96,10 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void populateCertInfo();
 
-    QTreeWidgetItem *addGroupItem( QTreeWidgetItem *parent, const QString& group );
+    QTreeWidgetItem *addGroupItem( QTreeWidgetItem *parent, const QString &group );
 
-    void addFieldItem( QTreeWidgetItem *parent, const QString& field, const QString& value, FieldWidget wdgt = NoWidget ,
-                       const QColor& color = QColor() );
+    void addFieldItem( QTreeWidgetItem *parent, const QString &field, const QString &value, FieldWidget wdgt = NoWidget,
+                       const QColor &color = QColor() );
 
     void populateInfoGeneralSection();
 
@@ -119,22 +123,23 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
     QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy;
 
-    QTreeWidgetItem *mSecGeneral;
-    QTreeWidgetItem *mSecDetails;
-    QTreeWidgetItem *mSecPemText;
-    QTreeWidgetItem *mGrpSubj;
-    QTreeWidgetItem *mGrpIssu;
-    QTreeWidgetItem *mGrpCert;
-    QTreeWidgetItem *mGrpPkey;
-    QTreeWidgetItem *mGrpExts;
+    QTreeWidgetItem *mSecGeneral = nullptr;
+    QTreeWidgetItem *mSecDetails = nullptr;
+    QTreeWidgetItem *mSecPemText = nullptr;
+    QTreeWidgetItem *mGrpSubj = nullptr;
+    QTreeWidgetItem *mGrpIssu = nullptr;
+    QTreeWidgetItem *mGrpCert = nullptr;
+    QTreeWidgetItem *mGrpPkey = nullptr;
+    QTreeWidgetItem *mGrpExts = nullptr;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
  */
 class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
@@ -142,29 +147,30 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
-     * @param cert Certificate object
-     * @param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
-     * @param parent Parent widget
-     * @param connectionCAs List of hierarchical certificates in a connection
+     * \param cert Certificate object
+     * \param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
+     * \param parent Parent widget
+     * \param connectionCAs List of hierarchical certificates in a connection
      */
-    explicit QgsAuthCertInfoDialog( const QSslCertificate& cert,
+    explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
                                     bool manageCertTrust,
-                                    QWidget *parent = nullptr,
-                                    const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
-    ~QgsAuthCertInfoDialog();
+                                    QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                    const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
-    /** Get access to embedded info widget */
+    //! Gets access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
-    /** Whether the trust cache has been rebuilt
-     * @note This happens when a trust policy has been adjusted for any cert in the hierarchy
+    /**
+     * Whether the trust cache has been rebuilt
+     * \note This happens when a trust policy has been adjusted for any cert in the hierarchy
      */
     bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }
 
   private:
-    QgsAuthCertInfo *mCertInfoWdgt;
+    QgsAuthCertInfo *mCertInfoWdgt = nullptr;
 };
 
 #endif // QGSAUTHCERTIFICATEINFO_H

@@ -1,114 +1,199 @@
+/***************************************************************************
+    qgsfeaturelistmodel.h
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
-#include <qgsexpression.h>
+#include "qgsexpression.h"
+#include "qgis.h"
 
-#include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
 #include <QVariant>
 #include <QItemSelectionModel>
 
 #include "qgsfeaturemodel.h"
 #include "qgsfeature.h" // QgsFeatureId
+#include "qgsexpressioncontext.h"
+#include "qgsconditionalstyle.h"
+#include "qgis_gui.h"
 
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
-class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
+/**
+ * \ingroup gui
+ * \class QgsFeatureListModel
+ */
+class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
   public:
     struct FeatureInfo
     {
-    public:
-      FeatureInfo()
-          : isNew( false )
-          , isEdited( false )
-      {}
+      public:
 
-      bool isNew;
-      bool isEdited;
+        /**
+         * Constructor for FeatureInfo.
+         */
+        FeatureInfo() = default;
+
+        //! True if feature is a newly added feature.
+        bool isNew = false;
+
+        //! True if feature has been edited.
+        bool isEdited = false;
     };
 
     enum Role
     {
-      FeatureInfoRole = Qt::UserRole,
+      FeatureInfoRole = 0x1000, // Make sure no collisions with roles on QgsAttributeTableModel
       FeatureRole
     };
 
   public:
-    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = nullptr );
-    virtual ~QgsFeatureListModel();
 
-    virtual void setSourceModel( QgsAttributeTableFilterModel* sourceModel );
-    QgsVectorLayerCache* layerCache();
-    virtual QVariant data( const QModelIndex& index, int role ) const override;
-    virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
+    //! Constructor for QgsFeatureListModel
+    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
 
     /**
-     * @brief If true is specified, a NULL value will be injected
-     * @param injectNull state of null value injection
-     * @note added in 2.9
+     * Returns the vector layer cache which is being used to populate the model.
+     */
+    QgsVectorLayerCache *layerCache();
+
+    QVariant data( const QModelIndex &index, int role ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * \brief If true is specified, a NULL value will be injected
+     * \param injectNull state of null value injection
+     * \since QGIS 2.9
      */
     void setInjectNull( bool injectNull );
 
     /**
-     * @brief Returns the current state of null value injection
-     * @return If a NULL value is added
-     * @note added in 2.9
+     * \brief Returns the current state of null value injection
+     * \returns If a NULL value is added
+     * \since QGIS 2.9
      */
     bool injectNull();
 
-    QgsAttributeTableModel* masterModel();
+    QgsAttributeTableModel *masterModel();
 
     /**
-     *  @param  expression   A {@link QgsExpression} compatible string.
-     *  @return true if the expression could be set, false if there was a parse error.
-     *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
+     *  \param  expression   A QgsExpression compatible string.
+     *  \returns true if the expression could be set, false if there was a parse error.
+     *          If it fails, the old expression will still be applied. Call parserErrorString()
      *          for a meaningful error message.
      */
-    bool setDisplayExpression( const QString& expression );
+    bool setDisplayExpression( const QString &expression );
 
     /**
-     * @brief Returns a detailed message about errors while parsing a QgsExpression.
-     * @return A message containg information about the parser error.
+     * \brief Returns a detailed message about errors while parsing a QgsExpression.
+     * \returns A message containing information about the parser error.
      */
     QString parserErrorString();
 
     QString displayExpression() const;
-    bool featureByIndex( const QModelIndex& index, QgsFeature& feat );
-    QgsFeatureId idxToFid( const QModelIndex& index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
+    bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
 
-    virtual QModelIndex mapToSource( const QModelIndex& proxyIndex ) const override;
-    virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const override;
+    /**
+     * Returns the feature ID corresponding to an \a index from the model.
+     * \see fidToIdx()
+     */
+    QgsFeatureId idxToFid( const QModelIndex &index ) const;
 
-    virtual QModelIndex mapToMaster( const QModelIndex& proxyIndex ) const;
-    virtual QModelIndex mapFromMaster( const QModelIndex& sourceIndex ) const;
+    /**
+     * Returns the model index corresponding to a feature ID.
+     * \see idxToFid()
+     */
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
 
-    virtual QItemSelection mapSelectionFromMaster( const QItemSelection& selection ) const;
-    virtual QItemSelection mapSelectionToMaster( const QItemSelection& selection ) const;
+    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
+    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
 
-    virtual QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
-    virtual QModelIndex parent( const QModelIndex& child ) const override;
-    virtual int columnCount( const QModelIndex&parent = QModelIndex() ) const override;
-    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+    virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
+    virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
+
+    virtual QItemSelection mapSelectionFromMaster( const QItemSelection &selection ) const;
+    virtual QItemSelection mapSelectionToMaster( const QItemSelection &selection ) const;
+
+    QModelIndex parent( const QModelIndex &child ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     QModelIndex fidToIndex( QgsFeatureId fid ) override;
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
+    /**
+     * Sort this model by its display expression.
+     *
+     * \since QGIS 3.2
+     */
+    bool sortByDisplayExpression() const;
+
+    /**
+     * Sort this model by its display expression.
+     *
+     * \note Not compatible with injectNull, if sorting by display expression is enabled,
+     * injectNull will automatically turned off.
+     *
+     * \since QGIS 3.2
+     */
+    void setSortByDisplayExpression( bool sortByDisplayExpression );
+
   public slots:
-    void onBeginRemoveRows( const QModelIndex& parent, int first, int last );
-    void onEndRemoveRows( const QModelIndex& parent, int first, int last );
-    void onBeginInsertRows( const QModelIndex& parent, int first, int last );
-    void onEndInsertRows( const QModelIndex& parent, int first, int last );
+
+    /**
+     * Does nothing except for calling beginRemoveRows()
+     *
+     * \deprecated Use beginRemoveRows() instead
+     */
+    Q_DECL_DEPRECATED void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling endRemoveRows()
+     *
+     * \deprecated Use endRemoveRows() instead
+     */
+    Q_DECL_DEPRECATED void onEndRemoveRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling beginInsertRows()
+     *
+     * \deprecated use beginInsertRows() instead
+     */
+    Q_DECL_DEPRECATED void onBeginInsertRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling endInsertRows()
+     *
+     * \deprecated use endInsertRows() instead
+     */
+    Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
   private:
-    QgsExpression* mExpression;
-    QgsAttributeTableFilterModel* mFilterModel;
+    mutable QgsExpression mDisplayExpression;
+    QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QString mParserErrorString;
-    bool mInjectNull;
+    bool mInjectNull = false;
+    mutable QgsExpressionContext mExpressionContext;
+    mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
+    bool mSortByDisplayExpression = false;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

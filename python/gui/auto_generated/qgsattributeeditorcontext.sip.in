@@ -1,0 +1,244 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributeeditorcontext.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAttributeEditorContext
+{
+%Docstring
+This class contains context information for attribute editor widgets.
+It will be passed to embedded widgets whenever this occurs (e.g. when
+showing an embedded form due to relations)
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorcontext.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum Mode
+    {
+      SingleEditMode,
+      AddFeatureMode,
+      MultiEditMode,
+      SearchMode,
+      AggregateSearchMode,
+      IdentifyMode
+    };
+
+    enum RelationMode
+    {
+      Undefined,
+      Multiple,
+      Single
+    };
+
+    enum FormMode
+    {
+      Embed,
+      StandaloneDialog,
+      Popup
+    };
+
+    QgsAttributeEditorContext();
+%Docstring
+Constructor for QgsAttributeEditorContext
+%End
+
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode );
+
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode );
+
+    void setDistanceArea( const QgsDistanceArea &distanceArea );
+%Docstring
+Sets distance area object, ``distanceArea``, for area/length calculations
+
+.. seealso:: :py:func:`distanceArea`
+
+.. versionadded:: 2.2
+%End
+
+    const QgsDistanceArea &distanceArea() const;
+%Docstring
+Returns the distance area object used for area/length calculations.
+
+.. seealso:: :py:func:`setDistanceArea`
+
+.. versionadded:: 2.2
+%End
+
+    void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets the associated map canvas, ``mapCanvas``, (e.g. to zoom to related features).
+
+.. seealso:: :py:func:`mapCanvas`
+
+.. versionadded:: 3.2
+%End
+
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the associated map canvas (e.g. to zoom to related features).
+
+.. seealso:: :py:func:`setMapCanvas`
+
+.. versionadded:: 3.2
+%End
+
+    void setVectorLayerTools( QgsVectorLayerTools *vlTools );
+%Docstring
+Sets the associated vector layer tools.
+
+:param vlTools: vector layer tools
+
+.. seealso:: :py:func:`vectorLayerTools`
+
+.. versionadded:: 2.2
+%End
+
+    const QgsVectorLayerTools *vectorLayerTools() const;
+%Docstring
+Returns the associated vector layer tools.
+
+.. seealso:: :py:func:`setVectorLayerTools`
+
+.. versionadded:: 2.2
+%End
+
+    void setRelation( const QgsRelation &relation, RelationMode mode );
+%Docstring
+Set attribute relation and mode
+
+:param relation: relation
+:param mode: relation mode
+
+.. seealso:: :py:func:`relation`
+
+.. seealso:: :py:func:`relationMode`
+
+.. versionadded:: 2.6
+%End
+
+    const QgsRelation &relation() const;
+%Docstring
+Returns the attribute relation.
+
+.. seealso:: :py:func:`setRelation`
+
+.. seealso:: :py:func:`relationMode`
+
+.. versionadded:: 2.6
+%End
+
+    RelationMode relationMode() const;
+%Docstring
+Returns the attribute relation mode.
+
+.. seealso:: :py:func:`setRelation`
+
+.. seealso:: :py:func:`relation`
+
+.. versionadded:: 2.6
+%End
+
+    FormMode formMode() const;
+%Docstring
+Returns the form mode.
+
+.. seealso:: :py:func:`setFormMode`
+%End
+
+    void setFormMode( FormMode mode );
+%Docstring
+Sets the form mode.
+
+:param mode: form mode
+
+.. seealso:: :py:func:`formMode`
+
+.. versionadded:: 2.16
+%End
+
+    bool allowCustomUi() const;
+%Docstring
+Returns true if the attribute editor should permit use of custom UI forms.
+
+.. seealso:: :py:func:`setAllowCustomUi`
+
+.. versionadded:: 2.16
+%End
+
+    void setAllowCustomUi( bool allow );
+%Docstring
+Sets whether the attribute editor should permit use of custom UI forms.
+
+:param allow: set to true to allow custom UI forms, or false to disable them and use default generated
+              QGIS forms
+
+.. seealso:: :py:func:`allowCustomUi`
+
+.. versionadded:: 2.16
+%End
+
+    const QgsAttributeEditorContext *parentContext() const;
+
+    QgsFeature formFeature() const;
+%Docstring
+Returns current feature from the currently edited form or table row
+
+.. seealso:: :py:func:`setFormFeature`
+
+.. versionadded:: 3.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Set current ``feature`` for the currently edited form or table row
+
+.. seealso:: :py:func:`formFeature`
+
+.. versionadded:: 3.2
+%End
+
+    Mode attributeFormMode() const;
+%Docstring
+Returns current attributeFormMode
+
+.. versionadded:: 3.4
+%End
+
+    void setAttributeFormMode( const Mode &attributeFormMode );
+%Docstring
+Set ``attributeFormMode`` for the edited form
+
+.. versionadded:: 3.4
+%End
+
+    QString attributeFormModeString() const;
+%Docstring
+Returns given ``attributeFormMode`` as string
+
+.. versionadded:: 3.4
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributeeditorcontext.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

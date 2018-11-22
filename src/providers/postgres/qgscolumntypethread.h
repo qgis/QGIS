@@ -28,24 +28,24 @@ class QgsGeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsGeomColumnTypeThread( QString connName, bool useEstimatedMetaData, bool allowGeometrylessTables );
+    QgsGeomColumnTypeThread( const QString &connName, bool useEstimatedMetaData, bool allowGeometrylessTables );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run() override;
+    void run() override;
 
   signals:
-    void setLayerType( const QgsPostgresLayerProperty& layerProperty );
+    void setLayerType( const QgsPostgresLayerProperty &layerProperty );
     void progress( int, int );
-    void progressMessage( const QString& );
+    void progressMessage( const QString & );
 
   public slots:
     void stop();
 
   private:
-    QgsGeomColumnTypeThread() {}
+    QgsGeomColumnTypeThread() = default;
 
-    QgsPostgresConn *mConn;
+    QgsPostgresConn *mConn = nullptr;
     QString mName;
     bool mUseEstimatedMetadata;
     bool mAllowGeometrylessTables;

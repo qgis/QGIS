@@ -27,67 +27,90 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsFeatureRequest,
+                       QgsProcessingFeatureSource)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class RandomExtract(GeoAlgorithm):
+class RandomExtract(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random extract')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def group(self):
+        return self.tr('Vector selection')
 
+    def groupId(self):
+        return 'vectorselection'
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.methods, 0))
-        self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Number/percentage of selected features'), 0, None, 10))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random)')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Method'), self.methods, False, 0))
 
-    def processAlgorithm(self, progress):
-        filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
-        method = self.getParameterValue(self.METHOD)
+        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
+                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Integer,
+                                                       10, False, 0.0))
 
-        features = vector.features(layer)
-        featureCount = len(features)
-        value = int(self.getParameterValue(self.NUMBER))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random)')))
+
+    def name(self):
+        return 'randomextract'
+
+    def displayName(self):
+        return self.tr('Random extract')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        featureCount = source.featureCount()
+        value = self.parameterAsInt(parameters, self.NUMBER, context)
 
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Selected number is greater than feature count. '
                             'Choose a lower value and try again.'))
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
             value = int(round(value / 100.0000, 4) * featureCount)
 
-        selran = random.sample(xrange(featureCount), value)
+        selran = random.sample(list(range(featureCount)), value)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), layer.wkbType(), layer.crs())
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        total = 100.0 / featureCount
+        total = 100.0 / featureCount if featureCount else 1
         for i, feat in enumerate(features):
+            if feedback.isCanceled():
+                break
             if i in selran:
-                writer.addFeature(feat)
-            progress.setPercentage(int(i * total))
-        del writer
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            feedback.setProgress(int(i * total))
+        return {self.OUTPUT: dest_id}

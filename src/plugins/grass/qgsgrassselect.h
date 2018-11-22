@@ -17,7 +17,8 @@
 #define QGSGRASSSELECT_H
 #include "ui_qgsgrassselectbase.h"
 
-/** \class QgsGrassSelect
+/**
+ * \class QgsGrassSelect
  * \brief Dialog to select GRASS layer.
  *
  */
@@ -27,18 +28,16 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
 
   public:
     //! Constructor
-    //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
-    QgsGrassSelect( QWidget *parent, int type = VECTOR );
-    //! Destructor
-    ~QgsGrassSelect();
+    //QgsGrassSelect(QWidget *parent = nullptr, int type = VECTOR );
+    QgsGrassSelect( QWidget *parent, int type = Vector );
 
-    enum TYPE
+    enum Type
     {
-      MAPSET,
-      VECTOR,
-      RASTER,
-      GROUP, // group of rasters, used in selectedType
-      MAPCALC // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
+      MapSet,
+      Vector,
+      Raster,
+      Group, // group of rasters, used in selectedType
+      MapCalc // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
     };
 
     QString  gisdbase;
@@ -52,34 +51,34 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     void accept() override;
 
     //! Open dialog for Gisdbase
-    void on_GisdbaseBrowse_clicked();
+    void GisdbaseBrowse_clicked();
 
     //! Reset combobox of locations for current Gisdbase
-    void on_egisdbase_textChanged() { setLocations(); }
+    void egisdbase_textChanged() { setLocations(); }
     void setLocations();
 
     //! Reset combobox of mapsets for current Location
-    void on_elocation_activated() { setMapsets(); }
+    void elocation_activated() { setMapsets(); }
     void setMapsets();
 
     //! Reset combobox of maps for current Gisdbase + Location
-    void on_emapset_activated() { setMaps(); }
+    void emapset_activated() { setMaps(); }
     void setMaps();
 
     //! Reset combobox of layers for current Gisdbase + Location + Map
-    void on_emap_activated() { setLayers(); }
+    void emap_activated() { setLayers(); }
     void setLayers();
 
   private:
     int type; // map type (mapset element)
-    static bool first; // called first time
-    static QString lastGisdbase; // Last selected values
-    static QString lastLocation;
-    static QString lastMapset;
-    static QString lastVectorMap;
-    static QString lastRasterMap;
-    static QString lastLayer; // vector layer
-    static QString lastMapcalc;
+    static bool sFirst; // called first time
+    static QString sLastGisdbase; // Last selected values
+    static QString sLastLocation;
+    static QString sLastMapset;
+    static QString sLastVectorMap;
+    static QString sLastRasterMap;
+    static QString sLastLayer; // vector layer
+    static QString sLastMapcalc;
 };
 
 

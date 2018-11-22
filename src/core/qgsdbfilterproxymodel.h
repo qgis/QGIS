@@ -19,23 +19,36 @@
 #define QGSDBFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include "qgis.h"
 
-/** A class that implements a custom filter and can be used
- as a proxy for QgsDbTableModel*/
-class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
+#include "qgis_core.h"
+
+/**
+ * \class QgsDatabaseFilterProxyModel
+ * \ingroup core
+ * A class that implements a custom filter and can be used
+ * as a proxy for QgsDbTableModel
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-    QgsDbFilterProxyModel( QObject* parent = nullptr );
-    ~QgsDbFilterProxyModel();
-    /** Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
-    void _setFilterWildcard( const QString& pattern );
-    /** Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
-    void _setFilterRegExp( const QString& pattern );
+
+    /**
+     * Constructor for QgsDatabaseFilterProxyModel.
+     */
+    QgsDatabaseFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    //! Calls QSortFilterProxyModel::setFilterWildcard and triggers update
+    void _setFilterWildcard( const QString &pattern );
+
+    //! Calls QSortFilterProxyModel::setFilterRegExp and triggers update
+    void _setFilterRegExp( const QString &pattern );
 
   protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const override;
+    bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
 };
 
 #endif

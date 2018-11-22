@@ -22,8 +22,9 @@
 #include <QObject>
 #include <QPair>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
+#include "qgis_grass_lib.h"
 
 extern "C"
 {
@@ -34,12 +35,7 @@ extern "C"
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
 class QgsGrassVectorMap;
@@ -54,26 +50,29 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     bool isValid() const { return mValid; }
     QgsGrassVectorMap *map() { return mMap; }
 
-    /** Category index index */
+    //! Category index index
     int cidxFieldIndex();
 
-    /** Current number of cats in cat index, changing during editing */
+    //! Current number of cats in cat index, changing during editing
     int cidxFieldNumCats();
 
-    /** Original fields before editing started + topo field if edited.
+    /**
+     * Original fields before editing started + topo field if edited.
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields() */
-    QgsFields & fields() { return mFields; }
+    QgsFields &fields() { return mFields; }
 
-    /** Current fields, as modified during editing, it contains cat field, without topo field.
+    /**
+     * Current fields, as modified during editing, it contains cat field, without topo field.
      *  This fields are used by layers which are not editied to reflect current state of editing. */
-    QgsFields & tableFields() { return mTableFields; }
+    QgsFields &tableFields() { return mTableFields; }
 
-    static QStringList fieldNames( QgsFields & fields );
+    static QStringList fieldNames( const QgsFields &fields );
 
-    QMap<int, QList<QVariant> > & attributes() { return mAttributes; }
+    QMap<int, QList<QVariant> > &attributes() { return mAttributes; }
 
-    /** Get attribute for index corresponding to current fields(),
+    /**
+     * Gets attribute for index corresponding to current fields(),
      * if there is no table, returns cat */
     QVariant attribute( int cat, int index );
 
@@ -86,13 +85,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void addUser();
     void removeUser();
 
-    /** Load attributes from the map. Old sources are released. */
+    //! Load attributes from the map. Old sources are released.
     void load();
 
-    /** Clear all cached data */
+    //! Clear all cached data
     void clear();
 
-    /** Decrease number of users and clear if no more users */
+    //! Decrease number of users and clear if no more users
     void close();
 
     void startEdit();
@@ -101,62 +100,72 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     //------------------------------- Database utils ---------------------------------
     void setMapset();
 
-    /** Execute SQL statement
-     *   @param sql */
+    /**
+     * Execute SQL statement
+     *   \param sql */
     void executeSql( const QString &sql, QString &error );
 
-    /** Update attributes
-     *   @param cat
-     *   @param index ields  index */
-    void changeAttributeValue( int cat, QgsField field, QVariant value, QString &error );
+    /**
+     * Update attributes
+     *   \param cat
+     *   \param index ields  index */
+    void changeAttributeValue( int cat, const QgsField &field, const QVariant &value, QString &error );
 
-    /** Insert new attributes to the table (it does not check if attributes already exists)
-     *   @param cat */
+    /**
+     * Insert new attributes to the table (it does not check if attributes already exists)
+     *   \param cat */
     void insertAttributes( int cat, const QgsFeature &feature, QString &error );
 
-    /** Restore previously deleted table record using data from mAttributes, if exists.
+    /**
+     * Restore previously deleted table record using data from mAttributes, if exists.
      *  If there the cat is not in mAttributes, nothing is inserted (to keep previous state).
-     *   @param cat */
+     *   \param cat */
     void reinsertAttributes( int cat, QString &error );
 
-    /** Update existing record by values from feature.
-     *  @param cat
-     *  @param nullValues override all values, if false, only non empty values are used for update
+    /**
+     * Update existing record by values from feature.
+     *  \param cat
+     *  \param nullValues override all values, if false, only non empty values are used for update
      */
     void updateAttributes( int cat, QgsFeature &feature, QString &error, bool nullValues = false );
 
-    /** Delete attributes from the table
-     *   @param cat
+    /**
+     * Delete attributes from the table
+     *   \param cat
      */
     void deleteAttribute( int cat, QString &error );
 
-    /** Check if a database row exists
-     *   @param cat
-     *   @param error set to error if happens
-     *   @return true if cat is orphan
+    /**
+     * Check if a database row exists
+     *   \param cat
+     *   \param error set to error if happens
+     *   \returns true if cat is orphan
      */
     bool recordExists( int cat, QString &error );
 
-    /** Check if a database row exists and it is orphan (no more lines with that category)
-     *   @param cat
-     *   @param error set to error if happens
-     *   @return true if cat is orphan
+    /**
+     * Check if a database row exists and it is orphan (no more lines with that category)
+     *   \param cat
+     *   \param error set to error if happens
+     *   \returns true if cat is orphan
      */
     bool isOrphan( int cat, QString &error );
 
-    /** Create table and link vector to this table
-     * @param fields fields to be created without cat (id) field
+    /**
+     * Create table and link vector to this table
+     * \param fields fields to be created without cat (id) field
      */
     void createTable( const QgsFields &fields, QString &error );
 
-    /** Add column to table
-     *   @param field
+    /**
+     * Add column to table
+     *   \param field
      */
     void addColumn( const QgsField &field, QString &error );
 
     void deleteColumn( const QgsField &field, QString &error );
 
-    /** Insert records for all existing categories to the table */
+    //! Insert records for all existing categories to the table
     void insertCats( QString &error );
 
     // update fields to real state
@@ -166,14 +175,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void printCachedAttributes();
 
   private:
-    QString quotedValue( QVariant value );
-    dbDriver * openDriver( QString &error );
+    QString quotedValue( const QVariant &value );
+    dbDriver *openDriver( QString &error );
     void addTopoField( QgsFields &fields );
     int mField;
     bool mValid;
-    QgsGrassVectorMap *mMap;
-    struct field_info *mFieldInfo;
-    dbDriver *mDriver;
+    QgsGrassVectorMap *mMap = nullptr;
+    struct field_info *mFieldInfo = nullptr;
+    dbDriver *mDriver = nullptr;
 
     bool mHasTable;
     // index of key column

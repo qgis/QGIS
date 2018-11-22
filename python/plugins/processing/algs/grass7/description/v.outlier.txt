@@ -1,11 +1,12 @@
 v.outlier
 Removes outliers from vector point data.
 Vector (v.*)
-ParameterVector|input|Input vector layer|-1|False
-ParameterNumber|ew_step|Interpolation spline step value in east direction|None|None|10
-ParameterNumber|ns_step|Interpolation spline step value in north direction|None|None|10
-ParameterNumber|lambda_i|Tykhonov regularization weight|None|None|0.1
-ParameterNumber|threshold|Threshold for the outliers|None|None|50
-ParameterBoolean|-e|Estimate point density and distance|False
-OutputVector|output|Layer without outliers
-OutputVector|outlier|Outliers
+QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
+QgsProcessingParameterNumber|ew_step|Interpolation spline step value in east direction|QgsProcessingParameterNumber.Double|10.0|True|None|None
+QgsProcessingParameterNumber|ns_step|Interpolation spline step value in north direction|QgsProcessingParameterNumber.Double|10.0|True|None|None
+QgsProcessingParameterNumber|lambda|Tykhonov regularization weight|QgsProcessingParameterNumber.Double|0.1|True|None|None
+QgsProcessingParameterNumber|threshold|Threshold for the outliers|QgsProcessingParameterNumber.Double|50.0|True|None|None
+QgsProcessingParameterEnum|filter|Filtering option|both;positive;negative|False|0|True
+QgsProcessingParameterBoolean|-e|Estimate point density and distance|False
+QgsProcessingParameterVectorDestination|output|Layer without outliers
+QgsProcessingParameterVectorDestination|outlier|Outliers

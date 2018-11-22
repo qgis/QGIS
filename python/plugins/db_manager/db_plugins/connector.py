@@ -19,13 +19,15 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import object
 
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 
 from .plugin import DbError, ConnectionError
 
 
-class DBConnector:
+class DBConnector(object):
 
     def __init__(self, uri):
         self.connection = None
@@ -38,14 +40,23 @@ class DBConnector:
         self.connection = None
 
     def uri(self):
-        return QgsDataSourceURI(self._uri.uri(False))
+        return QgsDataSourceUri(self._uri.uri(False))
+
+    def cancel(self):
+        pass
 
     def publicUri(self):
-        publicUri = QgsDataSourceURI.removePassword(self._uri.uri(False))
-        return QgsDataSourceURI(publicUri)
+        publicUri = QgsDataSourceUri.removePassword(self._uri.uri(False))
+        return QgsDataSourceUri(publicUri)
 
     def hasSpatialSupport(self):
         return False
+
+    def canAddGeometryColumn(self, table):
+        return self.hasSpatialSupport()
+
+    def canAddSpatialIndex(self, table):
+        return self.hasSpatialSupport()
 
     def hasRasterSupport(self):
         return False
@@ -72,7 +83,7 @@ class DBConnector:
         if cursor is None:
             cursor = self._get_cursor()
         try:
-            cursor.execute(unicode(sql))
+            cursor.execute(sql)
 
         except self.connection_error_types() as e:
             raise ConnectionError(e)
@@ -92,7 +103,7 @@ class DBConnector:
     def _get_cursor(self, name=None):
         try:
             if name is not None:
-                name = unicode(name).encode('ascii', 'replace').replace('?', "_")
+                name = str(name).encode('ascii', 'replace').replace('?', "_")
                 self._last_cursor_named_id = 0 if not hasattr(self,
                                                               '_last_cursor_named_id') else self._last_cursor_named_id + 1
                 return self.connection.cursor("%s_%d" % (name, self._last_cursor_named_id))
@@ -161,8 +172,6 @@ class DBConnector:
             raise ConnectionError(e)
 
         except self.execution_error_types() as e:
-            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-            self._rollback()
             raise DbError(e)
 
     def _get_cursor_columns(self, c):
@@ -175,7 +184,7 @@ class DBConnector:
 
     @classmethod
     def quoteId(self, identifier):
-        if hasattr(identifier, '__iter__'):
+        if hasattr(identifier, '__iter__') and not isinstance(identifier, str):
             ids = list()
             for i in identifier:
                 if i is None or i == "":
@@ -183,14 +192,14 @@ class DBConnector:
                 ids.append(self.quoteId(i))
             return u'.'.join(ids)
 
-        identifier = unicode(
-            identifier) if identifier is not None else unicode()  # make sure it's python unicode string
+        identifier = str(
+            identifier) if identifier is not None else str()  # make sure it's python unicode string
         return u'"%s"' % identifier.replace('"', '""')
 
     @classmethod
     def quoteString(self, txt):
         """ make the string safe - replace ' with '' """
-        if hasattr(txt, '__iter__'):
+        if hasattr(txt, '__iter__') and not isinstance(txt, str):
             txts = list()
             for i in txt:
                 if i is None:
@@ -198,14 +207,16 @@ class DBConnector:
                 txts.append(self.quoteString(i))
             return u'.'.join(txts)
 
-        txt = unicode(txt) if txt is not None else unicode()  # make sure it's python unicode string
+        txt = str(txt) if txt is not None else str()  # make sure it's python unicode string
         return u"'%s'" % txt.replace("'", "''")
 
     @classmethod
     def getSchemaTableName(self, table):
-        if not hasattr(table, '__iter__'):
+        if not hasattr(table, '__iter__') and not isinstance(table, str):
             return (None, table)
-        elif len(table) < 2:
+        if isinstance(table, str):
+            table = table.split('.')
+        if len(table) < 2:
             return (None, table[0])
         else:
             return (table[0], table[1])

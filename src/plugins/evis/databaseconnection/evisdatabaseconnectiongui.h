@@ -27,11 +27,11 @@
 #ifndef eVisDatabaseConnectionGUI_H
 #define eVisDatabaseConnectionGUI_H
 
-#include <ui_evisdatabaseconnectionguibase.h>
+#include "ui_evisdatabaseconnectionguibase.h"
 #include "evisdatabaseconnection.h"
 #include "evisdatabaselayerfieldselectiongui.h"
 #include "evisquerydefinition.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QTemporaryFile>
 #include <QDialog>
@@ -40,7 +40,7 @@
 * \class eVisDatabaseConnectionGui
 * \brief GUI class for database connections
 * This class provides the GUI component for setting up a database connection and making a sql query.
-* This class effectively provides access to a wide variety of database types. Upon a sucessful query,
+* This class effectively provides access to a wide variety of database types. Upon a successful query,
 * the results are stored in a tabdelimited file the loaded into qgis using the demlimitedtext data provider
 */
 class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnectionGuiBase
@@ -49,42 +49,41 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     Q_OBJECT
 
   public:
-    /** \brief Constructor */
-    eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
+    //! \brief Constructor
+    eVisDatabaseConnectionGui( QList<QTemporaryFile *> *, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
-    /** \brief Destructor */
-    ~eVisDatabaseConnectionGui();
+    ~eVisDatabaseConnectionGui() override;
 
   private:
-    /** \brief Pointer to a database connection */
-    eVisDatabaseConnection* mDatabaseConnection;
+    //! \brief Pointer to a database connection
+    eVisDatabaseConnection *mDatabaseConnection = nullptr;
 
-    /** \brief Pointer to a temporary file which will hold the results of our query */
-    QList<QTemporaryFile*>* mTempOutputFileList;
+    //! \brief Pointer to a temporary file which will hold the results of our query
+    QList<QTemporaryFile *> *mTempOutputFileList;
 
-    /** \brief Pointer to another GUI component that will select which fields contain x, y coordinates */
-    eVisDatabaseLayerFieldSelectionGui* mDatabaseLayerFieldSelector;
+    //! \brief Pointer to another GUI component that will select which fields contain x, y coordinates
+    eVisDatabaseLayerFieldSelectionGui *mDatabaseLayerFieldSelector = nullptr;
 
-    /** \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file */
-    QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;
+    //! \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file
+    QMap<int, eVisQueryDefinition> *mQueryDefinitionMap;
 
   private slots:
-    /** \brief Slot called after the user selects the x, y fields in the field selection gui component */
-    void drawNewVectorLayer( const QString&, const QString&, const QString& );
+    //! \brief Slot called after the user selects the x, y fields in the field selection gui component
+    void drawNewVectorLayer( const QString &, const QString &, const QString & );
 
-    void on_buttonBox_accepted();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void buttonBox_accepted();
+    void showHelp();
 
-    void on_cboxDatabaseType_currentIndexChanged( int );
-    void on_cboxPredefinedQueryList_currentIndexChanged( int );
-    void on_pbtnConnect_clicked();
-    void on_pbtnLoadPredefinedQueries_clicked();
-    void on_pbtnOpenFile_clicked();
-    void on_pbtnRunQuery_clicked();
+    void cboxDatabaseType_currentIndexChanged( int );
+    void cboxPredefinedQueryList_currentIndexChanged( int );
+    void pbtnConnect_clicked();
+    void pbtnLoadPredefinedQueries_clicked();
+    void pbtnOpenFile_clicked();
+    void pbtnRunQuery_clicked();
 
   signals:
-    /** \brief signal emitted by the drawNewVectorLayer slot */
-    void drawVectorLayer( const QString&, const QString&, const QString& );
+    //! \brief signal emitted by the drawNewVectorLayer slot
+    void drawVectorLayer( const QString &, const QString &, const QString & );
 };
 
 #endif

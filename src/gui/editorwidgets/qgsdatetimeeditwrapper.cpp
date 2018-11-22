@@ -17,6 +17,9 @@
 #include "qgsdatetimeeditfactory.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsdatetimeedit.h"
+#include "qgsdatetimeeditconfig.h"
+#include "qgsdatetimefieldformatter.h"
 
 #include <QDateTimeEdit>
 #include <QDateEdit>
@@ -24,23 +27,22 @@
 #include <QTextCharFormat>
 #include <QCalendarWidget>
 
-QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mQDateTimeEdit( nullptr )
-    , mQgsDateTimeEdit( nullptr )
+QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+
 {
 }
 
 QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
 {
-  QgsDateTimeEdit* widget = new QgsDateTimeEdit( parent );
+  QgsDateTimeEdit *widget = new QgsDateTimeEdit( parent );
   widget->setDateTime( QDateTime::currentDateTime() );
   return widget;
 }
 
 void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 {
-  QgsDateTimeEdit* qgsEditor = dynamic_cast<QgsDateTimeEdit*>( editor );
+  QgsDateTimeEdit *qgsEditor = dynamic_cast<QgsDateTimeEdit *>( editor );
   if ( qgsEditor )
   {
     mQgsDateTimeEdit = qgsEditor;
@@ -48,7 +50,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   // assign the Qt editor also if the QGIS editor has been previously assigned
   // this avoids testing each time which widget to use
   // the QGIS editor must be used for non-virtual methods (dateTime, setDateTime)
-  QDateTimeEdit* qtEditor = dynamic_cast<QDateTimeEdit*>( editor );
+  QDateTimeEdit *qtEditor = dynamic_cast<QDateTimeEdit *>( editor );
   if ( qtEditor )
   {
     mQDateTimeEdit = qtEditor;
@@ -56,17 +58,20 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 
   if ( !mQDateTimeEdit )
   {
-    QgsDebugMsg( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." );
-    QgsMessageLog::logMessage( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit.", "UI forms", QgsMessageLog::WARNING );
+    QgsDebugMsg( QStringLiteral( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ) );
+    QgsMessageLog::logMessage( tr( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ), tr( "UI forms" ), Qgis::Warning );
     return;
   }
 
-  const QString displayFormat = config( "display_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
+  const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
   mQDateTimeEdit->setDisplayFormat( displayFormat );
 
-  const bool calendar = config( "calendar_popup", false ).toBool();
-  mQDateTimeEdit->setCalendarPopup( calendar );
-  if ( calendar )
+  const bool calendar = config( QStringLiteral( "calendar_popup" ), true ).toBool();
+  if ( calendar != mQDateTimeEdit->calendarPopup() )
+  {
+    mQDateTimeEdit->setCalendarPopup( calendar );
+  }
+  if ( calendar && mQDateTimeEdit->calendarWidget() )
   {
     // highlight today's date
     QTextCharFormat todayFormat;
@@ -74,25 +79,25 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
     mQDateTimeEdit->calendarWidget()->setDateTextFormat( QDate::currentDate(), todayFormat );
   }
 
-  const bool allowNull = config( "allow_null", true ).toBool();
+  const bool allowNull = config( QStringLiteral( "allow_null" ), true ).toBool();
   if ( mQgsDateTimeEdit )
   {
     mQgsDateTimeEdit->setAllowNull( allowNull );
   }
   else
   {
-    QgsMessageLog::instance()->logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
-                                           "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
-                                           "field widgets" );
+    QgsApplication::messageLog()->logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
+        "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
+        tr( "field widgets" ) );
   }
 
   if ( mQgsDateTimeEdit )
   {
-    connect( mQgsDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mQgsDateTimeEdit, &QgsDateTimeEdit::valueChanged, this, &QgsDateTimeEditWrapper::dateTimeChanged );
   }
   else
   {
-    connect( mQDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this,  SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mQDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this,  &QgsDateTimeEditWrapper::dateTimeChanged );
   }
 }
 
@@ -101,10 +106,45 @@ bool QgsDateTimeEditWrapper::valid() const
   return mQgsDateTimeEdit || mQDateTimeEdit;
 }
 
-void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
+void QgsDateTimeEditWrapper::showIndeterminateState()
 {
-  const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
-  emit valueChanged( dateTime.toString( fieldFormat ) );
+  if ( mQgsDateTimeEdit )
+    mQgsDateTimeEdit->setEmpty();
+}
+
+void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
+{
+  switch ( field().type() )
+  {
+    case QVariant::DateTime:
+      emit valueChanged( dateTime );
+      break;
+    case QVariant::Date:
+      emit valueChanged( dateTime.date() );
+      break;
+    case QVariant::Time:
+      emit valueChanged( dateTime.time() );
+      break;
+    default:
+      if ( !dateTime.isValid() || dateTime.isNull() )
+      {
+        emit valueChanged( QVariant( field().type() ) );
+      }
+      else
+      {
+        const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+        const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+        if ( fieldIsoFormat )
+        {
+          emit valueChanged( dateTime.toString( Qt::ISODate ) );
+        }
+        else
+        {
+          emit valueChanged( dateTime.toString( fieldFormat ) );
+        }
+      }
+      break;
+  }
 }
 
 QVariant QgsDateTimeEditWrapper::value() const
@@ -112,28 +152,41 @@ QVariant QgsDateTimeEditWrapper::value() const
   if ( !mQDateTimeEdit )
     return QVariant( field().type() );
 
-  if ( field().type() == QVariant::DateTime )
-  {
-    if ( mQgsDateTimeEdit )
-    {
-      return mQgsDateTimeEdit->dateTime();
-    }
-    else
-    {
-      return mQDateTimeEdit->dateTime();
-    }
-  }
-
-  const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
-
+  QDateTime dateTime;
   if ( mQgsDateTimeEdit )
   {
-    return mQgsDateTimeEdit->dateTime().toString( fieldFormat );
+    dateTime = mQgsDateTimeEdit->dateTime();
   }
   else
   {
-    return mQDateTimeEdit->dateTime().toString( fieldFormat );
+    dateTime = mQDateTimeEdit->dateTime();
   }
+
+  switch ( field().type() )
+  {
+    case QVariant::DateTime:
+      return dateTime;
+      break;
+    case QVariant::Date:
+      return dateTime.date();
+      break;
+    case QVariant::Time:
+      return dateTime.time();
+      break;
+    default:
+      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+      if ( fieldIsoFormat )
+      {
+        return dateTime.toString( Qt::ISODate );
+      }
+      else
+      {
+        return dateTime.toString( fieldFormat );
+      }
+      break;
+  }
+  return QVariant(); // avoid warnings
 }
 
 void QgsDateTimeEditWrapper::setValue( const QVariant &value )
@@ -141,16 +194,35 @@ void QgsDateTimeEditWrapper::setValue( const QVariant &value )
   if ( !mQDateTimeEdit )
     return;
 
-  const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
-  const QDateTime date = field().type() == QVariant::DateTime ? value.toDateTime() : QDateTime::fromString( value.toString(), fieldFormat );
+  QDateTime dateTime;
+  switch ( field().type() )
+  {
+    case QVariant::DateTime:
+    case QVariant::Date:
+    case QVariant::Time:
+      dateTime = value.toDateTime();
+      break;
+    default:
+      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+      if ( fieldIsoFormat )
+      {
+        dateTime = QDateTime::fromString( value.toString(), Qt::ISODate );
+      }
+      else
+      {
+        dateTime = QDateTime::fromString( value.toString(), fieldFormat );
+      }
+      break;
+  }
 
   if ( mQgsDateTimeEdit )
   {
-    mQgsDateTimeEdit->setDateTime( date );
+    mQgsDateTimeEdit->setDateTime( dateTime );
   }
   else
   {
-    mQDateTimeEdit->setDateTime( date );
+    mQDateTimeEdit->setDateTime( dateTime );
   }
 }
 

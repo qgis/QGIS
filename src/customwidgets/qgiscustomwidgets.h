@@ -18,31 +18,25 @@
 
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDesignerCustomWidgetCollectionInterface>
-#else
 #include <QtUiPlugin/QDesignerCustomWidgetCollectionInterface>
-#endif
 #include <qplugin.h>
 
 
 class QgisCustomWidgets : public QObject, public QDesignerCustomWidgetCollectionInterface
 {
     Q_OBJECT
-#if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA( IID "org.qgis.customwidgets" )
-#endif
     Q_INTERFACES( QDesignerCustomWidgetCollectionInterface )
 
   public:
-    explicit QgisCustomWidgets( QObject *parent = 0 );
+    explicit QgisCustomWidgets( QObject *parent = nullptr );
 
-    virtual QList<QDesignerCustomWidgetInterface*> customWidgets() const override;
+    QList<QDesignerCustomWidgetInterface *> customWidgets() const override;
 
     static QString groupName() { return tr( "QGIS custom widgets" ); }
 
   private:
-    QList<QDesignerCustomWidgetInterface*> mWidgets;
+    QList<QDesignerCustomWidgetInterface *> mWidgets;
 };
 
 #endif // QGISCUSTOMWIDGETS_H

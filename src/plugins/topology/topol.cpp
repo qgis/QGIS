@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          begin                : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include <qgsmaplayer.h>
-#include <qgsapplication.h>
-#include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsmaplayer.h"
+#include "qgsapplication.h"
+#include "qgisinterface.h"
+#include "qgsguiutils.h"
 
-// Qt4 Related Includes
+// Qt Related Includes
 #include <QAction>
 #include <QToolBar>
 #include <QFile>
 #include <QMessageBox>
+#include <QMenu>
 
 #include "topol.h"
 #include "checkDock.h"
@@ -34,8 +35,8 @@ static const QString sName = QObject::tr( "Topology Checker" );
 static const QString sDescription = QObject::tr( "A Plugin for finding topological errors in vector layers" );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/topology/mActionTopologyChecker.svg";
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyChecker.svg" );
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -46,18 +47,13 @@ static const QString sPluginIcon = ":/topology/mActionTopologyChecker.svg";
 /**
  * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
- * @param theQGisInterface - Pointer to the QGIS interface object
+ * \param theQGisInterface - Pointer to the QGIS interface object
  */
-Topol::Topol( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mQActionPointer( nullptr )
+Topol::Topol( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
 {
   mDock = nullptr;
-}
-
-Topol::~Topol()
-{
 }
 
 /*
@@ -69,7 +65,7 @@ void Topol::initGui()
   delete mQActionPointer;
 
   mQActionPointer = new QAction( QIcon( sPluginIcon ), sName, this );
-  mQActionPointer->setObjectName( "mQActionPointer" );
+  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   //mQActionPointer = new QAction( QIcon(), tr( "Topology Checker" ), this );
   mQActionPointer->setCheckable( true );
 
@@ -79,10 +75,10 @@ void Topol::initGui()
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Topology Checker for vector layer" ) );
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( showOrHide() ) );
+  connect( mQActionPointer, &QAction::triggered, this, &Topol::showOrHide );
   // Add the icon to the toolbar
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( QString(), mQActionPointer );
   //run();
 }
 //method defined in interface
@@ -95,11 +91,10 @@ void Topol::showOrHide()
 {
   if ( !mDock )
     run();
+  else if ( mQActionPointer->isChecked() )
+    mDock->show();
   else
-    if ( mQActionPointer->isChecked() )
-      mDock->show();
-    else
-      mDock->hide();
+    mDock->hide();
 }
 
 // Slot called when the menu item is triggered
@@ -110,7 +105,7 @@ void Topol::run()
 {
   mDock = new checkDock( mQGisIface );
   mQGisIface->addDockWidget( Qt::RightDockWidgetArea, mDock );
-  connect( mDock, SIGNAL( visibilityChanged( bool ) ), mQActionPointer, SLOT( setChecked( bool ) ) );
+  connect( mDock, &QDockWidget::visibilityChanged, mQActionPointer, &QAction::setChecked );
   //mDock->show();
 }
 
@@ -118,7 +113,7 @@ void Topol::run()
 void Topol::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
+  mQGisIface->vectorMenu()->removeAction( mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
@@ -140,9 +135,9 @@ void Topol::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new Topol( theQgisInterfacePointer );
+  return new Topol( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -181,7 +176,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

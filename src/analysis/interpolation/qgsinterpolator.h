@@ -19,76 +19,138 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include "qgis_sip.h"
+#include "qgis_analysis.h"
 
-class QgsVectorLayer;
+class QgsFeatureSource;
 class QgsGeometry;
+class QgsFeedback;
 
-struct ANALYSIS_EXPORT vertexData
+/**
+ * Interpolation data for an individual source vertex.
+ * \since QGIS 3.0
+ */
+struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 {
-  double x;
-  double y;
-  double z;
+
+  /**
+   * Constructor for QgsInterpolatorVertexData with the specified
+   * \a x, \a y, and \a z coordinate.
+   */
+  QgsInterpolatorVertexData( double x, double y, double z )
+    : x( x )
+    , y( y )
+    , z( z )
+  {}
+
+  //! Constructor for QgsInterpolatorVertexData
+  QgsInterpolatorVertexData() = default;
+
+  //! X-coordinate
+  double x = 0.0;
+  //! Y-coordinate
+  double y = 0.0;
+  //! Z-coordinate
+  double z = 0.0;
 };
 
-/** Interface class for interpolations. Interpolators take
-the vertices of a vector layer as base data. The z-Value
-can be an attribute or the z-coordinates in case of 25D types*/
+/**
+ * \ingroup analysis
+ * Interface class for interpolations. Interpolators take
+ * the vertices of a vector layer as base data. The z-Value
+ * can be an attribute or the z-coordinates in case of 3D types.
+*/
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
-    /** Describes the type of input data*/
-    enum InputType
+
+    //! Describes the type of input data
+    enum SourceType
     {
-      POINTS,
-      STRUCTURE_LINES,
-      BREAK_LINES
+      SourcePoints, //!< Point source
+      SourceStructureLines, //!< Structure lines
+      SourceBreakLines, //!< Break lines
     };
 
-    /** A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
+    //! Source for interpolated values from features
+    enum ValueSource
+    {
+      ValueAttribute, //!< Take value from feature's attribute
+      ValueZ, //!< Use feature's geometry Z values for interpolation
+      ValueM, //!< Use feature's geometry M values for interpolation
+    };
+
+    //! Result of an interpolation operation
+    enum Result
+    {
+      Success = 0, //!< Operation was successful
+      Canceled, //!< Operation was manually canceled
+      InvalidSource, //!< Operation failed due to invalid source
+      FeatureGeometryError, //!< Operation failed due to invalid feature geometry
+    };
+
+    //! A source together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
-      QgsVectorLayer* vectorLayer;
-      bool zCoordInterpolation;
-      int interpolationAttribute;
-      InputType mInputType;
+      //! Feature source
+      QgsFeatureSource *source = nullptr;
+      //! Source for feature values to interpolate
+      QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueAttribute;
+      //! Index of feature attribute to use for interpolation
+      int interpolationAttribute = -1;
+      //! Source type
+      QgsInterpolator::SourceType sourceType = SourcePoints;
     };
 
-    QgsInterpolator( const QList<LayerData>& layerData );
+    QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
-    virtual ~QgsInterpolator();
+    virtual ~QgsInterpolator() = default;
 
-    /** Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
-       @return 0 in case of success*/
-    virtual int interpolatePoint( double x, double y, double& result ) = 0;
+    /**
+     * Calculates interpolation value for map coordinates x, y
+     * \param x x-coordinate (in map units)
+     * \param y y-coordinate (in map units)
+     * \param result out: interpolation result
+     * \param feedback optional feedback object for progress and cancelation support
+     * \returns 0 in case of success*/
+    virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
-    //! @note not available in Python bindings
-    const QList<LayerData>& layerData() const { return mLayerData; }
+    //! \note not available in Python bindings
+    QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
 
   protected:
-    /** Caches the vertex and value data from the provider. All the vertex data
-     will be held in virtual memory
-    @return 0 in case of success*/
-    int cacheBaseData();
 
-    QVector<vertexData> mCachedBaseData;
+    /**
+     * Caches the vertex and value data from the provider. All the vertex data
+     * will be held in virtual memory.
+     *
+     * An optional \a feedback argument may be specified to allow cancelation and
+     * progress reports from the cache operation.
+     *
+     * \returns Success in case of success
+    */
+    Result cacheBaseData( QgsFeedback *feedback = nullptr );
 
-    /** Flag that tells if the cache already has been filled*/
-    bool mDataIsCached;
+    //! Cached vertex data for input sources
+    QVector<QgsInterpolatorVertexData> mCachedBaseData;
 
-    //Information about the input vector layers and the attributes (or z-values) that are used for interpolation
+    //! Flag that tells if the cache already has been filled
+    bool mDataIsCached = false;
+
+    //! Information about the input vector layers and the attributes (or z-values) that are used for interpolation
     QList<LayerData> mLayerData;
 
   private:
-    QgsInterpolator(); //forbidden
-    /** Helper method that adds the vertices of a geometry to the mCachedBaseData
-       @param geom the geometry
-       @param zCoord true if the z-coordinate of the geometry is to be interpolated
-       @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
-     @return 0 in case of success*/
-    int addVerticesToCache( const QgsGeometry* geom, bool zCoord, double attributeValue );
+    QgsInterpolator() = delete;
+
+    /**
+     * Helper method that adds the vertices of a geometry to the mCachedBaseData
+     * \param geom the geometry
+     * \param source source for values to interpolate from the feature
+     * \param attributeValue the attribute value for interpolation (if interpolating from attribute value)
+     *\returns 0 in case of success
+    */
+    bool addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue );
 };
 
 #endif

@@ -25,103 +25,99 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import math
 import codecs
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.outputs import OutputNumber
-from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects
-from processing.tools import raster
+from qgis.core import (QgsRectangle,
+                       QgsRasterBandStats,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputNumber)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class RasterLayerStatistics(GeoAlgorithm):
+class RasterLayerStatistics(QgisAlgorithm):
 
     INPUT = 'INPUT'
+    BAND = 'BAND'
+    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     MIN = 'MIN'
     MAX = 'MAX'
+    RANGE = 'RANGE'
     SUM = 'SUM'
     MEAN = 'MEAN'
-    COUNT = 'COUNT'
-    NO_DATA_COUNT = 'NO_DATA_COUNT'
     STD_DEV = 'STD_DEV'
-    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
+    SUM_OF_SQUARES = 'SUM_OF_SQUARES'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
+    def group(self):
+        return self.tr('Raster analysis')
 
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+    def groupId(self):
+        return 'rasteranalysis'
 
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
-        self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
-        self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
-        self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
-        self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
-        self.addOutput(OutputNumber(self.COUNT, self.tr('valid cells count')))
-        self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
-        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, progress):
-        outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
-        uri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(uri)
-        values = raster.scanraster(layer, progress)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     1,
+                                                     self.INPUT))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
 
-        n = 0
-        nodata = 0
-        mean = 0
-        M2 = 0
-        sum = 0
-        minvalue = None
-        maxvalue = None
+        self.addOutput(QgsProcessingOutputNumber(self.MIN, self.tr('Minimum value')))
+        self.addOutput(QgsProcessingOutputNumber(self.MAX, self.tr('Maximum value')))
+        self.addOutput(QgsProcessingOutputNumber(self.RANGE, self.tr('Range')))
+        self.addOutput(QgsProcessingOutputNumber(self.SUM, self.tr('Sum')))
+        self.addOutput(QgsProcessingOutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(QgsProcessingOutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+        self.addOutput(QgsProcessingOutputNumber(self.SUM_OF_SQUARES, self.tr('Sum of the squares')))
 
-        for v in values:
-            if v is not None:
-                sum += v
-                n = n + 1
-                delta = v - mean
-                mean = mean + delta / n
-                M2 = M2 + delta * (v - mean)
-                if minvalue is None:
-                    minvalue = v
-                    maxvalue = v
-                else:
-                    minvalue = min(v, minvalue)
-                    maxvalue = max(v, maxvalue)
-            else:
-                nodata += 1
+    def name(self):
+        return 'rasterlayerstatistics'
 
-        variance = M2 / (n - 1)
-        stddev = math.sqrt(variance)
+    def displayName(self):
+        return self.tr('Raster layer statistics')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        band = self.parameterAsInt(parameters, self.BAND, context)
+        outputFile = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
+
+        stat = layer.dataProvider().bandStatistics(band, QgsRasterBandStats.All, QgsRectangle(), 0)
 
         data = []
-        data.append('Valid cells: ' + unicode(n))
-        data.append('No-data cells: ' + unicode(nodata))
-        data.append('Minimum value: ' + unicode(minvalue))
-        data.append('Maximum value: ' + unicode(maxvalue))
-        data.append('Sum: ' + unicode(sum))
-        data.append('Mean value: ' + unicode(mean))
-        data.append('Standard deviation: ' + unicode(stddev))
+        data.append(self.tr('Analyzed file: {} (band {})').format(layer.source(), band))
+        data.append(self.tr('Minimum value: {}').format(stat.minimumValue))
+        data.append(self.tr('Maximum value: {}').format(stat.maximumValue))
+        data.append(self.tr('Range: {}').format(stat.range))
+        data.append(self.tr('Sum: {}').format(stat.sum))
+        data.append(self.tr('Mean value: {}').format(stat.mean))
+        data.append(self.tr('Standard deviation: {}').format(stat.stdDev))
+        data.append(self.tr('Sum of the squares: {}').format(stat.sumOfSquares))
 
-        self.createHTML(outputFile, data)
+        results = {self.MIN: stat.minimumValue,
+                   self.MAX: stat.maximumValue,
+                   self.RANGE: stat.range,
+                   self.SUM: stat.sum,
+                   self.MEAN: stat.mean,
+                   self.STD_DEV: stat.stdDev,
+                   self.SUM_OF_SQUARES: stat.sumOfSquares}
 
-        self.setOutputValue(self.COUNT, n)
-        self.setOutputValue(self.NO_DATA_COUNT, nodata)
-        self.setOutputValue(self.MIN, minvalue)
-        self.setOutputValue(self.MAX, maxvalue)
-        self.setOutputValue(self.SUM, sum)
-        self.setOutputValue(self.MEAN, mean)
-        self.setOutputValue(self.STD_DEV, stddev)
+        if outputFile:
+            self.createHTML(outputFile, data)
+            results[self.OUTPUT_HTML_FILE] = outputFile
+
+        return results
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>')
-        f.write('<meta http-equiv="Content-Type" content="text/html; \
-                charset=utf-8" /></head><body>')
-        for s in algData:
-            f.write('<p>' + unicode(s) + '</p>')
-        f.write('</body></html>')
-        f.close()
+        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+            f.write('<html><head>\n')
+            f.write('<meta http-equiv="Content-Type" content="text/html; \
+                    charset=utf-8" /></head><body>\n')
+            for s in algData:
+                f.write('<p>' + str(s) + '</p>\n')
+            f.write('</body></html>\n')

@@ -20,48 +20,69 @@
 #include "qgsmaptopixel.h"
 #include "qgslogger.h"
 
-#include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsmaplayerlistutils.h"
+#include "qgsproject.h"
 #include "qgsxmlutils.h"
-
+#include "qgsexception.h"
+#include "qgsgeometry.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 
 QgsMapSettings::QgsMapSettings()
-    : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
-    , mSize( QSize( 0, 0 ) )
-    , mExtent()
-    , mRotation( 0.0 )
-    , mProjectionsEnabled( false )
-    , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
-    , mDatumTransformStore( mDestCRS )
-    , mBackgroundColor( Qt::white )
-    , mSelectionColor( Qt::yellow )
-    , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
-    , mImageFormat( QImage::Format_ARGB32_Premultiplied )
-    , mValid( false )
-    , mVisibleExtent()
-    , mMapUnitsPerPixel( 1 )
-    , mScale( 1 )
+  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+  , mSize( QSize( 0, 0 ) )
+  , mBackgroundColor( Qt::white )
+  , mSelectionColor( Qt::yellow )
+  , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
+  , mSegmentationTolerance( M_PI_2 / 90 )
 {
-  updateDerived();
+  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
 
-  // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QGis::Degrees );
+  updateDerived();
 }
 
+void QgsMapSettings::setMagnificationFactor( double factor )
+{
+  double ratio = mMagnificationFactor / factor;
+
+  mMagnificationFactor = factor;
+
+  double rot = rotation();
+  setRotation( 0.0 );
+
+  QgsRectangle ext = visibleExtent();
+  ext.scale( ratio );
+
+  mRotation = rot;
+  mExtent = ext;
+  mDpi = mDpi / ratio;
+
+  QgsDebugMsg( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
+
+  updateDerived();
+}
+
+double QgsMapSettings::magnificationFactor() const
+{
+  return mMagnificationFactor;
+}
 
 QgsRectangle QgsMapSettings::extent() const
 {
   return mExtent;
 }
 
-void QgsMapSettings::setExtent( const QgsRectangle& extent )
+void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
 {
-  mExtent = extent;
+  QgsRectangle magnifiedExtent = extent;
+
+  if ( !magnified )
+    magnifiedExtent.scale( 1 / mMagnificationFactor );
+
+  mExtent = magnifiedExtent;
 
   updateDerived();
 }
@@ -73,7 +94,8 @@ double QgsMapSettings::rotation() const
 
 void QgsMapSettings::setRotation( double degrees )
 {
-  if ( qgsDoubleNear( mRotation, degrees ) ) return;
+  if ( qgsDoubleNear( mRotation, degrees ) )
+    return;
 
   mRotation = degrees;
 
@@ -110,14 +132,14 @@ void QgsMapSettings::updateDerived()
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
-    double xMean = ( qAbs( extent.xMinimum() ) + qAbs( extent.xMaximum() ) ) * 0.5;
-    double yMean = ( qAbs( extent.yMinimum() ) + qAbs( extent.yMaximum() ) ) * 0.5;
+    double xMean = ( std::fabs( extent.xMinimum() ) + std::fabs( extent.xMaximum() ) ) * 0.5;
+    double yMean = ( std::fabs( extent.yMinimum() ) + std::fabs( extent.yMaximum() ) ) * 0.5;
 
     double xRange = extent.width() / xMean;
     double yRange = extent.height() / yMean;
 
-    static const double minProportion = 1e-12;
-    if ( xRange < minProportion || yRange < minProportion )
+    static const double MIN_PROPORTION = 1e-12;
+    if ( xRange < MIN_PROPORTION || yRange < MIN_PROPORTION )
     {
       mValid = false;
       return;
@@ -140,17 +162,17 @@ void QgsMapSettings::updateDerived()
 
   // calculate the actual extent of the mapCanvas
   double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-                 dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
+         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
-    whitespace = (( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
+    whitespace = ( ( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
     dxmin -= whitespace;
     dxmax += whitespace;
   }
   else
   {
-    whitespace = (( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
+    whitespace = ( ( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
     dymin -= whitespace;
     dymax += whitespace;
   }
@@ -158,7 +180,7 @@ void QgsMapSettings::updateDerived()
   mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
 
   // update the scale
-  mScaleCalculator.setDpi( mDpi );
+  mScaleCalculator.setDpi( mDpi * mDevicePixelRatio );
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   mMapToPixel.setParameters( mapUnitsPerPixel(),
@@ -171,10 +193,10 @@ void QgsMapSettings::updateDerived()
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )
   {
-    QgsPoint p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
-    QgsPoint p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
-    QgsPoint p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
-    QgsPoint p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
+    QgsPointXY p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
+    QgsPointXY p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
+    QgsPointXY p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
+    QgsPointXY p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
     dxmin = std::min( p1.x(), std::min( p2.x(), std::min( p3.x(), p4.x() ) ) );
     dymin = std::min( p1.y(), std::min( p2.y(), std::min( p3.y(), p4.y() ) ) );
     dxmax = std::max( p1.x(), std::max( p2.x(), std::max( p3.x(), p4.x() ) ) );
@@ -183,14 +205,14 @@ void QgsMapSettings::updateDerived()
   }
 #endif
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ) );
-  QgsDebugMsg( mExtent.toString() );
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
-  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
-  QgsDebugMsg( QString( "Rotation: %1 degrees" ).arg( mRotation ) );
+  QgsDebugMsgLevel( QStringLiteral( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
+  QgsDebugMsgLevel( mExtent.toString(), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
 
   mValid = true;
 }
@@ -208,12 +230,28 @@ void QgsMapSettings::setOutputSize( QSize size )
   updateDerived();
 }
 
-int QgsMapSettings::outputDpi() const
+float QgsMapSettings::devicePixelRatio() const
+{
+  return mDevicePixelRatio;
+}
+
+void QgsMapSettings::setDevicePixelRatio( float dpr )
+{
+  mDevicePixelRatio = dpr;
+  updateDerived();
+}
+
+QSize QgsMapSettings::deviceOutputSize() const
+{
+  return outputSize() * mDevicePixelRatio;
+}
+
+double QgsMapSettings::outputDpi() const
 {
   return mDpi;
 }
 
-void QgsMapSettings::setOutputDpi( int dpi )
+void QgsMapSettings::setOutputDpi( double dpi )
 {
   mDpi = dpi;
 
@@ -221,14 +259,28 @@ void QgsMapSettings::setOutputDpi( int dpi )
 }
 
 
-QStringList QgsMapSettings::layers() const
+QStringList QgsMapSettings::layerIds() const
 {
-  return mLayers;
+  return _qgis_listQPointerToIDs( mLayers );
 }
 
-void QgsMapSettings::setLayers( const QStringList& layers )
+
+QList<QgsMapLayer *> QgsMapSettings::layers() const
 {
-  mLayers = layers;
+  return _qgis_listQPointerToRaw( mLayers );
+}
+
+void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
+{
+  // filter list, removing null layers and non-spatial layers
+  auto filteredList = layers;
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
+                                      []( QgsMapLayer * layer )
+  {
+    return !layer || !layer->isSpatial();
+  } ), filteredList.end() );
+
+  mLayers = _qgis_listRawToQPointer( filteredList );
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
@@ -236,43 +288,39 @@ QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
   return mLayerStyleOverrides;
 }
 
-void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
 {
   mLayerStyleOverrides = overrides;
 }
 
-void QgsMapSettings::setCrsTransformEnabled( bool enabled )
-{
-  mProjectionsEnabled = enabled;
-}
-
-bool QgsMapSettings::hasCrsTransformEnabled() const
-{
-  return mProjectionsEnabled;
-}
-
-
-void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mDestCRS = crs;
-  mDatumTransformStore.setDestinationCrs( crs );
-}
-
-const QgsCoordinateReferenceSystem& QgsMapSettings::destinationCrs() const
-{
-  return mDestCRS;
-}
-
-
-void QgsMapSettings::setMapUnits( QGis::UnitType u )
-{
-  mScaleCalculator.setMapUnits( u );
-
+  mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.
   updateDerived();
 }
 
-void QgsMapSettings::setFlags( const QgsMapSettings::Flags& flags )
+QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
+{
+  return mDestCRS;
+}
+
+bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
+{
+  QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  if ( !params.valid )
+  {
+    return false;
+  }
+  else
+  {
+    mEllipsoid = ellipsoid;
+    return true;
+  }
+}
+
+void QgsMapSettings::setFlags( QgsMapSettings::Flags flags )
 {
   mFlags = flags;
 }
@@ -295,7 +343,7 @@ bool QgsMapSettings::testFlag( QgsMapSettings::Flag flag ) const
   return mFlags.testFlag( flag );
 }
 
-QGis::UnitType QgsMapSettings::mapUnits() const
+QgsUnitTypes::DistanceUnit QgsMapSettings::mapUnits() const
 {
   return mScaleCalculator.mapUnits();
 }
@@ -315,13 +363,13 @@ QPolygonF QgsMapSettings::visiblePolygon() const
 {
   QPolygonF poly;
 
-  const QSize& sz = outputSize();
-  const QgsMapToPixel& m2p = mapToPixel();
+  const QSize &sz = outputSize();
+  const QgsMapToPixel &m2p = mapToPixel();
 
-  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
-  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0,                             0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), 0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), static_cast<double>( sz.height() ) ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0,                             static_cast<double>( sz.height() ) ).toQPointF();
 
   return poly;
 }
@@ -336,158 +384,150 @@ double QgsMapSettings::scale() const
   return mScale;
 }
 
-
-const QgsCoordinateTransform* QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
+QgsCoordinateTransformContext QgsMapSettings::transformContext() const
 {
-  return mDatumTransformStore.transformation( layer );
+#ifdef QGISDEBUG
+  if ( !mHasTransformContext )
+    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+#endif
+
+  return mTransformContext;
+}
+
+void QgsMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+#ifdef QGISDEBUG
+  mHasTransformContext = true;
+#endif
+}
+
+QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer ) const
+{
+  if ( !layer )
+    return QgsCoordinateTransform();
+
+  return QgsCoordinateTransform( layer->crs(), mDestCRS, mTransformContext );
+}
+
+double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
+{
+  return layerTransform( layer ).scaleFactor( referenceExtent );
 }
 
 
-double QgsMapSettings::layerToMapUnits( QgsMapLayer *theLayer, const QgsRectangle& referenceExtent ) const
+QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const
 {
-  QgsRectangle extent = referenceExtent.isEmpty() ? theLayer->extent() : referenceExtent;
-  QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
-  QgsPoint l2( extent.xMaximum(), extent.yMaximum() );
-  double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
-  QgsPoint m1 = layerToMapCoordinates( theLayer, l1 );
-  QgsPoint m2 = layerToMapCoordinates( theLayer, l2 );
-  double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
-  return distMapUnits / distLayerUnits;
-}
-
-
-QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
-{
-  if ( hasCrsTransformEnabled() )
+  try
   {
-    try
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-      {
-        QgsDebugMsg( QString( "sourceCrs = " + ct->sourceCrs().authid() ) );
-        QgsDebugMsg( QString( "destCRS = " + ct->destCRS().authid() ) );
-        QgsDebugMsg( QString( "extent = " + extent.toString() ) );
-        extent = ct->transformBoundingBox( extent );
-      }
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "extent %1" ).arg( extent.toString() ), 3 );
+      extent = ct.transformBoundingBox( extent );
     }
   }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
 
-  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "proj extent = %1 " ).arg( extent.toString() ), 3 );
 
   return extent;
 }
 
 
-QgsRectangle QgsMapSettings::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
+QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const
 {
-  if ( hasCrsTransformEnabled() )
+  try
   {
-    try
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
     {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-      {
-        QgsDebugMsg( QString( "sourceCrs = " + ct->sourceCrs().authid() ) );
-        QgsDebugMsg( QString( "destCRS = " + ct->destCRS().authid() ) );
-        QgsDebugMsg( QString( "extent = " + extent.toString() ) );
-        extent = ct->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-      }
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
+      QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "extent = %1" ).arg( extent.toString() ), 3 );
+      extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
 
-  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "proj extent =  %1" ).arg( extent.toString() ), 3 );
 
   return extent;
 }
 
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const
+QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const
 {
-  if ( hasCrsTransformEnabled() )
+  try
   {
-    try
-    {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        point = ct->transform( point, QgsCoordinateTransform::ForwardTransform );
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
-    }
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
   }
-  else
+  catch ( QgsCsException &cse )
   {
-    // leave point without transformation
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
+
   return point;
 }
 
 
-QgsRectangle QgsMapSettings::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const
 {
-  if ( hasCrsTransformEnabled() )
+  try
   {
-    try
-    {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        rect = ct->transform( rect, QgsCoordinateTransform::ForwardTransform );
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
-    }
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
   }
-  else
+  catch ( QgsCsException &cse )
   {
-    // leave point without transformation
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
+
   return rect;
 }
 
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point ) const
+QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const
 {
-  if ( hasCrsTransformEnabled() )
+  try
   {
-    try
-    {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        point = ct->transform( point, QgsCoordinateTransform::ReverseTransform );
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
-    }
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
   }
-  else
+  catch ( QgsCsException &cse )
   {
-    // leave point without transformation
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
+
   return point;
 }
 
 
-QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) const
+QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const
 {
-  if ( hasCrsTransformEnabled() )
+  try
   {
-    try
-    {
-      if ( const QgsCoordinateTransform* ct = layerTransform( theLayer ) )
-        rect = ct->transform( rect, QgsCoordinateTransform::ReverseTransform );
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ), "CRS" );
-    }
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
   }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
+
   return rect;
 }
 
@@ -495,9 +535,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
 
 QgsRectangle QgsMapSettings::fullExtent() const
 {
-  QgsDebugMsg( "called." );
-  QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
-
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
   QgsRectangle fullExtent;
@@ -505,35 +542,24 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QStringList::const_iterator it = mLayers.begin();
-  QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
-  while ( it != mLayers.end() )
+  QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( mLayers.count() ), 5 );
+  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
   {
-    QgsMapLayer * lyr = registry->mapLayer( *it );
-    if ( !lyr )
+    if ( QgsMapLayer *lyr = layerPtr.data() )
     {
-      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
-    }
-    else
-    {
-      QgsDebugMsg( "Updating extent using " + lyr->name() );
-      QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
+      QgsDebugMsgLevel( "Updating extent using " + lyr->name(), 5 );
+      QgsDebugMsgLevel( "Input extent: " + lyr->extent().toString(), 5 );
 
       if ( lyr->extent().isNull() )
-      {
-        ++it;
         continue;
-      }
 
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
       QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
 
-      QgsDebugMsg( "Output extent: " + extent.toString() );
-      fullExtent.unionRect( extent );
-
+      QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
+      fullExtent.combineExtentWith( extent );
     }
-    ++it;
   }
 
   if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )
@@ -560,35 +586,29 @@ QgsRectangle QgsMapSettings::fullExtent() const
     }
   }
 
-  QgsDebugMsg( "Full extent: " + fullExtent.toString() );
+  QgsDebugMsgLevel( "Full extent: " + fullExtent.toString(), 5 );
   return fullExtent;
 }
 
 
-void QgsMapSettings::readXML( QDomNode& theNode )
+void QgsMapSettings::readXml( QDomNode &node )
 {
-  // set units
-  QDomNode mapUnitsNode = theNode.namedItem( "units" );
-  QGis::UnitType units = QgsXmlUtils::readMapUnits( mapUnitsNode.toElement() );
-  setMapUnits( units );
-
-  // set projections flag
-  QDomNode projNode = theNode.namedItem( "projections" );
-  setCrsTransformEnabled( projNode.toElement().text().toInt() );
-
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
-  srs.readXML( srsNode );
+  QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
+  if ( !srsNode.isNull() )
+  {
+    srs.readXml( srsNode );
+  }
   setDestinationCrs( srs );
 
   // set extent
-  QDomNode extentNode = theNode.namedItem( "extent" );
+  QDomNode extentNode = node.namedItem( QStringLiteral( "extent" ) );
   QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
   setExtent( aoi );
 
   // set rotation
-  QDomNode rotationNode = theNode.namedItem( "rotation" );
+  QDomNode rotationNode = node.namedItem( QStringLiteral( "rotation" ) );
   QString rotationVal = rotationNode.toElement().text();
   if ( ! rotationVal.isEmpty() )
   {
@@ -597,47 +617,41 @@ void QgsMapSettings::readXML( QDomNode& theNode )
   }
 
   //render map tile
-  QDomElement renderMapTileElem = theNode.firstChildElement( "rendermaptile" );
+  QDomElement renderMapTileElem = node.firstChildElement( QStringLiteral( "rendermaptile" ) );
   if ( !renderMapTileElem.isNull() )
   {
-    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == "1" ? true : false );
+    setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
   }
-
-  mDatumTransformStore.readXML( theNode );
 }
 
 
 
-void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
+void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 {
   // units
-  theNode.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), theDoc ) );
+  node.appendChild( QgsXmlUtils::writeMapUnits( mapUnits(), doc ) );
 
   // Write current view extents
-  theNode.appendChild( QgsXmlUtils::writeRectangle( extent(), theDoc ) );
+  node.appendChild( QgsXmlUtils::writeRectangle( extent(), doc ) );
 
   // Write current view rotation
-  QDomElement rotNode = theDoc.createElement( "rotation" );
+  QDomElement rotNode = doc.createElement( QStringLiteral( "rotation" ) );
   rotNode.appendChild(
-    theDoc.createTextNode( qgsDoubleToString( rotation() ) )
+    doc.createTextNode( qgsDoubleToString( rotation() ) )
   );
-  theNode.appendChild( rotNode );
-
-  // projections enabled
-  QDomElement projNode = theDoc.createElement( "projections" );
-  projNode.appendChild( theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) ) );
-  theNode.appendChild( projNode );
+  node.appendChild( rotNode );
 
   // destination CRS
-  QDomElement srsNode = theDoc.createElement( "destinationsrs" );
-  theNode.appendChild( srsNode );
-  destinationCrs().writeXML( srsNode, theDoc );
+  if ( mDestCRS.isValid() )
+  {
+    QDomElement srsNode = doc.createElement( QStringLiteral( "destinationsrs" ) );
+    node.appendChild( srsNode );
+    mDestCRS.writeXml( srsNode, doc );
+  }
 
   //render map tile
-  QDomElement renderMapTileElem = theDoc.createElement( "rendermaptile" );
-  QDomText renderMapTileText = theDoc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
+  QDomElement renderMapTileElem = doc.createElement( QStringLiteral( "rendermaptile" ) );
+  QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
-  theNode.appendChild( renderMapTileElem );
-
-  mDatumTransformStore.writeXML( theNode, theDoc );
+  node.appendChild( renderMapTileElem );
 }

@@ -13,32 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 
-#include "qgscursors.h"
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 
-QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl )
-    : QgsMapToolIdentify( canvas )
-    , mCanvas( canvas )
-    , mLayer( vl )
+QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl )
+  : QgsMapToolIdentify( canvas )
+  , mCanvas( canvas )
+  , mLayer( vl )
 {
   mToolName = tr( "Identify feature" );
 
   // set cursor
-  QPixmap cursorPixmap = QPixmap(( const char ** ) cross_hair_cursor );
-  mCursor = QCursor( cursorPixmap, 1, 1 );
+  mCursor = QCursor( Qt::CrossCursor );
 }
 
-QgsMapToolIdentifyFeature::~QgsMapToolIdentifyFeature()
-{
-}
-
-void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+  QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
 
   QList<IdentifyResult> results;
   if ( !identifyVectorLayer( &results, mLayer, point ) )
@@ -50,7 +44,7 @@ void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
   emit featureIdentified( results[0].mFeature.id() );
 }
 
-void QgsMapToolIdentifyFeature::keyPressEvent( QKeyEvent* e )
+void QgsMapToolIdentifyFeature::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
   {

@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
 #include <qgsapplication.h>
+#include "qgsfeatureiterator.h"
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>
@@ -26,7 +27,8 @@
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( x, y ) ) );
+  QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( x, y ) );
+  f.setGeometry( g );
   return f;
 }
 
@@ -42,9 +44,9 @@ static QList<QgsFeature> _pointFeatures()
 
   QList<QgsFeature> feats;
   feats << _pointFeature( 1,  1,  1 )
-  << _pointFeature( 2, -1,  1 )
-  << _pointFeature( 3, -1, -1 )
-  << _pointFeature( 4,  1, -1 );
+        << _pointFeature( 2, -1,  1 )
+        << _pointFeature( 3, -1, -1 )
+        << _pointFeature( 4,  1, -1 );
   return feats;
 }
 
@@ -67,8 +69,11 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
-        index.insertFeature( f );
+      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
+      {
+        QgsFeature indexFeature( f );
+        index.addFeature( indexFeature );
+      }
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
@@ -80,11 +85,38 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( fids2.contains( 3 ) );
     }
 
+    void testQueryManualInsert()
+    {
+      QgsSpatialIndex index;
+      index.addFeature( 1, QgsRectangle( 2, 3, 2, 3 ) );
+      index.addFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
+      index.addFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
+
+      QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      QVERIFY( fids.count() == 1 );
+      QVERIFY( fids.at( 0 ) == 1 );
+
+      QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QVERIFY( fids2.count() == 2 );
+      QVERIFY( fids2.contains( 2 ) );
+      QVERIFY( fids2.contains( 3 ) );
+    }
+
+    void testInitFromEmptyIterator()
+    {
+      QgsFeatureIterator it;
+      QgsSpatialIndex index( it );
+      // we just test that we survive the above command without exception from libspatialindex raised
+    }
+
     void testCopy()
     {
-      QgsSpatialIndex* index = new QgsSpatialIndex;
-      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
-        index->insertFeature( f );
+      QgsSpatialIndex *index = new QgsSpatialIndex;
+      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
+      {
+        QgsFeature indexFeature( f );
+        index->addFeature( indexFeature );
+      }
 
       // create copy of the index
       QgsSpatialIndex indexCopy( *index );
@@ -125,9 +157,10 @@ class TestQgsSpatialIndex : public QObject
       {
         for ( int k = 0; k < 500; ++k )
         {
-          QgsFeature f( i*1000 + k );
-          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
-          index.insertFeature( f );
+          QgsFeature f( i * 1000 + k );
+          QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
+          f.setGeometry( g );
+          index.addFeature( f );
         }
       }
 
@@ -140,22 +173,23 @@ class TestQgsSpatialIndex : public QObject
 
     void benchmarkBulkLoad()
     {
-      QgsVectorLayer* vl = new QgsVectorLayer( "Point", "x", "memory" );
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       for ( int i = 0; i < 100; ++i )
       {
         QgsFeatureList flist;
         for ( int k = 0; k < 500; ++k )
         {
-          QgsFeature f( i*1000 + k );
-          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          QgsFeature f( i * 1000 + k );
+          QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
+          f.setGeometry( g );
           flist << f;
         }
         vl->dataProvider()->addFeatures( flist );
       }
 
       QTime t;
-      QgsSpatialIndex* indexBulk;
-      QgsSpatialIndex* indexInsert;
+      QgsSpatialIndex *indexBulk = nullptr;
+      QgsSpatialIndex *indexInsert = nullptr;
 
       t.start();
       {
@@ -179,7 +213,7 @@ class TestQgsSpatialIndex : public QObject
         QgsFeature f;
         indexInsert = new QgsSpatialIndex;
         while ( fi.nextFeature( f ) )
-          indexInsert->insertFeature( f );
+          indexInsert->addFeature( f );
       }
       qDebug( "insert:    %d ms", t.elapsed() );
 
@@ -191,8 +225,8 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( resBulk.count(), 500 );
       QCOMPARE( resInsert.count(), 500 );
       // the trees are built differently so they will give also different order of fids
-      qSort( resBulk );
-      qSort( resInsert );
+      std::sort( resBulk.begin(), resBulk.end() );
+      std::sort( resInsert.begin(), resInsert.end() );
       QCOMPARE( resBulk, resInsert );
 
       delete indexBulk;
@@ -201,7 +235,7 @@ class TestQgsSpatialIndex : public QObject
 
 };
 
-QTEST_MAIN( TestQgsSpatialIndex )
+QGSTEST_MAIN( TestQgsSpatialIndex )
 
 #include "testqgsspatialindex.moc"
 

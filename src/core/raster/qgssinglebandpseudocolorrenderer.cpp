@@ -16,26 +16,23 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
 
-QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader ):
-    QgsRasterRenderer( input, "singlebandpseudocolor" )
-    , mShader( shader )
-    , mBand( band )
-    , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
-    , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
-    , mClassificationMinMaxOrigin( QgsRasterRenderer::MinMaxUnknown )
+QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band, QgsRasterShader *shader )
+  : QgsRasterRenderer( input, QStringLiteral( "singlebandpseudocolor" ) )
+  , mShader( shader )
+  , mBand( band )
+  , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
+  , mClassificationMax( std::numeric_limits<double>::quiet_NaN() )
 {
-}
-
-QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
-{
-  delete mShader;
 }
 
 void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
@@ -47,7 +44,33 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
   mBand = bandNo;
 }
 
-QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() const
+void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
+{
+  mClassificationMin = min;
+  if ( shader() )
+  {
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    if ( colorRampShader )
+    {
+      colorRampShader->setMinimumValue( min );
+    }
+  }
+}
+
+void QgsSingleBandPseudoColorRenderer::setClassificationMax( double max )
+{
+  mClassificationMax = max;
+  if ( shader() )
+  {
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    if ( colorRampShader )
+    {
+      colorRampShader->setMaximumValue( max );
+    }
+  }
+}
+
+QgsSingleBandPseudoColorRenderer *QgsSingleBandPseudoColorRenderer::clone() const
 {
   QgsRasterShader *shader = nullptr;
 
@@ -56,91 +79,148 @@ QgsSingleBandPseudoColorRenderer* QgsSingleBandPseudoColorRenderer::clone() cons
     shader = new QgsRasterShader( mShader->minimumValue(), mShader->maximumValue() );
 
     // Shader function
-    const QgsColorRampShader* origColorRampShader = dynamic_cast<const QgsColorRampShader*>( mShader->rasterShaderFunction() );
+    const QgsColorRampShader *origColorRampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
 
     if ( origColorRampShader )
     {
-      QgsColorRampShader * colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
+      QgsColorRampShader *colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
 
+      if ( origColorRampShader->sourceColorRamp() )
+      {
+        colorRampShader->setSourceColorRamp( origColorRampShader->sourceColorRamp()->clone() );
+      }
       colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
-
+      colorRampShader->setClassificationMode( origColorRampShader->classificationMode() );
+      colorRampShader->setClip( origColorRampShader->clip() );
       colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
       shader->setRasterShaderFunction( colorRampShader );
     }
   }
-  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( nullptr, mBand, shader );
-
-  renderer->setOpacity( mOpacity );
-  renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : nullptr );
+  QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( nullptr, mBand, shader );
+  renderer->copyCommonProperties( this );
 
   return renderer;
 }
 
-void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
+void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader )
 {
-  delete mShader;
-  mShader = shader;
+  mShader.reset( shader );
 }
 
-QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
+void QgsSingleBandPseudoColorRenderer::createShader( QgsColorRamp *colorRamp, QgsColorRampShader::Type colorRampType, QgsColorRampShader::ClassificationMode classificationMode, int classes, bool clip, const QgsRectangle &extent )
+{
+  if ( band() == -1 || classificationMin() >= classificationMax() )
+  {
+    return;
+  }
+
+  QgsColorRampShader *colorRampShader = new QgsColorRampShader( classificationMin(), classificationMax(), colorRamp,  colorRampType, classificationMode );
+  colorRampShader->classifyColorRamp( classes, band(), extent, input() );
+  colorRampShader->setClip( clip );
+
+  QgsRasterShader *rasterShader = new QgsRasterShader();
+  rasterShader->setRasterShaderFunction( colorRampShader );
+  setShader( rasterShader );
+}
+
+QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
     return nullptr;
   }
 
-  int band = elem.attribute( "band", "-1" ).toInt();
-  QgsRasterShader* shader = nullptr;
-  QDomElement rasterShaderElem = elem.firstChildElement( "rastershader" );
+  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
+  QgsRasterShader *shader = nullptr;
+  QDomElement rasterShaderElem = elem.firstChildElement( QStringLiteral( "rastershader" ) );
   if ( !rasterShaderElem.isNull() )
   {
     shader = new QgsRasterShader();
-    shader->readXML( rasterShaderElem );
+    shader->readXml( rasterShaderElem );
   }
 
-  QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
-  r->readXML( elem );
+  QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
+  r->readXml( elem );
 
   // TODO: add _readXML in superclass?
-  r->setClassificationMin( elem.attribute( "classificationMin", "NaN" ).toDouble() );
-  r->setClassificationMax( elem.attribute( "classificationMax", "NaN" ).toDouble() );
-  r->setClassificationMinMaxOrigin( QgsRasterRenderer::minMaxOriginFromName( elem.attribute( "classificationMinMaxOrigin", "Unknown" ) ) );
+  r->setClassificationMin( elem.attribute( QStringLiteral( "classificationMin" ), QStringLiteral( "NaN" ) ).toDouble() );
+  r->setClassificationMax( elem.attribute( QStringLiteral( "classificationMax" ), QStringLiteral( "NaN" ) ).toDouble() );
+
+  // Backward compatibility with serialization of QGIS 2.X era
+  QString minMaxOrigin = elem.attribute( QStringLiteral( "classificationMinMaxOrigin" ) );
+  if ( !minMaxOrigin.isEmpty() )
+  {
+    if ( minMaxOrigin.contains( QLatin1String( "MinMax" ) ) )
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+    }
+    else if ( minMaxOrigin.contains( QLatin1String( "CumulativeCut" ) ) )
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::CumulativeCut );
+    }
+    else if ( minMaxOrigin.contains( QLatin1String( "StdDev" ) ) )
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::StdDev );
+    }
+    else
+    {
+      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::None );
+    }
+
+    if ( minMaxOrigin.contains( QLatin1String( "FullExtent" ) ) )
+    {
+      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+    }
+    else if ( minMaxOrigin.contains( QLatin1String( "SubExtent" ) ) )
+    {
+      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+    }
+    else
+    {
+      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+    }
+
+    if ( minMaxOrigin.contains( QLatin1String( "Estimated" ) ) )
+    {
+      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Estimated );
+    }
+    else // if ( minMaxOrigin.contains( QLatin1String( "Exact" ) ) )
+    {
+      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
+    }
+  }
 
   return r;
 }
 
-QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
-  if ( !mInput || !mShader )
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  if ( !mInput || !mShader || !mShader->rasterShaderFunction() )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height );
+  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
-    return outputBlock;
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
+    return outputBlock.release();
   }
 
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency();
 
-  QgsRasterBlock *alphaBlock = nullptr;
+  std::shared_ptr< QgsRasterBlock > alphaBlock;
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
-    alphaBlock = mInput->block( mAlphaBand, extent, width, height );
+    alphaBlock.reset( mInput->block( mAlphaBand, extent, width, height, feedback ) );
     if ( !alphaBlock || alphaBlock->isEmpty() )
     {
-      delete inputBlock;
-      delete alphaBlock;
-      return outputBlock;
+      return outputBlock.release();
     }
   }
   else if ( mAlphaBand == mBand )
@@ -148,27 +228,28 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
-    delete inputBlock;
-    delete alphaBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
+  QRgb *outputBlockData = outputBlock->colorData();
+  const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 
-  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
+  qgssize count = ( qgssize )width * height;
+  for ( qgssize i = 0; i < count; i++ )
   {
     if ( inputBlock->isNoData( i ) )
     {
-      outputBlock->setColor( i, myDefaultColor );
+      outputBlockData[i] = myDefaultColor;
       continue;
     }
     double val = inputBlock->value( i );
     int red, green, blue, alpha;
-    if ( !mShader->shade( val, &red, &green, &blue, &alpha ) )
+    if ( !fcn->shade( val, &red, &green, &blue, &alpha ) )
     {
-      outputBlock->setColor( i, myDefaultColor );
+      outputBlockData[i] = myDefaultColor;
       continue;
     }
 
@@ -182,7 +263,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
 
     if ( !hasTransparency )
     {
-      outputBlock->setColor( i, qRgba( red, green, blue, alpha ) );
+      outputBlockData[i] = qRgba( red, green, blue, alpha );
     }
     else
     {
@@ -197,45 +278,38 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
         currentOpacity *= alphaBlock->value( i ) / 255.0;
       }
 
-      outputBlock->setColor( i, qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha ) );
+      outputBlockData[i] = qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha );
     }
   }
 
-  delete inputBlock;
-  if ( mAlphaBand > 0 && mBand != mAlphaBand )
-  {
-    delete alphaBlock;
-  }
-
-  return outputBlock;
+  return outputBlock.release();
 }
 
-void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
   {
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
-  _writeXML( doc, rasterRendererElem );
-  rasterRendererElem.setAttribute( "band", mBand );
+  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  _writeXml( doc, rasterRendererElem );
+  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mBand );
   if ( mShader )
   {
-    mShader->writeXML( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
+    mShader->writeXml( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }
-  rasterRendererElem.setAttribute( "classificationMin", QString::number( mClassificationMin ) );
-  rasterRendererElem.setAttribute( "classificationMax", QString::number( mClassificationMax ) );
-  rasterRendererElem.setAttribute( "classificationMinMaxOrigin", QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "classificationMin" ), QgsRasterBlock::printValue( mClassificationMin ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "classificationMax" ), QgsRasterBlock::printValue( mClassificationMax ) );
 
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const
+void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
 {
   if ( mShader )
   {
-    QgsRasterShaderFunction* shaderFunction = mShader->rasterShaderFunction();
+    QgsRasterShaderFunction *shaderFunction = mShader->rasterShaderFunction();
     if ( shaderFunction )
     {
       shaderFunction->legendSymbologyItems( symbolItems );

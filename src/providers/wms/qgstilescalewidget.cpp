@@ -18,27 +18,28 @@
 #include "qgstilescalewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsdockwidget.h"
+#include "qgssettings.h"
+#include "layertree/qgslayertreeview.h"
 
-#include <QDockWidget>
 #include <QMainWindow>
 #include <QMenu>
 #include <QGraphicsView>
+#include <QToolTip>
 
-QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas * mapCanvas, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , mMapCanvas( mapCanvas )
+QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
+  : QWidget( parent, f )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
-  connect( mMapCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( scaleChanged( double ) ) );
+  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
+  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
 
   layerChanged( mMapCanvas->currentLayer() );
-}
-
-QgsTileScaleWidget::~QgsTileScaleWidget()
-{
 }
 
 void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
@@ -46,15 +47,15 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   mSlider->setDisabled( true );
 
   QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rl || rl->providerType() != "wms" || !rl->dataProvider() )
+  if ( !rl || rl->providerType() != QLatin1String( "wms" ) || !rl->dataProvider() )
     return;
 
   QVariant res = rl->dataProvider()->property( "resolutions" );
 
   mResolutions.clear();
-  Q_FOREACH ( const QVariant& r, res.toList() )
+  Q_FOREACH ( const QVariant &r, res.toList() )
   {
-    QgsDebugMsg( QString( "found resolution: %1" ).arg( r.toDouble() ) );
+    QgsDebugMsg( QStringLiteral( "found resolution: %1" ).arg( r.toDouble() ) );
     mResolutions << r.toDouble();
   }
 
@@ -81,71 +82,80 @@ void QgsTileScaleWidget::scaleChanged( double scale )
     return;
 
   double mupp = mMapCanvas->mapUnitsPerPixel();
-  QgsDebugMsg( QString( "resolution changed to %1" ).arg( mupp ) );
+  QgsDebugMsg( QStringLiteral( "resolution changed to %1" ).arg( mupp ) );
 
   int i;
   for ( i = 0; i < mResolutions.size() && mResolutions.at( i ) < mupp; i++ )
-    QgsDebugMsg( QString( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
+    QgsDebugMsg( QStringLiteral( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
 
   if ( i == mResolutions.size() ||
        ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
   {
-    QgsDebugMsg( "previous resolution" );
+    QgsDebugMsg( QStringLiteral( "previous resolution" ) );
     i--;
   }
 
-  QgsDebugMsg( QString( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
+  QgsDebugMsg( QStringLiteral( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
   mSlider->blockSignals( true );
   mSlider->setValue( i );
   mSlider->blockSignals( false );
 }
 
-void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
+void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
-  Q_UNUSED( value );
-  QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+  QgsDebugMsg( QStringLiteral( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+
+  // Invert value in tooltip to match expectation (i.e. 0 = zoomed out, maximum = zoomed in)
+  QToolTip::showText( QCursor::pos(), tr( "Zoom level: %1" ).arg( mSlider->maximum() - value ) + "\n" + tr( "Resolution: %1" ).arg( mResolutions.at( value ) ), this );
   mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
+}
+
+void QgsTileScaleWidget::locationChanged( Qt::DockWidgetArea area )
+{
+  mSlider->setOrientation( area == Qt::TopDockWidgetArea || area == Qt::BottomDockWidgetArea ? Qt::Horizontal : Qt::Vertical );
 }
 
 void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 {
-  QDockWidget *dock = mainWindow->findChild<QDockWidget *>( "theTileScaleDock" );
+  QgsDockWidget *dock = mainWindow->findChild<QgsDockWidget *>( QStringLiteral( "theTileScaleDock" ) );
   if ( dock )
   {
     dock->setVisible( dock->isHidden() );
     return;
   }
 
-  QgsMapCanvas *canvas = mainWindow->findChild<QgsMapCanvas *>( "theMapCanvas" );
-  QgsDebugMsg( QString( "canvas:%1 [%2]" ).arg(( ulong ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
+  QgsMapCanvas *canvas = mainWindow->findChild<QgsMapCanvas *>( QStringLiteral( "theMapCanvas" ) );
+  QgsDebugMsg( QStringLiteral( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
   if ( !canvas )
   {
-    QgsDebugMsg( "map canvas theMapCanvas not found" );
+    QgsDebugMsg( QStringLiteral( "map canvas mapCanvas not found" ) );
     return;
   }
 
   QgsTileScaleWidget *tws = new QgsTileScaleWidget( canvas );
-  tws->setObjectName( "theTileScaleWidget" );
+  tws->setObjectName( QStringLiteral( "theTileScaleWidget" ) );
 
-  QObject *legend = mainWindow->findChild<QObject*>( "theLayerTreeView" );
+  QgsLayerTreeView *legend = mainWindow->findChild<QgsLayerTreeView *>( QStringLiteral( "theLayerTreeView" ) );
   if ( legend )
   {
-    connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-             tws, SLOT( layerChanged( QgsMapLayer* ) ) );
+    connect( legend, &QgsLayerTreeView::currentLayerChanged,
+             tws, &QgsTileScaleWidget::layerChanged );
   }
   else
   {
-    QgsDebugMsg( "legend not found" );
+    QgsDebugMsg( QStringLiteral( "legend not found" ) );
   }
 
   //create the dock widget
-  dock = new QDockWidget( tr( "Tile Scale Panel" ), mainWindow );
-  dock->setObjectName( "theTileScaleDock" );
-  dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  dock = new QgsDockWidget( tr( "Tile Scale" ), mainWindow );
+  dock->setObjectName( QStringLiteral( "theTileScaleDock" ) );
+
+  connect( dock, &QDockWidget::dockLocationChanged, tws, &QgsTileScaleWidget::locationChanged );
+
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );
 
   // add to the Panel submenu
-  QMenu *panelMenu = mainWindow->findChild<QMenu *>( "mPanelMenu" );
+  QMenu *panelMenu = mainWindow->findChild<QMenu *>( QStringLiteral( "mPanelMenu" ) );
   if ( panelMenu )
   {
     // add to the Panel submenu
@@ -153,19 +163,19 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
   else
   {
-    QgsDebugMsg( "panel menu not found" );
+    QgsDebugMsg( QStringLiteral( "panel menu not found" ) );
   }
 
   dock->setWidget( tws );
 
-  connect( dock, SIGNAL( visibilityChanged( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
+  connect( dock, &QDockWidget::visibilityChanged, tws, &QgsTileScaleWidget::scaleEnabled );
 
-  QSettings settings;
-  dock->setVisible( settings.value( "/UI/tileScaleEnabled", false ).toBool() );
+  QgsSettings settings;
+  dock->setVisible( settings.value( QStringLiteral( "UI/tileScaleEnabled" ), false ).toBool() );
 }
 
 void QgsTileScaleWidget::scaleEnabled( bool enabled )
 {
-  QSettings settings;
-  settings.setValue( "/UI/tileScaleEnabled", enabled );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/tileScaleEnabled" ), enabled );
 }

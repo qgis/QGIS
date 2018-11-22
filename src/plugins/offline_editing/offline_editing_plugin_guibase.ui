@@ -6,18 +6,55 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>270</height>
+    <width>590</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create offline project</string>
+   <string>Create Offline Project</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="selectDatatypeComboLabel">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Storage type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mSelectDatatypeCombo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
+        <property name="text">
+         <string>GeoPackage</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SpatiaLite</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -37,7 +74,7 @@
      <item>
       <widget class="QPushButton" name="mBrowseButton">
        <property name="text">
-        <string>Browse...</string>
+        <string>Browse…</string>
        </property>
       </widget>
      </item>
@@ -82,7 +119,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="mUnselectAllButton">
+        <widget class="QPushButton" name="mDeselectAllButton">
          <property name="text">
           <string>Deselect all</string>
          </property>
@@ -93,6 +130,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="mOnlySelectedCheckBox">
+     <property name="text">
+      <string>Only synchronize selected features if a selection is present</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
@@ -100,7 +144,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>

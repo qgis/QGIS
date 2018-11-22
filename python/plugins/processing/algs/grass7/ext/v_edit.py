@@ -27,48 +27,37 @@ __revision__ = '$Format:%H$'
 
 
 import os
+from processing.tools.system import getTempFilename
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('input_txt') and alg.getParameterValue(u'input'):
-        return alg.tr("You need to set either an input ASCII file or inline data!")
+    if (alg.parameterAsString(parameters, 'input_txt', context)
+            and alg.parameterAsString(parameters, 'input', context)):
+        return False, alg.tr("You need to set either an input ASCII file or inline data!")
 
-    return None
+    return True, None
 
 
-def processCommand(alg):
-    # handle inline add data
-    input_txt = alg.getParameterFromName('input_txt')
-    inputParameter = alg.getParameterFromName('input')
-    if input_txt.value:
+def processCommand(alg, parameters, context, feedback):
+    # Handle inline rules
+    txtRules = alg.parameterAsString(parameters, 'input_txt', context)
+    if txtRules:
         # Creates a temporary txt file
-        ruleFile = alg.getTempFilename()
+        tempRulesName = getTempFilename()
 
         # Inject rules into temporary txt file
-        with open(ruleFile, "w") as tempRules:
-            tempRules.write(input_txt.value)
-        inputParameter.value = ruleFile
-        alg.parameters.remove(input_txt)
+        with open(tempRulesName, "w") as tempRules:
+            tempRules.write(txtRules)
+        alg.removeParameter('input_txt')
+        parameters['input'] = tempRulesName
 
-    # exclude output for from_output
-    output = alg.getOutputFromName('output')
-    alg.removeOutputFromName('output')
-
-    alg.processCommand()
-    alg.addOutput(output)
-    if input_txt.value:
-        inputParameter.value = None
-        alg.addParameter(input_txt)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context, feedback):
     # We need to add the from layer to outputs:
-    out = alg.exportedLayers[alg.getParameterValue('map')]
-    from_out = alg.getOutputValue('output')
-    command = u"v.out.ogr -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
-        out, os.path.dirname(from_out),
-        os.path.splitext(os.path.basename(from_out))[0]
-    )
-    alg.commands.append(command)
-    alg.outputCommands.append(command)
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = alg.exportedLayers['map']
+    dataType = 'auto'
+    alg.exportVectorLayer(grassName, fileName, dataType=dataType)

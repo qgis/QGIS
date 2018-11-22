@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -23,8 +23,10 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsgui.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the save as dialog
  */
 class TestQgsVectorLayerSaveAsDialog : public QObject
@@ -42,14 +44,10 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     void testAttributesAsDisplayedValues();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-    : mQgisApp( nullptr )
-{
-
-}
+TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog() = default;
 
 //runs before all tests
 void TestQgsVectorLayerSaveAsDialog::initTestCase()
@@ -59,7 +57,7 @@ void TestQgsVectorLayerSaveAsDialog::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
-  QgsEditorWidgetRegistry::initEditors();
+  QgsGui::editorWidgetRegistry()->initEditors();
 }
 
 //runs after all tests
@@ -71,19 +69,19 @@ void TestQgsVectorLayerSaveAsDialog::cleanupTestCase()
 void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 {
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "none?field=code:int&field=regular:string", "vl", "memory" ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
   // Set a widget
-  tempLayer->editFormConfig()->setWidgetType( 0, "ValueRelation" );
+  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
 
-  QgsVectorLayerSaveAsDialog d( tempLayer.data() );
+  QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
-  QgsCollapsibleGroupBoxBasic* mAttributesSelection = d.findChild<QgsCollapsibleGroupBoxBasic*>( "mAttributesSelection" );
-  mAttributesSelection->setChecked( true );
+  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
+  QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( "mAttributeTable" );
-  QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( "mReplaceRawFieldValues" );
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( QStringLiteral( "mAttributeTable" ) );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->columnCount(), 3 );
@@ -133,5 +131,5 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   //d.exec();
 }
 
-QTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
+QGSTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
 #include "testqgsvectorlayersaveasdialog.moc"

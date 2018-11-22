@@ -40,36 +40,15 @@ extern "C"
 #include "qgsgrass.h"
 #include "qgsgrassdatafile.h"
 
-#if GRASS_VERSION_MAJOR >= 7
-#define G_allocate_raster_buf Rast_allocate_buf
-#define G_close_cell Rast_close
-#define G_get_raster_map_type Rast_get_map_type
-#define G_get_raster_row Rast_get_row
-#define G_is_null_value Rast_is_null_value
-#define G_open_raster_new Rast_open_new
-#define G_short_history Rast_short_history
-#define G_command_history Rast_command_history
-#define G_write_history Rast_write_history
-#define G_set_c_null_value Rast_set_c_null_value
-#define G_set_f_null_value Rast_set_f_null_value
-#define G_set_d_null_value Rast_set_d_null_value
-#define G_set_raster_value_c Rast_set_c_value
-#define G_set_raster_value_f Rast_set_f_value
-#define G_set_raster_value_d Rast_set_d_value
-#define G_put_raster_row Rast_put_row
-#define G_raster_size Rast_cell_size
-#define G_unopen_cell Rast_unopen
-#endif
-
 static int cf = -1;
 
-void checkStream( QDataStream& stream )
+void checkStream( QDataStream &stream )
 {
   if ( stream.status() != QDataStream::Ok )
   {
     if ( cf != -1 )
     {
-      G_unopen_cell( cf );
+      Rast_unopen( cf );
       G_fatal_error( "Cannot read data stream" );
     }
   }
@@ -77,7 +56,7 @@ void checkStream( QDataStream& stream )
 
 int main( int argc, char **argv )
 {
-  char *name;
+  char *name = nullptr;
   struct Option *map;
   struct Cell_head window;
 
@@ -119,29 +98,29 @@ int main( int argc, char **argv )
   QString err = QgsGrass::setRegion( &window, extent, rows, cols );
   if ( !err.isEmpty() )
   {
-    G_fatal_error( "Cannot set region: %s", err.toUtf8().data() );
+    G_fatal_error( "Cannot set region: %s", err.toUtf8().constData() );
   }
   window.proj = ( int ) proj;
   window.zone = ( int ) zone;
 
   G_set_window( &window );
 
-  QGis::DataType qgis_type;
+  Qgis::DataType qgis_type;
   qint32 type;
   stdinStream >> type;
   checkStream( stdinStream );
-  qgis_type = ( QGis::DataType )type;
+  qgis_type = ( Qgis::DataType )type;
 
   RASTER_MAP_TYPE grass_type;
   switch ( qgis_type )
   {
-    case QGis::Int32:
+    case Qgis::Int32:
       grass_type = CELL_TYPE;
       break;
-    case QGis::Float32:
+    case Qgis::Float32:
       grass_type = FCELL_TYPE;
       break;
-    case QGis::Float64:
+    case Qgis::Float64:
       grass_type = DCELL_TYPE;
       break;
     default:
@@ -149,14 +128,14 @@ int main( int argc, char **argv )
       return 1;
   }
 
-  cf = G_open_raster_new( name, grass_type );
+  cf = Rast_open_new( name, grass_type );
   if ( cf < 0 )
   {
     G_fatal_error( "Unable to create raster map <%s>", name );
     return 1;
   }
 
-  void *buf = G_allocate_raster_buf( grass_type );
+  void *buf = Rast_allocate_buf( grass_type );
 
   int expectedSize = cols * QgsRasterBlock::typeSize( qgis_type );
   bool isCanceled = false;
@@ -180,56 +159,56 @@ int main( int argc, char **argv )
       return 1;
     }
 
-    qint32 *cell = 0;
-    float *fcell = 0;
-    double *dcell = 0;
+    qint32 *cell = nullptr;
+    float *fcell = nullptr;
+    double *dcell = nullptr;
     if ( grass_type == CELL_TYPE )
-      cell = ( qint32* ) byteArray.data();
+      cell = ( qint32 * ) byteArray.data();
     else if ( grass_type == FCELL_TYPE )
-      fcell = ( float* ) byteArray.data();
+      fcell = ( float * ) byteArray.data();
     else if ( grass_type == DCELL_TYPE )
-      dcell = ( double* ) byteArray.data();
+      dcell = ( double * ) byteArray.data();
 
     void *ptr = buf;
     for ( int col = 0; col < cols; col++ )
     {
       if ( grass_type == CELL_TYPE )
       {
-        if (( CELL )cell[col] == ( CELL )noDataValue )
+        if ( ( CELL )cell[col] == ( CELL )noDataValue )
         {
-          G_set_c_null_value(( CELL* )ptr, 1 );
+          Rast_set_c_null_value( ( CELL * )ptr, 1 );
         }
         else
         {
-          G_set_raster_value_c( ptr, ( CELL )( cell[col] ), grass_type );
+          Rast_set_c_value( ptr, ( CELL )( cell[col] ), grass_type );
         }
       }
       else if ( grass_type == FCELL_TYPE )
       {
-        if (( FCELL )fcell[col] == ( FCELL )noDataValue )
+        if ( ( FCELL )fcell[col] == ( FCELL )noDataValue )
         {
-          G_set_f_null_value(( FCELL* )ptr, 1 );
+          Rast_set_f_null_value( ( FCELL * )ptr, 1 );
         }
         else
         {
-          G_set_raster_value_f( ptr, ( FCELL )( fcell[col] ), grass_type );
+          Rast_set_f_value( ptr, ( FCELL )( fcell[col] ), grass_type );
         }
       }
       else if ( grass_type == DCELL_TYPE )
       {
-        if (( DCELL )dcell[col] == ( DCELL )noDataValue )
+        if ( ( DCELL )dcell[col] == ( DCELL )noDataValue )
         {
-          G_set_d_null_value(( DCELL* )ptr, 1 );
+          Rast_set_d_null_value( ( DCELL * )ptr, 1 );
         }
         else
         {
-          G_set_raster_value_d( ptr, ( DCELL )dcell[col], grass_type );
+          Rast_set_d_value( ptr, ( DCELL )dcell[col], grass_type );
         }
       }
 
-      ptr = G_incr_void_ptr( ptr, G_raster_size( grass_type ) );
+      ptr = G_incr_void_ptr( ptr, Rast_cell_size( grass_type ) );
     }
-    G_put_raster_row( cf, buf, grass_type );
+    Rast_put_row( cf, buf, grass_type );
 
 #ifndef Q_OS_WIN
     // Because stdin is somewhere buffered on Windows (not clear if in QProcess or by Windows)
@@ -243,15 +222,15 @@ int main( int argc, char **argv )
 
   if ( isCanceled )
   {
-    G_unopen_cell( cf );
+    Rast_unopen( cf );
   }
   else
   {
-    G_close_cell( cf );
+    Rast_close( cf );
     struct History history;
-    G_short_history( name, "raster", &history );
-    G_command_history( &history );
-    G_write_history( name, &history );
+    Rast_short_history( name, "raster", &history );
+    Rast_command_history( &history );
+    Rast_write_history( name, &history );
   }
 
   exit( EXIT_SUCCESS );

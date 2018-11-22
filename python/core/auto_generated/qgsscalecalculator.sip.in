@@ -1,0 +1,87 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsscalecalculator.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsScaleCalculator
+{
+%Docstring
+Calculates scale for a given combination of canvas size, map extent,
+and monitor dpi.
+%End
+
+%TypeHeaderCode
+#include "qgsscalecalculator.h"
+%End
+  public:
+
+    QgsScaleCalculator( double dpi = 0,
+                        QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceMeters );
+%Docstring
+Constructor
+
+:param dpi: Monitor resolution in dots per inch
+:param mapUnits: Units of the data on the map
+%End
+
+    void setDpi( double dpi );
+%Docstring
+Sets the ``dpi`` (dots per inch) for the output resolution, to be used in scale calculations.
+
+.. seealso:: :py:func:`dpi`
+%End
+
+    double dpi();
+%Docstring
+Returns the DPI (dots per inch) used in scale calculations.
+
+.. seealso:: :py:func:`setDpi`
+%End
+
+    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
+%Docstring
+Set the map units
+
+:param mapUnits: Units of the data on the map. Must match a value from the
+%End
+
+    QgsUnitTypes::DistanceUnit mapUnits() const;
+%Docstring
+Returns current map units
+%End
+
+    double calculate( const QgsRectangle &mapExtent, double canvasWidth );
+%Docstring
+Calculate the scale denominator
+
+:param mapExtent: QgsRectangle containing the current map extent
+:param canvasWidth: Width of the map canvas in pixel (physical) units
+
+:return: scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
+%End
+
+    double calculateGeographicDistance( const QgsRectangle &mapExtent );
+%Docstring
+Calculate the distance between two points in geographic coordinates.
+Used to calculate scale for map views with geographic (decimal degree)
+data.
+
+:param mapExtent: QgsRectangle containing the current map extent
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsscalecalculator.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

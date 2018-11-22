@@ -12,9 +12,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
+
 __author__ = 'Larry Shaffer'
 __date__ = '2014/02/16'
 __copyright__ = 'Copyright 2014, The QGIS Project'
@@ -24,7 +22,6 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import datetime
-import tempfile
 
 if os.name == 'nt':
     print("TestQgisLocalServer currently doesn't support windows")
@@ -43,7 +40,7 @@ from qgis.testing import (
     unittest
 )
 
-from utilities import openInBrowserTab
+from utilities import openInBrowserTab, getTempfilePath
 
 start_app()
 MAPSERV = getLocalServer()
@@ -107,9 +104,9 @@ class TestQgisLocalServer(unittest.TestCase):
         param_crs = 'CRS=EPSG%3A32613'
         param_bbx = 'BBOX=606510%2C4823130%2C612510%2C4827130'
         msg = '\nParameter instances could not be converted'
-        assert (param_lyrs in params_p
-                and param_crs in params_p
-                and param_bbx in params_p), msg
+        assert (param_lyrs in params_p and
+                param_crs in params_p and
+                param_bbx in params_p), msg
 
     # @unittest.skip('')
     def test_getmap(self):
@@ -122,7 +119,7 @@ class TestQgisLocalServer(unittest.TestCase):
         chk.setControlName('expected_' + test_name)
         # chk.setMapRenderer(None)
         res = chk.compareImages(test_name, 0, img_path)
-        if QGIS_TEST_REPORT and not res:  # don't report ok checks
+        if QGIS_TEST_REPORT and not res:  # don't report OK checks
             TESTREPORTS[test_name] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(test_name)
         assert res, msg
@@ -167,14 +164,14 @@ def run_suite(module, tests):
                     datetime.datetime.now().strftime('%Y-%m-%d %X')
         report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
         report += '\n<h2>Failed Image Tests: {0}</h2>'.format(len(TESTREPORTS))
-        for k, v in TESTREPORTS.items():
+        for k, v in list(TESTREPORTS.items()):
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
-        tmp.write(report)
-        tmp.close()
-        openInBrowserTab('file://' + tmp.name)
+        tmp_name = getTempfilePath("html")
+        with open(tmp_name, 'wb') as temp_file:
+            temp_file.write(report)
+        openInBrowserTab('file://' + tmp_name)
 
     return res
 

@@ -1,7 +1,7 @@
 r.surf.area
 Surface area estimation for rasters.
 Raster (r.*)
-ParameterRaster|map|Input layer|False
-ParameterNumber|vscale|Vertical scale|None|None|1
-ParameterSelection|units|Units|miles;feet;meters;kilometers;acres;hectares
-OutputHTML|html|Area
+QgsProcessingParameterRasterLayer|map|Input layer|None|False
+QgsProcessingParameterNumber|vscale|Vertical scale|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterEnum|units|Units|miles;feet;meters;kilometers;acres;hectares|False|1|True
+QgsProcessingParameterFileDestination|html|Area|Html files (*.html)|report.html|False

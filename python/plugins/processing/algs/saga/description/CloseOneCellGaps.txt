@@ -1,0 +1,4 @@
+Close One Cell Gaps
+grid_tools
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
+QgsProcessingParameterRasterDestination|RESULT|Changed Grid

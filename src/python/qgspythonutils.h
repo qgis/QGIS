@@ -19,6 +19,7 @@
 // Needed for CMake variables defines
 #include "qgsconfig.h"
 
+#include "qgis_python.h"
 
 #include <QString>
 #include <QStringList>
@@ -34,7 +35,7 @@ class QgsServerInterface;
  All calls to Python functions in QGIS come here.
  This class is a singleton.
 
- Default path for python plugins is:
+ Default path for Python plugins is:
  - QgsApplication::qgisSettingsDirPath() + "/python/plugins"
  - QgsApplication::pkgDataPath() + "/python/plugins"
 
@@ -44,67 +45,75 @@ class PYTHON_EXPORT QgsPythonUtils
 {
   public:
 
-    virtual ~QgsPythonUtils() {}
+    virtual ~QgsPythonUtils() = default;
 
-    //! returns true if python support is ready to use (must be inited first)
+    //! returns true if Python support is ready to use (must be inited first)
     virtual bool isEnabled() = 0;
 
-    //! initialize python and import bindings
-    virtual void initPython( QgisInterface* interface ) = 0;
+    //! initialize Python and import bindings
+    virtual void initPython( QgisInterface *iface ) = 0;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! initialize python and import server bindings
-    virtual void initServerPython( QgsServerInterface* interface ) = 0;
+    //! initialize Python and import server bindings
+    virtual void initServerPython( QgsServerInterface *iface ) = 0;
 
     //! start server plugin: call plugin's classServerFactory(serverInterface) add to active plugins
     virtual bool startServerPlugin( QString packageName ) = 0;
 #endif
 
-    //! close python interpreter
+    //! close Python interpreter
     virtual void exitPython() = 0;
 
     /* console */
 
-    //! run a statement, show an error message on error
-    //! @return true if no error occurred
-    virtual bool runString( const QString& command, QString msgOnError = QString(), bool single = true ) = 0;
+    /**
+     * run a statement, show an error message on error
+     * \returns true if no error occurred
+     */
+    virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
-    //! run a statement, error reporting is not done
-    //! @return true if no error occurred
-    virtual bool runStringUnsafe( const QString& command, bool single = true ) = 0;
+    /**
+     * run a statement, error reporting is not done
+     * \returns true if no error occurred
+     */
+    virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
-    virtual bool evalString( const QString& command, QString& result ) = 0;
+    virtual bool evalString( const QString &command, QString &result ) = 0;
 
-    //! get information about error to the supplied arguments
-    //! @return false if there was no python error
-    virtual bool getError( QString& errorClassName, QString& errorText ) = 0;
+    /**
+     * Gets information about error to the supplied arguments
+     * \returns false if there was no Python error
+     */
+    virtual bool getError( QString &errorClassName, QString &errorText ) = 0;
 
     /* plugins */
 
-    //! return list of all available python plugins
+    //! Returns a list of all available Python plugins
     virtual QStringList pluginList() = 0;
 
-    //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( const QString& packageName ) = 0;
+    //! Returns whether the plugin is loaded (active)
+    virtual bool isPluginLoaded( const QString &packageName ) = 0;
 
-    //! return a list of active plugins
+    //! Returns a list of active plugins
     virtual QStringList listActivePlugins() = 0;
 
-    //! load python plugin (import)
-    virtual bool loadPlugin( const QString& packageName ) = 0;
+    //! load Python plugin (import)
+    virtual bool loadPlugin( const QString &packageName ) = 0;
 
     //! start plugin: add to active plugins and call initGui()
-    virtual bool startPlugin( const QString& packageName ) = 0;
+    virtual bool startPlugin( const QString &packageName ) = 0;
 
-    //! helper function to get some information about plugin
-    //! @param function one of these strings: name, tpye, version, description
-    virtual QString getPluginMetadata( const QString& pluginName, const QString& function ) = 0;
+    /**
+     * helper function to get some information about plugin
+     * \param function one of these strings: name, tpye, version, description
+     */
+    virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
 
     //! confirm that the plugin can be uninstalled
-    virtual bool canUninstallPlugin( const QString& packageName ) = 0;
+    virtual bool canUninstallPlugin( const QString &packageName ) = 0;
 
     //! unload plugin
-    virtual bool unloadPlugin( const QString& packageName ) = 0;
+    virtual bool unloadPlugin( const QString &packageName ) = 0;
 };
 
 #endif

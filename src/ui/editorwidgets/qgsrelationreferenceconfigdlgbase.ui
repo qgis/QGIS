@@ -21,6 +21,13 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="mCbxShowOpenFormButton">
+     <property name="text">
+      <string>Show open form button</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="1">
     <widget class="QComboBox" name="mComboRelation"/>
    </item>
@@ -31,7 +38,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxReadOnly">
      <property name="text">
       <string>Use a read-only line edit instead of a combobox</string>
@@ -39,7 +46,11 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true"/>
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::TabFocus</enum>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -55,7 +66,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxMapIdentification">
      <property name="text">
       <string>On map identification (for geometric layers only)</string>
@@ -69,7 +80,7 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mFilterGroupBox">
      <property name="title">
       <string>Filters</string>
@@ -97,10 +108,10 @@
       <item row="2" column="1">
        <widget class="QToolButton" name="mAddFilterButton">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../images/images.qrc">
+         <iconset>
           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
         </property>
        </widget>
@@ -108,7 +119,7 @@
       <item row="3" column="1">
        <widget class="QToolButton" name="mRemoveFilterButton">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
         <property name="icon">
          <iconset resource="../../../images/images.qrc">
@@ -148,7 +159,7 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxAllowAddFeatures">
      <property name="text">
       <string>Allow adding new features</string>
@@ -172,12 +183,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mExpressionWidget</tabstop>
   <tabstop>mComboRelation</tabstop>
   <tabstop>mCbxAllowNull</tabstop>
   <tabstop>mCbxOrderByValue</tabstop>
   <tabstop>mCbxShowForm</tabstop>
+  <tabstop>mCbxShowOpenFormButton</tabstop>
   <tabstop>mCbxMapIdentification</tabstop>
   <tabstop>mCbxReadOnly</tabstop>
+  <tabstop>mCbxAllowAddFeatures</tabstop>
   <tabstop>mFilterGroupBox</tabstop>
   <tabstop>mAvailableFieldsList</tabstop>
   <tabstop>mAddFilterButton</tabstop>

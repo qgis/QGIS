@@ -15,29 +15,29 @@
 
 #include <QImage>
 
-#include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgslinesymbollayer.h"
 
 #include "qgscoordinatetransform.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayer.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
+#include "qgsrenderer.h"
 
-/* Few notes about highligting (RB):
+/* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
    may be another layer which must remain partially visible.
  - Because single highlight color does not work well with layers using similar layer color
    there were considered various possibilities but no optimal solution was found.
    What does not work:
    - lighter/darker color: it would work more or less for fully opaque highlight, but
-     overlaying transparent lighter color over original has small visual efect.
+     overlaying transparent lighter color over original has small visual effect.
    - complemetary color: mixing transparent (128) complement color with original color
      results in grey for all colors
    - contrast line style/ fill pattern: impression is not highligh but just different style
@@ -45,59 +45,40 @@
    - fill with highlight or contrast color but opaque and using pattern
      (e.g. Qt::Dense7Pattern): again no highlight impression
 */
-/*!
-  \class QgsHighlight
-  \brief The QgsHighlight class provides a transparent overlay widget
-  for highlighting features on the map.
-*/
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer )
-    : QgsMapCanvasItem( mapCanvas )
-    , mLayer( layer )
-    , mBuffer( 0 )
-    , mMinWidth( 0 )
+
+QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer )
+  : QgsMapCanvasItem( mapCanvas )
+  , mLayer( layer )
 {
-  mGeometry = geom ? new QgsGeometry( *geom ) : nullptr;
+  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer )
-    : QgsMapCanvasItem( mapCanvas )
-    , mLayer( static_cast<QgsMapLayer *>( layer ) )
-    , mBuffer( 0 )
-    , mMinWidth( 0 )
-{
-  mGeometry = geom ? new QgsGeometry( *geom ) : nullptr;
-  init();
-}
-
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer )
-    : QgsMapCanvasItem( mapCanvas )
-    , mGeometry( nullptr )
-    , mLayer( static_cast<QgsMapLayer *>( layer ) )
-    , mFeature( feature )
-    , mBuffer( 0 )
-    , mMinWidth( 0 )
+QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer )
+  : QgsMapCanvasItem( mapCanvas )
+  , mLayer( layer )
+  , mFeature( feature )
 {
   init();
 }
 
 void QgsHighlight::init()
 {
-  if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
+  QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
+  if ( ct.isValid() )
   {
-    const QgsCoordinateTransform* ct = mMapCanvas->mapSettings().layerTransform( mLayer );
-    if ( ct )
+    if ( mGeometry )
     {
-      if ( mGeometry )
-      {
-        mGeometry->transform( *ct );
-      }
-      else if ( mFeature.constGeometry() )
-      {
-        mFeature.geometry()->transform( *ct );
-      }
+      mGeometry->transform( ct );
+    }
+    else if ( mFeature.hasGeometry() )
+    {
+      QgsGeometry g = mFeature.geometry();
+      g.transform( ct );
+      mFeature.setGeometry( g );
     }
   }
+
   updateRect();
   update();
   setColor( QColor( Qt::lightGray ) );
@@ -108,34 +89,34 @@ QgsHighlight::~QgsHighlight()
   delete mGeometry;
 }
 
-/*!
-  Set the outline and fill color.
-  */
-void QgsHighlight::setColor( const QColor & color )
+
+void QgsHighlight::setColor( const QColor &color )
 {
+  mColor = color;
   mPen.setColor( color );
   QColor fillColor( color.red(), color.green(), color.blue(), 63 );
   mBrush.setColor( fillColor );
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-void QgsHighlight::setFillColor( const QColor & fillColor )
+void QgsHighlight::setFillColor( const QColor &fillColor )
 {
+  mFillColor = fillColor;
   mBrush.setColor( fillColor );
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, const QColor & color, const QColor & fillColor )
+std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor )
 {
-  QgsFeatureRendererV2 *renderer = nullptr;
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
-  if ( layer && layer->rendererV2() )
+  std::unique_ptr<QgsFeatureRenderer> renderer;
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
+  if ( layer && layer->renderer() )
   {
-    renderer = layer->rendererV2()->clone();
+    renderer.reset( layer->renderer()->clone() );
   }
   if ( renderer )
   {
-    Q_FOREACH ( QgsSymbolV2* symbol, renderer->symbols( context ) )
+    Q_FOREACH ( QgsSymbol *symbol, renderer->symbols( context ) )
     {
       if ( !symbol ) continue;
       setSymbol( symbol, context, color, fillColor );
@@ -144,14 +125,14 @@ QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, co
   return renderer;
 }
 
-void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & context,   const QColor & color, const QColor & fillColor )
+void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context,   const QColor &color, const QColor &fillColor )
 {
   if ( !symbol ) return;
 
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
-    QgsSymbolLayerV2* symbolLayer = symbol->symbolLayer( i );
+    QgsSymbolLayer *symbolLayer = symbol->symbolLayer( i );
     if ( !symbolLayer ) continue;
 
     if ( symbolLayer->subSymbol() )
@@ -161,52 +142,50 @@ void QgsHighlight::setSymbol( QgsSymbolV2* symbol, const QgsRenderContext & cont
     else
     {
       symbolLayer->setColor( color ); // line symbology layers
-      symbolLayer->setOutlineColor( color ); // marker and fill symbology layers
+      symbolLayer->setStrokeColor( color ); // marker and fill symbology layers
       symbolLayer->setFillColor( fillColor ); // marker and fill symbology layers
 
       // Data defined widths overwrite what we set here (widths do not work with data defined)
-      QgsSimpleMarkerSymbolLayerV2 * simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>( symbolLayer );
+      QgsSimpleMarkerSymbolLayer *simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( symbolLayer );
       if ( simpleMarker )
       {
-        simpleMarker->setOutlineWidth( getSymbolWidth( context, simpleMarker->outlineWidth(), simpleMarker->outlineWidthUnit() ) );
+        simpleMarker->setStrokeWidth( getSymbolWidth( context, simpleMarker->strokeWidth(), simpleMarker->strokeWidthUnit() ) );
       }
-      QgsSimpleLineSymbolLayerV2 * simpleLine = dynamic_cast<QgsSimpleLineSymbolLayerV2*>( symbolLayer );
+      QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbolLayer );
       if ( simpleLine )
       {
         simpleLine->setWidth( getSymbolWidth( context, simpleLine->width(), simpleLine->widthUnit() ) );
       }
-      QgsSimpleFillSymbolLayerV2 * simpleFill = dynamic_cast<QgsSimpleFillSymbolLayerV2*>( symbolLayer );
+      QgsSimpleFillSymbolLayer *simpleFill = dynamic_cast<QgsSimpleFillSymbolLayer *>( symbolLayer );
       if ( simpleFill )
       {
-        simpleFill->setBorderWidth( getSymbolWidth( context, simpleFill->borderWidth(), simpleFill->outputUnit() ) );
+        simpleFill->setStrokeWidth( getSymbolWidth( context, simpleFill->strokeWidth(), simpleFill->outputUnit() ) );
       }
-      symbolLayer->removeDataDefinedProperty( "color" );
-      symbolLayer->removeDataDefinedProperty( "color_border" );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
+      symbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
     }
   }
 }
 
-double QgsHighlight::getSymbolWidth( const QgsRenderContext & context, double width, QgsSymbolV2::OutputUnit unit )
+double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double width, QgsUnitTypes::RenderUnit unit )
 {
   // if necessary scale mm to map units
   double scale = 1.;
-  if ( unit == QgsSymbolV2::MapUnit )
+  if ( unit == QgsUnitTypes::RenderMapUnits )
   {
-    scale = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsSymbolV2::MM ) / QgsSymbolLayerV2Utils::lineWidthScaleFactor( context, QgsSymbolV2::MapUnit );
+    scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMapUnits );
   }
-  width =  qMax( width + 2 * mBuffer * scale, mMinWidth * scale );
+  width = std::max( width + 2 * mBuffer * scale, mMinWidth * scale );
   return width;
 }
 
-/*!
-  Set the outline width.
-  */
 void QgsHighlight::setWidth( int width )
 {
+  mWidth = width;
   mPen.setWidth( width );
 }
 
-void QgsHighlight::paintPoint( QPainter *p, const QgsPoint& point )
+void QgsHighlight::paintPoint( QPainter *p, const QgsPointXY &point )
 {
   QPolygonF r( 5 );
 
@@ -220,7 +199,7 @@ void QgsHighlight::paintPoint( QPainter *p, const QgsPoint& point )
   p->drawPolygon( r );
 }
 
-void QgsHighlight::paintLine( QPainter *p, QgsPolyline line )
+void QgsHighlight::paintLine( QPainter *p, QgsPolylineXY line )
 {
   QPolygonF polygon( line.size() );
 
@@ -232,7 +211,7 @@ void QgsHighlight::paintLine( QPainter *p, QgsPolyline line )
   p->drawPolyline( polygon );
 }
 
-void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
+void QgsHighlight::paintPolygon( QPainter *p, const QgsPolygonXY &polygon )
 {
   // OddEven fill rule by default
   QPainterPath path;
@@ -240,24 +219,27 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
   p->setPen( mPen );
   p->setBrush( mBrush );
 
-  for ( int i = 0; i < polygon.size(); i++ )
+  for ( const auto &sourceRing : polygon )
   {
-    if ( polygon[i].empty() ) continue;
+    if ( sourceRing.empty() )
+      continue;
 
     QPolygonF ring;
-    ring.reserve( polygon[i].size() + 1 );
+    ring.reserve( sourceRing.size() + 1 );
 
-    for ( int j = 0; j < polygon[i].size(); j++ )
+    QPointF lastVertex;
+    for ( const auto &sourceVertex : sourceRing )
     {
-      //adding point only if it is more than a pixel appart from the previous one
-      const QPointF cur = toCanvasCoordinates( polygon[i][j] ) - pos();
-      if ( 0 == j || std::abs( ring.back().x() - cur.x() ) > 1 || std::abs( ring.back().y() - cur.y() ) > 1 )
+      //adding point only if it is more than a pixel apart from the previous one
+      const QPointF curVertex = toCanvasCoordinates( sourceVertex ) - pos();
+      if ( ring.isEmpty() || std::abs( ring.back().x() - curVertex.x() ) > 1 || std::abs( ring.back().y() - curVertex.y() ) > 1 )
       {
-        ring.push_back( cur );
+        ring.push_back( curVertex );
       }
+      lastVertex = curVertex;
     }
 
-    ring.push_back( ring[ 0 ] );
+    ring.push_back( ring.at( 0 ) );
 
     path.addPolygon( ring );
   }
@@ -267,88 +249,84 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
 void QgsHighlight::updatePosition()
 {
-  // nothing to do here...
+  if ( isVisible() ) updateRect();
 }
 
-/*!
-  Draw the shape in response to an update event.
-  */
-void QgsHighlight::paint( QPainter* p )
+void QgsHighlight::paint( QPainter *p )
 {
   if ( mGeometry )
   {
     p->setPen( mPen );
     p->setBrush( mBrush );
 
-    switch ( mGeometry->wkbType() )
+    switch ( mGeometry->type() )
     {
-      case QGis::WKBPoint:
-      case QGis::WKBPoint25D:
+      case QgsWkbTypes::PointGeometry:
       {
-        paintPoint( p, mGeometry->asPoint() );
-      }
-      break;
-
-      case QGis::WKBMultiPoint:
-      case QGis::WKBMultiPoint25D:
-      {
-        QgsMultiPoint m = mGeometry->asMultiPoint();
-        for ( int i = 0; i < m.size(); i++ )
+        if ( !mGeometry->isMultipart() )
         {
-          paintPoint( p, m[i] );
+          paintPoint( p, mGeometry->asPoint() );
+        }
+        else
+        {
+          QgsMultiPointXY m = mGeometry->asMultiPoint();
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintPoint( p, m[i] );
+          }
         }
       }
       break;
 
-      case QGis::WKBLineString:
-      case QGis::WKBLineString25D:
+      case QgsWkbTypes::LineGeometry:
       {
-        paintLine( p, mGeometry->asPolyline() );
-      }
-      break;
-
-      case QGis::WKBMultiLineString:
-      case QGis::WKBMultiLineString25D:
-      {
-        QgsMultiPolyline m = mGeometry->asMultiPolyline();
-
-        for ( int i = 0; i < m.size(); i++ )
+        if ( !mGeometry->isMultipart() )
         {
-          paintLine( p, m[i] );
+          paintLine( p, mGeometry->asPolyline() );
         }
-      }
-      break;
-
-      case QGis::WKBPolygon:
-      case QGis::WKBPolygon25D:
-      {
-        paintPolygon( p, mGeometry->asPolygon() );
-      }
-      break;
-
-      case QGis::WKBMultiPolygon:
-      case QGis::WKBMultiPolygon25D:
-      {
-        QgsMultiPolygon m = mGeometry->asMultiPolygon();
-        for ( int i = 0; i < m.size(); i++ )
+        else
         {
-          paintPolygon( p, m[i] );
-        }
-      }
-      break;
+          QgsMultiPolylineXY m = mGeometry->asMultiPolyline();
 
-      case QGis::WKBUnknown:
-      default:
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintLine( p, m[i] );
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::PolygonGeometry:
+      {
+        if ( !mGeometry->isMultipart() )
+        {
+          paintPolygon( p, mGeometry->asPolygon() );
+        }
+        else
+        {
+          QgsMultiPolygonXY m = mGeometry->asMultiPolygon();
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintPolygon( p, m[i] );
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         return;
     }
   }
-  else if ( mFeature.constGeometry() )
+  else if ( mFeature.hasGeometry() )
   {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
     if ( !layer )
       return;
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+    context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+
 
     // Because lower level outlines must be covered by upper level fill color
     // we render first with temporary opaque color, which is then replaced
@@ -356,47 +334,47 @@ void QgsHighlight::paint( QPainter* p )
     QColor tmpColor( 255, 0, 0, 255 );
     QColor tmpFillColor( 0, 255, 0, 255 );
 
-    QgsFeatureRendererV2 *renderer = getRenderer( context, tmpColor, tmpFillColor );
+    std::unique_ptr< QgsFeatureRenderer > renderer = createRenderer( context, tmpColor, tmpFillColor );
     if ( layer && renderer )
     {
 
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
       QImage image = QImage( imageSize.width(), imageSize.height(), QImage::Format_ARGB32 );
       image.fill( 0 );
-      QPainter *imagePainter = new QPainter( &image );
-      imagePainter->setRenderHint( QPainter::Antialiasing, true );
+      QPainter imagePainter( &image );
+      imagePainter.setRenderHint( QPainter::Antialiasing, true );
 
-      context.setPainter( imagePainter );
+      context.setPainter( &imagePainter );
 
       renderer->startRender( context, layer->fields() );
+      context.expressionContext().setFeature( mFeature );
       renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
 
-      imagePainter->end();
+      imagePainter.end();
 
-      QColor color( mPen.color() );  // true output color
+      // true output color
+      int penRed = mPen.color().red();
+      int penGreen = mPen.color().green();
+      int penBlue = mPen.color().blue();
       // coefficient to subtract alpha using green (temporary fill)
       double k = ( 255. - mBrush.color().alpha() ) / 255.;
+      QRgb *line = nullptr;
       for ( int r = 0; r < image.height(); r++ )
       {
+        line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
         for ( int c = 0; c < image.width(); c++ )
         {
-          QRgb rgba = image.pixel( c, r );
-          int alpha = qAlpha( rgba );
+          int alpha = qAlpha( line[c] );
           if ( alpha > 0 )
           {
-            int green = qGreen( rgba );
-            color.setAlpha( qBound<int>( 0, alpha - ( green * k ), 255 ) );
-
-            image.setPixel( c, r, color.rgba() );
+            int green = qGreen( line[c] );
+            line[c] = qRgba( penRed, penGreen, penBlue, qBound<int>( 0, alpha - ( green * k ), 255 ) );
           }
         }
       }
 
       p->drawImage( 0, 0, image );
-
-      delete imagePainter;
-      delete renderer;
     }
   }
 }
@@ -419,17 +397,17 @@ void QgsHighlight::updateRect()
     setRect( r );
     setVisible( mGeometry );
   }
-  else if ( mFeature.constGeometry() )
+  else if ( mFeature.hasGeometry() )
   {
     // We are currently using full map canvas extent for two reasons:
-    // 1) currently there is no method in QgsFeatureRendererV2 to get rendered feature
+    // 1) currently there is no method in QgsFeatureRenderer to get rendered feature
     //    bounding box
     // 2) using different extent would result in shifted fill patterns
 
     // This is an hack to pass QgsMapCanvasItem::setRect what it
     // expects (encoding of position and size of the item)
-    const QgsMapToPixel& m2p = mMapCanvas->mapSettings().mapToPixel();
-    QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+    const QgsMapToPixel &m2p = mMapCanvas->mapSettings().mapToPixel();
+    QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
     double res = m2p.mapUnitsPerPixel();
     QSizeF imageSize = mMapCanvas->mapSettings().outputSize();
     QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + imageSize.width()*res, topLeft.y() - imageSize.height()*res );

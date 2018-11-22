@@ -15,15 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgslogger.h"
 
 #include <QApplication>
 #include <QtDebug>
 #include <QFile>
 #include <QThread>
-
-#include "qgsconfig.h"
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined
@@ -53,11 +50,11 @@ void QgsLogger::init()
                 ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
-  if ( CMAKE_SOURCE_DIR[sPrefixLength-1] == '/' )
+  if ( CMAKE_SOURCE_DIR[sPrefixLength - 1] == '/' )
     sPrefixLength++;
 }
 
-void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, const char *function, int line )
 {
   init();
 
@@ -74,28 +71,28 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   {
     if ( qApp && qApp->thread() != QThread::currentThread() )
     {
-      m.prepend( QString( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
+      m.prepend( QStringLiteral( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
     }
 
-    m.prepend( QString( "[%1ms] " ).arg( sTime.elapsed() ) );
+    m.prepend( QStringLiteral( "[%1ms] " ).arg( sTime.elapsed() ) );
     sTime.restart();
 
     if ( function )
     {
-      m.prepend( QString( " (%1) " ).arg( function ) );
+      m.prepend( QStringLiteral( " (%1) " ).arg( function ) );
     }
 
     if ( line != -1 )
     {
 #ifndef _MSC_VER
-      m.prepend( QString( ": %1:" ).arg( line ) );
+      m.prepend( QStringLiteral( ": %1:" ).arg( line ) );
 #else
       m.prepend( QString( "(%1) :" ).arg( line ) );
 #endif
     }
 
 #ifndef _MSC_VER
-    m.prepend( file + sPrefixLength );
+    m.prepend( file + ( file[0] == '/' ? sPrefixLength : 0 ) );
 #else
     m.prepend( file );
 #endif
@@ -111,35 +108,35 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   }
 }
 
-void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line )
 {
-  debug( QString( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
+  debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
-void QgsLogger::debug( const QString& var, double val, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &var, double val, int debuglevel, const char *file, const char *function, int line )
 {
-  debug( QString( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
+  debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
-void QgsLogger::warning( const QString& msg )
+void QgsLogger::warning( const QString &msg )
 {
   logMessageToFile( msg );
   qWarning( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::critical( const QString& msg )
+void QgsLogger::critical( const QString &msg )
 {
   logMessageToFile( msg );
   qCritical( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::fatal( const QString& msg )
+void QgsLogger::fatal( const QString &msg )
 {
   logMessageToFile( msg );
   qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::logMessageToFile( const QString& theMessage )
+void QgsLogger::logMessageToFile( const QString &message )
 {
   if ( sLogFile.isEmpty() )
     return;
@@ -148,7 +145,7 @@ void QgsLogger::logMessageToFile( const QString& theMessage )
   QFile file( sLogFile );
   if ( !file.open( QIODevice::Append ) )
     return;
-  file.write( theMessage.toLocal8Bit().constData() );
+  file.write( message.toLocal8Bit().constData() );
   file.write( "\n" );
   file.close();
 }

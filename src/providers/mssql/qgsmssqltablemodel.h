@@ -15,11 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMSSQLTABLEMODEL_H
+#define QGSMSSQLTABLEMODEL_H
+
 #include <QStandardItemModel>
 
 #include "qgis.h"
 
-/** Layer Property structure */
+//! Layer Property structure
 struct QgsMssqlLayerProperty
 {
   // MSSQL layer properties
@@ -36,7 +39,8 @@ struct QgsMssqlLayerProperty
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsMssqlTableModel : public QStandardItemModel
@@ -44,46 +48,45 @@ class QgsMssqlTableModel : public QStandardItemModel
     Q_OBJECT
   public:
     QgsMssqlTableModel();
-    ~QgsMssqlTableModel();
 
-    /** Adds entry for one database table to the model*/
+    //! Adds entry for one database table to the model
     void addTableEntry( const QgsMssqlLayerProperty &property );
 
-    /** Sets an sql statement that belongs to a cell specified by a model index*/
-    void setSql( const QModelIndex& index, const QString& sql );
+    //! Sets an sql statement that belongs to a cell specified by a model index
+    void setSql( const QModelIndex &index, const QString &sql );
 
-    /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
-       This is for tables where the type is dectected later by thread*/
+    /**
+     * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
+       This is for tables where the type is detected later by thread*/
     void setGeometryTypesForTable( QgsMssqlLayerProperty layerProperty );
 
-    /** Returns the number of tables in the model*/
+    //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }
 
-    enum columns
+    enum Columns
     {
-      dbtmSchema = 0,
-      dbtmTable,
-      dbtmType,
-      dbtmGeomCol,
-      dbtmSrid,
-      dbtmPkCol,
-      dbtmSelectAtId,
-      dbtmSql,
-      dbtmColumns
+      DbtmSchema = 0,
+      DbtmTable,
+      DbtmType,
+      DbtmGeomCol,
+      DbtmSrid,
+      DbtmPkCol,
+      DbtmSelectAtId,
+      DbtmSql,
+      DbtmColumns
     };
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
+    QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata, bool disableInvalidGeometryHandling );
 
-    static QIcon iconForWkbType( QGis::WkbType type );
+    static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
-    static QGis::WkbType wkbTypeFromMssql( QString dbType );
-
-    static QString displayStringForWkbType( QGis::WkbType type );
+    static QgsWkbTypes::Type wkbTypeFromMssql( QString dbType );
 
   private:
-    /** Number of tables in the model*/
-    int mTableCount;
+    //! Number of tables in the model
+    int mTableCount = 0;
 };
 
+#endif

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsGrassToolsBase</class>
- <widget class="QDockWidget" name="QgsGrassToolsBase">
+ <widget class="QgsDockWidget" name="QgsGrassToolsBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GRASS Tools</string>
+   <string>&amp;GRASS Tools</string>
   </property>
   <widget class="QWidget" name="mContents">
    <layout class="QGridLayout" name="gridLayout">
@@ -40,11 +40,11 @@
           <item>
            <widget class="QToolButton" name="mViewModeButton">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="../../../images/images.qrc">
-              <normaloff>:/images/themes/default/mIconListView.png</normaloff>:/images/themes/default/mIconListView.png</iconset>
+              <normaloff>:/images/themes/default/mIconListView.svg</normaloff>:/images/themes/default/mIconListView.svg</iconset>
             </property>
            </widget>
           </item>
@@ -59,7 +59,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="mFilterInput"/>
+           <widget class="QLineEdit" name="mFilterInput">
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -132,6 +136,14 @@
    <zorder>mMessageLabel</zorder>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

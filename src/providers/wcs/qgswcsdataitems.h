@@ -23,20 +23,23 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
-    ~QgsWCSConnectionItem();
+    QgsWCSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
 
-    QVector<QgsDataItem*> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
 
-    virtual QList<QAction*> actions() override;
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
-    QgsWcsCapabilities mCapabilities;
+    QgsWcsCapabilities mWcsCapabilities;
     QVector<QgsWcsCoverageSummary> mLayerProperties;
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   private:
     QString mUri;
@@ -48,15 +51,14 @@ class QgsWCSLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     const QgsWcsCapabilitiesProperty& capabilitiesProperty,
-                     const QgsDataSourceURI& dataSourceUri, const QgsWcsCoverageSummary& coverageSummary );
-    ~QgsWCSLayerItem();
+    QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path,
+                     const QgsWcsCapabilitiesProperty &capabilitiesProperty,
+                     const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary );
 
     QString createUri();
 
     QgsWcsCapabilitiesProperty mCapabilities;
-    QgsDataSourceURI mDataSourceUri;
+    QgsDataSourceUri mDataSourceUri;
     QgsWcsCoverageSummary mCoverageSummary;
 };
 
@@ -64,19 +66,22 @@ class QgsWCSRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWCSRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsWCSRootItem();
+    QgsWCSRootItem( QgsDataItem *parent, QString name, QString path );
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction*> actions() override;
+    QVariant sortKey() const override { return 9; }
 
-    virtual QWidget * paramWidget() override;
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+    QWidget *paramWidget() override;
+#endif
 
   public slots:
-    void connectionsChanged();
-
+#ifdef HAVE_GUI
+    void onConnectionsChanged();
     void newConnection();
+#endif
 };
 
 #endif // QGSWCSDATAITEMS_H

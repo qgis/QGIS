@@ -25,10 +25,11 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerSQL
+from qgis.core import QgsSettings
 
 
 class SqlEdit(QsciScintilla):
@@ -98,7 +99,7 @@ class SqlEdit(QsciScintilla):
         self.setAutoCompletionCaseSensitivity(False)
 
         # Load font from Python console settings
-        settings = QSettings()
+        settings = QgsSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
         fontSize = int(settings.value('pythonConsole/fontsize', 10))
 
@@ -106,8 +107,6 @@ class SqlEdit(QsciScintilla):
         self.defaultFont.setFixedPitch(True)
         self.defaultFont.setPointSize(fontSize)
         self.defaultFont.setStyleHint(QFont.TypeWriter)
-        self.defaultFont.setStretch(QFont.SemiCondensed)
-        self.defaultFont.setLetterSpacing(QFont.PercentageSpacing, 87.0)
         self.defaultFont.setBold(False)
 
         self.boldFont = QFont(self.defaultFont)
@@ -127,16 +126,16 @@ class SqlEdit(QsciScintilla):
         # Disable some shortcuts
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl
-                           + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl +
+                           shift)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
         # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                                                           + Qt.Key_Space), self)
+        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL +
+                                                           Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -177,3 +176,6 @@ class SqlEdit(QsciScintilla):
 
     def lexer(self):
         return self.mylexer
+
+    def setMarginVisible(self, visible):
+        pass

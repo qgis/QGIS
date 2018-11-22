@@ -4,6 +4,34 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+# Macro that checks for extra include directories set during GRASS compilation.
+# This helps for platforms where GRASS is built against dependencies in
+# non-standard locations; like on Mac, where the system gettext is too old and
+# GRASS is built off of gettext in /usr/local/opt, or some other custom prefix.
+# Such includes may need found again when including some GRASS headers.
+
+MACRO (CHECK_GRASS_EXTRA_INCLUDE_DIRS GRASS_VERSION)
+  SET(GRASS_EXTRA_INCLUDE_DIRS${GRASS_VERSION} ""
+      CACHE STRING "Extra includes string used for GRASS${GRASS_VERSION}")
+
+  IF(UNIX AND EXISTS ${GRASS_INCLUDE_DIR${GRASS_VERSION}}/Make/Platform.make
+     AND "${GRASS${GRASS_VERSION}_EXTRA_INCLUDE_DIRS}" STREQUAL "")
+
+    FILE(READ ${GRASS_INCLUDE_DIR${GRASS_VERSION}}/Make/Platform.make _platformfile)
+    STRING(REGEX MATCH "INCLUDE_DIRS *= *[^\n]*" _config_includes "${_platformfile}")
+    SET(_extra_includes "")
+    IF(NOT "${_config_includes}" STREQUAL "")
+      STRING(REGEX REPLACE "INCLUDE_DIRS *= *([^\n]*)" "\\1" _extra_includes "${_config_includes}")
+    ENDIF()
+    IF(NOT "${_extra_includes}" STREQUAL "")
+      SET(GRASS_EXTRA_INCLUDE_DIRS${GRASS_VERSION} ${_extra_includes}
+          CACHE STRING "Extra includes string used for GRASS${GRASS_VERSION}" FORCE)
+    ENDIF()
+  ENDIF()
+
+  MARK_AS_ADVANCED (GRASS_EXTRA_INCLUDE_DIRS${GRASS_VERSION})
+ENDMACRO (CHECK_GRASS_EXTRA_INCLUDE_DIRS GRASS_VERSION)
+
 # macro that checks for grass installation in specified directory
 
 MACRO (CHECK_GRASS G_PREFIX)
@@ -108,11 +136,7 @@ MACRO (CHECK_GRASS G_PREFIX)
           SET(GRASS_FOUND${GRASS_FIND_VERSION} TRUE)
           SET(GRASS_FOUND TRUE) # GRASS_FOUND is true if at least one version was found
           SET(GRASS_PREFIX${GRASS_CACHE_VERSION} ${G_PREFIX})
-          IF(GRASS_FIND_VERSION EQUAL 6)
-            # Set also normal variable with number
-            SET(GRASS_INCLUDE_DIR${GRASS_FIND_VERSION} ${GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION}})
-            SET(GRASS_PREFIX${GRASS_FIND_VERSION} ${G_PREFIX})
-          ENDIF(GRASS_FIND_VERSION EQUAL 6)
+          CHECK_GRASS_EXTRA_INCLUDE_DIRS(${GRASS_FIND_VERSION})
         ENDIF(GRASS_LIBRARIES_FOUND${GRASS_FIND_VERSION})
     ENDIF(GRASS_MAJOR_VERSION${GRASS_FIND_VERSION} EQUAL GRASS_FIND_VERSION)
   ENDIF(GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION} AND EXISTS ${GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION}}/grass/version.h)
@@ -134,23 +158,30 @@ IF (WIN32)
 ENDIF (WIN32)
 
 IF (UNIX)
-  IF (GRASS_FIND_VERSION EQUAL 6)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass64 /usr/lib/grass64)
-  ELSEIF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71)
-  ENDIF ()
+  IF (GRASS_FIND_VERSION EQUAL 7)
+    IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+        FOREACH (VERSION_MINOR 0 1 2 3 4 5 6)
+            FOREACH (VERSION_BUILD 0 1 2 3 4 5 6)
+                LIST (APPEND GRASS_PATHS /usr/local/grass-${GRASS_FIND_VERSION}.${VERSION_MINOR}.${VERSION_BUILD})
+            ENDFOREACH (VERSION_BUILD)
+        ENDFOREACH(VERSION_MINOR)
+    ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+        FOREACH (PATH /usr/lib64 /usr/lib)
+            FOREACH (VERSION grass70, grass72, grass74)
+                LIST(APPEND GRASS_PATHS "${PATH}/${VERSION}")
+            ENDFOREACH (VERSION)
+        ENDFOREACH (PATH)
+    ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+   ENDIF (GRASS_FIND_VERSION EQUAL 7)
 ENDIF (UNIX)
 
 IF (APPLE)
-  IF (GRASS_FIND_VERSION EQUAL 6)
-    LIST(APPEND GRASS_PATHS
-      /Applications/GRASS-6.3.app/Contents/MacOS
-      /Applications/GRASS-6.4.app/Contents/MacOS
-    )
-  ELSEIF (GRASS_FIND_VERSION EQUAL 7)
+  IF (GRASS_FIND_VERSION EQUAL 7)
     LIST(APPEND GRASS_PATHS
       /Applications/GRASS-7.0.app/Contents/MacOS
       /Applications/GRASS-7.1.app/Contents/MacOS
+      /Applications/GRASS-7.2.app/Contents/MacOS
+      /Applications/GRASS-7.4.app/Contents/MacOS
     )
   ENDIF ()
   LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)

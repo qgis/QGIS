@@ -2,7 +2,7 @@
   QgsAttributeTableDialog.h - dialog for attribute table
   -------------------
          date                 : Feb 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -21,16 +21,12 @@
 #include <QModelIndex>
 #include <QItemSelectionModel>
 
-#include <time.h>
+#include <ctime>
 
 #include "ui_qgsattributetabledialog.h"
-#include "qgscontexthelp.h"
-
-#include "qgsattributedialog.h"
-#include "qgsvectorlayer.h" //QgsFeatureIds
-#include "qgsfieldmodel.h"
 #include "qgssearchwidgetwrapper.h"
-#include <QDockWidget>
+#include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -42,101 +38,121 @@ class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
 
-class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
+class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
-     * @param theLayer layer pointer
-     * @param parent parent object
-     * @param flags window flags
+     * \param layer layer pointer
+     * \param initialMode initial filter for dialog
+     * \param parent parent object
+     * \param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
-    ~QgsAttributeTableDialog();
+    QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    /**
-     * Sets the filter expression to filter visible features
-     * @param filterString filter query string. QgsExpression compatible.
-     */
-    void setFilterExpression( const QString& filterString );
+    ~QgsAttributeTableDialog() override;
+
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
+
     /**
      * Toggles editing mode
      */
     void editingToggled();
 
+    /**
+     * Sets the filter expression to filter visible features
+     * \param filterString filter query string. QgsExpression compatible.
+     */
+    void setFilterExpression( const QString &filterString,
+                              QgsAttributeForm::FilterType type = QgsAttributeForm::ReplaceFilter,
+                              bool alwaysShowFilter = false );
+
   private slots:
+
+    /**
+     * Cut selected rows to the clipboard
+     */
+    void mActionCutSelectedRows_triggered();
+
     /**
      * Copies selected rows to the clipboard
      */
-    void on_mCopySelectedRowsButton_clicked();
+    void mActionCopySelectedRows_triggered();
+
     /**
      * Paste features from the clipboard
      */
-    void on_mPasteFeatures_clicked();
+    void mActionPasteFeatures_triggered();
+
     /**
      * Toggles editing mode
      */
-    void on_mToggleEditingButton_toggled();
+    void mActionToggleEditing_toggled( bool );
+
     /**
      * Saves edits
      */
-    void on_mSaveEditsButton_clicked();
+    void mActionSaveEdits_triggered();
+
     /**
      * Reload the data
      */
-    void on_mReloadButton_clicked();
-    /**
-     * Filter the columns (open a dialog, ...)
-     */
-    void on_mFilterTableFields_clicked();
+    void mActionReload_triggered();
 
     /**
      * Inverts selection
      */
-    void on_mInvertSelectionButton_clicked();
+    void mActionInvertSelection_triggered();
+
     /**
      * Clears selection
      */
-    void on_mRemoveSelectionButton_clicked();
+    void mActionRemoveSelection_triggered();
+
     /**
      * Select all
      */
-    void on_mSelectAllButton_clicked();
+    void mActionSelectAll_triggered();
+
     /**
      * Zooms to selected features
      */
-    void on_mZoomMapToSelectedRowsButton_clicked();
+    void mActionZoomMapToSelectedRows_triggered();
+
     /**
      * Pans to selected features
      */
-    void on_mPanMapToSelectedRowsButton_clicked();
+    void mActionPanMapToSelectedRows_triggered();
+
     /**
      * Moves selected lines to the top
      */
-    void on_mSelectedToTopButton_toggled();
+    void mActionSelectedToTop_toggled( bool );
 
     /**
      * Opens dialog to add new attribute
      */
-    void on_mAddAttribute_clicked();
+    void mActionAddAttribute_triggered();
 
     /**
      * Opens dialog to remove attribute
      */
-    void on_mRemoveAttribute_clicked();
+    void mActionRemoveAttribute_triggered();
+
     /**
      * Opens field calculator dialog
      */
-    void on_mOpenFieldCalculator_clicked();
+    void mActionOpenFieldCalculator_triggered();
 
     /**
      * deletes the selected features
      */
-    void on_mDeleteSelectedButton_clicked();
+    void mActionDeleteSelected_triggered();
 
     /**
      * Called when the current index changes in the main view
@@ -145,25 +161,21 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      *
      * Will adjust the button state
      */
-    void on_mMainView_currentChanged( int );
+    void mMainView_currentChanged( int );
 
     /**
      * add feature
      */
-    void on_mAddFeature_clicked();
+    void mActionAddFeature_triggered();
 
-    void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
-
-    void on_mSortButton_clicked();
-
-    void on_mExpressionSelectButton_clicked();
-    void filterColumnChanged( QObject* filterAction );
+    void mActionExpressionSelect_triggered();
+    void filterColumnChanged( QObject *filterAction );
     void filterExpressionBuilder();
     void filterShowAll();
     void filterSelected();
     void filterVisible();
     void filterEdited();
-    void filterQueryChanged( const QString& query );
+    void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
     void openConditionalStyles();
 
@@ -172,79 +184,77 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void updateTitle();
 
-    void updateButtonStatus( const QString& fieldName, bool isValid );
+    void updateButtonStatus( const QString &fieldName, bool isValid );
 
     /* replace the search widget with a new one */
-    void replaceSearchWidget( QWidget* oldw, QWidget* neww );
+    void replaceSearchWidget( QWidget *oldw, QWidget *neww );
 
+    void layerActionTriggered();
   signals:
-    /**
-     * Informs that editing mode has been toggled
-     * @param layer layer that has been toggled
-     */
-    void editingToggled( QgsMapLayer *layer );
 
     /**
      * Informs that edits should be saved
-     * @param layer layer whose edits are to be saved
+     * \param layer layer whose edits are to be saved
      */
     void saveEdits( QgsMapLayer *layer );
 
   protected:
-    /**
-     * Handle closing of the window
-     * @param event unused
-     */
-    void closeEvent( QCloseEvent* event ) override;
 
     /*
      * Handle KeyPress event of the window
-     * @param event
+     * \param event
      */
-    void keyPressEvent( QKeyEvent* event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+
+    bool eventFilter( QObject *object, QEvent *ev ) override;
 
   private slots:
+
     /**
      * Initialize column box
      */
     void columnBoxInit();
 
-    void runFieldCalculation( QgsVectorLayer* layer, const QString& fieldName, const QString& expression, const QgsFeatureIds& filteredIds = QgsFeatureIds() );
+    void runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
+    void viewModeChanged( QgsAttributeEditorContext::Mode mode );
+    void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
+    void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
+    void toggleDockMode( bool docked );
 
   private:
-    QMenu* mMenuActions;
-    QAction* mActionToggleEditing;
+    QMenu *mMenuActions = nullptr;
+    QToolButton *mActionFeatureActions = nullptr;
 
-    QDockWidget* mDock;
-    QgsDistanceArea* myDa;
+    QgsDockWidget *mDock = nullptr;
+    QDialog *mDialog = nullptr;
+    QgsDistanceArea *myDa = nullptr;
 
 
-    QMenu* mFilterColumnsMenu;
-    QSignalMapper* mFilterActionMapper;
+    QMenu *mFilterColumnsMenu = nullptr;
+    QSignalMapper *mFilterActionMapper = nullptr;
 
-    QgsVectorLayer* mLayer;
-    QgsFieldModel* mFieldModel;
-
-    QgsRubberBand* mRubberBand;
-    QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
+    QPointer< QgsVectorLayer > mLayer = nullptr;
+    QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
+    QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
+    void deleteFeature( QgsFeatureId fid );
 
     friend class TestQgsAttributeTable;
 };
 
 
-class QgsAttributeTableDock : public QDockWidget
+class QgsAttributeTableDock : public QgsDockWidget
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTableDock( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
-    virtual void closeEvent( QCloseEvent * ev ) override;
+    void closeEvent( QCloseEvent *ev ) override;
 };
 
 

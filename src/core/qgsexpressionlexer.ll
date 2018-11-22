@@ -20,8 +20,11 @@
 %option prefix="exp_"
  // this makes flex generate lexer with context + init/destroy functions
 %option reentrant
+%option yylineno
  // this makes Bison send yylex another argument to use instead of using the global variable yylval
 %option bison-bridge
+%option bison-locations
+
 
  // ensure that lexer will be 8-bit (and not just 7-bit)
 %option 8bit
@@ -31,7 +34,9 @@
 #include <stdlib.h>  // atof()
 
 #include "qgsexpression.h"
-struct expression_parser_context;
+#include "expression/qgsexpressionnodeimpl.h"
+#include "qgsexpressionfunction.h"
+        struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
 #include <QLocale>
 
@@ -47,10 +52,23 @@ struct expression_parser_context;
 #define YY_NO_UNISTD_H
 #endif
 
-#define B_OP(x) yylval->b_op = QgsExpression::x
-#define U_OP(x) yylval->u_op = QgsExpression::x
+#define B_OP(x) yylval->b_op = QgsExpressionNodeBinaryOperator::x
+#define U_OP(x) yylval->u_op = QgsExpressionNodeUnaryOperator::x
 #define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
 #define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
+
+#define YY_USER_ACTION \
+    yylloc->first_line = yylloc->last_line; \
+    yylloc->first_column = yylloc->last_column; \
+    for(int i = 0; yytext[i] != '\0'; i++) { \
+    if(yytext[i] == '\n') { \
+        yylloc->last_line++; \
+        yylloc->last_column = 0; \
+    } \
+    else { \
+        yylloc->last_column++; \
+    } \
+}
 
 static QString stripText(QString text)
 {
@@ -110,16 +128,16 @@ non_ascii    [\x80-\xFF]
 
 col_first    [A-Za-z_]|{non_ascii}
 col_next     [A-Za-z0-9_]|{non_ascii}
-column_ref  {col_first}{col_next}*
+identifier  {col_first}{col_next}*
 
 deprecated_function "$"[xXyY]_?[aA][tT]
-special_col "$"{column_ref}
-variable "@"{column_ref}
+special_col "$"{identifier}
+variable "@"{identifier}
 
-named_node {column_ref}{white}*":="{white}*
+named_node {identifier}{white}*":="{white}*
 
 col_str_char  "\"\""|[^\"]
-column_ref_quoted  "\""{col_str_char}*"\""
+identifier_quoted  "\""{col_str_char}*"\""
 
 dig         [0-9]
 num_int     {dig}+
@@ -184,14 +202,14 @@ string      "'"{str_char}*"'"
 
 ","                 { return COMMA; }
 
-{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok );
+	yylval->numberInt = cLocale.toInt( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_INT;
 
-	yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+	yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;
 
@@ -202,7 +220,7 @@ string      "'"{str_char}*"'"
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
-{deprecated_function} { TEXT; return FUNCTION; }
+{deprecated_function} { TEXT; return NAME; }
 
 {named_node} { TEXT_FILTER(stripNamedText); return NAMED_NODE; }
 
@@ -210,9 +228,9 @@ string      "'"{str_char}*"'"
 
 {variable}        { TEXT; return VARIABLE; }
 
-{column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
+{identifier}         { TEXT; return NAME; }
 
-{column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
+{identifier_quoted}  { TEXT_FILTER(stripColumnRef); return QUOTED_COLUMN_REF; }
 
 {white}    /* skip blanks and tabs */
 

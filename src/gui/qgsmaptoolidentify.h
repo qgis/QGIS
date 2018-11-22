@@ -16,15 +16,15 @@
 #ifndef QGSMAPTOOLIDENTIFY_H
 #define QGSMAPTOOLIDENTIFY_H
 
-#include "qgsdistancearea.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsmaptool.h"
-#include "qgsmaplayer.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
+#include "qgsunittypes.h"
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsVectorLayer;
@@ -32,8 +32,10 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsHighlight;
 class QgsIdentifyMenu;
+class QgsDistanceArea;
 
 /**
+ * \ingroup gui
   \brief Map tool for identifying features in layers
 
   after selecting a point, performs the identification:
@@ -44,7 +46,6 @@ class QgsIdentifyMenu;
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {
     Q_OBJECT
-    Q_FLAGS( LayerType )
 
   public:
 
@@ -56,6 +57,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       TopDownAll,
       LayerSelection
     };
+    Q_ENUM( IdentifyMode )
 
     enum Type
     {
@@ -64,21 +66,23 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       AllLayers = VectorLayer | RasterLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
+    Q_FLAG( LayerType )
 
     struct IdentifyResult
     {
-      IdentifyResult() : mLayer( nullptr ) {}
+      //! Constructor for IdentifyResult
+      IdentifyResult() = default;
 
-      IdentifyResult( QgsMapLayer * layer, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes ):
-          mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
+        : mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer * layer, const QString& label, const QMap< QString, QString >& attributes, const QMap< QString, QString >& derivedAttributes ):
-          mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes )
+        : mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer * layer, const QString& label, const QgsFields& fields, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes ):
-          mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
+        : mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      QgsMapLayer* mLayer;
+      QgsMapLayer *mLayer = nullptr;
       QString mLabel;
       QgsFields mFields;
       QgsFeature mFeature;
@@ -88,126 +92,175 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     };
 
     //! constructor
-    QgsMapToolIdentify( QgsMapCanvas * canvas );
+    QgsMapToolIdentify( QgsMapCanvas *canvas );
 
-    virtual ~QgsMapToolIdentify();
+    ~QgsMapToolIdentify() override;
 
-    //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void activate() override;
+    void deactivate() override;
 
-    //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    /**
+     * Performs the identification.
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
+    \param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
+    \returns a list of IdentifyResult*/
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
-    //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
-    virtual void activate() override;
-
-    virtual void deactivate() override;
-
-    /** Performs the identification.
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-    @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
-    @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer*>& layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
-
-    /** Performs the identification.
-    To avoid beeing forced to specify IdentifyMode with a list of layers
+    /**
+     * Performs the identification.
+    To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
-    @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, const LayerType& layerType = AllLayers );
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+    \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
+    \returns a list of IdentifyResult*/
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
-    //! return a pointer to the identify menu which will be used in layer selection mode
-    //! this menu can also be customized
-    QgsIdentifyMenu* identifyMenu() {return mIdentifyMenu;}
+    //! Performs identification based on a geometry (in map coordinates)
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
+    //! Performs identification based on a geometry (in map coordinates)
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType );
+
+
+    /**
+     * Returns a pointer to the identify menu which will be used in layer selection mode
+     * this menu can also be customized
+     */
+    QgsIdentifyMenu *identifyMenu() {return mIdentifyMenu;}
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( const QString& );
-    void changedRasterResults( QList<IdentifyResult>& );
+    void identifyMessage( const QString & );
+    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> & );
 
   protected:
-    /** Performs the identification.
-    To avoid beeing forced to specify IdentifyMode with a list of layers
+
+    /**
+     * Performs the identification.
+    To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
-    @param x x coordinates of mouseEvent
-    @param y y coordinates of mouseEvent
-    @param mode Identification mode. Can use Qgis default settings or a defined mode.
-    @param layerList Performs the identification within the given list of layers.
-    @param layerType Only performs identification in a certain type of layers (raster, vector).
-    @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer*>& layerList, const LayerType& layerType = AllLayers );
+    \param x x coordinates of mouseEvent
+    \param y y coordinates of mouseEvent
+    \param mode Identification mode. Can use Qgis default settings or a defined mode.
+    \param layerList Performs the identification within the given list of layers.
+    \param layerType Only performs identification in a certain type of layers (raster, vector).
+    \returns a list of IdentifyResult*/
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
-    QgsIdentifyMenu* mIdentifyMenu;
+    QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
-    /** Call the right method depending on layer type */
-    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, const QgsMapToolIdentify::LayerType& layerType = AllLayers );
+    //! Call the right method depending on layer type
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
 
-    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint& point );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+
+    //! Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
+    QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
+
+    /**
+     * Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+     *
+     * This is useful when the identification is triggered by some other piece of GUI like a 3D map view
+     * and some properties like search radius need to be adjusted so that identification returns correct
+     * results. Currently only search radius may be overridden.
+     *
+     * When the custom identification has finished, restoreCanvasPropertiesOverrides() should
+     * be called to erase any overrides.
+     * \see restoreCanvasPropertiesOverrides()
+     * \since QGIS 3.4
+     */
+    void setCanvasPropertiesOverrides( double searchRadiusMapUnits );
+
+    /**
+     * Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
+     * \see setCanvasPropertiesOverrides()
+     * \since QGIS 3.4
+     */
+    void restoreCanvasPropertiesOverrides();
 
   private:
 
-    //! Private helper
-    //! @deprecated use displayDistanceUnits() and displayAreaUnits() instead
-    Q_DECL_DEPRECATED virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
 
-    /** Transforms the measurements of derived attributes in the desired units
-     * @deprecated use displayDistanceUnits() and displayAreaUnits() instead
-    */
-    Q_DECL_DEPRECATED virtual QGis::UnitType displayUnits();
-
-    /** Desired units for distance display.
-     * @note added in QGIS 2.14
-     * @see displayAreaUnits()
+    /**
+     * Desired units for distance display.
+     * \see displayAreaUnits()
+     * \since QGIS 2.14
      */
-    virtual QGis::UnitType displayDistanceUnits() const;
+    virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
-    /** Desired units for area display.
-     * @note added in QGIS 2.14
-     * @see displayDistanceUnits()
+    /**
+     * Desired units for area display.
+     * \see displayDistanceUnits()
+     * \since QGIS 2.14
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
-    /** Format a distance into a suitable string for display to the user
-     * @note added in QGIS 2.14
-     * @see formatArea()
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatArea()
+     * \since QGIS 2.14
      */
     QString formatDistance( double distance ) const;
 
-    /** Format a distance into a suitable string for display to the user
-     * @note added in QGIS 2.14
-     * @see formatDistance()
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatDistance()
+     * \since QGIS 2.14
      */
     QString formatArea( double area ) const;
 
-    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint = QgsPoint() );
-
-    /** Adds details of the closest vertex to derived attributes
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatArea()
      */
-    void closestVertexAttributes( const QgsAbstractGeometryV2& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
+    QString formatDistance( double distance, QgsUnitTypes::DistanceUnit unit ) const;
 
-    QString formatCoordinate( const QgsPoint& canvasPoint ) const;
-    QString formatXCoordinate( const QgsPoint& canvasPoint ) const;
-    QString formatYCoordinate( const QgsPoint& canvasPoint ) const;
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatDistance()
+     */
+    QString formatArea( double area, QgsUnitTypes::AreaUnit unit ) const;
 
-    // Last point in canvas CRS
-    QgsPoint mLastPoint;
+    QMap< QString, QString > featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
+
+    /**
+     * Adds details of the closest vertex to derived attributes
+     */
+    void closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes );
+
+    /**
+     * Adds details of the closest point to derived attributes
+    */
+    void closestPointAttributes( const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes );
+
+    QString formatCoordinate( const QgsPointXY &canvasPoint ) const;
+    QString formatXCoordinate( const QgsPointXY &canvasPoint ) const;
+    QString formatYCoordinate( const QgsPointXY &canvasPoint ) const;
+
+    // Last geometry (point or polygon) in map CRS
+    QgsGeometry mLastGeometry;
 
     double mLastMapUnitsPerPixel;
 
     QgsRectangle mLastExtent;
 
     int mCoordinatePrecision;
+
+    double mOverrideCanvasSearchRadius = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )

@@ -18,9 +18,10 @@
 #include "qgshistogramwidget.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsstatisticalsummary.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QObject>
 #include <QMouseEvent>
 
@@ -34,42 +35,34 @@
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
 #include <qwt_plot_layout.h>
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
-#else
-#include "../raster/qwt5_histogram_item.h"
-#endif
 
 
-QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, const QString& fieldOrExp )
-    : QWidget( parent )
-    , mVectorLayer( layer )
-    , mSourceFieldExp( fieldOrExp )
-    , mXAxisTitle( QObject::tr( "Value" ) )
-    , mYAxisTitle( QObject::tr( "Count" ) )
+QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, const QString &fieldOrExp )
+  : QWidget( parent )
+  , mVectorLayer( layer )
+  , mSourceFieldExp( fieldOrExp )
+  , mXAxisTitle( QObject::tr( "Value" ) )
+  , mYAxisTitle( QObject::tr( "Count" ) )
 {
   setupUi( this );
 
   mPlot = mpPlot;
 
   // hide the ugly canvas frame
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  QFrame* plotCanvasFrame = dynamic_cast<QFrame*>( mpPlot->canvas() );
+  QFrame *plotCanvasFrame = dynamic_cast<QFrame *>( mpPlot->canvas() );
   if ( plotCanvasFrame )
     plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
-#else
-  mpPlot->canvas()->setFrameStyle( QFrame::NoFrame );
-#endif
 
-  QSettings settings;
-  mMeanCheckBox->setChecked( settings.value( "/HistogramWidget/showMean", false ).toBool() );
-  mStdevCheckBox->setChecked( settings.value( "/HistogramWidget/showStdev", false ).toBool() );
+  QgsSettings settings;
+  mMeanCheckBox->setChecked( settings.value( QStringLiteral( "HistogramWidget/showMean" ), false ).toBool() );
+  mStdevCheckBox->setChecked( settings.value( QStringLiteral( "HistogramWidget/showStdev" ), false ).toBool() );
 
-  connect( mBinsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( refresh() ) );
-  connect( mMeanCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refresh() ) );
-  connect( mStdevCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refresh() ) );
-  connect( mLoadValuesButton, SIGNAL( clicked() ), this, SLOT( refreshValues() ) );
+  connect( mBinsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsHistogramWidget::refresh );
+  connect( mMeanCheckBox, &QAbstractButton::toggled, this, &QgsHistogramWidget::refresh );
+  connect( mStdevCheckBox, &QAbstractButton::toggled, this, &QgsHistogramWidget::refresh );
+  connect( mLoadValuesButton, &QAbstractButton::clicked, this, &QgsHistogramWidget::refreshValues );
 
   mGridPen = QPen( QColor( 0, 0, 0, 40 ) );
   mMeanPen = QPen( QColor( 10, 10, 10, 220 ) );
@@ -85,20 +78,20 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, 
 
 QgsHistogramWidget::~QgsHistogramWidget()
 {
-  QSettings settings;
-  settings.setValue( "/HistogramWidget/showMean", mMeanCheckBox->isChecked() );
-  settings.setValue( "/HistogramWidget/showStdev", mStdevCheckBox->isChecked() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "HistogramWidget/showMean" ), mMeanCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "HistogramWidget/showStdev" ), mStdevCheckBox->isChecked() );
 }
 
-static bool _rangesByLower( const QgsRendererRangeV2& a, const QgsRendererRangeV2& b )
+static bool _rangesByLower( const QgsRendererRange &a, const QgsRendererRange &b )
 {
-  return a.lowerValue() < b.lowerValue() ? -1 : 0;
+  return a.lowerValue() < b.lowerValue();
 }
 
 void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
 {
   mRanges = ranges;
-  qSort( mRanges.begin(), mRanges.end(), _rangesByLower );
+  std::sort( mRanges.begin(), mRanges.end(), _rangesByLower );
 }
 
 void QgsHistogramWidget::refreshValues()
@@ -111,7 +104,7 @@ void QgsHistogramWidget::refreshValues()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   bool ok;
-  mValues = mVectorLayer->getDoubleValues( mSourceFieldExp, ok );
+  mValues = QgsVectorLayerUtils::getDoubleValues( mVectorLayer, mSourceFieldExp, ok );
 
   if ( ! ok )
   {
@@ -120,10 +113,10 @@ void QgsHistogramWidget::refreshValues()
   }
 
 
-  qSort( mValues.begin(), mValues.end() );
+  std::sort( mValues.begin(), mValues.end() );
   mHistogram.setValues( mValues );
   mBinsSpinBox->blockSignals( true );
-  mBinsSpinBox->setValue( qMax( mHistogram.optimalNumberBins(), 30 ) );
+  mBinsSpinBox->setValue( std::max( mHistogram.optimalNumberBins(), 30 ) );
   mBinsSpinBox->blockSignals( false );
 
   mStats.setStatistics( QgsStatisticalSummary::StDev );
@@ -201,34 +194,24 @@ void QgsHistogramWidget::drawHistogram()
   mpPlot->setAxisAutoScale( QwtPlot::xBottom );
 
   // add a grid
-  QwtPlotGrid * grid = new QwtPlotGrid();
+  QwtPlotGrid *grid = new QwtPlotGrid();
   grid->enableX( false );
   grid->setPen( mGridPen );
   grid->attach( mpPlot );
 
   // make colors list
   mHistoColors.clear();
-  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
+  Q_FOREACH ( const QgsRendererRange &range, mRanges )
   {
     mHistoColors << ( range.symbol() ? range.symbol()->color() : Qt::black );
   }
 
   //draw histogram
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   QwtPlotHistogram *plotHistogram = nullptr;
   plotHistogram = createPlotHistogram( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
                                        !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
                                        !mRanges.isEmpty() ? Qt::NoPen : mPen );
   QVector<QwtIntervalSample> dataHisto;
-#else
-  HistogramItem *plotHistogramItem = nullptr;
-  plotHistogramItem = createHistoItem( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
-                                       !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
-                                       !mRanges.isEmpty() ? Qt::NoPen : mPen );
-  // we safely assume that QT>=4.0 (min version is 4.7), therefore QwtArray is a QVector, so don't set size here
-  QwtArray<QwtDoubleInterval> intervalsHisto;
-  QwtArray<double> valuesHisto;
-#endif
 
   int bins = mBinsSpinBox->value();
   QList<double> edges = mHistogram.binEdges( bins );
@@ -246,48 +229,28 @@ void QgsHistogramWidget::drawHistogram()
     if ( rangeIndex < mRanges.count() - 1 && edges.at( bin ) > mRanges.at( rangeIndex ).upperValue() )
     {
       rangeIndex++;
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
       plotHistogram->setSamples( dataHisto );
       plotHistogram->attach( mpPlot );
       plotHistogram = createPlotHistogram( mRanges.at( rangeIndex ).label(), mHistoColors.at( rangeIndex ) );
       dataHisto.clear();
       dataHisto << QwtIntervalSample( lastValue, mRanges.at( rangeIndex - 1 ).upperValue(), edges.at( bin ) );
-#else
-      plotHistogramItem->setData( QwtIntervalData( intervalsHisto, valuesHisto ) );
-      plotHistogramItem->attach( mpPlot );
-      plotHistogramItem = createHistoItem( mRanges.at( rangeIndex ).label(), mHistoColors.at( rangeIndex ) );
-      intervalsHisto.clear();
-      valuesHisto.clear();
-      intervalsHisto.append( QwtDoubleInterval( mRanges.at( rangeIndex - 1 ).upperValue(), edges.at( bin ) ) );
-      valuesHisto.append( lastValue );
-#endif
     }
 
-    double upperEdge = !mRanges.isEmpty() ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
+    double upperEdge = !mRanges.isEmpty() ? std::min( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
                        : edges.at( bin + 1 );
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
-#else
-    intervalsHisto.append( QwtDoubleInterval( edges.at( bin ), upperEdge ) );
-    valuesHisto.append( double( binValue ) );
-#endif
 
     lastValue = binValue;
   }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   plotHistogram->setSamples( dataHisto );
   plotHistogram->attach( mpPlot );
-#else
-  plotHistogramItem->setData( QwtIntervalData( intervalsHisto, valuesHisto ) );
-  plotHistogramItem->attach( mpPlot );
-#endif
 
   mRangeMarkers.clear();
-  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
+  Q_FOREACH ( const QgsRendererRange &range, mRanges )
   {
-    QwtPlotMarker* rangeMarker = new QwtPlotMarker();
+    QwtPlotMarker *rangeMarker = new QwtPlotMarker();
     rangeMarker->attach( mpPlot );
     rangeMarker->setLineStyle( QwtPlotMarker::VLine );
     rangeMarker->setXValue( range.upperValue() );
@@ -300,7 +263,7 @@ void QgsHistogramWidget::drawHistogram()
 
   if ( mMeanCheckBox->isChecked() )
   {
-    QwtPlotMarker* meanMarker = new QwtPlotMarker();
+    QwtPlotMarker *meanMarker = new QwtPlotMarker();
     meanMarker->attach( mpPlot );
     meanMarker->setLineStyle( QwtPlotMarker::VLine );
     meanMarker->setLinePen( mMeanPen );
@@ -312,7 +275,7 @@ void QgsHistogramWidget::drawHistogram()
 
   if ( mStdevCheckBox->isChecked() )
   {
-    QwtPlotMarker* stdev1Marker = new QwtPlotMarker();
+    QwtPlotMarker *stdev1Marker = new QwtPlotMarker();
     stdev1Marker->attach( mpPlot );
     stdev1Marker->setLineStyle( QwtPlotMarker::VLine );
     stdev1Marker->setLinePen( mStdevPen );
@@ -321,7 +284,7 @@ void QgsHistogramWidget::drawHistogram()
     stdev1Marker->setLabelAlignment( Qt::AlignLeft | Qt::AlignTop );
     stdev1Marker->show();
 
-    QwtPlotMarker* stdev2Marker = new QwtPlotMarker();
+    QwtPlotMarker *stdev2Marker = new QwtPlotMarker();
     stdev2Marker->attach( mpPlot );
     stdev2Marker->setLineStyle( QwtPlotMarker::VLine );
     stdev2Marker->setLinePen( mStdevPen );
@@ -335,10 +298,9 @@ void QgsHistogramWidget::drawHistogram()
   mpPlot->replot();
 }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-QwtPlotHistogram* QgsHistogramWidget::createPlotHistogram( const QString& title, const QBrush& brush, const QPen& pen ) const
+QwtPlotHistogram *QgsHistogramWidget::createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen ) const
 {
-  QwtPlotHistogram* histogram = new QwtPlotHistogram( title );
+  QwtPlotHistogram *histogram = new QwtPlotHistogram( title );
   histogram->setBrush( brush );
   if ( pen != Qt::NoPen )
   {
@@ -358,26 +320,4 @@ QwtPlotHistogram* QgsHistogramWidget::createPlotHistogram( const QString& title,
   }
   return histogram;
 }
-#else
-HistogramItem * QgsHistogramWidget::createHistoItem( const QString& title, const QBrush& brush, const QPen& pen ) const
-{
-  HistogramItem* item = new HistogramItem( title );
-  item->setColor( brush.color() );
-  item->setFlat( true );
-  item->setSpacing( 0 );
-  if ( pen != Qt::NoPen )
-  {
-    item->setPen( pen );
-  }
-  else if ( brush.color().lightness() > 200 )
-  {
-    QPen p;
-    p.setColor( brush.color().darker( 150 ) );
-    p.setWidth( 0 );
-    p.setCosmetic( true );
-    item->setPen( p );
-  }
-  return item;
-}
-#endif
 

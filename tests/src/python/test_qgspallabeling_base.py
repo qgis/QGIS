@@ -10,9 +10,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
+
+import collections
 
 __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
@@ -27,21 +26,26 @@ import sys
 import datetime
 import glob
 import shutil
-import tempfile
 
-from qgis.PyQt.QtCore import QSize, qDebug
+from qgis.PyQt.QtCore import QSize, qDebug, Qt
 from qgis.PyQt.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsDataSourceURI,
-    QgsMapLayerRegistry,
+    QgsCoordinateTransform,
+    QgsDataSourceUri,
+    QgsGeometry,
+    QgsLabelingEngineSettings,
+    QgsProject,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
     QgsProviderRegistry,
+    QgsStringReplacementCollection,
     QgsVectorLayer,
-    QgsMultiRenderChecker
+    QgsVectorLayerSimpleLabeling,
+    QgsMultiRenderChecker,
+    QgsUnitTypes
 )
 
 from qgis.testing import start_app, unittest
@@ -57,7 +61,7 @@ from utilities import (
 )
 
 
-start_app(sys.platform != 'darwin') # No cleanup on mac os x, it crashes the pallabellingcanvas test on exit
+start_app(sys.platform != 'darwin')  # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
 FONTSLOADED = loadTestFonts()
 
 PALREPORT = 'PAL_REPORT' in os.environ
@@ -73,17 +77,11 @@ class TestQgsPalLabeling(unittest.TestCase):
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
     _MapRegistry = None
-    """:type: QgsMapLayerRegistry"""
-    _MapRenderer = None
-    """:type: QgsMapRenderer"""
+    """:type: QgsProject"""
     _MapSettings = None
     """:type: QgsMapSettings"""
     _Canvas = None
     """:type: QgsMapCanvas"""
-    _Pal = None
-    """:type: QgsPalLabeling"""
-    _PalEngine = None
-    """:type: QgsLabelingEngineInterface"""
     _BaseSetup = False
 
     @classmethod
@@ -94,7 +92,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls._Iface = get_iface()
         cls._Canvas = cls._Iface.mapCanvas()
 
-        # verify that spatialite provider is available
+        # verify that SpatiaLite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
         # noinspection PyArgumentList
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()
@@ -114,8 +112,7 @@ class TestQgsPalLabeling(unittest.TestCase):
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
-        cls._MapRegistry = QgsMapLayerRegistry.instance()
-        cls._MapRenderer = cls._Canvas.mapRenderer()
+        cls._MapRegistry = QgsProject.instance()
 
         cls._MapSettings = cls.getBaseMapSettings()
         osize = cls._MapSettings.outputSize()
@@ -124,9 +121,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls._Canvas.setCanvasColor(cls._MapSettings.backgroundColor())
 
         cls.setDefaultEngineSettings()
-        msg = ('\nCould not initialize PAL labeling engine, '
-               'SKIPPING TEST SUITE')
-        assert cls._PalEngine, msg
 
         cls._BaseSetup = True
 
@@ -141,10 +135,8 @@ class TestQgsPalLabeling(unittest.TestCase):
 
     @classmethod
     def setDefaultEngineSettings(cls):
-        """Restore default settings for pal labelling"""
-        cls._Pal = QgsPalLabeling()
-        cls._MapRenderer.setLabelingEngine(cls._Pal)
-        cls._PalEngine = cls._MapRenderer.labelingEngine()
+        """Restore default settings for pal labeling"""
+        cls._MapSettings.setLabelingEngineSettings(QgsLabelingEngineSettings())
 
     @classmethod
     def removeAllLayers(cls):
@@ -158,8 +150,8 @@ class TestQgsPalLabeling(unittest.TestCase):
         lyr_id = layer.id()
         cls._MapRegistry.removeMapLayer(lyr_id)
         ms_layers = cls._MapSettings.layers()
-        if lyr_id in ms_layers:
-            ms_layers.remove(lyr_id)
+        if layer in ms_layers:
+            ms_layers.remove(layer)
             cls._MapSettings.setLayers(ms_layers)
 
     @classmethod
@@ -170,7 +162,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     def loadFeatureLayer(cls, table, chk=False):
         if chk and cls._MapRegistry.mapLayersByName(table):
             return
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(cls._PalFeaturesDb)
         uri.setDataSource('', table, 'geometry')
         vlayer = QgsVectorLayer(uri.uri(), table, 'spatialite')
@@ -180,7 +172,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         # qDebug('render_lyr = {0}'.format(repr(vlayer)))
         cls._MapRegistry.addMapLayer(vlayer)
         # place new layer on top of render stack
-        render_lyrs = [vlayer.id()]
+        render_lyrs = [vlayer]
         render_lyrs.extend(cls._MapSettings.layers())
         # qDebug('render_lyrs = {0}'.format(repr(render_lyrs)))
         cls._MapSettings.setLayers(render_lyrs)
@@ -193,7 +185,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def aoiExtent(cls):
         """Area of interest extent, which matches output aspect ratio"""
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         uri.setDatabase(cls._PalFeaturesDb)
         uri.setDataSource('', 'aoi', 'geometry')
         aoilayer = QgsVectorLayer(uri.uri(), 'aoi', 'spatialite')
@@ -216,8 +208,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
         ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
-        ms.setCrsTransformEnabled(False)
-        ms.setMapUnits(crs.mapUnits())  # meters
         ms.setExtent(cls.aoiExtent())
         return ms
 
@@ -232,10 +222,9 @@ class TestQgsPalLabeling(unittest.TestCase):
         ms.setOutputDpi(oms.outputDpi())
         ms.setFlags(oms.flags())
         ms.setDestinationCrs(oms.destinationCrs())
-        ms.setCrsTransformEnabled(oms.hasCrsTransformEnabled())
-        ms.setMapUnits(oms.mapUnits())
         ms.setExtent(oms.extent())
         ms.setOutputImageFormat(oms.outputImageFormat())
+        ms.setLabelingEngineSettings(oms.labelingEngineSettings())
 
         ms.setLayers(oms.layers())
         return ms
@@ -260,12 +249,16 @@ class TestQgsPalLabeling(unittest.TestCase):
 
     def defaultLayerSettings(self):
         lyr = QgsPalLayerSettings()
-        lyr.enabled = True
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
         font.setPointSize(32)
-        lyr.textFont = font
-        lyr.textNamedStyle = 'Roman'
+        format = lyr.format()
+        format.setFont(font)
+        format.setNamedStyle('Roman')
+        format.setSize(32)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setJoinStyle(Qt.BevelJoin)
+        lyr.setFormat(format)
         return lyr
 
     @staticmethod
@@ -281,7 +274,9 @@ class TestQgsPalLabeling(unittest.TestCase):
         for attr in dir(lyr):
             if attr[0].islower() and not attr.startswith("__"):
                 value = getattr(lyr, attr)
-                if not callable(value):
+                if isinstance(value, (QgsGeometry, QgsStringReplacementCollection, QgsCoordinateTransform)):
+                    continue  # ignore these objects
+                if not isinstance(value, collections.Callable):
                     res[attr] = value
         return res
 
@@ -295,8 +290,8 @@ class TestQgsPalLabeling(unittest.TestCase):
     def saveControlImage(self, tmpimg=''):
         # don't save control images for RenderVsOtherOutput (Vs) tests, since
         # those control images belong to a different test result
-        if ('PAL_CONTROL_IMAGE' not in os.environ
-                or 'Vs' in self._TestGroup):
+        if ('PAL_CONTROL_IMAGE' not in os.environ or
+                'Vs' in self._TestGroup):
             return
         imgpath = self.controlImagePath()
         testdir = os.path.dirname(imgpath)
@@ -364,7 +359,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         chk.setColorTolerance(colortol)
         # noinspection PyUnusedLocal
         res = chk.runTest(self._Test, mismatch)
-        if PALREPORT and not res:  # don't report ok checks
+        if PALREPORT and not res:  # don't report OK checks
             testname = self._TestGroup + ' . ' + self._Test
             PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
@@ -400,54 +395,49 @@ class TestPALConfig(TestQgsPalLabeling):
         msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
         self.assertEqual(palset, '', msg)
 
-    def test_settings_enable_pal(self):
-        # Verify default PAL settings enable PAL labeling for layer
-        lyr = QgsPalLayerSettings()
-        lyr.writeToLayer(self.layer)
-        palset = self.layer.customProperty('labeling', '')
-        msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
-        self.assertEqual(palset, 'pal', msg)
+    def test_settings_no_labeling(self):
+        self.layer.setLabeling(None)
+        self.assertEqual(None, self.layer.labeling())
 
     def test_layer_pal_activated(self):
         # Verify, via engine, that PAL labeling can be activated for layer
         lyr = self.defaultLayerSettings()
-        lyr.writeToLayer(self.layer)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(lyr))
         msg = '\nLayer labeling not activated, as reported by labelingEngine'
-        self.assertTrue(self._PalEngine.willUseLayer(self.layer), msg)
+        self.assertTrue(QgsPalLabeling.staticWillUseLayer(self.layer), msg)
 
     def test_write_read_settings(self):
         # Verify written PAL settings are same when read from layer
         # load and write default test settings
         lyr1 = self.defaultLayerSettings()
         lyr1dict = self.settingsDict(lyr1)
-        # print lyr1dict
-        lyr1.writeToLayer(self.layer)
+        # print(lyr1dict)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(lyr1))
 
         # read settings
-        lyr2 = QgsPalLayerSettings()
-        lyr2.readFromLayer(self.layer)
-        lyr2dict = self.settingsDict(lyr1)
-        # print lyr2dict
+        lyr2 = self.layer.labeling().settings()
+        lyr2dict = self.settingsDict(lyr2)
+        # print(lyr2dict)
 
         msg = '\nLayer settings read not same as settings written'
         self.assertDictEqual(lyr1dict, lyr2dict, msg)
 
     def test_default_partials_labels_enabled(self):
         # Verify ShowingPartialsLabels is enabled for PAL by default
-        pal = QgsPalLabeling()
-        self.assertTrue(pal.isShowingPartialsLabels())
+        engine_settings = QgsLabelingEngineSettings()
+        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
 
     def test_partials_labels_activate(self):
-        pal = QgsPalLabeling()
+        engine_settings = QgsLabelingEngineSettings()
         # Enable partials labels
-        pal.setShowingPartialsLabels(True)
-        self.assertTrue(pal.isShowingPartialsLabels())
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates)
+        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
 
     def test_partials_labels_deactivate(self):
-        pal = QgsPalLabeling()
+        engine_settings = QgsLabelingEngineSettings()
         # Disable partials labels
-        pal.setShowingPartialsLabels(False)
-        self.assertFalse(pal.isShowingPartialsLabels())
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        self.assertFalse(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
 
 
 # noinspection PyPep8Naming,PyShadowingNames
@@ -472,14 +462,14 @@ def runSuite(module, tests):
                     datetime.datetime.now().strftime('%Y-%m-%d %X')
         report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
         report += '\n<h2>Failed Tests: {0}</h2>'.format(len(PALREPORTS))
-        for k, v in PALREPORTS.items():
+        for k, v in list(PALREPORTS.items()):
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
-        tmp.write(report)
-        tmp.close()
-        openInBrowserTab('file://' + tmp.name)
+        tmp_name = getTempfilePath('html')
+        with open(tmp_name, 'wt') as report_file:
+            report_file.write(report)
+        openInBrowserTab('file://' + tmp_name)
 
     return res
 

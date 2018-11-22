@@ -17,7 +17,7 @@
 
 #include "qgsstringutils.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsStringUtils : public QObject
 {
@@ -33,6 +33,13 @@ class TestQgsStringUtils : public QObject
     void longestCommonSubstring();
     void hammingDistance();
     void soundex();
+    void insertLinks();
+    void titleCase_data();
+    void titleCase();
+    void ampersandEncode_data();
+    void ampersandEncode();
+    void wordWrap_data();
+    void wordWrap();
 
 };
 
@@ -118,6 +125,118 @@ void TestQgsStringUtils::soundex()
   QCOMPARE( QgsStringUtils::soundex( "ashcroft" ), QString( "A261" ) );
 }
 
+void TestQgsStringUtils::insertLinks()
+{
+  QCOMPARE( QgsStringUtils::insertLinks( QString() ), QString() );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "not a link!" ) ), QString( "not a link!" ) );
+  bool found = true;
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "not a link!" ), &found ), QString( "not a link!" ) );
+  QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.com is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com\">www.north-road.com</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.com.au is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com.au\">www.north-road.com.au</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this www.north-road.sucks is not a good link" ), &found ), QString( "this <a href=\"http://www.north-road.sucks\">www.north-road.sucks</a> is not a good link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://www.north-road.com is a link" ), &found ), QString( "this <a href=\"http://www.north-road.com\">http://www.north-road.com</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://north-road.com is a link" ), &found ), QString( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this http://north-road.com is a link, so is http://qgis.org, OK?" ), &found ), QString( "this <a href=\"http://north-road.com\">http://north-road.com</a> is a link, so is <a href=\"http://qgis.org\">http://qgis.org</a>, OK?" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "this north-road.com might not be a link" ), &found ), QString( "this north-road.com might not be a link" ) );
+  QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "please ftp to ftp://droopbox.ru and submit stuff" ), &found ), QString( "please ftp to <a href=\"ftp://droopbox.ru\">ftp://droopbox.ru</a> and submit stuff" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "please visit https://fsociety.org" ), &found ), QString( "please visit <a href=\"https://fsociety.org\">https://fsociety.org</a>" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "send your credit card number to qgis@qgis.org today!" ), &found ), QString( "send your credit card number to <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a> today!" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "send your credit card number to qgis@qgis.org.nz today!" ), &found ), QString( "send your credit card number to <a href=\"mailto:qgis@qgis.org.nz\">qgis@qgis.org.nz</a> today!" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "visit http://qgis.org or email qgis@qgis.org" ), &found ), QString( "visit <a href=\"http://qgis.org\">http://qgis.org</a> or email <a href=\"mailto:qgis@qgis.org\">qgis@qgis.org</a>" ) );
+  QVERIFY( found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
+  QVERIFY( !found );
+}
 
-QTEST_MAIN( TestQgsStringUtils )
+void TestQgsStringUtils::titleCase_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  // invalid strings
+  QTest::newRow( "empty string" ) << "" << "";
+  QTest::newRow( "single character" ) << "a" << "A";
+  QTest::newRow( "string 1" ) << "follow step-by-step instructions" << "Follow Step-by-Step Instructions";
+  QTest::newRow( "string 2" ) << "this sub-phrase is nice" << "This Sub-Phrase Is Nice";
+  QTest::newRow( "" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
+  QTest::newRow( "string 3" ) << "all words capitalized" << "All Words Capitalized";
+  QTest::newRow( "string 4" ) << "small words are for by and of lowercase" << "Small Words Are for by and of Lowercase";
+  QTest::newRow( "string 5" ) << "a small word starts" << "A Small Word Starts";
+  QTest::newRow( "last word" ) << "a small word it ends on" << "A Small Word It Ends On";
+  QTest::newRow( "last word2" ) << "Ends with small word of" << "Ends With Small Word Of";
+  QTest::newRow( "string 6" ) << "Merge VRT(s)" << "Merge VRT(s)";
+  QTest::newRow( "string 6" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
+  QTest::newRow( "accented" ) << "extraer vértices" << "Extraer Vértices";
+}
+
+void TestQgsStringUtils::titleCase()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+  QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
+}
+
+void TestQgsStringUtils::ampersandEncode_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "empty string" ) << "" << "";
+  QTest::newRow( "amp" ) << "a & b" << "a &amp; b";
+  QTest::newRow( "gt" ) << "a > b" << "a &gt; b";
+  QTest::newRow( "lt" ) << "a < b" << "a &lt; b";
+  QTest::newRow( "mix" ) << "a <²> b" << "a &lt;&#178;&gt; b";
+}
+
+void TestQgsStringUtils::ampersandEncode()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+  QCOMPARE( QgsStringUtils::ampersandEncode( input ), expected );
+
+}
+
+void TestQgsStringUtils::wordWrap_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<int>( "length" );
+  QTest::addColumn<bool>( "isMax" );
+  QTest::addColumn<QString>( "delimiter" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "wordwrap" ) << "university of qgis" << 13 << true << QString() << "university of\nqgis";
+  QTest::newRow( "optional parameters unspecified" ) << "test string" << 5 << true << QString() << "test\nstring";
+  QTest::newRow( "wordwrap with delim" ) << "university of qgis" << 13 << true << QStringLiteral( " " ) << "university of\nqgis";
+  QTest::newRow( "wordwrap min" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";
+  QTest::newRow( "wordwrap min with delim" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";
+  QTest::newRow( "wordwrap on multi line" ) << "university of qgis\nsupports many multiline" << 5 << false << QStringLiteral( " " ) << "university\nof qgis\nsupports\nmany multiline";
+  QTest::newRow( "wordwrap on zero-space width" ) << QStringLiteral( "test%1zero-width space" ).arg( QChar( 8203 ) ) << 4 << false << QString() << "test\nzero-width\nspace";
+  QTest::newRow( "optional parameters specified" ) << "testxstring" << 5 << true << "x" << "test\nstring";
+}
+
+void TestQgsStringUtils::wordWrap()
+{
+  QFETCH( QString, input );
+  QFETCH( int, length );
+  QFETCH( bool, isMax );
+  QFETCH( QString, delimiter );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsStringUtils::wordWrap( input, length, isMax, delimiter ), expected );
+}
+
+
+QGSTEST_MAIN( TestQgsStringUtils )
 #include "testqgsstringutils.moc"

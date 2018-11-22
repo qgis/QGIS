@@ -16,7 +16,7 @@
 # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing. 
+# searching for the same item do nothing.
 
 # try to use framework on mac
 # want clean framework path, not unix compatibility path
@@ -41,7 +41,7 @@ FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
   "$ENV{LIB_DIR}/include"
   )
 
-FIND_LIBRARY(PROJ_LIBRARY NAMES proj proj_i PATHS
+FIND_LIBRARY(PROJ_LIBRARY NAMES proj_i proj PATHS
   "$ENV{LIB}"
   "$ENV{LIB_DIR}/lib"
   )
@@ -52,9 +52,19 @@ ENDIF (PROJ_INCLUDE_DIR AND PROJ_LIBRARY)
 
 
 IF (PROJ_FOUND)
+   # This macro checks if the symbol exists
+   include(CheckLibraryExists)
+   check_library_exists("${PROJ_LIBRARY}" proj_info "" PROJ_HAS_INFO)
 
    IF (NOT PROJ_FIND_QUIETLY)
-      MESSAGE(STATUS "Found Proj: ${PROJ_LIBRARY}")
+     IF (PROJ_HAS_INFO)
+       FILE(READ ${PROJ_INCLUDE_DIR}/proj.h proj_version)
+       STRING(REGEX REPLACE "^.*PROJ_VERSION_MAJOR +([0-9]+).*$" "\\1" PROJ_VERSION_MAJOR "${proj_version}")
+       STRING(REGEX REPLACE "^.*PROJ_VERSION_MINOR +([0-9]+).*$" "\\1" PROJ_VERSION_MINOR "${proj_version}")
+       STRING(REGEX REPLACE "^.*PROJ_VERSION_PATCH +([0-9]+).*$" "\\1" PROJ_VERSION_PATCH "${proj_version}")
+       STRING(CONCAT PROJ_VERSION_STR "(" ${PROJ_VERSION_MAJOR} "." ${PROJ_VERSION_MINOR} "." ${PROJ_VERSION_PATCH} ")")
+     ENDIF (PROJ_HAS_INFO)
+     MESSAGE(STATUS "Found Proj: ${PROJ_LIBRARY} ${PROJ_VERSION_STR}")
    ENDIF (NOT PROJ_FIND_QUIETLY)
 
 ELSE (PROJ_FOUND)

@@ -15,22 +15,33 @@
 
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
+#include "qgsexception.h"
+#include "qgsvectorlayer.h"
 
-QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds )
-    : QgsAbstractFeatureIterator( featureRequest )
-    , mFeatureIds( featureIds )
-    , mVectorLayerCache( vlCache )
+QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
+  : QgsAbstractFeatureIterator( featureRequest )
+  , mVectorLayerCache( vlCache )
 {
-  mFeatureIdIterator = featureIds.constBegin();
-
-  if ( mFeatureIdIterator == featureIds.constEnd() )
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
+  {
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
     close();
-}
+    return;
+  }
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
 
-QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
-    : QgsAbstractFeatureIterator( featureRequest )
-    , mVectorLayerCache( vlCache )
-{
   switch ( featureRequest.filterType() )
   {
     case QgsFeatureRequest::FilterFids:
@@ -52,17 +63,29 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
     close();
 }
 
-bool QgsCachedFeatureIterator::fetchFeature( QgsFeature& f )
+bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
 {
+  f.setValid( false );
+
   if ( mClosed )
     return false;
 
   while ( mFeatureIdIterator != mFeatureIds.constEnd() )
   {
+    if ( !mVectorLayerCache->mCache.contains( *mFeatureIdIterator ) )
+    {
+      ++mFeatureIdIterator;
+      continue;
+    }
+
     f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
     ++mFeatureIdIterator;
     if ( mRequest.acceptFeature( f ) )
+    {
+      f.setValid( true );
+      geometryToDestinationCrs( f, mTransform );
       return true;
+    }
   }
   close();
   return false;
@@ -81,20 +104,46 @@ bool QgsCachedFeatureIterator::close()
   return true;
 }
 
-QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
-    : QgsAbstractFeatureIterator( featureRequest )
-    , mVectorLayerCache( vlCache )
+QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
+  : QgsAbstractFeatureIterator( featureRequest )
+  , mVectorLayerCache( vlCache )
 {
-  mFeatIt = vlCache->layer()->getFeatures( featureRequest );
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
+  {
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    close();
+    return;
+  }
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
+
+  mFeatIt = vlCache->layer()->getFeatures( mRequest );
 }
 
-bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature& f )
+bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
 {
+  if ( mClosed )
+  {
+    f.setValid( false );
+    return false;
+  }
   if ( mFeatIt.nextFeature( f ) )
   {
     // As long as features can be fetched from the provider: Write them to cache
     mVectorLayerCache->cacheFeature( f );
     mFids.insert( f.id() );
+    geometryToDestinationCrs( f, mTransform );
     return true;
   }
   else

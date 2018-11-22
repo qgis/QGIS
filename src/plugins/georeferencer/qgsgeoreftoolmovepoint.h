@@ -16,7 +16,6 @@
 #ifndef QGSGEOREFTOOLMOVEPOINT_H
 #define QGSGEOREFTOOLMOVEPOINT_H
 
-#include <QMouseEvent>
 #include <QRubberBand>
 
 #include "qgsmaptool.h"
@@ -29,9 +28,9 @@ class QgsGeorefToolMovePoint : public QgsMapTool
   public:
     explicit QgsGeorefToolMovePoint( QgsMapCanvas *canvas );
 
-    void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     bool isCanvas( QgsMapCanvas * );
 
@@ -41,11 +40,11 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     void pointReleased( QPoint p );
 
   private:
-    /** Start point of the move in map coordinates*/
+    //! Start point of the move in map coordinates
     QPoint mStartPointMapCoords;
 
-    /** Rubberband that shows the feature being moved*/
-    QRubberBand *mRubberBand;
+    //! Rubberband that shows the feature being moved
+    QRubberBand *mRubberBand = nullptr;
 };
 
 #endif // QGSGEOREFTOOLMOVEPOINT_H

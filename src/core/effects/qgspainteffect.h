@@ -17,13 +17,16 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsrendercontext.h"
 #include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>
 
-/** \ingroup core
+class QgsRenderContext;
+
+/**
+ * \ingroup core
  * \class QgsPaintEffect
  * \brief Base class for visual effects which can be applied to QPicture drawings
  *
@@ -32,280 +35,404 @@
  * either drawing a picture directly, or by intercepting drawing operations to a
  * render context.
  *
- * To directly draw a picture, use the @link render @endlink method with a source
+ * To directly draw a picture, use the render() method with a source
  * QPicture and destination render context.
  *
  * Intercepting drawing operations to a render context is achieved by first calling
- * the @link begin @endlink method, passing a render context. Any drawing operations
+ * the begin() method, passing a render context. Any drawing operations
  * performed on the render context will not directly affect the context's paint
- * device. When the drawing operations have been completed, call the @link end @endlink
+ * device. When the drawing operations have been completed, call the end()
  * method. This will perform the paint effect on the intercepted drawing operations
  * and render the result to the render context's paint device.
  *
  * \see QgsPaintEffectRegistry
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsPaintEffect
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "drawSource" && dynamic_cast<QgsDrawSourceEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsDrawSourceEffect;
+    }
+    else if ( sipCpp->type() == "effectStack" && dynamic_cast<QgsEffectStack *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsEffectStack;
+    }
+    else if ( sipCpp->type() == "blur" && dynamic_cast<QgsBlurEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsBlurEffect;
+    }
+    else if ( sipCpp->type() == "dropShadow" && dynamic_cast<QgsDropShadowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsDropShadowEffect;
+    }
+    else if ( sipCpp->type() == "outerGlow" && dynamic_cast<QgsOuterGlowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsOuterGlowEffect;
+    }
+    else if ( sipCpp->type() == "innerGlow" && dynamic_cast<QgsInnerGlowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsInnerGlowEffect;
+    }
+    else if ( sipCpp->type() == "transform" && dynamic_cast<QgsTransformEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsTransformEffect;
+    }
+    else if ( sipCpp->type() == "color" && dynamic_cast<QgsColorEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsColorEffect;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
-    /** Drawing modes for effects. These modes are used only when effects are
+    /**
+     * Drawing modes for effects. These modes are used only when effects are
      * drawn as part of an effects stack
-     * @see QgsEffectStack
+     * \see QgsEffectStack
      */
     enum DrawMode
     {
-      Modifier, /*!< the result of the effect is not rendered, but is passed on to following effects in the stack */
-      Render, /*!< the result of the effect is rendered on the destination, but does not affect subsequent effects in the stack */
-      ModifyAndRender /*!< the result of the effect is both rendered and passed on to subsequent effects in the stack */
+      Modifier, //!< The result of the effect is not rendered, but is passed on to following effects in the stack
+      Render, //!< The result of the effect is rendered on the destination, but does not affect subsequent effects in the stack
+      ModifyAndRender //!< The result of the effect is both rendered and passed on to subsequent effects in the stack
     };
 
-    QgsPaintEffect();
-    QgsPaintEffect( const QgsPaintEffect& other );
+    /**
+     * Constructor for QgsPaintEffect.
+     */
+    QgsPaintEffect() = default;
+
+    QgsPaintEffect( const QgsPaintEffect &other );
     virtual ~QgsPaintEffect();
 
-    /** Returns the effect type.
-     * @returns unique string representation of the effect type
+    /**
+     * Returns the effect type.
+     * \returns unique string representation of the effect type
      */
     virtual QString type() const = 0;
 
-    /** Duplicates an effect by creating a deep copy of the effect
-     * @returns clone of paint effect
+    /**
+     * Duplicates an effect by creating a deep copy of the effect
+     * \returns clone of paint effect
      */
-    virtual QgsPaintEffect* clone() const = 0;
+    virtual QgsPaintEffect *clone() const = 0 SIP_FACTORY;
 
-    /** Returns the properties describing the paint effect encoded in a
+    /**
+     * Returns the properties describing the paint effect encoded in a
      * string format.
-     * @returns string map of properties, in the form property key, value
-     * @see readProperties
-     * @see saveProperties
+     * \returns string map of properties, in the form property key, value
+     * \see readProperties
+     * \see saveProperties
      */
     virtual QgsStringMap properties() const = 0;
 
-    /** Reads a string map of an effect's properties and restores the effect
+    /**
+     * Reads a string map of an effect's properties and restores the effect
      * to the state described by the properties map.
-     * @param props effect properties encoded in a string map
-     * @see properties
+     * \param props effect properties encoded in a string map
+     * \see properties
      */
-    virtual void readProperties( const QgsStringMap& props ) = 0;
+    virtual void readProperties( const QgsStringMap &props ) = 0;
 
-    /** Saves the current state of the effect to a DOM element. The default
-     * behaviour is to save the properties string map returned by
-     * @link properties @endlink.
-     * @param doc destination DOM document
-     * @param element destination DOM element
-     * @returns true if save was successful
-     * @see readProperties
+    /**
+     * Saves the current state of the effect to a DOM element. The default
+     * behavior is to save the properties string map returned by
+     * properties().
+     * \param doc destination DOM document
+     * \param element destination DOM element
+     * \returns true if save was successful
+     * \see readProperties
      */
-    virtual bool saveProperties( QDomDocument& doc, QDomElement& element ) const;
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
 
-    /** Restores the effect to the state described by a DOM element.
-     * @param element DOM element describing an effect's state
-     * @returns true if read was successful
-     * @see saveProperties
+    /**
+     * Restores the effect to the state described by a DOM element.
+     * \param element DOM element describing an effect's state
+     * \returns true if read was successful
+     * \see saveProperties
      */
-    virtual bool readProperties( const QDomElement& element );
+    virtual bool readProperties( const QDomElement &element );
 
-    /** Renders a picture using the effect.
-     * @param picture source QPicture to render
-     * @param context destination render context
-     * @see begin
+    /**
+     * Renders a picture using the effect.
+     * \param picture source QPicture to render
+     * \param context destination render context
+     * \see begin
      */
-    virtual void render( QPicture& picture, QgsRenderContext& context );
+    virtual void render( QPicture &picture, QgsRenderContext &context );
 
-    /** Begins intercepting paint operations to a render context. When the corresponding
-     * @link end @endlink member is called all intercepted paint operations will be
+    /**
+     * Begins intercepting paint operations to a render context. When the corresponding
+     * end() member is called all intercepted paint operations will be
      * drawn to the render context after being modified by the effect.
-     * @param context destination render context
-     * @see end
-     * @see render
+     * \param context destination render context
+     * \see end
+     * \see render
      */
-    virtual void begin( QgsRenderContext& context );
+    virtual void begin( QgsRenderContext &context );
 
-    /** Ends interception of paint operations to a render context, and draws the result
+    /**
+     * Ends interception of paint operations to a render context, and draws the result
      * to the render context after being modified by the effect.
-     * @param context destination render context
-     * @see begin
+     * \param context destination render context
+     * \see begin
      */
-    virtual void end( QgsRenderContext& context );
+    virtual void end( QgsRenderContext &context );
 
-    /** Returns whether the effect is enabled
-     * @returns true if effect is enabled
-     * @see setEnabled
+    /**
+     * Returns whether the effect is enabled
+     * \returns true if effect is enabled
+     * \see setEnabled
      */
     bool enabled() const { return mEnabled; }
 
-    /** Sets whether the effect is enabled
-     * @param enabled set to false to disable the effect
-     * @see enabled
+    /**
+     * Sets whether the effect is enabled
+     * \param enabled set to false to disable the effect
+     * \see enabled
      */
-    void setEnabled( const bool enabled );
+    void setEnabled( bool enabled );
 
-    /** Returns the draw mode for the effect. This property only has an
-     * effect if the paint effect is used in a @link QgsEffectStack @endlink
-     * @returns draw mode for effect
-     * @see setDrawMode
+    /**
+     * Returns the draw mode for the effect. This property only has an
+     * effect if the paint effect is used in a QgsEffectStack.
+     * \returns draw mode for effect
+     * \see setDrawMode
      */
     DrawMode drawMode() const { return mDrawMode; }
 
-    /** Sets the draw mode for the effect. This property only has an
-     * effect if the paint effect is used in a @link QgsEffectStack @endlink
-     * @param drawMode draw mode for effect
-     * @see drawMode
+    /**
+     * Sets the draw mode for the effect. This property only has an
+     * effect if the paint effect is used in a QgsEffectStack.
+     * \param drawMode draw mode for effect
+     * \see drawMode
      */
-    void setDrawMode( const DrawMode drawMode );
+    void setDrawMode( DrawMode drawMode );
 
   protected:
 
-    bool mEnabled;
-    DrawMode mDrawMode;
-    bool requiresQPainterDpiFix;
+    bool mEnabled = true;
+    DrawMode mDrawMode = ModifyAndRender;
+    bool requiresQPainterDpiFix = true;
 
-    /** Handles drawing of the effect's result on to the specified render context.
+    /**
+     * Handles drawing of the effect's result on to the specified render context.
      * Derived classes must reimplement this method to apply any transformations to
      * the source QPicture and draw the result using the context's painter.
-     * @param context destination render context
-     * @see drawSource
+     * \param context destination render context
+     * \see drawSource
      */
-    virtual void draw( QgsRenderContext& context ) = 0;
+    virtual void draw( QgsRenderContext &context ) = 0;
 
-    /** Draws the source QPicture onto the specified painter. Handles scaling of the picture
+    /**
+     * Draws the source QPicture onto the specified painter. Handles scaling of the picture
      * to account for the destination painter's DPI.
-     * @param painter destination painter
-     * @see source
-     * @see sourceAsImage
+     * \param painter destination painter
+     * \see source
+     * \see sourceAsImage
      */
-    void drawSource( QPainter& painter );
+    void drawSource( QPainter &painter );
 
-    /** Returns the source QPicture. The @link draw @endlink member can utilise this when
+    /**
+     * Returns the source QPicture. The draw() member can utilize this when
      * drawing the effect.
-     * @returns source QPicture
-     * @see drawSource
-     * @see sourceAsImage
+     * \returns source QPicture
+     * \see drawSource
+     * \see sourceAsImage
      */
-    const QPicture* source() const { return mPicture; }
+    const QPicture *source() const { return mPicture; }
 
-    /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
-     * utilise this when drawing the effect. The image will be padded or cropped from the original
-     * source QPicture by the results of the @link boundingRect @endlink method.
+    /**
+     * Returns the source QPicture rendered to a new QImage. The draw() member can
+     * utilize this when drawing the effect. The image will be padded or cropped from the original
+     * source QPicture by the results of the boundingRect() method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
-     * @returns source QPicture rendered to an image
-     * @see drawSource
-     * @see source
-     * @see imageOffset
-     * @see boundingRect
+     * \returns source QPicture rendered to an image
+     * \see drawSource
+     * \see source
+     * \see imageOffset
+     * \see boundingRect
      */
-    QImage* sourceAsImage( QgsRenderContext &context );
+    QImage *sourceAsImage( QgsRenderContext &context );
 
-    /** Returns the offset which should be used when drawing the source image on to a destination
+    /**
+     * Returns the offset which should be used when drawing the source image on to a destination
      * render context.
-     * @param context destination render context
-     * @returns point offset for image top left corner
-     * @see sourceAsImage
+     * \param context destination render context
+     * \returns point offset for image top left corner
+     * \see sourceAsImage
      */
-    QPointF imageOffset( const QgsRenderContext& context ) const;
+    QPointF imageOffset( const QgsRenderContext &context ) const;
 
-    /** Returns the bounding rect required for drawing the effect. This method can be used
+    /**
+     * Returns the bounding rect required for drawing the effect. This method can be used
      * to expand the bounding rect of a source picture to account for offset or blurring
      * effects.
-     * @param rect original source bounding rect
-     * @param context destination render context
-     * @returns modified bounding rect
-     * @see sourceAsImage
+     * \param rect original source bounding rect
+     * \param context destination render context
+     * \returns modified bounding rect
+     * \see sourceAsImage
      */
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
-    /** Applies a workaround to a QPainter to avoid an issue with incorrect scaling
+    /**
+     * Applies a workaround to a QPainter to avoid an issue with incorrect scaling
      * when drawing QPictures. This may need to be called by derived classes prior
      * to rendering results onto a painter.
-     * @param painter destination painter
+     * \param painter destination painter
      */
-    void fixQPictureDpi( QPainter* painter ) const;
+    void fixQPictureDpi( QPainter *painter ) const;
 
   private:
 
-    const QPicture* mPicture;
-    QImage* mSourceImage;
-    bool mOwnsImage;
+    const QPicture *mPicture = nullptr;
+    QImage *mSourceImage = nullptr;
+    bool mOwnsImage = false;
 
-    QPainter* mPrevPainter;
-    QPainter* mEffectPainter;
-    QPicture* mTempPicture;
+    QPainter *mPrevPainter = nullptr;
+    QPainter *mEffectPainter = nullptr;
+    QPicture *mTempPicture = nullptr;
 
-    QRectF imageBoundingRect( const QgsRenderContext& context ) const;
+    QRectF imageBoundingRect( const QgsRenderContext &context ) const;
 
     friend class QgsEffectStack;
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDrawSourceEffect
  * \brief A paint effect which draws the source picture with minor or no alterations
  *
  * The draw source effect can be used to draw an unaltered copy of the original source
  * picture. Minor changes like lowering the opacity and applying a blend mode are
- * supported, however these changes will force the resultant output to be rasterised.
+ * supported, however these changes will force the resultant output to be rasterized.
  * If no alterations are performed then the original picture will be rendered as a vector.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
 {
   public:
 
-    QgsDrawSourceEffect();
-    virtual ~QgsDrawSourceEffect();
+    //! Constructor for QgsDrawSourceEffect
+    QgsDrawSourceEffect() = default;
 
-    /** Creates a new QgsDrawSource effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsDrawSourceEffect
+    /**
+     * Creates a new QgsDrawSource effect from a properties string map.
+     * \param map encoded properties string map
+     * \returns new QgsDrawSourceEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
-    virtual QString type() const override { return QString( "drawSource" ); }
-    virtual QgsDrawSourceEffect* clone() const override;
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
+    QString type() const override { return QStringLiteral( "drawSource" ); }
+    QgsDrawSourceEffect *clone() const override SIP_FACTORY;
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
 
-    /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see transparency
+    /**
+     * Sets the \a opacity for the effect.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see setTransparency
+    /**
+     * Returns the opacity for the effect
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
      */
-    double transparency() const { return mTransparency; }
+    double opacity() const { return mOpacity; }
 
-    /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the source on to a destination
+    /**
+     * Sets the blend mode for the effect
+     * \param mode blend mode used for drawing the source on to a destination
      * paint device
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the source on to a destination
+    /**
+     * Returns the blend mode for the effect
+     * \returns blend mode used for drawing the source on to a destination
      * paint device
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override;
+    void draw( QgsRenderContext &context ) override;
 
   private:
 
-    double mTransparency;
-    QPainter::CompositionMode mBlendMode;
+    double mOpacity = 1.0;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+};
+
+/**
+ * \ingroup core
+ * \class QgsEffectPainter
+ * \brief A class to manager painter saving and restoring required for effect drawing
+ *
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsEffectPainter
+{
+  public:
+
+    /**
+     * QgsEffectPainter constructor
+     *
+     * \param renderContext the QgsRenderContext object
+     * \since QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext &renderContext );
+
+    /**
+     * QgsEffectPainter constructor alternative if no painter translation is needed
+     *
+     * \param renderContext the QgsRenderContext object
+     * \param effect the QgsPaintEffect object
+     * \since QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect );
+    ~QgsEffectPainter();
+
+    /**
+     * Sets the effect to be painted
+     *
+     * \param effect the QgsPaintEffect object
+     */
+    void setEffect( QgsPaintEffect *effect );
+
+    ///@cond PRIVATE
+
+    /**
+     * Access to the painter object
+     *
+     * \since QGIS 3.0
+     */
+    QPainter *operator->() { return mPainter; }
+    ///@endcond
+
+  private:
+    QgsRenderContext &mRenderContext;
+    QPainter *mPainter = nullptr;
+    QgsPaintEffect *mEffect = nullptr;
 };
 
 #endif // QGSPAINTEFFECT_H

@@ -16,47 +16,62 @@
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
-#include <QSettings>
-
-QgsWFSConnection::QgsWFSConnection( const QString & theConnName )
-    : QgsOWSConnection( "WFS", theConnName )
+QgsWfsConnection::QgsWfsConnection( const QString &connName )
+  : QgsOwsConnection( QStringLiteral( "WFS" ), connName )
 {
-  const QString& key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
+  const QString &key = QgsWFSConstants::CONNECTIONS_WFS + connectionName();
 
-  QSettings settings;
+  QgsSettings settings;
 
-  const QString& version = settings.value( key + "/" + QgsWFSConstants::SETTINGS_VERSION ).toString();
+  const QString &version = settings.value( key + "/" + QgsWFSConstants::SETTINGS_VERSION ).toString();
   if ( !version.isEmpty() )
   {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_VERSION ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_VERSION, version );
   }
 
-  const QString& maxnumfeatures = settings.value( key + "/" + QgsWFSConstants::SETTINGS_MAXNUMFEATURES ).toString();
+  const QString &maxnumfeatures = settings.value( key + "/" + QgsWFSConstants::SETTINGS_MAXNUMFEATURES ).toString();
   if ( !maxnumfeatures.isEmpty() )
   {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, maxnumfeatures );
   }
 
-  QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ) );
+  const QString &pagesize = settings.value( key + "/" + QgsWFSConstants::SETTINGS_PAGE_SIZE ).toString();
+  if ( !pagesize.isEmpty() )
+  {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE ); // setParam allow for duplicates!
+    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE, pagesize );
+  }
+
+  if ( settings.contains( key + "/" + QgsWFSConstants::SETTINGS_PAGING_ENABLED ) )
+  {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ); // setParam allow for duplicates!
+    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED,
+                   settings.value( key + "/" + QgsWFSConstants::SETTINGS_PAGING_ENABLED, true ).toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  }
+
+  QgsDebugMsg( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ) );
 }
 
-QStringList QgsWFSConnection::connectionList()
+QStringList QgsWfsConnection::connectionList()
 {
-  return QgsOWSConnection::connectionList( "WFS" );
+  return QgsOwsConnection::connectionList( QStringLiteral( "WFS" ) );
 }
 
-void QgsWFSConnection::deleteConnection( const QString & name )
+void QgsWfsConnection::deleteConnection( const QString &name )
 {
-  QgsOWSConnection::deleteConnection( "WFS", name );
+  QgsOwsConnection::deleteConnection( QStringLiteral( "WFS" ), name );
 }
 
-QString QgsWFSConnection::selectedConnection()
+QString QgsWfsConnection::selectedConnection()
 {
-  return QgsOWSConnection::selectedConnection( "WFS" );
+  return QgsOwsConnection::selectedConnection( QStringLiteral( "WFS" ) );
 }
 
-void QgsWFSConnection::setSelectedConnection( const QString & name )
+void QgsWfsConnection::setSelectedConnection( const QString &name )
 {
-  QgsOWSConnection::setSelectedConnection( "WFS", name );
+  QgsOwsConnection::setSelectedConnection( QStringLiteral( "WFS" ), name );
 }

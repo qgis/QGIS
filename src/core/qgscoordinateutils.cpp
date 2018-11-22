@@ -16,41 +16,49 @@
  ***************************************************************************/
 
 #include "qgscoordinateutils.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgis.h"
-
+#include "qgsexception.h"
+#include "qgscoordinateformatter.h"
 ///@cond NOT_STABLE_API
 
-int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem& mapCrs )
+int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
 {
+  if ( !project )
+    project = QgsProject::instance();
   // Get the display precision from the project settings
-  bool automatic = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic" );
+  bool automatic = project->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
   int dp = 0;
 
   if ( automatic )
   {
-    QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
-    bool formatGeographic = ( format == "DM" || format == "DMS" || format == "D" );
+    QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+    bool formatGeographic = ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
     // - both map CRS and format are not geographic
     // - map CRS is geographic but format is not geographic (i.e. map units)
-    if ( mapCrs.geographicFlag() || !formatGeographic )
+    if ( mapCrs.isGeographic() || !formatGeographic )
     {
       // Work out a suitable number of decimal places for the coordinates with the aim of always
       // having enough decimal places to show the difference in position between adjacent pixels.
       // Also avoid taking the log of 0.
       if ( !qgsDoubleNear( mapUnitsPerPixel, 0.0 ) )
-        dp = static_cast<int>( ceil( -1.0 * log10( mapUnitsPerPixel ) ) );
+        dp = static_cast<int>( std::ceil( -1.0 * std::log10( mapUnitsPerPixel ) ) );
     }
     else
     {
-      dp = format == "D" ? 4 : 2; //guess sensible fallback
+      if ( format == QLatin1String( "D" ) )
+        dp = 4;
+      else
+        dp = 2;
     }
   }
   else
-    dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
+    dp = project->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
 
   // Keep dp sensible
   if ( dp < 0 )
@@ -59,39 +67,42 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
-QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint& point, const QgsCoordinateReferenceSystem& destCrs, int precision )
+QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
 {
-  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "MU" );
+  if ( !project )
+    return QString();
 
-  QgsPoint geo = point;
-  if ( format == "DM" || format == "DMS" || format == "D" )
+  QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
+
+  QgsPointXY geo = point;
+  if ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) )
   {
     // degrees
-    if ( destCrs.isValid() && !destCrs.geographicFlag() )
+    if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
-      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ) );
+      QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ), project );
       try
       {
         geo = ct.transform( point );
       }
-      catch ( QgsCsException& )
+      catch ( QgsCsException & )
       {
         return QString();
       }
     }
 
-    if ( format == "DM" )
-      return geo.toDegreesMinutes( precision, true, true );
-    else if ( format == "DMS" )
-      return geo.toDegreesMinutesSeconds( precision, true, true );
+    if ( format == QLatin1String( "DM" ) )
+      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutes, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
+    else if ( format == QLatin1String( "DMS" ) )
+      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutesSeconds, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
     else
-      return geo.toString( precision );
+      return QgsCoordinateFormatter::asPair( geo.x(), geo.y(), precision );
   }
   else
   {
     // coordinates in map units
-    return point.toString( precision );
+    return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision );
   }
 }
 

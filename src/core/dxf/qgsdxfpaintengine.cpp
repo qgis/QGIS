@@ -20,18 +20,14 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgslogger.h"
 
-QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf )
-    : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
-    , mPaintDevice( dxfDevice )
-    , mDxf( dxf )
+QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf )
+  : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
+  , mPaintDevice( dxfDevice )
+  , mDxf( dxf )
 {
 }
 
-QgsDxfPaintEngine::~QgsDxfPaintEngine()
-{
-}
-
-bool QgsDxfPaintEngine::begin( QPaintDevice* pdev )
+bool QgsDxfPaintEngine::begin( QPaintDevice *pdev )
 {
   Q_UNUSED( pdev );
   return true;
@@ -47,14 +43,14 @@ QPaintEngine::Type QgsDxfPaintEngine::type() const
   return QPaintEngine::User;
 }
 
-void QgsDxfPaintEngine::drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr )
+void QgsDxfPaintEngine::drawPixmap( const QRectF &r, const QPixmap &pm, const QRectF &sr )
 {
   Q_UNUSED( r );
   Q_UNUSED( pm );
   Q_UNUSED( sr );
 }
 
-void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
+void QgsDxfPaintEngine::updateState( const QPaintEngineState &state )
 {
   if ( state.state() & QPaintEngine::DirtyTransform )
     mTransform = state.transform();
@@ -64,9 +60,14 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
 
   if ( state.state() & QPaintEngine::DirtyBrush )
     mBrush = state.brush();
+
+  if ( state.state() & QPaintEngine::DirtyOpacity )
+  {
+    mOpacity = state.opacity();
+  }
 }
 
-void QgsDxfPaintEngine::setRing( QgsPointSequenceV2 &polyline, const QPointF *points, int pointCount )
+void QgsDxfPaintEngine::setRing( QgsPointSequence &polyline, const QPointF *points, int pointCount )
 {
   polyline.clear();
   for ( int i = 0; i < pointCount; ++i )
@@ -79,28 +80,28 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
   if ( !mDxf || !mPaintDevice )
     return;
 
-  QgsRingSequenceV2 polygon;
-  polygon << QgsPointSequenceV2();
+  QgsRingSequence polygon;
+  polygon << QgsPointSequence();
   setRing( polygon.last(), points, pointCount );
 
   if ( mode == QPaintEngine::PolylineMode )
   {
     if ( mPen.style() != Qt::NoPen && mPen.brush().style() != Qt::NoBrush )
-      mDxf->writePolyline( polygon.at( 0 ), mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
+      mDxf->writePolyline( polygon.at( 0 ), mLayer, QStringLiteral( "CONTINUOUS" ), penColor(), currentWidth() );
   }
   else
   {
     if ( mBrush.style() != Qt::NoBrush )
-      mDxf->writePolygon( polygon, mLayer, "SOLID", mBrush.color() );
+      mDxf->writePolygon( polygon, mLayer, QStringLiteral( "SOLID" ), brushColor() );
   }
 }
 
-void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
+void QgsDxfPaintEngine::drawPath( const QPainterPath &path )
 {
   int pathLength = path.elementCount();
   for ( int i = 0; i < pathLength; ++i )
   {
-    const QPainterPath::Element& pathElem = path.elementAt( i );
+    const QPainterPath::Element &pathElem = path.elementAt( i );
     if ( pathElem.type == QPainterPath::MoveToElement )
     {
       moveTo( pathElem.x, pathElem.y );
@@ -122,7 +123,7 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
   endPolygon();
 
   if ( !mPolygon.isEmpty() && mBrush.style() != Qt::NoBrush )
-    mDxf->writePolygon( mPolygon, mLayer, "SOLID", mBrush.color() );
+    mDxf->writePolygon( mPolygon, mLayer, QStringLiteral( "SOLID" ), brushColor() );
 
   mPolygon.clear();
 }
@@ -156,7 +157,7 @@ void QgsDxfPaintEngine::endPolygon()
     if ( mPen.style() != Qt::NoPen )
       drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::PolylineMode );
 
-    mPolygon << QgsPointSequenceV2();
+    mPolygon << QgsPointSequence();
     setRing( mPolygon.last(), mCurrentPolygon.constData(), mCurrentPolygon.size() );
   }
   mCurrentPolygon.clear();
@@ -164,10 +165,10 @@ void QgsDxfPaintEngine::endPolygon()
 
 void QgsDxfPaintEngine::endCurve()
 {
-  if ( mCurrentCurve.size() < 1 )
+  if ( mCurrentCurve.empty() )
     return;
 
-  if ( mCurrentPolygon.size() < 1 )
+  if ( mCurrentPolygon.empty() )
   {
     mCurrentCurve.clear();
     return;
@@ -189,7 +190,7 @@ void QgsDxfPaintEngine::endCurve()
   mCurrentCurve.clear();
 }
 
-void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
+void QgsDxfPaintEngine::drawLines( const QLineF *lines, int lineCount )
 {
   if ( !mDxf || !mPaintDevice || !lines || mPen.style() == Qt::NoPen )
     return;
@@ -198,17 +199,17 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   {
     mDxf->writeLine( toDxfCoordinates( lines[i].p1() ),
                      toDxfCoordinates( lines[i].p2() ),
-                     mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
+                     mLayer, QStringLiteral( "CONTINUOUS" ), penColor(), currentWidth() );
   }
 }
 
-QgsPointV2 QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
+QgsPoint QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
 {
   if ( !mPaintDevice || !mDxf )
-    return QgsPointV2( pt.x(), pt.y() );
+    return QgsPoint( pt.x(), pt.y() );
 
   QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
-  return QgsPointV2( dxfPt.x(), dxfPt.y() );
+  return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
 
@@ -220,7 +221,7 @@ double QgsDxfPaintEngine::currentWidth() const
   return mPen.widthF() * mPaintDevice->widthScaleFactor();
 }
 
-QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF>& controlPolygon, double t )
+QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF> &controlPolygon, double t )
 {
   double x = 0;
   double y = 0;
@@ -245,14 +246,14 @@ double QgsDxfPaintEngine::bernsteinPoly( int n, int i, double t )
   if ( i < 0 )
     return 0;
 
-  return lower( n, i )*power( t, i )*power(( 1 - t ), ( n - i ) );
+  return lower( n, i ) * power( t, i ) * power( ( 1 - t ), ( n - i ) );
 }
 
 int QgsDxfPaintEngine::lower( int n, int i )
 {
   if ( i >= 0 && i <= n )
   {
-    return faculty( n ) / ( faculty( i )*faculty( n - i ) );
+    return faculty( n ) / ( faculty( i ) * faculty( n - i ) );
   }
   else
   {
@@ -266,7 +267,7 @@ double QgsDxfPaintEngine::power( double a, int b )
     return 1;
 
   double tmp = a;
-  for ( int i = 2; i <= qAbs( static_cast< double >( b ) ); i++ )
+  for ( int i = 2; i <= std::abs( b ); i++ )
     a *= tmp;
 
   if ( b > 0 )
@@ -290,4 +291,26 @@ int QgsDxfPaintEngine::faculty( int n )
     result *= i;
 
   return result;
+}
+
+QColor QgsDxfPaintEngine::penColor() const
+{
+  if ( qgsDoubleNear( mOpacity, 1.0 ) )
+  {
+    return mPen.color();
+  }
+  QColor c = mPen.color();
+  c.setAlphaF( c.alphaF() * mOpacity );
+  return c;
+}
+
+QColor QgsDxfPaintEngine::brushColor() const
+{
+  if ( qgsDoubleNear( mOpacity, 1.0 ) )
+  {
+    return mBrush.color();
+  }
+  QColor c = mBrush.color();
+  c.setAlphaF( c.alphaF() * mOpacity );
+  return c;
 }

@@ -1,13 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="city_building.svg" inkscape:version="0.43"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
-	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
-<path fill="param(fill) #000" fill-opacity="param(fill-opacity)" stroke="param(outline) #FFF" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width) 0" d="M517.815,486.516V93.48H62.181v393.036 M255.924,486.516V384.108
-	h63.414v102.408 M187.524,445.236h-63.411v-64.173h63.411V445.236z M187.524,331.237h-63.411v-64.174h63.411V331.237z
-	 M187.524,217.241h-63.411v-64.174h63.411V217.241z M317.65,331.237h-63.411v-64.174h63.411V331.237z M317.65,217.241h-63.411
-	v-64.174h63.411V217.241z M447.675,445.236h-63.41v-64.173h63.41V445.236z M447.781,331.237h-63.416v-64.174h63.416V331.237z
-	 M447.781,217.241h-63.416v-64.174h63.416V217.241z"/>
+<svg enable-background="new 0 0 579.997 579.997" height="579.997" viewBox="0 0 579.997 579.997" width="579.997" xmlns="http://www.w3.org/2000/svg">
+<path d="m517.815 486.516v-393.036h-455.634v393.036m193.743 0v-102.408h63.414v102.408m-131.814-41.28h-63.411v-64.173h63.411zm0-113.999h-63.411v-64.174h63.411zm0-113.996h-63.411v-64.174h63.411zm130.126 113.996h-63.411v-64.174h63.411zm0-113.996h-63.411v-64.174h63.411zm130.025 227.995h-63.41v-64.173h63.41zm.106-113.999h-63.416v-64.174h63.416zm0-113.996h-63.416v-64.174h63.416z" fill="param(fill) #000" fill-opacity="255" stroke="param(outline) #FFF" stroke-opacity="255" stroke-width="param(outline-width) 0"/>
 </svg>

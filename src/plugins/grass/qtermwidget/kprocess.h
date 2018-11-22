@@ -77,12 +77,12 @@ public:
     /**
      * Constructor
      */
-    explicit KProcess(QObject *parent = 0);
+    explicit KProcess(QObject *parent = nullptr);
 
     /**
      * Destructor
      */
-    virtual ~KProcess();
+    ~KProcess() override;
 
     /**
      * Set how to handle the output channels of the child process.
@@ -93,14 +93,14 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param mode the output channel handling mode
+     * \param mode the output channel handling mode
      */
     void setOutputChannelMode(OutputChannelMode mode);
 
     /**
      * Query how the output channels of the child process are handled.
      *
-     * @return the output channel handling mode
+     * \returns the output channel handling mode
      */
     OutputChannelMode outputChannelMode() const;
 
@@ -109,7 +109,7 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param mode the open mode. Note that this mode is automatically
+     * \param mode the open mode. Note that this mode is automatically
      *   "reduced" according to the channel modes and redirections.
      *   The default is QIODevice::ReadWrite.
      */
@@ -120,9 +120,9 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param name the name of the environment variable
-     * @param value the new value for the environment variable
-     * @param overwrite if @c false and the environment variable is already
+     * \param name the name of the environment variable
+     * \param value the new value for the environment variable
+     * \param overwrite if \c false and the environment variable is already
      *   set, the old value will be preserved
      */
     void setEnv(const QString &name, const QString &value, bool overwrite = true);
@@ -132,7 +132,7 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param name the name of the environment variable
+     * \param name the name of the environment variable
      */
     void unsetEnv(const QString &name);
 
@@ -151,8 +151,8 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param exe the program to execute
-     * @param args the command line arguments for the program,
+     * \param exe the program to execute
+     * \param args the command line arguments for the program,
      *   one per list element
      */
     void setProgram(const QString &exe, const QStringList &args = QStringList());
@@ -160,7 +160,7 @@ public:
     /**
      * @overload
      *
-     * @param argv the program to execute and the command line arguments
+     * \param argv the program to execute and the command line arguments
      *   for the program, one per list element
      */
     void setProgram(const QStringList &argv);
@@ -171,7 +171,7 @@ public:
      * If no executable is set yet, it will be set instead.
      *
      * For example, doing an "ls -l /usr/local/bin" can be achieved by:
-     *  \code
+     *  \code{.cpp}
      *  KProcess p;
      *  p << "ls" << "-l" << "/usr/local/bin";
      *  ...
@@ -179,16 +179,16 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param arg the argument to add
-     * @return a reference to this KProcess
+     * \param arg the argument to add
+     * \returns a reference to this KProcess
      */
     KProcess &operator<<(const QString& arg);
 
     /**
      * @overload
      *
-     * @param args the arguments to add
-     * @return a reference to this KProcess
+     * \param args the arguments to add
+     * \returns a reference to this KProcess
      */
     KProcess &operator<<(const QStringList& args);
 
@@ -212,7 +212,7 @@ public:
      *
      * This function must be called before starting the process, obviously.
      *
-     * @param cmd the command to execute through a shell.
+     * \param cmd the command to execute through a shell.
      *   The caller must make sure that all filenames etc. are properly
      *   quoted when passed as argument. Failure to do so often results in
      *   serious security holes. See KShell::quoteArg().
@@ -222,7 +222,7 @@ public:
     /**
      * Obtain the currently set program and arguments.
      *
-     * @return a list, the first element being the program, the remaining ones
+     * \returns a list, the first element being the program, the remaining ones
      *  being command line arguments to the program.
      */
     QStringList program() const;
@@ -230,7 +230,7 @@ public:
     /**
      * Start the process.
      *
-     * @see QProcess::start(const QString &, const QStringList &, OpenMode)
+     * \see QProcess::start(const QString &, const QStringList &, OpenMode)
      */
     void start();
 
@@ -247,8 +247,8 @@ public:
      * Unlike the other execute() variants this method is not static,
      * so the process can be parametrized properly and talked to.
      *
-     * @param msecs time to wait for process to exit before killing it
-     * @return -2 if the process could not be started, -1 if it crashed,
+     * \param msecs time to wait for process to exit before killing it
+     * \returns -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
     int execute(int msecs = -1);
@@ -256,11 +256,11 @@ public:
     /**
      * @overload
      *
-     * @param exe the program to execute
-     * @param args the command line arguments for the program,
+     * \param exe the program to execute
+     * \param args the command line arguments for the program,
      *   one per list element
-     * @param msecs time to wait for process to exit before killing it
-     * @return -2 if the process could not be started, -1 if it crashed,
+     * \param msecs time to wait for process to exit before killing it
+     * \returns -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
     static int execute(const QString &exe, const QStringList &args = QStringList(), int msecs = -1);
@@ -268,10 +268,10 @@ public:
     /**
      * @overload
      *
-     * @param argv the program to execute and the command line arguments
+     * \param argv the program to execute and the command line arguments
      *   for the program, one per list element
-     * @param msecs time to wait for process to exit before killing it
-     * @return -2 if the process could not be started, -1 if it crashed,
+     * \param msecs time to wait for process to exit before killing it
+     * \returns -2 if the process could not be started, -1 if it crashed,
      *  otherwise its exit code
      */
     static int execute(const QStringList &argv, int msecs = -1);
@@ -282,32 +282,32 @@ public:
      *
      * Unlike the other startDetached() variants this method is not static,
      * so the process can be parametrized properly.
-     * @note Currently, only the setProgram()/setShellCommand() and
+     * \note Currently, only the setProgram()/setShellCommand() and
      * setWorkingDirectory() parametrizations are supported.
      *
      * The KProcess object may be re-used immediately after calling this
      * function.
      *
-     * @return the PID of the started process or 0 on error
+     * \returns the PID of the started process or 0 on error
      */
     int startDetached();
 
     /**
      * @overload
      *
-     * @param exe the program to start
-     * @param args the command line arguments for the program,
+     * \param exe the program to start
+     * \param args the command line arguments for the program,
      *   one per list element
-     * @return the PID of the started process or 0 on error
+     * \returns the PID of the started process or 0 on error
      */
     static int startDetached(const QString &exe, const QStringList &args = QStringList());
 
     /**
      * @overload
      *
-     * @param argv the program to start and the command line arguments
+     * \param argv the program to start and the command line arguments
      *   for the program, one per list element
-     * @return the PID of the started process or 0 on error
+     * \returns the PID of the started process or 0 on error
      */
     static int startDetached(const QStringList &argv);
 
@@ -319,7 +319,7 @@ public:
      * This function can be called only while the process is running.
      * It cannot be applied to detached processes.
      *
-     * @return the process ID
+     * \returns the process ID
      */
     int pid() const;
 

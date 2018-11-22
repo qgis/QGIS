@@ -1,0 +1,106 @@
+<Composer>
+ <Composition snapGridOffsetY="0" numPages="1" name="composer title" printAsRaster="0" snapGridOffsetX="0" snapGridResolution="10" alignmentSnap="1" resizeToContentsMarginTop="0" paperHeight="210" paperWidth="297" generateWorldFile="0" worldFileMap="" resizeToContentsMarginRight="0" smartGuides="1" resizeToContentsMarginBottom="0" snapTolerancePixels="5" guidesVisible="1" resizeToContentsMarginLeft="0" showPages="1" printResolution="305" snapping="0" gridVisible="0">
+  <symbol type="fill" clip_to_extent="1" name="" alpha="1">
+   <layer pass="0" enabled="1" locked="0" class="SimpleFill">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="241,244,199,255" k="color"/>
+    <prop v="bevel" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="175,179,138,255" k="outline_color"/>
+    <prop v="solid" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option type="QString" value="" name="name"/>
+      <Option name="properties"/>
+      <Option type="QString" value="collection" name="type"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <ComposerLegend rasterBorderWidth="0" rasterBorder="1" title="My Legend" resizeToContents="1" symbolWidth="12" map="0" columnSpace="1" wmsLegendHeight="25" splitLayer="1" rasterBorderColor="0,0,0,255" columnCount="2" titleAlignment="4" fontColor="#f065ec" wmsLegendWidth="50" symbolHeight="9" boxSpace="5" wrapChar=" " legendFilterByAtlas="0" lineSpacing="1" equalColumnWidth="1">
+   <styles>
+    <style name="title" marginBottom="6">
+     <styleFont description="MS Shell Dlg 2,36,-1,5,50,0,0,0,0,0" style=""/>
+    </style>
+    <style name="group" marginTop="5">
+     <styleFont description="MS Shell Dlg 2,14,-1,5,50,0,0,0,0,0" style=""/>
+    </style>
+    <style name="subgroup" marginTop="4">
+     <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+    </style>
+    <style name="symbol" marginTop="3">
+     <styleFont description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+    </style>
+    <style marginLeft="4" name="symbolLabel" marginTop="3">
+     <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+    </style>
+   </styles>
+   <layer-tree-group>
+    <customproperties/>
+    <layer-tree-layer providerKey="ogr" name="points" expanded="1" checked="Qt::Checked" id="points20171212162310546" source="../points.shp">
+     <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer providerKey="ogr" name="polys" expanded="1" checked="Qt::Checked" id="polys20171212162309844" source="../polys.shp">
+     <customproperties/>
+    </layer-tree-layer>
+    <custom-order enabled="0"/>
+   </layer-tree-group>
+   <ComposerItem y="79.6503" excludeFromExports="0" frame="false" background="true" uuid="{69fb50e1-e233-4105-a97f-f95d3fa822cc}" lastValidViewScaleFactor="-1" zValue="6" frameJoinStyle="miter" id="" positionLock="false" width="70.6219" positionMode="0" itemRotation="0" page="1" outlineWidth="0.3" blendMode="0" pagey="79.6503" x="139.64" pagex="139.64" visibility="1" opacity="1" height="89.5">
+    <FrameColor blue="0" green="0" red="0" alpha="255"/>
+    <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" value="" name="name"/>
+      <Option name="properties"/>
+      <Option type="QString" value="collection" name="type"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLegend>
+  <dataDefinedProperties>
+   <Option type="Map">
+    <Option type="QString" value="" name="name"/>
+    <Option type="Map" name="properties">
+     <Option type="Map" name="dataDefinedHeight">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="28" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedMapScale">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="24126145*1.1" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedPositionX">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="200" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedPositionY">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="70" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedSource">
+      <Option type="bool" value="false" name="active"/>
+      <Option type="QString" value="" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedWidth">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="24" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+    </Option>
+    <Option type="QString" value="collection" name="type"/>
+   </Option>
+  </dataDefinedProperties>
+  <customproperties/>
+ </Composition>
+</Composer>

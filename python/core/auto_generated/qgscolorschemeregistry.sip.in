@@ -1,0 +1,181 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscolorschemeregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsColorSchemeRegistry
+{
+%Docstring
+Registry of color schemes
+
+A registry of QgsColorScheme color schemes. This class can be created directly, or
+accessed via a :py:func:`QgsApplication.colorSchemeRegistry()`
+
+.. versionadded:: 2.5
+%End
+
+%TypeHeaderCode
+#include "qgscolorschemeregistry.h"
+%End
+  public:
+
+    QgsColorSchemeRegistry();
+%Docstring
+Constructor for an empty color scheme registry
+%End
+
+    virtual ~QgsColorSchemeRegistry();
+
+    void populateFromInstance();
+%Docstring
+Adds all color schemes from the global instance to this color scheme.
+
+.. seealso:: :py:func:`addDefaultSchemes`
+
+.. seealso:: :py:func:`addColorScheme`
+%End
+
+    void addDefaultSchemes();
+%Docstring
+Adds all default color schemes to this color scheme.
+
+.. seealso:: :py:func:`populateFromInstance`
+
+.. seealso:: :py:func:`addColorScheme`
+
+.. seealso:: :py:func:`addUserSchemes`
+%End
+
+    void initStyleScheme();
+%Docstring
+Initializes the default random style color scheme for the user.
+
+.. versionadded:: 3.2
+%End
+
+    void addUserSchemes();
+%Docstring
+Creates schemes for all gpl palettes in the user's palettes folder.
+
+.. seealso:: :py:func:`populateFromInstance`
+
+.. seealso:: :py:func:`addDefaultSchemes`
+
+.. seealso:: :py:func:`addColorScheme`
+%End
+
+    void addColorScheme( QgsColorScheme *scheme /Transfer/ );
+%Docstring
+Adds a color scheme to the registry. Ownership of the scheme is transferred
+to the registry.
+
+:param scheme: color scheme to add
+
+.. seealso:: :py:func:`populateFromInstance`
+
+.. seealso:: :py:func:`removeColorScheme`
+%End
+
+    bool removeColorScheme( QgsColorScheme *scheme );
+%Docstring
+Removes all matching color schemes from the registry
+
+:param scheme: color scheme to remove
+
+:return: true if scheme was found and removed
+
+.. seealso:: :py:func:`addColorScheme`
+%End
+
+    QList<QgsColorScheme *> schemes() const;
+%Docstring
+Returns all color schemes in the registry
+
+:return: list of color schemes
+%End
+
+    QList<QgsColorScheme *> schemes( QgsColorScheme::SchemeFlag flag ) const;
+%Docstring
+Returns all color schemes in the registry which have a specified flag set
+
+:param flag: flag to match
+
+:return: list of color schemes with flag set
+%End
+
+
+
+    void setRandomStyleColorScheme( QgsColorScheme *scheme );
+%Docstring
+Sets the color ``scheme`` to use when fetching random colors to use for symbol styles.
+
+``scheme`` should match a color scheme which is already present in the registry.
+
+Note that calling this method takes a snapshot of the colors from the scheme's
+QgsColorScheme.fetchColors() list. Accordingly, any future changes to the colors
+in ``scheme`` are not automatically reflected by calls to fetchRandomStyleColor().
+If ``scheme`` is updated, then another call to setRandomStyleColorScheme() must
+be made in order to update the cached list of available style colors.
+
+.. seealso:: :py:func:`randomStyleColorScheme`
+
+.. seealso:: :py:func:`fetchRandomStyleColor`
+
+.. versionadded:: 3.2
+%End
+
+    QgsColorScheme *randomStyleColorScheme();
+%Docstring
+Returns the color scheme used when fetching random colors to use for symbol styles.
+
+This may be None, in which case totally random colors are used for styles.
+
+.. seealso:: :py:func:`setRandomStyleColorScheme`
+
+.. seealso:: :py:func:`fetchRandomStyleColor`
+
+.. versionadded:: 3.2
+%End
+
+    QColor fetchRandomStyleColor() const;
+%Docstring
+Returns a random color for use with a new symbol style (e.g. for a newly created
+map layer).
+
+If a randomStyleColorScheme() is set then this color will be randomly taken from that
+color scheme. If no randomStyleColorScheme() is set then a totally random color
+will be generated.
+
+Note that calling setRandomStyleColorScheme() takes a snapshot of the colors from the scheme's
+QgsColorScheme.fetchColors() list. Accordingly, any future changes to the colors
+in the scheme are not automatically reflected by calls to fetchRandomStyleColor().
+If the scheme is updated, then another call to setRandomStyleColorScheme() must
+be made in order to update the cached list of available style colors from which
+fetchRandomStyleColor() selects colors.
+
+This method is thread safe.
+
+.. seealso:: :py:func:`randomStyleColorScheme`
+
+.. seealso:: :py:func:`setRandomStyleColorScheme`
+
+.. versionadded:: 3.2
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscolorschemeregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

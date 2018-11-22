@@ -1,8 +1,0 @@
-D8 Contributing Area
-aread8
-Basic Grid Analysis tools
-ParameterRaster|-p|D8 Flow Direction Grid|False
-ParameterVector|-o|Outlets Shapefile|0|True
-ParameterRaster|-wg|Weight Grid|True
-ParameterBoolean|-nc|Check for edge contamination|True
-OutputRaster|-ad8|D8 Contributing Area Grid

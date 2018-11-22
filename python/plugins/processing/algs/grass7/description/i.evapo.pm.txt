@@ -1,0 +1,12 @@
+i.evapo.pm
+Computes potential evapotranspiration calculation with hourly Penman-Monteith.
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map [m a.s.l.]|None|False
+QgsProcessingParameterRasterLayer|temperature|Name of input temperature raster map [C]|None|False
+QgsProcessingParameterRasterLayer|relativehumidity|Name of input relative humidity raster map [%]|None|False
+QgsProcessingParameterRasterLayer|windspeed|Name of input wind speed raster map [m/s]|None|False
+QgsProcessingParameterRasterLayer|netradiation|Name of input net solar radiation raster map [MJ/m2/h]|None|False
+QgsProcessingParameterRasterLayer|cropheight|Name of input crop height raster map [m]|None|False
+*QgsProcessingParameterBoolean|-z|Set negative ETa to zero|False
+*QgsProcessingParameterBoolean|-n|Use Night-time|False
+QgsProcessingParameterRasterDestination|output|Evapotranspiration

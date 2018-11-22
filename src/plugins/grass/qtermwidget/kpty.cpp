@@ -28,6 +28,8 @@
 
 
 #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#define HAVE_UTEMPTER
+#define HAVE_UTMPX
 #define HAVE_LOGIN
 #define HAVE_LIBUTIL_H
 #endif
@@ -509,7 +511,7 @@ void KPty::login(const char * user, const char * remotehost)
     if (remotehost) {
         strncpy(l_struct.ut_host, remotehost, sizeof(l_struct.ut_host));
 # ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-        l_struct.ut_syslen = qMin(strlen(remotehost), sizeof(l_struct.ut_host));
+        l_struct.ut_syslen = std::min(strlen(remotehost), sizeof(l_struct.ut_host));
 # endif
     }
 

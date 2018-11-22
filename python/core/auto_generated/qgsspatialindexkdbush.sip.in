@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsspatialindexkdbush.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSpatialIndexKDBush
+{
+%Docstring
+
+A very fast static spatial index for 2D points based on a flat KD-tree.
+
+Compared to QgsSpatialIndex, this index:
+- supports single point features only (no multipoints)
+- is static (features cannot be added or removed from the index after construction)
+- is much faster!
+- allows direct retrieval of the original feature's points, without requiring additional feature requests
+- supports true "distance based" searches, i.e. return all points within a radius
+from a search point
+
+QgsSpatialIndexKDBush objects are implicitly shared and can be inexpensively copied.
+
+.. seealso:: :py:class:`QgsSpatialIndex`
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsspatialindexkdbush.h"
+%End
+  public:
+
+    explicit QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
+%Docstring
+Constructor - creates KDBush index and bulk loads it with features from the iterator.
+
+The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+that of the spatial index construction.
+
+Any non-single point features encountered during iteration will be ignored and not included in the index.
+%End
+
+    explicit QgsSpatialIndexKDBush( const QgsFeatureSource &source, QgsFeedback *feedback = 0 );
+%Docstring
+Constructor - creates KDBush index and bulk loads it with features from the source.
+
+The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+that of the spatial index construction.
+
+Any non-single point features encountered during iteration will be ignored and not included in the index.
+%End
+
+    QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
+%Docstring
+Copy constructor
+%End
+
+
+    ~QgsSpatialIndexKDBush();
+
+    QList<QgsSpatialIndexKDBushData> intersects( const QgsRectangle &rectangle ) const;
+%Docstring
+Returns the list of features which fall within the specified ``rectangle``.
+%End
+
+
+    QList<QgsSpatialIndexKDBushData> within( const QgsPointXY &point, double radius ) const;
+%Docstring
+Returns the list of features which are within the given search ``radius``
+of ``point``.
+%End
+
+
+    qgssize size() const;
+%Docstring
+Returns the size of the index, i.e. the number of points contained within the index.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsspatialindexkdbush.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

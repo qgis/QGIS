@@ -27,7 +27,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 
-#include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 
@@ -69,35 +68,37 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
   QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
 
   QStringList paths = QgsGrass::grassModulesPaths();
-  paths += environment.value( "PATH" ).split( QgsGrass::pathSeparator() );
-  environment.insert( "PATH", paths.join( QgsGrass::pathSeparator() ) );
-  environment.insert( "PYTHONPATH", QgsGrass::getPythonPath() );
+  paths += environment.value( QStringLiteral( "PATH" ) ).split( QgsGrass::pathSeparator() );
+  environment.insert( QStringLiteral( "PATH" ), paths.join( QgsGrass::pathSeparator() ) );
+  environment.insert( QStringLiteral( "PYTHONPATH" ), QgsGrass::getPythonPath() );
 
   if ( direct )
   {
     // Set path to GRASS gis fake library
     QgsGrassModule::setDirectLibraryPath( environment );
-    environment.insert( "QGIS_PREFIX_PATH", QgsApplication::prefixPath() );
+    environment.insert( QStringLiteral( "QGIS_PREFIX_PATH" ), QgsApplication::prefixPath() );
     // Window to avoid crash in G__gisinit
-    environment.insert( "GRASS_REGION", "west:0;south:0;east:1;north:1;cols:1;rows:1;proj:0;zone:0" );
+    environment.insert( QStringLiteral( "GRASS_REGION" ), QStringLiteral( "west:0;south:0;east:1;north:1;cols:1;rows:1;proj:0;zone:0" ) );
   }
   return environment;
 }
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                                 bool direct, QWidget *parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , QgsGrassModuleBase()
-    , mOptions( 0 )
-    , mSuccess( false )
-    , mDirect( direct )
+  : QWidget( parent, f )
+  , QgsGrassModuleBase()
+  , mSuccess( false )
+  , mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
 
   setupUi( this );
-  // use fixed width font because module's output may be formated
-  mOutputTextBrowser->setStyleSheet( "font-family: Monospace; font-size: 9pt;" );
+  connect( mRunButton, &QPushButton::clicked, this, &QgsGrassModule::mRunButton_clicked );
+  connect( mCloseButton, &QPushButton::clicked, this, &QgsGrassModule::mCloseButton_clicked );
+  connect( mViewButton, &QPushButton::clicked, this, &QgsGrassModule::mViewButton_clicked );
+  // use fixed width font because module's output may be formatted
+  mOutputTextBrowser->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 9pt;" ) );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );
   mTools = tools;
   mIface = iface;
@@ -120,7 +121,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
     mErrors.append( tr( "Cannot open module file (%1)" ).arg( mpath ) );
     return;
   }
-  QDomDocument qDoc( "qgisgrassmodule" );
+  QDomDocument qDoc( QStringLiteral( "qgisgrassmodule" ) );
   QString err;
   int line, column;
   if ( !qDoc.setContent( &qFile,  &err, &line, &column ) )
@@ -136,8 +137,8 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QDomElement qDocElem = qDoc.documentElement();
 
   // Read GRASS module description
-  QString xName = qDocElem.attribute( "module" );
-  QString xDocName = qDocElem.attribute( "manual" );
+  QString xName = qDocElem.attribute( QStringLiteral( "module" ) );
+  QString xDocName = qDocElem.attribute( QStringLiteral( "manual" ) );
   if ( xDocName.isEmpty() )
   {
     xDocName = xName;
@@ -161,7 +162,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
 
   QVBoxLayout *layout = new QVBoxLayout( mTabWidget->widget( 0 ) );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  if ( xName == "r.mapcalc" )
+  if ( xName == QLatin1String( "r.mapcalc" ) )
   {
     mOptions = new QgsGrassMapcalc( mTools, this,
                                     mIface, mTabWidget->widget( 0 ) );
@@ -198,17 +199,17 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   else
   {
     mManualTextBrowser->clear();
-    mManualTextBrowser->textCursor().insertImage( ":/grass/error.png" );
+    mManualTextBrowser->textCursor().insertImage( QStringLiteral( ":/grass/error.png" ) );
     mManualTextBrowser->insertPlainText( tr( "Cannot find man page %1" ).arg( manPath ) );
     mManualTextBrowser->insertPlainText( tr( "Please ensure you have the GRASS documentation installed." ) );
   }
 
-  connect( &mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( readStdout() ) );
-  connect( &mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( readStderr() ) );
-  connect( &mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( finished( int, QProcess::ExitStatus ) ) );
+  connect( &mProcess, &QProcess::readyReadStandardOutput, this, &QgsGrassModule::readStdout );
+  connect( &mProcess, &QProcess::readyReadStandardError, this, &QgsGrassModule::readStderr );
+  connect( &mProcess, static_cast<void ( QProcess::* )( int, QProcess::ExitStatus )>( &QProcess::finished ), this, &QgsGrassModule::finished );
 
   const char *env = "GRASS_MESSAGE_FORMAT=gui";
-  char *envstr = new char[strlen( env )+1];
+  char *envstr = new char[strlen( env ) + 1];
   strcpy( envstr, env );
   putenv( envstr );
 
@@ -230,7 +231,7 @@ QgsGrassModule::Description QgsGrassModule::description( QString path )
   {
     return Description( tr( "Not available, cannot open description (%1)" ).arg( path ) );
   }
-  QDomDocument qDoc( "qgisgrassmodule" );
+  QDomDocument qDoc( QStringLiteral( "qgisgrassmodule" ) );
   QString err;
   int line, column;
   if ( !qDoc.setContent( &qFile,  &err, &line, &column ) )
@@ -238,15 +239,15 @@ QgsGrassModule::Description QgsGrassModule::description( QString path )
     QString errmsg = tr( "Cannot read module file (%1)" ).arg( path )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
-    QMessageBox::warning( 0, tr( "Warning" ), errmsg );
+    QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     qFile.close();
     return Description( tr( "Not available, incorrect description (%1)" ).arg( path ) );
   }
   qFile.close();
   QDomElement qDocElem = qDoc.documentElement();
 
-  QString label = QApplication::translate( "grasslabel", qDocElem.attribute( "label" ).trimmed().toUtf8() );
-  bool direct = qDocElem.attribute( "direct" ) == "1";
+  QString label = QApplication::translate( "grasslabel", qDocElem.attribute( QStringLiteral( "label" ) ).trimmed().toUtf8() );
+  bool direct = qDocElem.attribute( QStringLiteral( "direct" ) ) == QLatin1String( "1" );
   return Description( label, direct );
 }
 
@@ -434,7 +435,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       painter.drawPixmap( pos, 0, plusPixmap );
       pos += buffer + plusWidth;
     }
-    if (( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
+    if ( ( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
     {
       pos += buffer;
       painter.drawPixmap( pos, 0, arrowPixmap );
@@ -475,7 +476,7 @@ void QgsGrassModule::run()
       {
         err.append( readyErrors.at( i ) + "<br>" );
       }
-      QMessageBox::warning( 0, tr( "Warning" ), err );
+      QMessageBox::warning( nullptr, tr( "Warning" ), err );
       return;
     }
 
@@ -487,7 +488,7 @@ void QgsGrassModule::run()
     {
       if ( !mOptions->inputRegion( &tempWindow, crs, false ) )
       {
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get input region" ) );
+        QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot get input region" ) );
         return;
       }
       resetRegion = true;
@@ -498,7 +499,7 @@ void QgsGrassModule::run()
       if ( outsideRegion.size() > 0 )
       {
         QMessageBox questionBox( QMessageBox::Question, tr( "Warning" ),
-                                 tr( "Input %1 outside current region!" ).arg( outsideRegion.join( "," ) ),
+                                 tr( "Input %1 outside current region!" ).arg( outsideRegion.join( QStringLiteral( "," ) ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel );
         QPushButton *resetButton = nullptr;
         if ( QgsGrass::versionMajor() > 6 || ( QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 ) )
@@ -516,7 +517,7 @@ void QgsGrassModule::run()
         {
           if ( !mOptions->inputRegion( &tempWindow, crs, true ) )
           {
-            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get input region" ) );
+            QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot get input region" ) );
             return;
           }
         }
@@ -530,22 +531,14 @@ void QgsGrassModule::run()
       QStringList outputExists = mOptions->checkOutput();
       if ( outputExists.size() > 0 )
       {
-        QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
-                                          tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( "," ) ),
+        QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ),
+                                          tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( QStringLiteral( "," ) ) ),
                                           QMessageBox::Ok | QMessageBox::Cancel );
 
         if ( ret == QMessageBox::Cancel )
           return;
 
-#if GRASS_VERSION_MAJOR < 7
-        // r.mapcalc does not use standard parser (does not accept --o) in GRASS 6
-        if ( mXName != "r.mapcalc" )
-        {
-          arguments.append( "--o" );
-        }
-#else
-        arguments.append( "--o" );
-#endif
+        arguments.append( QStringLiteral( "--o" ) );
       }
     }
 
@@ -587,15 +580,15 @@ void QgsGrassModule::run()
      * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
      * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
     *   */
-    putenv(( char* ) "GISRC_MODE_MEMORY" );  // unset
+    putenv( ( char * ) "GISRC_MODE_MEMORY" ); // unset
 
     mOutputTextBrowser->clear();
 
     QProcessEnvironment environment = processEnvironment( mDirect );
-    environment.insert( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
+    environment.insert( QStringLiteral( "GRASS_HTML_BROWSER" ), QgsGrassUtils::htmlBrowserPath() );
 
     // Warning: it is not useful to write requested region to WIND file and
-    //          reset then to original beacuse it is reset before
+    //          reset then to original because it is reset before
     //          the region is read by a module even if waitForStarted() is used
     //          -> necessary to pass region as environment variable
     //             but the feature is available in GRASS 6.1 only since 23.3.2006
@@ -603,7 +596,7 @@ void QgsGrassModule::run()
     {
       QString reg = QgsGrass::regionString( &tempWindow );
       QgsDebugMsg( "reg: " + reg );
-      environment.insert( "GRASS_REGION", reg );
+      environment.insert( QStringLiteral( "GRASS_REGION" ), reg );
     }
 
     if ( mDirect )
@@ -615,30 +608,30 @@ void QgsGrassModule::run()
 #elif defined(Q_OS_MAC)
       variables << "DYLD_LIBRARY_PATH";
 #else
-      variables << "LD_LIBRARY_PATH";
+      variables << QStringLiteral( "LD_LIBRARY_PATH" );
 #endif
-      environment.insert( "QGIS_PREFIX_PATH", QgsApplication::prefixPath() );
+      environment.insert( QStringLiteral( "QGIS_PREFIX_PATH" ), QgsApplication::prefixPath() );
       if ( crs.isValid() ) // it should always be valid
       {
-        environment.insert( "QGIS_GRASS_CRS", crs.toProj4() );
+        environment.insert( QStringLiteral( "QGIS_GRASS_CRS" ), crs.toProj4() );
       }
       // Suppress debug output
-      environment.insert( "QGIS_DEBUG", "-1" );
+      environment.insert( QStringLiteral( "QGIS_DEBUG" ), QStringLiteral( "-1" ) );
 
       // Print some important variables
-      variables << "QGIS_PREFIX_PATH" << "QGIS_GRASS_CRS" << "GRASS_REGION";
-      Q_FOREACH ( const QString& v, variables )
+      variables << QStringLiteral( "QGIS_PREFIX_PATH" ) << QStringLiteral( "QGIS_GRASS_CRS" ) << QStringLiteral( "GRASS_REGION" );
+      Q_FOREACH ( const QString &v, variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }
     }
 
-    QString commandHtml = mXName + " " + argumentsHtml.join( " " );
+    QString commandHtml = mXName + " " + argumentsHtml.join( QStringLiteral( " " ) );
 
     QgsDebugMsg( "command: " + commandHtml );
-    commandHtml.replace( "&", "&amp;" );
-    commandHtml.replace( "<", "&lt;" );
-    commandHtml.replace( ">", "&gt;" );
+    commandHtml.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) );
+    commandHtml.replace( QLatin1String( "<" ), QLatin1String( "&lt;" ) );
+    commandHtml.replace( QLatin1String( ">" ), QLatin1String( "&gt;" ) );
     mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
 
     // I was not able to get scripts working on Windows
@@ -647,13 +640,13 @@ void QgsGrassModule::run()
     // but it fails (without error) to re-run the script with
     // execlp(). And I could not figure out why it fails.
     // Because of this problem we simulate here what g.parser
-    // normaly does and that way we can avoid it.
+    // normally does and that way we can avoid it.
 
     QStringList execArguments = QgsGrassModule::execArguments( mXName );
 
     if ( execArguments.size() == 0 )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot find module %1" ).arg( mXName ) );
+      QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot find module %1" ).arg( mXName ) );
       return;
     }
 
@@ -678,7 +671,7 @@ void QgsGrassModule::run()
         }
         else // option
         {
-          QStringList opt = arg.split( "=" );
+          QStringList opt = arg.split( '=' );
           //env = "GIS_OPT_" + opt.takeFirst().toUpper();
           //env += "=" + opt.join( "=" ); // rejoin rest
           environment.insert( "GIS_OPT_" + opt.takeFirst().toUpper(), opt.join( "=" ) );
@@ -727,7 +720,7 @@ void QgsGrassModule::run()
     mProcess.waitForStarted();
     if ( mProcess.state() != QProcess::Running )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot start module: %1" ).arg( mProcess.errorString() ) );
+      QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot start module: %1" ).arg( mProcess.errorString() ) );
       return;
     }
 
@@ -777,10 +770,10 @@ void QgsGrassModule::readStdout()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', QString() );
 
-    // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
-    // normaly it should be printed to stderr
+    // GRASS_INFO_PERCENT is caught here only because of bugs in GRASS,
+    // normally it should be printed to stderr
     if ( rxpercent.indexIn( line ) != -1 )
     {
       int progress = rxpercent.cap( 1 ).toInt();
@@ -803,11 +796,11 @@ void QgsGrassModule::readStderr()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', QString() );
 
     QString text, html;
     int percent;
-    QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+    QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, percent );
     if ( type == QgsGrass::OutputPercent )
     {
       setProgress( percent );
@@ -873,7 +866,7 @@ void QgsGrassModule::viewOutput()
       bool onlyLayer1 = false;
       for ( int j = 0; j < layers.count(); j++ )
       {
-        if ( layers[j].left( 1 ) == "1" )
+        if ( layers[j].at( 0 ) == '1' )
         {
           onlyLayer1 = true;
           break;
@@ -889,13 +882,13 @@ void QgsGrassModule::viewOutput()
                       + map + "/" + layers[j];
 
         // skip 0_* layers
-        if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
+        if ( onlyLayer1 && layers[j].at( 0 ) != '1' )
           continue;
 
         QString name = QgsGrassUtils::vectorLayerName(
                          map, layers[j], 1 );
 
-        mIface->addVectorLayer( uri, name, "grass" );
+        mIface->addVectorLayer( uri, name, QStringLiteral( "grass" ) );
       }
     }
   }
@@ -907,7 +900,7 @@ void QgsGrassModule::viewOutput()
     if ( mDirect )
     {
       QString baseName = QFileInfo( map ).baseName();
-      mIface->addRasterLayer( map, baseName, "gdal" );
+      mIface->addRasterLayer( map, baseName, QStringLiteral( "gdal" ) );
     }
     else
     {
@@ -916,7 +909,7 @@ void QgsGrassModule::viewOutput()
                     + QgsGrass::getDefaultMapset()
                     + "/cellhd/" + map;
 
-      mIface->addRasterLayer( uri, map, "grassraster" );
+      mIface->addRasterLayer( uri, map, QStringLiteral( "grassraster" ) );
     }
   }
 }
@@ -947,11 +940,11 @@ QString QgsGrassModule::libraryPathVariable()
 #elif defined(Q_OS_MAC)
   return "DYLD_LIBRARY_PATH";
 #else
-  return "LD_LIBRARY_PATH";
+  return QStringLiteral( "LD_LIBRARY_PATH" );
 #endif
 }
 
-void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
+void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment &environment )
 {
   QString pathVariable = libraryPathVariable();
   QString separator;
@@ -960,10 +953,10 @@ void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
 #elif defined(Q_OS_MAC)
   separator = ":";
 #else
-  separator = ":";
+  separator = QStringLiteral( ":" );
 #endif
   QString lp = environment.value( pathVariable );
-  lp =  QgsApplication::pluginPath() + separator + lp;
+  lp = QgsApplication::pluginPath() + separator + lp;
   environment.insert( pathVariable, lp );
   QgsDebugMsg( pathVariable + "=" + lp );
 }

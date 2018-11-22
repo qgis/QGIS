@@ -15,49 +15,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#define CPL_SUPRESS_CPLUSPLUS
-#include "cpl_conv.h"
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#include <cpl_conv.h>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
-  QgsDebugMsg( "Entered" );
 
   // first get the GDAL driver manager
   QgsGdalProviderBase::registerGdalDrivers();
 }
 
 /**
- * @param theBandNumber the number of the band for which you want a color table
- * @param theList a pointer the object that will hold the color table
- * @return true of a color table was able to be read, false otherwise
+ * \param bandNumber the number of the band for which you want a color table
+ * \param list a pointer the object that will hold the color table
+ * \return true of a color table was able to be read, false otherwise
  */
-QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int theBandNumber )const
+QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber )const
 {
-  QgsDebugMsg( "entered." );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   //Invalid band number, segfault prevention
-  if ( 0 >= theBandNumber )
+  if ( 0 >= bandNumber )
   {
-    QgsDebugMsg( "Invalid parameter" );
+    QgsDebugMsg( QStringLiteral( "Invalid parameter" ) );
     return ct;
   }
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, theBandNumber );
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
   GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
 
   if ( myGdalColorTable )
   {
-    QgsDebugMsg( "Color table found" );
+    QgsDebugMsg( QStringLiteral( "Color table found" ) );
 
     // load category labels
-    char ** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
+    char **categoryNames = GDALGetRasterCategoryNames( myGdalBand );
     QVector<QString> labels;
     if ( categoryNames )
     {
@@ -70,12 +67,12 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     }
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
-    GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
+    GDALColorInterp myColorInterpretation = GDALGetRasterColorInterpretation( myGdalBand );
     QgsDebugMsg( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ) );
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
     QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
 
-    const GDALColorEntry* myColorEntry = nullptr;
+    const GDALColorEntry *myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
     {
       myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
@@ -126,7 +123,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         }
         else
         {
-          QgsDebugMsg( "Color interpretation type not supported yet" );
+          QgsDebugMsg( QStringLiteral( "Color interpretation type not supported yet" ) );
           return ct;
         }
       }
@@ -134,45 +131,45 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
   else
   {
-    QgsDebugMsg( "No color table found for band " + QString::number( theBandNumber ) );
+    QgsDebugMsg( "No color table found for band " + QString::number( bandNumber ) );
     return ct;
   }
 
-  QgsDebugMsg( "Color table loaded successfully" );
+  QgsDebugMsg( QStringLiteral( "Color table loaded successfully" ) );
   return ct;
 }
 
-QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
+Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDataType ) const
 {
-  switch ( theGdalDataType )
+  switch ( gdalDataType )
   {
     case GDT_Byte:
-      return QGis::Byte;
+      return Qgis::Byte;
     case GDT_UInt16:
-      return QGis::UInt16;
+      return Qgis::UInt16;
     case GDT_Int16:
-      return QGis::Int16;
+      return Qgis::Int16;
     case GDT_UInt32:
-      return QGis::UInt32;
+      return Qgis::UInt32;
     case GDT_Int32:
-      return QGis::Int32;
+      return Qgis::Int32;
     case GDT_Float32:
-      return QGis::Float32;
+      return Qgis::Float32;
     case GDT_Float64:
-      return QGis::Float64;
+      return Qgis::Float64;
     case GDT_CInt16:
-      return QGis::CInt16;
+      return Qgis::CInt16;
     case GDT_CInt32:
-      return QGis::CInt32;
+      return Qgis::CInt32;
     case GDT_CFloat32:
-      return QGis::CFloat32;
+      return Qgis::CFloat32;
     case GDT_CFloat64:
-      return QGis::CFloat64;
+      return Qgis::CFloat64;
     case GDT_Unknown:
     case GDT_TypeCount:
-      return QGis::UnknownDataType;
+      return Qgis::UnknownDataType;
   }
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
@@ -220,8 +217,8 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 void QgsGdalProviderBase::registerGdalDrivers()
 {
   GDALAllRegister();
-  QSettings mySettings;
-  QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
+  QgsSettings mySettings;
+  QString myJoinedList = mySettings.value( QStringLiteral( "gdal/skipList" ), "" ).toString();
   if ( !myJoinedList.isEmpty() )
   {
     QStringList myList = myJoinedList.split( ' ' );
@@ -240,12 +237,12 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   bool myHasGeoTransform = GDALGetGeoTransform( gdalDataset, myGeoTransform ) == CE_None;
   if ( !myHasGeoTransform )
   {
-    // Initialise the affine transform matrix
-    myGeoTransform[0] =  0;
-    myGeoTransform[1] =  1;
-    myGeoTransform[2] =  0;
-    myGeoTransform[3] =  0;
-    myGeoTransform[4] =  0;
+    // Initialize the affine transform matrix
+    myGeoTransform[0] = 0;
+    myGeoTransform[1] = 1;
+    myGeoTransform[2] = 0;
+    myGeoTransform[3] = 0;
+    myGeoTransform[4] = 0;
     myGeoTransform[5] = -1;
   }
 
@@ -264,60 +261,41 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
 {
-  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
-  QgsDebugMsg( "Disabled VSI_CACHE" );
-#endif
-
   GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
-
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
-  CPLFree( pszOldVal );
-  QgsDebugMsg( "Reset VSI_CACHE" );
-#endif
-
   return hDS;
 }
 
-CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace )
+int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
-  QgsDebugMsg( "Disabled VSI_CACHE" );
-#endif
+  Q_UNUSED( dfComplete );
+  Q_UNUSED( pszMessage );
 
-  CPLErr err = GDALRasterIO( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace );
+  QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
+  return !feedback->isCanceled();
+}
 
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
-  CPLFree( pszOldVal );
-  QgsDebugMsg( "Reset VSI_CACHE" );
-#endif
+
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback )
+{
+  GDALRasterIOExtraArg extra;
+  INIT_RASTERIO_EXTRA_ARG( extra );
+  if ( false && feedback )  // disabled!
+  {
+    // Currently the cancelation is disabled... When RasterIO call is canceled,
+    // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
+    // expect to get CPLE_UserInterrupt to clearly identify that the failure was
+    // caused by the cancelation and not that something dodgy is going on.
+    // Are both error codes acceptable?
+    extra.pfnProgress = _gdalProgressFnWithFeedback;
+    extra.pProgressData = ( void * ) feedback;
+  }
+  CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
 
   return err;
 }
 
 int QgsGdalProviderBase::gdalGetOverviewCount( GDALRasterBandH hBand )
 {
-  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
-  QgsDebugMsg( "Disabled VSI_CACHE" );
-#endif
-
   int count = GDALGetOverviewCount( hBand );
-
-#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
-  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
-  CPLFree( pszOldVal );
-  QgsDebugMsg( "Reset VSI_CACHE" );
-#endif
-
   return count;
 }

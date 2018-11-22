@@ -24,6 +24,7 @@ The content of this file is based on
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
@@ -46,7 +47,7 @@ class DlgAddGeometryColumn(QDialog, Ui_Dialog):
     def createGeomColumn(self):
         """ first check whether everything's fine """
         if self.editName.text() == "":
-            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field name must not be empty"))
+            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("Field name must not be empty."))
             return
 
         name = self.editName.text()
@@ -59,13 +60,11 @@ class DlgAddGeometryColumn(QDialog, Ui_Dialog):
         createSpatialIndex = False
 
         # now create the geometry column
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.table.addGeometryColumn(name, geom_type, srid, dim, createSpatialIndex)
-        except DbError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.table.addGeometryColumn(name, geom_type, srid, dim, createSpatialIndex)
+            except DbError as e:
+                DlgDbError.showError(e, self)
+                return
 
         self.accept()

@@ -172,7 +172,7 @@ int Pty::start(const QString& program,
 
   addEnvironmentVariables(environment);
 
-  setEnv("WINDOWID", QString::number(winid));
+  setEnv(QStringLiteral("WINDOWID"), QString::number(winid));
 
   // unless the LANGUAGE environment variable has been set explicitly
   // set it to a null string
@@ -185,7 +185,7 @@ int Pty::start(const QString& program,
   // does not have a translation for
   //
   // BR:149300
-  setEnv("LANGUAGE",QString(),false /* do not overwrite existing value if any */);
+  setEnv(QStringLiteral("LANGUAGE"),QString(),false /* do not overwrite existing value if any */);
 
   setUseUtmp(addToUtmp);
 
@@ -268,7 +268,7 @@ void Pty::init()
   _xonXoff = true;
   _utf8 =true;
 
-  connect(pty(), SIGNAL(readyRead()) , this , SLOT(dataReceived()));
+  connect(pty(), &QIODevice::readyRead , this , &Pty::dataReceived);
   setPtyChannels(KPtyProcess::AllChannels);
 }
 

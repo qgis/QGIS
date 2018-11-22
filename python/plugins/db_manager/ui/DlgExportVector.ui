@@ -146,7 +146,7 @@
    <item row="1" column="2">
     <widget class="QToolButton" name="btnChooseOutputFile">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

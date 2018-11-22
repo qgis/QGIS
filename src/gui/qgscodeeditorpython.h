@@ -17,36 +17,43 @@
 #define QGSCODEEDITORPYTHON_H
 
 #include "qgscodeeditor.h"
+#include "qgis_sip.h"
+#include "qgis_gui.h"
+
+SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A Python editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.6
  * \note may not be available in Python bindings, depending on platform support
+ * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 {
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new Python editor.
      *
-     * @param parent The parent QWidget
-     * @param filenames The list of apis files to load for the python lexer
-     * @note added in 2.6
+     * \param parent The parent QWidget
+     * \param filenames The list of apis files to load for the Python lexer
+     * \since QGIS 2.6
      */
-    QgsCodeEditorPython( QWidget *parent = nullptr, const QList<QString> &filenames = QList<QString>() );
-    ~QgsCodeEditorPython();
+    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>() );
 
-    /** Load APIs from one or more files
-     * @param filenames The list of apis files to load for the python lexer
+    /**
+     * Load APIs from one or more files
+     * \param filenames The list of apis files to load for the Python lexer
      */
-    void loadAPIs( QList<QString> const &filenames );
+    void loadAPIs( const QList<QString> &filenames );
 
-    /** Load a script file
-     * @param script The script file to load
+    /**
+     * Load a script file
+     * \param script The script file to load
      */
     bool loadScript( const QString &script );
 

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsProcessingDialogBase</class>
+ <widget class="QDialog" name="QgsProcessingDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>688</width>
+    <height>523</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="handleWidth">
+      <number>16</number>
+     </property>
+     <widget class="QTabWidget" name="mTabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>2</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Parameters</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Log</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTextEdit" name="txtLog">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="mButtonSaveLog">
+            <property name="toolTip">
+             <string>Save Log to File</string>
+            </property>
+            <property name="text">
+             <string>…</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="mButtonCopyLog">
+            <property name="toolTip">
+             <string>Copy Log to Clipboard</string>
+            </property>
+            <property name="text">
+             <string>…</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="mButtonClearLog">
+            <property name="toolTip">
+             <string>Clear Log</string>
+            </property>
+            <property name="text">
+             <string>…</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../../images/images.qrc">
+              <normaloff>:/images/themes/default/console/iconClearConsole.svg</normaloff>:/images/themes/default/console/iconClearConsole.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QTextBrowser" name="textShortHelp">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="accessibleName">
+       <string/>
+      </property>
+      <property name="openLinks">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblProgress">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

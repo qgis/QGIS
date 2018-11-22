@@ -27,12 +27,7 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 #include <QByteArray>
@@ -48,42 +43,42 @@ extern "C"
 #include "qgsgrass.h"
 #include "qgsgrassdatafile.h"
 
-static struct line_pnts *line = Vect_new_line_struct();
+static struct line_pnts *gLine = Vect_new_line_struct();
 
-void writePoint( struct Map_info* map, int type, const QgsPoint& point, struct line_cats *cats )
+void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct line_cats *cats )
 {
-  Vect_reset_line( line );
-  Vect_append_point( line, point.x(), point.y(), 0 );
-  Vect_write_line( map, type, line, cats );
+  Vect_reset_line( gLine );
+  Vect_append_point( gLine, point.x(), point.y(), 0 );
+  Vect_write_line( map, type, gLine, cats );
 }
 
-void writePolyline( struct Map_info* map, int type, const QgsPolyline& polyline, struct line_cats *cats )
+void writePolyline( struct Map_info *map, int type, const QgsPolylineXY &polyline, struct line_cats *cats )
 {
-  Vect_reset_line( line );
-  Q_FOREACH ( const QgsPoint& point, polyline )
+  Vect_reset_line( gLine );
+  Q_FOREACH ( const QgsPointXY &point, polyline )
   {
-    Vect_append_point( line, point.x(), point.y(), 0 );
+    Vect_append_point( gLine, point.x(), point.y(), 0 );
   }
-  Vect_write_line( map, type, line, cats );
+  Vect_write_line( map, type, gLine, cats );
 }
 
-static struct Map_info *finalMap = 0;
-static struct Map_info *tmpMap = 0;
-static QString finalName;
-static QString tmpName;
-dbDriver *driver = 0;
+static struct Map_info *finalMap = nullptr;
+static struct Map_info *tmpMap = nullptr;
+static QString sFinalName;
+static QString sTmpName;
+dbDriver *driver = nullptr;
 
 void closeMaps()
 {
   if ( tmpMap )
   {
     Vect_close( tmpMap );
-    Vect_delete( tmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
   }
   if ( finalMap )
   {
     Vect_close( finalMap );
-    Vect_delete( finalName.toUtf8().data() );
+    Vect_delete( sFinalName.toUtf8().constData() );
   }
   if ( driver )
   {
@@ -95,7 +90,7 @@ void closeMaps()
 }
 
 // check stream status or exit
-void checkStream( QDataStream& stdinStream )
+void checkStream( QDataStream &stdinStream )
 {
   if ( stdinStream.status() != QDataStream::Ok )
   {
@@ -104,7 +99,7 @@ void checkStream( QDataStream& stdinStream )
   }
 }
 
-void exitIfCanceled( QDataStream& stdinStream )
+void exitIfCanceled( QDataStream &stdinStream )
 {
   bool isCanceled;
   stdinStream >> isCanceled;
@@ -147,26 +142,26 @@ int main( int argc, char **argv )
   QDataStream stdoutStream( &stdoutFile );
 
   // global finalName, tmpName are used by checkStream()
-  finalName = QString( mapOption->answer );
+  sFinalName = QString( mapOption->answer );
   QDateTime now = QDateTime::currentDateTime();
-  tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( "yyyyMMddhhmmss" ) );
+  sTmpName = QStringLiteral( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( QStringLiteral( "yyyyMMddhhmmss" ) ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;
   checkStream( stdinStream );
-  QGis::WkbType wkbType = ( QGis::WkbType )typeQint32;
-  QGis::WkbType wkbFlatType = QGis::flatType( wkbType );
-  bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type )typeQint32;
+  QgsWkbTypes::Type wkbFlatType = QgsWkbTypes::flatType( wkbType );
+  bool isPolygon = QgsWkbTypes::singleType( wkbFlatType ) == QgsWkbTypes::Polygon;
 
   finalMap = QgsGrass::vectNewMapStruct();
   Vect_open_new( finalMap, mapOption->answer, 0 );
-  struct Map_info * map = finalMap;
+  struct Map_info *map = finalMap;
   // keep tmp name in sync with QgsGrassMapsetItem::createChildren
   if ( isPolygon )
   {
     tmpMap = QgsGrass::vectNewMapStruct();
     // TODO: use Vect_open_tmp_new with GRASS 7
-    Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
+    Vect_open_new( tmpMap, sTmpName.toUtf8().constData(), 0 );
     map = tmpMap;
   }
 
@@ -178,7 +173,7 @@ int main( int argc, char **argv )
   QString key;
   while ( true )
   {
-    key = "cat" + ( keyNum == 1 ? "" : QString::number( keyNum ) );
+    key = "cat" + ( keyNum == 1 ? QString() : QString::number( keyNum ) );
     if ( srcFields.indexFromName( key ) == -1 )
     {
       break;
@@ -245,57 +240,57 @@ int main( int argc, char **argv )
       break;
     }
 
-    const QgsGeometry* geometry = feature.constGeometry();
-    if ( geometry )
+    QgsGeometry geometry = feature.geometry();
+    if ( !geometry.isNull() )
     {
       // geometry type may be probably different from provider type (e.g. multi x single)
-      QGis::WkbType geometryType = QGis::flatType( geometry->wkbType() );
+      QgsWkbTypes::Type geometryType = QgsWkbTypes::flatType( geometry.wkbType() );
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
-        Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
+        Vect_cat_set( cats, 1, static_cast<int>( feature.id() ) + fidToCatPlus );
       }
 
-      if ( geometryType == QGis::WKBPoint )
+      if ( geometryType == QgsWkbTypes::Point )
       {
-        QgsPoint point = geometry->asPoint();
+        QgsPointXY point = geometry.asPoint();
         writePoint( map, GV_POINT, point, cats );
       }
-      else if ( geometryType == QGis::WKBMultiPoint )
+      else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
-        QgsMultiPoint multiPoint = geometry->asMultiPoint();
-        Q_FOREACH ( const QgsPoint& point, multiPoint )
+        QgsMultiPointXY multiPoint = geometry.asMultiPoint();
+        Q_FOREACH ( const QgsPointXY &point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
         }
       }
-      else if ( geometryType == QGis::WKBLineString )
+      else if ( geometryType == QgsWkbTypes::LineString )
       {
-        QgsPolyline polyline = geometry->asPolyline();
+        QgsPolylineXY polyline = geometry.asPolyline();
         writePolyline( map, GV_LINE, polyline, cats );
       }
-      else if ( geometryType == QGis::WKBMultiLineString )
+      else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline multiPolyline = geometry->asMultiPolyline();
-        Q_FOREACH ( const QgsPolyline& polyline, multiPolyline )
+        QgsMultiPolylineXY multiPolyline = geometry.asMultiPolyline();
+        Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
       }
-      else if ( geometryType == QGis::WKBPolygon )
+      else if ( geometryType == QgsWkbTypes::Polygon )
       {
-        QgsPolygon polygon = geometry->asPolygon();
-        Q_FOREACH ( const QgsPolyline& polyline, polygon )
+        QgsPolygonXY polygon = geometry.asPolygon();
+        Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
       }
-      else if ( geometryType == QGis::WKBMultiPolygon )
+      else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon multiPolygon = geometry->asMultiPolygon();
-        Q_FOREACH ( const QgsPolygon& polygon, multiPolygon )
+        QgsMultiPolygonXY multiPolygon = geometry.asMultiPolygon();
+        Q_FOREACH ( const QgsPolygonXY &polygon, multiPolygon )
         {
-          Q_FOREACH ( const QgsPolyline& polyline, polygon )
+          Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
           {
             writePolyline( map, GV_BOUNDARY, polyline, cats );
           }
@@ -379,12 +374,8 @@ int main( int argc, char **argv )
     G_message( "Merging lines" );
     Vect_merge_lines( map, GV_BOUNDARY, nullptr, nullptr );
     G_message( "Removing bridges" );
-#if GRASS_VERSION_MAJOR < 7
-    Vect_remove_bridges( map, nullptr );
-#else
     int linesRemoved, bridgesRemoved;
     Vect_remove_bridges( map, nullptr, &linesRemoved, &bridgesRemoved );
-#endif
     G_message( "Attaching islands" );
     Vect_build_partial( map, GV_BUILD_ATTACH_ISLES );
 
@@ -400,12 +391,12 @@ int main( int argc, char **argv )
         // TODO: send warning
         continue;
       }
-      QgsPoint point( x, y );
+      QgsPointXY point( x, y );
       QgsFeature feature( area );
-      feature.setGeometry( QgsGeometry::fromPoint( point ) );
+      feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
-      spatialIndex.insertFeature( feature );
+      spatialIndex.addFeature( feature );
     }
 
     G_message( "Attaching input polygons to cleaned areas" );
@@ -426,19 +417,19 @@ int main( int argc, char **argv )
       {
         break;
       }
-      if ( !feature.constGeometry() )
+      if ( !feature.hasGeometry() )
       {
         continue;
       }
 
-      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.constGeometry()->boundingBox() );
+      QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry().boundingBox() );
       Q_FOREACH ( QgsFeatureId id, idList )
       {
-        QgsFeature& centroid = centroids[id];
-        if ( feature.constGeometry()->contains( centroid.constGeometry() ) )
+        QgsFeature &centroid = centroids[id];
+        if ( feature.geometry().contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
-          attr.append(( int )feature.id() + fidToCatPlus );
+          attr.append( static_cast<int>( feature.id() ) + fidToCatPlus );
           centroid.setAttributes( attr );
         }
       }
@@ -449,18 +440,18 @@ int main( int argc, char **argv )
     G_message( "Copying lines from temporary map" );
     Vect_copy_map_lines( tmpMap, finalMap );
     Vect_close( tmpMap );
-    Vect_delete( tmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
 
     int centroidsCount = centroids.size();
     count = 0;
-    Q_FOREACH ( const QgsFeature& centroid, centroids.values() )
+    for ( auto it = centroids.constBegin(); it != centroids.constEnd(); ++it )
     {
-      QgsPoint point = centroid.constGeometry()->asPoint();
+      QgsPointXY point = it.value().geometry().asPoint();
 
-      if ( centroid.attributes().size() > 0 )
+      if ( it.value().attributes().size() > 0 )
       {
         Vect_reset_cats( cats );
-        Q_FOREACH ( const QVariant& attribute, centroid.attributes() )
+        Q_FOREACH ( const QVariant &attribute, it.value().attributes() )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }

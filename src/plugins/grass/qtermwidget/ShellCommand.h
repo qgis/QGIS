@@ -33,8 +33,8 @@ namespace Konsole {
  * ShellCommand can be used to:
  *
  * <ul>
- *      <li>Take a command-line (eg "/bin/sh -c /path/to/my/script") and split it
- *          into its component parts (eg. the command "/bin/sh" and the arguments
+ *      <li>Take a command-line (e.g., "/bin/sh -c /path/to/my/script") and split it
+ *          into its component parts (e.g., the command "/bin/sh" and the arguments
  *          "-c","/path/to/my/script")
  *      </li>
  *      <li>Take a command and a list of arguments and combine them to
@@ -53,7 +53,7 @@ public:
     /**
      * Constructs a ShellCommand from a command line.
      *
-     * @param fullCommand The command line to parse.
+     * \param fullCommand The command line to parse.
      */
     ShellCommand(const QString & fullCommand);
     /**

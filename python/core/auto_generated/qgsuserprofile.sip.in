@@ -1,0 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsuserprofile.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsUserProfile
+{
+%Docstring
+User profile contains information about the user profile folders on the machine.
+In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
+This allows for manage different user profiles per machine vs the single default one that was allowed in the
+past.
+
+A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsuserprofile.h"
+%End
+  public:
+
+    QgsUserProfile( const QString &folder );
+%Docstring
+Reference to a existing user profile folder.
+Profile folder should be created using :py:class:`QgsProfileManager`.
+
+:param folder: An existing profile folder as the base of the user profile.
+%End
+
+    const QString folder() const;
+%Docstring
+The base folder for the user profile.
+%End
+
+    QgsError validate() const;
+%Docstring
+Check of the profile is in a valid state.
+%End
+
+    const QString name() const;
+%Docstring
+The name for the user profile.
+%End
+
+    void initSettings() const;
+%Docstring
+Init the settings from the user folder.
+%End
+
+    const QString alias() const;
+%Docstring
+Returns the alias for the user profile.
+
+:return: If no alias is set name() is returned.
+%End
+
+    QgsError setAlias( const QString &alias );
+%Docstring
+Set the alias of the profile. The alias is a user friendly name.
+
+:param alias: A user friendly name for the profile.
+
+:return: True of setting the alias was successful.
+%End
+
+    const QIcon icon() const;
+%Docstring
+The icon for the user profile.
+
+:return: A QIcon for the users
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsuserprofile.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

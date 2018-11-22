@@ -19,24 +19,36 @@
 #define QGSRUGGEDNESSFILTER_H
 
 #include "qgsninecellfilter.h"
+#include "qgis_analysis.h"
 
-/** Calculates the ruggedness index based on a 3x3 moving window.
+/**
+ * \ingroup analysis
+ * Calculates the ruggedness index based on a 3x3 moving window.
   Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies topographic heterogeneity*/
 class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 {
   public:
-    QgsRuggednessFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
-    ~QgsRuggednessFilter();
+    QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
   protected:
-    /** Calculates output value from nine input values. The input values and the output value can be equal to the
-      nodata value if not present or outside of the border. Must be implemented by subclasses*/
-    float processNineCellWindow( float* x11, float* x21, float* x31,
-                                 float* x12, float* x22, float* x32,
-                                 float* x13, float* x23, float* x33 ) override;
 
+    /**
+     * Calculates output value from nine input values. The input values and the output value can be equal to the
+      nodata value if not present or outside of the border. Must be implemented by subclasses*/
+    float processNineCellWindow( float *x11, float *x21, float *x31,
+                                 float *x12, float *x22, float *x32,
+                                 float *x13, float *x23, float *x33 ) override;
+
+#ifdef HAVE_OPENCL
   private:
     QgsRuggednessFilter();
+
+    virtual const QString openClProgramBaseName() const override
+    {
+      return QStringLiteral( "ruggedness" );
+    }
+#endif
+
 };
 
 #endif // QGSRUGGEDNESSFILTER_H

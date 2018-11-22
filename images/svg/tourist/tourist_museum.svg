@@ -1,23 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="tourist_museum.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<sodipodi:namedview  showgrid="false" inkscape:cy="348.04571" inkscape:cx="290" inkscape:zoom="0.65172414" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="88" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="853" inkscape:window-height="675">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="60 : 30 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 30 : 1" sodipodi:type="inkscape:persp3d" id="perspective3452" inkscape:persp3d-origin="30 : 20 : 1">
-		</inkscape:perspective>
-</defs>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M501.772,419.162V207.823h52.274v-58.906h3.849l-3.849-1.305
-	v-13.379h-39.449L293.68,59.312L68.572,134.233h-40.46V147.7l-3.659,1.218h3.659v58.906h48.995v211.339H54.205L23.16,470.467
-	l534.483-0.93l-29.084-50.375H501.772z M199.712,207.823v211.339h-74.117V207.823H199.712z M248.199,207.823h82.482v211.339h-82.482
-	V207.823z M379.168,207.823h74.118v211.339h-74.118V207.823z"/>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m501.772 419.162v-211.339h52.274v-58.906h3.849l-3.849-1.305v-13.379h-39.449l-220.917-74.921-225.108 74.921h-40.46v13.467l-3.659 1.218h3.659v58.906h48.995v211.339h-22.902l-31.045 51.304 534.483-.93-29.084-50.375zm-302.06-211.339v211.339h-74.117v-211.339zm48.487 0h82.482v211.339h-82.482zm130.969 0h74.118v211.339h-74.118z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

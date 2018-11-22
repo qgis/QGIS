@@ -20,16 +20,34 @@
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsmapmouseevent.h"
 
-QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
 {
+  mPalProperties << QgsPalLayerSettings::PositionX;
+  mPalProperties << QgsPalLayerSettings::PositionY;
+  mPalProperties << QgsPalLayerSettings::Show;
+  mPalProperties << QgsPalLayerSettings::LabelRotation;
+  mPalProperties << QgsPalLayerSettings::Family;
+  mPalProperties << QgsPalLayerSettings::FontStyle;
+  mPalProperties << QgsPalLayerSettings::Size;
+  mPalProperties << QgsPalLayerSettings::Bold;
+  mPalProperties << QgsPalLayerSettings::Italic;
+  mPalProperties << QgsPalLayerSettings::Underline;
+  mPalProperties << QgsPalLayerSettings::Color;
+  mPalProperties << QgsPalLayerSettings::Strikeout;
+  mPalProperties << QgsPalLayerSettings::BufferSize;
+  mPalProperties << QgsPalLayerSettings::BufferColor;
+  mPalProperties << QgsPalLayerSettings::LabelDistance;
+  mPalProperties << QgsPalLayerSettings::Hali;
+  mPalProperties << QgsPalLayerSettings::Vali;
+  mPalProperties << QgsPalLayerSettings::ScaleVisibility;
+  mPalProperties << QgsPalLayerSettings::MinScale;
+  mPalProperties << QgsPalLayerSettings::MaxScale;
+  mPalProperties << QgsPalLayerSettings::AlwaysShow;
 }
 
-QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
-{
-}
-
-void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
 {
   deleteRubberBands();
 
@@ -41,15 +59,34 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent* e )
   }
 
   mCurrentLabel = LabelDetails( labelPos );
-  if ( !mCurrentLabel.valid || !mCurrentLabel.layer || !mCurrentLabel.layer->isEditable() )
+  if ( !mCurrentLabel.valid || !mCurrentLabel.layer )
   {
     return;
   }
 
   createRubberBands();
+
+  if ( !mCurrentLabel.layer->isEditable() )
+  {
+    QgsPalIndexes indexes;
+    bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
+
+    if ( !newAuxiliaryLayer && !mCurrentLabel.layer->auxiliaryLayer() )
+    {
+      deleteRubberBands();
+      return;
+    }
+
+    // in case of a new auxiliary layer, a dialog window is displayed and the
+    // canvas release event is lost.
+    if ( newAuxiliaryLayer )
+    {
+      canvasReleaseEvent( e );
+    }
+  }
 }
 
-void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
   if ( mLabelRubberBand && mCurrentLabel.valid )
@@ -65,8 +102,9 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
                               mCurrentLabel.pos.featureId,
                               mCurrentLabel.pos.labelFont,
                               labeltext, nullptr );
+    d.setMapCanvas( canvas() );
 
-    connect( &d, SIGNAL( applied() ), this, SLOT( dialogPropertiesApplied() ) );
+    connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );
     if ( d.exec() == QDialog::Accepted )
     {
       applyChanges( d.changedProperties() );
@@ -76,15 +114,15 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& changes )
+void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &changes )
 {
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
   if ( !vlayer )
     return;
 
   if ( !changes.isEmpty() )
   {
-    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
 
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
     for ( ; changeIt != changes.constEnd(); ++changeIt )
@@ -93,13 +131,13 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap& chang
     }
 
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
 }
 
 void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
 {
-  QgsLabelPropertyDialog* dlg = qobject_cast<QgsLabelPropertyDialog*>( sender() );
+  QgsLabelPropertyDialog *dlg = qobject_cast<QgsLabelPropertyDialog *>( sender() );
   if ( !dlg )
     return;
 

@@ -12,14 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
-#include <QSharedPointer>
+#include <QLocale>
 
+#include <memory>
+
+#include "qgssettings.h"
 #include "qgsfield.h"
+#include "qgsapplication.h"
+#include "qgstest.h"
 
 class TestQgsField: public QObject
 {
@@ -34,21 +39,25 @@ class TestQgsField: public QObject
     void copy();// test cpy destruction (double delete)
     void assignment();
     void gettersSetters(); //test getters and setters
+    void isNumeric(); //test isNumeric
     void equality(); //test equality operators
     void asVariant(); //test conversion to and from a QVariant
     void displayString();
     void convertCompatible();
     void dataStream();
+    void displayName();
+    void editorWidgetSetup();
+    void collection();
 
   private:
 };
 
 void TestQgsField::initTestCase()
 {
-  // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 }
 
 void TestQgsField::cleanupTestCase()
@@ -58,17 +67,17 @@ void TestQgsField::cleanupTestCase()
 
 void TestQgsField::init()
 {
-
+  QLocale::setDefault( QLocale::English );
 }
 
 void TestQgsField::cleanup()
 {
-
+  QLocale::setDefault( QLocale::English );
 }
 
 void TestQgsField::create()
 {
-  QScopedPointer<QgsField> field( new QgsField( "name", QVariant::Double, "double", 5, 2, "comment" ) );
+  std::unique_ptr<QgsField> field( new QgsField( QStringLiteral( "name" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) ) );
   QCOMPARE( field->name(), QString( "name" ) );
   QCOMPARE( field->type(), QVariant::Double );
   QCOMPARE( field->typeName(), QString( "double" ) );
@@ -79,23 +88,33 @@ void TestQgsField::create()
 
 void TestQgsField::copy()
 {
-  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
+  original.setConstraints( constraints );
   QgsField copy( original );
   QVERIFY( copy == original );
 
-  copy.setName( "copy" );
+  copy.setName( QStringLiteral( "copy" ) );
   QCOMPARE( original.name(), QString( "original" ) );
   QVERIFY( copy != original );
 }
 
 void TestQgsField::assignment()
 {
-  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
+  original.setConstraints( constraints );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
 
-  copy.setName( "copy" );
+  copy.setName( QStringLiteral( "copy" ) );
   QCOMPARE( original.name(), QString( "original" ) );
   QVERIFY( copy != original );
 }
@@ -103,44 +122,113 @@ void TestQgsField::assignment()
 void TestQgsField::gettersSetters()
 {
   QgsField field;
-  field.setName( "name" );
+  field.setName( QStringLiteral( "name" ) );
   QCOMPARE( field.name(), QString( "name" ) );
   field.setType( QVariant::Int );
   QCOMPARE( field.type(), QVariant::Int );
-  field.setTypeName( "typeName" );
+  field.setTypeName( QStringLiteral( "typeName" ) );
   QCOMPARE( field.typeName(), QString( "typeName" ) );
   field.setLength( 5 );
   QCOMPARE( field.length(), 5 );
   field.setPrecision( 2 );
   QCOMPARE( field.precision(), 2 );
-  field.setComment( "comment" );
+  field.setComment( QStringLiteral( "comment" ) );
   QCOMPARE( field.comment(), QString( "comment" ) );
+  field.setAlias( QStringLiteral( "alias" ) );
+  QCOMPARE( field.alias(), QString( "alias" ) );
+  field.setDefaultValueDefinition( QgsDefaultValue( QStringLiteral( "1+2" ) ) );
+  QCOMPARE( field.defaultValueDefinition().expression(), QString( "1+2" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintNotNull );
+  QCOMPARE( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ), QgsFieldConstraints::ConstraintOriginProvider );
+  QCOMPARE( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintOriginNotSet );
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginNotSet );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraints(), 0 );
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintUnique | QgsFieldConstraints::ConstraintNotNull );
+  constraints.removeConstraint( QgsFieldConstraints::ConstraintNotNull );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintUnique );
+
+  constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraintExpression(), QStringLiteral( "constraint expression" ) );
+  QCOMPARE( field.constraints().constraintDescription(), QStringLiteral( "description" ) );
+  QCOMPARE( field.constraints().constraints(), QgsFieldConstraints::ConstraintUnique | QgsFieldConstraints::ConstraintExpression ); //setting constraint expression should add constraint
+  constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+
+  // check a constraint strength which hasn't been set
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ), QgsFieldConstraints::ConstraintStrengthNotSet );
+  // check a constraint strength which has not been explicitly set
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthHard );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthSoft );
+  // try overwriting a provider constraint's strength
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
+  field.setConstraints( constraints );
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthHard );
+}
+
+void TestQgsField::isNumeric()
+{
+  QgsField field;
+  field.setType( QVariant::Int );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::UInt );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::Double );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::LongLong );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::ULongLong );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::String );
+  QVERIFY( !field.isNumeric() );
+  field.setType( QVariant::DateTime );
+  QVERIFY( !field.isNumeric() );
+  field.setType( QVariant::Bool );
+  QVERIFY( !field.isNumeric() );
+  field.setType( QVariant::Invalid );
+  QVERIFY( !field.isNumeric() );
 }
 
 void TestQgsField::equality()
 {
   QgsField field1;
-  field1.setName( "name" );
+  field1.setName( QStringLiteral( "name" ) );
   field1.setType( QVariant::Int );
   field1.setLength( 5 );
   field1.setPrecision( 2 );
-  field1.setTypeName( "typename1" ); //typename is NOT required for equality
-  field1.setComment( "comment1" ); //comment is NOT required for equality
+  field1.setTypeName( QStringLiteral( "typename1" ) ); //typename is NOT required for equality
+  field1.setComment( QStringLiteral( "comment1" ) ); //comment is NOT required for equality
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  field1.setConstraints( constraints );
   QgsField field2;
-  field2.setName( "name" );
+  field2.setName( QStringLiteral( "name" ) );
   field2.setType( QVariant::Int );
   field2.setLength( 5 );
   field2.setPrecision( 2 );
-  field2.setTypeName( "typename2" ); //typename is NOT required for equality
-  field2.setComment( "comment2" ); //comment is NOT required for equality
+  field2.setTypeName( QStringLiteral( "typename2" ) ); //typename is NOT required for equality
+  field2.setComment( QStringLiteral( "comment2" ) ); //comment is NOT required for equality
+  constraints = field2.constraints();
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  field2.setConstraints( constraints );
   QVERIFY( field1 == field2 );
   QVERIFY( !( field1 != field2 ) );
 
   //test that all applicable components contribute to equality
-  field2.setName( "name2" );
+  field2.setName( QStringLiteral( "name2" ) );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  field2.setName( "name" );
+  field2.setName( QStringLiteral( "name" ) );
   field2.setType( QVariant::Double );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
@@ -153,11 +241,51 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setPrecision( 2 );
+  field2.setAlias( QStringLiteral( "alias " ) );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setAlias( QString() );
+  field2.setDefaultValueDefinition( QgsDefaultValue( QStringLiteral( "1+2" ) ) );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setDefaultValueDefinition( QgsDefaultValue() );
+  constraints = field2.constraints();
+  constraints.removeConstraint( QgsFieldConstraints::ConstraintNotNull );
+  field2.setConstraints( constraints );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  constraints = field2.constraints();
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginLayer );
+  field2.setConstraints( constraints );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  constraints = field2.constraints();
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraintExpression( QStringLiteral( "exp" ) );
+  field2.setConstraints( constraints );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  constraints = field2.constraints();
+  constraints.setConstraintExpression( QStringLiteral( "exp" ), QStringLiteral( "desc" ) );
+  field2.setConstraints( constraints );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  constraints = QgsFieldConstraints();
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard );
+  field2.setConstraints( constraints );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
+  field1.setConstraints( constraints );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
 }
 
 void TestQgsField::asVariant()
 {
-  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+  QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull );
+  original.setConstraints( constraints );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
@@ -169,38 +297,104 @@ void TestQgsField::asVariant()
 
 void TestQgsField::displayString()
 {
-  QgsField stringField( "string", QVariant::String, "string" );
+  QgsField stringField( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
 
   //test string value
-  QString test( "test string" );
+  QString test( QStringLiteral( "test string" ) );
   QCOMPARE( stringField.displayString( test ), test );
 
   //test NULL
-  QSettings s;
-  s.setValue( "qgis/nullValue", "TEST NULL" );
+  QgsApplication::setNullRepresentation( QStringLiteral( "TEST NULL" ) );
   QVariant nullString = QVariant( QVariant::String );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 
-  //test int value
-  QgsField intField( "int", QVariant::String, "int" );
+  //test int value in string type
+  QgsField intField( QStringLiteral( "int" ), QVariant::String, QStringLiteral( "int" ) );
   QCOMPARE( intField.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( intField.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  //test int value in int type
+  QgsField intField2( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "int" ) );
+  QCOMPARE( intField2.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( intField2.displayString( 599999898999LL ), QString( "599,999,898,999" ) );
+
+  //test long type
+  QgsField longField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
+  QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( longField.displayString( 599999898999LL ), QString( "599,999,898,999" ) );
+
   //test NULL int
   QVariant nullInt = QVariant( QVariant::Int );
   QCOMPARE( intField.displayString( nullInt ), QString( "TEST NULL" ) );
 
   //test double value
-  QgsField doubleField( "double", QVariant::Double, "double", 10, 3 );
+  QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+  QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
+  QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
+  QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
+
   //test NULL double
   QVariant nullDouble = QVariant( QVariant::Double );
   QCOMPARE( doubleField.displayString( nullDouble ), QString( "TEST NULL" ) );
 
+  //test double value with German locale
+  QLocale::setDefault( QLocale::German );
+  QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599.999.898.999" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5.999,123456" ) );
+
+  //test value with custom German locale (OmitGroupSeparator)
+  QLocale customGerman( QLocale::German );
+  customGerman.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
+  QLocale::setDefault( customGerman );
+  QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999,123456" ) );
+
+  //test int value in int type with custom German locale (OmitGroupSeparator)
+  QCOMPARE( intField2.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( intField2.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  //test long type with custom German locale (OmitGroupSeparator)
+  QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( longField.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  //test value with custom english locale (OmitGroupSeparator)
+  QLocale customEnglish( QLocale::English );
+  customEnglish.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
+  QLocale::setDefault( customEnglish );
+  QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999.123456" ) );
+
+  //test int value in int type with custom english locale (OmitGroupSeparator)
+  QCOMPARE( intField2.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( intField2.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  //test long type with custom english locale (OmitGroupSeparator)
+  QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
+  QCOMPARE( longField.displayString( 599999898999LL ), QString( "599999898999" ) );
+
+  // binary field
+  QgsField binaryField( QStringLiteral( "binary" ), QVariant::ByteArray, QStringLiteral( "Binary" ) );
+  QString testBAString( QStringLiteral( "test string" ) );
+  QByteArray testBA( testBAString.toLocal8Bit() );
+  QCOMPARE( binaryField.displayString( testBA ), QStringLiteral( "BLOB" ) );
 }
 
 void TestQgsField::convertCompatible()
 {
   //test string field
-  QgsField stringField( "string", QVariant::String, "string" );
+  QgsField stringField( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
 
   QVariant stringVar( "test string" );
   QVERIFY( stringField.convertCompatible( stringVar ) );
@@ -227,7 +421,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( nullDouble.isNull() );
 
   //test double
-  QgsField doubleField( "double", QVariant::Double, "double" );
+  QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ) );
 
   stringVar = QVariant( "test string" );
   QVERIFY( !doubleField.convertCompatible( stringVar ) );
@@ -257,7 +451,7 @@ void TestQgsField::convertCompatible()
   //test special rules
 
   //conversion of double to int
-  QgsField intField( "int", QVariant::Int, "int" );
+  QgsField intField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "int" ) );
   //small double, should be rounded
   QVariant smallDouble( 45.7 );
   QVERIFY( intField.convertCompatible( smallDouble ) );
@@ -303,14 +497,52 @@ void TestQgsField::convertCompatible()
   QCOMPARE( smallLonglong.type(), QVariant::Int );
   QCOMPARE( smallLonglong, QVariant( 99 ) );
   //conversion of longlong to longlong field
-  QgsField longlongField( "long", QVariant::LongLong, "longlong" );
+  QgsField longlongField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
   longlong = QVariant( 99999999999999999LL );
   QVERIFY( longlongField.convertCompatible( longlong ) );
   QCOMPARE( longlong.type(), QVariant::LongLong );
   QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
 
+  //string representation of an int
+  QVariant stringInt( "123456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( 123456 ) );
+  // now with group separator for english locale
+  stringInt = QVariant( "123,456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( "123456" ) );
+
+  //string representation of a longlong
+  QVariant stringLong( "99999999999999999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+  // now with group separator for english locale
+  stringLong = QVariant( "99,999,999,999,999,999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+
+
+  //string representation of a double
+  QVariant stringDouble( "123456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
+  // now with group separator for english locale
+  stringDouble = QVariant( "1,223,456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+  // This should not convert
+  stringDouble = QVariant( "1.223.456,012345" );
+  QVERIFY( ! doubleField.convertCompatible( stringDouble ) );
+
+
   //double with precision
-  QgsField doubleWithPrecField( "double", QVariant::Double, "double", 10, 3 );
+  QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   doubleVar = QVariant( 10.12345678 );
   //note - this returns true!
   QVERIFY( doubleWithPrecField.convertCompatible( doubleVar ) );
@@ -318,22 +550,92 @@ void TestQgsField::convertCompatible()
   QCOMPARE( doubleVar.toDouble(), 10.123 );
 
   //truncating string length
-  QgsField stringWithLen( "string", QVariant::String, "string", 3 );
+  QgsField stringWithLen( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ), 3 );
   stringVar = QVariant( "longstring" );
   QVERIFY( !stringWithLen.convertCompatible( stringVar ) );
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
+
+
+  /////////////////////////////////////////////////////////
+  // German locale tests
+
+  //double with ',' as decimal separator for German locale
+  QLocale::setDefault( QLocale::German );
+  QVariant doubleCommaVar( "1,2345" );
+  QVERIFY( doubleField.convertCompatible( doubleCommaVar ) );
+  QCOMPARE( doubleCommaVar.type(), QVariant::Double );
+  QCOMPARE( doubleCommaVar.toString(), QString( "1.2345" ) );
+
+  //string representation of an int
+  stringInt = QVariant( "123456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( 123456 ) );
+  // now with group separator for german locale
+  stringInt = QVariant( "123.456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( "123456" ) );
+
+  //string representation of a longlong
+  stringLong = QVariant( "99999999999999999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+  // now with group separator for german locale
+  stringLong = QVariant( "99.999.999.999.999.999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+
+  //string representation of a double
+  stringDouble = QVariant( "123456,012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
+  // For doubles we also want to accept dot as a decimal point
+  stringDouble = QVariant( "123456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
+  // now with group separator for german locale
+  stringDouble = QVariant( "1.223.456,012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+  // Be are good citizens and we also accept english locale
+  stringDouble = QVariant( "1,223,456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+
+  // Test that wrongly formatted decimal separator are also accepted
+  QLocale::setDefault( QLocale::German );
+  stringDouble = QVariant( "12.23.456,012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+
 }
 
 void TestQgsField::dataStream()
 {
   QgsField original;
-  original.setName( "name" );
+  original.setName( QStringLiteral( "name" ) );
   original.setType( QVariant::Int );
   original.setLength( 5 );
   original.setPrecision( 2 );
-  original.setTypeName( "typename1" );
-  original.setComment( "comment1" );
+  original.setTypeName( QStringLiteral( "typename1" ) );
+  original.setComment( QStringLiteral( "comment1" ) );
+  original.setAlias( QStringLiteral( "alias" ) );
+  original.setDefaultValueDefinition( QgsDefaultValue( QStringLiteral( "default" ) ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
+  constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
+  original.setConstraints( constraints );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
@@ -348,5 +650,39 @@ void TestQgsField::dataStream()
   QCOMPARE( result.comment(), original.comment() ); //comment is NOT required for equality
 }
 
-QTEST_MAIN( TestQgsField )
+void TestQgsField::displayName()
+{
+  QgsField field;
+  field.setName( QStringLiteral( "name" ) );
+  QCOMPARE( field.displayName(), QString( "name" ) );
+  field.setAlias( QStringLiteral( "alias" ) );
+  QCOMPARE( field.displayName(), QString( "alias" ) );
+  field.setAlias( QString() );
+  QCOMPARE( field.displayName(), QString( "name" ) );
+}
+
+void TestQgsField::editorWidgetSetup()
+{
+  QgsField field;
+  QVariantMap config;
+  config.insert( QStringLiteral( "a" ), "value_a" );
+  const QgsEditorWidgetSetup setup( QStringLiteral( "test" ), config );
+  field.setEditorWidgetSetup( setup );
+
+  QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
+  QCOMPARE( field.editorWidgetSetup().config(), setup.config() );
+}
+
+void TestQgsField::collection()
+{
+  QgsField field( QStringLiteral( "collection" ), QVariant::List, QStringLiteral( "_int32" ), 0, 0, QString(), QVariant::Int );
+  QCOMPARE( field.subType(), QVariant::Int );
+  field.setSubType( QVariant::Double );
+  QCOMPARE( field.subType(), QVariant::Double );
+
+  QVariant str( "hello" );
+  QVERIFY( !field.convertCompatible( str ) );
+}
+
+QGSTEST_MAIN( TestQgsField )
 #include "testqgsfield.moc"

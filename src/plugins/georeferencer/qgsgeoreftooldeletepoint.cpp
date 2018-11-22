@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "qgsmapcanvas.h"
-
 #include "qgsgeoreftooldeletepoint.h"
+#include "qgsmapmouseevent.h"
 
-QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas* canvas )
-    : QgsMapToolEmitPoint( canvas )
+QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas *canvas )
+  : QgsMapToolEmitPoint( canvas )
 {
 }
 
 // Mouse press event for overriding
-void QgsGeorefToolDeletePoint::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsGeorefToolDeletePoint::canvasPressEvent( QgsMapMouseEvent *e )
 {
   // Only add point on Qt:LeftButton
   if ( Qt::LeftButton == e->button() )

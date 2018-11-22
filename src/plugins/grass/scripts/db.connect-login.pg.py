@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -104,27 +104,28 @@ def main():
     if port:
         conn += ",port=" + port
 
-    # Unfortunately we cannot test untill user/password is set
+    # Unfortunately we cannot test until user/password is set
     if user or password:
-        print "Setting login (db.login) ... "
+        print("Setting login (db.login) ... ")
         sys.stdout.flush()
         if grass.run_command('db.login', driver="pg", database=conn, user=user, password=password) != 0:
             grass.fatal("Cannot login")
 
     # Try to connect
-    print "Testing connection ..."
+    print("Testing connection ...")
     sys.stdout.flush()
     if grass.run_command('db.select', quiet=True, flags='c', driver="pg", database=conn, sql="select version()") != 0:
         if user or password:
-            print "Deleting login (db.login) ..."
+            print("Deleting login (db.login) ...")
             sys.stdout.flush()
             if grass.run_command('db.login', quiet=True, driver="pg", database=conn, user="", password="") != 0:
-                print "Cannot delete login."
+                print("Cannot delete login.")
                 sys.stdout.flush()
         grass.fatal("Cannot connect to database.")
 
     if grass.run_command('db.connect', driver="pg", database=conn, schema=schema) != 0:
         grass.fatal("Cannot connect to database.")
+
 
 if __name__ == "__main__":
     options, flags = grass.parser()

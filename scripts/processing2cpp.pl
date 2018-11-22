@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 ###########################################################################
 #    processing2cpp.pl
 #    ---------------------
@@ -20,6 +20,7 @@ use Data::Dumper;
 die "usage: $0 dest.cpp\n" unless @ARGV==1;
 
 open F, ">$ARGV[0]";
+binmode(F, ":utf8");
 
 print F <<EOF;
 /*

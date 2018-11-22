@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    remove_non_svn_files.sh
 #    ---------------------
@@ -21,4 +21,4 @@
 # deleting each file.
 #
 
-for FILE in `svn status |grep ^? | awk '{print $2}'`;do rm -i -r $FILE; done
+for FILE in $(svn status |grep "^?" | awk '{print $2}');do rm -i -r $FILE; done

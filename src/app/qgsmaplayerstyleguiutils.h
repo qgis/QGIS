@@ -23,23 +23,20 @@ class QgsMapLayer;
 class QAction;
 class QMenu;
 
-/** Various GUI utility functions for dealing with map layer's style manager */
+//! Various GUI utility functions for dealing with map layer's style manager
 class QgsMapLayerStyleGuiUtils : public QObject
 {
     Q_OBJECT
 
   public:
-    static QgsMapLayerStyleGuiUtils* instance();
-    QAction* actionAddStyle( QgsMapLayer* layer, QObject* parent = nullptr );
-    QAction* actionRemoveStyle( QgsMapLayer* layer, QObject* parent = nullptr );
-    QAction* actionRenameStyle( QgsMapLayer* layer, QObject* parent = nullptr );
-    QList<QAction*> actionsUseStyle( QgsMapLayer* layer, QObject* parent = nullptr );
+    static QgsMapLayerStyleGuiUtils *instance();
+    QAction *actionAddStyle( QgsMapLayer *layer, QObject *parent = nullptr );
+    QAction *actionRemoveStyle( QgsMapLayer *layer, QObject *parent = nullptr );
+    QAction *actionRenameStyle( QgsMapLayer *layer, QObject *parent = nullptr );
+    QList<QAction *> actionsUseStyle( QgsMapLayer *layer, QObject *parent = nullptr );
 
     //! Add actions for the given map layer to the menu
-    void addStyleManagerActions( QMenu* m, QgsMapLayer* layer );
-
-  private:
-    QString defaultStyleName();
+    void addStyleManagerActions( QMenu *m, QgsMapLayer *layer );
 
   private slots:
     void addStyle();

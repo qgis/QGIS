@@ -18,23 +18,25 @@
 #define QGSFEATUREACTION_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayertools.h"
 
 #include <QList>
 #include <QPair>
 #include <QAction>
+#include <QUuid>
+#include "qgis_app.h"
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
+class QgsExpressionContextScope;
 
 class APP_EXPORT QgsFeatureAction : public QAction
 {
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, QUuid actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
@@ -46,26 +48,35 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * Will set the default values to recently used or provider defaults based on settings
      * and override with values in defaultAttributes if provided.
      *
-     * @param defaultAttributes  Provide some default attributes here if desired.
+     * \param defaultAttributes  Provide some default attributes here if desired.
      *
-     * @return true if feature was added if showModal is true. If showModal is false, returns true in every case
+     * \returns true if feature was added if showModal is true. If showModal is false, returns true in every case
      */
-    bool addFeature( const QgsAttributeMap& defaultAttributes = QgsAttributeMap(), bool showModal = true );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
+
+    /**
+     * Sets whether to force suppression of the attribute form popup after creating a new feature.
+     * If \a force is true, then regardless of any user settings, form settings, etc, the attribute
+     * form will ALWAYS be suppressed.
+     */
+    void setForceSuppressFormPopup( bool force );
 
   private slots:
-    void onFeatureSaved( const QgsFeature& feature );
+    void onFeatureSaved( const QgsFeature &feature );
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
 
-    QgsVectorLayer* mLayer;
-    QgsFeature* mFeature;
-    int mAction;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsFeature *mFeature = nullptr;
+    QUuid mActionId;
     int mIdx;
 
     bool mFeatureSaved;
 
-    static QMap<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
+    bool mForceSuppressFormPopup = false;
+
+    static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

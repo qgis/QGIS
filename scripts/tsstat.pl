@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 ###########################################################################
 #    tsstat.pl
 #    ---------------------
@@ -23,7 +23,9 @@ my @lang;
 
 # script to generate a html list of the qgis application translations
 # showing the percentage finished and the names of the translators
-
+#
+# try to always use ISO 639-1 language codes
+#
 # without argument it generates html which is used in the about-dialog of the application
 # output to std-out, to be piped to doc/TRANSLATORS so it can be used in dialog
 #   scripts/tsstat.pl > doc/TRANSLATORS
@@ -36,7 +38,7 @@ my @lang;
 # translator names here as a hash where the key is the lang_country code used for the ts file name
 my $translators= {
 	'af' => '',
-	'ar' => 'Ichaouia Amine, Hosham Munier',
+	'ar' => 'Ichaouia Amine, Hosham Munier, Ammar Shaarbaf',
 	'bg' => 'Захари Савов, Jordan Tzvetkov',
 	'bs' => 'Almir Karabegovic',
 	'ca' => 'Albert F, Pau Reguant Ridó, Xavier Roijals',
@@ -45,22 +47,24 @@ my $translators= {
 	'de' => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
 	'es' => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
 	'el' => 'Theodoros Vakkas, Ioannis Tsimpiris, Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
+	'eo' => 'Augustin Roche, Nikolay Korotkiy',
 	'et' => 'Veiko Viil',
 	'eu' => 'Asier Sarasua Garmendia, Irantzu Alvarez',
 	'fa' => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',
 	'fi' => 'Kari Mikkonen, Matti Mäntynen',
-	'fr' => 'Arnaud Morvan, Augustin Roche, DelazJ, Didier Vanden Berghe, Dofabien, etrimaille, Jean-Roc Morreale, Jérémy Garniaux, Loïc Buscoz, Lsam, Marc-André Saia, Marie Silvestre, Mathieu Bossaert, Mathieu Lattes, Mayeul Kauffmann, Médéric Ribreux, Mehdi Semchaoui, Michael Douchin, Nicolas Boisteault, Nicolas Rochard, Pascal Obstetar, Robin Prest, Rod Bera, Stéphane Henriod, Stéphane Possamai, sylther, Sylvain Badey, Sylvain Maillard, Vincent Picavet, Xavier Tardieu, Yann Leveille-Menez, yoda89',
+	'fr' => 'Arnaud Morvan, Augustin Roche, Didier Vanden Berghe, Dofabien, Etienne Trimaille, Harrissou Sant-anna, Jean-Roc Morreale, Jérémy Garniaux, Loïc Buscoz, Lsam, Marc-André Saia, Marie Silvestre, Mathieu Bossaert, Mathieu Lattes, Mayeul Kauffmann, Médéric Ribreux, Mehdi Semchaoui, Michael Douchin, Nicolas Boisteault, Nicolas Rochard, Pascal Obstetar, Robin Prest, Rod Bera, Stéphane Henriod, Stéphane Possamai, sylther, Sylvain Badey, Sylvain Maillard, Vincent Picavet, Xavier Tardieu, Yann Leveille-Menez, yoda89',
 	'gl' => 'Xan Vieiro',
 	'hi' => 'Harish Kumar Solanki',
-	'hu' => 'Zoltan Siki',
+	'hu' => 'Zoltan Siki, Zoltan Toldi',
 	'hr' => 'Zoran Jankovic',
-	'is' => 'Ásta Kristín Óladóttir, Thordur Ivarsson',
+	'is' => 'Ásta Kristín Óladóttir, Thordur Ivarsson, Sveinn í Felli',
 	'id' => 'Emir Hartato, Muhammad Iqnaul Haq Siregar, Trias Aditya, Januar V. Simarmata, I Made Anombawa',
-	'it' => 'Roberto Angeletti, Michele Beneventi, Marco Braida, Stefano Campus, Luca Casagrande, Paolo Cavallini, Giuliano Curti, Luca Delucchi, Alessandro Fanna, Michele Ferretti, Matteo Ghetta, Anne Gishla, Maurizio Napolitano, Flavio Rigolon',
-	'ja' => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate',
+	'it' => 'Marco Grisolia, Roberto Angeletti, Michele Beneventi, Marco Braida, Stefano Campus, Luca Casagrande, Paolo Cavallini, Giuliano Curti, Luca Delucchi, Alessandro Fanna, Michele Ferretti, Matteo Ghetta, Anne Gishla, Maurizio Napolitano, Flavio Rigolon',
+	'ja' => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate, Kohei Tomita',
 	'ka' => 'Shota Murtskhvaladze, George Machitidze',
 	'km' => 'Khoem Sokhem',
 	'ko' => 'OSGeo Korean Chapter',
+	'ky' => 'Stéphane Henriod, Azamat Karypov, Salaidin Kamaldinov, Akylbek Chymyrov, Chinara Saparova, Almaz Abdiev, Nurlan Tokbaev, Tatygul Urmambetova, Adilet Bekturov, Nursultan Ismailov, Nurlan Zhusupov',
 	'lo' => 'Anousak Souphavanh, Soukanh Lathsavong',
 	'lv' => 'Maris Nartiss, Pēteris Brūns',
 	'lt' => 'Paulius Litvinas, Tomas Straupis, Kestas M',
@@ -69,9 +73,9 @@ my $translators= {
 	'mr' => '',
 	'nb' => 'James Stott, Maléne Peterson',
 	'nl' => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans, Dick Groskamp',
-	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok, Michał Kułach, Ewelina Krawczak, Michał Smoczyk, Jakub Bobrowski',
+	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok, Michał Kułach, Ewelina Krawczak, Michał Smoczyk, Jakub Bobrowski, Kuba Kiszkurno, Beata Baziak, Bartosz Mazurkiewcz, Tomasz Rychlicki',
 	'pt_BR' => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
-	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar',
+	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar, José Macau',
 	'ro' => 'Sorin Călinică, Tudor Bărăscu, Georgiana Ioanovici, Alex Bădescu, Lonut Losifescu-Enescu, Bogdan Pacurar',
 	'ru' => 'Alexander Bruy, Artem Popov',
 	'sk' => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
@@ -84,11 +88,11 @@ my $translators= {
 	'ta' => '',
 	'te' => '',
 	'th' => 'Man Chao',
-        'tl' => 'Kathrina Gregana',
+	'tl' => 'Kathrina Gregana',
 	'tr' => 'Osman Yalçın YILMAZ, Omur Saygin',
-	'uk' => 'Alexander Bruy',
+	'uk' => 'Alexander Bruy, Svitlana Shulik (IT-Transit LLC), Alesya Shushova (IT-Transit LLC)',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
-	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie',
+	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie, Dennis Raylin Chen',
 	'zh-Hans' => 'Calvin Ngei, Lisashen',
 };
 
@@ -167,57 +171,29 @@ foreach my $l (@lang) {
 	$l->{percentage} = ($l->{finished}+$l->{unfinished}/2)/$maxn*100;
 }
 
-if ( @ARGV && $ARGV[0] eq "site") {
-	print "<html><body>";
-	print "<head>";
-	print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>";
-	print "<style>";
-	print "body{font-family:sans-serif;}";
-	print "table {font-size:80%;border-collapse: collapse;}";
-	print "td {border-left:solid 1px #aaaaaa;border-right:solid 1px #aaaaaa;padding:1px 10px;}";
-	print ".bartodo{ background-color:red;width:100px;height:20px;}";
-	print ".bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}";
-	print "</style></head>";
-	print "<table>";
-	print "<tr><td colspan=\"2\" style=\"width:250px;\">Language</td><td>Count</td><td>Finished</td><td>Unfinished</td><td>Untranslated</td><td>Percentage</td><td>Translators</td></tr>\n";
-	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
-		last if $l->{percentage} < 35;
-		printf "\n<tr>"
-			. '<td><img src="flags/%s.png"></td><td nowrap>%s</td>'
-			. '<td nowrap>%s</td><td>%d</td><td>%d</td><td>%d</td>'
-			. '<td><div class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
-			. '<td>%s</td>'
-			. '</tr>',
-			$l->{code}, $l->{name},
-			$l->{diff}==0 ? $l->{n} : "$l->{n} ($l->{diff})",
-			$l->{finished}, $l->{unfinished}, $l->{untranslated},
-			$l->{percentage}, $l->{percentage},
-			$l->{translator};
-	}
-	print "</table></body></html>\n";
-} else {
-	print "<style>";
-	print "table {font-size:80%;}";
-	print "th {text-align:left; }";
-	print ".bartodo{ background-color:red;width:100px;height:20px;}";
-	print ".bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}";
-	print "</style>";
-	print "<table>";
-	print "<tr><th colspan=\"2\" style=\"width:250px;\">Language</th><th>Finished %</th><th>Translators</th></tr>\n";
-	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
-		last if $l->{percentage} < 35;
-		printf "\n<tr>"
-			. '<td><img src="qrc:/images/flags/%s.png"></td><td>%s</td>'
-			. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
-			. '<td>%s</td>'
-			. '</tr>',
-			$l->{code}, $l->{name},
-			$l->{finished}, $l->{unfinished}, $l->{untranslated},
-			$l->{percentage}, $l->{percentage},
-			$l->{translator};
-	}
-	print "</table>\n";
+print "<!-- created by scripts/tsstat.pl - Edits will be lost -->\n";
+print "<style>";
+print "body { font-family:sans-serif; background-color:#d3d3d3; }";
+print "table {font-size:80%;}";
+print "th {text-align:left; }";
+print ".bartodo{ background-color:red;width:100px;height:20px;}";
+print ".bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}";
+print "</style>";
+print "<table>";
+print "<tr><th colspan=\"2\" style=\"width:250px;\">Language</th><th>Finished %</th><th>Translators</th></tr>\n";
+for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
+	last if $l->{percentage} < 35;
+	printf "\n<tr>"
+		. '<td align="center"><img src="qrc:/images/flags/%s.svg" height="20"></td><td>%s</td>'
+		. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
+		. '<td>%s</td>'
+		. '</tr>',
+		$l->{code}, $l->{name},
+		$l->{finished}, $l->{unfinished}, $l->{untranslated},
+		$l->{percentage}, $l->{percentage},
+		$l->{translator};
 }
+print "</table>\n";
 
 my @ts;
 for my $l (sort { $a->{code} cmp $b->{code} } @lang) {

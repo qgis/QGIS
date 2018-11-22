@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import sys, os
 
 from lib2to3.main import main

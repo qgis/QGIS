@@ -16,7 +16,7 @@
 #include "qgis.h"
 #include "qgspythonutilsimpl.h"
 
-QGISEXTERN QgsPythonUtils* instance()
+QGISEXTERN QgsPythonUtils *instance()
 {
   return new QgsPythonUtilsImpl();
 }

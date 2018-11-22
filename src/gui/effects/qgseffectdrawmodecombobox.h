@@ -18,12 +18,14 @@
 
 #include <QComboBox>
 #include "qgspainteffect.h"
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsEffectDrawModeComboBox
  * \brief A combo box allowing selection of paint effect draw modes
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
@@ -32,15 +34,17 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
 
   public:
 
-    QgsEffectDrawModeComboBox( QWidget* parent = nullptr );
+    QgsEffectDrawModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns the currently selected draw mode for the combo box
-     * @returns current draw mode
+    /**
+     * Returns the currently selected draw mode for the combo box
+     * \returns current draw mode
      */
     QgsPaintEffect::DrawMode drawMode() const;
 
-    /** Sets the currently selected draw mode for the combo box
-     * @param drawMode selected draw mode
+    /**
+     * Sets the currently selected draw mode for the combo box
+     * \param drawMode selected draw mode
      */
     void setDrawMode( QgsPaintEffect::DrawMode drawMode );
 

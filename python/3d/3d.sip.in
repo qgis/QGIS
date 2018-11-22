@@ -1,0 +1,12 @@
+%Module(name=qgis._3d,
+        keyword_arguments="All")
+
+${DEFAULTDOCSTRINGSIGNATURE}
+
+%Import core/core.sip
+
+%Import QtCore/QtCoremod.sip
+%Import QtGui/QtGuimod.sip
+%Import QtXml/QtXmlmod.sip
+
+%Include ./3d_auto.sip

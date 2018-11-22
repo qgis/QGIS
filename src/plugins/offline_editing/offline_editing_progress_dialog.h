@@ -27,16 +27,15 @@ class QgsOfflineEditingProgressDialog : public QDialog, private Ui::QgsOfflineEd
     Q_OBJECT
 
   public:
-    QgsOfflineEditingProgressDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = nullptr );
-    virtual ~QgsOfflineEditingProgressDialog();
+    QgsOfflineEditingProgressDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
     void setCurrentLayer( int layer, int numLayers );
-    void setupProgressBar( const QString& format, int maximum );
+    void setupProgressBar( const QString &format, int maximum );
     void setProgressValue( int value );
 
   private:
-    int mProgressUpdate;
+    int mProgressUpdate = 0;
 };
 
 #endif // QGS_OFFLINE_EDITING_PROGRESS_DIALOG_H

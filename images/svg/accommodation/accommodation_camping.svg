@@ -1,21 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="amenity_camping.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<sodipodi:namedview  showgrid="false" inkscape:cy="290" inkscape:cx="209.39659" inkscape:zoom="0.65172414" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="88" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="675" inkscape:window-width="853">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-</defs>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M504.911,519.52l0.713-0.006l-10.927-19.284L304.525,139.548
-	l35.603-67.259l-23.227-12.295l-27.214,51.412l-28.368-53.804l-23.246,12.257l36.007,68.292
-	c-15.495,32.074-121.491,230.255-192.826,362.816L70.813,520.37l94.237-0.156l23.41,0.181l0.115-0.22l202.599-0.336l0.291,0.556
-	l91.769-0.708l21.747-0.036L504.911,519.52z M289.962,285.859c21.655,72.987,67.317,167.251,87.688,207.723l-175.523,0.29
-	C222.425,453.564,268.254,359.024,289.962,285.859z"/>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m504.911 519.52l.713-.006-10.927-19.284-190.172-360.682 35.603-67.259-23.227-12.295-27.214 51.412-28.368-53.804-23.246 12.257 36.007 68.292c-15.495 32.074-121.491 230.255-192.826 362.816l-10.441 19.403 94.237-.156 23.41.181.115-.22 202.599-.336.291.556 91.769-.708 21.747-.036zm-214.949-233.661c21.655 72.987 67.317 167.251 87.688 207.723l-175.523.29c20.298-40.308 66.127-134.848 87.835-208.013z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

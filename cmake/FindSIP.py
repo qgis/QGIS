@@ -39,4 +39,8 @@ print("sip_version_str:%s" % sipcfg.sip_version_str)
 print("sip_bin:%s" % sipcfg.sip_bin)
 print("default_sip_dir:%s" % sipcfg.default_sip_dir)
 print("sip_inc_dir:%s" % sipcfg.sip_inc_dir)
-print("sip_mod_dir:%s" % sipcfg.sip_mod_dir)
+# SIP 4.19.10+ has new sipcfg.sip_module_dir
+if hasattr(sipcfg, "sip_module_dir"):
+    print("sip_module_dir:%s" % sipcfg.sip_module_dir)
+else:
+    print("sip_module_dir:%s" % sipcfg.sip_mod_dir)

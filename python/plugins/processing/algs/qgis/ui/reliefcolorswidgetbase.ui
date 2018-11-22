@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>505</width>
+    <height>209</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTreeWidget" name="reliefClassTree">
+     <column>
+      <property name="text">
+       <string>Lower bound</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Upper bound</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Color</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QToolButton" name="btnAdd">
+       <property name="toolTip">
+        <string>Add row</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnRemove">
+       <property name="toolTip">
+        <string>Remove row</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnUp">
+       <property name="toolTip">
+        <string>Move up</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnDown">
+       <property name="toolTip">
+        <string>Move down</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnLoad">
+       <property name="toolTip">
+        <string>Load colors from file</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnSave">
+       <property name="toolTip">
+        <string>Save colors to file</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnAuto">
+       <property name="toolTip">
+        <string>Generate color table automatically</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

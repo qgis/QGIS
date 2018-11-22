@@ -17,18 +17,22 @@
 #ifndef QGSAUTHMETHODREGISTRY_H
 #define QGSAUTHMETHODREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include <QDir>
 #include <QLibrary>
 #include <QMap>
 #include <QString>
+#include <memory>
 
-#include "qgsauthconfig.h"
+#include "qgis_core.h"
 
 class QgsAuthMethod;
 class QgsAuthMethodMetadata;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A registry / canonical manager of authentication methods.
 
   This is a Singleton class that manages authentication method plugin access.
@@ -43,81 +47,75 @@ class CORE_EXPORT QgsAuthMethodRegistry
 {
 
   public:
-    /** Means of accessing canonical single instance  */
-    static QgsAuthMethodRegistry* instance( const QString& pluginPath = QString::null );
+    //! Means of accessing canonical single instance
+    static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString() );
 
-    /** Virtual dectructor */
+    //! Virtual dectructor
     virtual ~QgsAuthMethodRegistry();
 
-    /** Return path for the library of the auth method */
-    QString library( const QString & authMethodKey ) const;
+    //! Returns path for the library of the auth method
+    QString library( const QString &authMethodKey ) const;
 
-    /** Return list of auth method plugins found */
+    //! Returns list of auth method plugins found
     QString pluginList( bool asHtml = false ) const;
 
-    /** Return library directory where plugins are found */
-    const QDir & libraryDirectory() const;
+    //! Returns library directory where plugins are found
+    QDir libraryDirectory() const;
 
-    /** Set library directory where to search for plugins */
-    void setLibraryDirectory( const QDir & path );
+    //! Sets library directory where to search for plugins
+    void setLibraryDirectory( const QDir &path );
 
-    /** Create an instance of the auth method
-        @param authMethodKey identificator of the auth method
-        @return instance of auth method or nullptr on error
+    /**
+     * Create an instance of the auth method
+        \param authMethodKey identificator of the auth method
+        \returns instance of auth method or nullptr on error
      */
-    QgsAuthMethod *authMethod( const QString & authMethodKey );
+    std::unique_ptr< QgsAuthMethod > authMethod( const QString &authMethodKey );
 
-    /** Return the auth method capabilities
-        @param authMethodKey identificator of the auth method
+    /**
+     * Returns the auth method capabilities
+        \param authMethodKey identificator of the auth method
      */
     // int authMethodCapabilities( const QString& authMethodKey ) const;
 
-    /** Return the GUI edit widget associated with the auth method
-     * @param parent Parent widget
-     * @param authMethodKey identificator of the auth method
+    /**
+     * Returns the GUI edit widget associated with the auth method
+     * \param parent Parent widget
+     * \param authMethodKey identificator of the auth method
      */
-    QWidget *editWidget( const QString & authMethodKey, QWidget * parent = nullptr );
+    QWidget *editWidget( const QString &authMethodKey, QWidget *parent = nullptr );
 
-#if QT_VERSION >= 0x050000
-    /** Get pointer to auth method function
-        @param authMethodKey identificator of the auth method
-        @param functionName name of function
-        @return pointer to function or nullptr on error
+    /**
+     * Gets pointer to auth method function
+        \param authMethodKey identificator of the auth method
+        \param functionName name of function
+        \returns pointer to function or nullptr on error
      */
-    QFunctionPointer function( const QString & authMethodKey,
-                               const QString & functionName );
-#else
-    /** Get pointer to auth method function
-        @param authMethodKey identificator of the auth method
-        @param functionName name of function
-        @return pointer to function or nullptr on error
-     */
-    void *function( const QString & authMethodKey,
-                    const QString & functionName );
-#endif
+    QFunctionPointer function( const QString &authMethodKey,
+                               const QString &functionName );
 
-    /** Return the library object associated with an auth method key */
-    QLibrary *authMethodLibrary( const QString & authMethodKey ) const;
+    //! Returns the library object associated with an auth method key
+    std::unique_ptr< QLibrary > authMethodLibrary( const QString &authMethodKey ) const;
 
-    /** Return list of available auth methods by their keys */
+    //! Returns list of available auth methods by their keys
     QStringList authMethodList() const;
 
-    /** Return metadata of the auth method or nullptr if not found */
-    const QgsAuthMethodMetadata* authMethodMetadata( const QString& authMethodKey ) const;
+    //! Returns metadata of the auth method or nullptr if not found
+    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey ) const;
 
 //    void registerGuis( QWidget *widget );
 
-    /** Type for auth method metadata associative container */
-    typedef std::map<QString, QgsAuthMethodMetadata*> AuthMethods;
+    //! Type for auth method metadata associative container
+    typedef std::map<QString, QgsAuthMethodMetadata *> AuthMethods;
 
   private:
-    /** Ctor private since instance() creates it */
-    QgsAuthMethodRegistry( const QString& pluginPath );
+    //! Ctor private since instance() creates it
+    QgsAuthMethodRegistry( const QString &pluginPath );
 
-    /** Associative container of auth method metadata handles */
+    //! Associative container of auth method metadata handles
     AuthMethods mAuthMethods;
 
-    /** Directory in which auth method plugins are installed */
+    //! Directory in which auth method plugins are installed
     QDir mLibraryDirectory;
 };
 

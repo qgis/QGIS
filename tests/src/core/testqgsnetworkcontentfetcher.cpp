@@ -18,16 +18,14 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsapplication.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QNetworkReply>
 
 class TestQgsNetworkContentFetcher : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsNetworkContentFetcher()
-        : mLoaded( false )
-    {}
+    TestQgsNetworkContentFetcher() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -41,7 +39,7 @@ class TestQgsNetworkContentFetcher : public QObject
     void contentLoaded();
 
   private:
-    bool mLoaded;
+    bool mLoaded =  false ;
 };
 
 void TestQgsNetworkContentFetcher::initTestCase()
@@ -83,7 +81,7 @@ void TestQgsNetworkContentFetcher::fetchBadUrl()
   QgsNetworkContentFetcher fetcher;
   //test fetching from a bad url
   mLoaded = false;
-  fetcher.fetchContent( QUrl( "http://x" ) );
+  fetcher.fetchContent( QUrl( QStringLiteral( "http://x" ) ) );
   connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
   while ( !mLoaded )
   {
@@ -98,7 +96,7 @@ void TestQgsNetworkContentFetcher::fetchEncodedContent()
   QgsNetworkContentFetcher fetcher;
   //test fetching encoded content as string
   mLoaded = false;
-  fetcher.fetchContent( QUrl::fromLocalFile( QString( TEST_DATA_DIR ) + '/' +  "encoded_html.html" ) );
+  fetcher.fetchContent( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" ) );
   connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
   while ( !mLoaded )
   {
@@ -116,5 +114,5 @@ void TestQgsNetworkContentFetcher::contentLoaded()
   mLoaded = true;
 }
 
-QTEST_MAIN( TestQgsNetworkContentFetcher )
+QGSTEST_MAIN( TestQgsNetworkContentFetcher )
 #include "testqgsnetworkcontentfetcher.moc"

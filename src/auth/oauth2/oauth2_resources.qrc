@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/oauth2method">
+        <file>oauth2_resources/hidden.svg</file>
+        <file>oauth2_resources/visible.svg</file>
+        <file>oauth2_resources/visible_red.svg</file>
+        <file>oauth2_verification_finished.html</file>
+        <file>oauth2_resources/close.svg</file>
+        <file>oauth2_resources/fileopen.svg</file>
+        <file>oauth2_resources/export.svg</file>
+        <file>oauth2_resources/import.svg</file>
+    </qresource>
+</RCC>

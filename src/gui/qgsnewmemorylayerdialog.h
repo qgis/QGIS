@@ -18,38 +18,61 @@
 #define QGSNEWMEMORYLAYERDIALOG_H
 
 #include "ui_qgsnewmemorylayerdialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgis.h"
-#include "qgsvectorlayer.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgshelp.h"
+#include "qgis_gui.h"
 
+class QgsVectorLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsNewMemoryLayerDialog
+ */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {
     Q_OBJECT
 
   public:
 
-    /** Runs the dialoag and creates a new memory layer
-     * @param parent parent widget
-     * @returns new memory layer
+    /**
+     * Runs the dialog and creates a new memory layer
+     * \param parent parent widget
+     * \param defaultCrs default layer CRS to show in dialog
+     * \returns new memory layer
      */
-    static QgsVectorLayer* runAndCreateLayer( QWidget* parent = nullptr );
+    static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 
-    QgsNewMemoryLayerDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsNewMemoryLayerDialog();
+    QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    ~QgsNewMemoryLayerDialog() override;
 
-    /** Returns the selected geometry type*/
-    QGis::WkbType selectedType() const;
+    //! Returns the selected geometry type
+    QgsWkbTypes::Type selectedType() const;
 
-    /** Returns the selected crs*/
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * \see crs()
+     * \since QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the selected CRS for the new layer.
+     * \see setCrs()
+     */
     QgsCoordinateReferenceSystem crs() const;
 
-    /** Returns the layer name*/
+    //! Returns the layer name
     QString layerName() const;
 
   private:
 
     QString mCrsId;
+
+  private slots:
+
+    void geometryTypeChanged( int index );
+    void showHelp();
 };
 
 #endif //QGSNEWMEMORYLAYERDIALOG_H

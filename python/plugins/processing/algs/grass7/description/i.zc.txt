@@ -1,9 +1,8 @@
 i.zc
 Zero-crossing "edge detection" raster function for image processing.
 Imagery (i.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterNumber|width|x-y extent of the Gaussian filter|1|None|9
-ParameterNumber|threshold|Sensitivity of Gaussian filter|0|None|10.0
-ParameterNumber|orientations|Number of azimuth directions categorized|0|None|1
-OutputRaster|output|Zero crossing
-
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterNumber|width|x-y extent of the Gaussian filter|QgsProcessingParameterNumber.Double|9|True|1|None
+QgsProcessingParameterNumber|threshold|Sensitivity of Gaussian filter|QgsProcessingParameterNumber.Double|10.0|True|0|None
+QgsProcessingParameterNumber|orientations|Number of azimuth directions categorized|QgsProcessingParameterNumber.Double|1|True|0|None
+QgsProcessingParameterRasterDestination|output|Zero crossing

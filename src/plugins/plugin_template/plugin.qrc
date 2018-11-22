@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/[pluginlcasename]/" >
-        <file>[pluginlcasename].png</file>
-    </qresource>
-</RCC>

@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -21,7 +21,8 @@
 #include "qgsapplication.h"
 #include "qgsauthcrypto.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsAuthCrypto
  */
 class TestQgsAuthCrypto: public QObject
@@ -40,30 +41,30 @@ class TestQgsAuthCrypto: public QObject
     void testPasswordHashKnown();
 
   private:
-    static const QString smPass;
-    static const QString smSalt;
-    static const QString smHash;
-    static const QString smCiv;
-    static const QString smText;
-    static const QString smCrypt;
+    static const QString PASS;
+    static const QString SALT;
+    static const QString HASH;
+    static const QString CIV;
+    static const QString TEXT;
+    static const QString CRYPT;
 };
 
-const QString TestQgsAuthCrypto::smPass = "password";
-const QString TestQgsAuthCrypto::smSalt = "f48b706946df69d4d2b45bd0603c95af";
-const QString TestQgsAuthCrypto::smHash = "0be18c3f1bf872194d6042f5f4a0c116";
-const QString TestQgsAuthCrypto::smCiv = QString(
-      "1c18c442b6723ee465bcbb60568412179fcc3313eb0187b4546ca96d869fbdc1"
-    );
-const QString TestQgsAuthCrypto::smText = QString(
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
-      "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
-      "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea "
-      "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate "
-      "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
-      "occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
-      "mollit anim id est laborum."
-    );
-const QString TestQgsAuthCrypto::smCrypt = QString(
+const QString TestQgsAuthCrypto::PASS = QStringLiteral( "password" );
+const QString TestQgsAuthCrypto::SALT = QStringLiteral( "f48b706946df69d4d2b45bd0603c95af" );
+const QString TestQgsAuthCrypto::HASH = QStringLiteral( "0be18c3f1bf872194d6042f5f4a0c116" );
+const QString TestQgsAuthCrypto::CIV = QStringLiteral(
+    "1c18c442b6723ee465bcbb60568412179fcc3313eb0187b4546ca96d869fbdc1"
+                                       );
+const QString TestQgsAuthCrypto::TEXT = QString(
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod "
+    "tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim "
+    "veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea "
+    "commodo consequat. Duis aute irure dolor in reprehenderit in voluptate "
+    "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint "
+    "occaecat cupidatat non proident, sunt in culpa qui officia deserunt "
+    "mollit anim id est laborum."
+                                        );
+const QString TestQgsAuthCrypto::CRYPT = QString(
       "ec53707ca8769489a6084e88c0e1fb18d3423406ac23c34ad5ac25600f59486375927bc9ed79"
       "d363f8774810ef74a92412ae236b949126c6b799dd8c20b5dbc68e7aa8501e414831e91c6533"
       "83aa6f86eb85eb5206a7e8e894b5c15b6e64de9555c580e1434248d3c0b80ee346583b998ee2"
@@ -93,30 +94,30 @@ void TestQgsAuthCrypto::cleanupTestCase()
 
 void TestQgsAuthCrypto::testEncrypt()
 {
-  QString res = QgsAuthCrypto::encrypt( smPass, smCiv, smText );
-  QCOMPARE( res, smCrypt );
+  QString res = QgsAuthCrypto::encrypt( PASS, CIV, TEXT );
+  QCOMPARE( res, CRYPT );
 }
 
 void TestQgsAuthCrypto::testDecrypt()
 {
-  QString res = QgsAuthCrypto::decrypt( smPass, smCiv, smCrypt );
-  QCOMPARE( res, smText );
+  QString res = QgsAuthCrypto::decrypt( PASS, CIV, CRYPT );
+  QCOMPARE( res, TEXT );
 }
 
 void TestQgsAuthCrypto::testPasswordHashDerived()
 {
   QString salt, hash, civ, derived;
-  QgsAuthCrypto::passwordKeyHash( smPass, &salt, &hash, &civ );
+  QgsAuthCrypto::passwordKeyHash( PASS, &salt, &hash, &civ );
   QVERIFY( !civ.isNull() );
-  QVERIFY( QgsAuthCrypto::verifyPasswordKeyHash( smPass, salt, hash, &derived ) );
+  QVERIFY( QgsAuthCrypto::verifyPasswordKeyHash( PASS, salt, hash, &derived ) );
   QVERIFY( !derived.isNull() );
   QCOMPARE( hash, derived ); // double-check assigned output
 }
 
 void TestQgsAuthCrypto::testPasswordHashKnown()
 {
-  QVERIFY( QgsAuthCrypto::verifyPasswordKeyHash( smPass, smSalt, smHash ) );
+  QVERIFY( QgsAuthCrypto::verifyPasswordKeyHash( PASS, SALT, HASH ) );
 }
 
-QTEST_MAIN( TestQgsAuthCrypto )
+QGSTEST_MAIN( TestQgsAuthCrypto )
 #include "testqgsauthcrypto.moc"

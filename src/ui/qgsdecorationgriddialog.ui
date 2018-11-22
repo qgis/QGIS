@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>603</width>
-    <height>335</height>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Grid properties</string>
+   <string>Grid Properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="sizeConstraint">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QGroupBox" name="grpEnable">
      <property name="title">
-      <string>Enable grid</string>
+      <string>Enable Grid</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -32,7 +32,7 @@
       <item row="0" column="3" rowspan="8">
        <widget class="QGroupBox" name="mDrawAnnotationCheckBox">
         <property name="title">
-         <string>Draw annotation</string>
+         <string>Draw Annotation</string>
         </property>
         <property name="flat">
          <bool>false</bool>
@@ -63,13 +63,6 @@
          <item row="0" column="1">
           <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
          </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QPushButton" name="mAnnotationFontButton">
-           <property name="text">
-            <string>Font...</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="mDistanceToFrameLabel">
            <property name="text">
@@ -95,6 +88,19 @@
          </item>
          <item row="3" column="1">
           <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QgsFontButton" name="mAnnotationFontButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Font</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -174,54 +180,10 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QPushButton" name="mLineSymbolButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="6" column="0">
        <widget class="QLabel" name="mMarkerSymbolLabel">
         <property name="text">
          <string>Marker symbol</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QPushButton" name="mMarkerSymbolButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>
@@ -294,6 +256,63 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="1">
+       <widget class="QgsSymbolButton" name="mLineSymbolButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QgsSymbolButton" name="mMarkerSymbolButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="10" colspan="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>       
+      </item>
      </layout>
      <zorder>mOffsetYEdit</zorder>
      <zorder>mOffsetXEdit</zorder>
@@ -321,12 +340,24 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>grpEnable</tabstop>
   <tabstop>mIntervalXEdit</tabstop>

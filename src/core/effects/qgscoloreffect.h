@@ -17,17 +17,19 @@
 #ifndef QGSCOLOREFFECT_H
 #define QGSCOLOREFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgsimageoperation.h"
 #include "qgis.h"
 #include <QPainter>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsColorEffect
- * \brief A paint effect which alters the colors (eg brightness, contrast) in a
+ * \brief A paint effect which alters the colors (e.g., brightness, contrast) in a
  * source picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
@@ -35,175 +37,193 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
   public:
 
-    /** Creates a new QgsColorEffect effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsColorEffect
+    /**
+     * Creates a new QgsColorEffect effect from a properties string map.
+     * \param map encoded properties string map
+     * \returns new QgsColorEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsColorEffect();
-    virtual ~QgsColorEffect();
 
-    virtual QString type() const override { return QString( "color" ); }
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsColorEffect* clone() const override;
+    QString type() const override { return QStringLiteral( "color" ); }
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
+    QgsColorEffect *clone() const override SIP_FACTORY;
 
-    /** Sets the brightness modification for the effect.
-     * @param brightness Valid values are between -255 and 255, where 0 represents
+    /**
+     * Sets the brightness modification for the effect.
+     * \param brightness Valid values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
-     * @see setBrightness
+     * \see setBrightness
      */
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
 
-    /** Returns the brightness modification for the effect.
-     * @returns brightness value. Values are between -255 and 255, where 0 represents
+    /**
+     * Returns the brightness modification for the effect.
+     * \returns brightness value. Values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
-     * @see setBrightness
+     * \see setBrightness
      */
     int brightness() const { return mBrightness; }
 
-    /** Sets the contrast modification for the effect.
-     * @param contrast Valid values are between -100 and 100, where 0 represents
+    /**
+     * Sets the contrast modification for the effect.
+     * \param contrast Valid values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
-     * @see setContrast
+     * \see setContrast
      */
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
 
-    /** Returns the contrast modification for the effect.
-     * @returns contrast value. Values are between -100 and 100, where 0 represents
+    /**
+     * Returns the contrast modification for the effect.
+     * \returns contrast value. Values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
-     * @see setContrast
+     * \see setContrast
      */
     int contrast() const { return mContrast; }
 
-    /** Sets the saturation modification for the effect.
-     * @param saturation Valid values are between 0 and 2.0, where 1.0 represents
+    /**
+     * Sets the saturation modification for the effect.
+     * \param saturation Valid values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
-     * @see saturation
+     * \see saturation
      */
     void setSaturation( double saturation ) { mSaturation = saturation; }
 
-    /** Returns the saturation modification for the effect.
-     * @returns saturation value. Values are between 0 and 2.0, where 1.0 represents
+    /**
+     * Returns the saturation modification for the effect.
+     * \returns saturation value. Values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
-     * @see setSaturation
+     * \see setSaturation
      */
     double saturation() const { return mSaturation; }
 
-    /** Sets whether the effect should convert a picture to grayscale.
-     * @param grayscaleMode method for grayscale conversion
-     * @see grayscaleMode
+    /**
+     * Sets whether the effect should convert a picture to grayscale.
+     * \param grayscaleMode method for grayscale conversion
+     * \see grayscaleMode
      */
     void setGrayscaleMode( QgsImageOperation::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
 
-    /** Returns whether the effect will convert a picture to grayscale.
-     * @returns method for grayscale conversion
-     * @see setGrayscaleMode
+    /**
+     * Returns whether the effect will convert a picture to grayscale.
+     * \returns method for grayscale conversion
+     * \see setGrayscaleMode
      */
     QgsImageOperation::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
-    /** Sets whether the effect should colorize a picture.
-     * @param colorizeOn set to true to enable colorization
-     * @see colorizeOn
-     * @see setColorizeColor
-     * @see setColorizeStrength
+    /**
+     * Sets whether the effect should colorize a picture.
+     * \param colorizeOn set to true to enable colorization
+     * \see colorizeOn
+     * \see setColorizeColor
+     * \see setColorizeStrength
      */
     void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
 
-    /** Returns whether the effect will colorize a picture.
-     * @returns true if colorization is enableds
-     * @see setColorizeOn
-     * @see colorizeColor
-     * @see colorizeStrength
+    /**
+     * Returns whether the effect will colorize a picture.
+     * \returns true if colorization is enableds
+     * \see setColorizeOn
+     * \see colorizeColor
+     * \see colorizeStrength
      */
     bool colorizeOn() const { return mColorizeOn; }
 
-    /** Sets the color used for colorizing a picture. This is only used if
-     * @link setColorizeOn @endlink is set to true.
-     * @param colorizeColor colorization color
-     * @see colorizeColor
-     * @see setColorizeOn
-     * @see setColorizeStrength
+    /**
+     * Sets the color used for colorizing a picture. This is only used if
+     *  setColorizeOn() is set to true.
+     * \param colorizeColor colorization color
+     * \see colorizeColor
+     * \see setColorizeOn
+     * \see setColorizeStrength
      */
-    void setColorizeColor( const QColor& colorizeColor );
+    void setColorizeColor( const QColor &colorizeColor );
 
-    /** Returns the color used for colorizing a picture. This is only used if
-     * @link colorizeOn @endlink is set to true.
-     * @returns colorization color
-     * @see setColorizeColor
-     * @see colorizeOn
-     * @see colorizeStrength
+    /**
+     * Returns the color used for colorizing a picture. This is only used if
+     * colorizeOn() is set to true.
+     * \returns colorization color
+     * \see setColorizeColor
+     * \see colorizeOn
+     * \see colorizeStrength
      */
     QColor colorizeColor() const { return mColorizeColor; }
 
-    /** Sets the strength for colorizing a picture. This is only used if
-     * @link setColorizeOn @endlink is set to true.
-     * @param colorizeStrength colorization strength, between 0 and 100
-     * @see colorizeStrength
-     * @see setColorizeOn
-     * @see setColorizeColor
+    /**
+     * Sets the strength for colorizing a picture. This is only used if
+     *  setColorizeOn() is set to true.
+     * \param colorizeStrength colorization strength, between 0 and 100
+     * \see colorizeStrength
+     * \see setColorizeOn
+     * \see setColorizeColor
      */
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
 
-    /** Returns the strength used for colorizing a picture. This is only used if
-     * @link setColorizeOn @endlink is set to true.
-     * @returns colorization strength, between 0 and 100
-     * @see setColorizeStrengths
-     * @see colorizeOn
-     * @see colorizeColor
+    /**
+     * Returns the strength used for colorizing a picture. This is only used if
+     * setColorizeOn() is set to true.
+     * \returns colorization strength, between 0 and 100
+     * \see setColorizeStrength
+     * \see colorizeOn
+     * \see colorizeColor
      */
     int colorizeStrength() const { return mColorizeStrength; }
 
-    /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see transparency
+    /**
+     * Sets the \a opacity for the effect.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see setTransparency
+    /**
+     * Returns the opacity for the effect.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque.
+     * \see setOpacity()
      */
-    double transparency() const { return mTransparency; }
+    double opacity() const { return mOpacity; }
 
-    /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the effect on to a destination
+    /**
+     * Sets the blend mode for the effect
+     * \param mode blend mode used for drawing the effect on to a destination
      * paint device
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the effect on to a destination
+    /**
+     * Returns the blend mode for the effect
+     * \returns blend mode used for drawing the effect on to a destination
      * paint device
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override;
+    void draw( QgsRenderContext &context ) override;
 
   private:
 
-    double mTransparency;
-    QPainter::CompositionMode mBlendMode;
-    int mBrightness;
-    int mContrast;
-    double mSaturation;
-    QgsImageOperation::GrayscaleMode mGrayscaleMode;
-    bool mColorizeOn;
+    double mOpacity = 1.0;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+    int mBrightness = 0;
+    int mContrast = 0;
+    double mSaturation = 1.0;
+    QgsImageOperation::GrayscaleMode mGrayscaleMode = QgsImageOperation::GrayscaleOff;
+    bool mColorizeOn = false;
     QColor mColorizeColor;
-    int mColorizeStrength;
+    int mColorizeStrength = 100;
 };
 
 #endif // QGSBLUREFFECT_H

@@ -16,25 +16,27 @@
 #define QGSFORMANNOTATIONDIALOG_H
 
 #include "ui_qgsformannotationdialogbase.h"
-#include "qgsformannotationitem.h"
+#include "qgis_app.h"
 
 class QgsAnnotationWidget;
+class QgsMapCanvasAnnotationItem;
 
 class APP_EXPORT QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:
-    QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsFormAnnotationDialog();
+    QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
   private:
-    QgsFormAnnotationItem* mItem;
-    QgsAnnotationWidget* mEmbeddedWidget;
+    QgsMapCanvasAnnotationItem *mItem = nullptr;
+    QgsAnnotationWidget *mEmbeddedWidget = nullptr;
 
   private slots:
     void applySettingsToItem();
-    void on_mBrowseToolButton_clicked();
+    void mBrowseToolButton_clicked();
     void deleteItem();
+    void mButtonBox_clicked( QAbstractButton *button );
+    void showHelp();
 };
 
 #endif // QGSFORMANNOTATIONDIALOG_H

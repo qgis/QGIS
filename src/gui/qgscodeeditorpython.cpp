@@ -26,18 +26,14 @@
 #include <Qsci/qscilexerpython.h>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
-    : QgsCodeEditor( parent )
-    , mAPISFilesList( filenames )
+  : QgsCodeEditor( parent )
+  , mAPISFilesList( filenames )
 {
   if ( !parent )
   {
     setTitle( tr( "Python Editor" ) );
   }
   setSciLexerPython();
-}
-
-QgsCodeEditorPython::~QgsCodeEditorPython()
-{
 }
 
 void QgsCodeEditorPython::setSciLexerPython()
@@ -47,36 +43,36 @@ void QgsCodeEditorPython::setSciLexerPython()
 
   setEdgeMode( QsciScintilla::EdgeLine );
   setEdgeColumn( 80 );
-  setEdgeColor( QColor( "#FF0000" ) );
+  setEdgeColor( QColor( 255, 0, 0 ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
 
   QFont font = getMonospaceFont();
 
-  QsciLexerPython* pyLexer = new QsciLexerPython( this );
+  QsciLexerPython *pyLexer = new QsciLexerPython( this );
   pyLexer->setDefaultFont( font );
   pyLexer->setFont( font, -1 );
   pyLexer->setColor( Qt::red, QsciLexerPython::Comment );
   pyLexer->setColor( Qt::darkGreen, QsciLexerPython::Keyword );
   pyLexer->setColor( Qt::darkBlue, QsciLexerPython::Decorator );
 
-  QsciAPIs* apis = new QsciAPIs( pyLexer );
+  QsciAPIs *apis = new QsciAPIs( pyLexer );
 
   // check if the file is a prepared apis file.
   //QString mPapFileName = QFileInfo( mAPISFilesList[0] ).fileName();
   //QString isPapFile = mPapFileName.right( 3 );
-  //QgsDebugMsg( QString( "file extension: %1" ).arg( isPapFile ) );
+  //QgsDebugMsg( QStringLiteral( "file extension: %1" ).arg( isPapFile ) );
 
   if ( mAPISFilesList.isEmpty() )
   {
-    mPapFile = QgsApplication::pkgDataPath() + "/python/qsci_apis/pyqgis.pap";
+    mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/pyqgis.pap" );
     apis->loadPrepared( mPapFile );
   }
-  else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == "pap" )
+  else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == QLatin1String( "pap" ) )
   {
-    if ( !QFileInfo( mAPISFilesList[0] ).exists() )
+    if ( !QFileInfo::exists( mAPISFilesList[0] ) )
     {
-      QgsDebugMsg( QString( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
+      QgsDebugMsg( QStringLiteral( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
       return;
     }
     mPapFile = mAPISFilesList[0];
@@ -86,9 +82,9 @@ void QgsCodeEditorPython::setSciLexerPython()
   {
     for ( int i = 0; i < mAPISFilesList.size(); i++ )
     {
-      if ( !QFileInfo( mAPISFilesList[i] ).exists() )
+      if ( !QFileInfo::exists( mAPISFilesList[i] ) )
       {
-        QgsDebugMsg( QString( "The apis file %1 was not found" ).arg( mAPISFilesList.at( i ) ) );
+        QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( mAPISFilesList.at( i ) ) );
         return;
       }
       else
@@ -103,19 +99,20 @@ void QgsCodeEditorPython::setSciLexerPython()
 
   setMarginVisible( true );
   setFoldingVisible( true );
+  setIndentationsUseTabs( false );
 }
 
 
 void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {
   mAPISFilesList = filenames;
-  //QgsDebugMsg( QString( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
+  //QgsDebugMsg( QStringLiteral( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
   setSciLexerPython();
 }
 
 bool QgsCodeEditorPython::loadScript( const QString &script )
 {
-  QgsDebugMsg( QString( "The script file: %1" ).arg( script ) );
+  QgsDebugMsg( QStringLiteral( "The script file: %1" ).arg( script ) );
   QFile file( script );
   if ( !file.open( QIODevice::ReadOnly ) )
   {

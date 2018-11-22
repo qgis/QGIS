@@ -21,34 +21,46 @@
 #include <QList>
 #include <QSet>
 
-class QgsGPSConnection;
+#include "qgis_core.h"
 
-/** A singleton class to register / unregister existing GPS connections such that the information
-  is available to all classes and plugins*/
-class CORE_EXPORT QgsGPSConnectionRegistry
+class QgsGpsConnection;
+
+/**
+ * \ingroup core
+ * A class to register / unregister existing GPS connections such that the information
+ * is available to all classes and plugins.
+ *
+ * QgsGpsConnectionRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::gpsConnectionRegistry().
+*/
+class CORE_EXPORT QgsGpsConnectionRegistry
 {
   public:
-    static QgsGPSConnectionRegistry* instance();
-    ~QgsGPSConnectionRegistry();
 
-    /** Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again*/
-    void registerConnection( QgsGPSConnection* c );
-    /** Unregisters connection. The registry does no longer own the connection*/
-    void unregisterConnection( QgsGPSConnection* c );
+    /**
+     * Constructor for QgsGpsConnectionRegistry.
+     */
+    QgsGpsConnectionRegistry() = default;
+    ~QgsGpsConnectionRegistry();
 
-    QList< QgsGPSConnection *> connectionList() const;
+    //! QgsGpsConnectionRegistry cannot be copied.
+    QgsGpsConnectionRegistry( const QgsGpsConnectionRegistry &rh ) = delete;
+    //! QgsGpsConnectionRegistry cannot be copied.
+    QgsGpsConnectionRegistry &operator=( const QgsGpsConnectionRegistry &rh ) = delete;
 
-  protected:
-    QgsGPSConnectionRegistry();
+    //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
+    void registerConnection( QgsGpsConnection *c );
+    //! Unregisters connection. The registry does no longer own the connection
+    void unregisterConnection( QgsGpsConnection *c );
 
-    static QgsGPSConnectionRegistry* mInstance;
-
-    QSet<QgsGPSConnection*> mConnections;
+    QList< QgsGpsConnection *> connectionList() const;
 
   private:
+#ifdef SIP_RUN
+    QgsGpsConnectionRegistry( const QgsGpsConnectionRegistry &rh );
+#endif
 
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh );
-    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh );
+    QSet<QgsGpsConnection *> mConnections;
 };
 
 #endif // QGSGPSCONNECTIONREGISTRY_H

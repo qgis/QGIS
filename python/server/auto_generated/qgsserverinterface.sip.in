@@ -1,0 +1,149 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverinterface.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsServerInterface
+{
+%Docstring
+QgsServerInterface
+Class defining interfaces exposed by QGIS Server and
+made available to plugins.
+
+This class provides methods to access the request handler and
+the capabilities cache. A method to read the environment
+variables set in the main FCGI loop is also available.
+Plugins can add listeners (instances of QgsServerFilter) with
+a certain priority through the registerFilter( QgsServerFilter* , int) method.
+%End
+
+%TypeHeaderCode
+#include "qgsserverinterface.h"
+%End
+  public:
+
+
+    virtual ~QgsServerInterface();
+
+
+
+    virtual QgsCapabilitiesCache *capabilitiesCache() = 0 /KeepReference/;
+%Docstring
+Gets pointer to the capabiblities cache
+
+:return: :py:class:`QgsCapabilitiesCache`
+%End
+
+    virtual QgsRequestHandler *requestHandler() = 0 /KeepReference/;
+%Docstring
+Gets pointer to the request handler
+
+:return: :py:class:`QgsRequestHandler`
+%End
+
+    virtual void registerFilter( QgsServerFilter *filter /Transfer/, int priority = 0 ) = 0;
+%Docstring
+Register a :py:class:`QgsServerFilter`
+
+:param filter: the QgsServerFilter to add
+:param priority: an optional priority for the filter order
+%End
+
+    virtual void setFilters( QgsServerFiltersMap *filters /Transfer/ ) = 0;
+%Docstring
+Set the filters map
+
+:param filters: the :py:class:`QgsServerFiltersMap`
+%End
+
+    virtual QgsServerFiltersMap filters() = 0;
+%Docstring
+Returns the list of current :py:class:`QgsServerFilter`
+
+:return: QgsServerFiltersMap list of :py:class:`QgsServerFilter`
+%End
+
+    virtual void registerAccessControl( QgsAccessControlFilter *accessControl /Transfer/, int priority = 0 ) = 0;
+%Docstring
+Register an access control filter
+
+:param accessControl: the access control to register
+:param priority: the priority used to order them
+%End
+
+    virtual QgsAccessControl *accessControls() const = 0;
+%Docstring
+Gets the registered access control filters
+%End
+
+    virtual void registerServerCache( QgsServerCacheFilter *serverCache /Transfer/, int priority = 0 ) = 0;
+%Docstring
+Register a server cache filter
+
+:param serverCache: the server cache to register
+:param priority: the priority used to order them
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsServerCacheManager *cacheManager() const = 0;
+%Docstring
+Gets the registered server cache filters
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString getEnv( const QString &name ) const = 0;
+%Docstring
+Returns an enrironment variable, used to pass  environment variables to Python
+%End
+
+    virtual QString configFilePath() = 0;
+%Docstring
+Returns the configuration file path
+
+:return: QString containing the configuration file path
+%End
+
+    virtual void setConfigFilePath( const QString &configFilePath ) = 0;
+%Docstring
+Set the configuration file path
+
+:param configFilePath: QString with the configuration file path
+%End
+
+    virtual void removeConfigCacheEntry( const QString &path ) = 0;
+%Docstring
+Remove entry from config cache
+
+:param path: the path of the file to remove
+%End
+
+    virtual QgsServiceRegistry *serviceRegistry() = 0 /KeepReference/;
+%Docstring
+Returns the service registry
+
+:return: :py:class:`QgsServiceResgistry`
+%End
+
+
+  private:
+    QgsServerInterface();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverinterface.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

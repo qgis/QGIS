@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://ogr.maptools.org/ multipolys_densify.xsd"
+     xsi:schemaLocation=""
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -10,7 +10,7 @@
       <gml:coord><gml:X>9</gml:X><gml:Y>6</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-
+                                                                                                                                                               
   <gml:featureMember>
     <ogr:multipolys_densify fid="multipolys.0">
       <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,1 2.0,1.2 2.0,1.4 2.0,1.6 2.0,1.8 2,2 2.2,2.0 2.4,2.0 2.6,2.0 2.8,2.0 3,2 3.0,2.2 3.0,2.4 3.0,2.6 3.0,2.8 3,3 3.2,3.0 3.4,3.0 3.6,3.0 3.8,3.0 4,3 4.0,2.6 4.0,2.2 4.0,1.8 4.0,1.4 4,1 3.6,1.0 3.2,1.0 2.8,1.0 2.4,1.0 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>

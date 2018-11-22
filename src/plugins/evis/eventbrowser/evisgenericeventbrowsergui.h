@@ -32,23 +32,22 @@
 
 #include "qgsmaptool.h"
 #include "qgsfeature.h"
-#include "qgsmapcanvas.h"
 #include "qgisinterface.h"
-#include "qgsmaprenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
 #include "evisconfiguration.h"
 
 #include "ui_evisgenericeventbrowserguibase.h"
 
+class QgsMapCanvas;
+
 /**
 * \class eVisGenericEventBrowserGui
 * \brief Generic viewer for browsing event
 * The eVisGenericEventBrowserGui is simply a window that will display an image referenced/stored
 * in an attribute of a feature. Images can either loaded locally from disk or loaded via a URL.
-* The eVisGenericEventBrowserGui also interacts with the map canvas to draw a highlighing symbol
-* on the canvas. The highlighing symbol can also be a pointer showing the direction in which the
+* The eVisGenericEventBrowserGui also interacts with the map canvas to draw a highlighting symbol
+* on the canvas. The highlighting symbol can also be a pointer showing the direction in which the
 * image was taken by referencing a compass bearing recorded as an attribute of a feature.
 */
 class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventBrowserGuiBase
@@ -56,128 +55,127 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     Q_OBJECT
 
   public:
-    /** \brief Constructor called when button is pressed in the plugin toolbar */
-    eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl );
+    //! \brief Constructor called when button is pressed in the plugin toolbar
+    eVisGenericEventBrowserGui( QWidget *parent, QgisInterface *interface, Qt::WindowFlags fl );
 
-    /** \brief Constructor called when new browser is requested by the eVisEventIdTool */
-    eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl );
+    //! \brief Constructor called when new browser is requested by the eVisEventIdTool
+    eVisGenericEventBrowserGui( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl );
 
-    /** \Brief Destructor */
-    ~eVisGenericEventBrowserGui();
+    ~eVisGenericEventBrowserGui() override;
 
   protected:
     void closeEvent( QCloseEvent *event ) override;
 
   private:
     //Variables
-    /** \brief A flag to bypass some signal/slots during gui initialization */
-    bool mIgnoreEvent;
+    //! \brief A flag to bypass some signal/slots during gui initialization
+    bool mIgnoreEvent = false;
 
-    /** \brief Pointer to the main configurations object */
+    //! \brief Pointer to the main configurations object
     eVisConfiguration mConfiguration;
 
-    /** \brief Flag indicating if the browser fully initialized */
-    bool mBrowserInitialized;
+    //! \brief Flag indicating if the browser fully initialized
+    bool mBrowserInitialized = false;
 
-    /** \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
-    int mDefaultCompassBearingField;
+    //! \brief Index of the attribute field name that closest 'matches' configuration of the parameter
+    int mDefaultCompassBearingField = 0;
 
-    /** \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
-    int mDefaultCompassOffsetField;
+    //! \brief Index of the attribute field name that closest 'matches' configuration of the parameter
+    int mDefaultCompassOffsetField = 0;
 
-    /** \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
-    int mDefaultEventImagePathField;
+    //! \brief Index of the attribute field name that closest 'matches' configuration of the parameter
+    int mDefaultEventImagePathField = 0;
 
-    /** \brief Pointer to the QgisInferface */
-    QgisInterface* mInterface;
+    //! \brief Pointer to the QgisInferface
+    QgisInterface *mInterface = nullptr;
 
-    /** \brief Pointer to the map canvas */
-    QgsMapCanvas* mCanvas;
+    //! \brief Pointer to the map canvas
+    QgsMapCanvas *mCanvas = nullptr;
 
-    /** \brief Pointer to the vector layer */
-    QgsVectorLayer* mVectorLayer;
+    //! \brief Pointer to the vector layer
+    QgsVectorLayer *mVectorLayer = nullptr;
 
-    /** \brief Pointer to the vector data provider */
-    QgsVectorDataProvider* mDataProvider;
+    //! \brief Pointer to the vector data provider
+    QgsVectorDataProvider *mDataProvider = nullptr;
 
-    /** \brief QPixmap holding the default highlighting symbol */
+    //! \brief QPixmap holding the default highlighting symbol
     QPixmap mHighlightSymbol;
 
-    /** \brief QPixmap holding the pointer highlighting symbol */
+    //! \brief QPixmap holding the pointer highlighting symbol
     QPixmap mPointerSymbol;
 
-    /** \brief Compass bearing value for the current feature */
-    double mCompassBearing;
+    //! \brief Compass bearing value for the current feature
+    double mCompassBearing = 0;
 
-    /** \brief Compass bearing offset retrieved from attribute */
-    double mCompassOffset;
+    //! \brief Compass bearing offset retrieved from attribute
+    double mCompassOffset = 0;
 
-    /** \brief QString holding the path to the image for the current feature */
+    //! \brief QString holding the path to the image for the current feature
     QString mEventImagePath;
 
-    /** \brief List of current select featured ids*/
+    //! \brief List of current select featured ids
     QList<QgsFeatureId> mFeatureIds;
 
-    /** \brief Index of selected feature being viewed, used to access mFeatureIds */
-    int mCurrentFeatureIndex;
+    //! \brief Index of selected feature being viewed, used to access mFeatureIds
+    int mCurrentFeatureIndex = 0;
 
-    /** \brief Current feature being viewed */
+    //! \brief Current feature being viewed
     QgsFeature mFeature;
 
     //Methods
-    /** \brief Applies parameters on the Options tabs and saves the configuration */
+    //! \brief Applies parameters on the Options tabs and saves the configuration
     void accept() override;
 
-    /** \brief Modifies the Event Image Path according to the local and global settings */
+    //! \brief Modifies the Event Image Path according to the local and global settings
     void buildEventImagePath();
 
-    /** \brief Method that loads the image in the browser */
+    //! \brief Method that loads the image in the browser
     void displayImage();
 
-    /** \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider */
-    QgsFeature* featureAtId( QgsFeatureId );
+    //! \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider
+    QgsFeature *featureAtId( QgsFeatureId );
 
-    /** \brief Functionality common to both constructors */
+    //! \brief Functionality common to both constructors
     bool initBrowser();
 
-    /** \brief Set all of the gui objects based on the current configuration*/
+    //! Sets all of the gui objects based on the current configuration
     void initOptionsTab();
 
-    /** \brief Method called to load data into the browser */
+    //! \brief Method called to load data into the browser
     void loadRecord();
 
-    /** \brief Reset all gui items on the options tab to a 'system default' */
+    //! \brief Reset all gui items on the options tab to a 'system default'
     void restoreDefaultOptions();
 
-    /** \brief Sets the base path to the path of the data source */
+    //! Sets the base path to the path of the data source
     void setBasePathToDataSource();
 
   private slots:
     void launchExternalApplication( QTreeWidgetItem *, int );
-    void on_buttonboxOptions_clicked( QAbstractButton* );
-    void on_chkboxApplyPathRulesToDocs_stateChanged( int );
-    void on_cboxEventImagePathField_currentIndexChanged( int );
-    void on_cboxCompassBearingField_currentIndexChanged( int );
-    void on_cboxCompassOffsetField_currentIndexChanged( int );
-    void on_chkboxDisplayCompassBearing_stateChanged( int );
-    void on_chkboxEventImagePathRelative_stateChanged( int );
-    void on_chkboxUseOnlyFilename_stateChanged( int );
-    void on_displayArea_currentChanged( int );
-    void on_dsboxCompassOffset_valueChanged( double );
-    void on_leBasePath_textChanged( const QString& );
-    void on_pbtnAddFileType_clicked();
-    void on_pbtnDeleteFileType_clicked();
-    void on_pbtnNext_clicked();
-    void on_pbtnPrevious_clicked();
-    void on_pbtnResetApplyPathRulesToDocs_clicked();
-    void on_pbtnResetBasePathData_clicked();
-    void on_pbtnResetCompassBearingData_clicked();
-    void on_pbtnResetCompassOffsetData_clicked();
-    void on_pbtnResetEventImagePathData_clicked();
-    void on_pbtnResetUseOnlyFilenameData_clicked();
-    void on_rbtnManualCompassOffset_toggled( bool );
-    void on_tableFileTypeAssociations_cellDoubleClicked( int, int );
-    /** \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature */
-    void renderSymbol( QPainter* );
+    void buttonboxOptions_clicked( QAbstractButton * );
+    void chkboxApplyPathRulesToDocs_stateChanged( int );
+    void cboxEventImagePathField_currentIndexChanged( int );
+    void cboxCompassBearingField_currentIndexChanged( int );
+    void cboxCompassOffsetField_currentIndexChanged( int );
+    void chkboxDisplayCompassBearing_stateChanged( int );
+    void chkboxEventImagePathRelative_stateChanged( int );
+    void chkboxUseOnlyFilename_stateChanged( int );
+    void displayArea_currentChanged( int );
+    void dsboxCompassOffset_valueChanged( double );
+    void leBasePath_textChanged( const QString & );
+    void pbtnAddFileType_clicked();
+    void pbtnDeleteFileType_clicked();
+    void pbtnNext_clicked();
+    void pbtnPrevious_clicked();
+    void pbtnResetApplyPathRulesToDocs_clicked();
+    void pbtnResetBasePathData_clicked();
+    void pbtnResetCompassBearingData_clicked();
+    void pbtnResetCompassOffsetData_clicked();
+    void pbtnResetEventImagePathData_clicked();
+    void pbtnResetUseOnlyFilenameData_clicked();
+    void rbtnManualCompassOffset_toggled( bool );
+    void tableFileTypeAssociations_cellDoubleClicked( int, int );
+    //! \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature
+    void renderSymbol( QPainter * );
 };
 #endif

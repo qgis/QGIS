@@ -1,5 +1,0 @@
-Ordered Weighted Averaging|Ordered Weighted Averaging (OWA)
-grid_analysis
-ParameterMultipleInput|GRIDS|Input Grids|3|False
-ParameterFixedTable|WEIGHTS|Weights|3|Weight|False
-OutputRaster|OUTPUT|Output Grid

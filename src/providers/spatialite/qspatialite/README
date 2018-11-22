@@ -1,7 +1,0 @@
-QSPATIALITE driver derived from QSQLITE driver.
-
-No actual changes except linking to spatialite and a call to
-spatialite_init(0).
-
-See the Qt SQL documentation for more information on compiling Qt SQL
-driver plugins (sql-driver.html).

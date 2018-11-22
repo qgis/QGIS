@@ -17,49 +17,53 @@
 #ifndef QGSCREDENTIALDIALOG_H
 #define QGSCREDENTIALDIALOG_H
 
-#include <ui_qgscredentialdialog.h>
-#include <qgisgui.h>
+#include "ui_qgscredentialdialog.h"
+#include "qgsguiutils.h"
 #include "qgscredentials.h"
 
 #include <QString>
+#include "qgis.h"
+#include "qgis_gui.h"
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog for requesting credentials
  */
 class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, private Ui_QgsCredentialDialog
 {
     Q_OBJECT
   public:
-    QgsCredentialDialog( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsCredentialDialog();
+    //! QgsCredentialDialog constructor
+    QgsCredentialDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+#ifndef SIP_RUN
   signals:
 
-    //! @note not available in Python bindings
-    void credentialsRequested( const QString&, QString *, QString *, const QString&, bool * );
+    //! \note not available in Python bindings
+    void credentialsRequested( const QString &, QString *, QString *, const QString &, bool * );
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     void credentialsRequestedMasterPassword( QString *, bool, bool * );
+#endif
 
   private slots:
-    void requestCredentials( const QString&, QString *, QString *, const QString&, bool * );
+    void requestCredentials( const QString &, QString *, QString *, const QString &, bool * );
 
     void requestCredentialsMasterPassword( QString *password, bool stored, bool *ok );
 
-    void on_chkMasterPassShow_stateChanged( int state );
-    void on_leMasterPass_textChanged( const QString& pass );
-    void on_leMasterPassVerify_textChanged( const QString& pass );
-    void on_chkbxEraseAuthDb_toggled( bool checked );
+    void leMasterPass_textChanged( const QString &pass );
+    void leMasterPassVerify_textChanged( const QString &pass );
+    void chkbxEraseAuthDb_toggled( bool checked );
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
 
-    virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
+    bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 
   private:
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
 };
 
 #endif

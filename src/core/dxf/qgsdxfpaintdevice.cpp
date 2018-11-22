@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsdxfpaintdevice.h"
+#include "qgsdxfpaintengine.h"
+#include "qgspoint.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( nullptr )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }
@@ -27,7 +29,7 @@ QgsDxfPaintDevice::~QgsDxfPaintDevice()
   delete mPaintEngine;
 }
 
-QPaintEngine* QgsDxfPaintDevice::paintEngine() const
+QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 {
   return mPaintEngine;
 }
@@ -45,7 +47,7 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmHeightMM:
       return mDrawingSize.height();
     case QPaintDevice::PdmNumColors:
-      return INT_MAX;
+      return std::numeric_limits<int>::max();
     case QPaintDevice::PdmDepth:
       return 32;
     case QPaintDevice::PdmDpiX:
@@ -53,10 +55,10 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmPhysicalDpiX:
     case QPaintDevice::PdmPhysicalDpiY:
       return 96;
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     case QPaintDevice::PdmDevicePixelRatio:
       return 1;
-#endif
+    case QPaintDevice::PdmDevicePixelRatioScaled:
+      return 1;
   }
   return 0;
 }
@@ -85,7 +87,7 @@ QPointF QgsDxfPaintDevice::dxfCoordinates( QPointF pt ) const
   return QPointF( x, y );
 }
 
-void QgsDxfPaintDevice::setLayer( const QString& layer )
+void QgsDxfPaintDevice::setLayer( const QString &layer )
 {
   if ( mPaintEngine )
   {

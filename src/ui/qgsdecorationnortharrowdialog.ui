@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
-    <height>234</height>
+    <width>578</width>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,13 +15,14 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>.</normaloff>.</iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="grpEnable">
      <property name="title">
-      <string>Enable north arrow</string>
+      <string>Enable North Arrow</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -30,7 +31,135 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="1">
+       <widget class="QLabel" name="sizeLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" colspan="3">
+       <widget class="QgsDoubleSpinBox" name="spinSize">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>9999.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="svgLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Custom SVG</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="2" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_26">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="mSvgPathLineEdit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mSvgSelectorBtn">
+          <property name="text">
+           <string>…</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="colorLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="3">
+       <layout class="QHBoxLayout" name="colorLayout">
+        <item>
+         <widget class="QLabel" name="fillLabel">
+          <property name="text">
+           <string>Fill</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsColorButton" name="pbnChangeColor">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="outlineLabel">
+          <property name="text">
+           <string>Stroke</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsColorButton" name="pbnChangeOutlineColor">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="labelHorizontal">
@@ -40,7 +169,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsSpinBox" name="spinVertical">
+         <widget class="QgsSpinBox" name="spinHorizontal">
           <property name="minimumSize">
            <size>
             <width>90</width>
@@ -69,7 +198,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsSpinBox" name="spinHorizontal">
+         <widget class="QgsSpinBox" name="spinVertical">
           <property name="minimumSize">
            <size>
             <width>90</width>
@@ -99,8 +228,8 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="textLabel6">
+      <item row="3" column="1">
+       <widget class="QLabel" name="angleLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -121,21 +250,8 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="4">
-       <widget class="QSpinBox" name="spinAngle">
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="textLabel8">
+      <item row="4" column="1">
+       <widget class="QLabel" name="placementLabel">
         <property name="text">
          <string>Placement</string>
         </property>
@@ -144,7 +260,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="lblMargin">
         <property name="minimumSize">
          <size>
@@ -157,42 +273,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2" colspan="3">
+      <item row="4" column="2" colspan="3">
        <widget class="QComboBox" name="cboPlacement">
         <property name="toolTip">
          <string>Placement on screen</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QCheckBox" name="cboxAutomatic">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="whatsThis">
-         <string/>
-        </property>
-        <property name="text">
-         <string>Set direction automatically</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
+      <item row="6" column="1">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -205,26 +293,71 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2" colspan="2">
-       <widget class="QSlider" name="sliderRotation">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="pageStep">
-         <number>10</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
+      <item row="3" column="2" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_36">
+        <item>
+         <widget class="QSlider" name="sliderRotation">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>10</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinAngle">
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cboxAutomatic">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+          <property name="text">
+           <string>Automatic</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="0" column="0" rowspan="4">
+      <item row="0" column="0" rowspan="6">
        <widget class="QLabel" name="pixmapLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -264,9 +397,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -277,47 +421,20 @@
  </customwidgets>
  <tabstops>
   <tabstop>grpEnable</tabstop>
+  <tabstop>pbnChangeColor</tabstop>
+  <tabstop>pbnChangeOutlineColor</tabstop>
+  <tabstop>spinSize</tabstop>
+  <tabstop>mSvgPathLineEdit</tabstop>
+  <tabstop>mSvgSelectorBtn</tabstop>
   <tabstop>sliderRotation</tabstop>
   <tabstop>spinAngle</tabstop>
-  <tabstop>cboPlacement</tabstop>
-  <tabstop>spinVertical</tabstop>
-  <tabstop>spinHorizontal</tabstop>
-  <tabstop>wgtUnitSelection</tabstop>
   <tabstop>cboxAutomatic</tabstop>
+  <tabstop>cboPlacement</tabstop>
+  <tabstop>spinHorizontal</tabstop>
+  <tabstop>spinVertical</tabstop>
+  <tabstop>wgtUnitSelection</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>sliderRotation</sender>
-   <signal>sliderMoved(int)</signal>
-   <receiver>spinAngle</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>374</x>
-     <y>257</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>527</x>
-     <y>259</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinAngle</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sliderRotation</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>524</x>
-     <y>244</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>351</x>
-     <y>263</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

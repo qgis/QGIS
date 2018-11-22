@@ -25,22 +25,30 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import QObject, pyqtSignal
 
-class ProcessingResults:
+
+class ProcessingResults(QObject):
+
+    resultAdded = pyqtSignal()
 
     results = []
 
-    @staticmethod
-    def addResult(name, result):
-        ProcessingResults.results.append(Result(name, result))
+    def addResult(self, icon, name, timestamp, result):
+        self.results.append(Result(icon, name, timestamp, result))
+        self.resultAdded.emit()
 
-    @staticmethod
-    def getResults():
-        return ProcessingResults.results
+    def getResults(self):
+        return self.results
 
 
 class Result:
 
-    def __init__(self, name, filename):
+    def __init__(self, icon, name, timestamp, filename):
+        self.icon = icon
         self.name = name
+        self.timestamp = timestamp
         self.filename = filename
+
+
+resultsList = ProcessingResults()

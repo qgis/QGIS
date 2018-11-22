@@ -1,0 +1,22 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="layer0">
+  <Feature id="1">
+   <Attribute value="1" name="id"/>
+   <Attribute value="one" name="name"/>
+   <Attribute value="First Value" name="utf8nameè"/>
+  </Feature>
+  <Feature id="2">
+   <Attribute value="2" name="id"/>
+   <Attribute value="two" name="name"/>
+   <Attribute value="Second Value" name="utf8nameè"/>
+  </Feature>
+  <Feature id="3">
+   <Attribute value="3" name="id"/>
+   <Attribute value="three" name="name"/>
+   <Attribute value="Third èé↓" name="utf8nameè"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

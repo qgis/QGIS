@@ -15,54 +15,53 @@
 
 #include "qgslayertreeregistrybridge.h"
 
-#include "qgsmaplayerregistry.h"
-
 #include "qgslayertree.h"
 
 #include "qgsproject.h"
 #include "qgslogger.h"
 
-QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QObject *parent )
-    : QObject( parent )
-    , mRoot( root )
-    , mRegistryRemovingLayers( false )
-    , mEnabled( true )
-    , mNewLayersVisible( true )
-    , mInsertionPointGroup( root )
-    , mInsertionPointIndex( 0 )
+QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent )
+  : QObject( parent )
+  , mRoot( root )
+  , mProject( project )
+  , mRegistryRemovingLayers( false )
+  , mEnabled( true )
+  , mNewLayersVisible( true )
+  , mInsertionPointGroup( root )
+  , mInsertionPointIndex( 0 )
 {
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( legendLayersAdded( QList<QgsMapLayer*> ) ), this, SLOT( layersAdded( QList<QgsMapLayer*> ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
+  connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
+  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
 
-  connect( mRoot, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( groupWillRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
-  connect( mRoot, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( groupRemovedChildren() ) );
+  connect( mRoot, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeRegistryBridge::groupWillRemoveChildren );
+  connect( mRoot, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeRegistryBridge::groupRemovedChildren );
 }
 
-void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup* parentGroup, int index )
+void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )
 {
   mInsertionPointGroup = parentGroup;
   mInsertionPointIndex = index;
 }
 
-void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer*>& layers )
+void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers )
 {
   if ( !mEnabled )
     return;
 
-  QList<QgsLayerTreeNode*> nodes;
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  QList<QgsLayerTreeNode *> nodes;
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
-    QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layer );
-    nodeLayer->setVisible( mNewLayersVisible ? Qt::Checked : Qt::Unchecked );
+    QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layer );
+    nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
 
     nodes << nodeLayer;
 
     // check whether the layer is marked as embedded
-    QString projectFile = QgsProject::instance()->layerIsEmbedded( nodeLayer->layerId() );
+    QString projectFile = mProject->layerIsEmbedded( nodeLayer->layerId() );
     if ( !projectFile.isEmpty() )
     {
-      nodeLayer->setCustomProperty( "embedded", 1 );
-      nodeLayer->setCustomProperty( "embedded_project", projectFile );
+      nodeLayer->setCustomProperty( QStringLiteral( "embedded" ), 1 );
+      nodeLayer->setCustomProperty( QStringLiteral( "embedded_project" ), projectFile );
     }
   }
 
@@ -73,9 +72,9 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer*>& layers 
   emit addedLayersToLayerTree( layers );
 }
 
-void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList& layerIds )
+void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList &layerIds )
 {
-  QgsDebugMsg( QString( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ), 4 );
 
   if ( !mEnabled )
     return;
@@ -84,22 +83,22 @@ void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList& layerId
   // the registry _again_ in groupRemovedChildren() - this prevents it
   mRegistryRemovingLayers = true;
 
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( const QString &layerId, layerIds )
   {
-    QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
+    QgsLayerTreeLayer *nodeLayer = mRoot->findLayer( layerId );
     if ( nodeLayer )
-      qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+      qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
   }
 
   mRegistryRemovingLayers = false;
 }
 
 
-static void _collectLayerIdsInGroup( QgsLayerTreeGroup* group, int indexFrom, int indexTo, QStringList& lst )
+static void _collectLayerIdsInGroup( QgsLayerTreeGroup *group, int indexFrom, int indexTo, QStringList &lst )
 {
   for ( int i = indexFrom; i <= indexTo; ++i )
   {
-    QgsLayerTreeNode* child = group->children().at( i );
+    QgsLayerTreeNode *child = group->children().at( i );
     if ( QgsLayerTree::isLayer( child ) )
     {
       lst << QgsLayerTree::toLayer( child )->layerId();
@@ -111,7 +110,7 @@ static void _collectLayerIdsInGroup( QgsLayerTreeGroup* group, int indexFrom, in
   }
 }
 
-void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
+void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
   if ( mRegistryRemovingLayers )
     return; // do not try to remove those layers again
@@ -119,7 +118,7 @@ void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode* node
   Q_ASSERT( mLayerIdsForRemoval.isEmpty() );
 
   Q_ASSERT( QgsLayerTree::isGroup( node ) );
-  QgsLayerTreeGroup* group = QgsLayerTree::toGroup( node );
+  QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
 
   _collectLayerIdsInGroup( group, indexFrom, indexTo, mLayerIdsForRemoval );
 }
@@ -132,12 +131,12 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
   // remove only those that really do not exist in the tree
   // (ignores layers that were dragged'n'dropped: 1. drop new 2. remove old)
   QStringList toRemove;
-  Q_FOREACH ( const QString& layerId, mLayerIdsForRemoval )
+  Q_FOREACH ( const QString &layerId, mLayerIdsForRemoval )
     if ( !mRoot->findLayer( layerId ) )
       toRemove << layerId;
   mLayerIdsForRemoval.clear();
 
-  QgsDebugMsg( QString( "%1 layers will be removed" ).arg( toRemove.count() ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 layers will be removed" ).arg( toRemove.count() ), 4 );
 
   // delay the removal of layers from the registry. There may be other slots connected to map layer registry's signals
   // that might disrupt the execution flow - e.g. a processEvents() call may force update of layer tree view with
@@ -145,7 +144,7 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
   QMetaObject::invokeMethod( this, "removeLayersFromRegistry", Qt::QueuedConnection, Q_ARG( QStringList, toRemove ) );
 }
 
-void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( const QStringList& layerIds )
+void QgsLayerTreeRegistryBridge::removeLayersFromRegistry( const QStringList &layerIds )
 {
-  QgsMapLayerRegistry::instance()->removeMapLayers( layerIds );
+  mProject->removeMapLayers( layerIds );
 }

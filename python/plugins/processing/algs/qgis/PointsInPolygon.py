@@ -30,89 +30,159 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
+                       QgsFeatureSink,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsField,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterField,
+                       QgsSpatialIndex)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointsInPolygon(GeoAlgorithm):
-
+class PointsInPolygon(QgisAlgorithm):
     POLYGONS = 'POLYGONS'
     POINTS = 'POINTS'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
+    WEIGHT = 'WEIGHT'
+    CLASSFIELD = 'CLASSFIELD'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumPoints.svg")
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Count points in polygon')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
-        self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterString(self.FIELD,
-                                          self.tr('Count field name'), 'NUMPOINTS'))
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumPoints.svg")
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Count')))
+    def group(self):
+        return self.tr('Vector analysis')
 
-    def processAlgorithm(self, progress):
-        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
-        fieldName = self.getParameterValue(self.FIELD)
+    def groupId(self):
+        return 'vectoranalysis'
 
-        polyProvider = polyLayer.dataProvider()
-        fields = polyProvider.fields()
-        fields.append(QgsField(fieldName, QVariant.Int))
+    def __init__(self):
+        super().__init__()
 
-        (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
-                                                         polyLayer.pendingFields(), fieldName)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.POLYGONS,
+                                                              self.tr('Polygons'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.POINTS,
+                                                              self.tr('Points'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterField(self.WEIGHT,
+                                                      self.tr('Weight field'), parentLayerParameterName=self.POINTS,
+                                                      optional=True))
+        self.addParameter(QgsProcessingParameterField(self.CLASSFIELD,
+                                                      self.tr('Class field'), parentLayerParameterName=self.POINTS,
+                                                      optional=True))
+        self.addParameter(QgsProcessingParameterString(self.FIELD,
+                                                       self.tr('Count field name'), defaultValue='NUMPOINTS'))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Count'), QgsProcessing.TypeVectorPolygon))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
+    def name(self):
+        return 'countpointsinpolygon'
 
-        spatialIndex = vector.spatialindex(pointLayer)
+    def displayName(self):
+        return self.tr('Count points in polygon')
 
-        ftPoly = QgsFeature()
-        ftPoint = QgsFeature()
-        outFeat = QgsFeature()
-        geom = QgsGeometry()
+    def processAlgorithm(self, parameters, context, feedback):
+        poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
-        for current, ftPoly in enumerate(features):
-            geom = ftPoly.geometry()
-            engine = QgsGeometry.createGeometryEngine(geom.geometry())
-            engine.prepareGeometry()
+        point_source = self.parameterAsSource(parameters, self.POINTS, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POINTS))
 
-            attrs = ftPoly.attributes()
+        weight_field = self.parameterAsString(parameters, self.WEIGHT, context)
+        weight_field_index = -1
+        if weight_field:
+            weight_field_index = point_source.fields().lookupField(weight_field)
+
+        class_field = self.parameterAsString(parameters, self.CLASSFIELD, context)
+        class_field_index = -1
+        if class_field:
+            class_field_index = point_source.fields().lookupField(class_field)
+
+        field_name = self.parameterAsString(parameters, self.FIELD, context)
+
+        fields = poly_source.fields()
+        if fields.lookupField(field_name) < 0:
+            fields.append(QgsField(field_name, QVariant.LongLong))
+        field_index = fields.lookupField(field_name)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+        point_attribute_indices = []
+        if weight_field_index >= 0:
+            point_attribute_indices.append(weight_field_index)
+        if class_field_index >= 0:
+            point_attribute_indices.append(class_field_index)
+
+        features = poly_source.getFeatures()
+        total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0
+        for current, polygon_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
 
             count = 0
-            points = spatialIndex.intersects(geom.boundingBox())
-            if len(points) > 0:
-                request = QgsFeatureRequest().setFilterFids(points)
-                fit = pointLayer.getFeatures(request)
-                ftPoint = QgsFeature()
-                while fit.nextFeature(ftPoint):
-                    tmpGeom = ftPoint.geometry()
-                    if engine.contains(tmpGeom.geometry()):
-                        count += 1
+            output_feature = QgsFeature()
+            if polygon_feature.hasGeometry():
+                geom = polygon_feature.geometry()
+                engine = QgsGeometry.createGeometryEngine(geom.constGet())
+                engine.prepareGeometry()
 
-            outFeat.setGeometry(geom)
-            if idxCount == len(attrs):
-                attrs.append(count)
+                count = 0
+                classes = set()
+
+                request = QgsFeatureRequest().setFilterRect(geom.boundingBox()).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
+                request.setSubsetOfAttributes(point_attribute_indices)
+                for point_feature in point_source.getFeatures(request):
+                    if feedback.isCanceled():
+                        break
+
+                    if engine.contains(point_feature.geometry().constGet()):
+                        if weight_field_index >= 0:
+                            weight = point_feature[weight_field_index]
+                            try:
+                                count += float(weight)
+                            except:
+                                # Ignore fields with non-numeric values
+                                pass
+                        elif class_field_index >= 0:
+                            point_class = point_feature[class_field_index]
+                            if point_class not in classes:
+                                classes.add(point_class)
+                        else:
+                            count += 1
+
+                output_feature.setGeometry(geom)
+
+            attrs = polygon_feature.attributes()
+
+            if class_field_index >= 0:
+                score = len(classes)
             else:
-                attrs[idxCount] = count
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+                score = count
+            if field_index == len(attrs):
+                attrs.append(score)
+            else:
+                attrs[field_index] = score
+            output_feature.setAttributes(attrs)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

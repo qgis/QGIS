@@ -18,9 +18,8 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
 
-QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache* cachedVectorLayer )
-    : QgsAbstractCacheIndex()
-    , C( cachedVectorLayer )
+QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
+  : C( cachedVectorLayer )
 {
 
 }
@@ -34,7 +33,7 @@ void QgsCacheIndexFeatureId::flush()
 {
 }
 
-void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest& featureRequest, const QgsFeatureIds& fids )
+void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
   Q_UNUSED( featureRequest )
   Q_UNUSED( fids )
@@ -42,12 +41,35 @@ void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest& featureR
 
 bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest )
 {
-  if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid )
+  switch ( featureRequest.filterType() )
   {
-    if ( C->isFidCached( featureRequest.filterFid() ) )
+    case QgsFeatureRequest::FilterFid:
     {
-      featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
-      return true;
+      if ( C->isFidCached( featureRequest.filterFid() ) )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterFids:
+    {
+      if ( C->cachedFeatureIds().contains( featureRequest.filterFids() ) )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterNone:
+    case QgsFeatureRequest::FilterExpression:
+    {
+      if ( C->hasFullCache() )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
     }
   }
 

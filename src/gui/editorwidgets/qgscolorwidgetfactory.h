@@ -17,20 +17,31 @@
 #define QGSCOLORWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
-/** \class QgsColorWidgetFactory
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
+ * \class QgsColorWidgetFactory
  * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsColorWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsColorWidgetFactory( const QString& name );
+
+    /**
+     * Constructor for QgsColorWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
+    QgsColorWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 };
 
 #endif // QGSCOLORWIDGETFACTORY_H

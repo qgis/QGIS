@@ -18,10 +18,9 @@
 #include "qgsoracletablemodel.h"
 #include "qgsdataitem.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Owner" );
@@ -35,35 +34,31 @@ QgsOracleTableModel::QgsOracleTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsOracleTableModel::~QgsOracleTableModel()
-{
-}
-
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
 
   if ( layerProperty.isView && layerProperty.pkCols.isEmpty() )
   {
-    QgsDebugMsg( "View without pk skipped." );
+    QgsDebugMsg( QStringLiteral( "View without pk skipped." ) );
     return;
   }
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *ownerItem = 0;
+  QStandardItem *ownerItem = nullptr;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    QGis::WkbType wkbType = layerProperty.types[ i ];
+    QgsWkbTypes::Type wkbType = layerProperty.types[ i ];
     int srid = layerProperty.srids[ i ];
 
 
     QString tip;
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == QgsWkbTypes::Unknown )
     {
       tip = tr( "Specify a geometry type" );
     }
-    else if ( wkbType != QGis::WKBNoGeometry && srid == 0 )
+    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == 0 )
     {
       tip = tr( "Enter a SRID" );
     }
@@ -74,26 +69,26 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     }
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
-    typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
+    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
+    typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == QgsWkbTypes::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
-    sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == 0 );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
+    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == 0 );
     if ( sridItem->isEditable() )
     {
-      sridItem->setText( tr( "Enter..." ) );
+      sridItem->setText( tr( "Enter…" ) );
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
     QStandardItem *pkItem = new QStandardItem( "" );
     if ( layerProperty.isView )
     {
-      pkItem->setText( tr( "Select..." ) );
+      pkItem->setText( tr( "Select…" ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
     }
     else
@@ -107,9 +102,9 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
-    QStandardItem* sqlItem = new QStandardItem( layerProperty.sql );
+    QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
-    QList<QStandardItem*> childItemList;
+    QList<QStandardItem *> childItemList;
     childItemList << ownerNameItem;
     childItemList << tableItem;
     childItemList << typeItem;
@@ -140,12 +135,12 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
     if ( !ownerItem )
     {
-      QList<QStandardItem*> ownerItems = findItems( layerProperty.ownerName, Qt::MatchExactly, dbtmOwner );
+      QList<QStandardItem *> ownerItems = findItems( layerProperty.ownerName, Qt::MatchExactly, DbtmOwner );
 
       // there is already an item for this schema
       if ( ownerItems.size() > 0 )
       {
-        ownerItem = ownerItems.at( dbtmOwner );
+        ownerItem = ownerItems.at( DbtmOwner );
       }
       else
       {
@@ -170,9 +165,9 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 
   //find out schema name and table name
-  QModelIndex ownerSibling = index.sibling( index.row(), dbtmOwner );
-  QModelIndex tableSibling = index.sibling( index.row(), dbtmTable );
-  QModelIndex geomSibling = index.sibling( index.row(), dbtmGeomCol );
+  QModelIndex ownerSibling = index.sibling( index.row(), DbtmOwner );
+  QModelIndex tableSibling = index.sibling( index.row(), DbtmTable );
+  QModelIndex geomSibling = index.sibling( index.row(), DbtmGeomCol );
 
   if ( !ownerSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid() )
   {
@@ -183,30 +178,30 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> ownerItems = findItems( ownerName, Qt::MatchExactly, dbtmOwner );
+  QList<QStandardItem *> ownerItems = findItems( ownerName, Qt::MatchExactly, DbtmOwner );
   if ( ownerItems.size() < 1 )
   {
     return;
   }
 
-  QStandardItem* ownerItem = ownerItems.at( dbtmOwner );
+  QStandardItem *ownerItem = ownerItems.at( DbtmOwner );
 
   int n = ownerItem->rowCount();
   for ( int i = 0; i < n; i++ )
   {
-    QModelIndex currentChildIndex = indexFromItem( ownerItem->child( i, dbtmOwner ) );
+    QModelIndex currentChildIndex = indexFromItem( ownerItem->child( i, DbtmOwner ) );
     if ( !currentChildIndex.isValid() )
     {
       continue;
     }
 
-    QModelIndex currentTableIndex = currentChildIndex.sibling( i, dbtmTable );
+    QModelIndex currentTableIndex = currentChildIndex.sibling( i, DbtmTable );
     if ( !currentTableIndex.isValid() )
     {
       continue;
     }
 
-    QModelIndex currentGeomIndex = currentChildIndex.sibling( i, dbtmGeomCol );
+    QModelIndex currentGeomIndex = currentChildIndex.sibling( i, DbtmGeomCol );
     if ( !currentGeomIndex.isValid() )
     {
       continue;
@@ -214,7 +209,7 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
 
     if ( itemFromIndex( currentTableIndex )->text() == tableName && itemFromIndex( currentGeomIndex )->text() == geomName )
     {
-      QModelIndex sqlIndex = currentChildIndex.sibling( i, dbtmSql );
+      QModelIndex sqlIndex = currentChildIndex.sibling( i, DbtmSql );
       if ( sqlIndex.isValid() )
       {
         itemFromIndex( sqlIndex )->setText( sql );
@@ -224,31 +219,27 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 }
 
-QIcon QgsOracleTableModel::iconForWkbType( QGis::WkbType type )
+QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
-  switch ( type )
+  switch ( QgsWkbTypes::geometryType( type ) )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+
+    case QgsWkbTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+
+    case QgsWkbTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QGis::WKBNoGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QGis::WKBUnknown:
-      break;
+
+    case QgsWkbTypes::UnknownGeometry:
+      return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+
+    case QgsWkbTypes::NullGeometry:
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
+
   }
-  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+  return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
 }
 
 bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
@@ -256,31 +247,31 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
 
-  if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
+  if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QGis::WkbType wkbType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
 
     QString tip;
-    if ( wkbType == QGis::WKBUnknown )
+    if ( wkbType == QgsWkbTypes::Unknown )
     {
       tip = tr( "Specify a geometry type" );
     }
-    else if ( wkbType != QGis::WKBNoGeometry )
+    else if ( wkbType != QgsWkbTypes::NoGeometry )
     {
       bool ok;
-      int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
+      int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
       if ( !ok || srid == 0 )
         tip = tr( "Enter a SRID" );
     }
 
-    if ( tip.isEmpty() && idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toBool() )
+    if ( tip.isEmpty() && idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toBool() )
     {
-      if ( !idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 2 ).toBool() )
+      if ( !idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toBool() )
         tip = tr( "Select a primary key" );
     }
 
-    for ( int i = 0; i < dbtmColumns; i++ )
+    for ( int i = 0; i < DbtmColumns; i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
       if ( tip.isEmpty() )
@@ -291,7 +282,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
       else
       {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-        if ( i == dbtmOwner || i == dbtmTable || i == dbtmGeomCol )
+        if ( i == DbtmOwner || i == DbtmTable || i == DbtmGeomCol )
         {
           item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           item->setToolTip( tip );
@@ -303,23 +294,23 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   return true;
 }
 
-QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceURI &connInfo )
+QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo )
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsg( "invalid index" );
-    return QString::null;
+    QgsDebugMsg( QStringLiteral( "invalid index" ) );
+    return QString();
   }
 
-  QGis::WkbType wkbType = ( QGis::WkbType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( wkbType == QGis::WKBUnknown )
+  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( wkbType == QgsWkbTypes::Unknown )
   {
-    QgsDebugMsg( "unknown geometry type" );
+    QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
     // no geometry type selected
-    return QString::null;
+    return QString();
   }
 
-  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::DisplayRole ).toString();
   bool isView = pkItem->data( Qt::UserRole + 1 ).toBool();
   bool isSet  = pkItem->data( Qt::UserRole + 2 ).toBool();
@@ -327,38 +318,38 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   if ( isView && !isSet )
   {
     // no valid primary candidate selected
-    QgsDebugMsg( "no pk candidate selected" );
-    return QString::null;
+    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
+    return QString();
   }
 
-  QString ownerName = index.sibling( index.row(), dbtmOwner ).data( Qt::DisplayRole ).toString();
-  QString tableName = index.sibling( index.row(), dbtmTable ).data( Qt::DisplayRole ).toString();
+  QString ownerName = index.sibling( index.row(), DbtmOwner ).data( Qt::DisplayRole ).toString();
+  QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
 
   QString geomColumnName;
   QString srid;
-  if ( wkbType != QGis::WKBNoGeometry )
+  if ( wkbType != QgsWkbTypes::NoGeometry )
   {
-    geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
+    geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
-    srid = index.sibling( index.row(), dbtmSrid ).data( Qt::DisplayRole ).toString();
+    srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
     srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugMsg( "srid not numeric" );
-      return QString::null;
+      QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
+      return QString();
     }
   }
 
-  bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
-  QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
+  bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;
+  QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
-  QgsDataSourceURI uri( connInfo );
+  QgsDataSourceUri uri( connInfo );
   uri.setDataSource( ownerName, tableName, geomColumnName, sql, pkColumnName );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri() ) );
+  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri() ) );
   return uri.uri();
 }

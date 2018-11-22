@@ -16,64 +16,127 @@
 #ifndef QGSCOMPOUNDCOLORWIDGET_H
 #define QGSCOMPOUNDCOLORWIDGET_H
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
+#include "qgis.h"
+#include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCompoundColorWidget
  * A custom QGIS widget for selecting a color, including options for selecting colors via
  * hue wheel, color swatches, and a color sampler.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
-class GUI_EXPORT QgsCompoundColorWidget : public QWidget, private Ui::QgsCompoundColorWidgetBase
+class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase
 {
 
     Q_OBJECT
 
   public:
 
-    /** Constructor for QgsCompoundColorWidget
-     * @param parent parent widget
-     * @param color initial color for dialog
+    //! Widget layout
+    enum Layout
+    {
+      LayoutDefault = 0, //!< Use the default (rectangular) layout
+      LayoutVertical, //!< Use a narrower, vertically stacked layout
+    };
+
+    /**
+     * Constructor for QgsCompoundColorWidget
+     * \param parent parent widget
+     * \param color initial color for dialog
+     * \param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor& color = QColor() );
+    QgsCompoundColorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
-    ~QgsCompoundColorWidget();
+    ~QgsCompoundColorWidget() override;
 
-    /** Returns the current color for the dialog
-     * @returns dialog color
+    /**
+     * Returns the current color for the dialog
+     * \returns dialog color
      */
     QColor color() const;
 
-    /** Sets whether alpha modification (transparency) is permitted
+    /**
+     * Sets whether opacity modification (transparency) is permitted
      * for the color dialog. Defaults to true.
-     * @param allowAlpha set to false to disable alpha modification
+     * \param allowOpacity set to false to disable opacity modification
+     * \since QGIS 3.0
      */
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( bool allowOpacity );
+
+    /**
+     * Sets whether the widget's color has been "discarded" and the selected color should not
+     * be stored in the recent color list.
+     * \param discarded set to true to avoid adding color to recent color list on widget destruction.
+     * \since QGIS 3.0
+     */
+    void setDiscarded( bool discarded ) { mDiscarded = discarded; }
+
+    /**
+     * Triggers a user prompt for importing a new color scheme from an existing GPL file.
+     *
+     * The \a parent argument must be set to a valid parent widget for the dialog prompts.
+     *
+     *
+     * \see createNewUserPalette()
+     * \see removeUserPalette()
+     * \since QGIS 3.2
+     */
+    static QgsUserColorScheme *importUserPaletteFromFile( QWidget *parent );
+
+    /**
+     * Triggers a user prompt for creating a new user color scheme.
+     *
+     * The \a parent argument must be set to a valid parent widget for the dialog prompts.
+     *
+     *
+     * \see importUserPaletteFromFile()
+     * \see removeUserPalette()
+     * \since QGIS 3.2
+     */
+    static QgsUserColorScheme *createNewUserPalette( QWidget *parent );
+
+    /**
+     * Triggers a user prompt for removing an existing user color \a scheme.
+     *
+     * The \a parent argument must be set to a valid parent widget for the dialog prompts.
+     *
+     *
+     * \see importUserPaletteFromFile()
+     * \see createNewUserPalette()
+     * \since QGIS 3.2
+     */
+    static bool removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent );
 
   signals:
 
-    /** Emitted when the dialog's color changes
-     * @param color current color
+    /**
+     * Emitted when the dialog's color changes
+     * \param color current color
      */
     void currentColorChanged( const QColor &color );
 
   public slots:
 
-    /** Sets the current color for the dialog
-     * @param color desired color
+    /**
+     * Sets the current color for the dialog
+     * \param color desired color
      */
     void setColor( const QColor &color );
 
-    /** Sets the color to show in an optional "previous color" section
-     * @param color previous color
+    /**
+     * Sets the color to show in an optional "previous color" section
+     * \param color previous color
      */
-    void setPreviousColor( const QColor& color );
+    void setPreviousColor( const QColor &color );
 
   protected:
 
-    void mousePressEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
     void mouseMoveEvent( QMouseEvent *e ) override;
 
@@ -83,17 +146,15 @@ class GUI_EXPORT QgsCompoundColorWidget : public QWidget, private Ui::QgsCompoun
 
   private slots:
 
-    void on_mHueRadio_toggled( bool checked );
-    void on_mSaturationRadio_toggled( bool checked );
-    void on_mValueRadio_toggled( bool checked );
-    void on_mRedRadio_toggled( bool checked );
-    void on_mGreenRadio_toggled( bool checked );
-    void on_mBlueRadio_toggled( bool checked );
+    void mHueRadio_toggled( bool checked );
+    void mSaturationRadio_toggled( bool checked );
+    void mValueRadio_toggled( bool checked );
+    void mRedRadio_toggled( bool checked );
+    void mGreenRadio_toggled( bool checked );
+    void mBlueRadio_toggled( bool checked );
 
-    void on_mAddColorToSchemeButton_clicked();
+    void mAddColorToSchemeButton_clicked();
 
-    void exportColors();
-    void importColors();
     void importPalette();
     void removePalette();
     void newPalette();
@@ -101,49 +162,66 @@ class GUI_EXPORT QgsCompoundColorWidget : public QWidget, private Ui::QgsCompoun
     void schemeIndexChanged( int index );
     void listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-    void on_mAddCustomColorButton_clicked();
+    void mAddCustomColorButton_clicked();
 
-    void on_mSampleButton_clicked();
-    void on_mTabWidget_currentChanged( int index );
+    void mSampleButton_clicked();
+    void mTabWidget_currentChanged( int index );
+
+  private slots:
+
+    void mActionShowInButtons_toggled( bool state );
 
   private:
 
-    bool mAllowAlpha;
+    static QScreen *findScreenAt( QPoint pos );
 
-    int mLastCustomColorIndex;
+    bool mAllowAlpha = true;
 
-    bool mPickingColor;
+    int mLastCustomColorIndex = 0;
 
-    /** Saves all widget settings
+    bool mPickingColor = false;
+
+    bool mDiscarded = false;
+
+    /**
+     * Saves all widget settings
      */
     void saveSettings();
 
-    /** Ends a color picking operation
-     * @param eventPos global position of pixel to sample color from
-     * @param takeSample set to true to actually sample the color, false to just cancel
+    /**
+     * Ends a color picking operation
+     * \param eventPos global position of pixel to sample color from
+     * \param takeSample set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
-    void stopPicking( QPoint eventPos, const bool takeSample = true );
+    void stopPicking( QPoint eventPos, bool takeSample = true );
 
-    /** Returns the average color from the pixels in an image
-     * @param image image to sample
-     * @returns average color from image
+    /**
+     * Returns the average color from the pixels in an image
+     * \param image image to sample
+     * \returns average color from image
      */
     QColor averageColor( const QImage &image ) const;
 
-    /** Samples a color from the desktop
-     * @param point position of color to sample
-     * @returns average color from sampled position
+    /**
+     * Samples a color from the desktop
+     * \param point position of color to sample
+     * \returns average color from sampled position
      */
     QColor sampleColor( QPoint point ) const;
 
-    /** Repopulates the scheme combo box with current color schemes
+    /**
+     * Repopulates the scheme combo box with current color schemes
      */
     void refreshSchemeComboBox();
 
-    /** Returns the path to the user's palette folder
+    /**
+     * Returns the path to the user's palette folder
      */
-    QString gplFilePath();
+    static QString gplFilePath();
+
+    //! Updates the state of actions for the current selected scheme
+    void updateActionsForCurrentScheme();
 };
 
 #endif // QGSCOMPOUNDCOLORWIDGET_H

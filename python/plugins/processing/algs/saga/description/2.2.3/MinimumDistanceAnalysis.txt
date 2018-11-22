@@ -1,4 +1,0 @@
-Minimum Distance Analysis
-statistics_points
-ParameterVector|POINTS|Points|0|False
-OutputTable|TABLE|Minimum Distance Analysis

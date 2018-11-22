@@ -17,22 +17,23 @@
 
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
-QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields& fields )
-    : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive )
+QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields )
+  : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
 }
 
-QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntBinaryOperator:
+    case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator*>( node )->op() )
+      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
       {
-        case QgsExpression::boPow:
-        case QgsExpression::boRegexp:
+        case QgsExpressionNodeBinaryOperator::boPow:
+        case QgsExpressionNodeBinaryOperator::boRegexp:
           return Fail; //not supported by SQLite
 
         default:
@@ -48,19 +49,19 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   QString id( identifier );
-  id.replace( '\"', "\"\"" );
+  id.replace( '\"', QLatin1String( "\"\"" ) );
   return id.prepend( '\"' ).append( '\"' );
 }
 
-QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 
   if ( value.isNull() )
-    return "NULL";
+    return QStringLiteral( "NULL" );
 
   switch ( value.type() )
   {
@@ -80,8 +81,39 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
       // """A string constant is formed by enclosing the string in single quotes (').
       // A single quote within the string can be encoded by putting two single quotes
       // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
-      return v.replace( '\'', "''" ).prepend( '\'' ).append( '\'' );
+      return v.replace( '\'', QLatin1String( "''" ) ).prepend( '\'' ).append( '\'' );
   }
+}
+
+QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
+{
+  static const QMap<QString, QString> FN_NAMES
+  {
+    { "abs", "abs" },
+    { "char", "char" },
+    { "coalesce", "coalesce" },
+    { "lower", "lower" },
+    { "round", "round" },
+    { "trim", "trim" },
+    { "upper", "upper" },
+  };
+
+  return FN_NAMES.value( fnName, QString() );
+}
+
+QString QgsSQLiteExpressionCompiler::castToReal( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
+}
+
+QString QgsSQLiteExpressionCompiler::castToInt( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
+}
+
+QString QgsSQLiteExpressionCompiler::castToText( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS TEXT)" ).arg( value );
 }
 
 ///@endcond

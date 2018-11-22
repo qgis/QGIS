@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
+    <width>470</width>
     <height>627</height>
    </rect>
   </property>
@@ -29,14 +29,14 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>New Spatialite Layer</string>
+   <string>New SpatiaLite Layer</string>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -51,166 +51,128 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>432</width>
-        <height>576</height>
+        <width>450</width>
+        <height>560</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QGroupBox" name="buttonGroup1">
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mFileFormatLabel">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Database</string>
+         </property>
+         <property name="buddy">
+          <cstring>mDatabaseComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="mDatabaseComboBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
-          <string>Type</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="mPointRadioButton">
-            <property name="text">
-             <string>Point</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QRadioButton" name="mLineRadioButton">
-            <property name="text">
-             <string>Line</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QRadioButton" name="mPolygonRadioButton">
-            <property name="text">
-             <string>Polygon</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="mMultipointRadioButton">
-            <property name="text">
-             <string>MultiPoint</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QRadioButton" name="mMultilineRadioButton">
-            <property name="text">
-             <string>Multiline</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QRadioButton" name="mMultipolygonRadioButton">
-            <property name="text">
-             <string>Multipolygon</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="mFileFormatLabel">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Database</string>
-           </property>
-           <property name="buddy">
-            <cstring>mDatabaseComboBox</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="mDatabaseComboBox">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="toolButtonNewDatabase">
-           <property name="toolTip">
-            <string>Create a new Spatialite database</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="0" column="2">
+        <widget class="QToolButton" name="toolButtonNewDatabase">
+         <property name="toolTip">
+          <string>Create a new SpatiaLite database</string>
+         </property>
+         <property name="text">
+          <string>…</string>
+         </property>
+        </widget>
        </item>
-       <item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label1">
+         <property name="text">
+          <string>Layer name</string>
+         </property>
+         <property name="buddy">
+          <cstring>leLayerName</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="leLayerName">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Name for the new layer</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Geometry type</string>
+         </property>
+         <property name="buddy">
+          <cstring>mGeometryTypeBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="2">
+        <widget class="QComboBox" name="mGeometryTypeBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Geometry type&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QCheckBox" name="mGeometryWithZCheckBox">
            <property name="text">
-            <string>Layer name</string>
-           </property>
-           <property name="buddy">
-            <cstring>leLayerName</cstring>
+            <string>Include Z dimension</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="leLayerName">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Name for the new layer</string>
+          <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+           <property name="text">
+            <string>Include M values</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Geometry column</string>
-           </property>
-           <property name="buddy">
-            <cstring>leGeometryColumn</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="leGeometryColumn">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Name for the new layer</string>
-           </property>
-           <property name="text">
-            <string>geometry</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
+       <item row="4" column="1" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLineEdit" name="leSRID">
@@ -236,33 +198,24 @@
            <property name="whatsThis">
             <string>Specify the coordinate reference system of the layer's geometry.</string>
            </property>
-           <property name="text">
-            <string>Specify CRS</string>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/mActionSetProjection.svg</normaloff>:/images/themes/default/mActionSetProjection.svg</iconset>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkBoxPrimaryKey">
-         <property name="toolTip">
-          <string>Add an integer id field as the primary key for the new layer</string>
-         </property>
-         <property name="text">
-          <string>Create an autoincrementing primary key</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox">
+       <item row="5" column="0" colspan="3">
+        <widget class="QGroupBox" name="groupBox1">
          <property name="title">
-          <string>New field</string>
+          <string>New Field</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="0">
            <widget class="QLabel" name="textLabel1">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -291,7 +244,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="textLabel2">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -329,11 +282,11 @@
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Add to fields list</string>
+             <string>Add to Fields List</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
             </property>
             <property name="toolButtonStyle">
              <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -343,10 +296,10 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="6" column="0" colspan="3">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Fields list</string>
+          <string>Fields List</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="0" colspan="3">
@@ -403,14 +356,62 @@
              <string>Delete selected field</string>
             </property>
             <property name="text">
-             <string>Remove field</string>
+             <string>Remove Field</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
             </property>
             <property name="toolButtonStyle">
              <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="3">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
+         <property name="title">
+          <string>Advanced Options</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Geometry column</string>
+            </property>
+            <property name="buddy">
+             <cstring>leGeometryColumn</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="leGeometryColumn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Name of the geometry column</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBoxPrimaryKey">
+            <property name="toolTip">
+             <string>Add an integer id field as the primary key for the new layer</string>
+            </property>
+            <property name="text">
+             <string>Create an autoincrementing primary key</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -434,28 +435,41 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QWidget</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mPointRadioButton</tabstop>
-  <tabstop>mLineRadioButton</tabstop>
-  <tabstop>mPolygonRadioButton</tabstop>
-  <tabstop>mMultipointRadioButton</tabstop>
-  <tabstop>mMultilineRadioButton</tabstop>
-  <tabstop>mMultipolygonRadioButton</tabstop>
   <tabstop>mDatabaseComboBox</tabstop>
   <tabstop>toolButtonNewDatabase</tabstop>
   <tabstop>leLayerName</tabstop>
-  <tabstop>leGeometryColumn</tabstop>
+  <tabstop>mGeometryTypeBox</tabstop>
+  <tabstop>mGeometryWithZCheckBox</tabstop>
+  <tabstop>mGeometryWithMCheckBox</tabstop>
   <tabstop>leSRID</tabstop>
   <tabstop>pbnFindSRID</tabstop>
-  <tabstop>checkBoxPrimaryKey</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
+  <tabstop>leGeometryColumn</tabstop>
+  <tabstop>checkBoxPrimaryKey</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

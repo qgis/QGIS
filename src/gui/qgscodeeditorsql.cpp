@@ -19,11 +19,11 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
-#include <Qsci/qscilexersql.h>
+#include <QLabel>
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
-    : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent )
 {
   if ( !parent )
   {
@@ -35,31 +35,15 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   setSciLexerSQL();
 }
 
-QgsCodeEditorSQL::~QgsCodeEditorSQL()
-{
-}
-
-/** Internal use.
-
-   setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
-   a lexer, since its caseSensitive() method is actually used, and defaults
-   to true.
-   @note not available in Python bindings
-*/
-class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
-{
-  public:
-    //! constructor
-    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
-
-    bool caseSensitive() const override { return false; }
-};
 
 void QgsCodeEditorSQL::setSciLexerSQL()
 {
   QFont font = getMonospaceFont();
-
-  QsciLexerSQL* sqlLexer = new QgsCaseInsensitiveLexerSQL( this );
+#ifdef Q_OS_MAC
+  // The font size gotten from getMonospaceFont() is too small on Mac
+  font.setPointSize( QLabel().font().pointSize() );
+#endif
+  QsciLexerSQL *sqlLexer = new QgsCaseInsensitiveLexerSQL( this );
   sqlLexer->setDefaultFont( font );
   sqlLexer->setFont( font, -1 );
   font.setBold( true );

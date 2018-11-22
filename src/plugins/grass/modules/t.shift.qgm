@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label="Shifts temporally the maps of a space time dataset" module="t.shift">
 	<option key="input"/>
-	<option key="temporaltype"/>
+	<option key="type"/>
 	<option key="granularity"/>
 </qgisgrassmodule>

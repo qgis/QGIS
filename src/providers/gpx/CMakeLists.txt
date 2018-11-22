@@ -16,15 +16,19 @@ SET (GPX_MOC_HDRS
 # Build
 
 INCLUDE_DIRECTORIES(
-  ../../core
-  ../../core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES (SYSTEM
-  ${GEOS_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
 )
 
-QT4_WRAP_CPP(GPX_MOC_SRCS ${GPX_MOC_HDRS})
+QT5_WRAP_CPP(GPX_MOC_SRCS ${GPX_MOC_HDRS})
 
 ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS} ${GPX_MOC_SRCS})
 

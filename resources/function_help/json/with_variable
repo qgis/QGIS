@@ -1,0 +1,11 @@
+{
+  "name": "with_variable",
+  "type": "function",
+  "description": "This function sets a variable for any expression code that will be provided as 3rd argument. This is only useful for complicated expressions, where the same calculated value needs to be used in different places.",
+  "arguments": [
+                 {"arg":"name","description":"the name of the variable to set"},
+                 {"arg":"value","description":"the value to set"},
+                 {"arg":"expression","description":"the expression for which the variable will be available"}
+               ],
+  "examples": [ { "expression":"with_variable('my_sum', 1 + 2 + 3, @my_sum * 2 + @my_sum * 5)", "returns":"42"}]
+}

@@ -37,28 +37,28 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Roof Color</string>
+         <string>Roof color</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QgsColorButtonV2" name="mRoofColorButton">
-        <property name="text">
-         <string>...</string>
+       <widget class="QgsColorButton" name="mRoofColorButton">
+        <property name="text" stdset="0">
+         <string>…</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Wall Color</string>
+         <string>Wall color</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsColorButtonV2" name="mWallColorButton">
+       <widget class="QgsColorButton" name="mWallColorButton">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -89,9 +89,9 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QgsColorButtonV2" name="mShadowColorButton">
+          <widget class="QgsColorButton" name="mShadowColorButton">
            <property name="text">
-            <string>...</string>
+            <string>…</string>
            </property>
           </widget>
          </item>
@@ -115,9 +115,15 @@
     <widget class="QgsFieldExpressionWidget" name="mHeightWidget" native="true"/>
    </item>
    <item row="1" column="1">
-    <widget class="QSpinBox" name="mAngleWidget">
+    <widget class="QgsSpinBox" name="mAngleWidget">
+     <property name="wrapping">
+      <bool>true</bool>
+     </property>
      <property name="suffix">
       <string>°</string>
+     </property>
+     <property name="minimum">
+      <number>-360</number>
      </property>
      <property name="maximum">
       <number>359</number>
@@ -138,15 +144,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

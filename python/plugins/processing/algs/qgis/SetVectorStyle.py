@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SelectByLocation.py
+    SetVectorStyle.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -25,41 +25,48 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.core.parameters import ParameterFile
-from processing.tools import dataobjects
-from qgis.utils import iface
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class SetVectorStyle(GeoAlgorithm):
+class SetVectorStyle(QgisAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        #self.allowOnlyOpenedLayers = True
-        self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterFile(self.STYLE,
-                                        self.tr('Style file'), False, False, 'qml'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled'), True))
+    def group(self):
+        return self.tr('Vector general')
 
-    def processAlgorithm(self, progress):
-        filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
+    def groupId(self):
+        return 'vectorgeneral'
 
-        style = self.getParameterValue(self.STYLE)
-        layer = dataobjects.getObjectFromUri(filename, False)
-        if layer is None:
-            dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
-        else:
-            layer.loadNamedStyle(style)
-            iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerSymbology(layer)
+    def __init__(self):
+        super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Vector layer')))
+        self.addParameter(QgsProcessingParameterFile(self.STYLE,
+                                                     self.tr('Style file'), extension='qml'))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
+                                                      self.tr('Styled')))
+
+    def name(self):
+        return 'setstyleforvectorlayer'
+
+    def displayName(self):
+        return self.tr('Set style for vector layer')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        style = self.parameterAsFile(parameters, self.STYLE, context)
+        layer.loadNamedStyle(style)
+        layer.triggerRepaint()
+        return {self.INPUT: layer}

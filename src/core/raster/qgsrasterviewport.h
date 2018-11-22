@@ -17,10 +17,12 @@
 #ifndef QGSRASTERVIEWPORT_H
 #define QGSRASTERVIEWPORT_H
 
-#include <qgspoint.h>
-#include "qgscoordinatetransform.h"
+#include "qgspointxy.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  This class provides details of the viewable area that a raster will
  *  be rendered into.
  *
@@ -28,29 +30,40 @@
  *  by rasterlayer draw functions at the point of drawing to the screen.
  */
 
-struct QgsRasterViewPort
+struct CORE_EXPORT QgsRasterViewPort
 {
-  /** \brief Coordinate (in output device coordinate system) of top left corner
-   *   of the part of the raster that is to be rendered.*/
-  QgsPoint mTopLeftPoint;
-  /** \brief Coordinate (in output device coordinate system) of bottom right corner
-   *   of the part of the raster that is to be rendered.*/
-  QgsPoint mBottomRightPoint;
+#ifdef SIP_RUN
+  % TypeHeaderCode
+#include <qgsrasterviewport.h>
+  % End
+#endif
 
-  /** \brief Width, number of columns to be rendered */
+  /**
+   * \brief Coordinate (in output device coordinate system) of top left corner
+   *   of the part of the raster that is to be rendered.*/
+  QgsPointXY mTopLeftPoint;
+
+  /**
+   * \brief Coordinate (in output device coordinate system) of bottom right corner
+   *   of the part of the raster that is to be rendered.*/
+  QgsPointXY mBottomRightPoint;
+
+  //! \brief Width, number of columns to be rendered
   int mWidth;
-  /** \brief Distance in map units from bottom edge to top edge for the part of
+
+  /**
+   * \brief Distance in map units from bottom edge to top edge for the part of
    *  the raster that is to be rendered.*/
-  /** \brief Height, number of rows to be rendered */
+  //! \brief Height, number of rows to be rendered
   int mHeight;
 
-  /** \brief Intersection of current map extent and layer extent */
+  //! \brief Intersection of current map extent and layer extent
   QgsRectangle mDrawnExtent;
 
-  /** \brief Source coordinate system */
+  //! \brief Source coordinate system
   QgsCoordinateReferenceSystem mSrcCRS;
 
-  /** \brief Target coordinate system */
+  //! \brief Target coordinate system
   QgsCoordinateReferenceSystem mDestCRS;
 
   int mSrcDatumTransform;

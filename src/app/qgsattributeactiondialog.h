@@ -24,10 +24,13 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include "ui_qgsattributeactiondialogbase.h"
-#include "qgsactionmanager.h"
-#include "qgsfield.h"
 #include "qgsattributetableconfig.h"
+#include "qgsaction.h"
 #include <QMap>
+#include "qgis_app.h"
+
+class QgsActionManager;
+class QgsVectorLayer;
 
 class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
@@ -40,16 +43,16 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
       ShortTitle,
       ActionText,
       Capture,
-      ShowInAttributeTable
+      ActionScopes,
+      NotificationMessage,
+      EnabledOnlyWhenEditable
     };
 
   public:
-    QgsAttributeActionDialog( const QgsActionManager& actions,
-                              QWidget* parent = nullptr );
+    QgsAttributeActionDialog( const QgsActionManager &actions,
+                              QWidget *parent = nullptr );
 
-    ~QgsAttributeActionDialog() {}
-
-    void init( const QgsActionManager& action , const QgsAttributeTableConfig& attributeTableConfig );
+    void init( const QgsActionManager &action, const QgsAttributeTableConfig &attributeTableConfig );
 
     QList<QgsAction> actions() const;
 
@@ -63,12 +66,12 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     void remove();
     void insert();
     void addDefaultActions();
-    void itemDoubleClicked( QTableWidgetItem* item );
+    void itemDoubleClicked( QTableWidgetItem *item );
     void updateButtons();
 
   private:
-    void insertRow( int row, const QgsAction& action );
-    void insertRow( int row, QgsAction::ActionType type, const QString& name, const QString& actionText, const QString& iconPath, bool capture );
+    void insertRow( int row, const QgsAction &action );
+    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &actionText, const QString &iconPath, bool capture, const QString &shortTitle, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable = false );
     void swapRows( int row1, int row2 );
     QgsAction rowToAction( int row ) const;
 
@@ -78,7 +81,7 @@ class APP_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
 
     QString uniqueName( QString name );
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif

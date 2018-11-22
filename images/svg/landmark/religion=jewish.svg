@@ -1,22 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="religion=jewish.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=jewish.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
-	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
-		</inkscape:perspective>
-</defs>
-<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer4" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280" inkscape:document-units="px" inkscape:grid-bbox="true">
-	</sodipodi:namedview>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M355.362,414.504l148.542,0.068l-74.291-128.807l74.29-128.806
-	l-148.545,0.062l-74.096-128.47l-74.285,128.53l-148.701,0.062l74.331,128.616L58.276,414.368l148.697,0.068l74.289,128.544
-	L355.362,414.504z M447.266,381.838l-73.043-0.033l36.512-63.306L447.266,381.838z M336.473,381.787l-110.619-0.05l-55.468-95.978
-	l55.471-95.977l110.613-0.045l55.385,96.027L336.473,381.787z M447.267,189.692l-36.532,63.34l-36.515-63.31L447.267,189.692z
-	 M281.233,93.968l36.376,63.069l-72.845,0.029L281.233,93.968z M114.944,189.829l73.124-0.03l-36.572,63.277L114.944,189.829z
-	 M114.944,381.687l36.552-63.243l36.569,63.276L114.944,381.687z M244.761,414.453l72.853,0.034l-36.38,63.075L244.761,414.453z"/>
+<svg enable-background="new 0 0 579.997 579.997" height="579.997" viewBox="0 0 579.997 579.997" width="579.997" xmlns="http://www.w3.org/2000/svg">
+<path d="m355.362 414.504l148.542.068-74.291-128.807 74.29-128.806-148.545.062-74.096-128.47-74.285 128.53-148.701.062 74.331 128.616-74.331 128.609 148.697.068 74.289 128.544zm91.904-32.666l-73.043-.033 36.512-63.306zm-110.793-.051l-110.619-.05-55.468-95.978 55.471-95.977 110.613-.045 55.385 96.027zm110.794-192.095l-36.532 63.34-36.515-63.31zm-166.034-95.724l36.376 63.069-72.845.029zm-166.289 95.861l73.124-.03-36.572 63.277zm0 191.858l36.552-63.243 36.569 63.276zm129.817 32.766l72.853.034-36.38 63.075z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

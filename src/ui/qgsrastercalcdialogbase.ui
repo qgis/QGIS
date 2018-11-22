@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Raster calculator</string>
+   <string>Raster Calculator</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -25,7 +25,7 @@
       </property>
       <widget class="QGroupBox" name="mRasterBandsGroupBox">
        <property name="title">
-        <string>Raster bands</string>
+        <string>Raster Bands</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -35,7 +35,7 @@
       </widget>
       <widget class="QGroupBox" name="mResultGroupBox">
        <property name="title">
-        <string>Result layer</string>
+        <string>Result Layer</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,1,0">
         <item row="3" column="0" colspan="4">
@@ -84,7 +84,7 @@
           <item row="1" column="3">
            <widget class="QLabel" name="mXMaxLabel">
             <property name="text">
-             <string>XMax</string>
+             <string>X Max</string>
             </property>
            </widget>
           </item>
@@ -163,8 +163,8 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QLineEdit" name="mOutputLayerLineEdit"/>
+        <item row="0" column="1" colspan="3">
+         <widget class="QgsFileWidget" name="mOutputLayer"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="mOutputFormatLabel">
@@ -176,7 +176,7 @@
         <item row="2" column="0">
          <widget class="QPushButton" name="mCurrentLayerExtentButton">
           <property name="text">
-           <string>Current layer extent</string>
+           <string>Selected Layer Extent</string>
           </property>
          </widget>
         </item>
@@ -184,28 +184,6 @@
          <widget class="QLabel" name="mOutputLayerLabel">
           <property name="text">
            <string>Output layer</string>
-          </property>
-          <property name="buddy">
-           <cstring>mOutputLayerPushButton</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <widget class="QPushButton" name="mOutputLayerPushButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>...</string>
           </property>
          </widget>
         </item>
@@ -469,7 +447,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Raster calculator expression</string>
+          <string>Raster Calculator Expression</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
@@ -504,7 +482,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -526,11 +504,15 @@
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mRasterBandsListWidget</tabstop>
-  <tabstop>mOutputLayerLineEdit</tabstop>
-  <tabstop>mOutputLayerPushButton</tabstop>
+  <tabstop>mOutputLayer</tabstop>
   <tabstop>mOutputFormatComboBox</tabstop>
   <tabstop>mCurrentLayerExtentButton</tabstop>
   <tabstop>mXMinSpinBox</tabstop>
@@ -541,6 +523,7 @@
   <tabstop>mNRowsSpinBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddResultToProjectCheckBox</tabstop>
+  <tabstop>mOperatorsGroupBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
   <tabstop>mSqrtButton</tabstop>

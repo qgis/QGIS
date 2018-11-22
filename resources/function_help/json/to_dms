@@ -1,0 +1,15 @@
+{
+  "name": "to_dms",
+  "type": "function",
+  "description": "Convert a coordinate to degree, minute, second.",
+  "arguments": [
+    {"arg":"coordinate","description":"A latitude or longitude value."},
+    {"arg":"axis","description":"The axis of the coordinate. Either 'x' or 'y'."},
+    {"arg":"precision", "description":"Number of decimals."},
+    {"arg":"formatting", "optional": true, "default":"", "description":"Designates the formatting type. Acceptable values are NULL, 'aligned' or 'suffix'."}
+  ],
+    "examples": [
+    { "expression":"to_dms(6.3545681, 'x', 3)", "returns":"6°21′16.445″"},
+    { "expression":"to_dms(6.3545681, 'y', 4, 'suffix')", "returns":"6°21′16.4452″N"}
+  ]
+}

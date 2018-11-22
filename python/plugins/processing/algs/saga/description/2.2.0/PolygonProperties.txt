@@ -1,8 +1,0 @@
-Polygon Properties
-shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterBoolean|BPARTS        |Number of Parts|True
-ParameterBoolean|BPOINTS       |Number of Vertices|True
-ParameterBoolean|BLENGTH       |Perimeter|True
-ParameterBoolean|BAREA         |Area|True
-OutputVector|OUTPUT|Polygons with Property Attributes

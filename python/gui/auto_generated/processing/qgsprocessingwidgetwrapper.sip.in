@@ -1,0 +1,430 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingwidgetwrapper.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingContextGenerator
+{
+%Docstring
+
+An interface for objects which can create Processing contexts.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    virtual QgsProcessingContext *processingContext() = 0;
+%Docstring
+This method needs to be reimplemented in all classes which implement this interface
+and return a Processing context.
+
+Note that ownership of the context is not transferred - it is intended that subclasses
+return a pointer to a context which they have already created and own.
+%End
+
+    virtual ~QgsProcessingContextGenerator();
+};
+
+class QgsProcessingParameterWidgetContext
+{
+%Docstring
+Contains settings which reflect the context in which a Processing parameter widget is shown, e.g., the
+parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+to fine-tune its behavior.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    QgsProcessingParameterWidgetContext();
+%Docstring
+Constructor for QgsProcessingParameterWidgetContext.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets the map ``canvas`` associated with the widget. This allows the widget to retrieve the current
+map scale and other properties from the canvas.
+
+.. seealso:: :py:func:`mapCanvas`
+%End
+
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas associated with the widget.
+
+.. seealso:: :py:func:`setMapCanvas`
+%End
+
+    QgsProcessingModelAlgorithm *model() const;
+%Docstring
+Returns the model which the parameter widget is associated with.
+
+.. seealso:: :py:func:`setModel`
+
+.. seealso:: :py:func:`modelChildAlgorithmId`
+%End
+
+    void setModel( QgsProcessingModelAlgorithm *model );
+%Docstring
+Sets the ``model`` which the parameter widget is associated with.
+
+.. seealso:: :py:func:`model`
+
+.. seealso:: :py:func:`setModelChildAlgorithmId`
+%End
+
+    QString modelChildAlgorithmId() const;
+%Docstring
+Returns the child algorithm ID within the model which the parameter widget is associated with.
+
+.. seealso:: :py:func:`setModelChildAlgorithmId`
+
+.. seealso:: :py:func:`model`
+%End
+
+    void setModelChildAlgorithmId( const QString &id );
+%Docstring
+Sets the child algorithm ``id`` within the model which the parameter widget is associated with.
+
+.. seealso:: :py:func:`modelChildAlgorithmId`
+
+.. seealso:: :py:func:`setModel`
+%End
+
+};
+
+class QgsAbstractProcessingParameterWidgetWrapper : QObject, QgsExpressionContextGenerator
+{
+%Docstring
+
+A widget wrapper for Processing parameter value widgets.
+
+Widget wrappers are used to create widgets for individual Processing parameters, and
+handle retrieving and setting the current value for those parameters.
+
+Widget wrappers can be created for different dialog types, allowing different
+appearance and behavior of widgets depending on whether they are being created for
+use in a standard algorithm dialog, a batch processing dialog, or a modeler dialog.
+
+Individual widget wrappers are not usually created directly, instead they are
+constructed through the central registry, via calls to
+QgsGui.processingGuiRegistry()->createParameterWidgetWrapper().
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
+``parameter`` definition and dialog ``type``.
+%End
+
+    QgsProcessingGui::WidgetType type() const;
+%Docstring
+Returns the dialog type for which widgets and labels will be created by this wrapper.
+%End
+
+    virtual void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the Processing parameter widget is shown, e.g., the
+parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+to fine-tune its behavior.
+
+Subclasses should take care to call the base class method when reimplementing this method.
+
+.. seealso:: :py:func:`widgetContext`
+%End
+
+    const QgsProcessingParameterWidgetContext &widgetContext() const;
+%Docstring
+Returns the context in which the Processing parameter widget is shown, e.g., the
+parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+to fine-tune its behavior.
+
+.. seealso:: :py:func:`setWidgetContext`
+%End
+
+    QWidget *createWrappedWidget( QgsProcessingContext &context ) /Factory/;
+%Docstring
+Creates and return a new wrapped widget which allows customization of the parameter's value.
+
+The caller takes ownership of the returned widget. The wrapped widget can be retrieved at a later
+stage by calling wrappedWidget().
+
+The supplied ``context`` is used while initializing the widget to the parameter's default value.
+
+.. seealso:: :py:func:`createWrappedLabel`
+%End
+
+    QLabel *createWrappedLabel() /Factory/;
+%Docstring
+Creates and returns a new label to accompany widgets created by the wrapper.
+
+The caller takes ownership of the returned label. Some parameter type and dialog type
+combinations will return None for this method. If None is returned, then no
+label should be shown for the parameter's widget (i.e. the label is embedded inside the
+widget itself).
+
+The wrapped label can be retrieved at a later stage by calling wrappedLabel().
+
+.. seealso:: :py:func:`createWrappedWidget`
+%End
+
+    QWidget *wrappedWidget();
+%Docstring
+Returns the current wrapped widget, if any.
+
+.. seealso:: :py:func:`createWrappedWidget`
+%End
+
+    QLabel *wrappedLabel();
+%Docstring
+Returns the current wrapped label, if any.
+
+.. seealso:: :py:func:`createWrappedLabel`
+%End
+
+    const QgsProcessingParameterDefinition *parameterDefinition() const;
+%Docstring
+Returns the parameter definition associated with this wrapper.
+%End
+
+%Property( name = param, get = parameterDefinition )
+
+    void setParameterValue( const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Sets the current ``value`` for the parameter.
+
+The ``context`` argument is used to specify the wider Processing context which the
+current value is associated with.
+
+.. seealso:: :py:func:`parameterValue`
+%End
+
+    QVariant parameterValue() const;
+%Docstring
+Returns the current value of the parameter.
+
+.. seealso:: :py:func:`setParameterValue`
+%End
+
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to retrieve
+a Processing context for the wrapper when required.
+%End
+
+    virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
+%Docstring
+Called after all wrappers have been created within a particular dialog or context,
+allowing the wrapper to connect to the wrappers of other, related parameters.
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+  signals:
+
+
+    void widgetValueHasChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+%Docstring
+Emitted whenever the parameter value (as defined by the wrapped widget) is changed.
+%End
+
+  protected:
+
+    virtual QWidget *createWidget() = 0 /Factory/;
+%Docstring
+Creates a new widget which allows customization of the parameter's value.
+
+The caller takes ownership of the returned widget.
+
+.. seealso:: :py:func:`createLabel`
+%End
+
+    virtual QLabel *createLabel() /Factory/;
+%Docstring
+Creates a new label to accompany widgets created by the wrapper.
+
+The caller takes ownership of the returned label. Some parameter type and dialog type
+combinations will return None for this method. If None is returned, then no
+label should be shown for the parameter's widget (i.e. the label is embedded inside the
+widget itself).
+
+.. seealso:: :py:func:`createWidget`
+%End
+
+    virtual void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) = 0;
+%Docstring
+Sets the current ``value`` for the parameter to show in the widget.
+
+The ``context`` argument is used to specify the wider Processing context which the
+current value is associated with.
+
+.. seealso:: :py:func:`widgetValue`
+%End
+
+    virtual QVariant widgetValue() const = 0;
+%Docstring
+Returns the current value of the parameter.
+
+.. seealso:: :py:func:`setWidgetValue`
+%End
+
+  protected:
+
+
+};
+
+
+class QgsProcessingParameterWidgetFactoryInterface
+{
+%Docstring
+
+An interface for Processing widget wrapper factories.
+
+Widget wrapper factories allow creation of QgsAbstractProcessingParameterWidgetWrapper objects.
+They are centrally managed by :py:class:`QgsProcessingGuiRegistry`. Usually, individual factories
+are not directly utilized, rather the QgsGui.processingGuiRegistry()->createParameterWidgetWrapper()
+method is used to create widget wrappers.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    virtual ~QgsProcessingParameterWidgetFactoryInterface();
+
+    virtual QString parameterType() const = 0;
+%Docstring
+Returns the type string for the parameter type the factory is associated with.
+%End
+
+    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter,
+        QgsProcessingGui::WidgetType type ) = 0 /Factory/;
+%Docstring
+Creates a new widget wrapper for the specified ``parameter`` definition.
+
+The ``type`` argument indicates the dialog type to create a wrapper for.
+
+.. seealso:: :py:func:`createModelerWidgetWrapper`
+%End
+
+    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model,
+        const QString &childId,
+        const QgsProcessingParameterDefinition *parameter,
+        QgsProcessingContext &context );
+%Docstring
+Creates a new modeler parameter widget for the given ``parameter``. This widget allows
+configuration of the parameter's value when used inside a Processing ``model``.
+
+The ID of the child algorithm within the model must be specified via the ``childId``
+argument. This value corresponds to the :py:func:`QgsProcessingModelChildAlgorithm.childId()`
+string, which uniquely identifies which child algorithm the parameter is associated
+with inside the given ``model``.
+
+A Processing ``context`` must also be specified, which allows the widget
+to resolve parameter values which are context dependent. The context must
+last for the lifetime of the widget.
+
+.. seealso:: :py:func:`createWidgetWrapper`
+%End
+
+  protected:
+
+    virtual QStringList compatibleParameterTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing parameter types for inputs
+for this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list corresponds to the
+various available values for :py:func:`QgsProcessingParameterDefinition.type()`
+
+Subclasses should return a list of all :py:func:`QgsProcessingParameterDefinition.type()`
+values which can be used as input values for the parameter.
+
+.. seealso:: :py:func:`compatibleOutputTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+%End
+
+    virtual QStringList compatibleOutputTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing output types for inputs
+for this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list corresponds to the
+various available values for :py:func:`QgsProcessingOutputDefinition.type()`
+
+Subclasses should return a list of all :py:func:`QgsProcessingOutputDefinition.type()`
+values which can be used as values for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+%End
+
+    virtual QList< int > compatibleDataTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing data types for inputs
+for this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list corresponds
+to the various available values from QgsProcessing.SourceType.
+
+Subclasses should return a list of all QgsProcessing.SourceType
+values which can be used as values for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleOutputTypes`
+%End
+
+    virtual QString modelerExpressionFormatString() const;
+%Docstring
+Returns the expected expression format string for expression results for the parameter
+within model child algorithms.
+
+This is shown in modeler widget wrappers when using the "pre-calculated" expression mode,
+and should give helpful text to users to indicate the expected results from the expression.
+
+This is purely a text format and no expression validation is made against it.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingwidgetwrapper.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

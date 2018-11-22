@@ -28,11 +28,11 @@ version_available   available version
 zip_repository      the remote repository id
 download_url        url for downloading the plugin
 filename            the zip file name to be unzipped after downloaded
-downloads           number of dowloads
+downloads           number of downloads
 average_vote        average vote
 rating_votes        number of votes
 
-* status is only obligatory for Pythin plugins and it must match all the tags:
+* status is only obligatory for Python plugins and it must match all the tags:
 available, installed. version_available, version_installed.
 orphan = installed and not available to download;
 new = not installed and seen for the first time;

@@ -30,7 +30,12 @@
 #ifndef PAL_LAYER_H_
 #define PAL_LAYER_H_
 
-#include "pal.h"
+#define SIP_NO_FILE
+
+
+#include "qgis_core.h"
+#include "pal.h" // for LineArrangementFlags enum
+#include "rtree.hpp"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
@@ -41,14 +46,17 @@ class QgsLabelFeature;
 namespace pal
 {
 
+  /// @cond PRIVATE
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
+  /// @endcond
 
   class FeaturePart;
   class Pal;
   class LabelInfo;
 
   /**
-   * \brief A set of features which influence the labelling process
+   * \ingroup core
+   * \brief A set of features which influence the labeling process
    * \class pal::Layer
    * \note not available in Python bindings
    */
@@ -74,190 +82,203 @@ namespace pal
 
       bool displayAll() const { return mDisplayAll; }
 
-      /** Returns the number of features in layer.
+      /**
+       * Returns the number of features in layer.
        */
       int featureCount() { return mHashtable.size(); }
 
-      /** Returns pointer to the associated provider */
-      QgsAbstractLabelProvider* provider() const { return mProvider; }
+      //! Returns pointer to the associated provider
+      QgsAbstractLabelProvider *provider() const { return mProvider; }
 
-      /** Returns the layer's name.
+      /**
+       * Returns the layer's name.
        */
       QString name() const { return mName; }
 
-      /** Returns the layer's arrangement policy.
-       * @see setArrangement
+      /**
+       * Returns the layer's arrangement policy.
+       * \see setArrangement
        */
       QgsPalLayerSettings::Placement arrangement() const { return mArrangement; }
 
-      /** Sets the layer's arrangement policy.
-       * @param arrangement arrangement policy
-       * @see arrangement
+      /**
+       * Returns true if the layer has curved labels
+       */
+      bool isCurved() const { return mArrangement == QgsPalLayerSettings::Curved || mArrangement == QgsPalLayerSettings::PerimeterCurved; }
+
+      /**
+       * Sets the layer's arrangement policy.
+       * \param arrangement arrangement policy
+       * \see arrangement
        */
       void setArrangement( QgsPalLayerSettings::Placement arrangement ) { mArrangement = arrangement; }
 
-      /** Returns the layer's arrangement flags.
-       * @see setArrangementFlags
+      /**
+       * Returns the layer's arrangement flags.
+       * \see setArrangementFlags
        */
       LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
 
-      /** Sets the layer's arrangement flags.
-       * @param flags arrangement flags
-       * @see arrangementFlags
+      /**
+       * Sets the layer's arrangement flags.
+       * \param flags arrangement flags
+       * \see arrangementFlags
        */
-      void setArrangementFlags( const LineArrangementFlags& flags ) { mArrangementFlags = flags; }
+      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
       /**
        * \brief Sets whether the layer is currently active.
        *
        * Active means "is currently displayed or used as obstacles". When a layer is
        * deactivated then feature of this layer will not be used for either
-       * labelling or as obstacles.
+       * labeling or as obstacles.
        *
-       * @param active set to true to make the layer active, or false to deactivate the layer
-       * @see active
+       * \param active set to true to make the layer active, or false to deactivate the layer
+       * \see active
        */
       void setActive( bool active ) { mActive = active; }
 
-      /** Returns whether the layer is currently active.
-       * @see setActive
+      /**
+       * Returns whether the layer is currently active.
+       * \see setActive
        */
       bool active() const { return mActive; }
 
-      /** Sets whether the layer will be labeled.
-       * @note Layers are labelled if and only if labelLayer and active are true
-       * @param toLabel set to false disable labeling this layer
-       * @see labelLayer
-       * @see setActive
+      /**
+       * Sets whether the layer will be labeled.
+       * \note Layers are labelled if and only if labelLayer and active are true
+       * \param toLabel set to false disable labeling this layer
+       * \see labelLayer
+       * \see setActive
        */
       void setLabelLayer( bool toLabel ) { mLabelLayer = toLabel; }
 
-      /** Returns whether the layer will be labeled or not.
-       * @see setLabelLayer
+      /**
+       * Returns whether the layer will be labeled or not.
+       * \see setLabelLayer
        */
       bool labelLayer() const { return mLabelLayer; }
 
-      /** Returns the obstacle type, which controls how features within the layer
+      /**
+       * Returns the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
-       * @see setObstacleType
+       * \see setObstacleType
        */
       QgsPalLayerSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
-      /** Sets the obstacle type, which controls how features within the layer
+      /**
+       * Sets the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
-       * @param obstacleType new obstacle type
-       * @see obstacleType
+       * \param obstacleType new obstacle type
+       * \see obstacleType
        */
       void setObstacleType( QgsPalLayerSettings::ObstacleType obstacleType ) { mObstacleType = obstacleType; }
 
-      /** Sets the layer's priority.
-       * @param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
+      /**
+       * Sets the layer's priority.
+       * \param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
        * 1 to lowest priority.
-       * @see priority
+       * \see priority
        */
       void setPriority( double priority );
 
-      /** Returns the layer's priority, between 0 and 1. 0 corresponds to highest priority,
+      /**
+       * Returns the layer's priority, between 0 and 1. 0 corresponds to highest priority,
        * 1 to lowest priority.
-       * @see setPriority
+       * \see setPriority
        */
       double priority() const { return mDefaultPriority; }
 
-      /** Sets the layer's labeling mode.
-       * @param mode label mode
-       * @see labelMode
+      /**
+       * Sets the layer's labeling mode.
+       * \param mode label mode
+       * \see labelMode
        */
       void setLabelMode( LabelMode mode ) { mMode = mode; }
 
-      /** Returns the layer's labeling mode.
-       * @see setLabelMode
+      /**
+       * Returns the layer's labeling mode.
+       * \see setLabelMode
        */
       LabelMode labelMode() const { return mMode; }
 
-      /** Sets whether connected lines should be merged before labeling
-       * @param merge set to true to merge connected lines
-       * @see mergeConnectedLines
+      /**
+       * Sets whether connected lines should be merged before labeling
+       * \param merge set to true to merge connected lines
+       * \see mergeConnectedLines
        */
       void setMergeConnectedLines( bool merge ) { mMergeLines = merge; }
 
-      /** Returns whether connected lines will be merged before labeling.
-       * @see setMergeConnectedLines
+      /**
+       * Returns whether connected lines will be merged before labeling.
+       * \see setMergeConnectedLines
        */
       bool mergeConnectedLines() const { return mMergeLines; }
 
-      /** Sets how upside down labels will be handled within the layer.
-       * @param ud upside down label handling mode
-       * @see upsideDownLabels
+      /**
+       * Sets how upside down labels will be handled within the layer.
+       * \param ud upside down label handling mode
+       * \see upsidedownLabels
        */
       void setUpsidedownLabels( UpsideDownLabels ud ) { mUpsidedownLabels = ud; }
 
-      /** Returns how upside down labels are handled within the layer.
-       * @see setUpsidedownLabels
+      /**
+       * Returns how upside down labels are handled within the layer.
+       * \see setUpsidedownLabels
        */
       UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
 
-      /** Sets whether labels placed at the centroid of features within the layer
+      /**
+       * Sets whether labels placed at the centroid of features within the layer
        * are forced to be placed inside the feature's geometry.
-       * @param forceInside set to true to force centroid labels to be within the
+       * \param forceInside set to true to force centroid labels to be within the
        * feature. If set to false then the centroid may fall outside the feature.
-       * @see centroidInside
+       * \see centroidInside
        */
       void setCentroidInside( bool forceInside ) { mCentroidInside = forceInside; }
 
-      /** Returns whether labels placed at the centroid of features within the layer
+      /**
+       * Returns whether labels placed at the centroid of features within the layer
        * are forced to be placed inside the feature's geometry.
-       * @see setCentroidInside
+       * \see setCentroidInside
        */
       bool centroidInside() const { return mCentroidInside; }
 
-      /** Sets whether labels which do not fit completely within a polygon feature
-       * are discarded.
-       * @param fitInPolygon set to true to discard labels which do not fit within
-       * polygon features. Set to false to allow labels which partially fall outside
-       * the polygon.
-       * @see fitInPolygonOnly
-       */
-      void setFitInPolygonOnly( bool fitInPolygon ) { mFitInPolygon = fitInPolygon; }
-
-      /** Returns whether labels which do not fit completely within a polygon feature
-       * are discarded.
-       * @see setFitInPolygonOnly
-       */
-      bool fitInPolygonOnly() const { return mFitInPolygon; }
-
-      /** Register a feature in the layer.
+      /**
+       * Register a feature in the layer.
        *
        * Does not take ownership of the label feature (it is owned by its provider).
        *
-       * @throws PalException::FeatureExists
+       * \throws PalException::FeatureExists
        *
-       * @return true on success (i.e. valid geometry)
+       * \returns true on success (i.e. valid geometry)
        */
-      bool registerFeature( QgsLabelFeature* label );
+      bool registerFeature( QgsLabelFeature *label );
 
-      /** Join connected features with the same label text */
+      //! Join connected features with the same label text
       void joinConnectedFeatures();
 
-      /** Returns the connected feature ID for a label feature ID, which is unique for all features
+      /**
+       * Returns the connected feature ID for a label feature ID, which is unique for all features
        * which have been joined as a result of joinConnectedFeatures()
-       * @returns connected feature ID, or -1 if feature was not joined
+       * \returns connected feature ID, or -1 if feature was not joined
        */
       int connectedFeatureId( QgsFeatureId featureId ) const;
 
-      /** Chop layer features at the repeat distance **/
+      //! Chop layer features at the repeat distance *
       void chopFeaturesAtRepeatDistance();
 
     protected:
-      QgsAbstractLabelProvider* mProvider; // not owned
+      QgsAbstractLabelProvider *mProvider; // not owned
       QString mName;
 
-      /** List of feature parts */
-      QLinkedList<FeaturePart*> mFeatureParts;
+      //! List of feature parts
+      QLinkedList<FeaturePart *> mFeatureParts;
 
-      /** List of obstacle parts */
-      QList<FeaturePart*> mObstacleParts;
+      //! List of obstacle parts
+      QList<FeaturePart *> mObstacleParts;
 
-      Pal *pal;
+      Pal *pal = nullptr;
 
       double mDefaultPriority;
 
@@ -266,9 +287,8 @@ namespace pal
       bool mLabelLayer;
       bool mDisplayAll;
       bool mCentroidInside;
-      bool mFitInPolygon;
 
-      /** Optional flags used for some placement methods */
+      //! Optional flags used for some placement methods
       QgsPalLayerSettings::Placement mArrangement;
       LineArrangementFlags mArrangementFlags;
       LabelMode mMode;
@@ -277,14 +297,14 @@ namespace pal
       UpsideDownLabels mUpsidedownLabels;
 
       // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *mFeatureIndex;
+      RTree<FeaturePart *, double, 2, double, 8, 4> *mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
-      QHash< QgsFeatureId, QgsLabelFeature*> mHashtable;
+      QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
 
       //obstacle r-tree
-      RTree<FeaturePart*, double, 2, double, 8, 4> *mObstacleIndex;
+      RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
 
-      QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
+      QHash< QString, QLinkedList<FeaturePart *>* > mConnectedHashtable;
       QStringList mConnectedTexts;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
@@ -293,23 +313,23 @@ namespace pal
       /**
        * \brief Create a new layer
        *
-       * @param provider Associated provider
-       * @param name Name of the layer (for stats, debugging - does not need to be unique)
-       * @param arrangement Arrangement mode : how to place candidates
-       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param active is the layer is active (currently displayed)
-       * @param toLabel the layer will be labeled whether toLablel is true
-       * @param pal pointer to the pal object
-       * @param displayAll if true, all features will be labelled even though overlaps occur
+       * \param provider Associated provider
+       * \param name Name of the layer (for stats, debugging - does not need to be unique)
+       * \param arrangement Arrangement mode : how to place candidates
+       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param active is the layer is active (currently displayed)
+       * \param toLabel the layer will be labeled whether toLablel is true
+       * \param pal pointer to the pal object
+       * \param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
-      /** Add newly created feature part into r tree and to the list */
-      void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
+      //! Add newly created feature part into r tree and to the list
+      void addFeaturePart( FeaturePart *fpart, const QString &labelText = QString() );
 
-      /** Add newly created obstacle part into r tree and to the list */
-      void addObstaclePart( FeaturePart* fpart );
+      //! Add newly created obstacle part into r tree and to the list
+      void addObstaclePart( FeaturePart *fpart );
 
   };
 

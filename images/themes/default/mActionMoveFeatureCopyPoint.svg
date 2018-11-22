@@ -1,0 +1,15 @@
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<linearGradient gradientUnits="userSpaceOnUse" x1="50.5" x2="50.5" y1="16.9999985" y2="22.9999985">
+<stop offset="0" stop-color="#555753"/>
+<stop offset="1" stop-color="#555753" stop-opacity="0"/>
+</linearGradient>
+<g transform="translate(0 -8)">
+<rect fill="#72b072" height="6.6666665" rx="4.1666665" stroke="#383838" stroke-linecap="round" stroke-opacity=".93333334" stroke-width="1.33333325" width="6.6666665" x="1.6666666" y="15.666667"/>
+<rect fill="#a6cca6" height="6.6666665" rx="4.1666665" stroke="#5f615f" stroke-linecap="round" stroke-opacity=".95686275" stroke-width="1.33333325" width="6.6666665" x="10.412337" y="9.6995983"/>
+<g transform="translate(-27.5 6.0000005)">
+<rect fill="#3c5a6e" height="11" rx="2.0114901" width="11" x="40.5" y="14.999999"/>
+<path d="m41.500001 20.999999l8.999999-.009599c0 0 0 0 0-2 0-2.990401-1-2.990401-4.5-2.990401-3.5 0-4.5 0-4.5 3 0 2 0 2 .000001 2z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+<path d="m45.5 15.999999v3.000001h-4v3h4v2.999999l5-4z" fill="#fff" fill-rule="evenodd"/>
+</g>
+</g>
+</svg>

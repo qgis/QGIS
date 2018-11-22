@@ -74,28 +74,28 @@ public:
     /**
      * Constructor
      */
-    explicit KPtyProcess(QObject *parent = 0);
+    explicit KPtyProcess(QObject *parent = nullptr);
 
     /**
      * Construct a process using an open pty master.
      *
-     * @param ptyMasterFd an open pty master file descriptor.
+     * \param ptyMasterFd an open pty master file descriptor.
      *   The process does not take ownership of the descriptor;
      *   it will not be automatically closed at any point.
      */
-    KPtyProcess(int ptyMasterFd, QObject *parent = 0);
+    KPtyProcess(int ptyMasterFd, QObject *parent = nullptr);
 
     /**
      * Destructor
      */
-    virtual ~KPtyProcess();
+    ~KPtyProcess() override;
 
     /**
      * Set to which channels the PTY should be assigned.
      *
      * This function must be called before starting the process.
      *
-     * @param channels the output channel handling mode
+     * \param channels the output channel handling mode
      */
     void setPtyChannels(PtyChannels channels);
 
@@ -109,7 +109,7 @@ public:
     /**
      * Query to which channels the PTY is assigned.
      *
-     * @return the output channel handling mode
+     * \returns the output channel handling mode
      */
     PtyChannels ptyChannels() const;
 
@@ -122,21 +122,21 @@ public:
      *
      * This function must be called before starting the process.
      *
-     * @param value whether to register in utmp.
+     * \param value whether to register in utmp.
      */
     void setUseUtmp(bool value);
 
     /**
-     * Get whether to register the process as a TTY login in utmp.
+     * Gets whether to register the process as a TTY login in utmp.
      *
-     * @return whether to register in utmp
+     * \returns whether to register in utmp
      */
     bool isUseUtmp() const;
 
     /**
-     * Get the PTY device of this process.
+     * Gets the PTY device of this process.
      *
-     * @return the PTY device
+     * \returns the PTY device
      */
     KPtyDevice *pty() const;
 
@@ -144,7 +144,7 @@ protected:
     /**
      * @reimp
      */
-    virtual void setupChildProcess();
+    void setupChildProcess() override;
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _k_onStateChanged(QProcess::ProcessState))

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsGPSPluginGuiBase</class>
- <widget class="QDialog" name="QgsGPSPluginGuiBase">
+ <class>QgsGpsPluginGuiBase</class>
+ <widget class="QDialog" name="QgsGpsPluginGuiBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>647</width>
-    <height>277</height>
+    <width>1217</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -30,24 +29,14 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+         <item row="0" column="1">
+          <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="lblGPXFile">
            <property name="text">
             <string>File</string>
-           </property>
-           <property name="buddy">
-            <cstring>pbnGPXSelectFile</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QgsFileDropEdit" name="leGPXFile"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="pbnGPXSelectFile">
-           <property name="text">
-            <string>Browse...</string>
            </property>
           </widget>
          </item>
@@ -159,7 +148,7 @@
        <item row="0" column="2">
         <widget class="QPushButton" name="pbnIMPInput">
          <property name="text">
-          <string>Browse...</string>
+          <string>Browse…</string>
          </property>
         </widget>
        </item>
@@ -212,7 +201,7 @@
        <item row="4" column="2">
         <widget class="QPushButton" name="pbnIMPOutput">
          <property name="text">
-          <string>Save As...</string>
+          <string>Save As…</string>
          </property>
         </widget>
        </item>
@@ -272,7 +261,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Edit devices...</string>
+          <string>Edit devices…</string>
          </property>
         </widget>
        </item>
@@ -373,7 +362,7 @@
        <item row="4" column="2">
         <widget class="QPushButton" name="pbnDLOutput">
          <property name="text">
-          <string>Save As...</string>
+          <string>Save As…</string>
          </property>
         </widget>
        </item>
@@ -553,7 +542,7 @@
        <item row="0" column="2">
         <widget class="QPushButton" name="pbnCONVInput">
          <property name="text">
-          <string>Browse...</string>
+          <string>Browse…</string>
          </property>
         </widget>
        </item>
@@ -632,7 +621,7 @@
        <item row="2" column="2">
         <widget class="QPushButton" name="pbnCONVOutput">
          <property name="text">
-          <string>Save As...</string>
+          <string>Save As…</string>
          </property>
         </widget>
        </item>
@@ -655,15 +644,14 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsFileDropEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfiledropedit.h</header>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>leGPXFile</tabstop>
-  <tabstop>pbnGPXSelectFile</tabstop>
   <tabstop>cbGPXWaypoints</tabstop>
   <tabstop>cbGPXRoutes</tabstop>
   <tabstop>cbGPXTracks</tabstop>
@@ -693,8 +681,6 @@
   <tabstop>leCONVLayer</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources>
-  <include location="qgsgps_plugin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

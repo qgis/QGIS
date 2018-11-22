@@ -1,5 +1,5 @@
 result
-*.tar.gz
+*.tar.bz2
 local.cfg
 version.cfg
 qgis.spec

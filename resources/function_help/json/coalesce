@@ -5,7 +5,7 @@
   "variableLenArguments": true,
   "arguments": [ {"arg":"expression1", "syntaxOnly": true},
                  {"arg":"expression2", "syntaxOnly": true},
-                 {"arg":"expression", "descOnly": true, "description":"any valid expression or value, irregardless of type."}],
+                 {"arg":"expression", "descOnly": true, "description":"any valid expression or value, regardless of type."}],
   "examples": [ { "expression":"coalesce(NULL, 2)", "returns":"2"},
                 { "expression":"coalesce(NULL, 2, 3)", "returns":"2"},
                 { "expression":"coalesce(7, NULL, 3*2)", "returns":"7"},

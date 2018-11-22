@@ -1,7 +1,0 @@
-Spatial Query Plugin for QGIS
-
-   Luiz Motta and Diego Moreira 2009
-
-Plugin for make spatial query with two layers
-where features of target layer are selected by topological operations
-with reference layer

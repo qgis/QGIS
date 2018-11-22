@@ -18,13 +18,9 @@
 
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDesignerCustomWidgetCollectionInterface>
-#include <QDesignerExportWidget>
-#else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#endif
+#include "qgis_customwidgets.h"
 
 
 class CUSTOMWIDGETS_EXPORT QgsExtentGroupBoxPlugin : public QObject, public QDesignerCustomWidgetInterface
@@ -33,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsExtentGroupBoxPlugin : public QObject, public QDes
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsExtentGroupBoxPlugin( QObject *parent = 0 );
+    explicit QgsExtentGroupBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

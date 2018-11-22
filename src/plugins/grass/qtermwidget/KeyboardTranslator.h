@@ -147,10 +147,10 @@ public:
          * TODO: The numbers used to replace '*' characters are taken from the Konsole/KDE 3 code.
          * Document them.
          *
-         * @param expandWildCards Specifies whether wild cards (occurrences of the '*' character) in
+         * \param expandWildCards Specifies whether wild cards (occurrences of the '*' character) in
          * the entry should be replaced with a number to indicate the modifier keys being pressed.
          *
-         * @param modifiers The keyboard modifiers being pressed.
+         * \param modifiers The keyboard modifiers being pressed.
          */
         QByteArray text(bool expandWildCards = false,
                         Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
@@ -162,10 +162,10 @@ public:
          * Returns the character sequence associated with this entry,
          * with any non-printable characters replaced with escape sequences.
          *
-         * eg. \\E for Escape, \\t for tab, \\n for new line.
+         * e.g., \\E for Escape, \\t for tab, \\n for new line.
          *
-         * @param expandWildCards See text()
-         * @param modifiers See text()
+         * \param expandWildCards See text()
+         * \param modifiers See text()
          */
         QByteArray escapedText(bool expandWildCards = false,
                                Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
@@ -227,8 +227,8 @@ public:
          * Returns this entry's result ( ie. its command or character sequence )
          * as a string.
          *
-         * @param expandWildCards See text()
-         * @param modifiers See text()
+         * \param expandWildCards See text()
+         * \param modifiers See text()
          */
         QString resultToString(bool expandWildCards = false,
                                Qt::KeyboardModifiers modifiers = Qt::NoModifier) const;
@@ -282,9 +282,9 @@ public:
      * Returns the matching entry if found or a null Entry otherwise ( ie.
      * entry.isNull() will return true )
      *
-     * @param keyCode A key code from the Qt::Key enum
-     * @param modifiers A combination of modifiers
-     * @param state Optional flags which specify the current state of the terminal
+     * \param keyCode A key code from the Qt::Key enum
+     * \param modifiers A combination of modifiers
+     * \param state Optional flags which specify the current state of the terminal
      */
     Entry findEntry(int keyCode ,
                     Qt::KeyboardModifiers modifiers ,
@@ -428,7 +428,7 @@ public:
 
     /**
      * Writes the header for the keyboard translator.
-     * @param description Description of the keyboard translator.
+     * \param description Description of the keyboard translator.
      */
     void writeHeader( const QString& description );
     /** Writes a translator entry. */
@@ -508,7 +508,7 @@ private:
                                                      // instance
     bool _haveLoadedAll;
 
-    static KeyboardTranslatorManager * theKeyboardTranslatorManager;
+    static KeyboardTranslatorManager * sKeyboardTranslatorManager;
 };
 
 inline int KeyboardTranslator::Entry::keyCode() const { return _keyCode; }

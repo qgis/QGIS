@@ -22,7 +22,8 @@
 #include <QTimer>
 #include <QMetaType>
 
-QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocalSocket() )
+QgsQtLocationConnection::QgsQtLocationConnection()
+  : QgsGpsConnection( new QLocalSocket() )
 {
   //needed to fix https://sourceforge.net/p/necessitas/tickets/146/
   qRegisterMetaType< QList<QGeoSatelliteInfo> >( "QList<QGeoSatelliteInfo>" );
@@ -34,14 +35,8 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
   QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
 }
 
-QgsQtLocationConnection::~QgsQtLocationConnection()
-{
-  //connection will be closed by base class
-  QgsDebugMsg( "entered." );
-}
-
 //Needed to make connection detectable (half HACK)
-//this signals that the device has started the GPS sucessfully,
+//this signals that the device has started the GPS successfully,
 //not that it has a fix yet.
 void QgsQtLocationConnection::broadcastConnectionAvailable()
 {
@@ -93,13 +88,13 @@ void QgsQtLocationConnection::parseData()
       //mLastGPSInformation.status;   //< Status (A = active or V = void)
 
       emit stateChanged( mLastGPSInformation );
-      QgsDebugMsg( "Valid QGeoPositionInfo, positionUpdated" );
+      QgsDebugMsg( QStringLiteral( "Valid QGeoPositionInfo, positionUpdated" ) );
     }
   }
 }
 
 void QgsQtLocationConnection::satellitesInViewUpdated(
-  const QList<QGeoSatelliteInfo>& satellites )
+  const QList<QGeoSatelliteInfo> &satellites )
 {
   // The number of satellites in view is updated
   mLastGPSInformation.satellitesInView.clear();
@@ -119,11 +114,11 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
   }
   mLastGPSInformation.satInfoComplete = true;  //to be used to determine when to graph signal and satellite position
   emit stateChanged( mLastGPSInformation );
-  QgsDebugMsg( "satellitesInViewUpdated" );
+  QgsDebugMsg( QStringLiteral( "satellitesInViewUpdated" ) );
 }
 
 void QgsQtLocationConnection::satellitesInUseUpdated(
-  const QList<QGeoSatelliteInfo>& satellites )
+  const QList<QGeoSatelliteInfo> &satellites )
 {
   // The number of satellites in use is updated
   mLastGPSInformation.satellitesUsed = QString::number( satellites.count() ).toInt();
@@ -156,12 +151,12 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
   }
   mLastGPSInformation.satInfoComplete = true;  //to be used to determine when to graph signal and satellite position
   emit stateChanged( mLastGPSInformation );
-  QgsDebugMsg( "satellitesInUseUpdated" );
+  QgsDebugMsg( QStringLiteral( "satellitesInUseUpdated" ) );
 }
 
 void QgsQtLocationConnection::startGPS()
 {
-  QgsDebugMsg( "Starting GPS QtLocation connection" );
+  QgsDebugMsg( QStringLiteral( "Starting GPS QtLocation connection" ) );
   // Obtain the location data source if it is not obtained already
   if ( !locationDataSource )
   {
@@ -172,17 +167,17 @@ void QgsQtLocationConnection::startGPS()
       locationDataSource->setUpdateInterval( 1000 );
       // Whenever the location data source signals that the current
       // position is updated, the positionUpdated function is called.
-      QObject::connect( locationDataSource,
-                        SIGNAL( positionUpdated( QGeoPositionInfo ) ),
+      QObject::connect( locationDataSource.data(),
+                        &QGeoPositionInfoSource::positionUpdated,
                         this,
-                        SLOT( positionUpdated( QGeoPositionInfo ) ) );
+                        &QgsQtLocationConnection::positionUpdated );
       // Start listening for position updates
       locationDataSource->startUpdates();
     }
     else
     {
       // Not able to obtain the location data source
-      QgsDebugMsg( "No QtLocation Position Source" );
+      QgsDebugMsg( QStringLiteral( "No QtLocation Position Source" ) );
     }
   }
   else
@@ -194,33 +189,29 @@ void QgsQtLocationConnection::startGPS()
 
 void QgsQtLocationConnection::startSatelliteMonitor()
 {
-  QgsDebugMsg( "Starting GPS QtLocation satellite monitor" );
+  QgsDebugMsg( QStringLiteral( "Starting GPS QtLocation satellite monitor" ) );
 
   if ( !satelliteInfoSource )
   {
     satelliteInfoSource = QGeoSatelliteInfoSource::createDefaultSource( this );
     if ( satelliteInfoSource )
     {
-      QgsDebugMsg( "satelliteMonitor started" );
+      QgsDebugMsg( QStringLiteral( "satelliteMonitor started" ) );
       // Whenever the satellite info source signals that the number of
       // satellites in use is updated, the satellitesInUseUpdated function
       // is called
-      QObject::connect( satelliteInfoSource,
-                        SIGNAL( satellitesInUseUpdated(
-                                  const QList<QGeoSatelliteInfo>& ) ),
+      QObject::connect( satelliteInfoSource.data(),
+                        &QGeoSatelliteInfoSource::satellitesInUseUpdated,
                         this,
-                        SLOT( satellitesInUseUpdated(
-                                const QList<QGeoSatelliteInfo>& ) ) );
+                        &QgsQtLocationConnection::satellitesInUseUpdated );
 
       // Whenever the satellite info source signals that the number of
       // satellites in view is updated, the satellitesInViewUpdated function
       // is called
-      QObject::connect( satelliteInfoSource,
-                        SIGNAL( satellitesInViewUpdated(
-                                  const QList<QGeoSatelliteInfo>& ) ),
+      QObject::connect( satelliteInfoSource.data(),
+                        &QGeoSatelliteInfoSource::satellitesInViewUpdated,
                         this,
-                        SLOT( satellitesInViewUpdated(
-                                const QList<QGeoSatelliteInfo>& ) ) );
+                        &QgsQtLocationConnection::satellitesInViewUpdated );
 
       // Start listening for satellite updates
       satelliteInfoSource->startUpdates();
@@ -228,7 +219,7 @@ void QgsQtLocationConnection::startSatelliteMonitor()
     else
     {
       // Not able to obtain the Satellite data source
-      QgsDebugMsg( "No QtLocation Satellite Source" );
+      QgsDebugMsg( QStringLiteral( "No QtLocation Satellite Source" ) );
     }
   }
   else

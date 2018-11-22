@@ -18,6 +18,8 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageviewer.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -31,8 +33,8 @@
 #include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent )
-    , mCurrentItem( nullptr )
+  : QFrame( parent )
+
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -42,7 +44,9 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setFrameShadow( QFrame::Plain );
 
   mLayout = new QGridLayout( this );
-  mLayout->setContentsMargins( 9, 1, 9, 1 );
+  const int xMargin = std::max( 9.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.45 );
+  const int yMargin = std::max( 1.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.05 );
+  mLayout->setContentsMargins( xMargin, yMargin, xMargin, yMargin );
   setLayout( mLayout );
 
   mCountProgress = new QProgressBar( this );
@@ -51,9 +55,11 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
                               " image: url(:/images/themes/default/%1) }"
                               "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
-  mCountProgress->setObjectName( "mCountdown" );
-  mCountProgress->setFixedSize( 25, 14 );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+  mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
+  const int barWidth = std::max( 25.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.25 );
+  const int barHeight = std::max( 14.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.7 );
+  mCountProgress->setFixedSize( barWidth, barHeight );
   mCountProgress->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
   mCountProgress->setTextVisible( false );
   mCountProgress->setRange( 0, 5 );
@@ -61,61 +67,59 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->addWidget( mCountProgress, 0, 0, 1, 1 );
 
   mItemCount = new QLabel( this );
-  mItemCount->setObjectName( "mItemCount" );
+  mItemCount->setObjectName( QStringLiteral( "mItemCount" ) );
   mItemCount->setToolTip( tr( "Remaining messages" ) );
   mItemCount->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   mLayout->addWidget( mItemCount, 0, 2, 1, 1 );
 
   mCloseMenu = new QMenu( this );
-  mCloseMenu->setObjectName( "mCloseMenu" );
-  mActionCloseAll = new QAction( tr( "Close all" ), this );
+  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
+  mActionCloseAll = new QAction( tr( "Close All" ), this );
   mCloseMenu->addAction( mActionCloseAll );
-  connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
+  connect( mActionCloseAll, &QAction::triggered, this, &QgsMessageBar::clearWidgets );
 
   mCloseBtn = new QToolButton( this );
-  mCloseMenu->setObjectName( "mCloseMenu" );
+  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setMinimumWidth( 40 );
   mCloseBtn->setStyleSheet(
     "QToolButton { background-color: rgba(0, 0, 0, 0); }"
     "QToolButton::menu-button { background-color: rgba(0, 0, 0, 0); }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
-  mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
-  mCloseBtn->setIconSize( QSize( 18, 18 ) );
+  mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
+
+  const int iconSize = std::max( 18.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.9 );
+  mCloseBtn->setIconSize( QSize( iconSize, iconSize ) );
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
+  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )() > ( &QgsMessageBar::popWidget ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
   mCountdownTimer = new QTimer( this );
   mCountdownTimer->setInterval( 1000 );
-  connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
+  connect( mCountdownTimer, &QTimer::timeout, this, &QgsMessageBar::updateCountdown );
 
-  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
-  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, &QgsMessageBar::widgetAdded, this, &QgsMessageBar::updateItemCount );
+  connect( this, &QgsMessageBar::widgetRemoved, this, &QgsMessageBar::updateItemCount );
 
   // start hidden
   setVisible( false );
 }
 
-QgsMessageBar::~QgsMessageBar()
-{
-}
-
-void QgsMessageBar::mousePressEvent( QMouseEvent * e )
+void QgsMessageBar::mousePressEvent( QMouseEvent *e )
 {
   if ( mCountProgress == childAt( e->pos() ) && e->button() == Qt::LeftButton )
   {
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerContinue.svg" ) ) );
     }
     else
     {
       mCountdownTimer->start();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
     }
   }
 }
@@ -134,8 +138,8 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
       QWidget *widget = mCurrentItem;
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
-      disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
-      delete mCurrentItem;
+      disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+      mCurrentItem->deleteLater();
       mCurrentItem = nullptr;
     }
 
@@ -172,7 +176,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     if ( existingItem == item )
     {
       mItems.removeOne( existingItem );
-      delete existingItem;
+      existingItem->deleteLater();
       return true;
     }
   }
@@ -207,24 +211,24 @@ bool QgsMessageBar::clearWidgets()
   return !mCurrentItem && mItems.empty();
 }
 
-void QgsMessageBar::pushSuccess( const QString& title, const QString& message )
+void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
 {
-  pushMessage( title, message, SUCCESS );
+  pushMessage( title, message, Qgis::Success );
 }
 
-void QgsMessageBar::pushInfo( const QString& title, const QString& message )
+void QgsMessageBar::pushInfo( const QString &title, const QString &message )
 {
-  pushMessage( title, message, INFO );
+  pushMessage( title, message, Qgis::Info );
 }
 
-void QgsMessageBar::pushWarning( const QString& title, const QString& message )
+void QgsMessageBar::pushWarning( const QString &title, const QString &message )
 {
-  pushMessage( title, message, WARNING );
+  pushMessage( title, message, Qgis::Warning );
 }
 
-void QgsMessageBar::pushCritical( const QString& title, const QString& message )
+void QgsMessageBar::pushCritical( const QString &title, const QString &message )
 {
-  pushMessage( title, message, CRITICAL );
+  pushMessage( title, message, Qgis::Critical );
 }
 
 void QgsMessageBar::showItem( QgsMessageBarItem *item )
@@ -232,7 +236,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
   Q_ASSERT( item );
 
   if ( mCurrentItem )
-    disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
 
   if ( item == mCurrentItem )
     return;
@@ -259,7 +263,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
     mCountdownTimer->start();
   }
 
-  connect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+  connect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
   setStyleSheet( item->getStyleSheet() );
   show();
 
@@ -269,15 +273,23 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 void QgsMessageBar::pushItem( QgsMessageBarItem *item )
 {
   resetCountdown();
+
+  item->mMessageBar = this;
+
   // avoid duplicated widget
   popWidget( item );
   showItem( item );
+
+  // Log all messages that are sent to the message bar into the message log so the
+  // user can get them back easier.
+  QString formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
+  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), item->level() );
 }
 
-QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
+QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, Qgis::MessageLevel level, int duration )
 {
-  QgsMessageBarItem *item;
-  item = dynamic_cast<QgsMessageBarItem*>( widget );
+  QgsMessageBarItem *item = nullptr;
+  item = dynamic_cast<QgsMessageBarItem *>( widget );
   if ( item )
   {
     item->setLevel( level )->setDuration( duration );
@@ -290,26 +302,63 @@ QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::Me
   return item;
 }
 
-void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsMessageBar::pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level, int duration )
 {
+  // keep the number of items in the message bar to a maximum of 20, avoids flooding (and freezing) of the main window
+  if ( mItems.count() > 20 )
+    mItems.removeFirst();
+
+  // block duplicate items, avoids flooding (and freezing) of the main window
+  for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
+  {
+    if ( level == ( *it )->level() && title == ( *it )->title() && text == ( *it )->text() )
+      return;
+  }
+
   QgsMessageBarItem *item = new QgsMessageBarItem( title, text, level, duration );
   pushItem( item );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &text, QWidget *parent )
+void QgsMessageBar::pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level, int duration )
 {
-  QgsMessageBarItem* item = new QgsMessageBarItem( text, INFO, 0, parent );
+  QgsMessageViewer *mv = new QgsMessageViewer();
+  mv->setWindowTitle( title );
+  mv->setMessageAsPlainText( text + "\n\n" + showMore );
+
+  QToolButton *showMoreButton = new QToolButton();
+  QAction *act = new QAction( showMoreButton );
+  act->setText( tr( "Show more" ) );
+  showMoreButton->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+  showMoreButton->setCursor( Qt::PointingHandCursor );
+  showMoreButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  showMoreButton->addAction( act );
+  showMoreButton->setDefaultAction( act );
+  connect( showMoreButton, &QToolButton::triggered, mv, &QDialog::exec );
+  connect( showMoreButton, &QToolButton::triggered, showMoreButton, &QObject::deleteLater );
+
+  QgsMessageBarItem *item = new QgsMessageBarItem(
+    title,
+    text,
+    showMoreButton,
+    level,
+    duration );
+  pushItem( item );
+}
+
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
+{
+  QgsMessageBarItem *item = new QgsMessageBarItem( text, Qgis::Info, 0, parent );
   return item;
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
 {
-  return new QgsMessageBarItem( title, text, QgsMessageBar::INFO, 0, parent );
+  return new QgsMessageBarItem( title, text, Qgis::Info, 0, parent );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
-  return new QgsMessageBarItem( widget, INFO, 0, parent );
+  return new QgsMessageBarItem( widget, Qgis::Info, 0, parent );
 }
 
 void QgsMessageBar::updateCountdown()
@@ -334,7 +383,7 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
   mCountProgress->setVisible( false );
 }
 

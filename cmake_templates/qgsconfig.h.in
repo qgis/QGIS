@@ -13,7 +13,7 @@
 //used in vim src/core/qgis.cpp
 //The way below should work but it resolves to a number like 0110 which the compiler treats as octal I think
 //because debuggin it out shows the decimal number 72 which results in incorrect version status.
-//As a short term fix I (Tim) am defining the version in top level cmake. It would be good to 
+//As a short term fix I (Tim) am defining the version in top level cmake. It would be good to
 //reinstate this more generic approach below at some point though
 //#define VERSION_INT ${CPACK_PACKAGE_VERSION_MAJOR}${CPACK_PACKAGE_VERSION_MINOR}${CPACK_PACKAGE_VERSION_PATCH}
 #define VERSION_INT ${QGIS_VERSION_INT}
@@ -25,8 +25,11 @@
 #define QGIS_DATA_SUBDIR "${QGIS_DATA_SUBDIR}"
 #define QGIS_LIBEXEC_SUBDIR "${QGIS_LIBEXEC_SUBDIR}"
 #define QGIS_LIB_SUBDIR "${QGIS_LIB_SUBDIR}"
+#define QGIS_QML_SUBDIR "${QGIS_QML_SUBDIR}"
 #define CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
 #define CMAKE_SOURCE_DIR "${CMAKE_SOURCE_DIR}"
+
+#define QGIS_SERVER_MODULE_SUBDIR "${QGIS_SERVER_MODULE_SUBDIR}"
 
 #define QSCINTILLA_VERSION_STR "${QSCINTILLA_VERSION_STR}"
 
@@ -40,11 +43,13 @@
 
 #cmakedefine USING_NMAKE
 
+#cmakedefine USING_NINJA
+
+#cmakedefine HAVE_GUI
+
 #cmakedefine HAVE_POSTGRESQL
 
 #cmakedefine HAVE_ORACLE
-
-#cmakedefine HAVE_TOUCH
 
 #cmakedefine HAVE_OSGEARTHQT
 
@@ -52,7 +57,19 @@
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
+#cmakedefine HAVE_OPENCL
+
 #cmakedefine ENABLE_MODELTEST
+
+#cmakedefine HAVE_3D
+
+#cmakedefine USE_THREAD_LOCAL
+
+#cmakedefine QGISDEBUG
+
+#cmakedefine HAVE_QUICK
+
+#cmakedefine HAVE_QT5SERIALPORT
 
 #endif
 

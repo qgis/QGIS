@@ -1,0 +1,130 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspolygon3dsymbol.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPolygon3DSymbol : QgsAbstract3DSymbol
+{
+%Docstring
+3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgspolygon3dsymbol.h"
+%End
+  public:
+    QgsPolygon3DSymbol();
+%Docstring
+Constructor for QgsPolygon3DSymbol
+%End
+
+    virtual QString type() const;
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const;
+%Docstring
+Returns method that determines altitude (whether to clamp to feature to terrain)
+%End
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping );
+%Docstring
+Sets method that determines altitude (whether to clamp to feature to terrain)
+%End
+
+    Qgs3DTypes::AltitudeBinding altitudeBinding() const;
+%Docstring
+Returns method that determines how altitude is bound to individual vertices
+%End
+    void setAltitudeBinding( Qgs3DTypes::AltitudeBinding altBinding );
+%Docstring
+Sets method that determines how altitude is bound to individual vertices
+%End
+
+    float height() const;
+%Docstring
+Returns height (altitude) of the symbol (in map units)
+%End
+    void setHeight( float height );
+%Docstring
+Sets height (altitude) of the symbol (in map units)
+%End
+
+    float extrusionHeight() const;
+%Docstring
+Returns extrusion height (in map units)
+%End
+    void setExtrusionHeight( float extrusionHeight );
+%Docstring
+Sets extrusion height (in map units)
+%End
+
+    QgsPhongMaterialSettings material() const;
+%Docstring
+Returns material used for shading of the symbol
+%End
+    void setMaterial( const QgsPhongMaterialSettings &material );
+%Docstring
+Sets material used for shading of the symbol
+%End
+
+    Qgs3DTypes::CullingMode cullingMode() const;
+%Docstring
+Returns front/back culling mode
+%End
+    void setCullingMode( Qgs3DTypes::CullingMode mode );
+%Docstring
+Sets front/back culling mode
+%End
+
+    bool invertNormals() const;
+%Docstring
+Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+%End
+    void setInvertNormals( bool invert );
+%Docstring
+Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+%End
+
+    bool addBackFaces() const;
+%Docstring
+Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+
+.. versionadded:: 3.2
+%End
+
+    void setAddBackFaces( bool add );
+%Docstring
+Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+
+.. versionadded:: 3.2
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspolygon3dsymbol.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -17,23 +17,33 @@
 #define QGSCHECKBOXWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
-/** \class QgsCheckboxWidgetFactory
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
+ * \class QgsCheckboxWidgetFactory
  * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsCheckboxWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    explicit QgsCheckboxWidgetFactory( const QString& name );
+
+    /**
+     * Constructor for QgsCheckboxWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
+    explicit QgsCheckboxWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
-    void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    QMap<const char*, int> supportedWidgetTypes() override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    QHash<const char *, int> supportedWidgetTypes() override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 };
 
 #endif // QGSCHECKBOXWIDGETFACTORY_H

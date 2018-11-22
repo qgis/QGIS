@@ -3,7 +3,7 @@
 #
 # CSW Client
 # ---------------------------------------------------------
-# QGIS Catalogue Service client.
+# QGIS Catalog Service client.
 #
 # Copyright (C) 2010 NextGIS (http://nextgis.org),
 #                    Alexander Bruy (alexander.bruy@gmail.com),

@@ -18,9 +18,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+
 {
 }
 
@@ -30,7 +30,7 @@ QVariant QgsEnumerationWidgetWrapper::value() const
   QVariant value;
 
   if ( mComboBox )
-    value = mComboBox->itemData( mComboBox->currentIndex() );
+    value = mComboBox->currentData();
 
   return value;
 }
@@ -43,25 +43,26 @@ void QgsEnumerationWidgetWrapper::showIndeterminateState()
   }
 }
 
-QWidget* QgsEnumerationWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsEnumerationWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsEnumerationWidgetWrapper::initWidget( QWidget* editor )
+void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {
     QStringList enumValues;
     layer()->dataProvider()->enumValues( fieldIdx(), enumValues );
 
-    Q_FOREACH ( const QString& s, enumValues )
+    Q_FOREACH ( const QString &s, enumValues )
     {
       mComboBox->addItem( s, s );
     }
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 
@@ -70,7 +71,7 @@ bool QgsEnumerationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsEnumerationWidgetWrapper::setValue( const QVariant& value )
+void QgsEnumerationWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mComboBox )
   {

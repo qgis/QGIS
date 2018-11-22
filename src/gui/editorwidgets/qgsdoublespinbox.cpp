@@ -17,39 +17,41 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
-#include <QToolButton>
 
 #include "qgsdoublespinbox.h"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsfilterlineedit.h"
+
+#define CLEAR_ICON_SIZE 16
+
+// This is required because private implementation of
+// QAbstractSpinBoxPrivate checks for specialText emptiness
+// and skips specialText handling if it's empty
+QString QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
-    : QDoubleSpinBox( parent )
-    , mShowClearButton( true )
-    , mClearValueMode( MinimumValue )
-    , mCustomClearValue( 0.0 )
-    , mExpressionsEnabled( true )
+  : QDoubleSpinBox( parent )
 {
-  mClearButton = new QToolButton( this );
-  mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
-  mClearButton->setCursor( Qt::ArrowCursor );
-  mClearButton->setStyleSheet( "position: absolute; border: none; padding: 0px;" );
-  connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  mLineEdit = new QgsSpinBoxLineEdit();
 
-  setStyleSheet( QString( "padding-right: %1px;" ).arg( mClearButton->sizeHint().width() + 18 + frameWidth() + 1 ) );
+  // By default, group separator is off
+  setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
-                  qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
+  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
+                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
-  connect( this, SIGNAL( valueChanged( double ) ), this, SLOT( changed( double ) ) );
+  connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsDoubleSpinBox::clear );
+  connect( this, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
-  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  mLineEdit->setShowClearButton( showClearButton );
 }
 
 void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
@@ -60,26 +62,56 @@ void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
 void QgsDoubleSpinBox::changeEvent( QEvent *event )
 {
   QDoubleSpinBox::changeEvent( event );
-  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    lineEdit()->setFont( font() );
+  }
+
+  mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
+}
+
+void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
+{
+  double step = singleStep();
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    // ctrl modifier results in finer increments - 10% of usual step
+    double newStep = step / 10;
+    // but don't ever use an increment smaller than would be visible in the widget
+    // i.e. if showing 2 decimals, smallest increment will be 0.01
+    newStep = std::max( newStep, std::pow( 10.0, 0.0 - decimals() ) );
+
+    setSingleStep( newStep );
+
+    // clear control modifier before handing off event - Qt uses it for unwanted purposes
+    // (*increasing* step size, whereas QGIS UX convention is that control modifier
+    // results in finer changes!)
+    event->setModifiers( event->modifiers() & ~Qt::ControlModifier );
+  }
+  QDoubleSpinBox::wheelEvent( event );
+  setSingleStep( step );
 }
 
 void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
 {
-  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
   QDoubleSpinBox::paintEvent( event );
 }
 
 void QgsDoubleSpinBox::changed( double value )
 {
-  mClearButton->setVisible( shouldShowClearForValue( value ) );
+  mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
 }
 
 void QgsDoubleSpinBox::clear()
 {
   setValue( clearValue() );
+  if ( mLineEdit->isNull() )
+    mLineEdit->clear();
 }
 
-void QgsDoubleSpinBox::setClearValue( double customValue, const QString& specialValueText )
+void QgsDoubleSpinBox::setClearValue( double customValue, const QString &specialValueText )
 {
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
@@ -93,7 +125,7 @@ void QgsDoubleSpinBox::setClearValue( double customValue, const QString& special
   }
 }
 
-void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, const QString& clearValueText )
+void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, const QString &clearValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;
@@ -110,11 +142,30 @@ void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode,
 double QgsDoubleSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
-    return minimum() ;
+    return minimum();
   else if ( mClearValueMode == MaximumValue )
     return maximum();
   else
     return mCustomClearValue;
+}
+
+void QgsDoubleSpinBox::setLineEditAlignment( Qt::Alignment alignment )
+{
+  mLineEdit->setAlignment( alignment );
+}
+
+void QgsDoubleSpinBox::setSpecialValueText( const QString &txt )
+{
+  if ( txt.isEmpty() )
+  {
+    QDoubleSpinBox::setSpecialValueText( SPECIAL_TEXT_WHEN_EMPTY );
+    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+  }
+  else
+  {
+    QDoubleSpinBox::setSpecialValueText( txt );
+    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+  }
 }
 
 QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
@@ -124,6 +175,9 @@ QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
   QString text = originalText;
   if ( specialValueText().isEmpty() || text != specialValueText() )
   {
+    // Strip SPECIAL_TEXT_WHEN_EMPTY
+    if ( text.contains( SPECIAL_TEXT_WHEN_EMPTY ) )
+      text = text.replace( SPECIAL_TEXT_WHEN_EMPTY, QString() );
     int from = 0;
     int size = text.size();
     bool changed = false;
@@ -186,15 +240,4 @@ bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
     return false;
   }
   return value != clearValue();
-}
-
-void QgsDoubleSpinBox::resizeEvent( QResizeEvent * event )
-{
-  QDoubleSpinBox::resizeEvent( event );
-
-  QSize sz = mClearButton->sizeHint();
-
-  mClearButton->move( rect().right() - frameWidth() - 18 - sz.width(),
-                      ( rect().bottom() + 1 - sz.height() ) / 2 );
-
 }

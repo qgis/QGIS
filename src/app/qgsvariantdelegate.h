@@ -49,20 +49,20 @@ class QgsVariantDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsVariantDelegate( QObject* parent = nullptr );
+    explicit QgsVariantDelegate( QObject *parent = nullptr );
 
-    void paint( QPainter* painter, const QStyleOptionViewItem& option,
-                const QModelIndex& index ) const override;
-    QWidget* createEditor( QWidget* parent, const QStyleOptionViewItem& option,
+    void paint( QPainter *painter, const QStyleOptionViewItem &option,
+                const QModelIndex &index ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;
-    void setEditorData( QWidget* editor, const QModelIndex& index ) const override;
-    void setModelData( QWidget* editor, QAbstractItemModel* model,
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model,
                        const QModelIndex &index ) const override;
 
     static bool isSupportedType( QVariant::Type type );
-    static QString displayText( const QVariant& value );
+    static QString displayText( const QVariant &value );
 
-    static QVariant::Type type( const QVariant& value );
+    static QVariant::Type type( const QVariant &value );
 
   private:
     QRegExp mBoolExp;

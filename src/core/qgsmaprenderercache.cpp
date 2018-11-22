@@ -15,8 +15,8 @@
 
 #include "qgsmaprenderercache.h"
 
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerlistutils.h"
 
 QgsMapRendererCache::QgsMapRendererCache()
 {
@@ -35,19 +35,50 @@ void QgsMapRendererCache::clearInternal()
   mScale = 0;
 
   // make sure we are disconnected from all layers
-  QMap<QString, QImage>::const_iterator it = mCachedImages.constBegin();
-  for ( ; it != mCachedImages.constEnd(); ++it )
+  Q_FOREACH ( const QgsWeakMapLayerPointer &layer, mConnectedLayers )
   {
-    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( it.key() );
-    if ( layer )
+    if ( layer.data() )
     {
-      disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+      disconnect( layer.data(), &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
+      disconnect( layer.data(), &QgsMapLayer::willBeDeleted, this, &QgsMapRendererCache::layerRequestedRepaint );
     }
   }
   mCachedImages.clear();
+  mConnectedLayers.clear();
 }
 
-bool QgsMapRendererCache::init( const QgsRectangle& extent, double scale )
+void QgsMapRendererCache::dropUnusedConnections()
+{
+  QSet< QgsWeakMapLayerPointer > stillDepends = dependentLayers();
+  QSet< QgsWeakMapLayerPointer > disconnects = mConnectedLayers.subtract( stillDepends );
+  Q_FOREACH ( const QgsWeakMapLayerPointer &layer, disconnects )
+  {
+    if ( layer.data() )
+    {
+      disconnect( layer.data(), &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
+      disconnect( layer.data(), &QgsMapLayer::willBeDeleted, this, &QgsMapRendererCache::layerRequestedRepaint );
+    }
+  }
+
+  mConnectedLayers = stillDepends;
+}
+
+QSet<QgsWeakMapLayerPointer > QgsMapRendererCache::dependentLayers() const
+{
+  QSet< QgsWeakMapLayerPointer > result;
+  QMap<QString, CacheParameters>::const_iterator it = mCachedImages.constBegin();
+  for ( ; it != mCachedImages.constEnd(); ++it )
+  {
+    Q_FOREACH ( const QgsWeakMapLayerPointer &l, it.value().dependentLayers )
+    {
+      if ( l.data() )
+        result << l;
+    }
+  }
+  return result;
+}
+
+bool QgsMapRendererCache::init( const QgsRectangle &extent, double scale )
 {
   QMutexLocker lock( &mMutex );
 
@@ -65,41 +96,78 @@ bool QgsMapRendererCache::init( const QgsRectangle& extent, double scale )
   return false;
 }
 
-void QgsMapRendererCache::setCacheImage( const QString& layerId, const QImage& img )
+void QgsMapRendererCache::setCacheImage( const QString &cacheKey, const QImage &image, const QList<QgsMapLayer *> &dependentLayers )
 {
   QMutexLocker lock( &mMutex );
-  mCachedImages[layerId] = img;
+
+  CacheParameters params;
+  params.cachedImage = image;
 
   // connect to the layer to listen to layer's repaintRequested() signals
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-  if ( layer )
+  Q_FOREACH ( QgsMapLayer *layer, dependentLayers )
   {
-    connect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
+    if ( layer )
+    {
+      params.dependentLayers << layer;
+      if ( !mConnectedLayers.contains( QgsWeakMapLayerPointer( layer ) ) )
+      {
+        connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapRendererCache::layerRequestedRepaint );
+        connect( layer, &QgsMapLayer::willBeDeleted, this, &QgsMapRendererCache::layerRequestedRepaint );
+        mConnectedLayers << layer;
+      }
+    }
   }
+
+  mCachedImages[cacheKey] = params;
 }
 
-QImage QgsMapRendererCache::cacheImage( const QString& layerId )
+bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
+{
+  return mCachedImages.contains( cacheKey );
+}
+
+QImage QgsMapRendererCache::cacheImage( const QString &cacheKey ) const
 {
   QMutexLocker lock( &mMutex );
-  return mCachedImages.value( layerId );
+  return mCachedImages.value( cacheKey ).cachedImage;
+}
+
+QList< QgsMapLayer * > QgsMapRendererCache::dependentLayers( const QString &cacheKey ) const
+{
+  if ( mCachedImages.contains( cacheKey ) )
+  {
+    return _qgis_listQPointerToRaw( mCachedImages.value( cacheKey ).dependentLayers );
+  }
+  return QList< QgsMapLayer * >();
 }
 
 void QgsMapRendererCache::layerRequestedRepaint()
 {
-  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sender() );
-  if ( layer )
-    clearCacheImage( layer->id() );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  if ( !layer )
+    return;
+
+  QMutexLocker lock( &mMutex );
+
+  // check through all cached images to clear any which depend on this layer
+  QMap<QString, CacheParameters>::iterator it = mCachedImages.begin();
+  for ( ; it != mCachedImages.end(); )
+  {
+    if ( !it.value().dependentLayers.contains( layer ) )
+    {
+      ++it;
+      continue;
+    }
+
+    it = mCachedImages.erase( it );
+  }
+  dropUnusedConnections();
 }
 
-void QgsMapRendererCache::clearCacheImage( const QString& layerId )
+void QgsMapRendererCache::clearCacheImage( const QString &cacheKey )
 {
   QMutexLocker lock( &mMutex );
 
-  mCachedImages.remove( layerId );
-
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-  if ( layer )
-  {
-    disconnect( layer, SIGNAL( repaintRequested() ), this, SLOT( layerRequestedRepaint() ) );
-  }
+  mCachedImages.remove( cacheKey );
+  dropUnusedConnections();
 }

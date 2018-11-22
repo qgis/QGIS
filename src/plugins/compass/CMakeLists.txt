@@ -21,19 +21,21 @@ SET (COMPASS_RCCS  compass.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (COMPASS_UIS_H  ${COMPASS_UIS})
+QT5_WRAP_UI (COMPASS_UIS_H  ${COMPASS_UIS})
 
-QT4_WRAP_CPP (COMPASS_MOC_SRCS  ${COMPASS_MOC_HDRS})
+QT5_WRAP_CPP (COMPASS_MOC_SRCS  ${COMPASS_MOC_HDRS})
 
-QT4_ADD_RESOURCES(COMPASS_RCC_SRCS ${COMPASS_RCCS})
+QT5_ADD_RESOURCES(COMPASS_RCC_SRCS ${COMPASS_RCCS})
 
 ADD_LIBRARY (compassplugin MODULE ${COMPASS_SRCS} ${COMPASS_MOC_SRCS} ${COMPASS_RCC_SRCS} ${COMPASS_UIS_H})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster
-     ../../gui
-     ..
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ../../core ../../core/raster
+  ../../gui
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 TARGET_LINK_LIBRARIES(compassplugin

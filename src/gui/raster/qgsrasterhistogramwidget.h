@@ -18,6 +18,11 @@
 #define QGSRASTERHISTOGRAMWIDGET_H
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
+#include "qgis_sip.h"
+#include "qgis.h"
+
+#include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRendererWidget;
@@ -26,67 +31,73 @@ class QwtPlotMarker;
 class QwtPlotZoomer;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-typedef QPointF QwtDoublePoint;
-#endif
+typedef QPointF QwtDoublePoint SIP_SKIP;
 
-/** Histogram widget
-  *@author Etienne Tourigny
+/**
+ * \ingroup gui
+ * Histogram widget
   */
 
-class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRasterHistogramWidgetBase
+class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterHistogramWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = nullptr );
-    ~QgsRasterHistogramWidget();
 
-    /** Save the histogram as an image to disk */
-    bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
+    /**
+     * Constructor for QgsRasterHistogramWidget, for the specified raster \a layer.
+     */
+    QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Set the renderer widget (or just its name if there is no widget) */
-    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = nullptr );
+    //! Save the histogram as an image to disk
+    bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
 
-    /** Activate the histogram widget */
-    void setActive( bool theActiveFlag );
+    //! Sets the renderer widget (or just its name if there is no widget)
+    void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = nullptr );
 
-    /** \brief Compute the histogram on demand. */
+    //! Activate the histogram widget
+    void setActive( bool activeFlag );
+
+    //! \brief Compute the histogram on demand.
     bool computeHistogram( bool forceComputeFlag );
 
-    /** Apply a histoActionTriggered() event. */
+    //! Apply a histoActionTriggered() event.
     void histoAction( const QString &actionName, bool actionFlag = true );
 
-    /** Apply a histoActionTriggered() event. */
+    //! Apply a histoActionTriggered() event.
     void setSelectedBand( int index );
 
   public slots:
-    /** \brief slot executed when user wishes to refresh raster histogramwidget */
+    //! \brief slot executed when user wishes to refresh raster histogramwidget
     void refreshHistogram();
-    /** This slot lets you save the histogram as an image to disk */
-    void on_mSaveAsImageButton_clicked();
+
+    void apply() override;
 
   private slots:
-    /** Used when the histogram band selector changes, or when tab is loaded. */
-    void on_cboHistoBand_currentIndexChanged( int );
-    /** Applies the selected min/max values to the renderer widget. */
+    //! This slot lets you save the histogram as an image to disk
+    void mSaveAsImageButton_clicked();
+    //! Used when the histogram band selector changes, or when tab is loaded.
+    void cboHistoBand_currentIndexChanged( int );
+    //! Applies the selected min/max values to the renderer widget.
     void applyHistoMin();
     void applyHistoMax();
-    /** Button to activate picking of the min/max value on the graph. */
-    void on_btnHistoMin_toggled();
-    void on_btnHistoMax_toggled();
-    /** Called when a selection has been made using the plot picker. */
+    //! Button to activate picking of the min/max value on the graph.
+    void btnHistoMin_toggled();
+    void btnHistoMax_toggled();
+    //! Called when a selection has been made using the plot picker.
     void histoPickerSelected( QPointF );
-    /** Called when a selection has been made using the plot picker (for qwt5 only).
-      @note not available in python bindings
+
+    /**
+     * Called when a selection has been made using the plot picker (for qwt5 only).
+      \note not available in Python bindings
       */
-    void histoPickerSelectedQwt5( QwtDoublePoint );
-    /** Various actions that are stored in btnHistoActions. */
-    void histoActionTriggered( QAction* );
-    /** Draw the min/max markers on the histogram plot. */
+    void histoPickerSelectedQwt5( QwtDoublePoint ) SIP_SKIP;
+    //! Various actions that are stored in btnHistoActions.
+    void histoActionTriggered( QAction * );
+    //! Draw the min/max markers on the histogram plot.
     void updateHistoMarkers();
-    /** Button to compute the histogram, appears when no cached histogram is available. */
-    void on_btnHistoCompute_clicked();
+    //! Button to compute the histogram, appears when no cached histogram is available.
+    void btnHistoCompute_clicked();
 
   private:
 
@@ -97,17 +108,17 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
       ShowRGB = 2
     };
 
-    /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
-    QgsRasterLayer * mRasterLayer;
-    /** \brief Pointer to the renderer widget, to get/set min/max. */
-    QgsRasterRendererWidget* mRendererWidget;
-    /** \brief Name of the renderer widget (see QgsRasterRendererRegistry). */
+    //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
+    QgsRasterLayer *mRasterLayer = nullptr;
+    //! \brief Pointer to the renderer widget, to get/set min/max.
+    QgsRasterRendererWidget *mRendererWidget = nullptr;
+    //! \brief Name of the renderer widget (see QgsRasterRendererRegistry).
     QString mRendererName;
 
-    QwtPlotPicker* mHistoPicker;
-    QwtPlotZoomer* mHistoZoomer;
-    QwtPlotMarker* mHistoMarkerMin;
-    QwtPlotMarker* mHistoMarkerMax;
+    QwtPlotPicker *mHistoPicker = nullptr;
+    QwtPlotZoomer *mHistoZoomer = nullptr;
+    QwtPlotMarker *mHistoMarkerMin = nullptr;
+    QwtPlotMarker *mHistoMarkerMax = nullptr;
     double mHistoMin;
     double mHistoMax;
     QVector<QColor> mHistoColors;
@@ -117,10 +128,10 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     bool mHistoDrawLines;
     /* bool mHistoLoadApplyAll; */
     HistoShowBands mHistoShowBands;
-    /** \brief Returns a list of selected bands in the histogram widget- or empty if there is no selection restriction. */
+    //! \brief Returns a list of selected bands in the histogram widget- or empty if there is no selection restriction.
     QList< int > histoSelectedBands();
-    /** \brief Returns a list of selected bands in the renderer widget. */
+    //! \brief Returns a list of selected bands in the renderer widget.
     QList< int > rendererSelectedBands();
-    QPair< QString, QString > rendererMinMax( int theBandNo );
+    QPair< QString, QString > rendererMinMax( int bandNo );
 };
 #endif

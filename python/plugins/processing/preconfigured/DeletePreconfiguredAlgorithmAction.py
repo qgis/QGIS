@@ -26,7 +26,9 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.core import QgsApplication
 from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
@@ -34,18 +36,18 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class DeletePreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Delete preconfigured algorithm', 'DeletePreconfiguredAlgorithmAction')
+        self.name = QCoreApplication.translate('DeletePreconfiguredAlgorithmAction', 'Delete Preconfigured Algorithm…')
 
     def isEnabled(self):
         return isinstance(self.itemData, PreconfiguredAlgorithm)
 
     def execute(self):
         reply = QMessageBox.question(None,
-                                     self.tr('Confirmation', 'DeletePreconfiguredAlgorithmAction'),
+                                     self.tr('Delete Algorithm', 'DeletePreconfiguredAlgorithmAction'),
                                      self.tr('Are you sure you want to delete this algorithm?',
                                              'DeletePreconfiguredAlgorithmAction'),
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
-            self.toolbox.updateProvider('preconfigured')
+            QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()

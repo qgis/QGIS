@@ -20,24 +20,24 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
-#include <qgslogger.h>
-#include <QMouseEvent>
+#include "qgslogger.h"
 
-QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
-    : QgsMapToolLabel( canvas )
-    , mDragging( false )
-    , mShowPinned( false )
-    , mRubberBand( nullptr )
+
+QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas )
+  : QgsMapToolLabel( canvas )
+  , mDragging( false )
+  , mShowPinned( false )
+
 {
   mToolName = tr( "Pin labels" );
 
-  connect( QgisApp::instance()->actionToggleEditing(), SIGNAL( triggered() ), this, SLOT( updatePinnedLabels() ) );
-  connect( canvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( highlightPinnedLabels() ) );
+  connect( QgisApp::instance()->actionToggleEditing(), &QAction::triggered, this, &QgsMapToolPinLabels::updatePinnedLabels );
+  connect( canvas, &QgsMapCanvas::renderComplete, this, &QgsMapToolPinLabels::highlightPinnedLabels );
 }
 
 QgsMapToolPinLabels::~QgsMapToolPinLabels()
@@ -46,16 +46,16 @@ QgsMapToolPinLabels::~QgsMapToolPinLabels()
   removePinnedHighlights();
 }
 
-void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolPinLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
 }
 
-void QgsMapToolPinLabels::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolPinLabels::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -69,7 +69,7 @@ void QgsMapToolPinLabels::canvasMoveEvent( QgsMapMouseEvent* e )
   QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 }
 
-void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //if the user simply clicked without dragging a rect
   //we will fabricate a small 1x1 pix rect and then continue
@@ -98,14 +98,12 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 
-    QgsGeometry* selectGeom = mRubberBand->asGeometry();
-    QgsRectangle ext = selectGeom->boundingBox();
+    QgsGeometry selectGeom = mRubberBand->asGeometry();
+    QgsRectangle ext = selectGeom.boundingBox();
 
     pinUnpinLabels( ext, e );
 
-    delete selectGeom;
-
-    mRubberBand->reset( QGis::Polygon );
+    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     delete mRubberBand;
     mRubberBand = nullptr;
   }
@@ -118,12 +116,12 @@ void QgsMapToolPinLabels::showPinnedLabels( bool show )
   mShowPinned = show;
   if ( mShowPinned )
   {
-    QgsDebugMsg( QString( "Toggling on pinned label highlighting" ) );
+    QgsDebugMsg( QStringLiteral( "Toggling on pinned label highlighting" ) );
     highlightPinnedLabels();
   }
   else
   {
-    QgsDebugMsg( QString( "Toggling off pinned label highlighting" ) );
+    QgsDebugMsg( QStringLiteral( "Toggling off pinned label highlighting" ) );
     removePinnedHighlights();
   }
 }
@@ -133,22 +131,22 @@ void QgsMapToolPinLabels::updatePinnedLabels()
 {
   if ( mShowPinned )
   {
-    QgsDebugMsg( QString( "Updating highlighting due to layer editing mode change" ) );
+    QgsDebugMsg( QStringLiteral( "Updating highlighting due to layer editing mode change" ) );
     highlightPinnedLabels();
   }
 }
 
-void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition& labelpos,
-    const QString& id,
-    const QColor& color )
+void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos,
+    const QString &id,
+    const QColor &color )
 {
   QgsRectangle rect = labelpos.labelRect;
-  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QGis::Polygon );
-  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
-  rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
-  rb->addPoint( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
-  rb->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
+  rb->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
+  rb->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
+  rb->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
   rb->setColor( color );
   rb->setWidth( 0 );
   rb->show();
@@ -166,18 +164,18 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
     return;
   }
 
-  QgsDebugMsg( QString( "Highlighting pinned labels" ) );
+  QgsDebugMsg( QStringLiteral( "Highlighting pinned labels" ) );
 
   // get list of all drawn labels from all layers within given extent
-  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
   if ( !labelingResults )
   {
-    QgsDebugMsg( QString( "No labeling engine" ) );
+    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return;
   }
 
   QgsRectangle ext = mCanvas->extent();
-  QgsDebugMsg( QString( "Getting labels from canvas extent" ) );
+  QgsDebugMsg( QStringLiteral( "Getting labels from canvas extent" ) );
 
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
@@ -185,13 +183,13 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
   {
-    const QgsLabelPosition& pos = *it;
+    const QgsLabelPosition &pos = *it;
 
     mCurrentLabel = LabelDetails( pos );
 
     if ( isPinned() )
     {
-      QString labelStringID = QString( "%0|%1|%2" ).arg( QString::number( pos.isDiagram ), pos.layerID, QString::number( pos.featureId ) );
+      QString labelStringID = QStringLiteral( "%0|%1|%2" ).arg( QString::number( pos.isDiagram ), pos.layerID, QString::number( pos.featureId ) );
 
       // don't highlight again
       if ( mHighlights.contains( labelStringID ) )
@@ -200,15 +198,15 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       }
 
       QColor lblcolor = QColor( 54, 129, 255, 63 );
-      QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( pos.layerID );
+      QgsMapLayer *layer = QgsProject::instance()->mapLayer( pos.layerID );
       if ( !layer )
       {
         continue;
       }
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
       {
-        QgsDebugMsg( QString( "Failed to cast to vector layer" ) );
+        QgsDebugMsg( QStringLiteral( "Failed to cast to vector layer" ) );
         continue;
       }
       if ( vlayer->isEditable() )
@@ -233,40 +231,32 @@ void QgsMapToolPinLabels::removePinnedHighlights()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e )
+void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *e )
 {
   bool doUnpin = e->modifiers() & Qt::ShiftModifier;
   bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier;
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
-  bool labelChanged = false;
-
-  const QgsLabelingResults* labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
   if ( !labelingResults )
   {
-    QgsDebugMsg( QString( "No labeling engine" ) );
+    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return;
   }
 
   QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
+  bool labelChanged = false;
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
   {
-    const QgsLabelPosition& pos = *it;
+    const QgsLabelPosition &pos = *it;
 
     mCurrentLabel = LabelDetails( pos );
 
     if ( !mCurrentLabel.valid )
     {
-      QgsDebugMsg( QString( "Failed to get label details" ) );
-      continue;
-    }
-
-    QgsVectorLayer* vlayer = mCurrentLabel.layer;
-    if ( !vlayer->isEditable() )
-    {
-      QgsDebugMsg( QString( "Vector layer not editable, skipping label" ) );
+      QgsDebugMsg( QStringLiteral( "Failed to get label details" ) );
       continue;
     }
 
@@ -280,11 +270,11 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
       }
       else
       {
-        QgsDebugMsg( QString( "Unpin failed for layer" ) );
+        QgsDebugMsg( QStringLiteral( "Unpin failed for layer" ) );
       }
     }
     // pin label
-    if ( !isPinned() && ( !doUnpin || toggleUnpinOrPin ) )
+    else if ( !isPinned() && ( !doUnpin || toggleUnpinOrPin ) )
     {
       // pin label's location, and optionally rotation, to attribute table
       if ( pinUnpinCurrentFeature( true ) )
@@ -293,14 +283,14 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
       }
       else
       {
-        QgsDebugMsg( QString( "Pin failed for layer" ) );
+        QgsDebugMsg( QStringLiteral( "Pin failed for layer" ) );
       }
     }
   }
 
   if ( labelChanged )
   {
-    mCanvas->refresh();
+    mCurrentLabel.layer->triggerRepaint();
 
     if ( !mShowPinned )
     {
@@ -312,13 +302,13 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
 
 bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 {
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
-  const QgsLabelPosition& labelpos = mCurrentLabel.pos;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
+  const QgsLabelPosition &labelpos = mCurrentLabel.pos;
 
   // skip diagrams
   if ( labelpos.isDiagram )
   {
-    QgsDebugMsg( QString( "Label is diagram, skipping" ) );
+    QgsDebugMsg( QStringLiteral( "Label is diagram, skipping" ) );
     return false;
   }
 
@@ -329,7 +319,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 
   if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
   {
-    QgsDebugMsg( QString( "Label X or Y column not mapped, skipping" ) );
+    QgsDebugMsg( QStringLiteral( "Label X or Y column not mapped, skipping" ) );
     return false;
   }
 
@@ -352,9 +342,9 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   if ( pin )
   {
 
-//     QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
+//     QgsPointXY labelpoint = labelpos.cornerPoints.at( 0 );
 
-    QgsPoint referencePoint;
+    QgsPointXY referencePoint;
     if ( !currentLabelRotationPoint( referencePoint, !preserveRot, false ) )
     {
       referencePoint.setX( labelpos.labelRect.xMinimum() );
@@ -365,15 +355,12 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
     double labelY = referencePoint.y();
     double labelR = labelpos.rotation * 180 / M_PI;
 
-    // transform back to layer crs, if on-fly on
-    if ( mCanvas->mapSettings().hasCrsTransformEnabled() )
-    {
-      QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
-      labelX = transformedPoint.x();
-      labelY = transformedPoint.y();
-    }
+    // transform back to layer crs
+    QgsPointXY transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+    labelX = transformedPoint.x();
+    labelY = transformedPoint.y();
 
-    vlayer->beginEditCommand( tr( "Pinned label" ) + QString( " '%1'" ).arg( labelText ) );
+    vlayer->beginEditCommand( tr( "Pinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
     if ( !vlayer->changeAttributeValue( fid, yCol, labelY ) )
       writeFailed = true;
@@ -386,13 +373,13 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Unpinned label" ) + QString( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
+    vlayer->beginEditCommand( tr( "Unpinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString() ) );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString() ) ) )
       writeFailed = true;
     if ( hasRCol && !preserveRot )
     {
-      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant( QString::null ) ) )
+      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant( QString() ) ) )
         writeFailed = true;
     }
     vlayer->endEditCommand();
@@ -400,12 +387,12 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 
   if ( writeFailed )
   {
-    QgsDebugMsg( QString( "Write to attribute table failed" ) );
+    QgsDebugMsg( QStringLiteral( "Write to attribute table failed" ) );
 
 #if 0
-    QgsDebugMsg( QString( "Undoing and removing failed command from layer's undo stack" ) );
+    QgsDebugMsg( QStringLiteral( "Undoing and removing failed command from layer's undo stack" ) );
     int lastCmdIndx = vlayer->undoStack()->count();
-    const QgsUndoCommand* lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
+    const QgsUndoCommand *lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
     if ( lastCmd )
     {
       vlayer->undoEditCommand( lastCmd );
@@ -447,7 +434,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     return false;
 
   // edit attribute table
-  QgsVectorLayer* vlayer = mCurrentLabel.layer;
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
   int fid = mCurrentLabel.pos.featureId;
 
   bool writeFailed = false;
@@ -455,19 +442,16 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
 
   if ( pin )
   {
-    QgsPoint referencePoint = mCurrentLabel.pos.labelRect.center();
+    QgsPointXY referencePoint = mCurrentLabel.pos.labelRect.center();
     double labelX = referencePoint.x();
     double labelY = referencePoint.y();
 
-    // transform back to layer crs, if on-fly on
-    if ( mCanvas->mapSettings().hasCrsTransformEnabled() )
-    {
-      QgsPoint transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
-      labelX = transformedPoint.x();
-      labelY = transformedPoint.y();
-    }
+    // transform back to layer crs
+    QgsPointXY transformedPoint = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, referencePoint );
+    labelX = transformedPoint.x();
+    labelY = transformedPoint.y();
 
-    vlayer->beginEditCommand( tr( "Pinned diagram" ) + QString( " '%1'" ).arg( labelText ) );
+    vlayer->beginEditCommand( tr( "Pinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
     writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX );
     if ( !vlayer->changeAttributeValue( fid, yCol, labelY ) )
       writeFailed = true;
@@ -475,15 +459,12 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QString( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ) );
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ) ) )
+    vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString() ) );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString() ) ) )
       writeFailed = true;
     vlayer->endEditCommand();
   }
 
-  if ( writeFailed )
-    return false;
-
-  return true;
+  return !writeFailed;
 }

@@ -21,7 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;
@@ -37,7 +37,8 @@ extern "C"
 #include <grass/gis.h>
 }
 
-/** \class QgsGrassRegion
+/**
+ * \class QgsGrassRegion
  *  \brief GRASS attributes.
  *
  */
@@ -48,10 +49,10 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
   public:
     //! Constructor
     QgsGrassRegion( QgisInterface *iface,
-                    QWidget * parent = 0, Qt::WindowFlags f = 0 );
+                    QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    //! Destructor
-    ~QgsGrassRegion();
+
+    ~QgsGrassRegion() override;
 
   public slots:
     void buttonClicked( QAbstractButton *button );
@@ -61,10 +62,10 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     void reloadRegion();
 
     //! Mouse event receiver
-    //void mouseEventReceiverMove ( QgsPoint & );
+    //void mouseEventReceiverMove ( QgsPointXY & );
 
     //! Mouse event receiver
-    //void mouseEventReceiverClick ( QgsPoint & );
+    //void mouseEventReceiverClick ( QgsPointXY & );
 
     //! Calculate region, called if any value is changed
     void adjust( void );
@@ -84,7 +85,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     //! Called when the capture finished to refresh the mWindow values
     void onCaptureFinished();
 
-    void on_mDrawButton_clicked();
+    void mDrawButton_clicked();
 
     void canvasMapToolSet( QgsMapTool *tool );
   private:
@@ -92,12 +93,12 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     //QgsGrassPlugin *mPlugin;
 
     //! Pointer to QGIS interface
-    QgisInterface *mInterface;
+    QgisInterface *mInterface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QButtonGroup *mRadioGroup;
+    QButtonGroup *mRadioGroup = nullptr;
 
     //! Current new region
     struct Cell_head mWindow;
@@ -124,18 +125,18 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     QString formatExtent( double v );
     QString formatResolution( double v );
 
-    QgsGrassRegionEdit* mRegionEdit;
+    QgsGrassRegionEdit *mRegionEdit = nullptr;
 };
 
-/** Map tool which uses rubber band for changing grass region */
+//! Map tool which uses rubber band for changing grass region
 class QgsGrassRegionEdit : public QgsMapTool
 {
     Q_OBJECT
 
   public:
-    explicit QgsGrassRegionEdit( QgsMapCanvas* );
+    explicit QgsGrassRegionEdit( QgsMapCanvas * );
 
-    ~QgsGrassRegionEdit();
+    ~QgsGrassRegionEdit() override;
 
     //! mouse pressed in map canvas
     void canvasPressEvent( QgsMapMouseEvent * ) override;
@@ -150,16 +151,16 @@ class QgsGrassRegionEdit : public QgsMapTool
     //! called when map tool is about to get inactive
     void deactivate() override;
 
-    //! get the rectangle
+    //! Gets the rectangle
     QgsRectangle getRegion();
 
     //! refresh the rectangle displayed in canvas
-    void setRegion( const QgsPoint&, const QgsPoint& );
+    void setRegion( const QgsPointXY &, const QgsPointXY & );
     void setSrcRegion( const QgsRectangle &rect );
 
-    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform *coordinateTransform = 0, bool isPolygon = false );
+    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform &coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
     void calcSrcRegion();
-    static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
+    static void transform( QgsMapCanvas *canvas, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
 
   signals:
     void captureStarted();
@@ -170,16 +171,16 @@ class QgsGrassRegionEdit : public QgsMapTool
 
   private:
     //! Rubber band for selecting grass region
-    QgsRubberBand* mRubberBand;
-    QgsRubberBand* mSrcRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
+    QgsRubberBand *mSrcRubberBand = nullptr;
 
     //! Status of input from canvas
     bool mDraw;
 
     //! First rectangle point
-    QgsPoint mStartPoint;
+    QgsPointXY mStartPoint;
     //! Last rectangle point
-    QgsPoint mEndPoint;
+    QgsPointXY mEndPoint;
 
     //! Region rectangle in source CRS
     QgsRectangle mSrcRectangle;

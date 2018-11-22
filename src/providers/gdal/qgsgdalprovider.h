@@ -33,14 +33,17 @@
 #include <QMap>
 #include <QVector>
 
+class QMutex;
+
 class QgsRasterPyramid;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,
-                                  void * pProgressArg );
+                                  void *pProgressArg );
 
 
 class QgsCoordinateTransform;
@@ -58,224 +61,181 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-     *                otherwise we contact the host directly.
+     * \param   uri         file name
+     * \param   update      whether to open in update mode
+     * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( QString const & uri = nullptr, bool update = false );
+    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, bool update = false, GDALDatasetH newDataset = nullptr );
 
-    /** Create invalid provider with error */
-    QgsGdalProvider( QString const & uri, QgsError error );
+    //! Create invalid provider with error
+    QgsGdalProvider( const QString &uri, const QgsError &error );
 
-    //! Destructor
-    ~QgsGdalProvider();
 
-    QgsGdalProvider * clone() const override;
+    ~QgsGdalProvider() override;
 
-    /** \brief   Renders the layer as an image
+    /**
+     * Gets the data source specification. This may be a path or a protocol
+     * connection string
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
      */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
 
-    /** Return a provider name
+    /**
+     * Clone the provider.
      *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
+     * The underlying GDAL dataset is shared among the main provider and its
+     * clones.
      */
+    QgsGdalProvider *clone() const override;
+
     QString name() const override;
-
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
-
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
-
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent() override;
-
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
-
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
-
-    /**
-     * \brief   Returns the caption error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    double sample( const QgsPointXY &point, int band, bool *ok = nullptr, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
-
-    /**
-     * \brief   Returns the verbose error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
-
     QString lastError() override;
-
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on which
-        sublayers are visible on this provider, so it may
-        be prudent to check this value per intended operation.
-      */
     int capabilities() const override;
-
-    QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
-
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-
     int colorInterpretation( int bandNo ) const override;
-
     int xBlockSize() const override;
     int yBlockSize() const override;
-
     int xSize() const override;
     int ySize() const override;
+    QString generateBandName( int bandNumber ) const override;
 
-    QString generateBandName( int theBandNumber ) const override;
-
-    /** Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
-    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
+    // Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
-
-    /** Read band scale for raster value
-     * @@note added in 2.3 */
+    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     double bandScale( int bandNo ) const override;
-    /** Read band offset for raster value
-     * @@note added in 2.3 */
     double bandOffset( int bandNo ) const override;
-
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
-
-    /**
-     * Get metadata in a format suitable for feeding directly
-     * into a subset of the GUI raster properties "Metadata" tab.
-     */
-    QString metadata() override;
-
-    /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
+    QString htmlMetadata() override;
     QStringList subLayers() const override;
     static QStringList subLayers( GDALDatasetH dataset );
 
-    bool hasStatistics( int theBandNo,
-                        int theStats = QgsRasterBandStats::All,
-                        const QgsRectangle & theExtent = QgsRectangle(),
-                        int theSampleSize = 0 ) override;
+    bool hasStatistics( int bandNo,
+                        int stats = QgsRasterBandStats::All,
+                        const QgsRectangle &boundingBox = QgsRectangle(),
+                        int sampleSize = 0 ) override;
 
-    QgsRasterBandStats bandStatistics( int theBandNo,
-                                       int theStats = QgsRasterBandStats::All,
-                                       const QgsRectangle & theExtent = QgsRectangle(),
-                                       int theSampleSize = 0 ) override;
+    QgsRasterBandStats bandStatistics( int bandNo,
+                                       int stats = QgsRasterBandStats::All,
+                                       const QgsRectangle &boundingBox = QgsRectangle(),
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    bool hasHistogram( int theBandNo,
-                       int theBinCount = 0,
-                       double theMinimum = std::numeric_limits<double>::quiet_NaN(),
-                       double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-                       const QgsRectangle & theExtent = QgsRectangle(),
-                       int theSampleSize = 0,
-                       bool theIncludeOutOfRange = false ) override;
+    bool hasHistogram( int bandNo,
+                       int binCount = 0,
+                       double minimum = std::numeric_limits<double>::quiet_NaN(),
+                       double maximum = std::numeric_limits<double>::quiet_NaN(),
+                       const QgsRectangle &boundingBox = QgsRectangle(),
+                       int sampleSize = 0,
+                       bool includeOutOfRange = false ) override;
 
-    QgsRasterHistogram histogram( int theBandNo,
-                                  int theBinCount = 0,
-                                  double theMinimum = std::numeric_limits<double>::quiet_NaN(),
-                                  double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-                                  const QgsRectangle & theExtent = QgsRectangle(),
-                                  int theSampleSize = 0,
-                                  bool theIncludeOutOfRange = false ) override;
+    QgsRasterHistogram histogram( int bandNo,
+                                  int binCount = 0,
+                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle &boundingBox = QgsRectangle(),
+                                  int sampleSize = 0,
+                                  bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
-                           const QString & theResamplingMethod = "NEAREST",
-                           QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
-                           const QStringList & theCreateOptions = QStringList() ) override;
+    QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
+                           const QString &resamplingMethod = "NEAREST",
+                           QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                           const QStringList &createOptions = QStringList(),
+                           QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
-
-    /** \brief Close data set and release related data */
-    void closeDataset();
-
-    /** Emit a signal to notify of the progress event. */
-    void emitProgress( int theType, double theProgress, QString theMessage );
-    void emitProgressUpdate( int theProgress );
 
     static QMap<QString, QString> supportedMimes();
 
-    /** Writes into the provider datasource*/
-    bool write( void* data, int band, int width, int height, int xOffset, int yOffset ) override;
+    bool isEditable() const override;
+    bool setEditable( bool enabled ) override;
+    bool write( void *data, int band, int width, int height, int xOffset, int yOffset ) override;
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
-
-    /** Remove dataset*/
     bool remove() override;
 
-    QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
-    QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-        const QStringList & theConfigOptions, const QString & fileFormat );
-
+    QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
+    QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+                                           const QStringList &configOptions, const QString &fileFormat ) override;
   private:
+
+    QgsGdalProvider( const QgsGdalProvider &other );
+
+    //! Whether mGdalDataset and mGdalBaseDataset have been attempted to be set
+    bool mHasInit = false;
+
+    //! Open mGdalDataset/mGdalBaseDataset if needed.
+    bool initIfNeeded();
+
+    // There are 2 cloning mechanisms.
+    // * Either the cloned provider use the same GDAL handles as the main provider
+    //   instance, in which case *mpRefCounter is used to count how many providers
+    //    use the main provider. And *mpMutex is used to protect access to the
+    //   GDAL resource.
+    // * Or the cloned provider use its own GDAL handles, but with a cache mechanism
+    //   to avoid constant opening/closing of datasets. In that case *mpParent is
+    //   used to point to the main provider, and *mpLightRefCounter to count how
+    //   many providers point to that main provider.
+
+    // reference counter to know how many main and shared provider instances are linked
+    QAtomicInt *mpRefCounter = nullptr;
+
+    // mutex to protect access to mGdalDataset among main and shared provider instances
+    QMutex *mpMutex = nullptr;
+
+    // pointer to a QgsGdalProvider* that is the parent. Note when *mpParent == this, we are the parent.
+    QgsGdalProvider **mpParent = nullptr;
+
+    // reference counter to know how many main and related provider instances are linked
+    mutable QAtomicInt *mpLightRefCounter = nullptr;
+
     // update mode
     bool mUpdate;
 
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
-    /** Do some initialization on the dataset (e.g. handling of south-up datasets)*/
+    //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
 
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
-    /** \brief Whether this raster has overviews / pyramids or not */
-    bool mHasPyramids;
+    //! \brief Whether this raster has overviews / pyramids or not
+    bool mHasPyramids = false;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
      * may be longer than source data type to keep nulls
      * indexed from 0
      */
     QList<GDALDataType> mGdalDataType;
 
     QgsRectangle mExtent;
-    int mWidth;
-    int mHeight;
-    int mXBlockSize;
-    int mYBlockSize;
+    int mWidth = 0;
+    int mHeight = 0;
+    int mXBlockSize = 0;
+    int mYBlockSize = 0;
+    int mBandCount = 1;
 
     //mutable QList<bool> mMinMaxComputed;
 
@@ -285,21 +245,59 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // List of estimated max values, index 0 for band 1
     //mutable QList<double> mMaximum;
 
-    /** \brief Pointer to the gdaldataset */
-    GDALDatasetH mGdalBaseDataset;
+    //! \brief Pointer to the gdaldataset
+    GDALDatasetH mGdalBaseDataset = nullptr;
 
-    /** \brief Pointer to the gdaldataset (possibly warped vrt) */
-    GDALDatasetH mGdalDataset;
+    //! \brief Pointer to the gdaldataset (possibly warped vrt)
+    GDALDatasetH mGdalDataset = nullptr;
 
-    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
+    //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
     double mGeoTransform[6];
 
     QgsCoordinateReferenceSystem mCrs;
 
     QList<QgsRasterPyramid> mPyramidList;
 
-    /** \brief sublayers list saved for subsequent access */
+    //! \brief sublayers list saved for subsequent access
     QStringList mSubLayers;
+
+    //! Whether a per-dataset mask band is exposed as an alpha band for the point of view of the rest of the application.
+    bool mMaskBandExposedAsAlpha = false;
+
+    //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
+    GDALRasterBandH getBand( int bandNo ) const;
+
+    //! \brief Close data set and release related data
+    void closeDataset();
+
+    //! Pair of GDAL base dataset and "real" dataset handles.
+    struct DatasetPair
+    {
+      GDALDatasetH mGdalBaseDataset;
+      GDALDatasetH mGdalDataset;
+    };
+
+    // Dataset cache
+    static QHash< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
+
+    // Number of cached datasets in mgDatasetCache ( == sum(iter.value().size() )
+    static int mgDatasetCacheSize;
+
+    //! Add handles to the cache if possible for the specified parent provider, in which case true is returned. If false returned, then the handles should be processed appropriately by the caller
+    static bool cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider, GDALDatasetH gdalBaseDataset, GDALDatasetH gdalDataset );
+
+    //! Gets cached handles for the specified provider, in which case true is returned and 2 handles are set.
+    static bool getCachedGdalHandles( QgsGdalProvider *provider, GDALDatasetH &gdalBaseDataset, GDALDatasetH &gdalDataset );
+
+    //! Close all cached dataset for the specified provider.
+    static void closeCachedGdalHandlesFor( QgsGdalProvider *provider );
+
+    /**
+     * Converts a world (\a x, \a y) coordinate to a pixel \a row and \a col.
+     */
+    bool worldToPixel( double x, double y, int &col, int &row ) const;
+
+    bool mStatisticsAreReliable = false;
 };
 
 #endif

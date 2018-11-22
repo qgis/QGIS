@@ -24,57 +24,76 @@ __copyright__ = '(C) 2014, Michael Douchin'
 
 __revision__ = '$Format:%H$'
 
-import processing
-from qgis.core import QgsExpression, QgsFeatureRequest
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterString
+from qgis.core import (QgsExpression,
+                       QgsProcessing,
+                       QgsVectorLayer,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterExpression,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingOutputVectorLayer)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class SelectByExpression(GeoAlgorithm):
+class SelectByExpression(QgisAlgorithm):
 
-    LAYERNAME = 'LAYERNAME'
+    INPUT = 'INPUT'
     EXPRESSION = 'EXPRESSION'
-    RESULT = 'RESULT'
+    OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by expression')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+    def group(self):
+        return self.tr('Vector selection')
 
+    def groupId(self):
+        return 'vectorselection'
+
+    def __init__(self):
+        super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
-                        self.tr('removing from current selection')]
+                        self.tr('removing from current selection'),
+                        self.tr('selecting within current selection')]
 
-        self.addParameter(ParameterVector(self.LAYERNAME,
-                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterString(self.EXPRESSION,
-                                          self.tr("Expression")))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Modify current selection by'), self.methods, 0))
-        self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeVector]))
 
-    def processAlgorithm(self, progress):
-        filename = self.getParameterValue(self.LAYERNAME)
-        layer = processing.getObject(filename)
-        oldSelection = set(layer.selectedFeaturesIds())
-        method = self.getParameterValue(self.METHOD)
+        self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
+                                                           self.tr('Expression'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Modify current selection by'), self.methods, 0))
 
-        expression = self.getParameterValue(self.EXPRESSION)
-        qExp = QgsExpression(expression)
-        if not qExp.hasParserError():
-            qReq = QgsFeatureRequest(qExp)
-        else:
-            raise GeoAlgorithmExecutionException(qExp.parserErrorString())
-        selected = [f.id() for f in layer.getFeatures(qReq)]
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
-        if method == 1:
-            selected = list(oldSelection.union(selected))
+    def name(self):
+        return 'selectbyexpression'
+
+    def displayName(self):
+        return self.tr('Select by expression')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+        if method == 0:
+            behavior = QgsVectorLayer.SetSelection
+        elif method == 1:
+            behavior = QgsVectorLayer.AddToSelection
         elif method == 2:
-            selected = list(oldSelection.difference(selected))
+            behavior = QgsVectorLayer.RemoveFromSelection
+        elif method == 3:
+            behavior = QgsVectorLayer.IntersectSelection
 
-        layer.setSelectedFeatures(selected)
-        self.setOutputValue(self.RESULT, filename)
+        expression = self.parameterAsString(parameters, self.EXPRESSION, context)
+        qExp = QgsExpression(expression)
+        if qExp.hasParserError():
+            raise QgsProcessingException(qExp.parserErrorString())
+
+        layer.selectByExpression(expression, behavior)
+
+        return {self.OUTPUT: parameters[self.INPUT]}

@@ -19,30 +19,62 @@
 class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
+#include "qgis.h"
+#include "qgis_gui.h"
 
+#ifdef SIP_RUN
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+% ModuleCode
+#include "qgsfeatureselectiondlg.h"
+% End
+#endif
+
+/**
+ * \ingroup gui
+ * \class QgsFeatureSelectionDlg
+ */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFeatureSelectionDlg *>( sipCpp ) )
+      sipType = sipType_QgsFeatureSelectionDlg;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent = nullptr );
+
+    //! Constructor for QgsFeatureSelectionDlg
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Get the selected features
+     * Gets the selected features
      *
-     * @return The selected feature ids
+     * \returns The selected feature ids
      */
-    const QgsFeatureIds& selectedFeatures();
+    const QgsFeatureIds &selectedFeatures();
 
     /**
      * Set the selected features
-     * @param ids The feature ids to select
+     * \param ids The feature ids to select
      */
-    void setSelectedFeatures( const QgsFeatureIds& ids );
+    void setSelectedFeatures( const QgsFeatureIds &ids );
 
   private:
-    QgsGenericFeatureSelectionManager* mFeatureSelection;
-    QgsVectorLayer* mVectorLayer;
+    QgsGenericFeatureSelectionManager *mFeatureSelection = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+
+    // QWidget interface
+  protected:
+
+    //! Make sure the dialog does not grow too much
+    void showEvent( QShowEvent *event ) override;
 };
 
 #endif // QGSFEATURESELECTIONDLG_H

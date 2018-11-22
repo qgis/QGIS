@@ -18,81 +18,88 @@
 #ifndef QGSNETWORKDISKCACHE_H
 #define QGSNETWORKDISKCACHE_H
 
+#define SIP_NO_FILE
+
 #include <QNetworkDiskCache>
 #include <QMutex>
 
 class QNetworkDiskCache;
 
+///@cond PRIVATE
+
+class ExpirableNetworkDiskCache : public QNetworkDiskCache
+{
+    Q_OBJECT
+
+  public:
+    explicit ExpirableNetworkDiskCache( QObject *parent = nullptr ) : QNetworkDiskCache( parent ) {}
+    qint64 runExpire() { return QNetworkDiskCache::expire(); }
+};
+
+///@endcond
+
 /**
+ * \ingroup core
  * Wrapper implementation of QNetworkDiskCache with all methods guarded by a
  * mutex soly for internal use of QgsNetworkAccessManagers
  *
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsNetworkDiskCache : public QNetworkDiskCache
 {
     Q_OBJECT
 
   public:
-    ~QgsNetworkDiskCache();
 
-    //! @see QNetworkDiskCache::cacheDirectory
+    //! \see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
 
-    //! @see QNetworkDiskCache::setCacheDirectory
+    //! \see QNetworkDiskCache::setCacheDirectory
     void setCacheDirectory( const QString &cacheDir );
 
-    //! @see QNetworkDiskCache::maximumCacheSize()
+    //! \see QNetworkDiskCache::maximumCacheSize()
     qint64 maximumCacheSize() const;
 
-    //! @see QNetworkDiskCache::setMaximumCacheSize()
+    //! \see QNetworkDiskCache::setMaximumCacheSize()
     void setMaximumCacheSize( qint64 size );
 
-    //! @see QNetworkDiskCache::metaData()
+    //! \see QNetworkDiskCache::metaData()
     QNetworkCacheMetaData metaData( const QUrl &url ) override;
 
-    //! @see QNetworkDiskCache::updateMetaData()
+    //! \see QNetworkDiskCache::updateMetaData()
     void updateMetaData( const QNetworkCacheMetaData &metaData ) override;
 
-    //! @see QNetworkDiskCache::data()
+    //! \see QNetworkDiskCache::data()
     QIODevice *data( const QUrl &url ) override;
 
-    //! @see QNetworkDiskCache::remove()
+    //! \see QNetworkDiskCache::remove()
     bool remove( const QUrl &url ) override;
 
-    //! @see QNetworkDiskCache::cacheSize()
+    //! \see QNetworkDiskCache::cacheSize()
     qint64 cacheSize() const override;
 
-    //! @see QNetworkDiskCache::prepare()
+    //! \see QNetworkDiskCache::prepare()
     QIODevice *prepare( const QNetworkCacheMetaData &metaData ) override;
 
-    //! @see QNetworkDiskCache::insert()
+    //! \see QNetworkDiskCache::insert()
     void insert( QIODevice *device ) override;
 
-    //! @see QNetworkDiskCache::fileMetaData()
+    //! \see QNetworkDiskCache::fileMetaData()
     QNetworkCacheMetaData fileMetaData( const QString &fileName ) const;
 
   public slots:
-    //! @see QNetworkDiskCache::clear()
+    //! \see QNetworkDiskCache::clear()
     void clear() override;
 
   protected:
-    //! @see QNetworkDiskCache::expire()
-    virtual qint64 expire() override;
+    //! \see QNetworkDiskCache::expire()
+    qint64 expire() override;
 
   private:
     explicit QgsNetworkDiskCache( QObject *parent );
-    Q_DISABLE_COPY( QgsNetworkDiskCache )
 
-    class ExpirableNetworkDiskCache : public QNetworkDiskCache
-    {
-      public:
-        explicit ExpirableNetworkDiskCache( QObject *parent = 0 ) : QNetworkDiskCache( parent ) {}
-        qint64 runExpire() { return QNetworkDiskCache::expire(); }
-    };
-
-    static ExpirableNetworkDiskCache smDiskCache;
-    static QMutex smDiskCacheMutex;
+    static ExpirableNetworkDiskCache sDiskCache;
+    static QMutex sDiskCacheMutex;
 
     friend class QgsNetworkAccessManager;
 };

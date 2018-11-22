@@ -24,15 +24,12 @@
 #include <QImage>
 #include <QPainter>
 
-#define tr( sourceText ) QCoreApplication::translate ( "QgsRasterRenderer", sourceText )
-
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
-    : QgsRasterInterface( input )
-    , mType( type ), mOpacity( 1.0 ), mRasterTransparency( nullptr )
-    , mAlphaBand( -1 ) //, mInvertColor( false )
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &type )
+  : QgsRasterInterface( input )
+  , mType( type )
 {
 }
 
@@ -50,18 +47,18 @@ int QgsRasterRenderer::bandCount() const
   return 0;
 }
 
-QGis::DataType QgsRasterRenderer::dataType( int bandNo ) const
+Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
-  if ( mOn ) return QGis::ARGB32_Premultiplied;
+  if ( mOn ) return Qgis::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QGis::UnknownDataType;
+  return Qgis::UnknownDataType;
 }
 
-bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
+bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
   if ( !input ) return false;
@@ -93,191 +90,67 @@ bool QgsRasterRenderer::usesTransparency() const
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !qgsDoubleNear( mOpacity, 1.0 ) );
 }
 
-void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
+void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
 {
   delete mRasterTransparency;
   mRasterTransparency = t;
 }
 
-void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const
+void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const
 {
   if ( rasterRendererElem.isNull() )
   {
     return;
   }
 
-  rasterRendererElem.setAttribute( "type", mType );
-  rasterRendererElem.setAttribute( "opacity", QString::number( mOpacity ) );
-  rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "type" ), mType );
+  rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), mAlphaBand );
 
   if ( mRasterTransparency )
   {
-    mRasterTransparency->writeXML( doc, rasterRendererElem );
+    mRasterTransparency->writeXml( doc, rasterRendererElem );
   }
+
+  QDomElement minMaxOriginElem = doc.createElement( QStringLiteral( "minMaxOrigin" ) );
+  mMinMaxOrigin.writeXml( doc, minMaxOriginElem );
+  rasterRendererElem.appendChild( minMaxOriginElem );
 }
 
-void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
+void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
 {
   if ( rendererElem.isNull() )
   {
     return;
   }
 
-  mType = rendererElem.attribute( "type" );
-  mOpacity = rendererElem.attribute( "opacity", "1.0" ).toDouble();
-  mAlphaBand = rendererElem.attribute( "alphaBand", "-1" ).toInt();
+  mType = rendererElem.attribute( QStringLiteral( "type" ) );
+  mOpacity = rendererElem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
+  mAlphaBand = rendererElem.attribute( QStringLiteral( "alphaBand" ), QStringLiteral( "-1" ) ).toInt();
 
-  QDomElement rasterTransparencyElem = rendererElem.firstChildElement( "rasterTransparency" );
+  QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
     delete mRasterTransparency;
     mRasterTransparency = new QgsRasterTransparency();
-    mRasterTransparency->readXML( rasterTransparencyElem );
+    mRasterTransparency->readXml( rasterTransparencyElem );
+  }
+
+  QDomElement minMaxOriginElem = rendererElem.firstChildElement( QStringLiteral( "minMaxOrigin" ) );
+  if ( !minMaxOriginElem.isNull() )
+  {
+    mMinMaxOrigin.readXml( minMaxOriginElem );
   }
 }
 
-QString QgsRasterRenderer::minMaxOriginName( int theOrigin )
+void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin )
 {
-  if ( theOrigin == MinMaxUnknown )
-  {
-    return "Unknown";
-  }
-  else if ( theOrigin == MinMaxUser )
-  {
-    return "User";
-  }
+  if ( !other )
+    return;
 
-  QString name;
-  if ( theOrigin & MinMaxMinMax )
-  {
-    name += "MinMax";
-  }
-  else if ( theOrigin & MinMaxCumulativeCut )
-  {
-    name += "CumulativeCut";
-  }
-  else if ( theOrigin & MinMaxStdDev )
-  {
-    name += "StdDev";
-  }
-
-  if ( theOrigin & MinMaxFullExtent )
-  {
-    name += "FullExtent";
-  }
-  else if ( theOrigin & MinMaxSubExtent )
-  {
-    name += "SubExtent";
-  }
-
-  if ( theOrigin & MinMaxEstimated )
-  {
-    name += "Estimated";
-  }
-  else if ( theOrigin & MinMaxExact )
-  {
-    name += "Exact";
-  }
-  return name;
-}
-
-QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
-{
-  if ( theOrigin == MinMaxUnknown )
-  {
-    return tr( "Unknown" );
-  }
-  else if ( theOrigin == MinMaxUser )
-  {
-    return tr( "User defined" );
-  }
-
-  QString label;
-  QString est_exact;
-  QString values;
-  QString extent;
-
-  if ( theOrigin & MinMaxEstimated )
-  {
-    est_exact = tr( "Estimated" );
-  }
-  else if ( theOrigin & MinMaxExact )
-  {
-    est_exact = tr( "Exact" );
-  }
-
-  if ( theOrigin & MinMaxMinMax )
-  {
-    values = tr( "min / max" );
-  }
-  else if ( theOrigin & MinMaxCumulativeCut )
-  {
-    values = tr( "cumulative cut" );
-  }
-  else if ( theOrigin & MinMaxStdDev )
-  {
-    values = tr( "standard deviation" );
-  }
-
-  if ( theOrigin & MinMaxFullExtent )
-  {
-    extent = tr( "full extent" );
-  }
-  else if ( theOrigin & MinMaxSubExtent )
-  {
-    extent = tr( "sub extent" );
-  }
-
-  label = QCoreApplication::translate( "QgsRasterRenderer", "%1 %2 of %3.",
-                                       "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
-          .arg( est_exact,
-                values,
-                extent );
-  return label;
-}
-
-int QgsRasterRenderer::minMaxOriginFromName( const QString& theName )
-{
-  if ( theName.contains( "Unknown" ) )
-  {
-    return MinMaxUnknown;
-  }
-  else if ( theName.contains( "User" ) )
-  {
-    return MinMaxUser;
-  }
-
-  int origin = 0;
-
-  if ( theName.contains( "MinMax" ) )
-  {
-    origin |= MinMaxMinMax;
-  }
-  else if ( theName.contains( "CumulativeCut" ) )
-  {
-    origin |= MinMaxCumulativeCut;
-  }
-  else if ( theName.contains( "StdDev" ) )
-  {
-    origin |= MinMaxStdDev;
-  }
-
-  if ( theName.contains( "FullExtent" ) )
-  {
-    origin |= MinMaxFullExtent;
-  }
-  else if ( theName.contains( "SubExtent" ) )
-  {
-    origin |= MinMaxSubExtent;
-  }
-
-  if ( theName.contains( "Estimated" ) )
-  {
-    origin |= MinMaxEstimated;
-  }
-  else if ( theName.contains( "Exact" ) )
-  {
-    origin |= MinMaxExact;
-  }
-  return origin;
+  setOpacity( other->opacity() );
+  setAlphaBand( other->alphaBand() );
+  setRasterTransparency( other->rasterTransparency() ? new QgsRasterTransparency( *other->rasterTransparency() ) : nullptr );
+  if ( copyMinMaxOrigin )
+    setMinMaxOrigin( other->minMaxOrigin() );
 }

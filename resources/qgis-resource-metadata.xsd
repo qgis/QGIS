@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+###############################################################################
+#
+# Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2017 Angelos Tzotsos (gcpp.kalxas@gmail.com)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+###############################################################################
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:rm="http://qgis.org/resource-metadata/1.0" targetNamespace="http://qgis.org/resource-metadata/1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:include schemaLocation="qgis-base-metadata.xsd"/>
+	<xs:element name="ResourceMetadata" type="rm:ResourceMetadataType" base="rm:BaseMetadataType">
+		<xs:annotation>
+			<xs:appinfo>QGIS Resource Metadata Schema</xs:appinfo>
+			<xs:documentation>Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)</xs:documentation>
+			<xs:documentation>Copyright (C) 2017 Angelos Tzotsos (gcpp.kalxas@gmail.com)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ResourceMetadataType">
+		<xs:sequence>
+			<xs:element name="fees" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Any fees associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="constraints" type="rm:constraintsType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of constraints associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rights" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Attribution or copyright associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+      <xs:element name="license" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>License associated with a given resource (examples: http://opendefinition.org/licenses/).</xs:documentation>
+				</xs:annotation>
+      </xs:element>
+			<xs:element name="encoding" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Character encoding of the data of a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="crs" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Coordinate reference system associated with the data of a given resource.  Examples:
+						* EPSG:EPSGCODE
+						* http://www.opengis.net/def/crs/EPSG/0/EPSGCODE (URI Style 1)
+						* http://www.opengis.net/gml/srs/epsg.xml#EPSGCODE (URI Style 2)
+						* urn:EPSG:geographicCRS:EPSGCODE
+						* urn:ogc:def:crs:EPSG::EPSGCODE
+						* urn:ogc:def:crs:EPSG:EPSGCODE
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="extent" type="rm:extentType" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Spatial and temporal extents associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="version" use="required" fixed="1.0">
+			<xs:annotation>
+				<xs:documentation>Version of QGIS Resource Metadata schema used. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="constraintsType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Type of constraint.  Suggested types are 'access', 'other'.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="extentType">
+		<xs:sequence>
+			<xs:element name="spatial" type="rm:spatialType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Geospatial Extent of a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="temporal" type="rm:temporalType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Temporal extent associated with a given resource.  It is advised to use ISO 8601 for consistency.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="spatialType">
+		<xs:attribute name="dimensions" type="xs:integer" default="2"/>
+		<xs:attribute name="crs" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Coordinate reference system.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="minx" type="xs:decimal" use="required">
+			<xs:annotation>
+				<xs:documentation>Minimum x value according to crs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="miny" type="xs:decimal" use="required">
+			<xs:annotation>
+				<xs:documentation>Minimum y value according to crs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="minz" type="xs:decimal" use="optional">
+			<xs:annotation>
+				<xs:documentation>Minimum z value according to crs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxx" type="xs:decimal" use="required">
+			<xs:annotation>
+				<xs:documentation>Maximum x value according to crs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxy" type="xs:decimal" use="required">
+			<xs:annotation>
+				<xs:documentation>Maximum y value according to crs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxz" type="xs:decimal" use="optional">
+			<xs:annotation>
+				<xs:documentation>Maximum z value according to crs.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="temporalType">
+		<xs:choice>
+			<xs:element name="instant" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>Single point in time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="period" type="rm:periodType">
+				<xs:annotation>
+					<xs:documentation>Time period or envelope.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="periodType">
+		<xs:sequence>
+			<xs:element name="start" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>Begin date/time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="end" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>End date/time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="indeterminatePosition" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Whether resource has no end date/time (i.e. continuous acquisition).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

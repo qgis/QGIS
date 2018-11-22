@@ -25,90 +25,85 @@
 #include "qgsmaplayerstylemanager.h"
 
 
-QgsMapLayerStyleGuiUtils* QgsMapLayerStyleGuiUtils::instance()
+QgsMapLayerStyleGuiUtils *QgsMapLayerStyleGuiUtils::instance()
 {
   static QgsMapLayerStyleGuiUtils sInstance;
   return &sInstance;
 }
 
-QAction* QgsMapLayerStyleGuiUtils::actionAddStyle( QgsMapLayer* layer, QObject* parent )
+QAction *QgsMapLayerStyleGuiUtils::actionAddStyle( QgsMapLayer *layer, QObject *parent )
 {
-  QAction* a = new QAction( tr( "Add..." ), parent );
-  a->setData( QVariant::fromValue<QObject*>( layer ) );
-  connect( a, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
+  QAction *a = new QAction( tr( "Add…" ), parent );
+  a->setData( QVariant::fromValue<QObject *>( layer ) );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::addStyle );
   return a;
 }
 
-QAction* QgsMapLayerStyleGuiUtils::actionRemoveStyle( QgsMapLayer* layer, QObject* parent )
+QAction *QgsMapLayerStyleGuiUtils::actionRemoveStyle( QgsMapLayer *layer, QObject *parent )
 {
-  QAction* a = new QAction( tr( "Remove Current" ), parent );
-  a->connect( a, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
-  a->setData( QVariant::fromValue<QObject*>( layer ) );
+  QAction *a = new QAction( tr( "Remove Current" ), parent );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::removeStyle );
+  a->setData( QVariant::fromValue<QObject *>( layer ) );
   a->setEnabled( layer->styleManager()->styles().count() > 1 );
   return a;
 }
 
-QAction* QgsMapLayerStyleGuiUtils::actionRenameStyle( QgsMapLayer* layer, QObject* parent )
+QAction *QgsMapLayerStyleGuiUtils::actionRenameStyle( QgsMapLayer *layer, QObject *parent )
 {
-  QAction* a = new QAction( tr( "Rename Current..." ), parent );
-  a->connect( a, SIGNAL( triggered() ), this, SLOT( renameStyle() ) );
-  a->setData( QVariant::fromValue<QObject*>( layer ) );
+  QAction *a = new QAction( tr( "Rename Current…" ), parent );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::renameStyle );
+  a->setData( QVariant::fromValue<QObject *>( layer ) );
   return a;
 }
 
-QList<QAction*> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer* layer, QObject* parent )
+QList<QAction *> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer *layer, QObject *parent )
 {
-  QgsMapLayerStyleManager* mgr = layer->styleManager();
+  QgsMapLayerStyleManager *mgr = layer->styleManager();
   bool onlyOneStyle = mgr->styles().count() == 1;
 
-  QList<QAction*> actions;
-  Q_FOREACH ( QString name, mgr->styles() )
+  QList<QAction *> actions;
+  Q_FOREACH ( const QString &name, mgr->styles() )
   {
     bool active = name == mgr->currentStyle();
-    if ( name.isEmpty() )
-      name = defaultStyleName();
-    QAction* actionUse = new QAction( name, parent );
-    connect( actionUse, SIGNAL( triggered() ), this, SLOT( useStyle() ) );
+    QAction *actionUse = new QAction( name, parent );
+    connect( actionUse, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::useStyle );
     actionUse->setCheckable( true );
     actionUse->setChecked( active );
     actionUse->setEnabled( !onlyOneStyle );
 
-    actionUse->setData( QVariant::fromValue<QObject*>( layer ) );
+    actionUse->setData( QVariant::fromValue<QObject *>( layer ) );
     actions << actionUse;
   }
   return actions;
 }
 
-void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu* m, QgsMapLayer* layer )
+void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *layer )
 {
+  if ( ! layer )
+    return;
+
   m->addAction( actionAddStyle( layer, m ) );
   if ( layer->styleManager()->styles().count() > 1 )
     m->addAction( actionRemoveStyle( layer, m ) );
   m->addAction( actionRenameStyle( layer, m ) );
   m->addSeparator();
-  Q_FOREACH ( QAction* a, actionsUseStyle( layer, m ) )
+  Q_FOREACH ( QAction *a, actionsUseStyle( layer, m ) )
     m->addAction( a );
 }
 
-QString QgsMapLayerStyleGuiUtils::defaultStyleName()
-{
-  return tr( "(default)" );
-}
-
-
 void QgsMapLayerStyleGuiUtils::addStyle()
 {
-  QAction* a = qobject_cast<QAction*>( sender() );
+  QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( a->data().value<QObject*>() );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
 
   bool ok;
   QString text = QInputDialog::getText( nullptr, tr( "New style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
-                                        "new style", &ok );
+                                        QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -126,15 +121,13 @@ void QgsMapLayerStyleGuiUtils::addStyle()
 
 void QgsMapLayerStyleGuiUtils::useStyle()
 {
-  QAction* a = qobject_cast<QAction*>( sender() );
+  QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( a->data().value<QObject*>() );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
   QString name = a->text();
-  if ( name == defaultStyleName() )
-    name.clear();
 
   bool res = layer->styleManager()->setCurrentStyle( name );
   if ( !res )
@@ -146,27 +139,27 @@ void QgsMapLayerStyleGuiUtils::useStyle()
 
 void QgsMapLayerStyleGuiUtils::removeStyle()
 {
-  QAction* a = qobject_cast<QAction*>( sender() );
+  QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( a->data().value<QObject*>() );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
 
   bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
   if ( !res )
   {
-    QgsDebugMsg( "Failed to remove current style" );
+    QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
   }
 }
 
 
 void QgsMapLayerStyleGuiUtils::renameStyle()
 {
-  QAction* a = qobject_cast<QAction*>( sender() );
+  QAction *a = qobject_cast<QAction *>( sender() );
   if ( !a )
     return;
-  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( a->data().value<QObject*>() );
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
   if ( !layer )
     return;
 

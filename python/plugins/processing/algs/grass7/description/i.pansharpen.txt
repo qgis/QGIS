@@ -1,0 +1,13 @@
+i.pansharpen
+Image fusion algorithms to sharpen multispectral with high-res panchromatic channels
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|red|Name of red channel|None|False
+QgsProcessingParameterRasterLayer|green|Name of green channel|None|False
+QgsProcessingParameterRasterLayer|blue|Name of blue channel|None|False
+QgsProcessingParameterRasterLayer|pan|Name of raster map to be used for high resolution panchromatic channel|None|False
+QgsProcessingParameterEnum|method|Method|brovey;ihs;pca|False|1|False
+*QgsProcessingParameterBoolean|-l|Rebalance blue channel for LANDSAT|False
+*QgsProcessingParameterBoolean|-s|Process bands serially (default: run in parallel)|False
+QgsProcessingParameterRasterDestination|redoutput|Enhanced Red
+QgsProcessingParameterRasterDestination|greenoutput|Enhanced Green
+QgsProcessingParameterRasterDestination|blueoutput|Enhanced Blue

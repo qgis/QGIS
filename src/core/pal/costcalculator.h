@@ -15,6 +15,8 @@
 #ifndef COSTCALCULATOR_H
 #define COSTCALCULATOR_H
 
+#define SIP_NO_FILE
+
 #include <QList>
 #include "rtree.hpp"
 
@@ -27,30 +29,36 @@ namespace pal
 {
   class Feats;
 
+  /**
+   * \ingroup core
+   */
   class CostCalculator
   {
     public:
-      /** Increase candidate's cost according to its collision with passed feature */
-      static void addObstacleCostPenalty( LabelPosition* lp, pal::FeaturePart *obstacle );
+      //! Increase candidate's cost according to its collision with passed feature
+      static void addObstacleCostPenalty( LabelPosition *lp, pal::FeaturePart *obstacle );
 
-      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition* >& lPos, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( int nblp, QList< LabelPosition * > &lPos, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      /** Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field */
-      static void setCandidateCostFromPolygon( LabelPosition* lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      //! Sets cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field
+      static void setCandidateCostFromPolygon( LabelPosition *lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      /** Sort candidates by costs, skip the worse ones, evaluate polygon candidates */
-      static int finalizeCandidatesCosts( Feats* feat, int max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
+      static int finalizeCandidatesCosts( Feats *feat, int max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      /** Sorts label candidates in ascending order of cost
+      /**
+       * Sorts label candidates in ascending order of cost
        */
       static bool candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 );
 
-      /** Sorts label candidates in descending order of cost
+      /**
+       * Sorts label candidates in descending order of cost
        */
       static bool candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 );
   };
 
   /**
+   * \ingroup core
    * \brief Data structure to compute polygon's candidates costs
    *
    *  Eight segments from center of candidate to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
@@ -73,7 +81,7 @@ namespace pal
 
     private:
 
-      LabelPosition *lp;
+      LabelPosition *lp = nullptr;
       double px, py;
       double dist;
       bool ok;

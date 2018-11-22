@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgslocalec.h>
+#include "qgslocalec.h"
 
-#include <locale.h>
+#include <locale>
 #include <QByteArray>
 
 QMutex QgsLocaleNumC::sLocaleLock;
@@ -36,8 +36,7 @@ QgsLocaleNumC::QgsLocaleNumC()
 QgsLocaleNumC::~QgsLocaleNumC()
 {
   setlocale( LC_NUMERIC, mOldlocale );
-  if ( mOldlocale )
-    delete [] mOldlocale;
+  delete [] mOldlocale;
 
   sLocaleLock.unlock();
 }

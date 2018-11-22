@@ -1,0 +1,10 @@
+v.what.rast
+Uploads raster values at positions of vector centroids to the table.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|map|Name of vector points map for which to edit attributes|-1|None|False
+QgsProcessingParameterRasterLayer|raster|Raster map to be sampled|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;centroid|False|0|False
+QgsProcessingParameterField|column|Name of attribute column to be updated with the query result|None|map|0|False|False
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+*QgsProcessingParameterBoolean|-i|Interpolate values from the nearest four cells|False|True
+QgsProcessingParameterVectorDestination|output|Sampled

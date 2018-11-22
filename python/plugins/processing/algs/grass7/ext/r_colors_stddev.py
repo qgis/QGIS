@@ -25,56 +25,31 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
-def processInputs(alg):
+
+def processInputs(alg, parameters, context, feedback):
     # We need to import all the bands and to preserve color table
-    raster = alg.getParameterValue('map')
-    if raster in alg.exportedLayers.keys():
+    if 'map' in alg.exportedLayers:
         return
 
-    alg.setSessionProjectionFromLayer(raster, alg.commands)
-    destFilename = alg.getTempFilename()
-    alg.exportedLayers[raster] = destFilename
-    command = 'r.in.gdal input={} output={} --overwrite -o'.format(raster, destFilename)
-    alg.commands.append(command)
-
-    alg.setSessionProjectionFromProject(alg.commands)
-
-    region = unicode(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
-    regionCoords = region.split(',')
-    command = 'g.region'
-    command += ' -a'
-    command += ' n=' + unicode(regionCoords[3])
-    command += ' s=' + unicode(regionCoords[2])
-    command += ' e=' + unicode(regionCoords[1])
-    command += ' w=' + unicode(regionCoords[0])
-    cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
-    if cellsize:
-        command += ' res=' + unicode(cellsize)
-    else:
-        command += ' res=' + unicode(alg.getDefaultCellsize())
-    alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
-    if alignToResolution:
-        command += ' -a'
-    alg.commands.append(command)
+    # We need to import all the bands and color tables of the input raster
+    alg.loadRasterLayerFromParameter('map', parameters, context, False, None)
+    alg.postInputs()
 
 
-def processCommand(alg):
+def processCommand(alg, parameters, context, feedback):
     # We need to remove output
-    output = alg.getOutputFromName('output')
-    alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
-    alg.removeOutputFromName('output')
-    alg.processCommand()
-    alg.addOutput(output)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context, feedback):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
     # We need to export the raster with all its bands and its color table
-    output = alg.getOutputValue('output')
-    raster = alg.getParameterFromName('map')
-
-    # Get the list of rasters matching the basename
-    command = "r.out.gdal -t input={} output=\"{}\" createopt=\"TFW=YES,COMPRESS=LZW\"".format(
-        alg.exportedLayers[raster.value], output)
-    alg.commands.append(command)
-    alg.outputCommands.append(command)
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+    grassName = alg.exportedLayers['map']
+    alg.exportRasterLayer(grassName, fileName, True,
+                          outFormat, createOpt, metaOpt)

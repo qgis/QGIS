@@ -35,15 +35,7 @@ class ContextAction:
         self.itemData = itemData
         self.toolbox = toolbox
 
-    def updateToolbox(self):
-        '''
-        Updates the list of algorithms and then the toolbox.
-        It only update the item corresponding to the provider of the algorithm.
-        To be called after the action is executed, if needed
-        '''
-        self.toolbox.updateProvider(self.alg.provider.getName())
-
     def tr(self, string, context=''):
         if context == '':
-            context = 'ContextAction'
+            context = self.__class__.__name__
         return QCoreApplication.translate(context, string)

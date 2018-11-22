@@ -1,7 +1,7 @@
 v.hull
 Produces a convex hull for a given vector map.
 Vector (v.*)
-ParameterVector|input|Input layer|0|False
-ParameterBoolean|-a|Use all vector points (do not limit to current region)|False
-OutputVector|output|Convex hull
-
+QgsProcessingParameterFeatureSource|input|Input layer|0|None|False
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterBoolean|-f|Create a 'flat' 2D hull even if the input is 3D points|False
+QgsProcessingParameterVectorDestination|output|Convex hull

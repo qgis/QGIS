@@ -22,41 +22,36 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
-    : QDialog( parent )
-    , mPassCurOk( false )
-    , mPassNewOk( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged );
+    connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassNew_textChanged );
   }
-}
-
-QgsMasterPasswordResetDialog::~QgsMasterPasswordResetDialog()
-{
 }
 
 bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup )
 {
-  if ( !QgsAuthManager::instance()->isDisabled() )
+  if ( !QgsApplication::authManager()->isDisabled() )
   {
     validatePasswords();
     leMasterPassCurrent->setFocus();
 
     bool ok = ( exec() == QDialog::Accepted );
-    //QgsDebugMsg( QString( "exec(): %1" ).arg( ok ? "true" : "false" ) );
+    //QgsDebugMsg( QStringLiteral( "exec(): %1" ).arg( ok ? "true" : "false" ) );
 
     if ( ok )
     {
@@ -69,38 +64,28 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
   return false;
 }
 
-void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QString& pass )
+void QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged( const QString &pass )
 {
   // since this is called on every keystroke, block signals emitted during verification of password
-  QgsAuthManager::instance()->blockSignals( true );
+  QgsApplication::authManager()->blockSignals( true );
   mPassCurOk = !pass.isEmpty();
-  QgsAuthManager::instance()->blockSignals( false );
+  QgsApplication::authManager()->blockSignals( false );
   validatePasswords();
 }
 
-void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString& pass )
+void QgsMasterPasswordResetDialog::leMasterPassNew_textChanged( const QString &pass )
 {
   mPassNewOk = !pass.isEmpty();
   validatePasswords();
 }
 
-void QgsMasterPasswordResetDialog::on_chkPassShowCurrent_stateChanged( int state )
-{
-  leMasterPassCurrent->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-}
-
-void QgsMasterPasswordResetDialog::on_chkPassShowNew_stateChanged( int state )
-{
-  leMasterPassNew->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-}
-
 void QgsMasterPasswordResetDialog::validatePasswords()
 {
-  QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
-                : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+  QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassCurrent->setStyleSheet( ss1 );
-  QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( "QLineEdit" )
-                : QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" );
+  QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassNew->setStyleSheet( ss2 );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mPassCurOk && mPassNewOk );
 }

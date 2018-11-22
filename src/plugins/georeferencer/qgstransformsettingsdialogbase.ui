@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Transformation settings</string>
+   <string>Transformation Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -22,6 +22,12 @@
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
        <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Transformation type</string>
         </property>
@@ -71,6 +77,12 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="textLabel1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Resampling method</string>
         </property>
@@ -88,6 +100,12 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Target SRS</string>
         </property>
@@ -104,27 +122,20 @@
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Output raster</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QLineEdit" name="leOutputRaster"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="tbnOutputRaster">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QgsFileWidget" name="mOutputRaster">
+       </widget>
       </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="cmbCompressionComboBox">
@@ -205,6 +216,12 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="mCompressionLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Compression</string>
         </property>
@@ -277,21 +294,8 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="spacing">
-         <number>1</number>
-        </property>
-        <item>
-         <widget class="QLineEdit" name="mMapFileLineEdit"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="tbnMapFile">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QgsFileWidget" name="mPdfMap">
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
@@ -301,21 +305,8 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="spacing">
-         <number>1</number>
-        </property>
-        <item>
-         <widget class="QLineEdit" name="mReportFileLineEdit"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="tbnReportFile">
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QgsFileWidget" name="mPdfReport">
+       </widget>
       </item>
      </layout>
     </widget>
@@ -334,23 +325,26 @@
    <header location="global">qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cmbTransformType</tabstop>
   <tabstop>cmbResampling</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>leOutputRaster</tabstop>
-  <tabstop>tbnOutputRaster</tabstop>
+  <tabstop>mOutputRaster</tabstop>
   <tabstop>cmbCompressionComboBox</tabstop>
   <tabstop>mWorldFileCheckBox</tabstop>
   <tabstop>cbxZeroAsTrans</tabstop>
   <tabstop>cbxUserResolution</tabstop>
   <tabstop>dsbHorizRes</tabstop>
   <tabstop>dsbVerticalRes</tabstop>
-  <tabstop>mMapFileLineEdit</tabstop>
-  <tabstop>tbnMapFile</tabstop>
-  <tabstop>mReportFileLineEdit</tabstop>
-  <tabstop>tbnReportFile</tabstop>
+  <tabstop>mPdfMap</tabstop>
+  <tabstop>mPdfReport</tabstop>
   <tabstop>cbxLoadInQgisWhenDone</tabstop>
  </tabstops>
  <resources/>

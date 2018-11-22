@@ -14,29 +14,30 @@
  ***************************************************************************/
 
 #include "qgspointmarkeritem.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include <QPainter>
 #include <cmath>
 
-QgsPointMarkerItem::QgsPointMarkerItem( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas )
-    , mOpacityEffect( new QgsDrawSourceEffect() )
+QgsPointMarkerItem::QgsPointMarkerItem( QgsMapCanvas *canvas )
+  : QgsMapCanvasItem( canvas )
+  , mOpacityEffect( new QgsDrawSourceEffect() )
 {
   setCacheMode( QGraphicsItem::ItemCoordinateCache );
 }
 
-QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
+QgsRenderContext QgsPointMarkerItem::renderContext( QPainter *painter )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else
   {
@@ -54,7 +55,7 @@ QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
   return rc;
 }
 
-void QgsPointMarkerItem::paint( QPainter * painter )
+void QgsPointMarkerItem::paint( QPainter *painter )
 {
   if ( !painter )
   {
@@ -63,7 +64,7 @@ void QgsPointMarkerItem::paint( QPainter * painter )
 
   QgsRenderContext rc = renderContext( painter );
 
-  bool useEffect = !qgsDoubleNear( mOpacityEffect->transparency(), 0.0 );
+  bool useEffect = !qgsDoubleNear( mOpacityEffect->opacity(), 1.0 );
   if ( useEffect )
   {
     //use a paint effect to reduce opacity. If we directly set the opacity on the painter, then the symbol will NOT
@@ -81,22 +82,22 @@ void QgsPointMarkerItem::paint( QPainter * painter )
   }
 }
 
-void QgsPointMarkerItem::setPointLocation( const QgsPoint& p )
+void QgsPointMarkerItem::setPointLocation( const QgsPointXY &p )
 {
   mLocation = toCanvasCoordinates( p );
 }
 
-void QgsPointMarkerItem::setSymbol( QgsMarkerSymbolV2 *symbol )
+void QgsPointMarkerItem::setSymbol( QgsMarkerSymbol *symbol )
 {
   mMarkerSymbol.reset( symbol );
 }
 
-QgsMarkerSymbolV2*QgsPointMarkerItem::symbol()
+QgsMarkerSymbol *QgsPointMarkerItem::symbol()
 {
-  return mMarkerSymbol.data();
+  return mMarkerSymbol.get();
 }
 
-void QgsPointMarkerItem::setFeature( const QgsFeature& feature )
+void QgsPointMarkerItem::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
 }
@@ -105,20 +106,22 @@ void QgsPointMarkerItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   mMarkerSymbol->startRender( rc, mFeature.fields() );
-  QRectF bounds =  mMarkerSymbol->bounds( mLocation, rc, mFeature );
+  QRectF bounds = mMarkerSymbol->bounds( mLocation, rc, mFeature );
   mMarkerSymbol->stopRender( rc );
-  QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( bounds.x(), bounds.y() ),
-                  mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( bounds.x() + bounds.width() * 2, bounds.y() + bounds.height() * 2 ) );
+  QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() ),
+                  static_cast<int>( bounds.y() ) ),
+                  mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() + bounds.width() * 2 ),
+                      static_cast<int>( bounds.y() + bounds.height() * 2 ) ) );
   setRect( r );
 }
 
-void QgsPointMarkerItem::setTransparency( double transparency )
+void QgsPointMarkerItem::setOpacity( double opacity )
 {
-  mOpacityEffect->setTransparency( transparency );
+  mOpacityEffect->setOpacity( opacity );
 }
 
-double QgsPointMarkerItem::transparency() const
+double QgsPointMarkerItem::opacity() const
 {
-  return mOpacityEffect->transparency();
+  return mOpacityEffect->opacity();
 }
 

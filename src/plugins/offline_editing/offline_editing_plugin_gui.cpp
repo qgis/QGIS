@@ -18,78 +18,111 @@
 
 #include "offline_editing_plugin_gui.h"
 
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 
-
-QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent )
-    : QgsLayerTreeModel( rootNode, parent )
+QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::ShowLegend, false );
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
 }
 
-QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
+int QgsSelectLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
+  return QgsLayerTreeModel::columnCount( parent ) + 1;
 }
 
-QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) const
+
+QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
-  if ( role == Qt::CheckStateRole )
+  QgsLayerTreeNode *node = index2node( index );
+  if ( index.column() == 0 )
   {
-    QgsLayerTreeNode* node = index2node( index );
-    if ( QgsLayerTree::isLayer( node ) )
+    if ( role == Qt::CheckStateRole )
     {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
-      return nodeLayer->isVisible();
+      if ( QgsLayerTree::isLayer( node ) )
+      {
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        return nodeLayer->isVisible() ? Qt::Checked : Qt::Unchecked;
+      }
+      else if ( QgsLayerTree::isGroup( node ) )
+      {
+        QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
+        return nodeGroup->isVisible() ? Qt::Checked : Qt::Unchecked;
+      }
+      else
+      {
+        return QVariant();
+      }
     }
-    else if ( QgsLayerTree::isGroup( node ) )
+  }
+  else
+  {
+    if ( QgsLayerTree::isLayer( node ) && index.column() > 0 )
     {
-      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
-      return nodeGroup->isVisible();
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer()->dataProvider()->name() == QStringLiteral( "WFS" ) )
+      {
+        switch ( role )
+        {
+          case Qt::ToolTipRole:
+            return tr( "The source of this layer is a <b>WFS</b> server.<br>"
+                       "Some WFS layers are not suitable for offline<br>"
+                       "editing due to unstable primary keys<br>"
+                       "please check with your system administrator<br>"
+                       "if this WFS layer can be used for offline<br>"
+                       "editing." );
+
+          case Qt::DecorationRole:
+            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) );
+        }
+      }
     }
-    else
-    {
-      return QVariant();
-    }
+    return QVariant();
   }
   return QgsLayerTreeModel::data( index, role );
 }
 
 
-QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mBrowseButton, &QPushButton::clicked, this, &QgsOfflineEditingPluginGui::mBrowseButton_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOfflineEditingPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOfflineEditingPluginGui::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOfflineEditingPluginGui::showHelp );
 
   restoreState();
 
-  mOfflineDbFile = "offline.sqlite";
+  mOfflineDbFile = QStringLiteral( "offline.gpkg" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  QgsLayerTreeGroup* rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
-  QgsLayerTreeModel* treeModel = new QgsSelectLayerTreeModel( rootNode, this );
+  QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
+  QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
+  mLayerTree->header()->setResizeMode( QHeaderView::ResizeToContents );
 
-  connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mUnselectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
+  connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::selectAll );
+  connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::deSelectAll );
+  connect( mSelectDatatypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOfflineEditingPluginGui::datatypeChanged );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
-  QSettings settings;
-  settings.setValue( "Plugin-OfflineEditing/geometry", saveGeometry() );
-  settings.setValue( "Plugin-OfflineEditing/offline_data_path", mOfflineDataPath );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "OfflineEditing/geometry" ), saveGeometry(), QgsSettings::Section::Plugins );
+  settings.setValue( QStringLiteral( "OfflineEditing/offline_data_path" ), mOfflineDataPath, QgsSettings::Section::Plugins );
 }
 
 QString QgsOfflineEditingPluginGui::offlineDataPath()
@@ -102,32 +135,75 @@ QString QgsOfflineEditingPluginGui::offlineDbFile()
   return mOfflineDbFile;
 }
 
-QStringList& QgsOfflineEditingPluginGui::selectedLayerIds()
+QStringList QgsOfflineEditingPluginGui::selectedLayerIds()
 {
   return mSelectedLayerIds;
 }
 
-void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
+bool QgsOfflineEditingPluginGui::onlySelected() const
 {
-  QString fileName = QFileDialog::getSaveFileName( this,
-                     tr( "Select target database for offline data" ),
-                     QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                     tr( "SpatiaLite DB" ) + " (*.sqlite);;"
-                     + tr( "All files" ) + " (*.*)" );
+  return mOnlySelectedCheckBox->checkState() == Qt::Checked;
+}
 
-  if ( !fileName.isEmpty() )
+QgsOfflineEditing::ContainerType QgsOfflineEditingPluginGui::dbContainerType() const
+{
+  if ( mSelectDatatypeCombo->currentIndex() == 0 )
+    return QgsOfflineEditing::GPKG;
+  else
+    return QgsOfflineEditing::SpatiaLite;
+}
+
+void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
+{
+  switch ( dbContainerType() )
   {
-    if ( !fileName.endsWith( ".sqlite", Qt::CaseInsensitive ) )
+    case QgsOfflineEditing::GPKG:
     {
-      fileName += ".sqlite";
+      //GeoPackage
+      QString fileName = QFileDialog::getSaveFileName( this,
+                         tr( "Select target database for offline data" ),
+                         QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
+                         tr( "GeoPackage" ) + " (*.gpkg);;"
+                         + tr( "All files" ) + " (*.*)" );
+
+      if ( !fileName.isEmpty() )
+      {
+        if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
+        {
+          fileName += QLatin1String( ".gpkg" );
+        }
+        mOfflineDbFile = QFileInfo( fileName ).fileName();
+        mOfflineDataPath = QFileInfo( fileName ).absolutePath();
+        mOfflineDataPathLineEdit->setText( fileName );
+      }
+      break;
     }
-    mOfflineDbFile = QFileInfo( fileName ).fileName();
-    mOfflineDataPath = QFileInfo( fileName ).absolutePath();
-    mOfflineDataPathLineEdit->setText( fileName );
+
+    case QgsOfflineEditing::SpatiaLite:
+    {
+      //SpaciaLite
+      QString fileName = QFileDialog::getSaveFileName( this,
+                         tr( "Select target database for offline data" ),
+                         QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
+                         tr( "SpatiaLite DB" ) + " (*.sqlite);;"
+                         + tr( "All files" ) + " (*.*)" );
+
+      if ( !fileName.isEmpty() )
+      {
+        if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) )
+        {
+          fileName += QLatin1String( ".sqlite" );
+        }
+        mOfflineDbFile = QFileInfo( fileName ).fileName();
+        mOfflineDataPath = QFileInfo( fileName ).absolutePath();
+        mOfflineDataPathLineEdit->setText( fileName );
+      }
+      break;
+    }
   }
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
+void QgsOfflineEditingPluginGui::buttonBox_accepted()
 {
   if ( QFile( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) ).exists() )
   {
@@ -144,11 +220,10 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   }
 
   mSelectedLayerIds.clear();
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
   {
     if ( nodeLayer->isVisible() )
     {
-      QgsDebugMsg( nodeLayer->layerId() );
       mSelectedLayerIds.append( nodeLayer->layerId() );
     }
   }
@@ -156,33 +231,47 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   accept();
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
+void QgsOfflineEditingPluginGui::buttonBox_rejected()
 {
   reject();
 }
 
-// TODO: help
-void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
+void QgsOfflineEditingPluginGui::showHelp()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_offline_editing.html" ) );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()
 {
-  QSettings settings;
-  mOfflineDataPath = settings.value( "Plugin-OfflineEditing/offline_data_path", QDir().absolutePath() ).toString();
-  restoreGeometry( settings.value( "Plugin-OfflineEditing/geometry" ).toByteArray() );
+  QgsSettings settings;
+  mOfflineDataPath = settings.value( QStringLiteral( "OfflineEditing/offline_data_path" ), QDir::homePath(), QgsSettings::Section::Plugins ).toString();
+  restoreGeometry( settings.value( QStringLiteral( "OfflineEditing/geometry" ), QgsSettings::Section::Plugins ).toByteArray() );
 }
 
 void QgsOfflineEditingPluginGui::selectAll()
 {
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Checked );
+  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+    nodeLayer->setItemVisibilityChecked( true );
 }
 
-
-void QgsOfflineEditingPluginGui::unSelectAll()
+void QgsOfflineEditingPluginGui::deSelectAll()
 {
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
-    nodeLayer->setVisible( Qt::Unchecked );
+  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+    nodeLayer->setItemVisibilityChecked( false );
 }
+
+void QgsOfflineEditingPluginGui::datatypeChanged( int index )
+{
+  if ( index == 0 )
+  {
+    //GeoPackage
+    mOfflineDbFile = QStringLiteral( "offline.gpkg" );
+  }
+  else
+  {
+    //SpatiaLite
+    mOfflineDbFile = QStringLiteral( "offline.sqlite" );
+  }
+  mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
+}
+

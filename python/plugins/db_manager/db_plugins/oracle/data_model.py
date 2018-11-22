@@ -22,11 +22,17 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 from qgis.PyQt.QtCore import QTime
-
-from ..data_model import TableDataModel, SqlResultModel, BaseTableModel
+from qgis.core import QgsMessageLog
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask,
+                          BaseTableModel)
 from ..plugin import DbError
+from ..plugin import BaseError
 
 
 class ORTableDataModel(TableDataModel):
@@ -72,7 +78,7 @@ class ORTableDataModel(TableDataModel):
                     int(field.modifier)
                 return u"CAST({} AS VARCHAR2({}))".format(
                     self.db.quoteId(field.name),
-                    unicode(nbChars))
+                    str(nbChars))
 
         return u"CAST({0} As VARCHAR2({1}))".format(
             self.db.quoteId(field.name), field.charMaxLen)
@@ -86,13 +92,13 @@ class ORTableDataModel(TableDataModel):
         self._deleteCursor()
 
     def getData(self, row, col):
-        if (row < self.fetchedFrom
-                or row >= self.fetchedFrom + self.fetchedCount):
+        if (row < self.fetchedFrom or
+                row >= self.fetchedFrom + self.fetchedCount):
             margin = self.fetchedCount / 2
             if row + margin >= self.rowCount():
-                start = self.rowCount() - margin
+                start = int(self.rowCount() - margin)
             else:
-                start = row - margin
+                start = int(row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
@@ -113,6 +119,36 @@ class ORTableDataModel(TableDataModel):
         self.fetchedFrom = row_start
 
 
+class ORSqlResultModelTask(SqlResultModelTask):
+
+    def __init__(self, db, sql, parent):
+        super().__init__(db, sql, parent)
+
+    def run(self):
+        try:
+            self.model = ORSqlResultModel(self.db, self.sql, None)
+        except BaseError as e:
+            self.error = e
+            QgsMessageLog.logMessage(e.msg)
+            return False
+
+        return True
+
+    def cancel(self):
+        self.db.connector.cancel()
+        SqlResultModelTask.cancel(self)
+
+
+class ORSqlResultModelAsync(SqlResultModelAsync):
+
+    def __init__(self, db, sql, parent):
+        super().__init__()
+
+        self.task = ORSqlResultModelTask(db, sql, parent)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
+
+
 class ORSqlResultModel(SqlResultModel):
 
     def __init__(self, db, sql, parent=None):
@@ -120,7 +156,7 @@ class ORSqlResultModel(SqlResultModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, unicode(sql))
+        c = self.db._execute(None, str(sql))
 
         self._affectedRows = 0
         data = []

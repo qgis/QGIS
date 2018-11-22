@@ -1,5 +1,0 @@
-Fit N Points to shape
-shapes_points
-ParameterVector|SHAPES|Shapes|2|False
-ParameterNumber|NUMPOINTS|Number of points|1.0|None|10
-OutputVector|POINTS|Points

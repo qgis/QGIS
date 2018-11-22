@@ -16,6 +16,10 @@
 #ifndef QGSCONNECTIONPOOL_H
 #define QGSCONNECTIONPOOL_H
 
+#define SIP_NO_FILE
+
+#include "qgis.h"
+#include "qgsapplication.h"
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
@@ -25,13 +29,14 @@
 #include <QTimer>
 #include <QThread>
 
-#include "qgslogger.h"
 
-#define CONN_POOL_MAX_CONCURRENT_CONNS      4
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
+#define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
 
 
-/** Template that stores data related to one server.
+/**
+ * \ingroup core
+ * Template that stores data related to a connection to a single server or datasource.
  *
  * It is assumed that following functions exist:
  * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
@@ -47,7 +52,7 @@
  * - having handleConnectionExpired() slot that calls onConnectionExpired()
  * - having startExpirationTimer(), stopExpirationTimer() slots to start/stop the expiration timer
  *
- * For an example on how to use the template class, have a look at the implementation in postgres/spatialite providers.
+ * For an example on how to use the template class, have a look at the implementation in Postgres/SpatiaLite providers.
  * \note not available in Python bindings
  */
 template <typename T>
@@ -55,33 +60,56 @@ class QgsConnectionPoolGroup
 {
   public:
 
-    static const int maxConcurrentConnections;
-
     struct Item
     {
       T c;
       QTime lastUsedTime;
     };
 
-    QgsConnectionPoolGroup( const QString& ci )
-        : connInfo( ci )
-        , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-        , expirationTimer( nullptr )
+    QgsConnectionPoolGroup( const QString &ci )
+      : connInfo( ci )
+      , sem( QgsApplication::instance()->maxConcurrentConnectionsPerPool() + CONN_POOL_SPARE_CONNECTIONS )
     {
     }
 
     ~QgsConnectionPoolGroup()
     {
-      Q_FOREACH ( Item item, conns )
+      for ( const Item &item : qgis::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( item.c );
       }
     }
 
-    T acquire()
+    //! QgsConnectionPoolGroup cannot be copied
+    QgsConnectionPoolGroup( const QgsConnectionPoolGroup &other ) = delete;
+    //! QgsConnectionPoolGroup cannot be copied
+    QgsConnectionPoolGroup &operator=( const QgsConnectionPoolGroup &other ) = delete;
+
+    /**
+     * Try to acquire a connection for a maximum of \a timeout milliseconds.
+     * If \a timeout is a negative value the calling thread will be blocked
+     * until a connection becomes available. This is the default behavior.
+     *
+     * \returns initialized connection or nullptr if unsuccessful
+     */
+    T acquire( int timeout, bool requestMayBeNested )
     {
+      const int requiredFreeConnectionCount = requestMayBeNested ? 1 : 3;
       // we are going to acquire a resource - if no resource is available, we will block here
-      sem.acquire();
+      if ( timeout >= 0 )
+      {
+        if ( !sem.tryAcquire( requiredFreeConnectionCount, timeout ) )
+          return nullptr;
+      }
+      else
+      {
+        // we should still be able to use tryAcquire with a negative timeout here, but
+        // tryAcquire is broken on Qt > 5.8 with negative timeouts - see
+        // https://bugreports.qt.io/browse/QTBUG-64413
+        // https://lists.osgeo.org/pipermail/qgis-developer/2017-November/050456.html
+        sem.acquire( requiredFreeConnectionCount );
+      }
+      sem.release( requiredFreeConnectionCount - 1 );
 
       // quick (preferred) way - use cached connection
       {
@@ -95,6 +123,7 @@ class QgsConnectionPoolGroup
             qgsConnectionPool_ConnectionDestroy( i.c );
             qgsConnectionPool_ConnectionCreate( connInfo, i.c );
           }
+
 
           // no need to run if nothing can expire
           if ( conns.isEmpty() )
@@ -154,19 +183,19 @@ class QgsConnectionPoolGroup
     void invalidateConnections()
     {
       connMutex.lock();
-      Q_FOREACH ( Item i, conns )
+      for ( const Item &i : qgis::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( i.c );
       }
       conns.clear();
-      Q_FOREACH ( T c, acquiredConns )
+      for ( T c : qgis::as_const( acquiredConns ) )
         qgsConnectionPool_InvalidateConnection( c );
       connMutex.unlock();
     }
 
   protected:
 
-    void initTimer( QObject* parent )
+    void initTimer( QObject *parent )
     {
       expirationTimer = new QTimer( parent );
       expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
@@ -212,13 +241,15 @@ class QgsConnectionPoolGroup
     QList<T> acquiredConns;
     QMutex connMutex;
     QSemaphore sem;
-    QTimer* expirationTimer;
+    QTimer *expirationTimer = nullptr;
+
 };
 
 
 /**
+ * \ingroup core
  * Template class responsible for keeping a pool of open connections.
- * This is desired to avoid the overhead of creation of new connection everytime.
+ * This is desired to avoid the overhead of creation of new connection every time.
  *
  * The methods are thread safe.
  *
@@ -236,12 +267,12 @@ class QgsConnectionPool
 {
   public:
 
-    typedef QMap<QString, T_Group*> T_Groups;
+    typedef QMap<QString, T_Group *> T_Groups;
 
     virtual ~QgsConnectionPool()
     {
       mMutex.lock();
-      Q_FOREACH ( T_Group* group, mGroups )
+      for ( T_Group *group : qgis::as_const( mGroups ) )
       {
         delete group;
       }
@@ -249,9 +280,16 @@ class QgsConnectionPool
       mMutex.unlock();
     }
 
-    //! Try to acquire a connection: if no connections are available, the thread will get blocked.
-    //! @return initialized connection or null on error
-    T acquireConnection( const QString& connInfo )
+    /**
+     * Try to acquire a connection for a maximum of \a timeout milliseconds.
+     * If \a timeout is a negative value the calling thread will be blocked
+     * until a connection becomes available. This is the default behavior.
+     *
+     *
+     *
+     * \returns initialized connection or nullptr if unsuccessful
+     */
+    T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -259,10 +297,10 @@ class QgsConnectionPool
       {
         it = mGroups.insert( connInfo, new T_Group( connInfo ) );
       }
-      T_Group* group = *it;
+      T_Group *group = *it;
       mMutex.unlock();
 
-      return group->acquire();
+      return group->acquire( timeout, requestMayBeNested );
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused
@@ -271,18 +309,20 @@ class QgsConnectionPool
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( qgsConnectionPool_ConnectionToName( conn ) );
       Q_ASSERT( it != mGroups.end() );
-      T_Group* group = *it;
+      T_Group *group = *it;
       mMutex.unlock();
 
       group->release( conn );
     }
 
-    //! Invalidates all connections to the specified resource.
-    //! The internal state of certain handles (for instance OGR) are altered
-    //! when a dataset is modified. Consquently, all open handles need to be
-    //! invalidated when such datasets are changed to ensure the handles are
-    //! refreshed. See the OGR provider for an example where this is needed.
-    void invalidateConnections( const QString& connInfo )
+    /**
+     * Invalidates all connections to the specified resource.
+     * The internal state of certain handles (for instance OGR) are altered
+     * when a dataset is modified. Consquently, all open handles need to be
+     * invalidated when such datasets are changed to ensure the handles are
+     * refreshed. See the OGR provider for an example where this is needed.
+     */
+    void invalidateConnections( const QString &connInfo )
     {
       mMutex.lock();
       if ( mGroups.contains( connInfo ) )

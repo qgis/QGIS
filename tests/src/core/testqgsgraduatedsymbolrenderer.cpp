@@ -12,14 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
-#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgssymbollayerutils.h"
+
+/**
+ * \ingroup UnitTests
+ * This is a unit test for the qgsGraduatedSymbolRenderer class.
+ */
 
 class TestQgsGraduatedSymbolRenderer: public QObject
 {
@@ -32,6 +37,7 @@ class TestQgsGraduatedSymbolRenderer: public QObject
     void cleanup();// will be called after every testfunction.
     void rangesOverlap();
     void rangesHaveGaps();
+    void classifySymmetric();
 
 
   private:
@@ -59,12 +65,12 @@ void TestQgsGraduatedSymbolRenderer::cleanup()
 
 void TestQgsGraduatedSymbolRenderer::rangesOverlap()
 {
-  QgsGraduatedSymbolRendererV2 renderer;
+  QgsGraduatedSymbolRenderer renderer;
   //test with no ranges
   QVERIFY( !renderer.rangesOverlap() );
 
   //test with inverted range
-  QgsRendererRangeV2 inverted;
+  QgsRendererRange inverted;
   inverted.setLowerValue( 3.1 );
   inverted.setUpperValue( 1.2 );
   renderer.addClass( inverted );
@@ -72,13 +78,13 @@ void TestQgsGraduatedSymbolRenderer::rangesOverlap()
   renderer.deleteAllClasses();
 
   //test non-overlapping ranges
-  QgsRendererRangeV2 range1;
+  QgsRendererRange range1;
   range1.setLowerValue( 1.1 );
   range1.setUpperValue( 3.2 );
-  QgsRendererRangeV2 range2;
+  QgsRendererRange range2;
   range2.setLowerValue( 6.4 );
   range2.setUpperValue( 7.2 );
-  QgsRendererRangeV2 range3;
+  QgsRendererRange range3;
   range3.setLowerValue( 3.2 );
   range3.setUpperValue( 6.4 );
 
@@ -89,7 +95,7 @@ void TestQgsGraduatedSymbolRenderer::rangesOverlap()
   QVERIFY( !renderer.rangesOverlap() );
 
   //add overlapping class
-  QgsRendererRangeV2 range4;
+  QgsRendererRange range4;
   range4.setLowerValue( 7.0 );
   range4.setUpperValue( 8.4 );
   renderer.addClass( range4 );
@@ -99,12 +105,12 @@ void TestQgsGraduatedSymbolRenderer::rangesOverlap()
 
 void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
 {
-  QgsGraduatedSymbolRendererV2 renderer;
+  QgsGraduatedSymbolRenderer renderer;
   //test with no ranges
   QVERIFY( !renderer.rangesHaveGaps() );
 
   //test with inverted range
-  QgsRendererRangeV2 inverted;
+  QgsRendererRange inverted;
   inverted.setLowerValue( 3.1 );
   inverted.setUpperValue( 1.2 );
   renderer.addClass( inverted );
@@ -112,13 +118,13 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   renderer.deleteAllClasses();
 
   //test ranges without gaps ranges
-  QgsRendererRangeV2 range1;
+  QgsRendererRange range1;
   range1.setLowerValue( 1.1 );
   range1.setUpperValue( 3.2 );
-  QgsRendererRangeV2 range2;
+  QgsRendererRange range2;
   range2.setLowerValue( 6.4 );
   range2.setUpperValue( 7.2 );
-  QgsRendererRangeV2 range3;
+  QgsRendererRange range3;
   range3.setLowerValue( 3.2 );
   range3.setUpperValue( 6.4 );
 
@@ -129,7 +135,7 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   QVERIFY( !renderer.rangesHaveGaps() );
 
   //add gaps in ranges
-  QgsRendererRangeV2 range4;
+  QgsRendererRange range4;
   range4.setLowerValue( 8.0 );
   range4.setUpperValue( 8.4 );
   renderer.addClass( range4 );
@@ -137,5 +143,72 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   QVERIFY( renderer.rangesHaveGaps() );
 }
 
-QTEST_MAIN( TestQgsGraduatedSymbolRenderer )
+// this function is used only on breaks that already contain the symmetryPoint
+// calcEqualIntervalBreaks takes symmetryPoint as parameter
+void TestQgsGraduatedSymbolRenderer::classifySymmetric()
+{
+  // minimum < symmetryPointForEqualInterval < maximum
+  // going below 1E-6 will result in a fail because C++ think 2.6e-06 - 2e-06 = 0
+  QList<double> minimum =                       {15.30, 20,   20,     1111, 0.26, 0.000026, -1.56E10};
+  QList<double> symmetryPointForEqualInterval = {122.6, 24.3, 26.3, 1563.3, 0.34, 0.000034, 0.56E10};
+  QList<double> maximum =                       {253.6, 30,   30,     2222, 0.55, 0.000055, 1.25E10};
+
+  int newPosOfSymmetryPoint = 0;
+  bool astride = false;
+  double symmetryPoint = 0;
+  bool useSymmetricMode = true;
+  QList<double> breaks = {};
+
+  for ( int valTest = 0; valTest < minimum.size(); valTest++ )
+  {
+    //makes no sense with less than 3 classes
+    for ( int nclasses = 3; nclasses < 30; nclasses++ )
+    {
+      // PRETTY BREAKS
+      const QList<double> unchanged_breaks = QgsSymbolLayerUtils::prettyBreaks( minimum[valTest], maximum[valTest], nclasses );
+
+      // user can only choose a symmetryPoint which is part of the pretty breaks (this part is not tested here)
+      // makes no sense to take the extreme breaks as symmetry point
+      for ( int posOfSymmetryPoint = 1; posOfSymmetryPoint < unchanged_breaks.count() - 2; posOfSymmetryPoint++ )
+      {
+        symmetryPoint = unchanged_breaks[posOfSymmetryPoint];
+
+        // with astride = false
+        astride = false;
+        breaks = unchanged_breaks;
+        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+        QCOMPARE( breaks.count() % 2, 0 );
+        // because the minimum is not in the breaks
+        int newPosOfSymmetryPoint = breaks.count() / 2;
+        QCOMPARE( breaks[ newPosOfSymmetryPoint - 1 ], symmetryPoint );
+
+        // with astride = true
+        astride = true;
+        breaks = unchanged_breaks;
+        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+        QCOMPARE( breaks.count() % 2, 1 );
+        QVERIFY( !breaks.contains( symmetryPoint ) );
+      }
+
+      // EQUAL INTERVALS
+      useSymmetricMode = true;
+
+      // with astride = false
+      astride = false;
+      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum[valTest], maximum[valTest], nclasses, useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      QCOMPARE( breaks.count() % 2, 0 );
+      // because the minimum is not in the breaks
+      newPosOfSymmetryPoint = breaks.count() / 2 ;
+      QCOMPARE( breaks[ newPosOfSymmetryPoint - 1 ], symmetryPointForEqualInterval[valTest] );
+
+      // with astride = true
+      astride = true;
+      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum[valTest], maximum[valTest], nclasses, useSymmetricMode, symmetryPointForEqualInterval[valTest], astride );
+      QCOMPARE( breaks.count() % 2, 1 );
+      QVERIFY( !breaks.contains( symmetryPointForEqualInterval[valTest] ) );
+    }
+  }
+}
+
+QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
 #include "testqgsgraduatedsymbolrenderer.moc"

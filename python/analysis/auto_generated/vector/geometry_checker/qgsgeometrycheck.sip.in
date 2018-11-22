@@ -1,0 +1,175 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGeometryCheck
+{
+%Docstring
+This class manages all known geometry check factories.
+
+QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsAnalysis.geometryCheckRegistry()`
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheck.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    struct LayerFeatureIds
+    {
+      LayerFeatureIds();
+
+
+    };
+
+    enum ChangeWhat
+    {
+      ChangeFeature,
+      ChangePart,
+      ChangeRing,
+      ChangeNode
+    };
+
+    enum ChangeType
+    {
+      ChangeAdded,
+      ChangeRemoved,
+      ChangeChanged
+    };
+
+    enum CheckType
+    {
+      FeatureNodeCheck,
+      FeatureCheck,
+      LayerCheck
+    };
+
+    enum Flag
+    {
+      AvailableInValidation
+    };
+    typedef QFlags<QgsGeometryCheck::Flag> Flags;
+
+
+    struct Change
+    {
+      Change();
+
+      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
+%Docstring
+Create a new Change
+%End
+
+      QgsGeometryCheck::ChangeWhat what;
+
+      QgsGeometryCheck::ChangeType type;
+
+      QgsVertexId vidx;
+      bool operator==( const QgsGeometryCheck::Change &other );
+    };
+
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
+
+    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+%Docstring
+Create a new geometry check.
+%End
+    virtual ~QgsGeometryCheck();
+
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+%Docstring
+Returns if this geometry check is compatible with ``layer``.
+By default it checks for the geometry type in ``compatibleGeometryTypes``().
+
+.. versionadded:: 3.4
+%End
+
+    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+%Docstring
+A list of geometry types for which this check can be performed.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsGeometryCheck::Flags flags() const;
+%Docstring
+Flags for this geometry check.
+%End
+
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+%Docstring
+The main worker method.
+Check all features available from ``featurePools`` and write errors found to ``errors``.
+Other status messages can be written to ``messages``.
+Progress should be reported to ``feedback``. Only features and layers listed in ``ids`` should be checked.
+
+.. versionadded:: 3.4
+%End
+
+
+    virtual QStringList resolutionMethods() const = 0;
+%Docstring
+Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to :py:func:`fixError`.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString description() const = 0;
+%Docstring
+Returns a human readable description for this check.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns an id for this check.
+
+.. versionadded:: 3.4
+%End
+
+    virtual CheckType checkType() const = 0;
+%Docstring
+Returns the check type.
+
+.. versionadded:: 3.4
+%End
+
+    const QgsGeometryCheckContext *context() const;
+%Docstring
+Returns the context
+
+.. versionadded:: 3.4
+%End
+
+  protected:
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

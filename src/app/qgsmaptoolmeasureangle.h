@@ -17,25 +17,29 @@
 #define QGSMAPTOOLMEASUREANGLE_H
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsdistancearea.h"
+#include "qgis_app.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;
+class QgsSnapIndicator;
 
-/** Map tool to measure angle between two segments*/
+//! Map tool to measure angle between two segments
 class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolMeasureAngle( QgsMapCanvas* canvas );
-    ~QgsMapToolMeasureAngle();
+    QgsMapToolMeasureAngle( QgsMapCanvas *canvas );
+    ~QgsMapToolMeasureAngle() override;
 
-    //! Mouse move event for overridingqgs
-    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+
+    //! Mouse move event for overriding
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse release event for overriding
-    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when set as currently active map tool
     void activate() override;
@@ -44,28 +48,28 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     void deactivate() override;
 
   private:
-    /** Points defining the angle (three for measuring)*/
-    QList<QgsPoint> mAnglePoints;
-    QgsRubberBand* mRubberBand;
-    QgsDisplayAngle* mResultDisplay;
+    //! Points defining the angle (three for measuring)
+    QList<QgsPointXY> mAnglePoints;
+    QgsRubberBand *mRubberBand = nullptr;
+    QgsDisplayAngle *mResultDisplay = nullptr;
 
-    /** Creates a new rubber band and deletes the old one*/
+    //! Creates a new rubber band and deletes the old one
     void createRubberBand();
-    /** Snaps point to background layers*/
-    QgsPoint snapPoint( QPoint p );
 
-    /** Tool for measuring */
+    //! Tool for measuring
     QgsDistanceArea mDa;
 
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
+
   public slots:
-    /** Recalculate angle if projection state changed*/
+    //! Recalculate angle if projection state changed
     void updateSettings();
 
   private slots:
-    /** Deletes the rubber band and the dialog*/
+    //! Deletes the rubber band and the dialog
     void stopMeasuring();
 
-    /** Configures distance area objects with ellipsoid / output crs*/
+    //! Configures distance area objects with ellipsoid / output crs
     void configureDistanceArea();
 
 };

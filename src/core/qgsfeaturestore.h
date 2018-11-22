@@ -15,52 +15,93 @@
 #ifndef QGSFEATURESTORE_H
 #define QGSFEATURESTORE_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
-#include "qgslogger.h"
+#include "qgsfields.h"
+#include "qgsfeaturesink.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QList>
 #include <QMetaType>
 #include <QVariant>
 
-/** \ingroup core
- * Container for features with the same fields and crs.
+/**
+ * \ingroup core
+ * A container for features with the same fields and crs.
  */
-class CORE_EXPORT QgsFeatureStore
+class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 {
   public:
     //! Constructor
-    QgsFeatureStore();
+    QgsFeatureStore() = default;
 
     //! Constructor
-    QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs );
+    QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
 
-    /** Get fields list */
-    QgsFields& fields() { return mFields; }
+    /**
+     * Returns the store's field list.
+     * \see setFields()
+     */
+    QgsFields fields() const { return mFields; }
 
-    /** Set fields. Resets feature's fields to pointer to new internal fields. */
-    void setFields( const QgsFields & fields );
+    /**
+     * Sets the store's \a fields. Every contained feature's fields will be reset to match \a fields.
+     * \see fields()
+     */
+    void setFields( const QgsFields &fields );
 
-    /** Get crs */
+    /**
+     * Returns the store's coordinate reference system.
+     * \see setCrs()
+     */
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
-    /** Set crs */
-    void setCrs( const QgsCoordinateReferenceSystem& crs ) { mCrs = crs; }
-
-    /** Add feature. Feature's fields will be set to pointer to the store fields.
-     * @param feature
-     * @note added in 2.1
+    /**
+     * Sets the store's \a crs.
+     * \see crs()
      */
-    void addFeature( const QgsFeature& feature );
+    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
-    /** Get features list reference */
-    QgsFeatureList& features() { return mFeatures; }
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
-    /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> &theParams ) { mParams = theParams; }
+    /**
+     * Returns the number of features contained in the store.
+     */
+    int count() const { return mFeatures.size(); }
 
-    /** Get map of optional parameters */
+#ifdef SIP_RUN
+
+    /**
+     * Returns the number of features contained in the store.
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->count();
+    % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+#endif
+
+    /**
+     * Returns the list of features contained in the store.
+     */
+    QgsFeatureList features() const { return mFeatures; }
+
+    /**
+     * Sets a map of optional \a parameters for the store.
+     * \see params()
+     */
+    void setParams( const QMap<QString, QVariant> &parameters ) { mParams = parameters; }
+
+    /**
+     * Returns the map of optional parameters.
+     * \see setParams()
+     */
     QMap<QString, QVariant> params() const { return mParams; }
 
   private:

@@ -1,9 +1,0 @@
-Cluster Analysis for Grids
-imagery_classification
-ParameterMultipleInput|GRIDS|Grids|3.0|False
-ParameterSelection|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing
-ParameterNumber|NCLUSTER|Clusters|None|None|5
-ParameterBoolean|NORMALISE       |Normalise|True
-ParameterBoolean|OLDVERSION      |Old Version|True
-OutputRaster|CLUSTER|Clusters
-OutputTable|STATISTICS|Statistics

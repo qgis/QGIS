@@ -1,0 +1,5 @@
+{
+  "name": "Relations",
+  "type": "group",
+  "description": "Contains a list of relations available in the current project."
+}

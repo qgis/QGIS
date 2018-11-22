@@ -20,10 +20,11 @@
 #include "qgsfeaturerequest.h"
 #include "qgsattributeeditorcontext.h"
 
+#include <QWindow>
 
-QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent )
-    : QDialog( parent )
-    , mVectorLayer( vl )
+QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent )
+  : QDialog( parent )
+  , mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -35,14 +36,40 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttribute
   mDualView->init( mVectorLayer, nullptr, QgsFeatureRequest(), context );
 }
 
-const QgsFeatureIds& QgsFeatureSelectionDlg::selectedFeatures()
+const QgsFeatureIds &QgsFeatureSelectionDlg::selectedFeatures()
 {
-  return mFeatureSelection->selectedFeaturesIds();
+  return mFeatureSelection->selectedFeatureIds();
 }
 
-void QgsFeatureSelectionDlg::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsFeatureSelectionDlg::setSelectedFeatures( const QgsFeatureIds &ids )
 {
   mFeatureSelection->setSelectedFeatures( ids );
+}
+
+void QgsFeatureSelectionDlg::showEvent( QShowEvent *event )
+{
+
+  QWindow *mainWindow = nullptr;
+  for ( const auto &w : QgsApplication::instance()->topLevelWindows() )
+  {
+    if ( w->objectName() == QStringLiteral( "QgisAppWindow" ) )
+    {
+      mainWindow = w;
+      break;
+    }
+  }
+
+  if ( mainWindow )
+  {
+    QSize margins( size() - scrollAreaWidgetContents->size() );
+    QSize innerWinSize( mainWindow->width(), mainWindow->height() );
+    setMaximumSize( innerWinSize );
+    QSize minSize( scrollAreaWidgetContents->sizeHint() );
+    setMinimumSize( std::min( minSize.width() + margins.width( ), innerWinSize.width() ),
+                    std::min( minSize.height() + margins.width( ), innerWinSize.height() ) );
+  }
+
+  QDialog::showEvent( event );
 }
 
 

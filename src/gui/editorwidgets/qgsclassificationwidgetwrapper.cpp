@@ -15,18 +15,18 @@
 
 #include "qgsclassificationwidgetwrapper.h"
 
-#include "qgscategorizedsymbolrendererv2.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
-QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  :  QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+
 {
 }
 
 QVariant QgsClassificationWidgetWrapper::value() const
 {
-  return mComboBox->itemData( mComboBox->currentIndex() );
+  return mComboBox->currentData();
 }
 
 void QgsClassificationWidgetWrapper::showIndeterminateState()
@@ -34,18 +34,18 @@ void QgsClassificationWidgetWrapper::showIndeterminateState()
   whileBlocking( mComboBox )->setCurrentIndex( -1 );
 }
 
-QWidget*QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsClassificationWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
+void QgsClassificationWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {
-    const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( layer()->rendererV2() );
+    const QgsCategorizedSymbolRenderer *csr = dynamic_cast<const QgsCategorizedSymbolRenderer *>( layer()->renderer() );
     if ( csr )
     {
       const QgsCategoryList categories = csr->categories();
@@ -60,7 +60,8 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
       }
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 
@@ -69,7 +70,7 @@ bool QgsClassificationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsClassificationWidgetWrapper::setValue( const QVariant& value )
+void QgsClassificationWidgetWrapper::setValue( const QVariant &value )
 {
   mComboBox->setCurrentIndex( mComboBox->findData( value ) );
 }

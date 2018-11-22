@@ -1,0 +1,22 @@
+v.in.ascii
+Creates a vector map from an ASCII points file or ASCII vector file.
+Vector (v.*)
+QgsProcessingParameterFile|input|ASCII file to be imported|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterEnum|format|Input file format|point;standard|False|0|True
+QgsProcessingParameterString|separator|Field separator|pipe|False|True
+QgsProcessingParameterString|text|Text delimiter|None|False|True
+QgsProcessingParameterNumber|skip|Number of header lines to skip at top of input file|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterString|columns|Column definition in SQL style (example: 'x double precision, y double precision, cat int, name varchar(10)')|None|False|True
+QgsProcessingParameterNumber|x|Number of column used as x coordinate|QgsProcessingParameterNumber.Integer|1|True|1|None
+QgsProcessingParameterNumber|y|Number of column used as y coordinate|QgsProcessingParameterNumber.Integer|2|True|1|None
+QgsProcessingParameterNumber|z|Number of column used as z coordinate|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterNumber|cat|Number of column used as category|QgsProcessingParameterNumber.Integer|0|True|0|None
+*QgsProcessingParameterBoolean|-z|Create 3D vector map|False
+*QgsProcessingParameterBoolean|-n|Do not expect a header when reading in standard format|False
+*QgsProcessingParameterBoolean|-t|Do not create table in points mode|False
+*QgsProcessingParameterBoolean|-b|Do not build topology in points mode|False
+*QgsProcessingParameterBoolean|-r|Only import points falling within current region (points mode)|False
+*QgsProcessingParameterBoolean|-i|Ignore broken line(s) in points mode|False
+QgsProcessingParameterVectorDestination|output|ASCII
+
+

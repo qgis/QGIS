@@ -22,46 +22,88 @@
 #ifndef QGSOWSCONNECTION_H
 #define QGSOWSCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsdatasourceuri.h"
 
 #include <QStringList>
 #include <QPushButton>
 
-/*!
- * \brief   Connections management
+/**
+ * \ingroup core
+ * \brief Connections management
  */
-class CORE_EXPORT QgsOWSConnection : public QObject
+class CORE_EXPORT QgsOwsConnection : public QObject
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
-     * @param theService service name: WMS,WFS,WCS
-     * @param theConnName connection name
+     * \param service service name: WMS,WFS,WCS
+     * \param connName connection name
      */
-    QgsOWSConnection( const QString & theService, const QString & theConnName );
+    QgsOwsConnection( const QString &service, const QString &connName );
 
-    //! Destructor
-    ~QgsOWSConnection();
+    /**
+     * Returns the connection name.
+     * \since QGIS 3.0
+     */
+    QString connectionName() const;
 
-    static QStringList connectionList( const QString & theService );
+    /**
+     * Returns connection info string.
+     * \since QGIS 3.0
+     */
+    QString connectionInfo() const;
 
-    static void deleteConnection( const QString & theService, const QString & name );
+    /**
+     * Returns a string representing the service type, e.g. "WMS".
+     * \since QGIS 3.0
+     */
+    QString service() const;
 
-    static QString selectedConnection( const QString & theService );
-    static void setSelectedConnection( const QString & theService, const QString & name );
+    /**
+     * Returns the connection uri.
+     */
+    QgsDataSourceUri uri() const;
 
-    QString mConnName;
-    QgsDataSourceURI uri();
-    QString mConnectionInfo;
+    /**
+     * Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri \a uri.
+     * Connection settings are taken from the specified QSettings \a settingsKey.
+     * \since QGIS 3.0
+     */
+    static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
 
-    //! @deprecated use mConnectionInfo instead
-    Q_DECL_DEPRECATED QString connectionInfo();
+    /**
+     * Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri \a uri.
+     * Connection settings are taken from the specified QSettings \a settingsKey.
+     * \since QGIS 3.0
+     */
+    static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+
+    //! Returns the list of connections for the specified service
+    static QStringList connectionList( const QString &service );
+
+    //! Deletes the connection for the specified service with the specified name
+    static void deleteConnection( const QString &service, const QString &name );
+
+    //! Retrieves the selected connection for the specified service
+    static QString selectedConnection( const QString &service );
+    //! Marks the specified connection for the specified service as selected
+    static void setSelectedConnection( const QString &service, const QString &name );
 
   protected:
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
+
+  private:
+
+    QString mConnName;
     QString mService;
+    QString mConnectionInfo;
+
+    static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+
 };
 
 

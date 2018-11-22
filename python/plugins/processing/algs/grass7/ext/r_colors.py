@@ -26,89 +26,63 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
+from processing.tools.system import getTempFilename
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('rules_txt') and alg.getParameterValue('rules'):
-        return alg.tr("You need to set either inline rules or a rules file!")
+    txtRules = alg.parameterAsString(parameters, 'rules_txt', context)
+    rules = alg.parameterAsString(parameters, 'rules', context)
+    if txtRules and rules:
+        return False, alg.tr("You need to set either inline rules or a rules file!")
 
-    return None
+    return True, None
 
 
-def processInputs(alg):
+def processInputs(alg, parameters, context, feedback):
     # import all rasters with their color tables (and their bands)
     # We need to import all the bands and color tables of the input rasters
-    rasters = alg.getParameterValue('map').split(',')
-    for raster in rasters:
-        if raster in alg.exportedLayers.keys():
-            continue
+    rasters = alg.parameterAsLayerList(parameters, 'map', context)
+    for idx, layer in enumerate(rasters):
+        layerName = 'map_{}'.format(idx)
+        # Add a raster layer
+        alg.loadRasterLayer(layerName, layer, False, None)
 
-        alg.setSessionProjectionFromLayer(raster, alg.commands)
-        destFilename = alg.getTempFilename()
-        alg.exportedLayers[raster] = destFilename
-        command = 'r.in.gdal input={} output={} --overwrite -o'.format(raster, destFilename)
-        alg.commands.append(command)
+    # Optional raster layer to copy from
+    raster = alg.parameterAsString(parameters, 'raster', context)
+    if raster:
+        alg.loadRasterLayerFromParameter('raster', parameters, context, False, None)
 
-    alg.setSessionProjectionFromProject(alg.commands)
-
-    region = unicode(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
-    regionCoords = region.split(',')
-    command = 'g.region'
-    command += ' -a'
-    command += ' n=' + unicode(regionCoords[3])
-    command += ' s=' + unicode(regionCoords[2])
-    command += ' e=' + unicode(regionCoords[1])
-    command += ' w=' + unicode(regionCoords[0])
-    cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
-    if cellsize:
-        command += ' res=' + unicode(cellsize)
-    else:
-        command += ' res=' + unicode(alg.getDefaultCellsize())
-    alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
-    if alignToResolution:
-        command += ' -a'
-    alg.commands.append(command)
+    alg.postInputs()
 
 
-def processCommand(alg):
-    # remove output before processCommand
-    output = alg.getOutputFromName('output_dir')
-    alg.removeOutputFromName('output_dir')
-    color = alg.getParameterFromName('color')
-    if color.value == 0:
-        alg.parameters.remove(color)
-
-    # Handle rules
-    txtRules = alg.getParameterFromName('rules_txt')
-    if txtRules.value:
+def processCommand(alg, parameters, context, feedback):
+    # Handle inline rules
+    txtRules = alg.parameterAsString(parameters, 'txtrules', context)
+    if txtRules:
         # Creates a temporary txt file
-        tempRulesName = alg.getTempFilename()
+        tempRulesName = getTempFilename()
 
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
-            tempRules.write(txtRules.value)
+            tempRules.write(txtRules)
+        alg.removeParameter('txtrules')
+        parameters['rules'] = tempRulesName
 
-        # Use temporary file as rules file
-        alg.setParameterValue('rules', tempRulesName)
-        alg.parameters.remove(txtRules)
-
-    alg.processCommand()
-
-    # re-add the previous output
-    alg.addOutput(output)
-    alg.addParameter(color)
-    alg.addParameter(txtRules)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context, feedback):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
     # Export all rasters with their color tables (and their bands)
-    rasters = [alg.exportedLayers[f] for f in alg.getParameterValue('map').split(',')]
-    output_dir = alg.getOutputValue('output_dir')
-    for raster in rasters:
-        command = u"r.out.gdal -t createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\" --overwrite".format(
-            raster,
-            os.path.join(output_dir, raster + '.tif')
-        )
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+    rasters = alg.parameterAsLayerList(parameters, 'map', context)
+    outputDir = alg.parameterAsString(parameters, 'output_dir', context)
+    for idx, raster in enumerate(rasters):
+        rasterName = 'map_{}'.format(idx)
+        fileName = os.path.join(outputDir, rasterName)
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        alg.exportRasterLayer(alg.exportedLayers[rasterName], fileName, True,
+                              outFormat, createOpt, metaOpt)

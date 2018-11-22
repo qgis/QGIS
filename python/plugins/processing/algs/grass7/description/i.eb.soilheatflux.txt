@@ -1,0 +1,10 @@
+i.eb.soilheatflux
+Soil heat flux approximation (Bastiaanssen, 1995).
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|albedo|Name of albedo raster map [0.0;1.0]|None|False
+QgsProcessingParameterRasterLayer|ndvi|Name of NDVI raster map [-1.0;+1.0]|None|False
+QgsProcessingParameterRasterLayer|temperature|Name of Surface temperature raster map [K]|None|False
+QgsProcessingParameterRasterLayer|netradiation|Name of Net Radiation raster map [W/m2]|None|False
+QgsProcessingParameterRasterLayer|localutctime|Name of time of satellite overpass raster map [local time in UTC]|None|False
+QgsProcessingParameterBoolean|-r|HAPEX-Sahel empirical correction (Roerink, 1995)|False
+QgsProcessingParameterRasterDestination|output|Soil Heat Flux

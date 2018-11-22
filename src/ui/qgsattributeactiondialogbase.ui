@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
+    <width>948</width>
     <height>731</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Action list</string>
+      <string>Action List</string>
      </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">actiongroup</string>
@@ -64,7 +64,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
+          <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
         </property>
        </widget>
       </item>
@@ -104,7 +104,7 @@
       <item row="1" column="6">
        <widget class="QPushButton" name="mAddDefaultActionsButton">
         <property name="text">
-         <string>Create default actions</string>
+         <string>Create Default Actions</string>
         </property>
        </widget>
       </item>
@@ -124,7 +124,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
+          <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
         </property>
        </widget>
       </item>
@@ -146,7 +146,7 @@
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
         <property name="columnCount">
-         <number>6</number>
+         <number>8</number>
         </property>
         <column>
          <property name="text">
@@ -175,7 +175,20 @@
         </column>
         <column>
          <property name="text">
-          <string>Show In Attribute Table</string>
+          <string>Action Scopes</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>On Notification</string>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If not empty, this will enable provider notification listening and the action will be executed when the notification message matched the specified value. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Only when editable</string>
          </property>
         </column>
        </widget>
@@ -203,7 +216,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
         </property>
        </widget>
       </item>
@@ -255,13 +268,44 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mAttributeActionTable</tabstop>
+  <tabstop>groupBoxActionList</tabstop>
   <tabstop>mMoveUpButton</tabstop>
   <tabstop>mMoveDownButton</tabstop>
   <tabstop>mRemoveButton</tabstop>
+  <tabstop>mAddButton</tabstop>
   <tabstop>mAddDefaultActionsButton</tabstop>
+  <tabstop>mShowInAttributeTable</tabstop>
+  <tabstop>mAttributeTableWidgetType</tabstop>
+  <tabstop>mAttributeActionTable</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

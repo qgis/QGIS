@@ -20,28 +20,28 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString& name )
-    :  QgsEditorWidgetFactory( name )
+QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString &name )
+  :  QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsEnumerationWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsEnumerationWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsEnumerationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsEnumerationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsEnumerationWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Combo box with values that can be used within the column's type. Must be supported by the provider." ) );
 }
 
 
-bool QgsEnumerationWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
+unsigned int QgsEnumerationWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   QStringList list;
   vl->dataProvider()->enumValues( fieldIdx, list );
   if ( !list.isEmpty() )
-    return true;
+    return 20;
   else
-    return false;
+    return 0;
 }

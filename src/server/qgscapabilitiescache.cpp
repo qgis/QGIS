@@ -21,14 +21,10 @@
 
 QgsCapabilitiesCache::QgsCapabilitiesCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
+  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsCapabilitiesCache::removeChangedEntry );
 }
 
-QgsCapabilitiesCache::~QgsCapabilitiesCache()
-{
-}
-
-const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QString& configFilePath, const QString& key )
+const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QString &configFilePath, const QString &key )
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
 
@@ -42,7 +38,7 @@ const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QStr
   }
 }
 
-void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFilePath, const QString& key, const QDomDocument* doc )
+void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc )
 {
   if ( mCachedCapabilities.size() > 40 )
   {
@@ -61,9 +57,15 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFile
   mCachedCapabilities[ configFilePath ].insert( key, doc->cloneNode().toDocument() );
 }
 
-void QgsCapabilitiesCache::removeChangedEntry( const QString& path )
+void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
 {
-  QgsDebugMsg( "Remove capabilities cache entry because file changed" );
+  mCachedCapabilities.remove( path );
+  mFileSystemWatcher.removePath( path );
+}
+
+void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
+{
+  QgsDebugMsg( QStringLiteral( "Remove capabilities cache entry because file changed" ) );
   mCachedCapabilities.remove( path );
   mFileSystemWatcher.removePath( path );
 }

@@ -8,7 +8,7 @@ void QgsPluginManager::initTabDescriptions()
   if ( !mTabDescriptions.isEmpty() )
     return;
 
-  mTabDescriptions.insert( "all_plugins", tr( "<h3>All Plugins</h3>\
+  mTabDescriptions.insert( QStringLiteral( "all_plugins" ), tr( "<h3>All Plugins</h3>\
 \
 <p>\
 On the left you see the list of all plugins available for your QGIS, both installed and available for download. \
@@ -17,7 +17,7 @@ Some plugins come with your QGIS installation while most of them are made availa
 \
 <p>\
 You can temporarily enable or disable a plugin.\
- To <i>enable</i> or <i>disable</i> a plugin, click its checkbox or doubleclick its name...\
+ To <i>enable</i> or <i>disable</i> a plugin, click its checkbox or double-click its name…\
 </p>\
 \
 <p>\
@@ -28,7 +28,7 @@ on the 'Invalid' tab. Click on the plugin name to see more details, or to reinst
 
 
 
-  mTabDescriptions.insert( "installed_plugins", tr( "<h3>Installed Plugins</h3>\
+  mTabDescriptions.insert( QStringLiteral( "installed_plugins" ), tr( "<h3>Installed Plugins</h3>\
 \
 <p>\
 Here you only see plugins <b>installed on your QGIS</b>.\
@@ -37,7 +37,7 @@ Here you only see plugins <b>installed on your QGIS</b>.\
 Click on the name to see details. \
 </p>\
 <p>\
-Click the checkbox or doubleclick the name to <i>activate</i> or <i>deactivate</i> the plugin.\
+Click the checkbox or double-click the name to <i>activate</i> or <i>deactivate</i> the plugin.\
 </p>\
 <p>\
 You can change the sorting via the context menu (right click).\
@@ -46,7 +46,7 @@ You can change the sorting via the context menu (right click).\
 
 
 
-  mTabDescriptions.insert( "upgradeable_plugins", tr( "<h3>Upgradable plugins</h3>\
+  mTabDescriptions.insert( QStringLiteral( "upgradeable_plugins" ), tr( "<h3>Upgradable plugins</h3>\
 \
 <p>\
 Here are <b>upgradeable plugins</b>. It means more recent versions of installed \
@@ -57,7 +57,7 @@ plugins are available in the repositories.\
 
 
 
-  mTabDescriptions.insert( "not_installed_plugins", tr( "<h3>Not installed plugins</h3>\
+  mTabDescriptions.insert( QStringLiteral( "not_installed_plugins" ), tr( "<h3>Not installed plugins</h3>\
 \
 <p>\
 Here you see the list of all plugins available in the repositories, but which are <b>not yet installed</b>.\
@@ -78,7 +78,7 @@ then click the 'Install plugin' button.\
 
 
 
-  mTabDescriptions.insert( "new_plugins", tr( "<h3>New plugins</h3>\
+  mTabDescriptions.insert( QStringLiteral( "new_plugins" ), tr( "<h3>New plugins</h3>\
 \
 <p>\
 Here you see brand <b>new</b> plugins which can be installed.\
@@ -89,7 +89,7 @@ Here you see brand <b>new</b> plugins which can be installed.\
 
 
 
-  mTabDescriptions.insert( "invalid_plugins", tr( "<h3>Invalid plugins</h3>\
+  mTabDescriptions.insert( QStringLiteral( "invalid_plugins" ), tr( "<h3>Invalid plugins</h3>\
 \
 <p>\
 Plugins in this list here are <b>broken or incompatible</b> with your version of QGIS.\

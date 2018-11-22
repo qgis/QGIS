@@ -26,8 +26,9 @@ __copyright__ = '(C) 2016, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from processing.gui.ContextAction import ContextAction
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithmDialog import PreconfiguredAlgorithmDialog
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
@@ -35,12 +36,13 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class NewPreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Create preconfigured algorithm', 'NewPreconfiguredAlgorithmAction')
+        self.name = QCoreApplication.translate('NewPreconfiguredAlgorithmAction', 'Create Preconfigured Algorithm…')
 
     def isEnabled(self):
         return (isinstance(self.itemData, GeoAlgorithm) and
                 not isinstance(self.itemData, PreconfiguredAlgorithm))
 
     def execute(self):
-        dlg = PreconfiguredAlgorithmDialog(self.itemData, self.toolbox)
+        alg = self.itemData
+        dlg = PreconfiguredAlgorithmDialog(alg, self.toolbox)
         dlg.exec_()

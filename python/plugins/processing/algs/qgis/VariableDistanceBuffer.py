@@ -29,54 +29,110 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from . import Buffer as buff
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VariableDistanceBuffer(GeoAlgorithm):
+class VariableDistanceBuffer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
+    END_CAP_STYLE = 'END_CAP_STYLE'
+    JOIN_STYLE = 'JOIN_STYLE'
+    MITER_LIMIT = 'MITER_LIMIT'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBuffer.svg")
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Variable distance buffer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBuffer.svg")
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Distance field'), self.INPUT))
-        self.addParameter(ParameterNumber(self.SEGMENTS,
-                                          self.tr('Segments'), 1, default=5))
-        self.addParameter(ParameterBoolean(self.DISSOLVE,
-                                           self.tr('Dissolve result'), False))
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
+    def groupId(self):
+        return 'vectorgeometry'
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        dissolve = self.getParameterValue(self.DISSOLVE)
-        field = self.getParameterValue(self.FIELD)
-        segments = int(self.getParameterValue(self.SEGMENTS))
+    def __init__(self):
+        super().__init__()
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagSupportsBatch | QgsProcessingAlgorithm.FlagCanCancel | QgsProcessingAlgorithm.FlagHideFromToolbox
 
-        buff.buffering(progress, writer, 0, field, True, layer, dissolve,
-                       segments)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Distance field'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
+                                                       self.tr('Segments'), type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=1, defaultValue=5))
+        self.addParameter(QgsProcessingParameterBoolean(self.DISSOLVE,
+                                                        self.tr('Dissolve result'), defaultValue=False))
+        self.end_cap_styles = [self.tr('Round'),
+                               'Flat',
+                               'Square']
+        self.addParameter(QgsProcessingParameterEnum(
+            self.END_CAP_STYLE,
+            self.tr('End cap style'),
+            options=self.end_cap_styles, defaultValue=0))
+        self.join_styles = [self.tr('Round'),
+                            'Miter',
+                            'Bevel']
+        self.addParameter(QgsProcessingParameterEnum(
+            self.JOIN_STYLE,
+            self.tr('Join style'),
+            options=self.join_styles, defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0, defaultValue=2))
+
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Buffer'), QgsProcessing.TypeVectorPolygon))
+
+    def name(self):
+        return 'variabledistancebuffer'
+
+    def displayName(self):
+        return self.tr('Variable distance buffer')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
+        segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
+        end_cap_style = self.parameterAsEnum(parameters, self.END_CAP_STYLE, context) + 1
+        join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
+
+        field = self.parameterAsString(parameters, self.FIELD, context)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+        buff.buffering(feedback, context, sink, 0, field, True, source, dissolve, segments, end_cap_style,
+                       join_style, miter_limit)
+
+        return {self.OUTPUT: dest_id}

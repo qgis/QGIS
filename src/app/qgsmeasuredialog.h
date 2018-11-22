@@ -19,12 +19,14 @@
 
 #include "ui_qgsmeasurebase.h"
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsdistancearea.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgis_app.h"
 
 class QCloseEvent;
 class QgsMeasureTool;
+class QgsMapCanvas;
 
 class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
@@ -33,7 +35,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = nullptr );
+    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = nullptr );
 
     //! Save position
     void saveWindowLocation();
@@ -42,25 +44,22 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restorePosition();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint();
 
     //! Mose move
-    void mouseMove( const QgsPoint &point );
+    void mouseMove( const QgsPointXY &point );
 
     //! Remove last point
     void removeLastPoint();
 
   public slots:
-    virtual void reject() override;
+    void reject() override;
 
     //! Reset and start new
     void restart();
 
     //! Close event
     void closeEvent( QCloseEvent *e ) override;
-
-    //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     //! When any external settings change
     void updateSettings();
@@ -70,6 +69,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Open configuration tab
     void openConfigTab();
+
+    void crsChanged();
 
   private:
 
@@ -82,39 +83,44 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! shows/hides table, shows correct units
     void updateUi();
 
-    /** Resets the units combo box to display either distance or area units
-     * @param isArea set to true to populate with areal units, or false to show distance units
+    /**
+     * Resets the units combo box to display either distance or area units
+     * \param isArea set to true to populate with areal units, or false to show distance units
      */
     void repopulateComboBoxUnits( bool isArea );
 
-    double convertLength( double length, QGis::UnitType toUnit ) const;
+    double convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const;
 
     double convertArea( double area, QgsUnitTypes::AreaUnit toUnit ) const;
 
-    double mTotal;
+    double mTotal = 0.0;
 
     //! indicates whether we're measuring distances or areas
-    bool mMeasureArea;
+    bool mMeasureArea = false;
 
     //! Number of decimal places we want.
-    int mDecimalPlaces;
+    int mDecimalPlaces = 3;
 
     //! Current unit for input values
-    QGis::UnitType mCanvasUnits;
+    QgsUnitTypes::DistanceUnit mCanvasUnits = QgsUnitTypes::DistanceUnknownUnit;
 
     //! Current unit for distance values
-    QGis::UnitType mDistanceUnits;
+    QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
     //! Current unit for area values
-    QgsUnitTypes::AreaUnit mAreaUnits;
+    QgsUnitTypes::AreaUnit mAreaUnits  = QgsUnitTypes::AreaUnknownUnit;
 
     //! Our measurement object
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
-    QgsMeasureTool* mTool;
+    QgsMeasureTool *mTool = nullptr;
 
-    QgsPoint mLastMousePoint;
+    QgsMapCanvas *mCanvas = nullptr;
+
+    QgsPointXY mLastMousePoint;
+
+    void showHelp();
 
     friend class TestQgsMeasureTool;
 };

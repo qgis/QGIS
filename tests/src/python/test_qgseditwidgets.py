@@ -14,10 +14,12 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsMapLayerRegistry, QgsFeature, QgsGeometry, QgsPoint, QgsProject, QgsRelation, QgsVectorLayer, NULL
-from qgis.gui import QgsEditorWidgetRegistry
+from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsField)
+from qgis.gui import QgsGui
 
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QTextEdit
 
 start_app()
 
@@ -26,7 +28,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        QgsEditorWidgetRegistry.initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
 
     def createLayerWithOnePoint(self):
         self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
@@ -34,28 +36,28 @@ class TestQgsTextEditWidget(unittest.TestCase):
         pr = self.layer.dataProvider()
         f = QgsFeature()
         f.setAttributes(["test", 123])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
-        assert pr.addFeatures([f])
-        assert self.layer.pendingFeatureCount() == 1
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        self.assertTrue(pr.addFeatures([f]))
+        self.assertEqual(self.layer.featureCount(), 1)
         return self.layer
 
     def doAttributeTest(self, idx, expected):
-        reg = QgsEditorWidgetRegistry.instance()
+        reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('TextEdit', self.layer, idx, None)
         config = configWdg.config()
         editwidget = reg.create('TextEdit', self.layer, idx, config, None, None)
 
         editwidget.setValue('value')
-        assert editwidget.value() == expected[0]
+        self.assertEqual(editwidget.value(), expected[0])
 
         editwidget.setValue(123)
-        assert editwidget.value() == expected[1]
+        self.assertEqual(editwidget.value(), expected[1])
 
         editwidget.setValue(None)
-        assert editwidget.value() == expected[2]
+        self.assertEqual(editwidget.value(), expected[2])
 
         editwidget.setValue(NULL)
-        assert editwidget.value() == expected[3]
+        self.assertEqual(editwidget.value(), expected[3])
 
     def test_SetValue(self):
         self.createLayerWithOnePoint()
@@ -63,139 +65,69 @@ class TestQgsTextEditWidget(unittest.TestCase):
         self.doAttributeTest(0, ['value', '123', NULL, NULL])
         self.doAttributeTest(1, [NULL, 123, NULL, NULL])
 
-    def test_ValueRelation_representValue(self):
+    def testStringWithMaxLen(self):
+        """ tests that text edit wrappers correctly handle string fields with a maximum length """
+        layer = QgsVectorLayer("none?field=fldint:integer", "layer", "memory")
+        self.assertTrue(layer.isValid())
+        layer.dataProvider().addAttributes([QgsField('max', QVariant.String, 'string', 10),
+                                            QgsField('nomax', QVariant.String, 'string', 0)])
+        layer.updateFields()
+        QgsProject.instance().addMapLayer(layer)
 
-        first_layer = QgsVectorLayer("none?field=foreign_key:integer",
-                                     "first_layer", "memory")
-        assert first_layer.isValid()
-        second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
-                                      "second_layer", "memory")
-        assert second_layer.isValid()
-        QgsMapLayerRegistry.instance().addMapLayer(second_layer)
-        f = QgsFeature()
-        f.setAttributes([123])
-        assert first_layer.dataProvider().addFeatures([f])
-        f = QgsFeature()
-        f.setAttributes([123, 'decoded_val'])
-        assert second_layer.dataProvider().addFeatures([f])
+        reg = QgsGui.editorWidgetRegistry()
+        config = {'IsMultiline': 'True'}
 
-        reg = QgsEditorWidgetRegistry.instance()
-        factory = reg.factory("ValueRelation")
-        self.assertIsNotNone(factory)
+        # first test for field without character limit
+        editor = QTextEdit()
+        editor.setPlainText('this_is_a_long_string')
+        w = reg.create('TextEdit', layer, 2, config, editor, None)
+        self.assertEqual(w.value(), 'this_is_a_long_string')
 
-        # Everything valid
-        config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
+        # next test for field with character limit
+        editor = QTextEdit()
+        editor.setPlainText('this_is_a_long_string')
+        w = reg.create('TextEdit', layer, 1, config, editor, None)
 
-        # Code not find match in foreign layer
-        config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '(456)')
+        self.assertEqual(w.value(), 'this_is_a_')
 
-        # Missing Layer
-        config = {'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '(456)')
+        QgsProject.instance().removeAllMapLayers()
 
-        # Invalid Layer
-        config = {'Layer': 'invalid', 'Key': 'pkid', 'Value': 'decoded'}
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '(456)')
 
-        # Invalid Key
-        config = {'Layer': second_layer.id(), 'Key': 'invalid', 'Value': 'decoded'}
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '(456)')
+class TestQgsValueRelationWidget(unittest.TestCase):
 
-        # Invalid Value
-        config = {'Layer': second_layer.id(), 'Key': 'pkid', 'Value': 'invalid'}
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '(456)')
+    def test_enableDisable(self):
+        reg = QgsGui.editorWidgetRegistry()
+        layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
+        wrapper = reg.create('ValueRelation', layer, 0, {}, None, None)
 
-        QgsMapLayerRegistry.instance().removeMapLayer(second_layer.id())
+        widget = wrapper.widget()
 
-    def test_RelationReference_representValue(self):
+        self.assertTrue(widget.isEnabled())
+        wrapper.setEnabled(False)
+        self.assertFalse(widget.isEnabled())
+        wrapper.setEnabled(True)
+        self.assertTrue(widget.isEnabled())
 
-        first_layer = QgsVectorLayer("none?field=foreign_key:integer",
-                                     "first_layer", "memory")
-        assert first_layer.isValid()
-        second_layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
-                                      "second_layer", "memory")
-        assert second_layer.isValid()
-        QgsMapLayerRegistry.instance().addMapLayers([first_layer, second_layer])
-        f = QgsFeature()
-        f.setAttributes([123])
-        assert first_layer.dataProvider().addFeatures([f])
-        f = QgsFeature()
-        f.setAttributes([123, 'decoded_val'])
-        assert second_layer.dataProvider().addFeatures([f])
 
-        relMgr = QgsProject.instance().relationManager()
+class TestQgsValueMapEditWidget(unittest.TestCase):
+    VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
-        reg = QgsEditorWidgetRegistry.instance()
-        factory = reg.factory("RelationReference")
-        self.assertIsNotNone(factory)
+    def test_ValueMap_set_get(self):
+        layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayer(layer)
+        reg = QgsGui.editorWidgetRegistry()
+        configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
 
-        rel = QgsRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
-        rel.setReferencingLayer(first_layer.id())
-        rel.setReferencedLayer(second_layer.id())
-        rel.addFieldPair('foreign_key', 'pkid')
-        assert(rel.isValid())
+        config = {'map': [{'two': '2'}, {'twoandhalf': '2.5'}, {'NULL text': 'NULL'}, {'nothing': self.VALUEMAP_NULL_TEXT}]}
 
-        relMgr.addRelation(rel)
+        # Set a configuration containing values and NULL and check if it
+        # is returned intact.
+        configWdg.setConfig(config)
+        self.assertEqual(configWdg.config(), config)
 
-        # Everything valid
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), 'decoded_val')
+        QgsProject.instance().removeAllMapLayers()
 
-        # Code not find match in foreign layer
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '456'), '456')
 
-        # Invalid relation id
-        config = {'Relation': 'invalid'}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), '123')
-
-        # No display expression
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression(None)
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), '123')
-
-        # Invalid display expression
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression('invalid +')
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), '123')
-
-        # Missing relation
-        config = {}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), '123')
-
-        # Inconsistent layer provided to representValue()
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(second_layer, 0, config, None, '123'), '123')
-
-        # Inconsistent idx provided to representValue()
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(first_layer, 1, config, None, '123'), '123')
-
-        # Invalid relation
-        rel = QgsRelation()
-        rel.setRelationId('rel2')
-        rel.setRelationName('Relation Number Two')
-        rel.setReferencingLayer(first_layer.id())
-        rel.addFieldPair('foreign_key', 'pkid')
-        self.assertFalse(rel.isValid())
-
-        relMgr.addRelation(rel)
-
-        config = {'Relation': rel.id()}
-        second_layer.setDisplayExpression('decoded')
-        self.assertEqual(factory.representValue(first_layer, 0, config, None, '123'), '123')
-
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

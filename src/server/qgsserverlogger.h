@@ -18,35 +18,76 @@
 #ifndef QGSSERVERLOGGER_H
 #define QGSSERVERLOGGER_H
 
+
 #include "qgsmessagelog.h"
 
 #include <QFile>
 #include <QObject>
 #include <QString>
 #include <QTextStream>
+#include "qgis_server.h"
 
-/** Writes message log into server logfile*/
-class QgsServerLogger: public QObject
+/**
+ * \ingroup server
+ * \brief Writes message log into server logfile
+ * \since QGIS 2.8
+ */
+class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 {
     Q_OBJECT
   public:
-    static QgsServerLogger* instance();
 
-    int logLevel() const { return mLogLevel; }
-    //QString logFile() const { return mLogFile; }
+    /**
+     * Gets the singleton instance
+     */
+    static QgsServerLogger *instance();
+
+    /**
+     * Gets the current log level
+     * \returns the log level
+     * \since QGIS 3.0
+     */
+    Qgis::MessageLevel logLevel() const { return mLogLevel; }
+
+    /**
+      * Set the current log level
+      * \param level the log level
+      * \since QGIS 3.0
+      */
+    void setLogLevel( Qgis::MessageLevel level );
+
+    /**
+      * Set the current log file
+      */
+    void setLogFile( const QString &filename = QString() );
+
+    /**
+     * Activates logging to stderr.
+     * \since QGIS 3.4.
+     */
+    void setLogStderr();
 
   public slots:
-    void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
+
+    /**
+     * Log a message from the server context
+     *
+     * \param message the message
+     * \param tag tag of the message
+     * \param level log level of the message
+     */
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) override;
 
   protected:
     QgsServerLogger();
 
   private:
-    static QgsServerLogger* mInstance;
+    static QgsServerLogger *sInstance;
 
     QFile mLogFile;
+    bool mLogStderr = false;
     QTextStream mTextStream;
-    int mLogLevel;
+    Qgis::MessageLevel mLogLevel = Qgis::None;
 };
 
 #endif // QGSSERVERLOGGER_H

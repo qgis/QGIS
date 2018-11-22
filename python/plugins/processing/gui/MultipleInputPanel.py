@@ -27,16 +27,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
+from qgis.core import QgsProcessing
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
-
+''
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class MultipleInputPanel(BASE, WIDGET):
@@ -60,28 +65,31 @@ class MultipleInputPanel(BASE, WIDGET):
         # No checking is performed!
         self.selectedoptions = selected
         self.leText.setText(
-            self.tr('%d elements selected') % len(self.selectedoptions))
+            self.tr('{0} elements selected').format(len(self.selectedoptions)))
 
     def showSelectionDialog(self):
-        if self.datatype is None:
-            dlg = MultipleInputDialog(self.options, self.selectedoptions)
-        else:
+        if self.datatype == QgsProcessing.TypeFile:
             dlg = MultipleFileInputDialog(self.selectedoptions)
+        else:
+            dlg = MultipleInputDialog(self.options, self.selectedoptions, datatype=self.datatype)
         dlg.exec_()
         if dlg.selectedoptions is not None:
             self.selectedoptions = dlg.selectedoptions
             self.leText.setText(
-                self.tr('%d elements selected') % len(self.selectedoptions))
+                self.tr('{0} elements selected').format(len(self.selectedoptions)))
             self.selectionChanged.emit()
 
     def updateForOptions(self, options):
         selectedoptions = []
-        selected = [self.options[i] for i in self.selectedoptions]
+        selected = [self.options[i] if isinstance(i, int) else i for i in self.selectedoptions]
         for sel in selected:
-            try:
-                idx = options.index(sel)
-                selectedoptions.append(idx)
-            except ValueError:
-                pass
+            if isinstance(sel, int):
+                try:
+                    idx = options.index(sel)
+                    selectedoptions.append(idx)
+                except ValueError:
+                    pass
+            else:
+                selectedoptions.append(sel)
         self.options = options
         self.setSelectedItems(selectedoptions)

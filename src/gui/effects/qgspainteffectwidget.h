@@ -17,6 +17,8 @@
 #define QGSPAINTEFFECTWIDGET_H
 
 #include <QWidget>
+#include "qgis_sip.h"
+#include "qgis_gui.h"
 
 class QgsPaintEffect;
 class QgsShadowEffect;
@@ -27,11 +29,12 @@ class QgsTransformEffect;
 class QgsColorEffect;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsPaintEffectWidget : public QWidget
@@ -39,14 +42,13 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
     Q_OBJECT
 
   public:
-    QgsPaintEffectWidget( QWidget* parent = nullptr ) : QWidget( parent ) {}
-    virtual ~QgsPaintEffectWidget() {}
+    QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr ) : QWidget( parent ) {}
 
     /**
      * Sets the paint effect to modify with the widget
-     * @param effect paint effect
+     * \param effect paint effect
      */
-    virtual void setPaintEffect( QgsPaintEffect* effect ) = 0;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 
   signals:
 
@@ -61,29 +63,32 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
 #include "ui_widget_drawsource.h"
 
+/**
+ * \ingroup gui
+ * \class QgsDrawSourceWidget
+ */
 class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::WidgetDrawSource
 {
     Q_OBJECT
 
   public:
-    QgsDrawSourceWidget( QWidget* parent = nullptr );
+    QgsDrawSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsDrawSourceWidget(); }
+    static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsDrawSourceWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsDrawSourceEffect* mEffect;
+    QgsDrawSourceEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
 
-    void on_mTransparencySpnBx_valueChanged( double value );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mTransparencySlider_valueChanged( int value );
+    void opacityChanged( double value );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBlendCmbBx_currentIndexChanged( int index );
 
 };
 
@@ -91,31 +96,34 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 
 #include "ui_widget_blur.h"
 
+/**
+ * \ingroup gui
+ * \class QgsBlurWidget
+ */
 class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::WidgetBlur
 {
     Q_OBJECT
 
   public:
-    QgsBlurWidget( QWidget* parent = nullptr );
+    QgsBlurWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsBlurWidget(); }
+    static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsBlurWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsBlurEffect* mEffect;
+    QgsBlurEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
 
-    void on_mBlurTypeCombo_currentIndexChanged( int index );
-    void on_mBlurStrengthSpnBx_valueChanged( int value );
-    void on_mTransparencySpnBx_valueChanged( double value );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mTransparencySlider_valueChanged( int value );
+    void mBlurTypeCombo_currentIndexChanged( int index );
+    void mBlurStrengthSpnBx_valueChanged( int value );
+    void opacityChanged( double value );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBlendCmbBx_currentIndexChanged( int index );
 
 };
 
@@ -123,139 +131,152 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
 #include "ui_widget_shadoweffect.h"
 
+/**
+ * \ingroup gui
+ * \class QgsShadowEffectWidget
+ */
 class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetShadowEffect
 {
     Q_OBJECT
 
   public:
-    QgsShadowEffectWidget( QWidget* parent = nullptr );
+    QgsShadowEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsShadowEffectWidget(); }
+    static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsShadowEffectWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsShadowEffect* mEffect;
+    QgsShadowEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
-    void on_mShadowOffsetAngleSpnBx_valueChanged( int value );
-    void on_mShadowOffsetAngleDial_valueChanged( int value );
-    void on_mShadowOffsetSpnBx_valueChanged( double value );
-    void on_mOffsetUnitWidget_changed();
-    void on_mShadowTranspSpnBx_valueChanged( double value );
-    void on_mShadowColorBtn_colorChanged( const QColor& color );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mShadowBlendCmbBx_currentIndexChanged( int index );
-    void on_mShadowRadiuSpnBx_valueChanged( int value );
-    void on_mShadowTranspSlider_valueChanged( int value );
+    void mShadowOffsetAngleSpnBx_valueChanged( int value );
+    void mShadowOffsetAngleDial_valueChanged( int value );
+    void mShadowOffsetSpnBx_valueChanged( double value );
+    void mOffsetUnitWidget_changed();
+    void opacityChanged( double value );
+    void mShadowColorBtn_colorChanged( const QColor &color );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mShadowBlendCmbBx_currentIndexChanged( int index );
+    void mShadowRadiuSpnBx_valueChanged( int value );
 };
 
 
 #include "ui_widget_glow.h"
 
+/**
+ * \ingroup gui
+ * \class QgsGlowWidget
+ */
 class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::WidgetGlow
 {
     Q_OBJECT
 
   public:
-    QgsGlowWidget( QWidget* parent = nullptr );
+    QgsGlowWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsGlowWidget(); }
+    static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsGlowWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsGlowEffect* mEffect;
+    QgsGlowEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
     void colorModeChanged();
-    void on_mSpreadSpnBx_valueChanged( double value );
-    void on_mSpreadUnitWidget_changed();
-    void on_mTranspSpnBx_valueChanged( double value );
-    void on_mColorBtn_colorChanged( const QColor& color );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBlurRadiusSpnBx_valueChanged( int value );
-    void on_mTranspSlider_valueChanged( int value );
+    void mSpreadSpnBx_valueChanged( double value );
+    void mSpreadUnitWidget_changed();
+    void opacityChanged( double value );
+    void mColorBtn_colorChanged( const QColor &color );
+    void mBlendCmbBx_currentIndexChanged( int index );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBlurRadiusSpnBx_valueChanged( int value );
     void applyColorRamp();
 
 };
 
 #include "ui_widget_transform.h"
 
+/**
+ * \ingroup gui
+ * \class QgsTransformWidget
+ */
 class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::WidgetTransform
 {
     Q_OBJECT
 
   public:
-    QgsTransformWidget( QWidget* parent = nullptr );
+    QgsTransformWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsTransformWidget(); }
+    static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsTransformWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsTransformEffect* mEffect;
+    QgsTransformEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
 
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mSpinTranslateX_valueChanged( double value );
-    void on_mSpinTranslateY_valueChanged( double value );
-    void on_mTranslateUnitWidget_changed();
-    void on_mReflectXCheckBox_stateChanged( int state );
-    void on_mReflectYCheckBox_stateChanged( int state );
-    void on_mSpinShearX_valueChanged( double value );
-    void on_mSpinShearY_valueChanged( double value );
-    void on_mSpinScaleX_valueChanged( double value );
-    void on_mSpinScaleY_valueChanged( double value );
-    void on_mRotationSpinBox_valueChanged( double value );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mSpinTranslateX_valueChanged( double value );
+    void mSpinTranslateY_valueChanged( double value );
+    void mTranslateUnitWidget_changed();
+    void mReflectXCheckBox_stateChanged( int state );
+    void mReflectYCheckBox_stateChanged( int state );
+    void mSpinShearX_valueChanged( double value );
+    void mSpinShearY_valueChanged( double value );
+    void mSpinScaleX_valueChanged( double value );
+    void mSpinScaleY_valueChanged( double value );
+    void mRotationSpinBox_valueChanged( double value );
 
 };
 
 
 #include "ui_widget_coloreffects.h"
 
+/**
+ * \ingroup gui
+ * \class QgsColorEffectWidget
+ */
 class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetColorEffect
 {
     Q_OBJECT
 
   public:
-    QgsColorEffectWidget( QWidget* parent = nullptr );
+    QgsColorEffectWidget( QWidget *parent = nullptr );
 
-    static QgsPaintEffectWidget* create() { return new QgsColorEffectWidget(); }
+    static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsColorEffectWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
-    QgsColorEffect* mEffect;
+    QgsColorEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
-    void enableColorizeControls( const bool enable );
+    void blockSignals( bool block );
+    void enableColorizeControls( bool enable );
 
   private slots:
 
-    void on_mTranspSpnBx_valueChanged( double value );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mTranspSlider_valueChanged( int value );
-    void on_mBrightnessSpinBox_valueChanged( int value );
-    void on_mContrastSpinBox_valueChanged( int value );
-    void on_mSaturationSpinBox_valueChanged( int value );
-    void on_mColorizeStrengthSpinBox_valueChanged( int value );
-    void on_mColorizeCheck_stateChanged( int state );
-    void on_mColorizeColorButton_colorChanged( const QColor& color );
-    void on_mGrayscaleCombo_currentIndexChanged( int index );
+    void opacityChanged( double value );
+    void mBlendCmbBx_currentIndexChanged( int index );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBrightnessSpinBox_valueChanged( int value );
+    void mContrastSpinBox_valueChanged( int value );
+    void mSaturationSpinBox_valueChanged( int value );
+    void mColorizeStrengthSpinBox_valueChanged( int value );
+    void mColorizeCheck_stateChanged( int state );
+    void mColorizeColorButton_colorChanged( const QColor &color );
+    void mGrayscaleCombo_currentIndexChanged( int index );
 
 };
 

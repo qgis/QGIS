@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
@@ -51,7 +52,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.editName.setText(fld.name)
         self.cboType.setEditText(fld.dataType)
         if fld.modifier:
-            self.editLength.setText(unicode(fld.modifier))
+            self.editLength.setText(str(fld.modifier))
         self.chkNull.setChecked(not fld.notNull)
         if fld.hasDefault:
             self.editDefault.setText(fld.default)
@@ -76,10 +77,10 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         """ first check whether everything's fine """
         fld = self.getField(True)  # don't change the original copy
         if fld.name == "":
-            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field name must not be empty"))
+            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("Field name must not be empty."))
             return
         if fld.dataType == "":
-            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field type must not be empty"))
+            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("Field type must not be empty."))
             return
 
         self.accept()

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=MimeType
-MimeType=application/x-esri-shape
-Hidden=false
-Comment=ESRI shape file
-Comment[de]=ESRI-Shapedatei
-Icon=qgis-mime
-Patterns=*.shp;*.shx;

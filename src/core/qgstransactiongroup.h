@@ -16,33 +16,39 @@
 #ifndef QGSTRANSACTIONGROUP_H
 #define QGSTRANSACTIONGROUP_H
 
+#include "qgis_core.h"
 #include <QObject>
 #include <QSet>
+#include <memory>
+#include "qgstransaction.h"
 
 class QgsVectorLayer;
-class QgsTransaction;
 
+/**
+ * \ingroup core
+ * \class QgsTransactionGroup
+ */
 class CORE_EXPORT QgsTransactionGroup : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsTransactionGroup( QObject *parent = 0 );
 
-    ~QgsTransactionGroup();
+    //! Constructor for QgsTransactionGroup
+    explicit QgsTransactionGroup( QObject *parent = nullptr );
 
     /**
      * Add a layer to this transaction group.
      *
      * Will return true if it is compatible and has been added.
      */
-    bool addLayer( QgsVectorLayer* layer );
+    bool addLayer( QgsVectorLayer *layer );
 
     /**
-     * Get the set of layers currently managed by this transaction group.
+     * Gets the set of layers currently managed by this transaction group.
      *
-     * @return Layer set
+     * \returns Layer set
      */
-    QSet<QgsVectorLayer*> layers() const;
+    QSet<QgsVectorLayer *> layers() const;
 
     /**
      * Returns true if any of the layers in this group reports a modification.
@@ -50,13 +56,13 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool modified() const;
 
     /**
-     * Return the connection string used by this transaction group.
+     * Returns the connection string used by this transaction group.
      * Layers need be compatible when added.
      */
     QString connString() const;
 
     /**
-     * Return the provider key used by this transaction group.
+     * Returns the provider key used by this transaction group.
      * Layers need be compatible when added.
      */
     QString providerKey() const;
@@ -67,10 +73,11 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool isEmpty() const;
 
   signals:
+
     /**
      * Will be emitted whenever there is a commit error
      */
-    void commitError( const QString& msg );
+    void commitError( const QString &msg );
 
   private slots:
     void onEditingStarted();
@@ -79,14 +86,14 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     void onRollback();
 
   private:
-    bool mEditingStarting;
-    bool mEditingStopping;
+    bool mEditingStarting = false;
+    bool mEditingStopping = false;
 
     void disableTransaction();
 
-    QSet<QgsVectorLayer*> mLayers;
+    QSet<QgsVectorLayer *> mLayers;
     //! Only set while a transaction is active
-    QScopedPointer<QgsTransaction> mTransaction;
+    std::unique_ptr<QgsTransaction> mTransaction;
     //! Layers have to be compatible with the connection string
     QString mConnString;
     QString mProviderKey;

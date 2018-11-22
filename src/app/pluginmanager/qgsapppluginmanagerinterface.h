@@ -18,9 +18,11 @@
 #define QGSPLUGINMANAGERAPPIFACE_H
 
 #include "qgspluginmanagerinterface.h"
-#include "qgspluginmanager.h"
 
-/** \ingroup gui
+class QgsPluginManager;
+
+/**
+ * \ingroup gui
  * QgsPluginManagerInterface
  * Abstract base class to make QgsPluginManager available to pyplugin_installer.
  */
@@ -31,39 +33,36 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
   public:
 
     //! Constructor
-    explicit QgsAppPluginManagerInterface( QgsPluginManager * pluginManager );
+    explicit QgsAppPluginManagerInterface( QgsPluginManager *pluginManager );
 
-    //! Destructor
-    ~QgsAppPluginManagerInterface();
-
-    //! remove python plugins from the metadata registry (c++ plugins stay)
+    //! Removes Python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata() override;
 
-    //! add a single plugin to the metadata registry
-    void addPluginMetadata( const QMap<QString, QString>& metadata ) override;
+    //! Adds a single plugin to the metadata registry
+    void addPluginMetadata( const QMap<QString, QString> &metadata ) override;
 
-    //! refresh plugin list model (and metadata browser content if necessary)
+    //! Refreshes the plugin list model (and metadata browser content if necessary)
     void reloadModel() override;
 
-    //! return given plugin metadata
-    const QMap<QString, QString> * pluginMetadata( const QString& key ) const override;
+    //! Returns the given plugin metadata
+    const QMap<QString, QString> *pluginMetadata( const QString &key ) const override;
 
-    //! clear the repository listWidget
+    //! Clears the repository listWidget
     void clearRepositoryList() override;
 
-    //! add repository to the repository listWidget
-    void addToRepositoryList( const QMap<QString, QString>& repository ) override;
+    //! Adds a repository to the repository listWidget
+    void addToRepositoryList( const QMap<QString, QString> &repository ) override;
 
-    //! show the Plugin Manager window and optionally open tab tabIndex
+    //! Shows the Plugin Manager window and optionally open tab tabIndex
     void showPluginManager( int tabIndex = -1 ) override;
 
-    //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) override;
+    //! Shows the given message in the Plugin Manager internal message bar
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = -1 ) override;
 
   private:
 
     //! Pointer to QgsPluginManager object
-    QgsPluginManager *mPluginManager;
+    QgsPluginManager *mPluginManager = nullptr;
 };
 
 #endif //QGSPLUGINMANAGERAPPIFACE_H

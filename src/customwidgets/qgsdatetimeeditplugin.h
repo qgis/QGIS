@@ -18,13 +18,9 @@
 
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDesignerCustomWidgetCollectionInterface>
-#include <QDesignerExportWidget>
-#else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#endif
+#include "qgis_customwidgets.h"
 
 
 class CUSTOMWIDGETS_EXPORT QgsDateTimeEditPlugin : public QObject, public QDesignerCustomWidgetInterface
@@ -33,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsDateTimeEditPlugin : public QObject, public QDesig
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsDateTimeEditPlugin( QObject *parent = 0 );
+    explicit QgsDateTimeEditPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

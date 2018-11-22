@@ -29,16 +29,17 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputRaster
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -47,161 +48,109 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class translate(GdalAlgorithm):
 
     INPUT = 'INPUT'
+    TARGET_CRS = 'TARGET_CRS'
+    NODATA = 'NODATA'
+    COPY_SUBDATASETS = 'COPY_SUBDATASETS'
+    OPTIONS = 'OPTIONS'
+    DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
-    OUTSIZE = 'OUTSIZE'
-    OUTSIZE_PERC = 'OUTSIZE_PERC'
-    NO_DATA = 'NO_DATA'
-    EXPAND = 'EXPAND'
-    PROJWIN = 'PROJWIN'
-    SRS = 'SRS'
-    SDS = 'SDS'
-    EXTRA = 'EXTRA'
-    RTYPE = 'RTYPE'
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    TILED = 'TILED'
-    COMPRESS = 'COMPRESS'
-    JPEGCOMPRESSION = 'JPEGCOMPRESSION'
-    PREDICTOR = 'PREDICTOR'
-    ZLEVEL = 'ZLEVEL'
-    BIGTIFF = 'BIGTIFF'
-    BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
-    COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
-    TFW = 'TFW'
 
-    def getIcon(self):
+    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                    self.tr('Override the projection for the output file'),
+                                                    defaultValue=None,
+                                                    optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.NODATA,
+                                                       self.tr('Assign a specified nodata value to output bands'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=None,
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.COPY_SUBDATASETS,
+                                                        self.tr('Copy all subdatasets of this file to individual output files'),
+                                                        defaultValue=False))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                    self.tr('Output data type'),
+                                                    self.TYPES,
+                                                    allowMultiple=False,
+                                                    defaultValue=0)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(dataType_param)
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Converted')))
+
+    def name(self):
+        return 'translate'
+
+    def displayName(self):
+        return self.tr('Translate (convert format)')
+
+    def group(self):
+        return self.tr('Raster conversion')
+
+    def groupId(self):
+        return 'rasterconversion'
+
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
-    def commandLineName(self):
-        return "gdalogr:translate"
+    def commandName(self):
+        return 'gdal_translate'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Translate (convert format)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(self.OUTSIZE,
-                                          self.tr('Set the size of the output file (In pixels or %)'),
-                                          1, None, 100))
-        self.addParameter(ParameterBoolean(self.OUTSIZE_PERC,
-                                           self.tr('Output size is a percentage of input size'), True))
-        self.addParameter(ParameterString(self.NO_DATA,
-                                          self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '', optional=True))
-        self.addParameter(ParameterSelection(self.EXPAND,
-                                             self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
-        self.addParameter(ParameterCrs(self.SRS,
-                                       self.tr('Output projection for output file [leave blank to use input projection]'), None, optional=True))
-        self.addParameter(ParameterExtent(self.PROJWIN,
-                                          self.tr('Subset based on georeferenced coordinates')))
-        self.addParameter(ParameterBoolean(self.SDS,
-                                           self.tr('Copy all subdatasets of this file to individual output files'),
-                                           False))
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        params = []
-        params.append(ParameterSelection(self.RTYPE,
-                                         self.tr('Output raster type'), self.TYPE, 5))
-        params.append(ParameterSelection(self.COMPRESS,
-                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        params.append(ParameterNumber(self.JPEGCOMPRESSION,
-                                      self.tr('Set the JPEG compression level'),
-                                      1, 100, 75))
-        params.append(ParameterNumber(self.ZLEVEL,
-                                      self.tr('Set the DEFLATE compression level'),
-                                      1, 9, 6))
-        params.append(ParameterNumber(self.PREDICTOR,
-                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                      1, 3, 1))
-        params.append(ParameterBoolean(self.TILED,
-                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
-        params.append(ParameterSelection(self.BIGTIFF,
-                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
-        params.append(ParameterBoolean(self.TFW,
-                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
-        params.append(ParameterString(self.EXTRA,
-                                      self.tr('Additional creation parameters'), '', optional=True))
-
-        for param in params:
-            param.isAdvanced = True
-            self.addParameter(param)
-
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
-
-    def getConsoleCommands(self):
-        out = self.getOutputValue(translate.OUTPUT)
-        outsize = unicode(self.getParameterValue(self.OUTSIZE))
-        outsizePerc = unicode(self.getParameterValue(self.OUTSIZE_PERC))
-        noData = self.getParameterValue(self.NO_DATA)
-        if noData is not None:
-            noData = unicode(noData)
-        expand = unicode(self.getParameterFromName(
-            self.EXPAND).options[self.getParameterValue(self.EXPAND)])
-        projwin = unicode(self.getParameterValue(self.PROJWIN))
-        crsId = self.getParameterValue(self.SRS)
-        sds = self.getParameterValue(self.SDS)
-        extra = self.getParameterValue(self.EXTRA)
-        if extra is not None:
-            extra = unicode(extra)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
-        compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
-        bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
 
         arguments = []
-        arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append('-ot')
-        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if outsizePerc == 'True':
-            arguments.append('-outsize')
-            arguments.append(outsize + '%')
-            arguments.append(outsize + '%')
-        else:
-            arguments.append('-outsize')
-            arguments.append(outsize)
-            arguments.append(outsize)
-        if noData and len(noData) > 0:
-            arguments.append('-a_nodata')
-            arguments.append(noData)
-        if expand != 'none':
-            arguments.append('-expand')
-            arguments.append(expand)
-        regionCoords = projwin.split(',')
-        try:
-            projwin = []
-            projwin.append('-projwin')
-            projwin.append(regionCoords[0])
-            projwin.append(regionCoords[3])
-            projwin.append(regionCoords[1])
-            projwin.append(regionCoords[2])
-        except IndexError:
-            projwin = []
-        if projwin:
-            arguments.extend(projwin)
-        if crsId:
-            arguments.append('-a_srs')
-            arguments.append(unicode(crsId))
-        if sds:
-            arguments.append('-sds')
-        if extra and len(extra) > 0:
-            arguments.append(extra)
-        if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
-            arguments.append("-co COMPRESS=" + compress)
-            if compress == 'JPEG':
-                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
-            elif (compress == 'LZW') or (compress == 'DEFLATE'):
-                arguments.append("-co PREDICTOR=" + predictor)
-            if compress == 'DEFLATE':
-                arguments.append("-co ZLEVEL=" + zlevel)
-            if tiled == "True":
-                arguments.append("-co TILED=YES")
-            if tfw == "True":
-                arguments.append("-co TFW=YES")
-            if len(bigtiff) > 0:
-                arguments.append("-co BIGTIFF=" + bigtiff)
 
-        arguments.append(self.getParameterValue(self.INPUT))
+        crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
+        if crs.isValid():
+            arguments.append('-a_srs')
+            arguments.append(GdalUtils.gdal_crs_string(crs))
+
+        if nodata is not None:
+            arguments.append('-a_nodata')
+            arguments.append(nodata)
+
+        if self.parameterAsBool(parameters, self.COPY_SUBDATASETS, context):
+            arguments.append('-sds')
+
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+        if data_type:
+            arguments.append('-ot ' + self.TYPES[data_type])
+
+        arguments.append('-of')
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

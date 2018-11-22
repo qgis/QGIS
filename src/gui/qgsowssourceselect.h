@@ -20,38 +20,41 @@
 #ifndef QGSOWSSOURCESELECT_H
 #define QGSOWSSOURCESELECT_H
 #include "ui_qgsowssourceselectbase.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
-
-#include "qgsdataprovider.h"
+#include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
 #include <QNetworkRequest>
+#include "qgis_gui.h"
 
 class QgsDataProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 
 
-/*!
- * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
+/**
+ * \ingroup gui
+ * \brief  Dialog to create connections and add layers WCS etc.
  *
  * This dialog allows the user to define and save connection information
  * for WMS servers, etc.
  *
  * The user can then connect and add
- * layers from the WMS server to the map canvas.
+ * layers from the WCS server to the map canvas.
  */
-class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    /** Formats supported by provider */
+    //! Formats supported by provider
     struct SupportedFormat
     {
       QString format;
@@ -59,71 +62,35 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
-    ~QgsOWSSourceSelect();
+    QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
+    ~QgsOWSSourceSelect() override;
 
   public slots:
 
-    //! Opens the create connection dialog to build a new connection
-    void on_mNewButton_clicked();
-    //! Opens a dialog to edit an existing connection
-    void on_mEditButton_clicked();
-    //! Deletes the selected connection
-    void on_mDeleteButton_clicked();
-    //! Saves connections to the file
-    void on_mSaveButton_clicked();
-    //! Loads connections from the file
-    void on_mLoadButton_clicked();
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
 
-    /** Connects to the database using the stored connection parameters.
-     * Once connected, available layers are displayed.
-     */
-    void on_mConnectButton_clicked();
-
-    //! Determines the layers the user selected
-    virtual void addClicked();
-
-    void searchFinished();
-
-    //! Opens the Spatial Reference System dialog.
-    void on_mChangeCRSButton_clicked();
-
-    //! Signaled when a layer selection is changed.
-    virtual void on_mLayersTreeWidget_itemSelectionChanged();
-
-    //! Set status message to theMessage
-    void showStatusMessage( const QString &theMessage );
-
+  protected slots:
     //! show whatever error is exposed.
-    void showError( const QString &theTitle, const QString &theFormat, const QString &theError );
+    void showError( const QString &title, const QString &format, const QString &error );
 
-    //! Stores the selected datasource whenerver it is changed
-    void on_mConnectionsComboBox_activated( int );
-
-    //! Add some default wms servers to the list
-    void on_mAddDefaultButton_clicked();
-
-    void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
-  signals:
-    void addRasterLayer( const QString & rasterLayerPath,
-                         const QString & baseName,
-                         const QString & providerKey );
-    void connectionsChanged();
+    //! Sets status message to theMessage
+    void showStatusMessage( const QString &message );
 
   protected:
+
     /**
      * List of image formats (encodings) supported by provider
-     * @return list of format/label pairs
+     * \returns list of format/label pairs
      */
-    virtual QList<SupportedFormat> providerFormats();
+    virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 
     //! List of formats supported for currently selected layer item(s)
     virtual QStringList selectedLayersFormats();
 
     //! Server CRS supported for currently selected layer item(s)
-    virtual QStringList selectedLayersCRSs();
+    virtual QStringList selectedLayersCrses();
 
     //! List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
     virtual QStringList selectedLayersTimes();
@@ -139,11 +106,11 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Clear previously set formats
     void clearFormats();
 
-    //! Set supported CRSs
-    void populateCRS();
+    //! Sets supported CRSs
+    void populateCrs();
 
     //! Clear CRSs
-    void clearCRS();
+    void clearCrs();
 
     //! Populate times
     void populateTimes();
@@ -157,7 +124,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Connection info (uri)
     QString connectionInfo();
 
-    //! Set the server connection combo box to that stored in the config file.
+    //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
 
     //! Add a few example servers to the list.
@@ -166,13 +133,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Service name
     QString mService;
 
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
-
-
     /**
      * \brief Populate the layer list.
      *
@@ -180,27 +140,27 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
      */
     virtual void populateLayerList();
 
-    //! create an item including possible parents
-    //! @note not available in python bindings
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+    /**
+     * create an item including possible parents
+     * \note not available in Python bindings
+     */
+    QgsTreeWidgetItem *createItem( int id,
+                                   const QStringList &names,
+                                   QMap<int, QgsTreeWidgetItem *> &items,
+                                   int &layerAndStyleCount,
+                                   const QMap<int, int> &layerParents,
+                                   const QMap<int, QStringList> &layerParentNames ) SIP_FACTORY SIP_SKIP;
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( const QString& authId );
+    QString descriptionForAuthId( const QString &authId );
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
 
-    QPushButton *mAddButton;
-
     QMap<QString, QString> mCrsNames;
 
-    void addWMSListRow( const QDomElement& item, int row );
-    void addWMSListItem( const QDomElement& el, int row, int column );
+    void addWmsListRow( const QDomElement &item, int row );
+    void addWmsListItem( const QDomElement &el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
@@ -208,7 +168,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QString selectedFormat();
 
     //! Returns currently selected Crs
-    QString selectedCRS();
+    QString selectedCrs();
 
     //! Returns currently selected time
     QString selectedTime();
@@ -216,8 +176,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Returns currently selected cache load control
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 
-    QList<QTreeWidgetItem*> mCurrentSelection;
-    QTableWidgetItem* mCurrentTileset;
+    QList<QTreeWidgetItem *> mCurrentSelection;
+    QTableWidgetItem *mCurrentTileset = nullptr;
 
     //! Name for selected connection
     QString mConnName;
@@ -226,7 +186,41 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QString mConnectionInfo;
 
     //! URI for selected connection
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri mUri;
+
+  private slots:
+
+    //! Opens the create connection dialog to build a new connection
+    void mNewButton_clicked();
+    //! Opens a dialog to edit an existing connection
+    void mEditButton_clicked();
+    //! Deletes the selected connection
+    void mDeleteButton_clicked();
+    //! Saves connections to the file
+    void mSaveButton_clicked();
+    //! Loads connections from the file
+    void mLoadButton_clicked();
+
+    /**
+     * Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
+    void mConnectButton_clicked();
+
+    void searchFinished();
+
+    //! Opens the Spatial Reference System dialog.
+    void mChangeCRSButton_clicked();
+
+    //! Signaled when a layer selection is changed.
+    virtual void mLayersTreeWidget_itemSelectionChanged();
+
+    //! Stores the selected datasource whenerver it is changed
+    void mConnectionsComboBox_activated( int );
+
+    //! Add some default wms servers to the list
+    void mAddDefaultButton_clicked();
+
 
   private:
     //! Selected CRS
@@ -242,11 +236,11 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     QMap<QString, QString> mMimeLabelMap;
 
   private slots:
-    void on_mSearchButton_clicked();
-    void on_mSearchTableWidget_itemSelectionChanged();
-    void on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
-    void on_mLayerUpButton_clicked();
-    void on_mLayerDownButton_clicked();
+    void mSearchButton_clicked();
+    void mSearchTableWidget_itemSelectionChanged();
+    void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
+    void mLayerUpButton_clicked();
+    void mLayerDownButton_clicked();
     virtual void updateButtons();
 };
 

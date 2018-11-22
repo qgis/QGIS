@@ -1,0 +1,290 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgslayermetadata.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerMetadata : QgsAbstractMetadataBase
+{
+%Docstring
+A structured metadata store for a map layer.
+
+QgsLayerMetadata handles storage and management of the metadata
+for a QgsMapLayer. This class is an internal QGIS format with a common
+metadata structure, which allows for code to access the metadata properties for
+layers in a uniform way.
+
+The metadata store is designed to be compatible with the Dublin Core metadata
+specifications, and will be expanded to allow compatibility with ISO specifications
+in future releases. However, the QGIS internal schema does not represent a superset
+of all existing metadata schemas and accordingly conversion from specific
+metadata formats to QgsLayerMetadata may result in a loss of information.
+
+This class is designed to follow the specifications detailed in
+the schema definition available at resources/qgis-resource-metadata.xsd
+within the QGIS source code.
+
+Metadata can be validated through the use of QgsLayerMetadataValidator
+subclasses. E.g. validating against the native QGIS metadata schema can be performed
+using QgsNativeMetadataValidator.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayermetadata.h"
+%End
+  public:
+
+    struct SpatialExtent
+    {
+
+      QgsCoordinateReferenceSystem extentCrs;
+
+      QgsBox3d bounds;
+
+      bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
+    };
+
+    struct Extent
+    {
+      public:
+
+        QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
+%Docstring
+Spatial extents of the resource.
+
+.. seealso:: :py:func:`setSpatialExtents`
+%End
+
+        void setSpatialExtents( const QList< QgsLayerMetadata::SpatialExtent > &extents );
+%Docstring
+Sets the spatial ``extents`` of the resource.
+
+.. seealso:: :py:func:`spatialExtents`
+%End
+
+        QList< QgsDateTimeRange > temporalExtents() const;
+%Docstring
+Temporal extents of the resource. Use QgsDateTimeRange.isInstant() to determine
+whether the temporal extent is a range or a single point in time.
+If QgsDateTimeRange.isInfinite() returns true then the temporal extent
+is considered to be indeterminate and continuous.
+
+.. seealso:: :py:func:`setTemporalExtents`
+%End
+
+        void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
+%Docstring
+Sets the temporal ``extents`` of the resource.
+
+.. seealso:: :py:func:`temporalExtents`
+%End
+
+        bool operator==( const QgsLayerMetadata::Extent &other ) const;
+
+
+    };
+
+    struct Constraint
+    {
+
+      Constraint( const QString &constraint = QString(), const QString &type = QString() );
+%Docstring
+Constructor for Constraint.
+%End
+
+      QString type;
+
+      QString constraint;
+
+      bool operator==( const QgsLayerMetadata::Constraint &other ) const;
+
+    };
+
+    typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
+
+    QgsLayerMetadata();
+%Docstring
+Constructor for QgsLayerMetadata.
+%End
+
+    virtual QgsLayerMetadata *clone() const /Factory/;
+
+
+    QString fees() const;
+%Docstring
+Returns any fees associated with using the resource.
+An empty string will be returned if no fees are set.
+
+.. seealso:: :py:func:`setFees`
+%End
+
+    void setFees( const QString &fees );
+%Docstring
+Sets the ``fees`` associated with using the resource.
+Use an empty string if no fees are set.
+
+.. seealso:: :py:func:`fees`
+%End
+
+    QgsLayerMetadata::ConstraintList constraints() const;
+%Docstring
+Returns a list of constraints associated with using the resource.
+
+.. seealso:: :py:func:`setConstraints`
+%End
+
+    void addConstraint( const QgsLayerMetadata::Constraint &constraint );
+%Docstring
+Adds an individual constraint to the existing constraints.
+
+.. seealso:: :py:func:`constraints`
+
+.. seealso:: :py:func:`setConstraints`
+%End
+
+    void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
+%Docstring
+Sets the list of ``constraints`` associated with using the resource.
+
+.. seealso:: :py:func:`constraints`
+%End
+
+    QStringList rights() const;
+%Docstring
+Returns a list of attribution or copyright strings associated with the resource.
+
+.. seealso:: :py:func:`setRights`
+%End
+
+    void setRights( const QStringList &rights );
+%Docstring
+Sets a list of ``rights`` (attribution or copyright strings) associated with the resource.
+
+.. seealso:: :py:func:`rights`
+%End
+
+    QStringList licenses() const;
+%Docstring
+Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
+
+.. seealso:: :py:func:`setLicenses`
+%End
+
+    void setLicenses( const QStringList &licenses );
+%Docstring
+Sets a list of ``licenses`` associated with the resource.
+(examples: http://opendefinition.org/licenses/).
+
+.. seealso:: :py:func:`licenses`
+%End
+
+    QString encoding() const;
+%Docstring
+Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
+
+.. seealso:: :py:func:`setEncoding`
+%End
+
+    void setEncoding( const QString &encoding );
+%Docstring
+Sets the character ``encoding`` of the data in the resource. Use an empty string if no encoding is set.
+
+.. seealso:: :py:func:`encoding`
+%End
+
+
+    QgsLayerMetadata::Extent &extent();
+%Docstring
+Returns the spatial and temporal extents associated with the resource.
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+    void setExtent( const QgsLayerMetadata::Extent &extent );
+%Docstring
+Sets the spatial and temporal extents associated with the resource.
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system described by the layer's metadata.
+
+Note that this has no link to :py:func:`QgsMapLayer.crs()` While in most cases these
+two systems are likely to be identical, it is possible to have a layer
+with a different CRS described by it's accompanying metadata versus the
+CRS which is actually used to display and manipulate the layer within QGIS.
+This may be the case when a layer has an incorrect CRS within its metadata
+and a user has manually overridden the layer's CRS within QGIS.
+
+The CRS described here should either match the CRS from the layer :py:func:`QgsMapLayer.crs()`
+or the CRS from the data provider.
+
+This property should also match the CRS property used in the spatial extent.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the coordinate reference system for the layer's metadata.
+
+Note that this has no link to :py:func:`QgsMapLayer.setCrs()` Setting the layer's
+CRS via QgsMapLayer.setCrs() does not affect the layer's metadata CRS,
+and changing the CRS from the metadata will not change the layer's
+CRS or how it is projected within QGIS.
+
+While ideally these two systems are likely to be identical, it is possible to have a layer
+with a different CRS described by it's accompanying metadata versus the
+CRS which is actually used to display and manipulate the layer within QGIS.
+This may be the case when a layer has an incorrect CRS within its metadata
+and a user has manually overridden the layer's CRS within QGIS.
+
+The CRS described here should either match the CRS from the layer :py:func:`QgsMapLayer.crs()`
+or the CRS from the data provider.
+
+This property should also match the CRS property used in the spatial extent.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    void saveToLayer( QgsMapLayer *layer ) const;
+%Docstring
+Saves the metadata to a ``layer``'s custom properties (see QgsMapLayer.setCustomProperty() ).
+
+.. seealso:: :py:func:`readFromLayer`
+%End
+
+    void readFromLayer( const QgsMapLayer *layer );
+%Docstring
+Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
+
+.. seealso:: :py:func:`saveToLayer`
+%End
+
+    virtual bool readMetadataXml( const QDomElement &metadataElement );
+
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+
+
+    bool operator==( const QgsLayerMetadata &metadataOther ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgslayermetadata.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

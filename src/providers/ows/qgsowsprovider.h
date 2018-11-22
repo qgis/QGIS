@@ -38,17 +38,16 @@ class QgsOwsProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
      * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
      *                otherwise we contact the host directly.
+     * \param options generic data provider options
      *
      */
-    explicit QgsOwsProvider( QString const & uri = nullptr );
-
-    //! Destructor
-    ~QgsOwsProvider();
+    explicit QgsOwsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /* Pure virtuals */
 
@@ -56,11 +55,11 @@ class QgsOwsProvider : public QgsDataProvider
 
     QString description() const override;
 
-    QgsCoordinateReferenceSystem crs() override { return QgsCoordinateReferenceSystem(); }
+    QgsCoordinateReferenceSystem crs() const override { return QgsCoordinateReferenceSystem(); }
 
-    QgsRectangle extent() override { return QgsRectangle(); }
+    QgsRectangle extent() const override { return QgsRectangle(); }
 
-    bool isValid() override { return false; }
+    bool isValid() const override { return false; }
 };
 
 #endif // QGSOWSPROVIDER_H

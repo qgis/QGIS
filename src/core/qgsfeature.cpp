@@ -15,7 +15,7 @@ email                : sherman at mrcc.com
 
 #include "qgsfeature.h"
 #include "qgsfeature_p.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
@@ -29,6 +29,11 @@ email                : sherman at mrcc.com
  * See details in QEP #17
  ****************************************************************************/
 
+
+//
+// QgsFeature
+//
+
 QgsFeature::QgsFeature( QgsFeatureId id )
 {
   d = new QgsFeaturePrivate( id );
@@ -41,18 +46,38 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
   initAttributes( d->fields.count() );
 }
 
-QgsFeature::QgsFeature( QgsFeature const & rhs )
-    : d( rhs.d )
+QgsFeature::QgsFeature( const QgsFeature &rhs ) //NOLINT
+  : d( rhs.d )
 {
 }
 
-QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
+QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
 {
   d = rhs.d;
   return *this;
 }
 
-QgsFeature::~QgsFeature()
+bool QgsFeature::operator ==( const QgsFeature &other ) const
+{
+  if ( d == other.d )
+    return true;
+
+  if ( d->fid == other.d->fid
+       && d->valid == other.d->valid
+       && d->fields == other.d->fields
+       && d->attributes == other.d->attributes
+       && d->geometry.equals( other.d->geometry ) )
+    return true;
+
+  return false;
+}
+
+bool QgsFeature::operator!=( const QgsFeature &other ) const
+{
+  return !( *this == other );
+}
+
+QgsFeature::~QgsFeature() //NOLINT
 {
 }
 
@@ -73,22 +98,8 @@ void QgsFeature::deleteAttribute( int field )
   d->attributes.remove( field );
 }
 
-QgsGeometry *QgsFeature::geometry()
+QgsGeometry QgsFeature::geometry() const
 {
-  d.detach();
-  return d->geometry;
-}
-
-const QgsGeometry* QgsFeature::constGeometry() const
-{
-  return d->geometry;
-}
-
-QgsGeometry *QgsFeature::geometryAndOwnership()
-{
-  d.detach();
-  d->ownsGeometry = false;
-
   return d->geometry;
 }
 
@@ -98,13 +109,14 @@ QgsGeometry *QgsFeature::geometryAndOwnership()
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsFeature::setFeatureId( QgsFeatureId id )
+void QgsFeature::setId( QgsFeatureId id )
 {
   if ( id == d->fid )
     return;
 
   d.detach();
   d->fid = id;
+  d->valid = true;
 }
 
 QgsAttributes QgsFeature::attributes() const
@@ -119,40 +131,26 @@ void QgsFeature::setAttributes( const QgsAttributes &attrs )
 
   d.detach();
   d->attributes = attrs;
+  d->valid = true;
 }
 
-void QgsFeature::setGeometry( const QgsGeometry& geom )
+void QgsFeature::setGeometry( const QgsGeometry &geometry )
 {
-  setGeometry( new QgsGeometry( geom ) );
-}
-
-void QgsFeature::setGeometry( QgsGeometry* geom )
-{
-  // we do a little bit of trickery here to avoid an unnecessary deep copy
-  // of the existing geometry by the detach function
-  // (since we are replacing the geometry anyway)
-
-  //first, store the old ownsGeometry status
-  QgsFeaturePrivate* old_d = d.data();
-  bool ownedGeom = d->ownsGeometry;
-
-  //then set owns geometry to false before the detach, so that the deep copy
-  //is not made
-  d->ownsGeometry = false;
   d.detach();
+  d->geometry = geometry;
+  d->valid = true;
+}
 
-  //restore ownsGeometry setting if a detach was made
-  if ( old_d != d.data() )
-  {
-    old_d->ownsGeometry = ownedGeom;
-  }
-  else if ( ownedGeom )
-  {
-    delete d->geometry;
-  }
+void QgsFeature::setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry )
+{
+  d.detach();
+  d->geometry = QgsGeometry( std::move( geometry ) );
+  d->valid = true;
+}
 
-  d->geometry = geom;
-  d->ownsGeometry = true;
+void QgsFeature::clearGeometry()
+{
+  setGeometry( QgsGeometry() );
 }
 
 /***************************************************************************
@@ -160,20 +158,6 @@ void QgsFeature::setGeometry( QgsGeometry* geom )
  * full unit tests in testqgsfeature.cpp.
  * See details in QEP #17
  ****************************************************************************/
-
-/** Set the pointer to the feature geometry
-*/
-void QgsFeature::setGeometryAndOwnership( unsigned char *geom, int length )
-{
-  QgsGeometry *g = new QgsGeometry();
-  g->fromWkb( geom, length );
-  setGeometry( g );
-}
-
-void QgsFeature::setFields( const QgsFields* fields, bool init )
-{
-  setFields( *fields, init );
-}
 
 void QgsFeature::setFields( const QgsFields &fields, bool init )
 {
@@ -185,9 +169,9 @@ void QgsFeature::setFields( const QgsFields &fields, bool init )
   }
 }
 
-const QgsFields *QgsFeature::fields() const
+QgsFields QgsFeature::fields() const
 {
-  return &( d->fields );
+  return d->fields;
 }
 
 /***************************************************************************
@@ -210,25 +194,31 @@ void QgsFeature::setValid( bool validity )
   d->valid = validity;
 }
 
+bool QgsFeature::hasGeometry() const
+{
+  return !d->geometry.isNull();
+}
+
 void QgsFeature::initAttributes( int fieldCount )
 {
   d.detach();
+  d->attributes.resize( 0 ); // clears existing elements, while still preserving the currently allocated capacity of the list (unlike clear)
+  // ensures ALL attributes, including previously existing ones are default constructed.
+  // doing it this way also avoids clearing individual QVariants -- which can trigger a detachment. Cheaper just to make a new one.
   d->attributes.resize( fieldCount );
-  QVariant* ptr = d->attributes.data();
-  for ( int i = 0; i < fieldCount; ++i, ++ptr )
-    ptr->clear();
 }
 
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString::null, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::Warning );
     return false;
   }
 
   d.detach();
   d->attributes[idx] = value;
+  d->valid = true;
   return true;
 }
 
@@ -238,7 +228,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsFeature::setAttribute( const QString& name, const QVariant& value )
+bool QgsFeature::setAttribute( const QString &name, const QVariant &value )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -246,10 +236,11 @@ bool QgsFeature::setAttribute( const QString& name, const QVariant& value )
 
   d.detach();
   d->attributes[fieldIdx] = value;
+  d->valid = true;
   return true;
 }
 
-bool QgsFeature::deleteAttribute( const QString& name )
+bool QgsFeature::deleteAttribute( const QString &name )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -268,7 +259,7 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
   return d->attributes.at( fieldIdx );
 }
 
-QVariant QgsFeature::attribute( const QString& name ) const
+QVariant QgsFeature::attribute( const QString &name ) const
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -283,18 +274,24 @@ QVariant QgsFeature::attribute( const QString& name ) const
  * See details in QEP #17
  ****************************************************************************/
 
-int QgsFeature::fieldNameIndex( const QString& fieldName ) const
+int QgsFeature::fieldNameIndex( const QString &fieldName ) const
 {
-  return d->fields.fieldNameIndex( fieldName );
+  return d->fields.lookupField( fieldName );
 }
 
-QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+QDataStream &operator<<( QDataStream &out, const QgsFeature &feature )
 {
   out << feature.id();
   out << feature.attributes();
-  if ( feature.constGeometry() )
+  if ( feature.hasGeometry() )
   {
-    out << *( feature.constGeometry() );
+    out << ( feature.geometry() );
   }
   else
   {
@@ -305,16 +302,31 @@ QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
   return out;
 }
 
-QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
+QDataStream &operator>>( QDataStream &in, QgsFeature &feature )
 {
   QgsFeatureId id;
-  QgsGeometry* geometry = new QgsGeometry();
+  QgsGeometry geometry;
   bool valid;
   QgsAttributes attr;
-  in >> id >> attr >> *geometry >> valid;
-  feature.setFeatureId( id );
+  in >> id >> attr >> geometry >> valid;
+  feature.setId( id );
   feature.setGeometry( geometry );
   feature.setAttributes( attr );
   feature.setValid( valid );
   return in;
 }
+
+uint qHash( const QgsFeature &key, uint seed )
+{
+  uint hash = seed;
+  Q_FOREACH ( const QVariant &attr, key.attributes() )
+  {
+    hash ^= qHash( attr.toString() );
+  }
+
+  hash ^= qHash( key.geometry().asWkt() );
+  hash ^= qHash( key.id() );
+
+  return hash;
+}
+

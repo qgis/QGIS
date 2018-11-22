@@ -21,6 +21,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QComboBox" name="mLabelModeComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <item>
         <property name="text">
          <string>No labels</string>
@@ -32,7 +38,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Show labels for this layer</string>
+         <string>Single labels</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
@@ -60,25 +66,12 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>12</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
       <widget class="QPushButton" name="mEngineSettingsButton">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="toolTip">
-        <string>Automated placement settings (apply to all layers)</string>
+        <string>Automated placement settings (applies to all layers)</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

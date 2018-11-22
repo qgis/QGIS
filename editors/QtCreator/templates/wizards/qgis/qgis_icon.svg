@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="256" height="256" viewBox="0, 0, 256, 256">
+  <g id="Background">
+    <rect x="0" y="0" width="256" height="256" fill="#FFFFFF"/>
+  </g>
+  <defs>
+    <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="200.788" y1="249.007" x2="197.17" y2="11.232">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+    <linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="129.939" y1="252.718" x2="126.351" y2="16.928">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+  </defs>
+  <g id="Background"/>
+  <g id="Layer_1">
+    <path d="M137.607,136.899 L172.044,136.899 L142.898,108.083 L107.19,108.083 L107.19,142.392 L137.607,172.708 z" fill="#EE7913" id="polygon3"/>
+    <path d="M248.061,212.048 L186.618,151.306 L152.01,151.306 L152.01,187.067 L210.891,245.749 L248.061,245.749 z" fill="url(#Gradient_1)" id="polygon10"/>
+    <path d="M152.01,151.306 L186.618,151.306 L172.044,136.899 L137.607,136.899 L137.607,172.708 L152.01,187.067 z" fill="#F0E64A" id="polygon12"/>
+    <path d="M144.826,199.3 C139.606,200.502 134.183,201.154 128.588,201.154 C88.561,201.154 54.516,168.24 54.516,125.564 C54.516,82.887 88.182,50.695 128.588,50.695 C168.989,50.695 201.158,82.882 201.158,125.564 C201.158,132.501 200.295,139.183 198.697,145.509 L235.744,182.551 C245.296,165.815 250.64,146.354 250.64,125.277 C250.64,59.499 198.147,10.251 127.839,10.251 C57.849,10.251 5.36,59.178 5.36,125.277 C5.36,191.698 57.849,241.598 127.839,241.598 C145.905,241.598 162.791,238.275 177.916,232.227 L144.826,199.3 z" fill="url(#Gradient_2)" id="path19"/>
+    <path d="M107.19,108.083 L248.061,245.749 L248.061,212.048 L186.618,151.306 L172.044,136.898 L142.898,108.083 z" fill="#FFFFFF" fill-opacity="0.172" id="polygon4153"/>
+  </g>
+</svg>

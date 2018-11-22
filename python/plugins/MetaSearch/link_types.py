@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# MetaSearch Catalogue Client
+# MetaSearch Catalog Client
 #
 # Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
 #
@@ -45,4 +45,18 @@ WCS_LINK_TYPES = [
     'OGC:WCS-1.1.0-http-get-capabilities',
     'urn:x-esri:specification:ServiceType:wcs:url',
     'urn:x-esri:specification:ServiceType:Gmd:URL.wcs'
+]
+
+AMS_LINK_TYPES = [
+    'ESRI:ArcGIS:MapServer',
+    'Esri REST: Map Service'
+]
+
+AFS_LINK_TYPES = [
+    'ESRI:ArcGIS:FeatureServer',
+    'Esri REST: Feature Service'
+]
+
+GIS_FILE_LINK_TYPES = [
+    'FILE:GEO'
 ]

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Customization</string>
+   <string>Interface Customization</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -28,7 +28,7 @@
        <enum>QAbstractItemView::SelectItems</enum>
       </property>
       <property name="columnCount">
-       <number>3</number>
+       <number>2</number>
       </property>
       <attribute name="headerVisible">
        <bool>true</bool>
@@ -43,11 +43,6 @@
         <string notr="true">2</string>
        </property>
       </column>
-      <column>
-       <property name="text">
-        <string notr="true">3</string>
-       </property>
-      </column>
      </widget>
     </item>
     <item>
@@ -56,7 +51,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <property name="standardButtons">
-       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
+       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
       </property>
      </widget>
     </item>
@@ -151,7 +146,7 @@
      <normaloff>:/images/themes/default/mActionSelectAllTree.svg</normaloff>:/images/themes/default/mActionSelectAllTree.svg</iconset>
    </property>
    <property name="text">
-    <string>Select All</string>
+    <string>Check All</string>
    </property>
   </action>
  </widget>

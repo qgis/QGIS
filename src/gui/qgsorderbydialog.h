@@ -18,15 +18,20 @@
 #define QGSORDERBYDIALOG_H
 
 #include <QDialog>
-
-#include "qgsfeaturerequest.h"
+#include "qgis.h"
 
 #include "ui_qgsorderbydialogbase.h"
+#include "qgsfeaturerequest.h"
+#include "qgshelp.h"
+#include "qgis_gui.h"
+
+class QgsVectorLayer;
 
 /**
+ * \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
- * @note added in 2.14
+ * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBase
@@ -34,21 +39,22 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     Q_OBJECT
 
   public:
+
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
-     * @param layer  The vector layer for which the order by should be produced
-     * @param parent The parent widget, optional
+     * \param layer  The vector layer for which the order by should be produced
+     * \param parent The parent widget, optional
      */
-    QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Set the order by to manage
      */
-    void setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+    void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
-     * Get the order by defined in the dialog
+     * Gets the order by defined in the dialog
      */
     QgsFeatureRequest::OrderBy orderBy();
 
@@ -57,15 +63,17 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     bool eventFilter( QObject *obj, QEvent *e ) override;
 
   private slots:
-    void onExpressionChanged( const QString& expression );
+    void onExpressionChanged( const QString &expression );
+    void showHelp();
 
   private:
+
     /**
      * Initialize a row with the given information
      */
-    void setRow( int row, const QgsFeatureRequest::OrderByClause& orderByClause );
+    void setRow( int row, const QgsFeatureRequest::OrderByClause &orderByClause );
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 /***************************************************************************
                                context_help_id.py
@@ -33,14 +33,14 @@
 """
 import hashlib
 import sys
-# check to see if a class name was specified and if so, craete the context id
+# check to see if a class name was specified and if so, create the context id
 if len(sys.argv) > 1:
     hash = hashlib.sha1()
     # set the hash to the name passed on the command line
     hash.update(sys.argv[1])
     # generate the context id by converting the first 12 characters of the hash
     # to decimal
-    context_id = int(hash.hexdigest()[:12],16)
+    context_id = int(hash.hexdigest()[:12], 16)
     # print the result
     print context_id
 else:

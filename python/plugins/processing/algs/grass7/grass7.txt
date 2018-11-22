@@ -22,7 +22,7 @@ Each file starts with three lines containing:
  - The name of the group where you want the command to appear
 
 After this three lines, a variable number of lines appear, describing all inputs
-and ouputs. Here is a brief explanation of the format of these lines, depending
+and outputs. Here is a brief explanation of the format of these lines, depending
 on the type of parameter or output to be described. All declarations are contained
 in a single line, with elements separated by the symbol "|"
 

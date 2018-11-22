@@ -16,52 +16,60 @@
 #ifndef QGSLEGENDSETTINGS_H
 #define QGSLEGENDSETTINGS_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QSizeF>
 
 class QRectF;
 
-#include "qgscomposerlegendstyle.h"
-
-class QgsComposerLegendItem;
+#include "qgslegendstyle.h"
 
 
 /**
- * @brief The QgsLegendSettings class stores the appearance and layout settings
+ * \ingroup core
+ * \brief The QgsLegendSettings class stores the appearance and layout settings
  * for legend drawing with QgsLegendRenderer. The content of the legend is given
  * in QgsLegendModel class.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSettings
 {
   public:
     QgsLegendSettings();
 
-    void setTitle( const QString& t ) { mTitle = t; }
+    void setTitle( const QString &t ) { mTitle = t; }
     QString title() const { return mTitle; }
 
-    /** Returns the alignment of the legend title
-     * @returns Qt::AlignmentFlag for the legend title
-     * @see setTitleAlignment
+    /**
+     * Returns the alignment of the legend title
+     * \returns Qt::AlignmentFlag for the legend title
+     * \see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
-    /** Sets the alignment of the legend title
-     * @param alignment Text alignment for drawing the legend title
-     * @see titleAlignment
+
+    /**
+     * Sets the alignment of the legend title
+     * \param alignment Text alignment for drawing the legend title
+     * \see titleAlignment
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
-    /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
-    /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style ) { mStyleMap[s] = style; }
+    /**
+     * Returns reference to modifiable style
+     *
+     * \note Not available in Python bindings.
+     */
+    SIP_SKIP QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; } SIP_SKIP
+    //! Returns style
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const { return mStyleMap.value( s ); }
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }
 
     double boxSpace() const {return mBoxSpace;}
     void setBoxSpace( double s ) {mBoxSpace = s;}
 
-    void setWrapChar( const QString& t ) {mWrapChar = t;}
+    void setWrapChar( const QString &t ) {mWrapChar = t;}
     QString wrapChar() const {return mWrapChar;}
 
     double columnSpace() const {return mColumnSpace;}
@@ -77,65 +85,71 @@ class CORE_EXPORT QgsLegendSettings
     void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
 
     QColor fontColor() const {return mFontColor;}
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    void setFontColor( const QColor &c ) {mFontColor = c;}
 
     QSizeF symbolSize() const {return mSymbolSize;}
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
-    /** Returns whether a border will be drawn around raster symbol items.
-     * @see setDrawRasterBorder()
-     * @see rasterBorderColor()
-     * @see rasterBorderWidth()
-     * @note added in QGIS 2.12
+    /**
+     * Returns whether a stroke will be drawn around raster symbol items.
+     * \see setDrawRasterStroke()
+     * \see rasterStrokeColor()
+     * \see rasterStrokeWidth()
+     * \since QGIS 2.12
      */
-    bool drawRasterBorder() const { return mRasterSymbolBorder; }
+    bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
-    /** Sets whether a border will be drawn around raster symbol items.
-     * @param enabled set to true to draw borders
-     * @see drawRasterBorder()
-     * @see setRasterBorderColor()
-     * @see setRasterBorderWidth()
-     * @note added in QGIS 2.12
+    /**
+     * Sets whether a stroke will be drawn around raster symbol items.
+     * \param enabled set to true to draw borders
+     * \see drawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \see setRasterStrokeWidth()
+     * \since QGIS 2.12
      */
-    void setDrawRasterBorder( bool enabled ) { mRasterSymbolBorder = enabled; }
+    void setDrawRasterStroke( bool enabled ) { mRasterSymbolStroke = enabled; }
 
-    /** Returns the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderColor()
-     * @see drawRasterBorder()
-     * @see rasterBorderWidth()
-     * @note added in QGIS 2.12
+    /**
+     * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \see setRasterStrokeColor()
+     * \see drawRasterStroke()
+     * \see rasterStrokeWidth()
+     * \since QGIS 2.12
      */
-    QColor rasterBorderColor() const { return mRasterBorderColor; }
+    QColor rasterStrokeColor() const { return mRasterStrokeColor; }
 
-    /** Sets the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param color border color
-     * @see rasterBorderColor()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderWidth()
-     * @note added in QGIS 2.12
+    /**
+     * Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \param color stroke color
+     * \see rasterStrokeColor()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeWidth()
+     * \since QGIS 2.12
      */
-    void setRasterBorderColor( const QColor& color ) { mRasterBorderColor = color; }
+    void setRasterStrokeColor( const QColor &color ) { mRasterStrokeColor = color; }
 
-    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderWidth()
-     * @see drawRasterBorder()
-     * @see rasterBorderColor()
-     * @note added in QGIS 2.12
+    /**
+     * Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \see setRasterStrokeWidth()
+     * \see drawRasterStroke()
+     * \see rasterStrokeColor()
+     * \since QGIS 2.12
      */
-    double rasterBorderWidth() const { return mRasterBorderWidth; }
+    double rasterStrokeWidth() const { return mRasterStrokeWidth; }
 
-    /** Sets the border width for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param width border width in millimeters
-     * @see rasterBorderWidth()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderColor()
-     * @note added in QGIS 2.12
+    /**
+     * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \param width stroke width in millimeters
+     * \see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \since QGIS 2.12
      */
-    void setRasterBorderWidth( double width ) { mRasterBorderWidth = width; }
+    void setRasterStrokeWidth( double width ) { mRasterStrokeWidth = width; }
 
     QSizeF wmsLegendSize() const {return mWmsLegendSize;}
     void setWmsLegendSize( QSizeF s ) {mWmsLegendSize = s;}
@@ -149,7 +163,18 @@ class CORE_EXPORT QgsLegendSettings
     bool useAdvancedEffects() const { return mUseAdvancedEffects; }
     void setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
 
+    /**
+     * Returns the legend map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see setMapScale()
+     */
     double mapScale() const { return mMapScale; }
+
+    /**
+     * Sets the legend map \a scale.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see mapScale()
+     */
     void setMapScale( double scale ) { mMapScale = scale; }
 
     int dpi() const { return mDpi; }
@@ -157,97 +182,100 @@ class CORE_EXPORT QgsLegendSettings
 
     // utility functions
 
-    /** Splits a string using the wrap char taking into account handling empty
+    /**
+     * Splits a string using the wrap char taking into account handling empty
      * wrap char which means no wrapping
      */
-    QStringList splitStringForWrapping( const QString& stringToSplt ) const;
+    QStringList splitStringForWrapping( const QString &stringToSplt ) const;
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to
+    /**
+     * Draws Text. Takes care about all the composer specific issues (calculation to
      * pixel, scaling of font and painter to work around the Qt font bug)
      */
-    void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
+    void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
 
-    /** Like the above, but with a rectangle for multiline text
-     * @param p painter to use
-     * @param rect rectangle to draw into
-     * @param text text to draw
-     * @param font font to use
-     * @param halignment optional horizontal alignment
-     * @param valignment optional vertical alignment
-     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
+    /**
+     * Like the above, but with a rectangle for multiline text
+     * \param p painter to use
+     * \param rect rectangle to draw into
+     * \param text text to draw
+     * \param font font to use
+     * \param halignment optional horizontal alignment
+     * \param valignment optional vertical alignment
+     * \param flags allows for passing Qt::TextFlags to control appearance of rendered text
      */
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
+    void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
-    /** Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE */
-    QFont scaledFontPixelSize( const QFont& font ) const;
+    //! Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
+    QFont scaledFontPixelSize( const QFont &font ) const;
 
-    /** Calculates font to from point size to pixel size */
+    //! Calculates font to from point size to pixel size
     double pixelFontSize( double pointSize ) const;
 
-    /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
-    double textWidthMillimeters( const QFont& font, const QString& text ) const;
+    //! Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+    double textWidthMillimeters( const QFont &font, const QString &text ) const;
 
-    /** Returns the font height of a character in millimeters */
-    double fontHeightCharacterMM( const QFont& font, QChar c ) const;
+    //! Returns the font height of a character in millimeters
+    double fontHeightCharacterMM( const QFont &font, QChar c ) const;
 
-    /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
-    double fontAscentMillimeters( const QFont& font ) const;
+    //! Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+    double fontAscentMillimeters( const QFont &font ) const;
 
-    /** Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
-    double fontDescentMillimeters( const QFont& font ) const;
+    //! Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+    double fontDescentMillimeters( const QFont &font ) const;
 
   private:
 
     QString mTitle;
 
-    /** Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight) */
-    Qt::AlignmentFlag mTitleAlignment;
+    //! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
+    Qt::AlignmentFlag mTitleAlignment = Qt::AlignLeft;
 
     QString mWrapChar;
 
     QColor mFontColor;
 
-    /** Space between item box and contents */
-    qreal mBoxSpace;
+    //! Space between item box and contents
+    qreal mBoxSpace = 2;
 
-    /** Width and height of symbol icon */
+    //! Width and height of symbol icon
     QSizeF mSymbolSize;
 
-    /** Width and height of WMS legendGraphic pixmap */
+    //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;
 
-    /** Spacing between lines when wrapped */
-    double mLineSpacing;
+    //! Spacing between lines when wrapped
+    double mLineSpacing = 1;
 
-    /** Space between columns */
-    double mColumnSpace;
+    //! Space between columns
+    double mColumnSpace = 2;
 
-    /** Number of legend columns */
-    int mColumnCount;
+    //! Number of legend columns
+    int mColumnCount = 1;
 
-    /** Allow splitting layers into multiple columns */
-    bool mSplitLayer;
+    //! Allow splitting layers into multiple columns
+    bool mSplitLayer = false;
 
-    /** Use the same width (maximum) for all columns */
-    bool mEqualColumnWidth;
+    //! Use the same width (maximum) for all columns
+    bool mEqualColumnWidth = false;
 
-    bool mRasterSymbolBorder;
-    QColor mRasterBorderColor;
-    double mRasterBorderWidth;
+    bool mRasterSymbolStroke = true;
+    QColor mRasterStrokeColor;
+    double mRasterStrokeWidth = 0.0;
 
-    QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
+    QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
 
-    /** Conversion ratio between millimeters and map units - for symbols with size given in map units */
-    double mMmPerMapUnit;
+    //! Conversion ratio between millimeters and map units - for symbols with size given in map units
+    double mMmPerMapUnit = 1;
 
-    /** Whether to use advanced effects like transparency for symbols - may require their rasterization */
-    bool mUseAdvancedEffects;
+    //! Whether to use advanced effects like opacity for symbols - may require their rasterization
+    bool mUseAdvancedEffects = true;
 
-    /** Denominator of map's scale */
-    double mMapScale;
+    //! Denominator of map's scale
+    double mMapScale = 1;
 
-    /** DPI to be used when rendering legend */
-    int mDpi;
+    //! DPI to be used when rendering legend
+    int mDpi = 96;
 };
 
 

@@ -31,7 +31,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Font:</string>
+        <string>Font</string>
        </property>
       </widget>
      </item>
@@ -45,7 +45,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QScrollArea" name="mCharSelectScrollArea">
+    <widget class="QgsScrollArea" name="mCharSelectScrollArea">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -85,6 +85,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

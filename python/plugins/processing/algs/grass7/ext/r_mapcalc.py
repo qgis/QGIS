@@ -25,70 +25,41 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from os import path
+import os
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('expression') and alg.getParameterValue('file'):
-        return alg.tr("You need to set either inline expression or a rules file!")
+    if (alg.parameterAsString(parameters, 'expression', context)
+            and alg.parameterAsString(parameters, 'file', context)):
+        return False, alg.tr("You need to set either inline expression or a rules file!")
 
-    return None
-
-
-def processInputs(alg):
-    # We need to use the same raster names than in QGIS
-    if alg.getParameterValue('maps'):
-        rasters = alg.getParameterValue('maps').split(',')
-        for raster in rasters:
-            if raster in alg.exportedLayers.keys():
-                continue
-
-            alg.setSessionProjectionFromLayer(raster, alg.commands)
-            destFilename = path.splitext(path.basename(raster))[0]
-            alg.exportedLayers[raster] = destFilename
-            command = 'r.in.gdal input={} output={} --overwrite -o'.format(raster, destFilename)
-            alg.commands.append(command)
-
-    alg.setSessionProjectionFromProject(alg.commands)
-
-    region = unicode(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
-    regionCoords = region.split(',')
-    command = 'g.region'
-    command += ' -a'
-    command += ' n=' + unicode(regionCoords[3])
-    command += ' s=' + unicode(regionCoords[2])
-    command += ' e=' + unicode(regionCoords[1])
-    command += ' w=' + unicode(regionCoords[0])
-    cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
-    if cellsize:
-        command += ' res=' + unicode(cellsize)
-    else:
-        command += ' res=' + unicode(alg.getDefaultCellsize())
-    alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
-    if alignToResolution:
-        command += ' -a'
-    alg.commands.append(command)
+    return True, None
 
 
-def processCommand(alg):
-    # Remove output for command
-    output_dir = alg.getOutputFromName('output_dir')
-    maps = alg.getParameterFromName('maps')
-    alg.removeOutputFromName('output_dir')
-    alg.parameters.remove(maps)
-    alg.processCommand()
-    alg.addOutput(output_dir)
-    alg.addParameter(maps)
+def processInputs(alg, parameters, context, feedback):
+    # We will use the same raster names than in QGIS to name the rasters in GRASS
+    rasters = alg.parameterAsLayerList(parameters, 'maps', context)
+    for idx, raster in enumerate(rasters):
+        rasterName = os.path.splitext(
+            os.path.basename(raster.source()))[0]
+        alg.inputLayers.append(raster)
+        alg.setSessionProjectionFromLayer(raster)
+        command = 'r.in.gdal input="{0}" output="{1}" --overwrite -o'.format(
+            os.path.normpath(raster.source()),
+            rasterName)
+        alg.commands.append(command)
+
+    alg.removeParameter('maps')
+    alg.postInputs()
 
 
-def processOutputs(alg):
-    # Export everything into Output Directory with shell commands
-    outputDir = alg.getOutputValue('output_dir')
+def processCommand(alg, parameters, context, feedback):
+    alg.processCommand(parameters, context, feedback, True)
 
-    # Get the list of rasters matching the basename
-    commands = ["for r in $(g.list type=rast); do"]
-    commands.append("  r.out.gdal input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\" --overwrite".format(outputDir))
-    commands.append("done")
-    alg.commands.extend(commands)
-    alg.outputCommands.extend(commands)
+
+def processOutputs(alg, parameters, context, feedback):
+    # We need to export every raster from the GRASSDB
+    alg.exportRasterLayersIntoDirectory('output_dir',
+                                        parameters, context,
+                                        wholeDB=True)

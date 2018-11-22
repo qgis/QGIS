@@ -1,8 +1,0 @@
-r.lake
-r.lake.coords - Fills lake at given point to given level.
-Raster (r.*)
-ParameterRaster|dem|Elevation|False
-ParameterNumber|wl|Water level|None|None|1000.0
-ParameterPoint|xy|Seed point coordinates|
-ParameterBoolean|-n|Use negative depth values for lake raster layer|False
-OutputRaster|lake|Lake

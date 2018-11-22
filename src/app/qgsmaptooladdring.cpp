@@ -13,29 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 
 #include "qgsmaptooladdring.h"
 #include "qgsgeometry.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
 
 
-QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
+QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
   mToolName = tr( "Add ring" );
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRing::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRing::stopCapturing );
 }
 
-QgsMapToolAddRing::~QgsMapToolAddRing()
-{
-}
-
-void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
   emit messageDiscarded();
@@ -67,7 +65,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system." ), Qgis::Warning );
       return;
     }
 
@@ -89,7 +87,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
     bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-    QgsCurveV2* curveToAdd = nullptr;
+    QgsCurve *curveToAdd = nullptr;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
     {
       curveToAdd = captureCurve()->clone();
@@ -128,7 +126,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       {
         errorMessage = tr( "an unknown error occurred" );
       }
-      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
+      emit messageEmitted( tr( "Could not add ring since %1." ).arg( errorMessage ), Qgis::Critical );
       vlayer->destroyEditCommand();
     }
     else

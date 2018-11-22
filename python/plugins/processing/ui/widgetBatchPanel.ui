@@ -26,7 +26,7 @@
       <string>Add row</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
@@ -39,7 +39,7 @@
       <string>Toggle advanced mode</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -55,7 +55,7 @@
       <string>Remove row(s)</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
@@ -100,7 +100,7 @@
       <string>Open</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
@@ -113,10 +113,17 @@
       <string>Save</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="6">
+    <widget class="QCheckBox" name="checkLoadLayersOnCompletion">
+     <property name="text">
+      <string>Load layers on completion</string>
      </property>
     </widget>
    </item>

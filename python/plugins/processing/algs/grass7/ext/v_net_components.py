@@ -25,23 +25,19 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .v_net import variableOutput
+from .v_net import incorporatePoints, variableOutput
+from qgis.core import QgsProcessingParameterDefinition
 
 
-def processCommand(alg):
-    # remove the output for point
-    outLine = alg.getOutputFromName(u'output')
-    outPoint = alg.getOutputFromName(u'output_point')
-    alg.exportedLayers[outPoint.value] = outLine.name + alg.uniqueSufix
-    alg.removeOutputFromName(u'output_point')
-
-    alg.processCommand()
-
-    # Re-add output for point
-    alg.addOutput(outPoint)
+def processCommand(alg, parameters, context, feedback):
+    # We need to disable only output_point parameter
+    outPoint = alg.parameterDefinition('output_point')
+    outPoint.setFlags(outPoint.flags() | QgsProcessingParameterDefinition.FlagHidden)
+    incorporatePoints(alg, parameters, context, feedback)
+    outPoint.setFlags(outPoint.flags() | QgsProcessingParameterDefinition.FlagHidden)
 
 
-def processOutputs(alg):
-    outputParameter = {u"output": [u"line", 1],
-                       u"output_point": [u"point", 2]}
-    variableOutput(alg, outputParameter)
+def processOutputs(alg, parameters, context, feedback):
+    outputParameter = {'output': ['output', 'line', 1, True],
+                       'output_point': ['output', 'point', 2, True]}
+    variableOutput(alg, outputParameter, parameters, context)

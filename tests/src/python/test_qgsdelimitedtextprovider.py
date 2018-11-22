@@ -31,6 +31,7 @@ import tempfile
 import inspect
 import time
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
+import collections
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
@@ -41,10 +42,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsRectangle,
-    QgsMessageLog,
-    QgsFeature,
-    QgsFeatureIterator
-)
+    QgsApplication,
+    QgsFeature)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -56,6 +55,53 @@ TEST_DATA_DIR = unitTestDataPath()
 
 geomkey = "#geometry"
 fidkey = "#fid"
+
+try:
+    # Qt 5
+    from qgis.PyQt.QtCore import QUrlQuery
+
+    class MyUrl:
+
+        def __init__(self, url):
+            self.url = url
+            self.query = QUrlQuery()
+
+        @classmethod
+        def fromLocalFile(cls, filename):
+            return cls(QUrl.fromLocalFile(filename))
+
+        def addQueryItem(self, k, v):
+            self.query.addQueryItem(k, v)
+
+        def toString(self):
+            urlstr = self.url.toString()
+            querystr = self.query.toString(QUrl.FullyDecoded)
+            if querystr != '':
+                urlstr += '?'
+                urlstr += querystr
+            return urlstr
+except:
+    MyUrl = QUrl
+
+
+def normalize_query_items_order(s):
+    split_url = s.split('?')
+    urlstr = split_url[0]
+    if len(split_url) == 2:
+        items_list = split_url[1].split('&')
+        items_map = {}
+        for item in items_list:
+            split_item = item.split('=')
+            items_map[split_item[0]] = split_item[1]
+        first_arg = True
+        for k in sorted(items_map.keys()):
+            if first_arg:
+                urlstr += '?'
+                first_arg = False
+            else:
+                urlstr += '&'
+            urlstr += k + '=' + items_map[k]
+    return urlstr
 
 # Thought we could connect to messageReceived signal but doesn't seem to be available
 # in python :-(  Not sure why?
@@ -69,15 +115,15 @@ class MessageLogger(QObject):
         self.tag = tag
 
     def __enter__(self):
-        QgsMessageLog.instance().messageReceived.connect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
         return self
 
     def __exit__(self, type, value, traceback):
-        QgsMessageLog.instance().messageReceived.disconnect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:
-            self.log.append(unicode(msg))
+            self.log.append(str(msg))
 
     def messages(self):
         return self.log
@@ -92,7 +138,7 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         cls.basetestfile = os.path.join(srcpath, 'delimited_xy.csv')
 
-        url = QUrl.fromLocalFile(cls.basetestfile)
+        url = MyUrl.fromLocalFile(cls.basetestfile)
         url.addQueryItem("crs", "epsg:4326")
         url.addQueryItem("type", "csv")
         url.addQueryItem("xField", "X")
@@ -101,9 +147,9 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
         url.addQueryItem("subsetIndex", "no")
         url.addQueryItem("watchFile", "no")
 
-        cls.vl = QgsVectorLayer(url.toString(), u'test', u'delimitedtext')
+        cls.vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
@@ -119,7 +165,7 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         cls.basetestfile = os.path.join(srcpath, 'delimited_wkt.csv')
 
-        url = QUrl.fromLocalFile(cls.basetestfile)
+        url = MyUrl.fromLocalFile(cls.basetestfile)
         url.addQueryItem("crs", "epsg:4326")
         url.addQueryItem("type", "csv")
         url.addQueryItem("wktField", "wkt")
@@ -127,13 +173,13 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
         url.addQueryItem("subsetIndex", "no")
         url.addQueryItem("watchFile", "no")
 
-        cls.vl = QgsVectorLayer(url.toString(), u'test', u'delimitedtext')
+        cls.vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         cls.basetestpolyfile = os.path.join(srcpath, 'delimited_wkt_poly.csv')
 
-        url = QUrl.fromLocalFile(cls.basetestpolyfile)
+        url = MyUrl.fromLocalFile(cls.basetestpolyfile)
         url.addQueryItem("crs", "epsg:4326")
         url.addQueryItem("type", "csv")
         url.addQueryItem("wktField", "wkt")
@@ -141,7 +187,7 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
         url.addQueryItem("subsetIndex", "no")
         url.addQueryItem("watchFile", "no")
 
-        cls.vl_poly = QgsVectorLayer(url.toString(), u'test_polygon', u'delimitedtext')
+        cls.vl_poly = QgsVectorLayer(url.toString(), 'test_polygon', 'delimitedtext')
         assert cls.vl_poly.isValid(), "{} is invalid".format(cls.basetestpolyfile)
         cls.poly_provider = cls.vl_poly.dataProvider()
 
@@ -188,10 +234,10 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
                 for field in f.fields():
                     fields.append(str(field.name()))
                     fieldTypes.append(str(field.typeName()))
-            fielddata = dict((name, unicode(f[name])) for name in fields)
-            g = f.constGeometry()
-            if g:
-                fielddata[geomkey] = str(g.exportToWkt())
+            fielddata = dict((name, str(f[name])) for name in fields)
+            g = f.geometry()
+            if not g.isNull():
+                fielddata[geomkey] = str(g.asWkt())
             else:
                 fielddata[geomkey] = "None"
 
@@ -216,10 +262,10 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         # and return the data for the layer (fields, data)
 
         filepath = os.path.join(unitTestDataPath("delimitedtext"), filename)
-        url = QUrl.fromLocalFile(filepath)
+        url = MyUrl.fromLocalFile(filepath)
         if not requests:
             requests = [{}]
-        for k in params.keys():
+        for k in list(params.keys()):
             url.addQueryItem(k, params[k])
         urlstr = url.toString()
         log = []
@@ -227,7 +273,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             if verbose:
                 print(testname)
             layer = QgsVectorLayer(urlstr, 'test', 'delimitedtext')
-            uri = unicode(layer.dataProvider().dataSourceUri())
+            uri = layer.dataProvider().dataSourceUri()
             if verbose:
                 print(uri)
             basename = os.path.basename(filepath)
@@ -240,12 +286,12 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             if layer.isValid():
                 for nr, r in enumerate(requests):
                     if verbose:
-                        print("Processing request", nr + 1, repr(r))
-                    if callable(r):
+                        print(("Processing request", nr + 1, repr(r)))
+                    if isinstance(r, collections.Callable):
                         r(layer)
                         if verbose:
                             print("Request function executed")
-                    if callable(r):
+                    if isinstance(r, collections.Callable):
                         continue
                     rfields, rtypes, rdata = self.layerData(layer, r, nr * 1000)
                     if len(rfields) > len(fields):
@@ -255,7 +301,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
                     if not rdata:
                         log.append("Request " + str(nr) + " did not return any data")
                     if verbose:
-                        print("Request returned", len(rdata.keys()), "features")
+                        print(("Request returned", len(list(rdata.keys())), "features"))
             for msg in logger.messages():
                 filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
                 msg = re.sub(r'file\s+.*' + re.escape(filename), 'file ' + filelogname, msg)
@@ -266,36 +312,36 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
     def printWanted(self, testname, result):
         # Routine to export the result as a function definition
         print()
-        print("def {0}():".format(testname))
+        print(("def {0}():".format(testname)))
         data = result['data']
         log = result['log']
         fields = result['fields']
         prefix = '    '
 
         # Dump the data for a layer - used to construct unit tests
-        print(prefix + "wanted={}")
-        print(prefix + "wanted['uri']=" + repr(result['uri']))
-        print(prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes']))
-        print(prefix + "wanted['geometryType']=" + repr(result['geometryType']))
-        print(prefix + "wanted['data']={")
+        print((prefix + "wanted={}"))
+        print((prefix + "wanted['uri']=" + repr(result['uri'])))
+        print((prefix + "wanted['fieldTypes']=" + repr(result['fieldTypes'])))
+        print((prefix + "wanted['geometryType']=" + repr(result['geometryType'])))
+        print((prefix + "wanted['data']={"))
         for k in sorted(data.keys()):
             row = data[k]
-            print(prefix + "    {0}: {{".format(repr(k)))
+            print((prefix + "    {0}: {{".format(repr(k))))
             for f in fields:
-                print(prefix + "        " + repr(f) + ": " + repr(row[f]) + ",")
-            print(prefix + "        },")
-        print(prefix + "    }")
+                print((prefix + "        " + repr(f) + ": " + repr(row[f]) + ","))
+            print((prefix + "        },"))
+        print((prefix + "    }"))
 
-        print(prefix + "wanted['log']=[")
+        print((prefix + "wanted['log']=["))
         for msg in log:
-            print(prefix + '    ' + repr(msg) + ',')
-        print(prefix + '    ]')
+            print((prefix + '    ' + repr(msg) + ','))
+        print((prefix + '    ]'))
         print('    return wanted')
-        print()
+        print('', flush=True)
 
     def recordDifference(self, record1, record2):
         # Compare a record defined as a dictionary
-        for k in record1.keys():
+        for k in list(record1.keys()):
             if k not in record2:
                 return "Field {0} is missing".format(k)
             r1k = record1[k]
@@ -306,7 +352,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             else:
                 if record1[k] != record2[k]:
                     return "Field {0} differs: {1:.50} versus {2:.50}".format(k, repr(r1k), repr(r2k))
-        for k in record2.keys():
+        for k in list(record2.keys()):
             if k not in record1:
                 return "Output contains extra field {0}".format(k)
         return ''
@@ -315,24 +361,24 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         testname = inspect.stack()[1][3]
         verbose = not rebuildTests
         if verbose:
-            print("Running test:", testname)
+            print(("Running test:", testname))
         result = self.delimitedTextData(testname, file, requests, verbose, **params)
         if rebuildTests:
-            printWanted(testname, result)
+            self.printWanted(testname, result)
             assert False, "Test not run - being rebuilt"
         try:
             wanted = eval('want.{0}()'.format(testname))
         except:
-            printWanted(testname, result)
+            self.printWanted(testname, result)
             assert False, "Test results not available for {0}".format(testname)
 
         data = result['data']
         log = result['log']
         failures = []
-        if result['uri'] != wanted['uri']:
+        if normalize_query_items_order(result['uri']) != normalize_query_items_order(wanted['uri']):
             msg = "Layer Uri ({0}) doesn't match expected ({1})".format(
-                result['uri'], wanted['uri'])
-            print('    ' + msg)
+                normalize_query_items_order(result['uri']), normalize_query_items_order(wanted['uri']))
+            print(('    ' + msg))
             failures.append(msg)
         if result['fieldTypes'] != wanted['fieldTypes']:
             msg = "Layer field types ({0}) doesn't match expected ({1})".format(
@@ -353,14 +399,14 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             print('getting difference')
             difference = self.recordDifference(wrec, trec)
             if not difference:
-                print('    {0}: Passed'.format(description))
+                print(('    {0}: Passed'.format(description)))
             else:
-                print('    {0}: {1}'.format(description, difference))
+                print(('    {0}: {1}'.format(description, difference)))
                 failures.append(description + ': ' + difference)
         for id in sorted(data.keys()):
             if id not in wanted_data:
                 msg = "Layer contains unexpected extra data with id: \"{0}\"".format(id)
-                print('    ' + msg)
+                print(('    ' + msg))
                 failures.append(msg)
         common = []
         log_wanted = wanted['log']
@@ -370,18 +416,18 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         for l in log_wanted:
             if l not in common:
                 msg = 'Missing log message: ' + l
-                print('    ' + msg)
+                print(('    ' + msg))
                 failures.append(msg)
         for l in log:
             if l not in common:
                 msg = 'Extra log message: ' + l
-                print('    ' + msg)
+                print(('    ' + msg))
                 failures.append(msg)
         if len(log) == len(common) and len(log_wanted) == len(common):
             print('    Message log correct: Passed')
 
         if failures:
-            printWanted(testname, result)
+            self.printWanted(testname, result)
 
         assert len(failures) == 0, "\n".join(failures)
 
@@ -604,14 +650,14 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             f.write("id,name\n1,rabbit\n2,pooh\n")
 
         def appendfile(layer):
-            with file(filename, 'a') as f:
-                f.write('3,tigger\n')
+            with open(filename, 'a') as f:
+                f.write('3,tiger\n')
             # print "Appended to file - sleeping"
             time.sleep(1)
             QCoreApplication.instance().processEvents()
 
         def rewritefile(layer):
-            with file(filename, 'w') as f:
+            with open(filename, 'w') as f:
                 f.write("name,size,id\ntoad,small,5\nmole,medium,6\nbadger,big,7\n")
             # print "Rewritten file - sleeping"
             time.sleep(1)
@@ -621,7 +667,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             try:
                 os.remove(filename)
             except:
-                file(filename, "w").close()
+                open(filename, "w").close()
                 assert os.path.getsize(filename) == 0, "removal and truncation of {} failed".format(filename)
             # print "Deleted file - sleeping"
             time.sleep(1)
@@ -758,6 +804,29 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         params = {'yField': 'y', 'xField': 'x', 'type': 'csv', 'delimiter': '\\t'}
         requests = None
         self.runTest(filename, requests, **params)
+
+    def test_041_no_detect_type(self):
+        # CSV file parsing
+        # Skip lines
+        filename = 'testtypes.csv'
+        params = {'yField': 'lat', 'xField': 'lon', 'type': 'csv', 'detectTypes': 'no'}
+        requests = None
+        self.runTest(filename, requests, **params)
+
+    def test_042_no_detect_types_csvt(self):
+        # CSVT field types
+        filename = 'testcsvt.csv'
+        params = {'geomType': 'none', 'type': 'csv', 'detectTypes': 'no'}
+        requests = None
+        self.runTest(filename, requests, **params)
+
+    def test_043_decodeuri(self):
+        # URI decoding
+        filename = '/home/to/path/test.csv'
+        uri = 'file://{}?geomType=none'.format(filename)
+        registry = QgsProviderRegistry.instance()
+        components = registry.decodeUri('delimitedtext', uri)
+        self.assertEqual(components['path'], filename)
 
 
 if __name__ == '__main__':

@@ -18,13 +18,17 @@
 #define QGSMESSAGEOUTPUT_H
 
 #include <QString>
+#include "qgis_sip.h"
 #include <QObject>
 
+#include "qgis_core.h"
+
 class QgsMessageOutput;
-typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
+typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for showing messages from QGIS in GUI independent way.
  * This class provides abstraction of a dialog for showing output to the user.
  * By default QgsMessageConsoleOutput will be used if not overridden with other
@@ -42,34 +46,38 @@ class CORE_EXPORT QgsMessageOutput
     //! message can be in plain text or in html format
     enum MessageType { MessageText, MessageHtml };
 
-    //! virtual destructor
-    virtual ~QgsMessageOutput();
+    virtual ~QgsMessageOutput() = default;
 
-    //! set message, it won't be displayed until
-    virtual void setMessage( const QString& message, MessageType msgType ) = 0;
+    //! Sets message, it won't be displayed until
+    virtual void setMessage( const QString &message, MessageType msgType ) = 0;
 
     //! message to be appended to the current text
-    virtual void appendMessage( const QString& message ) = 0;
+    virtual void appendMessage( const QString &message ) = 0;
 
-    //! set title for the messages
-    virtual void setTitle( const QString& title ) = 0;
+    //! Sets title for the messages
+    virtual void setTitle( const QString &title ) = 0;
 
     //! display the message to the user and deletes itself
     virtual void showMessage( bool blocking = true ) = 0;
 
-    /** Display the blocking message to the user.
-     *  @note added in 2.10
+    /**
+     * Display the blocking message to the user.
+     *  \since QGIS 2.10
      */
-    static void showMessage( const QString& title, const QString& message, MessageType msgType );
+    static void showMessage( const QString &title, const QString &message, MessageType msgType );
 
-    //! sets function that will be used to create message output
-    //! @note not available in python bindings
-    // TODO: implementation where python class could be passed
-    static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f );
+    /**
+     * sets function that will be used to create message output
+     * \note not available in Python bindings
+     */
+    // TODO: implementation where Python class could be passed
+    static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f ) SIP_SKIP;
 
-    //! function that returns new class derived from QgsMessageOutput
-    //! (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
-    static QgsMessageOutput* createMessageOutput();
+    /**
+     * function that returns new class derived from QgsMessageOutput
+     * (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+     */
+    static QgsMessageOutput *createMessageOutput();
 
   private:
 
@@ -79,6 +87,7 @@ class CORE_EXPORT QgsMessageOutput
 
 
 /**
+ * \ingroup core
 \brief Default implementation of message output interface
 
 This class outputs messages to the standard output. Therefore it might
@@ -90,16 +99,19 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
 
   public:
 
-    QgsMessageOutputConsole();
+    /**
+     * Constructor for QgsMessageOutputConsole.
+     */
+    QgsMessageOutputConsole() = default;
 
-    virtual void setMessage( const QString& message, MessageType msgType ) override;
+    void setMessage( const QString &message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString& message ) override;
+    void appendMessage( const QString &message ) override;
 
-    virtual void setTitle( const QString& title ) override;
+    void setTitle( const QString &title ) override;
 
     //! sends the message to the standard output
-    virtual void showMessage( bool blocking = true ) override;
+    void showMessage( bool blocking = true ) override;
 
   signals:
 
@@ -114,7 +126,7 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     //! stores current title
     QString mTitle;
 
-    MessageType mMsgType;
+    MessageType mMsgType = MessageText;
 };
 
 #endif

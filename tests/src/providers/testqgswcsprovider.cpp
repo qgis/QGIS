@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -29,7 +29,8 @@
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsWcsProvider: public QObject
@@ -43,7 +44,7 @@ class TestQgsWcsProvider: public QObject
 
     void read();
   private:
-    bool read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport );
+    bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
     QString mTestDataDir;
     QString mReport;
     QString mUrl;
@@ -56,8 +57,8 @@ void TestQgsWcsProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', "<br />" );
-  mReport += "<h1>WCS provider tests</h1>\n";
+  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
+  mReport += QLatin1String( "<h1>WCS provider tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
   // Style is now inlined by QgsRasterChecker
 #if 0
@@ -71,10 +72,10 @@ void TestQgsWcsProvider::initTestCase()
 #endif
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + "/raster";
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + "/raster";
   qDebug() << "mTestDataDir = " << mTestDataDir;
 
-  mUrl =  QString( TEST_SERVER_URL ) + "/wcs";
+  mUrl =  QStringLiteral( TEST_SERVER_URL ) + "/wcs";
 }
 
 //runs after all tests
@@ -97,47 +98,47 @@ void TestQgsWcsProvider::read()
   bool ok = true;
   QStringList versions;
 
-  // TODO: 1.1 test disabled for now beacuse it was failing, UMN Mapserver is giving
+  // TODO: 1.1 test disabled for now because it was failing, UMN Mapserver is giving
   // 1x1 pixel response if GRIDORIGIN coordinate has a negative value, but it has to be
   // verified if the problem is really on Mapserver side
   //versions << "1.0" << "1.1";
-  versions << "1.0";
+  versions << QStringLiteral( "1.0" );
 
   QStringList identifiers;
 
   // identifiers in mapfile have the same name as files without .tif extension
-  identifiers << "band1_byte_noct_epsg4326";
-  identifiers << "band1_int16_noct_epsg4326";
-  identifiers << "band1_float32_noct_epsg4326";
-  identifiers << "band3_byte_noct_epsg4326";
-  identifiers << "band3_int16_noct_epsg4326";
-  identifiers << "band3_float32_noct_epsg4326";
+  identifiers << QStringLiteral( "band1_byte_noct_epsg4326" );
+  identifiers << QStringLiteral( "band1_int16_noct_epsg4326" );
+  identifiers << QStringLiteral( "band1_float32_noct_epsg4326" );
+  identifiers << QStringLiteral( "band3_byte_noct_epsg4326" );
+  identifiers << QStringLiteral( "band3_int16_noct_epsg4326" );
+  identifiers << QStringLiteral( "band3_float32_noct_epsg4326" );
 
   // How to reasonably log multiple fails within this loop?
-  QTemporaryFile* tmpFile = new QTemporaryFile( "qgis-wcs-test-XXXXXX.tif" );
+  QTemporaryFile *tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
   tmpFile->open();
   QString tmpFilePath = tmpFile->fileName();
   delete tmpFile; // removes the file
-  Q_FOREACH ( const QString& version, versions )
+  Q_FOREACH ( const QString &version, versions )
   {
-    Q_FOREACH ( const QString& identifier, identifiers )
+    Q_FOREACH ( const QString &identifier, identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
       QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
       qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
-        mReport += QString( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
+        mReport += QStringLiteral( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
         ok = false;
         continue;
       }
 
-      QgsDataSourceURI uri;
-      uri.setParam( "url", mUrl );
-      uri.setParam( "identifier", identifier );
-      uri.setParam( "crs", "epsg:4326" );
-      uri.setParam( "version", version );
-      uri.setParam( "cache", "AlwaysNetwork" );
+      QgsDataSourceUri uri;
+      uri.setParam( QStringLiteral( "url" ), mUrl );
+      uri.setParam( QStringLiteral( "identifier" ), identifier );
+      uri.setParam( QStringLiteral( "crs" ), QStringLiteral( "epsg:4326" ) );
+      uri.setParam( QStringLiteral( "version" ), version );
+      uri.setParam( QStringLiteral( "cache" ), QStringLiteral( "AlwaysNetwork" ) );
 
       if ( !read( identifier, uri.encodedUri(), tmpFilePath, mReport ) )
       {
@@ -149,16 +150,16 @@ void TestQgsWcsProvider::read()
   QVERIFY2( ok, "Reading data failed. See report for details." );
 }
 
-bool TestQgsWcsProvider::read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport )
+bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report )
 {
-  theReport += QString( "<h2>Identifier (coverage): %1</h2>" ).arg( theIdentifier );
+  report += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( identifier );
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( "wcs", theWcsUri, "gdal", theFilePath );
+  bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
 
-  theReport += checker.report();
+  report += checker.report();
   return ok;
 }
 
-QTEST_MAIN( TestQgsWcsProvider )
+QGSTEST_MAIN( TestQgsWcsProvider )
 #include "testqgswcsprovider.moc"

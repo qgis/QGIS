@@ -19,12 +19,23 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtCore import (Qt,
+                              QTime,
+                              QRegExp,
+                              QAbstractTableModel,
+                              pyqtSignal,
+                              QObject)
+from qgis.PyQt.QtGui import (QFont,
+                             QStandardItemModel,
+                             QStandardItem)
 from qgis.PyQt.QtWidgets import QApplication
 
-from .plugin import DbError
+from qgis.core import QgsTask
+
+from .plugin import DbError, BaseError
 
 
 class BaseTableModel(QAbstractTableModel):
@@ -57,10 +68,15 @@ class BaseTableModel(QAbstractTableModel):
         return len(self._header)
 
     def data(self, index, role):
-        if role != Qt.DisplayRole and role != Qt.FontRole:
+        if role not in [Qt.DisplayRole,
+                        Qt.EditRole,
+                        Qt.FontRole]:
             return None
 
         val = self.getData(index.row(), index.column())
+
+        if role == Qt.EditRole:
+            return val
 
         if role == Qt.FontRole:  # draw NULL in italic
             if val is not None:
@@ -71,16 +87,16 @@ class BaseTableModel(QAbstractTableModel):
 
         if val is None:
             return "NULL"
-        elif isinstance(val, buffer):
+        elif isinstance(val, memoryview):
             # hide binary data
             return None
-        elif isinstance(val, (str, unicode)) and len(val) > 300:
+        elif isinstance(val, str) and len(val) > 300:
             # too much data to display, elide the string
             val = val[:300]
         try:
-            return unicode(val)  # convert to unicode
+            return str(val)  # convert to Unicode
         except UnicodeDecodeError:
-            return unicode(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
+            return str(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
     def headerData(self, section, orientation, role):
         if role != Qt.DisplayRole:
@@ -118,7 +134,7 @@ class TableDataModel(BaseTableModel):
     def getData(self, row, col):
         if row < self.fetchedFrom or row >= self.fetchedFrom + self.fetchedCount:
             margin = self.fetchedCount / 2
-            start = self.rowCount() - margin if row + margin >= self.rowCount() else row - margin
+            start = int(self.rowCount() - margin if row + margin >= self.rowCount() else row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
@@ -132,6 +148,43 @@ class TableDataModel(BaseTableModel):
         return self.table.rowCount if self.table.rowCount is not None and self.columnCount(index) > 0 else 0
 
 
+class SqlResultModelAsync(QObject):
+
+    done = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.error = BaseError('')
+        self.status = None
+        self.model = None
+        self.task = None
+        self.canceled = False
+
+    def cancel(self):
+        self.canceled = True
+        if self.task:
+            self.task.cancel()
+
+    def modelDone(self):
+        if self.task:
+            self.status = self.task.status
+            self.model = self.task.model
+            self.error = self.task.error
+
+        self.done.emit()
+
+
+class SqlResultModelTask(QgsTask):
+
+    def __init__(self, db, sql, parent):
+        super().__init__(description=QApplication.translate("DBManagerPlugin", "Executing SQL"))
+        self.db = db
+        self.sql = sql
+        self.parent = parent
+        self.error = BaseError('')
+        self.model = None
+
+
 class SqlResultModel(BaseTableModel):
 
     def __init__(self, db, sql, parent=None):
@@ -139,9 +192,7 @@ class SqlResultModel(BaseTableModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, unicode(sql))
-        self._secs = t.elapsed() / 1000.0
-        del t
+        c = self.db._execute(None, sql)
 
         self._affectedRows = 0
         data = []
@@ -152,18 +203,20 @@ class SqlResultModel(BaseTableModel):
         try:
             if len(header) > 0:
                 data = self.db._fetchall(c)
-            self._affectedRows = c.rowcount
+            self._affectedRows = len(data)
         except DbError:
             # nothing to fetch!
             data = []
             header = []
 
-        BaseTableModel.__init__(self, header, data, parent)
+        super().__init__(header, data, parent)
 
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()
         c.close()
+        self._secs = t.elapsed() / 1000.0
         del c
+        del t
 
     def secs(self):
         return self._secs
@@ -182,7 +235,7 @@ class SimpleTableModel(QStandardItemModel):
     def rowFromData(self, data):
         row = []
         for c in data:
-            item = QStandardItem(unicode(c))
+            item = QStandardItem(str(c))
             item.setFlags((item.flags() | Qt.ItemIsEditable) if self.editable else (item.flags() & ~Qt.ItemIsEditable))
             row.append(item)
         return row
@@ -239,7 +292,7 @@ class TableFieldsModel(SimpleTableModel):
         fld.name = self.data(self.index(row, 0)) or ""
 
         typestr = self.data(self.index(row, 1)) or ""
-        regex = QRegExp("([^\(]+)\(([^\)]+)\)")
+        regex = QRegExp("([^\\(]+)\\(([^\\)]+)\\)")
         startpos = regex.indexIn(typestr)
         if startpos >= 0:
             fld.dataType = regex.cap(1).strip()
@@ -267,7 +320,7 @@ class TableConstraintsModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, constr):
-        field_names = [unicode(k_v[1].name) for k_v in iter(list(constr.fields().items()))]
+        field_names = [str(k_v[1].name) for k_v in iter(list(constr.fields().items()))]
         data = [constr.name, constr.type2String(), u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
@@ -303,7 +356,7 @@ class TableIndexesModel(SimpleTableModel):
                                          QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, idx):
-        field_names = [unicode(k_v1[1].name) for k_v1 in iter(list(idx.fields().items()))]
+        field_names = [str(k_v1[1].name) for k_v1 in iter(list(idx.fields().items()))]
         data = [idx.name, u", ".join(field_names)]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1

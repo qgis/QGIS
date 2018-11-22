@@ -19,8 +19,13 @@
 #include "ui_qgsexternalresourceconfigdlg.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
-/** \class QgsExternalResourceConfigDlg
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
+ * \class QgsExternalResourceConfigDlg
  * \note not available in Python bindings
  */
 
@@ -29,12 +34,14 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     Q_OBJECT
 
   public:
-    explicit QgsExternalResourceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
+
+    //! Constructor for QgsExternalResourceConfigDlg
+    explicit QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
   private slots:
     //! Choose a base directory for rootPath
@@ -42,9 +49,6 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
 
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
-
-    //! Dynamic activation of RelativeGroupBox
-    void enableRelative( bool state );
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

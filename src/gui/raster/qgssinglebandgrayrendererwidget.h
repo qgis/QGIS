@@ -18,37 +18,52 @@
 #ifndef QGSSINGLEBANDGRAYRENDERERWIDGET_H
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
+#include "qgis_gui.h"
 
+class QgsRasterMinMaxWidget;
+
+/**
+ * \ingroup gui
+ * \class QgsSingleBandGrayRendererWidget
+ */
 class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {
     Q_OBJECT
   public:
-    QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsSingleBandGrayRendererWidget();
+    QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer* renderer() override;
+    QgsRasterRenderer *renderer() override;
+    void setMapCanvas( QgsMapCanvas *canvas ) override;
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 
     QString min( int index = 0 ) override { Q_UNUSED( index ); return mMinLineEdit->text(); }
     QString max( int index = 0 ) override { Q_UNUSED( index ); return mMaxLineEdit->text(); }
-    void setMin( const QString& value, int index = 0 ) override { Q_UNUSED( index ); mMinLineEdit->setText( value ); }
-    void setMax( const QString& value, int index = 0 ) override { Q_UNUSED( index ); mMaxLineEdit->setText( value ); }
+    void setMin( const QString &value, int index = 0 ) override;
+    void setMax( const QString &value, int index = 0 ) override;
     int selectedBand( int index = 0 ) override { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
+    void doComputations() override;
+    QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+    //! called when new min/max values are loaded
+    void loadMinMax( int bandNo, double min, double max );
 
   private slots:
-    void on_mGrayBandComboBox_currentIndexChanged( int index );
+    void bandChanged();
+    void mMinLineEdit_textChanged( const QString & );
+    void mMaxLineEdit_textChanged( const QString & );
 
   private:
-    QgsRasterMinMaxWidget * mMinMaxWidget;
+    QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
+    bool mDisableMinMaxWidgetRefresh;
+
+    void minMaxModified();
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H

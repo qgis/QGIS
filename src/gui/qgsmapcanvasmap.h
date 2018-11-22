@@ -16,65 +16,48 @@
 #ifndef QGSMAPCANVASMAP_H
 #define QGSMAPCANVASMAP_H
 
-#include <QGraphicsRectItem>
-#include <QPixmap>
-#include <QTimer>
-
-#include <qgis.h>
-#include <qgsmaptopixel.h>
-
-#include <qgsmapcanvasitem.h>
+#include "qgsmapcanvasitem.h"
 
 class QgsMapSettings;
 class QgsMapCanvas;
 
-/** \ingroup gui
+#define SIP_NO_FILE
+
+/// @cond PRIVATE
+
+/**
+ * \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
+ *
+ * \note This class is not a part of public API
  */
-class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, public QGraphicsRectItem
+class QgsMapCanvasMap : public QgsMapCanvasItem
 {
   public:
 
     //! constructor
-    QgsMapCanvasMap( QgsMapCanvas* canvas );
+    QgsMapCanvasMap( QgsMapCanvas *canvas );
 
-    ~QgsMapCanvasMap();
+    //! \since QGIS 2.4
+    void setContent( const QImage &image, const QgsRectangle &rect );
 
-    //! @note added in 2.4
-    void setContent( const QImage& image, const QgsRectangle& rect );
-
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     QImage contentImage() const { return mImage; }
 
-    virtual void paint( QPainter * painter ) override;
+    void paint( QPainter *painter ) override;
 
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void refresh() {}
+    void addPreviewImage( const QImage &image, const QgsRectangle &rect );
 
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void resize( QSize size ) { Q_UNUSED( size ); }
-
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void enableAntiAliasing( bool flag ) { Q_UNUSED( flag ); }
-
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void render() {}
-
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void setBackgroundColor( const QColor& color ) { Q_UNUSED( color ); }
-
-    //! @deprecated in 2.4 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( QPoint point ) { Q_UNUSED( point ); }
-
-    //! @deprecated in 2.4
-    Q_DECL_DEPRECATED QPaintDevice& paintDevice();
-
-    //! @deprecated in 2.4 - does nothing. Kept for API compatibility
-    Q_DECL_DEPRECATED void updateContents() {}
+    QRectF boundingRect() const override;
 
   private:
 
     QImage mImage;
+
+    //! Preview images for panning. Usually cover area around the rendered image
+    QList< QPair< QImage, QgsRectangle > > mPreviewImages;
 };
+
+/// @endcond
 
 #endif

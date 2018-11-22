@@ -21,13 +21,10 @@
 
 # message only if verbose makefiles
 
-CMAKE_POLICY (SET CMP0053 OLD)
-
-
 FUNCTION (MYMESSAGE MSG)
-    IF (@CMAKE_VERBOSE_MAKEFILE@)
+    IF (${CMAKE_VERBOSE_MAKEFILE})
         MESSAGE (STATUS "${MSG}")
-    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+    ENDIF (${CMAKE_VERBOSE_MAKEFILE})
 ENDFUNCTION (MYMESSAGE)
 
 # get the install_name of a library or framework
@@ -72,19 +69,19 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
     # find current version
     # use python because pwd not working with WORKING_DIRECTORY param
     EXECUTE_PROCESS (
-        COMMAND python -c "import os.path\nprint os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\")"
+        COMMAND python -c "import os.path\nprint(os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\"))"
         OUTPUT_VARIABLE FWDIRPHYS
     )
     STRING (STRIP "${FWDIRPHYS}" FWDIRPHYS)
     IF (IS_DIRECTORY "${FWDIRPHYS}")
         STRING (REGEX MATCH "[^/\n]+$" FWVER "${FWDIRPHYS}")
         EXECUTE_PROCESS (COMMAND mkdir -p "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
-        EXECUTE_PROCESS (COMMAND ln -sfh ${FWVER} "${FWDEST}/${FWNAME}.framework/Versions/Current")
+        EXECUTE_PROCESS (COMMAND ln -sfn ${FWVER} "${FWDEST}/${FWNAME}.framework/Versions/Current")
         EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/${FWNAME}" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}/${FWNAME}")
         EXECUTE_PROCESS (COMMAND ln -sf Versions/Current/${FWNAME} "${FWDEST}/${FWNAME}.framework/${FWNAME}")
         IF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
             EXECUTE_PROCESS (COMMAND cp -Rfp "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
-            EXECUTE_PROCESS (COMMAND ln -sfh Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
+            EXECUTE_PROCESS (COMMAND ln -sfn Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
         ENDIF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
         # ensure writable by user, e.g. Homebrew frameworks are installed non-writable
         EXECUTE_PROCESS (COMMAND chmod -R u+w "${FWDEST}/${FWNAME}.framework")
@@ -107,7 +104,7 @@ ENDFUNCTION (COPY_FRAMEWORK)
 
 FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
     IF (LIBFROM)
-        STRING (REGEX MATCH "\\.dylib$" ISLIB "${LIBTO}")
+        STRING (REGEX MATCH "\\.(dylib|so)$" ISLIB "${LIBTO}")
         IF (ISLIB)
             SET (LIBPOST "${LIBTO}")
             SET (LIBMID "${QGIS_LIB_SUBDIR}")
@@ -228,9 +225,11 @@ FILE (GLOB QGFWLIST RELATIVE "${QFWDIR}" "${QFWDIR}/qgis*.framework")
 STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
 # don't collect any library symlinks, limit to versioned libs
 SET (Q_LIBVER ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
-FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.dylib")
+FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.dylib" "${QLIBDIR}/qgis/server/lib*.so")
 FILE (GLOB QGPLUGLIST "${QPLUGDIR}/*.so")
 FILE (GLOB QGPYLIST "${QGISPYDIR}/qgis/*.so")
 FILE (GLOB QGAPPLIST RELATIVE "${QBINDIR}" "${QBINDIR}/q*.app")
 FILE (GLOB QGRASSEXECLIST RELATIVE "${QLIBXDIR}/grass" "${QLIBXDIR}/grass/*/*")
-STRING(REPLACE ".app" ";" QGAPPLIST ${QGAPPLIST})
+IF (QGAPPLIST)
+  STRING(REPLACE ".app" ";" QGAPPLIST ${QGAPPLIST})
+ENDIF (QGAPPLIST)

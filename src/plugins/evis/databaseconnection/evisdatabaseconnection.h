@@ -42,84 +42,84 @@ class eVisDatabaseConnection
 
   public:
 
-    /** \brief Enum containting the type of database supported by this class */
-    enum DATABASE_TYPE
+    //! \brief Enum containing the type of database supported by this class
+    enum DatabaseType
     {
-      UNDEFINED,
-      MSACCESS,
-      QMYSQL,
+      Undefined,
+      MSAccess,
+      QMySQL,
       QPSQL,
       QODBC,
-      QSQLITE
+      QSqlite
     } mDatabaseType;
 
-    /** \brief Constructor */
-    eVisDatabaseConnection( const QString&, int, const QString&, const QString&, const QString&, DATABASE_TYPE );
+    //! \brief Constructor
+    eVisDatabaseConnection( const QString &, int, const QString &, const QString &, const QString &, DatabaseType );
 
-    /** \brief Public method that finalizes a connection to a databse */
+    //! \brief Public method that finalizes a connection to a database
     bool connect();
 
-    /** \brief Public method that passes an SQL statement to the database for execution */
-    QSqlQuery* query( const QString& );
+    //! \brief Public method that passes an SQL statement to the database for execution
+    QSqlQuery *query( const QString & );
 
-    /** \brief Public method for resetting the database connection parameters - equivalent to re running the constructor */
-    void resetConnectionParameters( const QString&, int, const QString&, const QString&, const QString&, DATABASE_TYPE );
+    //! \brief Public method for resetting the database connection parameters - equivalent to re running the constructor
+    void resetConnectionParameters( const QString &, int, const QString &, const QString &, const QString &, DatabaseType );
 
-    /** \brief Returns a list of tables in the current database */
+    //! \brief Returns a list of tables in the current database
     QStringList tables();
 
-    /** \brief Accessor to the database type */
-    DATABASE_TYPE databaseType()
+    //! \brief Accessor to the database type
+    DatabaseType databaseType()
     {
       return mDatabaseType;
     }
 
-    /** \brief Public method for closing the current database connection */
+    //! \brief Public method for closing the current database connection
     void close()
     {
       mDatabase.close();
     }
 
-    /** \brief Public method for requesting the last error reported by the database connect or query */
+    //! \brief Public method for requesting the last error reported by the database connect or query
     QString lastError()
     {
       return mLastError;
     }
 
-    /** \brief Mutator for database type */
-    void setDatabaseType( DATABASE_TYPE connectionType )
+    //! \brief Mutator for database type
+    void setDatabaseType( DatabaseType connectionType )
     {
       mDatabaseType = connectionType;
     }
 
   protected:
-    /** \brief Variable used to store the query results */
+    //! \brief Variable used to store the query results
     QSqlQuery mQuery;
 
   private:
-    /** \brief Host name for the database server */
+    //! \brief Host name for the database server
     QString mHostName;
 
-    /** \brief Port number the database server is listenting to */
+    //! \brief Port number the database server is listenting to
     int mPort;
 
-    /** \brief Database name, can also be a filename in the case of SQLite or MSAccess */
+    //! \brief Database name, can also be a filename in the case of SQLite or MSAccess
     QString mDatabaseName;
 
-    /** \brief Username for accessing the database */
+    //! \brief Username for accessing the database
     QString mUsername;
 
-    /** \brief Password associated with the username for accessing the database */
+    //! \brief Password associated with the username for accessing the database
     QString mPassword;
 
-    /** \brief QString containing the last reported error message */
+    //! \brief QString containing the last reported error message
     QString mLastError;
 
-    /** \brief The database object */
+    //! \brief The database object
     QSqlDatabase mDatabase;
 
-    /** \brief Sets the error messages */
-    void setLastError( const QString& error )
+    //! Sets the error messages
+    void setLastError( const QString &error )
     {
       mLastError = error;
     }

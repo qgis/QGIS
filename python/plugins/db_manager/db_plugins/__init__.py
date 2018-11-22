@@ -19,12 +19,14 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 
 class NotSupportedDbType(Exception):
 
     def __init__(self, dbtype):
-        self.msg = self.tr("%s is not supported yet") % dbtype
+        from qgis.PyQt.QtWidgets import QApplication
+        self.msg = QApplication.translate("DBManagerPlugin", "{0} is not supported yet").format(dbtype)
         Exception(self, self.msg)
 
     def __str__(self):
@@ -44,7 +46,7 @@ def initDbPluginList():
         try:
             exec(u"from .%s import plugin as mod" % name, globals())
         except ImportError as e:
-            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, unicode(e)))
+            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, str(e)))
             continue
 
         pluginclass = mod.classFactory()  # NOQA

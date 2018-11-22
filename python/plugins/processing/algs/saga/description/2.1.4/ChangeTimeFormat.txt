@@ -1,7 +1,0 @@
-Change Time Format
-table_tools
-ParameterTable|TABLE|Table|False
-ParameterTableField|FIELD|Time Field|TABLE|-1|False
-ParameterSelection|FMT_IN|Input Format|[0] hh.mm.ss;[1] hh:mm:ss;[2] hhmmss, fix size;[3] hours;[4] minutes;[5] seconds
-ParameterSelection|FMT_OUT|Output Format|[0] hh.mm.ss;[1] hh:mm:ss;[2] hhmmss, fix size;[3] hours;[4] minutes;[5] seconds
-OutputTable|OUTPUT|Output

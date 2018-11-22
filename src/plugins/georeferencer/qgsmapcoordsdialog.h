@@ -13,15 +13,16 @@
 #define MAPCOORDSDIALOG_H
 
 #include <QDialog>
-#include <QMouseEvent>
 
 #include "qgsmaptoolemitpoint.h"
+#include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
-#include "qgspoint.h"
-#include "qgsvertexmarker.h"
+#include "qgspointxy.h"
 #include "qgsmapcanvas.h"
+#include "qgspointlocator.h"
 
-#include <ui_qgsmapcoordsdialogbase.h>
+
+#include "ui_qgsmapcoordsdialogbase.h"
 
 class QPushButton;
 
@@ -30,85 +31,25 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     Q_OBJECT
 
   public:
-    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
-        : QgsMapTool( canvas )
-        , mSnappingMarker( nullptr )
-    {
-    }
+    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas );
 
-    virtual ~QgsGeorefMapToolEmitPoint()
-    {
-      delete mSnappingMarker;
-      mSnappingMarker = nullptr;
-    }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    void canvasMoveEvent( QgsMapMouseEvent *e ) override
-    {
-      MappedPoint mapped = mapPoint( e );
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
-      if ( !mapped.snapped )
-      {
-        delete mSnappingMarker;
-        mSnappingMarker = nullptr;
-      }
-      else
-      {
-        if ( !mSnappingMarker )
-        {
-          mSnappingMarker = new QgsVertexMarker( mCanvas );
-          mSnappingMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-          mSnappingMarker->setColor( Qt::magenta );
-          mSnappingMarker->setPenWidth( 3 );
-        }
-        mSnappingMarker->setCenter( mapped.point );
-      }
-    }
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    void canvasPressEvent( QgsMapMouseEvent * e ) override
-    {
-      MappedPoint mapped = mapPoint( e );
-      emit canvasClicked( mapped.point, e->button() );
-    }
-
-    void canvasReleaseEvent( QgsMapMouseEvent *e ) override
-    {
-      QgsMapTool::canvasReleaseEvent( e );
-      emit mouseReleased();
-    }
-
-    void deactivate() override
-    {
-      delete mSnappingMarker;
-      mSnappingMarker = 0;
-
-      QgsMapTool::deactivate();
-    }
+    void deactivate() override;
 
   signals:
-    void canvasClicked( const QgsPoint& point, Qt::MouseButton button );
+    void canvasClicked( const QgsPointXY &point, Qt::MouseButton button );
     void mouseReleased();
 
   private:
-    struct MappedPoint
-    {
-      MappedPoint() : snapped( false ) {}
-      QgsPoint point;
-      bool snapped;
-    };
 
-    MappedPoint mapPoint( QMouseEvent *e )
-    {
-      QgsPoint pnt = toMapCoordinates( e->pos() );
-      QgsSnappingUtils* snappingUtils = canvas()->snappingUtils();
-      QgsPointLocator::Match match = snappingUtils->snapToMap( pnt );
+    QgsPointLocator::Match mapPointMatch( QMouseEvent *e );
 
-      MappedPoint ret;
-      ret.snapped = match.isValid();
-      ret.point = ret.snapped ? match.point() : pnt;
-      return ret;
-    }
-
-    QgsVertexMarker* mSnappingMarker;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 
 class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
@@ -116,31 +57,31 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent = nullptr );
-    ~QgsMapCoordsDialog();
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent = nullptr );
+    ~QgsMapCoordsDialog() override;
 
   private slots:
-    void on_buttonBox_accepted();
+    void buttonBox_accepted();
 
     void setToolEmitPoint( bool isEnable );
 
-    void maybeSetXY( const QgsPoint &, Qt::MouseButton );
+    void maybeSetXY( const QgsPointXY &, Qt::MouseButton );
     void updateOK();
     void setPrevTool();
 
   signals:
-    void pointAdded( const QgsPoint &, const QgsPoint & );
+    void pointAdded( const QgsPointXY &, const QgsPointXY & );
 
   private:
-    double dmsToDD( const QString& dms );
+    double dmsToDD( const QString &dms );
 
-    QPushButton *mPointFromCanvasPushButton;
+    QPushButton *mPointFromCanvasPushButton = nullptr;
 
-    QgsGeorefMapToolEmitPoint* mToolEmitPoint;
-    QgsMapTool* mPrevMapTool;
-    QgsMapCanvas* mQgisCanvas;
+    QgsGeorefMapToolEmitPoint *mToolEmitPoint = nullptr;
+    QgsMapTool *mPrevMapTool = nullptr;
+    QgsMapCanvas *mQgisCanvas = nullptr;
 
-    QgsPoint mPixelCoords;
+    QgsPointXY mPixelCoords;
 };
 
 #endif

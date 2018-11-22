@@ -72,5 +72,6 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
         out[0].name() == "1"
         out[1].name() == "2"
 
+
 if __name__ == '__main__':
     unittest.main()

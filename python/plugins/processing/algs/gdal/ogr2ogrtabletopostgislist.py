@@ -25,25 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterTableField
+from qgis.core import QgsSettings
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     DATABASE = 'DATABASE'
     INPUT_LAYER = 'INPUT_LAYER'
+    SHAPE_ENCODING = 'SHAPE_ENCODING'
     HOST = 'HOST'
     PORT = 'PORT'
     USER = 'USER'
@@ -63,19 +58,25 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
     PRECISION = 'PRECISION'
     OPTIONS = 'OPTIONS'
 
+    def __init__(self):
+        GdalAlgorithm.__init__(self)
+
     def dbConnectionNames(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Import layer/table as geometryless table into PostgreSQL database')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer')))
+        self.addParameter(ParameterString(self.SHAPE_ENCODING,
+                                          self.tr('Shape encoding'), "", optional=True))
         self.addParameter(ParameterString(self.SCHEMA,
                                           self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
@@ -109,25 +110,36 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'importlayertableasgeometrylesstableintopostgresqldatabase'
+
+    def displayName(self):
+        return self.tr('Import layer/table as geometryless table into PostgreSQL database')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
+    def groupId(self):
+        return 'vectormiscellaneous'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
-        settings = QSettings()
-        mySettings = '/PostgreSQL/connections/' + connection
-        dbname = settings.value(mySettings + '/database')
-        user = settings.value(mySettings + '/username')
-        host = settings.value(mySettings + '/host')
-        port = settings.value(mySettings + '/port')
-        password = settings.value(mySettings + '/password')
+        uri = uri_from_name(connection)
+        if executing:
+            # to get credentials input when needed
+            uri = GeoDB(uri=uri).uri
+
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        schema = unicode(self.getParameterValue(self.SCHEMA))
-        table = unicode(self.getParameterValue(self.TABLE))
-        pk = unicode(self.getParameterValue(self.PK))
+        ogrLayer = GdalUtils.ogrConnectionStringFromLayer(inLayer)
+        shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
+        schema = str(self.getParameterValue(self.SCHEMA))
+        table = str(self.getParameterValue(self.TABLE))
+        pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
-        where = unicode(self.getParameterValue(self.WHERE))
+        where = str(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
-        gt = unicode(self.getParameterValue(self.GT))
+        gt = str(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
@@ -135,29 +147,25 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         launderstring = "-lco LAUNDER=NO"
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
         precision = self.getParameterValue(self.PRECISION)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append('-progress')
         arguments.append('--config PG_USE_COPY YES')
+        if len(shapeEncoding) > 0:
+            arguments.append('--config')
+            arguments.append('SHAPE_ENCODING')
+            arguments.append('"' + shapeEncoding + '"')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=')
-        arguments.append(host)
-        arguments.append('port=')
-        arguments.append(port)
-        if len(dbname) > 0:
-            arguments.append('dbname=' + dbname)
-        if len(password) > 0:
-            arguments.append('password=' + password)
-        if len(schema) > 0:
-            arguments.append('active_schema=' + schema)
-        else:
-            arguments.append('active_schema=public')
-        arguments.append('user=' + user + '"')
+        arguments.append('PG:"')
+        for token in uri.connectionInfo(executing).split(' '):
+            arguments.append(token)
+        arguments.append('active_schema={}'.format(schema or 'public'))
+        arguments.append('"')
         arguments.append(ogrLayer)
         arguments.append('-nlt NONE')
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         if launder:
             arguments.append(launderstring)
         if append:
@@ -170,9 +178,12 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
             arguments.append(pkstring)
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
-        if len(table) > 0:
-            arguments.append('-nln')
-            arguments.append(table)
+        if len(table) == 0:
+            table = GdalUtils.ogrLayerName(inLayer).lower()
+        if schema:
+            table = '{}.{}'.format(schema, table)
+        arguments.append('-nln')
+        arguments.append(table)
         if skipfailures:
             arguments.append('-skipfailures')
         if where:

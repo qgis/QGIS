@@ -28,243 +28,249 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
+from qgis.core import (QgsFields,
+                       QgsFeatureSink,
+                       QgsFeatureRequest,
+                       QgsGeometry,
+                       QgsProcessing,
+                       QgsProcessingUtils,
+                       QgsProcessingException,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterString,
+                       QgsProcessingOutputNumber)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterGeometryPredicate
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SpatialJoin(GeoAlgorithm):
-    TARGET = "TARGET"
+class SpatialJoin(QgisAlgorithm):
+    INPUT = "INPUT"
     JOIN = "JOIN"
     PREDICATE = "PREDICATE"
-    PRECISION = 'PRECISION'
-    SUMMARY = "SUMMARY"
-    STATS = "STATS"
-    KEEP = "KEEP"
+    JOIN_FIELDS = "JOIN_FIELDS"
+    METHOD = "METHOD"
+    DISCARD_NONMATCHING = "DISCARD_NONMATCHING"
+    PREFIX = "PREFIX"
     OUTPUT = "OUTPUT"
+    NON_MATCHING = "NON_MATCHING"
+    JOINED_COUNT = "JOINED_COUNT"
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
+    def group(self):
+        return self.tr('Vector general')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def groupId(self):
+        return 'vectorgeneral'
 
-        self.summarys = [
-            self.tr('Take attributes of the first located feature'),
-            self.tr('Take summary of intersecting features')
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.predicates = (
+            ('intersects', self.tr('intersects')),
+            ('contains', self.tr('contains')),
+            ('isEqual', self.tr('equals')),
+            ('touches', self.tr('touches')),
+            ('overlaps', self.tr('overlaps')),
+            ('within', self.tr('within')),
+            ('crosses', self.tr('crosses')))
+
+        self.reversed_predicates = {'intersects': 'intersects',
+                                    'contains': 'within',
+                                    'isEqual': 'isEqual',
+                                    'touches': 'touches',
+                                    'overlaps': 'overlaps',
+                                    'within': 'contains',
+                                    'crosses': 'crosses'}
+
+        self.methods = [
+            self.tr('Create separate feature for each located feature (one-to-many)'),
+            self.tr('Take attributes of the first located feature only (one-to-one)')
         ]
 
-        self.keeps = [
-            self.tr('Only keep matching records'),
-            self.tr('Keep all records (including non-matching target records)')
-        ]
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorAnyGeometry]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.JOIN,
+                                                              self.tr('Join layer'),
+                                                              [QgsProcessing.TypeVectorAnyGeometry]))
 
-        self.addParameter(ParameterVector(self.TARGET,
-                                          self.tr('Target vector layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterVector(self.JOIN,
-                                          self.tr('Join vector layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
-        predicates = list(ParameterGeometryPredicate.predicates)
-        predicates.remove('disjoint')
-        self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-                                                     self.tr('Geometric predicate'),
-                                                     left=self.TARGET, right=self.JOIN,
-                                                     enabledPredicates=predicates))
-        self.addParameter(ParameterNumber(self.PRECISION,
-                                          self.tr('Precision'),
-                                          0.0, None, 0.0))
-        self.addParameter(ParameterSelection(self.SUMMARY,
-                                             self.tr('Attribute summary'), self.summarys))
-        self.addParameter(ParameterString(self.STATS,
-                                          self.tr('Statistics for summary (comma separated)'),
-                                          'sum,mean,min,max,median', optional=True))
-        self.addParameter(ParameterSelection(self.KEEP,
-                                             self.tr('Joined table'), self.keeps))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
+        predicate = QgsProcessingParameterEnum(self.PREDICATE,
+                                               self.tr('Geometric predicate'),
+                                               options=[p[1] for p in self.predicates],
+                                               allowMultiple=True, defaultValue=[0])
+        predicate.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers.EnumWidgetWrapper',
+                'useCheckBoxes': True,
+                'columns': 2}})
+        self.addParameter(predicate)
+        self.addParameter(QgsProcessingParameterField(self.JOIN_FIELDS,
+                                                      self.tr('Fields to add (leave empty to use all fields)'),
+                                                      parentLayerParameterName=self.JOIN,
+                                                      allowMultiple=True, optional=True))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Join type'), self.methods))
+        self.addParameter(QgsProcessingParameterBoolean(self.DISCARD_NONMATCHING,
+                                                        self.tr('Discard records which could not be joined'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterString(self.PREFIX,
+                                                       self.tr('Joined field prefix'), optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Joined layer'),
+                                                            QgsProcessing.TypeVectorAnyGeometry,
+                                                            defaultValue=None, optional=True, createByDefault=True))
 
-    def processAlgorithm(self, progress):
-        target = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.TARGET))
-        join = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.JOIN))
-        predicates = self.getParameterValue(self.PREDICATE)
-        precision = self.getParameterValue(self.PRECISION)
+        non_matching = QgsProcessingParameterFeatureSink(self.NON_MATCHING,
+                                                         self.tr('Unjoinable features from first layer'),
+                                                         QgsProcessing.TypeVectorAnyGeometry,
+                                                         defaultValue=None, optional=True, createByDefault=False)
+        # TODO GUI doesn't support advanced outputs yet
+        # non_matching.setFlags(non_matching.flags() | QgsProcessingParameterDefinition.FlagAdvanced )
+        self.addParameter(non_matching)
 
-        summary = self.getParameterValue(self.SUMMARY) == 1
-        keep = self.getParameterValue(self.KEEP) == 1
+        self.addOutput(QgsProcessingOutputNumber(self.JOINED_COUNT, self.tr("Number of joined features from input table")))
 
-        sumList = self.getParameterValue(self.STATS).lower().split(',')
+    def name(self):
+        return 'joinattributesbylocation'
 
-        targetProvider = target.dataProvider()
-        joinProvider = join.dataProvider()
+    def displayName(self):
+        return self.tr('Join attributes by location')
 
-        targetFields = targetProvider.fields()
-        joinFields = joinProvider.fields()
+    def tags(self):
+        return self.tr("join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial").split(',')
 
-        fieldList = QgsFields()
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        if not summary:
-            joinFields = vector.testForUniqueness(targetFields, joinFields)
-            seq = range(len(targetFields) + len(joinFields))
-            targetFields.extend(joinFields)
-            targetFields = dict(zip(seq, targetFields))
+        join_source = self.parameterAsSource(parameters, self.JOIN, context)
+        if join_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
+
+        join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+        discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
+        prefix = self.parameterAsString(parameters, self.PREFIX, context)
+
+        source_fields = source.fields()
+        fields_to_join = QgsFields()
+        join_field_indexes = []
+        if not join_fields:
+            fields_to_join = join_source.fields()
+            join_field_indexes = [i for i in range(len(fields_to_join))]
         else:
-            numFields = {}
-            for j in xrange(len(joinFields)):
-                if joinFields[j].type() in [QVariant.Int, QVariant.Double]:
-                    numFields[j] = []
-                    for i in sumList:
-                        field = QgsField(i + unicode(joinFields[j].name()), QVariant.Double, '', 24, 16)
-                        fieldList.append(field)
-            field = QgsField('count', QVariant.Double, '', 24, 16)
-            fieldList.append(field)
-            joinFields = vector.testForUniqueness(targetFields, fieldList)
-            targetFields.extend(fieldList)
-            seq = range(len(targetFields))
-            targetFields = dict(zip(seq, targetFields))
+            for f in join_fields:
+                idx = join_source.fields().lookupField(f)
+                join_field_indexes.append(idx)
+                if idx >= 0:
+                    fields_to_join.append(join_source.fields().at(idx))
 
-        fields = QgsFields()
-        for f in targetFields.values():
-            fields.append(f)
+        if prefix:
+            prefixed_fields = QgsFields()
+            for i in range(len(fields_to_join)):
+                field = fields_to_join[i]
+                field.setName(prefix + field.name())
+                prefixed_fields.append(field)
+            fields_to_join = prefixed_fields
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, targetProvider.geometryType(), targetProvider.crs())
+        out_fields = QgsProcessingUtils.combineFields(source_fields, fields_to_join)
 
-        outFeat = QgsFeature()
-        inFeatB = QgsFeature()
-        inGeom = QgsGeometry()
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               out_fields, source.wkbType(), source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
+        if self.OUTPUT in parameters and parameters[self.OUTPUT] is not None and sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        index = vector.spatialindex(join)
+        (non_matching_sink, non_matching_dest_id) = self.parameterAsSink(parameters, self.NON_MATCHING, context,
+                                                                         source.fields(), source.wkbType(), source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
+        if self.NON_MATCHING in parameters and parameters[self.NON_MATCHING] is not None and non_matching_sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.NON_MATCHING))
 
-        mapP2 = dict()
-        features = vector.features(join)
-        for f in features:
-            mapP2[f.id()] = QgsFeature(f)
+        # do the join
 
-        features = vector.features(target)
-        total = 100.0 / len(features)
-        for c, f in enumerate(features):
-            atMap1 = f.attributes()
-            outFeat.setGeometry(f.geometry())
-            inGeom = vector.snapToPrecision(f.geometry(), precision)
-            none = True
-            joinList = []
-            if inGeom.type() == QGis.Point:
-                bbox = inGeom.buffer(10, 2).boundingBox()
-            else:
-                bbox = inGeom.boundingBox()
-            bufferedBox = vector.bufferedBoundingBox(bbox, 0.51 * precision)
-            joinList = index.intersects(bufferedBox)
-            if len(joinList) > 0:
-                count = 0
-                for i in joinList:
-                    inFeatB = mapP2[i]
-                    inGeomB = vector.snapToPrecision(inFeatB.geometry(), precision)
+        # build a list of 'reversed' predicates, because in this function
+        # we actually test the reverse of what the user wants (allowing us
+        # to prepare geometries and optimise the algorithm)
+        predicates = [self.reversed_predicates[self.predicates[i][0]] for i in
+                      self.parameterAsEnums(parameters, self.PREDICATE, context)]
 
-                    res = False
-                    for predicate in predicates:
-                        if predicate == 'intersects':
-                            res = inGeom.intersects(inGeomB)
-                        elif predicate == 'contains':
-                            res = inGeom.contains(inGeomB)
-                        elif predicate == 'equals':
-                            res = inGeom.equals(inGeomB)
-                        elif predicate == 'touches':
-                            res = inGeom.touches(inGeomB)
-                        elif predicate == 'overlaps':
-                            res = inGeom.overlaps(inGeomB)
-                        elif predicate == 'within':
-                            res = inGeom.within(inGeomB)
-                        elif predicate == 'crosses':
-                            res = inGeom.crosses(inGeomB)
-                        if res:
-                            break
+        remaining = set()
+        if not discard_nomatch or non_matching_sink is not None:
+            remaining = set(source.allFeatureIds())
 
-                    if res:
-                        count = count + 1
-                        none = False
-                        atMap2 = inFeatB.attributes()
-                        if not summary:
-                            atMap = atMap1
-                            atMap2 = atMap2
-                            atMap.extend(atMap2)
-                            atMap = dict(zip(seq, atMap))
-                            break
-                        else:
-                            for j in numFields.keys():
-                                numFields[j].append(atMap2[j])
+        added_set = set()
 
-                if summary and not none:
-                    atMap = atMap1
-                    for j in numFields.keys():
-                        for k in sumList:
-                            if k == 'sum':
-                                atMap.append(sum(self._filterNull(numFields[j])))
-                            elif k == 'mean':
-                                try:
-                                    nn_count = sum(1 for _ in self._filterNull(numFields[j]))
-                                    atMap.append(sum(self._filterNull(numFields[j])) / nn_count)
-                                except ZeroDivisionError:
-                                    atMap.append(NULL)
-                            elif k == 'min':
-                                try:
-                                    atMap.append(min(self._filterNull(numFields[j])))
-                                except ValueError:
-                                    atMap.append(NULL)
-                            elif k == 'median':
-                                atMap.append(self._median(numFields[j]))
-                            else:
-                                try:
-                                    atMap.append(max(self._filterNull(numFields[j])))
-                                except ValueError:
-                                    atMap.append(NULL)
+        request = QgsFeatureRequest().setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
+        features = join_source.getFeatures(request)
+        total = 100.0 / join_source.featureCount() if join_source.featureCount() else 0
 
-                        numFields[j] = []
-                    atMap.append(count)
-                    atMap = dict(zip(seq, atMap))
-            if none:
-                outFeat.setAttributes(atMap1)
-            else:
-                outFeat.setAttributes(atMap.values())
+        joined_count = 0
+        unjoined_count = 0
 
-            if keep:
-                writer.addFeature(outFeat)
-            else:
-                if not none:
-                    writer.addFeature(outFeat)
+        for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
 
-            progress.setPercentage(int(c * total))
-        del writer
+            if not f.hasGeometry():
+                continue
 
-    def _filterNull(self, values):
-        """Takes an iterator of values and returns a new iterator
-        returning the same values but skipping any NULL values"""
-        return (v for v in values if v != NULL)
+            bbox = f.geometry().boundingBox()
+            engine = None
 
-    def _median(self, data):
-        count = len(data)
-        if count == 1:
-            return data[0]
-        data.sort()
+            request = QgsFeatureRequest().setFilterRect(bbox)
+            for test_feat in source.getFeatures(request):
+                if feedback.isCanceled():
+                    break
+                if method == 1 and test_feat.id() in added_set:
+                    # already added this feature, and user has opted to only output first match
+                    continue
 
-        median = 0
-        if count > 1:
-            if (count % 2) == 0:
-                median = 0.5 * ((data[count / 2 - 1]) + (data[count / 2]))
-            else:
-                median = data[(count + 1) / 2 - 1]
+                join_attributes = []
+                for a in join_field_indexes:
+                    join_attributes.append(f[a])
 
-        return median
+                if engine is None:
+                    engine = QgsGeometry.createGeometryEngine(f.geometry().constGet())
+                    engine.prepareGeometry()
+
+                for predicate in predicates:
+                    if getattr(engine, predicate)(test_feat.geometry().constGet()):
+                        added_set.add(test_feat.id())
+
+                        if sink is not None:
+                            # join attributes and add
+                            attributes = test_feat.attributes()
+                            attributes.extend(join_attributes)
+                            output_feature = test_feat
+                            output_feature.setAttributes(attributes)
+                            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+                        break
+
+            feedback.setProgress(int(current * total))
+
+        if not discard_nomatch or non_matching_sink is not None:
+            remaining = remaining.difference(added_set)
+            for f in source.getFeatures(QgsFeatureRequest().setFilterFids(list(remaining))):
+                if feedback.isCanceled():
+                    break
+                if sink is not None:
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                if non_matching_sink is not None:
+                    non_matching_sink.addFeature(f, QgsFeatureSink.FastInsert)
+
+        result = {}
+        if sink is not None:
+            result[self.OUTPUT] = dest_id
+        if non_matching_sink is not None:
+            result[self.NON_MATCHING] = non_matching_dest_id
+
+        result[self.JOINED_COUNT] = len(added_set)
+
+        return result

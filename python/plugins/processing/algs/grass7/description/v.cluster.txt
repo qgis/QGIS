@@ -1,0 +1,11 @@
+v.cluster
+Performs cluster identification
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input layer|-1|None|False
+QgsProcessingParameterNumber|distance|Maximum distance to neighbors|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|min|Minimum number of points to create a cluster|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterEnum|method|Clustering method|dbscan;dbscan2;density;optics;optics2|True|0|True
+*QgsProcessingParameterBoolean|-2|Force 2D clustering|False
+*QgsProcessingParameterBoolean|-b|Do not build topology|False
+*QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+QgsProcessingParameterVectorDestination|output|Clustered

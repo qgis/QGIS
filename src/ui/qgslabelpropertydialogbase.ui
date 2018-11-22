@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Label properties</string>
+   <string>Label Properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -29,7 +29,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -37,9 +37,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-319</y>
-        <width>415</width>
-        <height>619</height>
+        <y>0</y>
+        <width>417</width>
+        <height>680</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mLabelPropertiesLayout">
@@ -65,37 +65,22 @@
              </widget>
             </item>
             <item>
-             <widget class="QgsSpinBox" name="mMinScaleSpinBox">
-              <property name="prefix">
-               <string>Min </string>
+             <widget class="QgsScaleWidget" name="mMinScaleWidget" native="true">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
               </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>999999999</number>
-              </property>
-              <property name="showClearButton" stdset="0">
-               <bool>false</bool>
+              <property name="toolTip">
+               <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QgsSpinBox" name="mMaxScaleSpinBox">
-              <property name="prefix">
-               <string>Max </string>
+             <widget class="QgsScaleWidget" name="mMaxScaleWidget" native="true">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
               </property>
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>999999999</number>
-              </property>
-              <property name="value">
-               <number>10000000</number>
-              </property>
-              <property name="showClearButton" stdset="0">
-               <bool>false</bool>
+              <property name="toolTip">
+               <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
               </property>
              </widget>
             </item>
@@ -338,7 +323,7 @@
            </layout>
           </item>
           <item row="3" column="2">
-           <widget class="QgsColorButtonV2" name="mFontColorButton">
+           <widget class="QgsColorButton" name="mFontColorButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -409,7 +394,7 @@
            </layout>
           </item>
           <item row="0" column="1">
-           <widget class="QgsColorButtonV2" name="mBufferColorButton">
+           <widget class="QgsColorButton" name="mBufferColorButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -576,11 +561,17 @@
           </item>
           <item row="5" column="1">
            <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="specialValueText">
              <string>Default</string>
             </property>
+            <property name="suffix">
+             <string>˚</string>
+            </property>
             <property name="minimum">
-             <double>-1.000000000000000</double>
+             <double>-360.000000000000000</double>
             </property>
             <property name="maximum">
              <double>360.000000000000000</double>
@@ -624,10 +615,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -635,22 +637,18 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mLabelTextLineEdit</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mShowLabelChkbx</tabstop>
-  <tabstop>mMinScaleSpinBox</tabstop>
-  <tabstop>mMaxScaleSpinBox</tabstop>
+  <tabstop>mMinScaleWidget</tabstop>
+  <tabstop>mMaxScaleWidget</tabstop>
   <tabstop>mAlwaysShowChkbx</tabstop>
   <tabstop>mFontFamilyCmbBx</tabstop>
   <tabstop>mFontStyleCmbBx</tabstop>
@@ -668,7 +666,6 @@
   <tabstop>mHaliComboBox</tabstop>
   <tabstop>mValiComboBox</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

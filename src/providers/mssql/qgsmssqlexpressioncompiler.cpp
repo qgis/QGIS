@@ -14,19 +14,33 @@
  ***************************************************************************/
 
 #include "qgsmssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
-QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields,
-                                QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch )
+QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields,
+                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
 
 }
 
-QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
-  if ( node->nodeType() == QgsExpression::ntBinaryOperator )
+  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
+    const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
+    switch ( bin->op() )
+    {
+      // special handling
+      case QgsExpressionNodeBinaryOperator::boPow:
+      case QgsExpressionNodeBinaryOperator::boRegexp:
+      case QgsExpressionNodeBinaryOperator::boConcat:
+        break;
+
+      default:
+        // fallback to default handling
+        return QgsSqlExpressionCompiler::compileNode( node, result );;
+    }
+
     QString op1, op2;
 
     Result result1 = compileNode( bin->opLeft(), op1 );
@@ -36,28 +50,27 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 
     switch ( bin->op() )
     {
-      case QgsExpression::boPow:
-        result = QString( "power(%1,%2)" ).arg( op1, op2 );
+      case QgsExpressionNodeBinaryOperator::boPow:
+        result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 
-      case QgsExpression::boRegexp:
+      case QgsExpressionNodeBinaryOperator::boRegexp:
         return Fail; //not supported, regexp syntax is too different to Qt
 
-      case QgsExpression::boConcat:
-        result = QString( "%1 + %2" ).arg( op1, op2 );
+      case QgsExpressionNodeBinaryOperator::boConcat:
+        result = QStringLiteral( "%1 + %2" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 
       default:
         break;
     }
-
   }
 
   //fallback to default handling
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsMssqlExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
   if ( value.isNull() )
@@ -71,9 +84,63 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant& value, bool& ok
   {
     case QVariant::Bool:
       //no boolean literal support in mssql, so fake it
-      return value.toBool() ? "(1=1)" : "(1=0)";
+      return value.toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
 
     default:
       return QgsSqlExpressionCompiler::quotedValue( value, ok );
   }
+}
+
+QString QgsMssqlExpressionCompiler::quotedIdentifier( const QString &identifier )
+{
+  QString quoted = identifier;
+  quoted.replace( '[', QStringLiteral( "[[" ) );
+  quoted.replace( ']', QStringLiteral( "]]" ) );
+  quoted = quoted.prepend( '[' ).append( ']' );
+  return quoted;
+}
+
+QString QgsMssqlExpressionCompiler::castToReal( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
+}
+
+QString QgsMssqlExpressionCompiler::castToInt( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
+}
+
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
+{
+  { "sqrt", "sqrt" },
+  { "abs", "abs" },
+  { "cos", "cos" },
+  { "sin", "sin" },
+  { "tan", "tan" },
+  { "radians", "radians" },
+  { "degrees", "degrees" },
+  { "acos", "acos" },
+  { "asin", "asin" },
+  { "atan", "atan" },
+  { "atan2", "atn2" },
+  { "exp", "exp" },
+  { "ln", "ln" },
+  { "log", "log" },
+  { "log10", "log10" },
+  { "pi", "pi" },
+  { "round", "round" },
+  { "floor", "floor" },
+  { "ceil", "ceiling" },
+  { "char", "char" },
+#if 0 // should be possible if/when mssql compiler handles case sensitive string matches
+  { "coalesce", "coalesce" },
+#endif
+  { "trim", "trim" },
+  { "lower", "lower" },
+  { "upper", "upper" },
+};
+
+QString QgsMssqlExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
+{
+  return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
 }

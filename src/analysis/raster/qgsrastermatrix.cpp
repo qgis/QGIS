@@ -16,29 +16,18 @@
  ***************************************************************************/
 
 #include "qgsrastermatrix.h"
-#include <string.h>
-#include <qmath.h>
+#include <cstring>
+#include <cmath>
 
-QgsRasterMatrix::QgsRasterMatrix()
-    : mColumns( 0 )
-    , mRows( 0 )
-    , mData( nullptr )
-    , mNodataValue( -1 )
+QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue )
+  : mColumns( nCols )
+  , mRows( nRows )
+  , mData( data )
+  , mNodataValue( nodataValue )
 {
 }
 
-QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double* data, double nodataValue )
-    : mColumns( nCols )
-    , mRows( nRows )
-    , mData( data )
-    , mNodataValue( nodataValue )
-{
-}
-
-QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix& m )
-    : mColumns( 0 )
-    , mRows( 0 )
-    , mData( nullptr )
+QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix &m )
 {
   operator=( m );
 }
@@ -48,7 +37,7 @@ QgsRasterMatrix::~QgsRasterMatrix()
   delete[] mData;
 }
 
-QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix & m )
+QgsRasterMatrix &QgsRasterMatrix::operator=( const QgsRasterMatrix &m )
 {
   delete[] mData;
   mColumns = m.nColumns();
@@ -60,7 +49,7 @@ QgsRasterMatrix& QgsRasterMatrix::operator=( const QgsRasterMatrix & m )
   return *this;
 }
 
-void QgsRasterMatrix::setData( int cols, int rows, double* data, double nodataValue )
+void QgsRasterMatrix::setData( int cols, int rows, double *data, double nodataValue )
 {
   delete[] mData;
   mColumns = cols;
@@ -69,76 +58,76 @@ void QgsRasterMatrix::setData( int cols, int rows, double* data, double nodataVa
   mNodataValue = nodataValue;
 }
 
-double* QgsRasterMatrix::takeData()
+double *QgsRasterMatrix::takeData()
 {
-  double* data = mData;
+  double *data = mData;
   mData = nullptr;
   mColumns = 0;
   mRows = 0;
   return data;
 }
 
-bool QgsRasterMatrix::add( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::add( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opPLUS, other );
 }
 
-bool QgsRasterMatrix::subtract( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::subtract( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opMINUS, other );
 }
 
-bool QgsRasterMatrix::multiply( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::multiply( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opMUL, other );
 }
 
-bool QgsRasterMatrix::divide( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::divide( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opDIV, other );
 }
 
-bool QgsRasterMatrix::power( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::power( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opPOW, other );
 }
 
-bool QgsRasterMatrix::equal( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::equal( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opEQ, other );
 }
 
-bool QgsRasterMatrix::notEqual( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::notEqual( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opNE, other );
 }
 
-bool QgsRasterMatrix::greaterThan( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::greaterThan( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opGT, other );
 }
 
-bool QgsRasterMatrix::lesserThan( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::lesserThan( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opLT, other );
 }
 
-bool QgsRasterMatrix::greaterEqual( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::greaterEqual( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opGE, other );
 }
 
-bool QgsRasterMatrix::lesserEqual( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::lesserEqual( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opLE, other );
 }
 
-bool QgsRasterMatrix::logicalAnd( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::logicalAnd( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opAND, other );
 }
 
-bool QgsRasterMatrix::logicalOr( const QgsRasterMatrix& other )
+bool QgsRasterMatrix::logicalOr( const QgsRasterMatrix &other )
 {
   return twoArgumentOperation( opOR, other );
 }
@@ -216,26 +205,26 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           }
           else
           {
-            mData[i] = sqrt( value );
+            mData[i] = std::sqrt( value );
           }
           break;
         case opSIN:
-          mData[i] = sin( value );
+          mData[i] = std::sin( value );
           break;
         case opCOS:
-          mData[i] = cos( value );
+          mData[i] = std::cos( value );
           break;
         case opTAN:
-          mData[i] = tan( value );
+          mData[i] = std::tan( value );
           break;
         case opASIN:
-          mData[i] = asin( value );
+          mData[i] = std::asin( value );
           break;
         case opACOS:
-          mData[i] = acos( value );
+          mData[i] = std::acos( value );
           break;
         case opATAN:
-          mData[i] = atan( value );
+          mData[i] = std::atan( value );
           break;
         case opSIGN:
           mData[i] = -value;
@@ -292,7 +281,7 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
       }
       else
       {
-        return qPow( arg1, arg2 );
+        return std::pow( arg1, arg2 );
       }
     case opEQ:
       return ( arg1 == arg2 ? 1.0 : 0.0 );
@@ -314,7 +303,7 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
   return mNodataValue;
 }
 
-bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other )
+bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other )
 {
   if ( isNumber() && other.isNumber() ) //operation on two 1x1 matrices
   {
@@ -333,7 +322,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   //two matrices
   if ( !isNumber() && !other.isNumber() )
   {
-    double* matrix = other.mData;
+    double *matrix = other.mData;
     int nEntries = mColumns * mRows;
     double value1, value2;
 
@@ -356,7 +345,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
   //this matrix is a single number and the other one a real matrix
   if ( isNumber() )
   {
-    double* matrix = other.mData;
+    double *matrix = other.mData;
     int nEntries = other.nColumns() * other.nRows();
     double value = mData[0];
     delete[] mData;
@@ -415,9 +404,5 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power ) const
 {
-  if (( base == 0 && power < 0 ) || ( base < 0 && ( power - floor( power ) ) > 0 ) )
-  {
-    return false;
-  }
-  return true;
+  return !( ( base == 0 && power < 0 ) || ( base < 0 && ( power - std::floor( power ) ) > 0 ) );
 }

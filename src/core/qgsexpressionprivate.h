@@ -18,13 +18,15 @@
 #define QGSEXPRESSIONPRIVATE_H
 
 #include <QString>
-#include <QSharedPointer>
+#include <memory>
 
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
 #include "qgsunittypes.h"
+#include "qgsexpressionnode.h"
 
 ///@cond
+
 /**
  * This class exists only for implicit sharing of QgsExpression
  * and is not part of the public API.
@@ -34,26 +36,19 @@ class QgsExpressionPrivate
 {
   public:
     QgsExpressionPrivate()
-        : ref( 1 )
-        , mRootNode( nullptr )
-        , mRowNumber( 0 )
-        , mScale( 0 )
-        , mCalc( nullptr )
-        , mDistanceUnit( QGis::UnknownUnit )
-        , mAreaUnit( QgsUnitTypes::UnknownAreaUnit )
+      : ref( 1 )
     {}
 
-    QgsExpressionPrivate( const QgsExpressionPrivate& other )
-        : ref( 1 )
-        , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
-        , mParserErrorString( other.mParserErrorString )
-        , mEvalErrorString( other.mEvalErrorString )
-        , mRowNumber( 0 )
-        , mScale( other.mScale )
-        , mExp( other.mExp )
-        , mCalc( other.mCalc )
-        , mDistanceUnit( other.mDistanceUnit )
-        , mAreaUnit( other.mAreaUnit )
+    QgsExpressionPrivate( const QgsExpressionPrivate &other )
+      : ref( 1 )
+      , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
+      , mParserErrorString( other.mParserErrorString )
+      , mEvalErrorString( other.mEvalErrorString )
+      , mParserErrors( other.mParserErrors )
+      , mExp( other.mExp )
+      , mCalc( other.mCalc )
+      , mDistanceUnit( other.mDistanceUnit )
+      , mAreaUnit( other.mAreaUnit )
     {}
 
     ~QgsExpressionPrivate()
@@ -63,18 +58,18 @@ class QgsExpressionPrivate
 
     QAtomicInt ref;
 
-    QgsExpression::Node* mRootNode;
+    QgsExpressionNode *mRootNode = nullptr;
 
     QString mParserErrorString;
     QString mEvalErrorString;
 
-    int mRowNumber;
-    double mScale;
+    QList<QgsExpression::ParserError> mParserErrors;
+
     QString mExp;
 
-    QSharedPointer<QgsDistanceArea> mCalc;
-    QGis::UnitType mDistanceUnit;
-    QgsUnitTypes::AreaUnit mAreaUnit;
+    std::shared_ptr<QgsDistanceArea> mCalc;
+    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
 };
 ///@endcond
 

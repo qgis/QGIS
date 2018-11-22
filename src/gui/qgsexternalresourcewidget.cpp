@@ -16,27 +16,25 @@
 
 #include "qgsexternalresourcewidget.h"
 #include "qgspixmaplabel.h"
+#include "qgsproject.h"
 
+#include <QDir>
 #include <QGridLayout>
 #include <QVariant>
 #include <QSettings>
+#include <QImageReader>
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #endif
 
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
-    : QWidget( parent )
-    , mFileWidgetVisible( true )
-    , mDocumentViewerContent( NoContent )
-    , mDocumentViewerHeight( 0 )
-    , mDocumentViewerWidth( 0 )
-
+  : QWidget( parent )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
-  QGridLayout* layout = new QGridLayout();
+  QGridLayout *layout = new QGridLayout();
   layout->setMargin( 0 );
 
   mFileWidget = new QgsFileWidget( this );
@@ -55,7 +53,8 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   setLayout( layout );
 
-  connect( mFileWidget, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::loadDocument );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
@@ -71,12 +70,12 @@ QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
   }
 }
 
-void QgsExternalResourceWidget::setDocumentPath( const QVariant& path )
+void QgsExternalResourceWidget::setDocumentPath( const QVariant &path )
 {
   mFileWidget->setFilePath( path.toString() );
 }
 
-QgsFileWidget*QgsExternalResourceWidget::fileWidget()
+QgsFileWidget *QgsExternalResourceWidget::fileWidget()
 {
   return mFileWidget;
 }
@@ -140,7 +139,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
   if ( mDocumentViewerContent == Image )
   {
-    const QPixmap* pm = mPixmapLabel->pixmap();
+    const QPixmap *pm = mPixmapLabel->pixmap();
 
     if ( !pm || pm->isNull() )
     {
@@ -167,14 +166,55 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   }
 }
 
-void QgsExternalResourceWidget::loadDocument( const QString& path )
+QString QgsExternalResourceWidget::resolvePath( const QString &path )
 {
+  switch ( mRelativeStorage )
+  {
+    case QgsFileWidget::Absolute:
+      return path;
+      break;
+    case QgsFileWidget::RelativeProject:
+      return QFileInfo( QgsProject::instance()->absoluteFilePath() ).dir().filePath( path );
+      break;
+    case QgsFileWidget::RelativeDefaultPath:
+      return QDir( mDefaultRoot ).filePath( path );
+      break;
+  }
+  return QString(); // avoid warnings
+}
+
+QString QgsExternalResourceWidget::defaultRoot() const
+{
+  return mDefaultRoot;
+}
+
+void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
+{
+  mFileWidget->setDefaultRoot( defaultRoot );
+  mDefaultRoot = defaultRoot;
+}
+
+QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() const
+{
+  return mRelativeStorage;
+}
+
+void QgsExternalResourceWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage )
+{
+  mFileWidget->setRelativeStorage( relativeStorage );
+  mRelativeStorage = relativeStorage;
+}
+
+void QgsExternalResourceWidget::loadDocument( const QString &path )
+{
+  QString resolvedPath;
+
   if ( path.isEmpty() )
   {
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( "about:blank" ) );
+      mWebView->setUrl( QUrl( QStringLiteral( "about:blank" ) ) );
     }
 #endif
     if ( mDocumentViewerContent == Image )
@@ -183,20 +223,26 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
       updateDocumentViewer();
     }
   }
-
+  else
+  {
+    resolvedPath = resolvePath( path );
 
 #ifdef WITH_QTWEBKIT
-  if ( mDocumentViewerContent == Web )
-  {
-    mWebView->setUrl( QUrl( path ) );
-  }
+    if ( mDocumentViewerContent == Web )
+    {
+      mWebView->setUrl( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
+    }
 #endif
 
-  if ( mDocumentViewerContent == Image )
-  {
-    QPixmap pm( path );
-    mPixmapLabel->setPixmap( pm );
-    updateDocumentViewer();
+    if ( mDocumentViewerContent == Image )
+    {
+      // use an image reader to ensure image orientation and transforms are correctly handled
+      QImageReader ir( resolvedPath );
+      ir.setAutoTransform( true );
+      QPixmap pm = QPixmap::fromImage( ir.read() );
+      mPixmapLabel->setPixmap( pm );
+      updateDocumentViewer();
+    }
   }
 }
 

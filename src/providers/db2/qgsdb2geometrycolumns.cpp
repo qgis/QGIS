@@ -16,29 +16,28 @@
  ***************************************************************************/
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include "qgsdb2newconnection.h" // needed for ENV_ZOS, ENV_LUW
 #include <QtSql>
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 
-QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase db )
-    : mDatabase( db )
-    , mEnvironment( ENV_LUW )
+QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
+  : mDatabase( db )
+  , mEnvironment( ENV_LUW )
 {
-  QgsDebugMsg( "constructing" );
+  QgsDebugMsg( QStringLiteral( "constructing" ) );
 }
 
-QgsDb2GeometryColumns::~QgsDb2GeometryColumns( )
+QgsDb2GeometryColumns::~QgsDb2GeometryColumns()
 {
   mQuery.clear();
 }
 
-int QgsDb2GeometryColumns::open()
+QString QgsDb2GeometryColumns::open()
 {
   return open( QString(), QString() );
 }
 
-int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &tableName )
+QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &tableName )
 {
   QString queryExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, "
                         "SRS_ID, SRS_NAME, MIN_X, MIN_Y, MAX_X, MAX_Y "
@@ -47,12 +46,12 @@ int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &table
                           "SRS_ID, SRS_NAME "
                           "FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
   mQuery = QSqlQuery( mDatabase );
-  int sqlcode = 0;
+  QString nativeError;
   mEnvironment = ENV_LUW;
 
   if ( !schemaName.isEmpty() && !tableName.isEmpty() )
   {
-    QString whereClause = QString( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
+    QString whereClause = QStringLiteral( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
                           .arg( schemaName, tableName );
     queryExtents += whereClause;
     queryNoExtents += whereClause;
@@ -62,30 +61,30 @@ int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &table
   if ( !mQuery.exec( queryExtents ) )
   {
     QgsDebugMsg( "ST_Geometry_Columns query failed: " + mDatabase.lastError().text() );
-    sqlcode =  mQuery.lastError().number();
-    QgsDebugMsg( QString( "SQLCODE: %1" ).arg( sqlcode ) );
+    nativeError = mQuery.lastError().nativeErrorCode();
+    QgsDebugMsg( QStringLiteral( "SQLCODE: %1" ).arg( nativeError ) );
     /* The MIN_X, MIN_Y, MAX_X, and MAX_Y columns are not available on z/OS (and LUW 9.5)
        so SQLCODE -206 is returned when specifying non-existent columns. */
-    if ( mQuery.lastError().number() == -206 )
+    if ( mQuery.lastError().nativeErrorCode() == QStringLiteral( "-206" ) )
     {
-      QgsDebugMsg( "Try query with no extents" );
+      QgsDebugMsg( QStringLiteral( "Try query with no extents" ) );
       mQuery.clear();
 
       if ( !mQuery.exec( queryNoExtents ) )
       {
-        QgsDebugMsg( QString( "SQLCODE: %1" ).arg( mQuery.lastError().number() ) );
+        QgsDebugMsg( QStringLiteral( "SQLCODE: %1" ).arg( mQuery.lastError().nativeErrorCode() ) );
       }
       else
       {
-        QgsDebugMsg( "success; must be z/OS" );
+        QgsDebugMsg( QStringLiteral( "success; must be z/OS" ) );
         mEnvironment = ENV_ZOS;
-        sqlcode = 0;
+        nativeError.clear();
       }
     }
   }
-//  QgsDebugMsg( QString( "sqlcode: %1" ).arg( sqlcode ) );
+//  QgsDebugMsg( QStringLiteral( "sqlcode: %1" ).arg( sqlcode ) );
 
-  return sqlcode;
+  return nativeError;
 }
 
 bool QgsDb2GeometryColumns::isActive()
@@ -111,15 +110,15 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   layer.type = mQuery.value( 3 ).toString();
   if ( mQuery.value( 4 ).isNull() )
   {
-    layer.srid = QString( "" );
-    layer.srsName = QString( "" );
+    layer.srid.clear();
+    layer.srsName.clear();
   }
   else
   {
     layer.srid = mQuery.value( 4 ).toString();
     layer.srsName = mQuery.value( 5 ).toString();
   }
-  layer.extents = QString( "0 0 0 0" ); // no extents
+  layer.extents = QStringLiteral( "0 0 0 0" ); // no extents
   if ( ENV_LUW == mEnvironment )
   {
     if ( !mQuery.value( 6 ).isNull() ) // Don't get values if null
@@ -131,7 +130,7 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
                         mQuery.value( 9 ).toString() ).trimmed();
     }
   }
-  QgsDebugMsg( QString( "layer: %1.%2(%3) type='%4' srid='%5' srsName='%6'" )
+  QgsDebugMsg( QStringLiteral( "layer: %1.%2(%3) type='%4' srid='%5' srsName='%6'" )
                .arg( layer.schemaName, layer.tableName, layer.geometryColName,
                      layer.type, layer.srid, layer.srsName ) );
   QgsDebugMsg( "Extents: '" + layer.extents + "'" );
@@ -142,13 +141,13 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   // to set the FID column.
   // We can only use the primary key if it only has one column and
   // the type is Integer or BigInt.
-  QString table = QString( "%1.%2" ).arg( layer.schemaName, layer.tableName );
+  QString table = QStringLiteral( "%1.%2" ).arg( layer.schemaName, layer.tableName );
   QSqlIndex pk = mDatabase.primaryIndex( table );
   if ( pk.count() == 1 )
   {
     QSqlField pkFld = pk.field( 0 );
     QVariant::Type pkType = pkFld.type();
-    if (( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
+    if ( ( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
     {
       QString fidColName = pk.fieldName( 0 );
       layer.pkCols.append( fidColName );
@@ -159,6 +158,6 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   {
     QgsDebugMsg( "Warning: table primary key count is " + QString::number( pk.count() ) );
   }
-  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString::null;
+  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString();
   return true;
 }

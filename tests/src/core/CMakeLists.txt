@@ -1,20 +1,29 @@
-# Standard includes and utils to compile into all tests.
-#SET (util_SRCS qgscompositionchecker.cpp)
-
-
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/layout
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/scalebar
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -22,40 +31,13 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   )
 
-#############################################################
-# Compiler defines
-
-# This define is used for tests that need to locate the test
-# data under tests/testdata in the qgis source tree.
-# the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
-
-ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
-
-# enable postgresql tests
-SET (ENABLE_PGTEST FALSE CACHE BOOL "Enable PostgreSQL provider tests")
-IF ( ENABLE_PGTEST )
-  ADD_DEFINITIONS( "-DENABLE_PGTEST" )
-ENDIF ()
-
-#############################################################
-# libraries
-
-# because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-ENDIF (WIN32)
-
-# Since the tests are not actually installed, but rather
-# run directly from the build/src/tests dir we need to
-# ensure the qgis libs can be found.
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
-ENDIF (APPLE)
+IF(HAVE_OPENCL)
+    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
+ENDIF(HAVE_OPENCL)
 
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
@@ -66,132 +48,185 @@ ENDIF (APPLE)
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  ADD_EXECUTABLE(qgis_${testname} ${testsrc} ${util_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
-  TARGET_LINK_LIBRARIES(qgis_${testname}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+MACRO (ADD_QGIS_TEST TESTSRC)
+  SET (TESTNAME  ${TESTSRC})
+  STRING(REPLACE "test" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+  SET (TESTNAME  "qgis_${TESTNAME}test")
+  ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
+  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
+  TARGET_LINK_LIBRARIES(${TESTNAME}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+  ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST(25drenderertest testqgs25drenderer.cpp)
-ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
-ADD_QGIS_TEST(atlascompositiontest testqgsatlascomposition.cpp)
-ADD_QGIS_TEST(authcryptotest testqgsauthcrypto.cpp)
-ADD_QGIS_TEST(authconfigtest testqgsauthconfig.cpp)
-ADD_QGIS_TEST(authmanagertest testqgsauthmanager.cpp)
-ADD_QGIS_TEST(blendmodestest testqgsblendmodes.cpp)
-ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
-ADD_QGIS_TEST(colorschemetest testqgscolorscheme.cpp)
-ADD_QGIS_TEST(colorschemeregistry testqgscolorschemeregistry.cpp)
-ADD_QGIS_TEST(composerddtest testqgscomposerdd.cpp)
-ADD_QGIS_TEST(composereffectstest testqgscomposereffects.cpp)
-ADD_QGIS_TEST(composergrouptest testqgscomposergroup.cpp)
+SET(TESTS
+ testqgs25drenderer.cpp
+ testqgsapplication.cpp
+ testqgsauthcrypto.cpp
+ testqgsauthcertutils.cpp
+ testqgsauthconfig.cpp
+ testqgsauthmanager.cpp
+ testqgsblendmodes.cpp
+ testqgsbrowsermodel.cpp
+ testqgsbrowserproxymodel.cpp
+ testqgscadutils.cpp
+ testqgsclipper.cpp
+ testqgscolorscheme.cpp
+ testqgscolorschemeregistry.cpp
+ testqgscompositionconverter.cpp
+ testqgsconnectionpool.cpp
+ testcontrastenhancements.cpp
+ testqgscoordinatereferencesystem.cpp
+ testqgscoordinatetransform.cpp
+ testqgscurve.cpp
+ testqgsdatadefinedsizelegend.cpp
+ testqgsdataitem.cpp
+ testqgsdatasourceuri.cpp
+ testqgsdiagram.cpp
+ testqgsdistancearea.cpp
+ testqgsdxfexport.cpp
+ testqgsellipsemarker.cpp
+ testqgsexpressioncontext.cpp
+ testqgssqliteexpressioncompiler.cpp
+ testqgsexpression.cpp
+ testqgsfeature.cpp
+ testqgsfields.cpp
+ testqgsfield.cpp
+ testqgsfilledmarker.cpp
+ testqgsgdalutils.cpp
+ testqgsvectorfilewriter.cpp
+ testqgsfontmarker.cpp
+ testqgsgeometryimport.cpp
+ testqgsgeometry.cpp
+ testqgsgeometryutils.cpp
+ testqgsgeonodeconnection.cpp
+ testqgsgml.cpp
+ testqgsgradients.cpp
+ testqgsgraduatedsymbolrenderer.cpp
+ testqgshistogram.cpp
+ testqgshstoreutils.cpp
+ testqgsimageoperation.cpp
+ testqgsinternalgeometryengine.cpp
+ testqgsinvertedpolygonrenderer.cpp
+ testqgsjsonutils.cpp
+ testqgslabelingengine.cpp
+ testqgslayertree.cpp
+ testqgslayout.cpp
+ testqgslayoutatlas.cpp
+ testqgslayoutcontext.cpp
+ testqgslayouthtml.cpp
+ testqgslayoutitem.cpp
+ testqgslayoutitemgroup.cpp
+ testqgslayoutlabel.cpp
+ testqgslayoutmap.cpp
+ testqgslayoutmapgrid.cpp
+ testqgslayoutmapoverview.cpp
+ testqgslayoutmodel.cpp
+ testqgslayoutmultiframe.cpp
+ testqgslayoutobject.cpp
+ testqgslayoutpage.cpp
+ testqgslayoutpicture.cpp
+ testqgslayoutpolyline.cpp
+ testqgslayoutscalebar.cpp
+ testqgslayoutshapes.cpp
+ testqgslayouttable.cpp
+ testqgslayoutunits.cpp
+ testqgslayoututils.cpp
+ testqgslegendrenderer.cpp
+ testqgscentroidfillsymbol.cpp
+ testqgslinefillsymbol.cpp
+ testqgsmapdevicepixelratio.cpp
+ testqgsmaplayerstylemanager.cpp
+ testqgsmaplayer.cpp
+ testqgsmaprendererjob.cpp
+ testqgsmaprotation.cpp
+ testqgsmapsettings.cpp
+ testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
+ testqgsmaptopixelgeometrysimplifier.cpp
+ testqgsmaptopixel.cpp
+ testqgsmarkerlinesymbol.cpp
+ testqgsnetworkcontentfetcher.cpp
+ testqgsogcutils.cpp
+ testqgsogrutils.cpp
+ testqgspagesizeregistry.cpp
+ testqgspainteffectregistry.cpp
+ testqgspainteffect.cpp
+ testqgspallabeling.cpp
+ testqgspointlocator.cpp
+ testqgspointpatternfillsymbol.cpp
+ testqgspoint.cpp
+ testqgsproject.cpp
+ testqgsprojectstorage.cpp
+ testqgsproperty.cpp
+ testqgis.cpp
+ testqgsrasterfilewriter.cpp
+ testqgsrasterfill.cpp
+ testqgsrasteriterator.cpp
+ testqgsrasterblock.cpp
+ testqgsrasterlayer.cpp
+ testqgsrastersublayer.cpp
+ testqgsrectangle.cpp
+ testqgsrenderers.cpp
+ testqgsrulebasedrenderer.cpp
+ testqgssettings.cpp
+ testqgsshapeburst.cpp
+ testqgssimplemarker.cpp
+ testqgssnappingutils.cpp
+ testqgsspatialindex.cpp
+ testqgsspatialindexkdbush.cpp
+ testqgsstatisticalsummary.cpp
+ testqgsstringutils.cpp
+ testqgsstyle.cpp
+ testqgssvgcache.cpp
+ testqgssvgmarker.cpp
+ testqgssymbol.cpp
+ testqgstaskmanager.cpp
+ testqgstracer.cpp
+ testqgsfontutils.cpp
+ testqgsvector.cpp
+ testqgsvectordataprovider.cpp
+ testqgsvectorlayercache.cpp
+ testqgsvectorlayerjoinbuffer.cpp
+ testqgsvectorlayer.cpp
+ testqgsvectorlayerutils.cpp
+ testziplayer.cpp
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerrenderer.cpp
+ testqgslayerdefinition.cpp
+ testqgssqliteutils.cpp
+ testqgsmimedatautils.cpp
+ testqgsofflineediting.cpp
+ testqgstranslateproject.cpp
+   )
+
 IF(WITH_QTWEBKIT)
-ADD_QGIS_TEST(composerhtmltest testqgscomposerhtml.cpp )
-ADD_QGIS_TEST(compositiontest testqgscomposition.cpp)
+  SET(TESTS ${TESTS}
+        )
 ENDIF(WITH_QTWEBKIT)
-ADD_QGIS_TEST(composerlabeltest testqgscomposerlabel.cpp)
-ADD_QGIS_TEST(composermapgridtest testqgscomposermapgrid.cpp)
-ADD_QGIS_TEST(composermapoverviewtest testqgscomposermapoverview.cpp)
-ADD_QGIS_TEST(composermaptest testqgscomposermap.cpp)
-ADD_QGIS_TEST(composermodel testqgscomposermodel.cpp)
-ADD_QGIS_TEST(composermultiframetest testqgscomposermultiframe.cpp)
-ADD_QGIS_TEST(composerobject testqgscomposerobject.cpp)
-ADD_QGIS_TEST(composerpapertest testqgscomposerpaper.cpp)
-ADD_QGIS_TEST(composerpicturetest testqgscomposerpicture.cpp)
-ADD_QGIS_TEST(composerrotationtest testqgscomposerrotation.cpp)
-ADD_QGIS_TEST(composerscalebartest testqgscomposerscalebar.cpp )
-ADD_QGIS_TEST(composershapestest testqgscomposershapes.cpp)
-ADD_QGIS_TEST(composertabletest testqgscomposertable.cpp)
-ADD_QGIS_TEST(composertablev2test testqgscomposertablev2.cpp)
-ADD_QGIS_TEST(composerutils testqgscomposerutils.cpp)
-ADD_QGIS_TEST(connectionpooltest testqgsconnectionpool.cpp)
-ADD_QGIS_TEST(contrastenhancementtest  testcontrastenhancements.cpp)
-ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
-ADD_QGIS_TEST(coordinatetransformtest testqgscoordinatetransform.cpp)
-ADD_QGIS_TEST(datadefined testqgsdatadefined.cpp)
-ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
-ADD_QGIS_TEST(datasourceuritest testqgsdatasourceuri.cpp)
-ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
-ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
-ADD_QGIS_TEST(ellipsemarkertest testqgsellipsemarker.cpp)
-ADD_QGIS_TEST(expressioncontext testqgsexpressioncontext.cpp)
-ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
-ADD_QGIS_TEST(featuretest testqgsfeature.cpp)
-ADD_QGIS_TEST(fieldstest testqgsfields.cpp)
-ADD_QGIS_TEST(fieldtest testqgsfield.cpp)
-ADD_QGIS_TEST(filledmarkertest testqgsfilledmarker.cpp)
-ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
-ADD_QGIS_TEST(fontmarkertest2 testqgsfontmarker.cpp)
-ADD_QGIS_TEST(geometryimporttest testqgsgeometryimport.cpp)
-ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
-ADD_QGIS_TEST(geometryutilstest testqgsgeometryutils.cpp)
-ADD_QGIS_TEST(gmltest testqgsgml.cpp)
-ADD_QGIS_TEST(gradienttest testqgsgradients.cpp )
-ADD_QGIS_TEST(graduatedsymbolrenderertest testqgsgraduatedsymbolrenderer.cpp)
-ADD_QGIS_TEST(histogramtest testqgshistogram.cpp)
-ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
-ADD_QGIS_TEST(invertedpolygontest testqgsinvertedpolygonrenderer.cpp )
-ADD_QGIS_TEST(labelingenginev2 testqgslabelingenginev2.cpp)
-ADD_QGIS_TEST(layertree testqgslayertree.cpp)
-ADD_QGIS_TEST(legendrenderertest testqgslegendrenderer.cpp )
-ADD_QGIS_TEST(centroidfillsymboltest testqgscentroidfillsymbol.cpp )
-ADD_QGIS_TEST(linefillsymboltest testqgslinefillsymbol.cpp )
-ADD_QGIS_TEST(maplayerstylemanager testqgsmaplayerstylemanager.cpp )
-ADD_QGIS_TEST(maplayertest testqgsmaplayer.cpp)
-# ADD_QGIS_TEST(maprendererjobtest testmaprendererjob.cpp )
-ADD_QGIS_TEST(maprenderertest testqgsmaprenderer.cpp)
-ADD_QGIS_TEST(maprotationtest testqgsmaprotation.cpp)
-ADD_QGIS_TEST(mapsettingstest testqgsmapsettings.cpp)
-ADD_QGIS_TEST(maptopixelgeometrysimplifiertest testqgsmaptopixelgeometrysimplifier.cpp)
-ADD_QGIS_TEST(maptopixeltest testqgsmaptopixel.cpp)
-ADD_QGIS_TEST(markerlinessymboltest testqgsmarkerlinesymbol.cpp)
-ADD_QGIS_TEST(networkcontentfetcher testqgsnetworkcontentfetcher.cpp )
-ADD_QGIS_TEST(ogcutilstest testqgsogcutils.cpp)
-ADD_QGIS_TEST(ogrutilstest testqgsogrutils.cpp)
-ADD_QGIS_TEST(painteffectregistrytest testqgspainteffectregistry.cpp)
-ADD_QGIS_TEST(painteffecttest testqgspainteffect.cpp)
-ADD_QGIS_TEST(pallabelingtest testqgspallabeling.cpp)
-ADD_QGIS_TEST(pointlocatortest testqgspointlocator.cpp )
-ADD_QGIS_TEST(pointpatternfillsymboltest testqgspointpatternfillsymbol.cpp )
-ADD_QGIS_TEST(pointtest testqgspoint.cpp)
-ADD_QGIS_TEST(projecttest testqgsproject.cpp)
-ADD_QGIS_TEST(qgistest testqgis.cpp)
-ADD_QGIS_TEST(rasterfilewritertest testqgsrasterfilewriter.cpp)
-ADD_QGIS_TEST(rasterfilltest testqgsrasterfill.cpp )
-ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
-ADD_QGIS_TEST(rastersublayertest testqgsrastersublayer.cpp)
-ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
-ADD_QGIS_TEST(rendererstest testqgsrenderers.cpp)
-ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
-ADD_QGIS_TEST(scaleexpressiontest testqgsscaleexpression.cpp)
-ADD_QGIS_TEST(shapebursttest testqgsshapeburst.cpp )
-ADD_QGIS_TEST(simplemarkertest testqgssimplemarker.cpp)
-ADD_QGIS_TEST(snappingutilstest testqgssnappingutils.cpp )
-ADD_QGIS_TEST(spatialindextest testqgsspatialindex.cpp)
-ADD_QGIS_TEST(statisticalsummarytest testqgsstatisticalsummary.cpp)
-ADD_QGIS_TEST(stringutilstest testqgsstringutils.cpp)
-ADD_QGIS_TEST(stylev2test testqgsstylev2.cpp)
-ADD_QGIS_TEST(svgmarkertest testqgssvgmarker.cpp)
-ADD_QGIS_TEST(symbolv2test testqgssymbolv2.cpp)
-ADD_QGIS_TEST(tracertest testqgstracer.cpp)
-#for some obscure reason calling this test "fontutils" kills the build on Ubuntu 15.10
-ADD_QGIS_TEST(typographicstylingutils testqgsfontutils.cpp)
-ADD_QGIS_TEST(vectordataprovidertest testqgsvectordataprovider.cpp)
-ADD_QGIS_TEST(vectorlayercachetest testqgsvectorlayercache.cpp )
-ADD_QGIS_TEST(vectorlayerjoinbuffer testqgsvectorlayerjoinbuffer.cpp )
-ADD_QGIS_TEST(vectorlayertest testqgsvectorlayer.cpp)
-ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
+
+
+IF(HAVE_OPENCL)
+  SET(TESTS ${TESTS}
+    testqgsopenclutils.cpp
+        )
+ENDIF(HAVE_OPENCL)
+
+
+FOREACH(TESTSRC ${TESTS})
+    ADD_QGIS_TEST(${TESTSRC})
+ENDFOREACH(TESTSRC)
 
 ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)

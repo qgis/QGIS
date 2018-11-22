@@ -71,7 +71,7 @@ public:
      * variable.
      */
     Session(QObject* parent = 0);
-    virtual ~Session();
+    ~Session() override;
 
     /**
      * Returns true if the session is currently running.  This will be true
@@ -82,7 +82,7 @@ public:
     /**
      * Sets the profile associated with this session.
      *
-     * @param profileKey A key which can be used to obtain the current
+     * \param profileKey A key which can be used to obtain the current
      * profile settings from the SessionManager
      */
     void setProfileKey(const QString & profileKey);
@@ -140,7 +140,7 @@ public:
     int sessionId() const;
 
     /**
-     * Return the session title set by the user (ie. the program running
+     * Returns the session title set by the user (ie. the program running
      * in the terminal), or an empty string if the user has not set a custom title
      */
     QString userTitle() const;
@@ -161,10 +161,10 @@ public:
     /**
      * Sets the format used by this session for tab titles.
      *
-     * @param context The context whoose format should be set.
-     * @param format The tab title format.  This may be a mixture
+     * \param context The context whoose format should be set.
+     * \param format The tab title format. This may be a mixture
      * of plain text and dynamic elements denoted by a '%' character
-     * followed by a letter.  (eg. %d for directory).  The dynamic
+     * followed by a letter (e.g., %d for directory). The dynamic
      * elements available depend on the @p context
      */
     void setTabTitleFormat(TabTitleContext context , const QString & format);
@@ -245,7 +245,7 @@ public:
      * specify how input key sequences are translated into
      * the character stream which is sent to the terminal.
      *
-     * @param id The name of the key bindings to use.  The
+     * \param id The name of the key bindings to use.  The
      * names of available key bindings can be determined using the
      * KeyboardTranslatorManager class.
      */
@@ -329,7 +329,7 @@ public:
      * Emits a request to resize the session to accommodate
      * the specified window size.
      *
-     * @param size The size in lines and columns to request.
+     * \param size The size in lines and columns to request.
      */
     void setSize(const QSize & size);
 
@@ -423,7 +423,7 @@ signals:
     /**
      * Emitted when the activity state of this session changes.
      *
-     * @param state The new state of the session.  This may be one
+     * \param state The new state of the session.  This may be one
      * of NOTIFYNORMAL, NOTIFYSILENCE or NOTIFYACTIVITY
      */
     void stateChanged(int state);
@@ -455,14 +455,14 @@ signals:
      * Emitted when the terminal process requests a change
      * in the size of the terminal window.
      *
-     * @param size The requested window size in terms of lines and columns.
+     * \param size The requested window size in terms of lines and columns.
      */
     void resizeRequest(const QSize & size);
 
     /**
      * Emitted when a profile change command is received from the terminal.
      *
-     * @param text The text of the command.  This is a string of the form
+     * \param text The text of the command.  This is a string of the form
      * "PropertyName=Value;PropertyName=Value ..."
      */
     void profileChangeCommandReceived(const QString & text);
@@ -470,7 +470,7 @@ signals:
     /**
      * Emitted when the flow control state changes.
      *
-     * @param enabled True if flow control is enabled or false otherwise.
+     * \param enabled True if flow control is enabled or false otherwise.
      */
     void flowControlEnabledChanged(bool enabled);
 
@@ -573,7 +573,7 @@ public:
     /** Constructs an empty session group. */
     SessionGroup();
     /** Destroys the session group and removes all connections between master and slave sessions. */
-    ~SessionGroup();
+    ~SessionGroup() override;
 
     /** Adds a session to the group. */
     void addSession( Session * session );
@@ -588,8 +588,8 @@ public:
      * Changes or activity in the group's master sessions may be propagated
      * to all the sessions in the group, depending on the current masterMode()
      *
-     * @param session The session whoose master status should be changed.
-     * @param master True to make this session a master or false otherwise
+     * \param session The session whoose master status should be changed.
+     * \param master True to make this session a master or false otherwise
      */
     void setMasterStatus( Session * session , bool master );
     /** Returns the master status of a session.  See setMasterStatus() */
@@ -611,7 +611,7 @@ public:
      * Specifies which activity in the group's master sessions is propagated
      * to all sessions in the group.
      *
-     * @param mode A bitwise OR of MasterMode flags.
+     * \param mode A bitwise OR of MasterMode flags.
      */
     void setMasterMode( int mode );
     /**

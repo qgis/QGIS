@@ -1,0 +1,179 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfeaturelistcombobox.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFeatureListComboBox : QComboBox
+{
+%Docstring
+This offers a combobox with autocompleter that allows selecting features from a layer.
+
+It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
+and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturelistcombobox.h"
+%End
+  public:
+
+    QgsFeatureListComboBox( QWidget *parent = 0 );
+%Docstring
+Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
+%End
+
+    QgsVectorLayer *sourceLayer() const;
+%Docstring
+The layer from which features should be listed.
+%End
+
+    void setSourceLayer( QgsVectorLayer *sourceLayer );
+%Docstring
+The layer from which features should be listed.
+%End
+
+    QString displayExpression() const;
+%Docstring
+The display expression will be used to display features as well as
+the value to match the typed text against.
+%End
+
+    void setDisplayExpression( const QString &displayExpression );
+%Docstring
+The display expression will be used to display features as well as
+the value to match the typed text against.
+%End
+
+    QString filterExpression() const;
+%Docstring
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
+%End
+
+    int nullIndex() const;
+%Docstring
+Returns the current index of the NULL value, or -1 if NULL values are
+not allowed.
+
+.. versionadded:: 3.2
+%End
+
+    void setFilterExpression( const QString &filterExpression );
+%Docstring
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
+
+TODO!
+%End
+
+    QVariant identifierValue() const;
+%Docstring
+The identifier value of the currently selected feature. A value from the
+identifierField.
+%End
+
+    void setIdentifierValue( const QVariant &identifierValue );
+%Docstring
+The identifier value of the currently selected feature. A value from the
+identifierField.
+%End
+
+    QgsFeatureRequest currentFeatureRequest() const;
+%Docstring
+Shorthand for getting a feature request to query the currently selected
+feature.
+%End
+
+    bool allowNull() const;
+%Docstring
+Determines if a NULL value should be available in the list.
+%End
+
+    void setAllowNull( bool allowNull );
+%Docstring
+Determines if a NULL value should be available in the list.
+%End
+
+    QString identifierField() const;
+%Docstring
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
+%End
+
+    void setIdentifierField( const QString &identifierField );
+%Docstring
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
+%End
+
+    QModelIndex currentModelIndex() const;
+%Docstring
+The index of the currently selected item.
+%End
+
+    virtual void focusOutEvent( QFocusEvent *event );
+
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+  signals:
+
+    void modelUpdated();
+%Docstring
+The underlying model has been updated.
+
+.. versionadded:: 3.2
+%End
+
+    void sourceLayerChanged();
+%Docstring
+The layer from which features should be listed.
+%End
+
+    void displayExpressionChanged();
+%Docstring
+The display expression will be used to display features as well as
+the the value to match the typed text against.
+%End
+
+    void filterExpressionChanged();
+%Docstring
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
+%End
+
+    void identifierValueChanged();
+%Docstring
+The identifier value of the currently selected feature. A value from the
+identifierField.
+%End
+
+    void identifierFieldChanged();
+%Docstring
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
+%End
+
+    void allowNullChanged();
+%Docstring
+Determines if a NULL value should be available in the list.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfeaturelistcombobox.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

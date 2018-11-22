@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturelistviewdelegate.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
@@ -14,17 +28,15 @@
 #include <QObject>
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
-    : QItemDelegate( parent )
-    , mFeatureSelectionModel( nullptr )
-    , mEditSelectionModel( nullptr )
-    , mListModel( listModel )
-    , mCurrentFeatureEdited( false )
+  : QItemDelegate( parent )
+  , mListModel( listModel )
+  , mCurrentFeatureEdited( false )
 {
 }
 
 QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {
-  if ( pos.x() > sIconSize )
+  if ( pos.x() > ICON_SIZE )
   {
     return EditElement;
   }
@@ -44,26 +56,26 @@ void QgsFeatureListViewDelegate::setCurrentFeatureEdited( bool state )
   mCurrentFeatureEdited = state;
 }
 
-void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* editSelectionModel )
+void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel *editSelectionModel )
 {
   mEditSelectionModel = editSelectionModel;
 }
 
-QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index )
-  int height = sIconSize;
-  return QSize( option.rect.width(), qMax( height, option.fontMetrics.height() ) );
+  int height = ICON_SIZE;
+  return QSize( option.rect.width(), std::max( height, option.fontMetrics.height() ) );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  static QPixmap selectedIcon;
-  if ( selectedIcon.isNull() )
-    selectedIcon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
-  static QPixmap deselectedIcon;
-  if ( deselectedIcon.isNull() )
-    deselectedIcon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+  static QPixmap sSelectedIcon;
+  if ( sSelectedIcon.isNull() )
+    sSelectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconSelected.svg" ) );
+  static QPixmap sDeselectedIcon;
+  if ( sDeselectedIcon.isNull() )
+    sDeselectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconDeselected.svg" ) );
 
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
@@ -75,10 +87,10 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QRect iconLayoutBounds( option.rect.x(), option.rect.y(), option.rect.height(), option.rect.height() );
 
-  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? selectedIcon : deselectedIcon;
+  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? sSelectedIcon : sDeselectedIcon;
 
   // Scale up the icon if needed
-  if ( option.rect.height() > sIconSize )
+  if ( option.rect.height() > ICON_SIZE )
   {
     icon = icon.scaledToHeight( option.rect.height(), Qt::SmoothTransformation );
   }

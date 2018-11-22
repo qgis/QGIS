@@ -18,18 +18,32 @@
 
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
+#include "qgspostgresconn.h"
 #include "qgspostgresfeatureiterator.h"
 
 class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
+    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source );
 
   protected:
 
-    virtual QString quotedIdentifier( const QString& identifier ) override;
-    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+    QString quotedIdentifier( const QString &identifier ) override;
+    QString quotedValue( const QVariant &value, bool &ok ) override;
+    Result compileNode( const QgsExpressionNode *node, QString &str ) override;
+    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
+    QString castToReal( const QString &value ) const override;
+    QString castToInt( const QString &value ) const override;
+    QString castToText( const QString &value ) const override;
+
+    QString mGeometryColumn;
+    QgsPostgresGeometryColumnType mSpatialColType;
+    QgsWkbTypes::Type mDetectedGeomType;
+    QgsWkbTypes::Type mRequestedGeomType;
+    QString mRequestedSrid;
+    QString mDetectedSrid;
 };
 
 #endif // QGSPOSTGRESEXPRESSIONCOMPILER_H

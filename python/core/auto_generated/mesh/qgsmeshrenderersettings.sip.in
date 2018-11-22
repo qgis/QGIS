@@ -1,0 +1,413 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshrenderersettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMeshRendererMeshSettings
+{
+%Docstring
+
+Represents a mesh renderer settings for mesh object
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+    bool isEnabled() const;
+%Docstring
+Returns whether mesh structure rendering is enabled
+%End
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether mesh structure rendering is enabled
+%End
+
+    double lineWidth() const;
+%Docstring
+Returns line width used for rendering (in millimeters)
+%End
+    void setLineWidth( double lineWidth );
+%Docstring
+Sets line width used for rendering (in millimeters)
+%End
+
+    QColor color() const;
+%Docstring
+Returns color used for rendering
+%End
+    void setColor( const QColor &color );
+%Docstring
+Sets color used for rendering of the mesh
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+class QgsMeshRendererScalarSettings
+{
+%Docstring
+
+Represents a mesh renderer settings for scalar datasets
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns color ramp shader function
+%End
+    void setColorRampShader( const QgsColorRampShader &shader );
+%Docstring
+Sets color ramp shader function
+%End
+
+    double classificationMinimum() const;
+%Docstring
+Returns min value used for creation of the color ramp shader
+%End
+    double classificationMaximum() const;
+%Docstring
+Returns max value used for creation of the color ramp shader
+%End
+    void setClassificationMinimumMaximum( double minimum, double maximum );
+%Docstring
+Sets min/max values used for creation of the color ramp shader
+%End
+
+    double opacity() const;
+%Docstring
+Returns opacity
+%End
+    void setOpacity( double opacity );
+%Docstring
+Sets opacity
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+class QgsMeshRendererVectorSettings
+{
+%Docstring
+
+Represents a mesh renderer settings for vector datasets
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    enum ArrowScalingMethod
+    {
+
+      MinMax,
+
+      Scaled,
+
+      Fixed
+    };
+
+    double lineWidth() const;
+%Docstring
+Returns line width of the arrow (in millimeters)
+%End
+    void setLineWidth( double lineWidth );
+%Docstring
+Sets line width of the arrow in pixels (in millimeters)
+%End
+
+    QColor color() const;
+%Docstring
+Returns color used for drawing arrows
+%End
+    void setColor( const QColor &color );
+%Docstring
+Sets color used for drawing arrows
+%End
+
+    double filterMin() const;
+%Docstring
+Returns filter value for vector magnitudes.
+
+If magnitude of the vector is lower than this value, the vector is not
+drawn. -1 represents that filtering is not active.
+%End
+
+    void setFilterMin( double filterMin );
+%Docstring
+Sets filter value for vector magnitudes.
+
+.. seealso:: :py:func:`filterMin`
+%End
+
+    double filterMax() const;
+%Docstring
+Returns filter value for vector magnitudes.
+
+If magnitude of the vector is higher than this value, the vector is not
+drawn. -1 represents that filtering is not active.
+%End
+
+    void setFilterMax( double filterMax );
+%Docstring
+Sets filter value for vector magnitudes.
+
+.. seealso:: :py:func:`filterMax`
+%End
+
+    QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
+%Docstring
+Returns method used for drawing arrows
+%End
+    void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
+%Docstring
+Sets method used for drawing arrows
+%End
+
+    double minShaftLength() const;
+%Docstring
+Returns mininimum shaft length (in millimeters)
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+%End
+
+    void setMinShaftLength( double minShaftLength );
+%Docstring
+Sets mininimum shaft length (in millimeters)
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+%End
+
+    double maxShaftLength() const;
+%Docstring
+Returns maximum shaft length (in millimeters)
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+%End
+
+    void setMaxShaftLength( double maxShaftLength );
+%Docstring
+Sets maximum shaft length (in millimeters)
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.MinMax
+%End
+
+    double scaleFactor() const;
+%Docstring
+Returns scale factor
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Scaled
+%End
+
+    void setScaleFactor( double scaleFactor );
+%Docstring
+Sets scale factor
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Scaled
+%End
+
+    double fixedShaftLength() const;
+%Docstring
+Returns fixed arrow length (in millimeters)
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Fixed
+%End
+
+    void setFixedShaftLength( double fixedShaftLength );
+%Docstring
+Sets fixed length  (in millimeters)
+
+Only for QgsMeshRendererVectorSettings.ArrowScalingMethod.Fixed
+%End
+
+    double arrowHeadWidthRatio() const;
+%Docstring
+Returns ratio of the head width of the arrow (range 0-1)
+%End
+    void setArrowHeadWidthRatio( double arrowHeadWidthRatio );
+%Docstring
+Sets ratio of the head width of the arrow (range 0-1)
+%End
+
+    double arrowHeadLengthRatio() const;
+%Docstring
+Returns ratio of the head length of the arrow (range 0-1)
+%End
+    void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
+%Docstring
+Sets ratio of the head length of the arrow (range 0-1)
+%End
+
+    bool isOnUserDefinedGrid() const;
+%Docstring
+Returns whether vectors are drawn on user-defined grid
+%End
+    void setOnUserDefinedGrid( bool enabled );
+%Docstring
+Toggles drawing of vectors on user defined grid
+%End
+    int userGridCellWidth() const;
+%Docstring
+Returns width in pixels of user grid cell
+%End
+    void setUserGridCellWidth( int width );
+%Docstring
+Sets width of user grid cell (in pixels)
+%End
+    int userGridCellHeight() const;
+%Docstring
+Returns height in pixels of user grid cell
+%End
+    void setUserGridCellHeight( int height );
+%Docstring
+Sets height of user grid cell (in pixels)
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+
+class QgsMeshRendererSettings
+{
+%Docstring
+
+Represents all mesh renderer settings
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    QgsMeshRendererMeshSettings nativeMeshSettings() const;
+%Docstring
+Returns renderer settings
+%End
+    void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings, triggers repaint
+%End
+
+    QgsMeshRendererMeshSettings triangularMeshSettings() const;
+%Docstring
+Returns renderer settings
+%End
+    void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshDatasetIndex activeScalarDataset() const;
+%Docstring
+Returns active scalar dataset
+%End
+    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
+%Docstring
+Sets active scalar dataset for rendering
+%End
+
+    QgsMeshDatasetIndex activeVectorDataset() const;
+%Docstring
+Returns active vector dataset
+%End
+    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
+%Docstring
+Sets active vector dataset for rendering.
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshrenderersettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

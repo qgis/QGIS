@@ -18,11 +18,14 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERTRANSPARENCY_H
 #define QGSRASTERTRANSPARENCY_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 class QDomDocument;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Defines the list of pixel values to be considered as transparent or semi
  * transparent when rendering rasters.
  */
@@ -30,7 +33,11 @@ class CORE_EXPORT QgsRasterTransparency
 {
 
   public:
-    QgsRasterTransparency();
+
+    /**
+     * Constructor for QgsRasterTransparency.
+     */
+    QgsRasterTransparency() = default;
 
     //
     // Structs to hold transparent pixel vlaues
@@ -53,42 +60,84 @@ class CORE_EXPORT QgsRasterTransparency
     //
     // Initializer, Accessor and mutator for transparency tables.
     //
-    /** \brief Accessor for transparentSingleValuePixelList */
+
+    /**
+     * Returns the transparent single value pixel list.
+     * \see setTransparentSingleValuePixelList()
+     */
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 
-    /** \brief Accessor for transparentThreeValuePixelList */
+    /**
+     * Returns the transparent three value pixel list.
+     * \see setTransparentThreeValuePixelList()
+     */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 
-    /** \brief Reset to the transparency list to a single value */
-    void initializeTransparentPixelList( double );
+    /**
+     * Resets the transparency list to a single \a value.
+     */
+    void initializeTransparentPixelList( double value );
 
-    /** \brief Reset to the transparency list to a single value */
-    void initializeTransparentPixelList( double, double, double );
+    /**
+     * Resets the transparency list to single red, green, and blue values.
+     */
+    void initializeTransparentPixelList( double redValue, double greenValue, double blueValue );
 
-    /** \brief Mutator for transparentSingleValuePixelList */
-    void setTransparentSingleValuePixelList( const QList<TransparentSingleValuePixel>& theNewList );
+    /**
+     * Sets the transparent single value pixel list, replacing the whole existing list.
+     * \see transparentSingleValuePixelList()
+     */
+    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList );
 
-    /** \brief Mutator for transparentThreeValuePixelList */
-    void setTransparentThreeValuePixelList( const QList<TransparentThreeValuePixel>& theNewList );
+    /**
+     * Sets the transparent three value pixel list, replacing the whole existing list.
+     * \see transparentThreeValuePixelList()
+     */
+    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList );
 
-    /** \brief Returns the transparency value for a single value Pixel */
-    int alphaValue( double, int theGlobalTransparency = 255 ) const;
+    /**
+     * Returns the transparency value for a single \a value pixel.
+     *
+     * Searches through the transparency list, and if a match is found, the global transparency value is scaled
+     * by the stored transparency value.
+     *
+     * \param value the needle to search for in the transparency hay stack
+     * \param globalTransparency the overal transparency level for the layer
+    */
+    int alphaValue( double value, int globalTransparency = 255 ) const;
 
-    /** \brief Return the transparency value for a RGB Pixel */
-    int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
+    //! \brief
 
-    /** True if there are no entries in the pixel lists except the nodata value*/
+    /**
+     * Returns the transparency value for a RGB pixel.
+     *
+     * Searches through the transparency list, if a match is found, the global transparency value is scaled
+     * by the stored transparency value.
+     * \param redValue the red portion of the needle to search for in the transparency hay stack
+     * \param greenValue  the green portion of the needle to search for in the transparency hay stack
+     * \param blueValue the green portion of the needle to search for in the transparency hay stack
+     * \param globalTransparency the overal transparency level for the layer
+    */
+    int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const;
+
+    //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    /**
+     * Writes the transparency information to an XML document.
+     */
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXML( const QDomElement& elem );
+    /**
+     * Reads the transparency information from an XML document.
+     */
+    void readXml( const QDomElement &elem );
 
   private:
-    /** \brief The list to hold transparency values for RGB layers */
+    //! \brief The list to hold transparency values for RGB layers
     QList<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;
 
-    /** \brief The list to hold transparency values for single value pixel layers */
+    //! \brief The list to hold transparency values for single value pixel layers
     QList<QgsRasterTransparency::TransparentSingleValuePixel> mTransparentSingleValuePixelList;
 
 };

@@ -28,15 +28,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
+from qgis.core import QgsSettings
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
 class MultipleFileInputDialog(BASE, WIDGET):
@@ -64,7 +69,14 @@ class MultipleFileInputDialog(BASE, WIDGET):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
+        self.settings = QgsSettings()
+        self.restoreGeometry(self.settings.value("/Processing/multipleFileInputDialogGeometry", QByteArray()))
+
         self.populateList()
+        self.finished.connect(self.saveWindowGeometry)
+
+    def saveWindowGeometry(self):
+        self.settings.setValue("/Processing/multipleInputDialogGeometry", self.saveGeometry())
 
     def populateList(self):
         model = QStandardItemModel()
@@ -77,7 +89,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             self.selectedoptions.append(item.text())
         QDialog.accept(self)
@@ -86,14 +98,14 @@ class MultipleFileInputDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def addFile(self):
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/LastInputPath'):
             path = settings.value('/Processing/LastInputPath')
         else:
             path = ''
 
-        files = QFileDialog.getOpenFileNames(self,
-                                             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+        files, selected_filter = QFileDialog.getOpenFileNames(self,
+                                                              self.tr('Select File(s)'), path, self.tr('All files (*.*)'))
 
         if len(files) == 0:
             return

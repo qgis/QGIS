@@ -17,19 +17,26 @@
 #define QGSTABLEWIDGETITEM_H
 
 #include <QTableWidget>
+#include "qgis_gui.h"
 
 /**
+ * \ingroup gui
  * This can be used like a regular QTableWidgetItem with the difference that a
  * specific role can be set to sort.
  */
 class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
 {
   public:
-    QgsTableWidgetItem();
+
+    /**
+      * Constructor for QgsTableWidgetItem.
+      */
+    QgsTableWidgetItem() = default;
+
     /**
      * Creates a new table widget item with the specified text.
      */
-    QgsTableWidgetItem( const QString& text );
+    QgsTableWidgetItem( const QString &text );
 
 
     /**
@@ -37,16 +44,17 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
      * By default this will be set to Qt::DisplayRole
      */
     void setSortRole( int role );
+
     /**
-     * Get the role by which the items should be sorted.
+     * Gets the role by which the items should be sorted.
      * By default this will be Qt::DisplayRole
      */
     int sortRole() const;
 
-    bool operator <( const QTableWidgetItem& other ) const override;
+    bool operator <( const QTableWidgetItem &other ) const override;
 
   private:
-    int mSortRole;
+    int mSortRole = Qt::DisplayRole;
 };
 
 #endif // QGSTABLEWIDGETITEM_H

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsAdvancedDigitizingDockWidgetBase</class>
- <widget class="QDockWidget" name="QgsAdvancedDigitizingDockWidgetBase">
+ <widget class="QgsDockWidget" name="QgsAdvancedDigitizingDockWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,10 +17,22 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Advanced Digitizing Panel</string>
+   <string>Advanced Digitizing</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="mLayout">
       <item>
@@ -65,7 +77,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
              <property name="iconSize">
               <size>
@@ -105,14 +117,14 @@
               <item row="0" column="2">
                <widget class="QToolButton" name="mParallelButton">
                 <property name="toolTip">
-                 <string>Parallel</string>
+                 <string/>
                 </property>
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                 <property name="icon">
                  <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/cadtools/parallel.png</normaloff>:/images/themes/default/cadtools/parallel.png</iconset>
+                  <normaloff>:/images/themes/default/cadtools/parallel.svg</normaloff>:/images/themes/default/cadtools/parallel.svg</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -128,14 +140,14 @@
               <item row="0" column="1">
                <widget class="QToolButton" name="mPerpendicularButton">
                 <property name="toolTip">
-                 <string>Perpendicular</string>
+                 <string/>
                 </property>
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                 <property name="icon">
                  <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/cadtools/perpendicular.png</normaloff>:/images/themes/default/cadtools/perpendicular.png</iconset>
+                  <normaloff>:/images/themes/default/cadtools/perpendicular.svg</normaloff>:/images/themes/default/cadtools/perpendicular.svg</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -151,14 +163,14 @@
               <item row="0" column="0">
                <widget class="QToolButton" name="mConstructionModeButton">
                 <property name="toolTip">
-                 <string>Construction mode</string>
+                 <string/>
                 </property>
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                 <property name="icon">
                  <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/cadtools/construction.png</normaloff>:/images/themes/default/cadtools/construction.png</iconset>
+                  <normaloff>:/images/themes/default/cadtools/construction.svg</normaloff>:/images/themes/default/cadtools/construction.svg</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -187,11 +199,11 @@
               <item row="0" column="4">
                <widget class="QToolButton" name="mSettingsButton">
                 <property name="text">
-                 <string>...</string>
+                 <string>…</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../plugins/georeferencer/georeferencer.qrc">
-                  <normaloff>:/icons/default/mActionTransformSettings.png</normaloff>:/icons/default/mActionTransformSettings.png</iconset>
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
                 </property>
                 <property name="popupMode">
                  <enum>QToolButton::InstantPopup</enum>
@@ -231,21 +243,21 @@
             <item row="3" column="2">
              <widget class="QLineEdit" name="mYLineEdit">
               <property name="toolTip">
-               <string>Y coordinate</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item row="3" column="3">
              <widget class="QToolButton" name="mLockYButton">
               <property name="toolTip">
-               <string>Lock y coordinate</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.png</normaloff>:/images/themes/default/cadtools/lock.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -255,14 +267,14 @@
             <item row="2" column="3">
              <widget class="QToolButton" name="mLockXButton">
               <property name="toolTip">
-               <string>Lock x coordinate</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.png</normaloff>:/images/themes/default/cadtools/lock.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -272,14 +284,14 @@
             <item row="3" column="0">
              <widget class="QToolButton" name="mRelativeYButton">
               <property name="toolTip">
-               <string>Toggles relative y to previous node</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/delta.png</normaloff>:/images/themes/default/cadtools/delta.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/delta.svg</normaloff>:/images/themes/default/cadtools/delta.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -289,14 +301,14 @@
             <item row="1" column="3">
              <widget class="QToolButton" name="mLockAngleButton">
               <property name="toolTip">
-               <string>Lock angle</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.png</normaloff>:/images/themes/default/cadtools/lock.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -306,7 +318,7 @@
             <item row="2" column="2">
              <widget class="QLineEdit" name="mXLineEdit">
               <property name="toolTip">
-               <string>X coordinate</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -320,14 +332,14 @@
             <item row="1" column="0">
              <widget class="QToolButton" name="mRelativeAngleButton">
               <property name="toolTip">
-               <string>Toggles relative angle to previous segment</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/delta.png</normaloff>:/images/themes/default/cadtools/delta.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/delta.svg</normaloff>:/images/themes/default/cadtools/delta.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -340,7 +352,7 @@
             <item row="1" column="2">
              <widget class="QLineEdit" name="mAngleLineEdit">
               <property name="toolTip">
-               <string>Angle</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -361,14 +373,14 @@
             <item row="0" column="3">
              <widget class="QToolButton" name="mLockDistanceButton">
               <property name="toolTip">
-               <string>Lock distance</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/lock.png</normaloff>:/images/themes/default/cadtools/lock.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/lock.svg</normaloff>:/images/themes/default/cadtools/lock.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -378,21 +390,21 @@
             <item row="0" column="2">
              <widget class="QLineEdit" name="mDistanceLineEdit">
               <property name="toolTip">
-               <string>Distance</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item row="2" column="0">
              <widget class="QToolButton" name="mRelativeXButton">
               <property name="toolTip">
-               <string>Toggles relative x to previous node</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/cadtools/delta.png</normaloff>:/images/themes/default/cadtools/delta.png</iconset>
+                <normaloff>:/images/themes/default/cadtools/delta.svg</normaloff>:/images/themes/default/cadtools/delta.svg</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -402,10 +414,10 @@
             <item row="0" column="4">
              <widget class="QToolButton" name="mRepeatingLockDistanceButton">
               <property name="toolTip">
-               <string>Continuously lock distance</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -419,10 +431,10 @@
             <item row="1" column="4">
              <widget class="QToolButton" name="mRepeatingLockAngleButton">
               <property name="toolTip">
-               <string>Continuously lock angle</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -436,10 +448,10 @@
             <item row="2" column="4">
              <widget class="QToolButton" name="mRepeatingLockXButton">
               <property name="toolTip">
-               <string>Continuously lock x coordinate</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -453,10 +465,10 @@
             <item row="3" column="4">
              <widget class="QToolButton" name="mRepeatingLockYButton">
               <property name="toolTip">
-               <string>Continuously lock y coordinate</string>
+               <string/>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -491,6 +503,14 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mEnabledButton</tabstop>
   <tabstop>mConstructionModeButton</tabstop>
@@ -515,7 +535,34 @@
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
-  <include location="../plugins/georeferencer/georeferencer.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

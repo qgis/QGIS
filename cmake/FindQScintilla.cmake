@@ -24,28 +24,40 @@ IF(EXISTS QSCINTILLA_VERSION_STR)
   SET(QSCINTILLA_FOUND TRUE)
 ELSE(EXISTS QSCINTILLA_VERSION_STR)
 
-  FIND_PATH(QSCINTILLA_INCLUDE_DIR
-    NAMES Qsci/qsciglobal.h
-    PATHS
-      ${Qt5Core_INCLUDE_DIRS}
-      "${QT_INCLUDE_DIR}"
-      /usr/local/include
-      /usr/include
-    )
-
-  if(ENABLE_QT5)
-    set(QSCINTILLA_LIBRARY_NAMES qscintilla2-qt5 libqt5scintilla2 libqscintilla2-qt5 qt5scintilla2 libqscintilla2-qt5.dylib)
-  else(ENABLE_QT5)
-    set(QSCINTILLA_LIBRARY_NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib)
-  endif(ENABLE_QT5)
+  set(QSCINTILLA_LIBRARY_NAMES
+    qscintilla2-qt5
+    qscintilla2_qt5
+    libqt5scintilla2
+    libqscintilla2-qt5
+    qt5scintilla2
+    libqscintilla2-qt5.dylib
+    qscintilla2
+  )
 
   find_library(QSCINTILLA_LIBRARY
     NAMES ${QSCINTILLA_LIBRARY_NAMES}
     PATHS
       "${QT_LIBRARY_DIR}"
       /usr/local/lib
+      /usr/local/lib/qt5
       /usr/lib
   )
+
+  set(_qsci_fw)
+  if(QSCINTILLA_LIBRARY MATCHES "/qscintilla.*\\.framework")
+    string(REGEX REPLACE "^(.*/qscintilla.*\\.framework).*$" "\\1" _qsci_fw "${QSCINTILLA_LIBRARY}")
+  endif()
+
+  FIND_PATH(QSCINTILLA_INCLUDE_DIR
+    NAMES Qsci/qsciglobal.h
+    PATHS
+      "${_qsci_fw}/Headers"
+      ${Qt5Core_INCLUDE_DIRS}
+      "${QT_INCLUDE_DIR}"
+      /usr/local/include
+      /usr/include
+    PATH_SUFFIXES qt
+    )
 
   IF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
     SET(QSCINTILLA_FOUND TRUE)
@@ -60,7 +72,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
   ENDIF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
 
   IF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
-    # get QScintilla2 version from header, is optinally retrieved via bindings
+    # get QScintilla2 version from header, is optionally retrieved via bindings
     # with Qsci PyQt4 module
     FILE(READ ${QSCINTILLA_INCLUDE_DIR}/Qsci/qsciglobal.h qsci_header)
     STRING(REGEX REPLACE "^.*QSCINTILLA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QSCINTILLA_VERSION_STR "${qsci_header}")

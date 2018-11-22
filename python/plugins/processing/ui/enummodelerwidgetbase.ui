@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="btnRemove">
+     <property name="toolTip">
+      <string>Remove item</string>
+     </property>
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>190</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1">
+    <widget class="QToolButton" name="btnAdd">
+     <property name="toolTip">
+      <string>Add item</string>
+     </property>
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QToolButton" name="btnClear">
+     <property name="toolTip">
+      <string>Clear all</string>
+     </property>
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="4">
+    <widget class="QListView" name="lstItems">
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="chkAllowMultiple">
+     <property name="text">
+      <string>Allow multiple selection</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

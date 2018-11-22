@@ -23,7 +23,7 @@ extern "C"
 
   int qgsvlayerModuleInit( sqlite3 *db,
                            char **pzErrMsg,
-                           void * unused /*const sqlite3_api_routines *pApi*/ );
+                           void *unused /*const sqlite3_api_routines *pApi*/ );
 
 }
 
@@ -32,20 +32,21 @@ extern "C"
 class QgsScopedSqlite
 {
   public:
-    QgsScopedSqlite() : db_( nullptr ) {}
+    QgsScopedSqlite() = default;
 
-    explicit QgsScopedSqlite( const QString& path, bool withExtension = true );
+    explicit QgsScopedSqlite( const QString &path, bool withExtension = true );
 
-    QgsScopedSqlite( QgsScopedSqlite& other );
-    QgsScopedSqlite& operator=( QgsScopedSqlite& other );
+    QgsScopedSqlite( QgsScopedSqlite &other );
+    QgsScopedSqlite &operator=( QgsScopedSqlite &other );
     ~QgsScopedSqlite();
 
-    sqlite3* get() const;
-    sqlite3* release();
-    void reset( sqlite3* db );
+    bool interrupt();
+    sqlite3 *get() const;
+    sqlite3 *release();
+    void reset( sqlite3 *db );
 
   private:
-    sqlite3* db_;
+    sqlite3 *db_ = nullptr;
 
     void close_();
 };
@@ -54,40 +55,40 @@ namespace Sqlite
 {
   struct Query
   {
-    Query( sqlite3* db, const QString& q );
-    ~Query();
+      Query( sqlite3 *db, const QString &q );
+      ~Query();
 
-    int step();
+      int step();
 
-    Query& bind( const QString& str, int idx );
-    Query& bind( const QString& str );
+      Query &bind( const QString &str, int idx );
+      Query &bind( const QString &str );
 
-    static void exec( sqlite3* db, const QString& sql );
+      static void exec( sqlite3 *db, const QString &sql );
 
-    void reset();
+      void reset();
 
-    int columnCount() const;
+      int columnCount() const;
 
-    QString columnName( int i ) const;
+      QString columnName( int i ) const;
 
-    int columnType( int i ) const;
+      int columnType( int i ) const;
 
-    int columnInt( int i ) const;
+      int columnInt( int i ) const;
 
-    qint64 columnInt64( int i ) const;
+      qint64 columnInt64( int i ) const;
 
-    double columnDouble( int i ) const;
+      double columnDouble( int i ) const;
 
-    QString columnText( int i ) const;
+      QString columnText( int i ) const;
 
-    QByteArray columnBlob( int i ) const;
+      QByteArray columnBlob( int i ) const;
 
-    sqlite3_stmt* stmt();
+      sqlite3_stmt *stmt();
 
-  private:
-    sqlite3* db_;
-    sqlite3_stmt* stmt_;
-    int nBind_;
+    private:
+      sqlite3 *db_ = nullptr;
+      sqlite3_stmt *stmt_ = nullptr;
+      int nBind_;
   };
 }
 

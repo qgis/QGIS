@@ -14,62 +14,66 @@
  ***************************************************************************/
 
 #include "qgsmessagelog.h"
-#include <qgslogger.h>
+#include "qgsapplication.h"
+#include "qgslogger.h"
 #include <QDateTime>
 #include <QMetaType>
+#include <QTextStream>
 #include <iostream>
+#include <stdio.h>
 
 class QgsMessageLogConsole;
 
-QgsMessageLog *QgsMessageLog::sInstance = nullptr;
-
-QgsMessageLog::QgsMessageLog()
-    : QObject()
+void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser )
 {
-  sInstance = this;
+  QgsDebugMsg( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );
+
+  QgsApplication::messageLog()->emitMessage( message, tag, level, notifyUser );
 }
 
-QgsMessageLog *QgsMessageLog::instance()
-{
-  if ( !sInstance )
-  {
-    qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
-    sInstance = new QgsMessageLog();
-  }
-
-  return sInstance;
-}
-
-void QgsMessageLog::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
-{
-  QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );
-
-  QgsMessageLog::instance()->emitMessage( message, tag, level );
-}
-
-void QgsMessageLog::emitMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser )
 {
   emit messageReceived( message, tag, level );
-  if ( level != QgsMessageLog::INFO )
+  if ( level != Qgis::Info && notifyUser && mAdviseBlockCount == 0 )
   {
     emit messageReceived( true );
   }
 }
 
 QgsMessageLogConsole::QgsMessageLogConsole()
-    : QObject( QgsMessageLog::instance() )
+  : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
-           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel ) >( &QgsMessageLog::messageReceived ),
+           this, &QgsMessageLogConsole::logMessage );
 }
 
-void QgsMessageLogConsole::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
-  std::cout
-    << tag.toLocal8Bit().data() << "[" <<
-    ( level == QgsMessageLog::INFO ? "INFO"
-      : level == QgsMessageLog::WARNING ? "WARNING"
-      : "CRITICAL" )
-    << "]: " << message.toLocal8Bit().data() << std::endl;
+  QString formattedMessage = formatLogMessage( message, tag, level );
+  QTextStream cerr( stderr );
+  cerr << formattedMessage;
 }
 
+QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) const
+{
+  const QString time = QTime::currentTime().toString();
+  const QString levelStr = level == Qgis::Info ? QStringLiteral( "INFO" ) :
+                           level == Qgis::Warning ? QStringLiteral( "WARNING" ) :
+                           QStringLiteral( "CRITICAL" );
+  const QString pid = QString::number( QCoreApplication::applicationPid() );
+  return QStringLiteral( "%1 %2 %3[%4]: %5\n" ).arg( time, levelStr, tag, pid, message );
+}
+
+//
+// QgsMessageLogNotifyBlocker
+//
+
+QgsMessageLogNotifyBlocker::QgsMessageLogNotifyBlocker()
+{
+  QgsApplication::messageLog()->mAdviseBlockCount++;
+}
+
+QgsMessageLogNotifyBlocker::~QgsMessageLogNotifyBlocker()
+{
+  QgsApplication::messageLog()->mAdviseBlockCount--;
+}

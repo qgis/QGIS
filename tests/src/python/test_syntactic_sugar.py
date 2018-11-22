@@ -75,5 +75,6 @@ class TestSyntacticSugar(unittest.TestCase):
             with edit(ml) as l:
                 l.rollBack()
 
+
 if __name__ == "__main__":
     unittest.main()

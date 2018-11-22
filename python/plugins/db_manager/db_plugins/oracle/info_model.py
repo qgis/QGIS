@@ -24,7 +24,7 @@ The content of this file is based on
 """
 
 from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import QGis
+from qgis.core import QgsWkbTypes
 
 from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
 from ..html_elems import HtmlContent, HtmlSection, HtmlParagraph, \
@@ -108,9 +108,9 @@ class ORTableInfo(TableInfo):
 
         # if the estimation is less than 100 rows, try to count them - it
         # shouldn't take long time
-        if (not self.table.isView
-                and not self.table.rowCount
-                and self.table.estimatedRowCount < 100):
+        if (not self.table.isView and
+                not self.table.rowCount and
+                self.table.estimatedRowCount < 100):
             # row count information is not displayed yet, so just block
             # table signals to avoid double refreshing
             # (infoViewer->refreshRowCount->tableChanged->infoViewer)
@@ -207,18 +207,18 @@ class ORTableInfo(TableInfo):
         ret.append(HtmlTable(tbl))
 
         if schema_priv and schema_priv[1]:
-            if (table_priv[0]
-                    and not table_priv[1]
-                    and not table_priv[2]
-                    and not table_priv[3]):
+            if (table_priv[0] and
+                    not table_priv[1] and
+                    not table_priv[2] and
+                    not table_priv[3]):
                 ret.append(
                     HtmlParagraph(QApplication.translate(
                         "DBManagerPlugin",
                         "<warning> This user has read-only privileges.")))
 
         # primary key defined?
-        if (not self.table.isView
-                and self.table.objectType != u"MATERIALIZED VIEW"):
+        if (not self.table.isView and
+                self.table.objectType != u"MATERIALIZED VIEW"):
             pk = [fld for fld in self.table.fields() if fld.primaryKey]
             if len(pk) <= 0:
                 ret.append(
@@ -575,8 +575,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             (QApplication.translate("DBManagerPlugin", "Geometry:"),
              self.table.geomType),
             (QApplication.translate("DBManagerPlugin",
-                                    "QGis Geometry type:"),
-             QGis.featureType(self.table.wkbType))
+                                    "Qgis Geometry type:"),
+             QgsWkbTypes.displayString(self.table.wkbType))
         ]
 
         # only if we have info from geometry_columns
@@ -639,9 +639,9 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
         ret.append(HtmlTable(tbl))
 
         # Handle extent update metadata
-        if (self.table.extent
-                and self.table.extent != self.table.estimatedExtent
-                and self.table.canUpdateMetadata()):
+        if (self.table.extent and
+                self.table.extent != self.table.estimatedExtent and
+                self.table.canUpdateMetadata()):
             ret.append(
                 HtmlParagraph(
                     QApplication.translate(

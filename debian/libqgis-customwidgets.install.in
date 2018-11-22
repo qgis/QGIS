@@ -1,1 +1,1 @@
-{QT_PLUGIN_DIR}/designer/libqgis_customwidgets.so*
+{QT_PLUGINS_DIR}/designer/libqgis_customwidgets.so*

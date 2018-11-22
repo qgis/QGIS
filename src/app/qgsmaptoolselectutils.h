@@ -20,6 +20,8 @@ email                : jpalmer at linz dot govt dot nz
 #include <QRect>
 #include <QPoint>
 
+#include "qgsvectorlayer.h"
+
 class QMouseEvent;
 class QgsMapCanvas;
 class QgsVectorLayer;
@@ -31,57 +33,87 @@ class QgsRubberBand;
  */
 namespace QgsMapToolSelectUtils
 {
-  /**
-    Selects the features within currently selected layer.
-    @param canvas The map canvas used to get the current selected vector layer and
-    for any required geometry transformations
-    @param selectGeometry The geometry to select the layers features. This geometry
-    must be in terms of the canvas coordinate system.
-    @param doContains Features will only be selected if fully contained within
-    the selection rubber band (otherwise intersection is enough).
-    @param doDifference Take the symmetric difference of the current selected
-    features and the new features found within the provided selectGeometry.
-    @param singleSelect Only selects the closest feature to the selectGeometry.
-  */
-  void setSelectFeatures( QgsMapCanvas* canvas,
-                          QgsGeometry* selectGeometry,
-                          bool doContains = true,
-                          bool doDifference = false,
-                          bool singleSelect = false );
 
   /**
-    Select the features within currently selected layer.
-    @param canvas The map canvas used to get the current selected vector layer and
+   * Calculates a list of features matching a selection geometry and flags.
+   * \param canvas the map canvas used to get the current selected vector layer and
     for any required geometry transformations
-    @param selectGeometry The geometry to select the layers features. This geometry
+   * \param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    @param e MouseEvents are used to determine the current selection
-    operations (add, subtract, contains)
+   * \param doContains features will only be selected if fully contained within
+    the selection rubber band (otherwise intersection is enough).
+   * \param singleSelect only selects the closest feature to the selectGeometry.
+   * \returns list of features which match search geometry and parameters
+   * \since QGIS 2.16
+   */
+  QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect );
+
+  /**
+    Selects the features within currently selected layer.
+    \param canvas the map canvas used to get the current selected vector layer and
+    for any required geometry transformations
+    \param selectGeometry the geometry to select the layers features. This geometry
+    must be in terms of the canvas coordinate system.
+    \param selectBehavior behavior of select (ie replace selection, add to selection)
+    \param doContains features will only be selected if fully contained within
+    the selection rubber band (otherwise intersection is enough).
+    \param singleSelect only selects the closest feature to the selectGeometry.
+    \since QGIS 2.16
   */
-  void setSelectFeatures( QgsMapCanvas* canvas, QgsGeometry* selectGeometry, QMouseEvent * e );
+  void setSelectedFeatures( QgsMapCanvas *canvas,
+                            const QgsGeometry &selectGeometry,
+                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                            bool doContains = true,
+                            bool singleSelect = false );
+
+  /**
+    Selects multiple matching features from within currently selected layer.
+    \param canvas the map canvas used to get the current selected vector layer and
+    for any required geometry transformations
+    \param selectGeometry the geometry to select the layers features. This geometry
+    must be in terms of the canvas coordinate system.
+    \param modifiers Keyboard modifiers are used to determine the current selection
+    operations (add, subtract, contains)
+    \since QGIS 2.16
+    \see selectSingleFeature()
+  */
+  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers );
+
+  /**
+    Selects a single feature from within currently selected layer.
+    \param canvas the map canvas used to get the current selected vector layer and
+    for any required geometry transformations
+    \param selectGeometry the geometry to select the layers features. This geometry
+    must be in terms of the canvas coordinate system.
+    \param modifiers Keyboard modifiers are used to determine the current selection
+    operations (add, subtract, contains)
+    \see selectMultipleFeatures()
+  */
+  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
-    @param canvas The map canvas used for getting the current layer
-    @return QgsVectorLayer The layer
+    \param canvas The map canvas used for getting the current layer
+    \returns QgsVectorLayer The layer
   */
-  QgsVectorLayer* getCurrentVectorLayer( QgsMapCanvas* canvas );
+  QgsVectorLayer *getCurrentVectorLayer( QgsMapCanvas *canvas );
 
   /**
-  Expands a rectangle to a minimum size for selection based on the vector layer type
-  @param selectRect The QRect to expand
-  @param vlayer The vector layer layer
-  @param vlayer The point to expand the rectangle around
+  Expands a point to a rectangle with minimum size for selection based on the vector layer type
+  \param point The point to expand the rectangle around (in map coordinates)
+  \param canvas The map canvas used to transform between canvas and map units
+  \param vlayer The vector layer layer
+  \returns Expanded rectangle in map units
   */
-  void expandSelectRectangle( QRect& selectRect, QgsVectorLayer* vlayer, QPoint point );
+  QgsRectangle expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsVectorLayer *vlayer );
 
   /**
   Sets a QgsRubberband to rectangle in map units using a rectangle defined in device coords
-  @param canvas The map canvas used to transform the rectangle into map units
-  @param selectRect The input rectangle in device coords
-  @param rubberBand The rubberband that will be set in map units using the input rectangle
+  \param canvas The map canvas used to transform the rectangle into map units
+  \param selectRect The input rectangle in device coords
+  \param rubberBand The rubberband that will be set in map units using the input rectangle
   */
-  void setRubberBand( QgsMapCanvas* canvas, QRect& selectRect, QgsRubberBand* rubberBand );
+  void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
 }
 
 #endif

@@ -142,7 +142,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(128, 128, 128);</string>
+      <string notr="true">QLabel {color: rgb(128, 128, 128);}</string>
      </property>
      <property name="text">
       <string>Note: Editing writes directly to authentication database</string>
@@ -156,15 +156,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsAuthConfigEditor</class>
-   <extends>QWidget</extends>
-   <header>qgsauthconfigeditor.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QFrame</extends>
    <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthConfigEditor</class>
+   <extends>QWidget</extends>
+   <header>qgsauthconfigeditor.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

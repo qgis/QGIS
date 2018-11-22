@@ -18,55 +18,61 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
-#include <QPaintEngine>
-#include "qgsgeometryfactory.h"
-#include "qgsabstractgeometryv2.h"
+#define SIP_NO_FILE
 
+#include "qgis_core.h"
+#include <QPaintEngine>
+#include "qgsabstractgeometry.h"
+
+class QgsPoint;
 class QgsDxfExport;
 class QgsDxfPaintDevice;
 
 
-/** \class QgsDxfPaintEngine
+/**
+ * \ingroup core
+ * \class QgsDxfPaintEngine
  * \note not available in Python bindings
 */
 
 class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 {
   public:
-    QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf );
-    ~QgsDxfPaintEngine();
+    QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf );
 
-    bool begin( QPaintDevice* pdev ) override;
+    bool begin( QPaintDevice *pdev ) override;
     bool end() override;
     QPaintEngine::Type type() const override;
-    void updateState( const QPaintEngineState& state ) override;
+    void updateState( const QPaintEngineState &state ) override;
 
-    void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
+    void drawPixmap( const QRectF &r, const QPixmap &pm, const QRectF &sr ) override;
 
-    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
-    void drawPath( const QPainterPath& path ) override;
-    void drawLines( const QLineF* lines, int lineCount ) override;
+    void drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode ) override;
+    void drawPath( const QPainterPath &path ) override;
+    void drawLines( const QLineF *lines, int lineCount ) override;
 
-    void setLayer( const QString& layer ) { mLayer = layer; }
+    void setLayer( const QString &layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }
 
     void setShift( QPointF shift ) { mShift = shift; }
 
   private:
-    const QgsDxfPaintDevice* mPaintDevice;
-    QgsDxfExport* mDxf;
+    const QgsDxfPaintDevice *mPaintDevice = nullptr;
+    QgsDxfExport *mDxf = nullptr;
 
     //painter state information
     QTransform mTransform;
     QPen mPen;
     QBrush mBrush;
+    //! Opacity
+    double mOpacity = 1.0;
     QString mLayer;
     QPointF mShift;
-    QgsRingSequenceV2 mPolygon;
+    QgsRingSequence mPolygon;
     QPolygonF mCurrentPolygon;
     QList<QPointF> mCurrentCurve;
 
-    QgsPointV2 toDxfCoordinates( QPointF pt ) const;
+    QgsPoint toDxfCoordinates( QPointF pt ) const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );
@@ -75,14 +81,19 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void endPolygon();
     void endCurve();
 
-    void setRing( QgsPointSequenceV2 &polyline, const QPointF * points, int pointCount );
+    void setRing( QgsPointSequence &polyline, const QPointF *points, int pointCount );
 
     //utils for bezier curve calculation
-    static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );
+    static QPointF bezierPoint( const QList<QPointF> &controlPolygon, double t );
     static double bernsteinPoly( int n, int i, double t );
     static int lower( int n, int i );
     static double power( double a, int b );
     static int faculty( int n );
+
+    //! Returns current pen color
+    QColor penColor() const;
+    //! Returns current brush color
+    QColor brushColor() const;
 };
 
 #endif // QGSDXFPAINTENGINE_H

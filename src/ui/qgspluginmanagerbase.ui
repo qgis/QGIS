@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>796</width>
-    <height>594</height>
+    <width>875</width>
+    <height>471</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -37,7 +37,7 @@
      <property name="childrenCollapsible">
       <bool>false</bool>
      </property>
-     <widget class="QFrame" name="mPluginsTabFrame">
+     <widget class="QFrame" name="mOptionsListFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -190,6 +190,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Install from ZIP</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/plugin-install_from_zip.svg</normaloff>:/images/themes/default/propertyicons/plugin-install_from_zip.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Settings</string>
           </property>
           <property name="toolTip">
@@ -259,34 +268,14 @@
             <number>0</number>
            </property>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QLabel" name="lblFilter">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Search</string>
-               </property>
-               <property name="buddy">
-                <cstring>leFilter</cstring>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsFilterLineEdit" name="leFilter">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QgsFilterLineEdit" name="leFilter">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QSplitter" name="mPluginsDetailsSplitter">
@@ -371,6 +360,12 @@
                   </property>
                   <item>
                    <widget class="QgsWebView" name="wvDetails" native="true">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="url" stdset="0">
                      <url>
                       <string>about:blank</string>
@@ -382,17 +377,82 @@
                 </widget>
                </item>
                <item>
+                <layout class="QGridLayout" name="gridLayout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinimumSize</enum>
+                 </property>
+                 <item row="1" column="1">
+                  <widget class="QSlider" name="voteSlider">
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>5</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>1</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                   <property name="tickInterval">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="voteSubmit">
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>Vote!</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="voteLabel">
+                   <property name="text">
+                    <string>Your Vote</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QLabel" name="voteRating">
+                   <property name="text">
+                    <string>Current vote</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinimumSize</enum>
+                 </property>
                  <item>
                   <widget class="QPushButton" name="buttonUpgradeAll">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
                    <property name="toolTip">
                     <string>Upgrade all upgradeable plugins</string>
                    </property>
                    <property name="text">
-                    <string>Upgrade all</string>
+                    <string>Upgrade All</string>
                    </property>
                   </widget>
                  </item>
@@ -414,11 +474,14 @@
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
                    <property name="toolTip">
                     <string>Uninstall the selected plugin</string>
                    </property>
                    <property name="text">
-                    <string>Uninstall plugin</string>
+                    <string>Uninstall Plugin</string>
                    </property>
                   </widget>
                  </item>
@@ -437,7 +500,7 @@
                     <string>Install, reinstall or upgrade the selected plugin</string>
                    </property>
                    <property name="text">
-                    <string>Reinstall plugin</string>
+                    <string>Reinstall Plugin</string>
                    </property>
                   </widget>
                  </item>
@@ -446,6 +509,207 @@
               </layout>
              </widget>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pageInstallFromZip">
+          <layout class="QVBoxLayout" name="verticalLayout_14">
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelInstallFromZip">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you are provided with a zip package containing a plugin to install, please select the file below and click the &lt;span style=&quot; font-style:italic;&quot;&gt;Install plugin&lt;/span&gt; button.&lt;/p&gt;&lt;p&gt;Please note for most users this function is not applicable, as the preferable way is to install plugins from a repository.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::AutoText</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+             <property name="margin">
+              <number>20</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>ZIP file:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsFileWidget" name="mZipFileWidget" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>24</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>60</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonInstallFromZip">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Install Plugin</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>60</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>78</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -507,7 +771,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QgsScrollArea" name="scrollArea">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -519,8 +783,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>552</width>
-                   <height>611</height>
+                   <width>460</width>
+                   <height>613</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -755,7 +1019,7 @@ p, li { white-space: pre-wrap; }
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>100</height>
+                         <height>150</height>
                         </size>
                        </property>
                        <property name="rootIsDecorated">
@@ -790,7 +1054,7 @@ p, li { white-space: pre-wrap; }
 (useful when you uploaded a plugin there)</string>
                          </property>
                          <property name="text">
-                          <string>Reload repository</string>
+                          <string>Reload Repository</string>
                          </property>
                         </widget>
                        </item>
@@ -816,7 +1080,7 @@ p, li { white-space: pre-wrap; }
                           <string>Add a new plugin repository</string>
                          </property>
                          <property name="text">
-                          <string>Add...</string>
+                          <string>Add…</string>
                          </property>
                         </widget>
                        </item>
@@ -835,7 +1099,7 @@ p, li { white-space: pre-wrap; }
                           <string>Edit the selected repository</string>
                          </property>
                          <property name="text">
-                          <string>Edit...</string>
+                          <string>Edit…</string>
                          </property>
                         </widget>
                        </item>
@@ -861,6 +1125,9 @@ p, li { white-space: pre-wrap; }
                    <spacer name="verticalSpacer">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -897,9 +1164,10 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsWebView</class>
-   <extends>QWidget</extends>
-   <header>qgswebview.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -908,9 +1176,19 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsWebView</class>
+   <extends>QWidget</extends>
+   <header>qgswebview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

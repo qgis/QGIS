@@ -17,9 +17,12 @@
 #define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
+#include "qgis.h"
 #include <QAction>
+#include "qgsfeatureid.h"
 
-#include "qgsfeature.h" // For QgsFeatureIds
+#include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -31,14 +34,16 @@ class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
-
+class QgsAttributeTableConfig;
+class QgsFeature;
 
 /**
- * @brief
- * Provides a table view of features of a @link QgsVectorLayer @endlink.
+ * \ingroup gui
+ * \brief
+ * Provides a table view of features of a QgsVectorLayer.
  *
  * This can either be used as a standalone widget. QgsBrowser features a reference implementation.
- * Or this can be used within the @link QgsDualView @endlink stacked widget.
+ * Or this can be used within the QgsDualView stacked widget.
  */
 
 class GUI_EXPORT QgsAttributeTableView : public QTableView
@@ -46,34 +51,51 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget* parent = nullptr );
 
-    virtual void setModel( QgsAttributeTableFilterModel* filterModel );
+    //! Constructor for QgsAttributeTableView
+    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
     /**
-     * @brief setFeatureSelectionManager
-     * @param featureSelectionManager We will take ownership
+     * \brief setFeatureSelectionManager
+     * \param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
      * events. These are used to disable / enable live synchronisation with the map canvas selection
      * which can be slow due to recurring canvas repaints.
      *
-     * @param object The object which is the target of the event.
-     * @param event  The intercepted event
+     * \param object The object which is the target of the event.
+     * \param event  The intercepted event
      *
-     * @return Returns always false, so the event gets processed
+     * \returns Returns always false, so the event gets processed
      */
-    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
+
+    /**
+     * Set the attribute table config which should be used to control
+     * the appearance of the attribute table.
+     * \since QGIS 2.16
+     */
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+
+    /**
+     * Returns the selected features in the attribute table in table sorted order.
+     * \returns The selected features in the attribute table in the order sorted by the table.
+     * \since QGIS 3.4
+     */
+    QList<QgsFeatureId> selectedFeaturesIds() const;
 
   protected:
+
     /**
      * Called for mouse press events on a table cell.
      * Disables selection change for these events.
      *
-     * @param event The mouse event
+     * \param event The mouse event
      */
     void mousePressEvent( QMouseEvent *event ) override;
 
@@ -81,7 +103,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * Called for mouse release events on a table cell.
      * Disables selection change for these events.
      *
-     * @param event The mouse event
+     * \param event The mouse event
      */
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
@@ -89,7 +111,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * Called for mouse move events on a table cell.
      * Disables selection change for these events.
      *
-     * @param event The mouse event
+     * \param event The mouse event
      */
     void mouseMoveEvent( QMouseEvent *event ) override;
 
@@ -97,42 +119,51 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * Called for key press events
      * Disables selection change by only pressing an arrow key
      *
-     * @param event The mouse event
+     * \param event The mouse event
      */
     void keyPressEvent( QKeyEvent *event ) override;
 
     /**
-     * @brief
-     * Is called when the context menu will be shown. Emits a @link willShowContextMenu @endlink signal,
+     * \brief
+     * Is called when the context menu will be shown. Emits a willShowContextMenu() signal,
      * so the menu can be populated by other parts of the application.
      *
-     * @param event The associated event object.
+     * \param event The associated event object.
      */
-    void contextMenuEvent( QContextMenuEvent* event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
     /**
      * Saves geometry to the settings on close
-     * @param event not used
+     * \param event not used
      */
     void closeEvent( QCloseEvent *event ) override;
 
   signals:
+
     /**
-     * @brief
-     * Is emitted, in order to provide a hook to add aditional menu entries to the context menu.
+     * \brief
+     * Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
      *
-     * @param menu     If additional QMenuItems are added, they will show up in the context menu.
-     * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
-     *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
+     * \param menu     If additional QMenuItems are added, they will show up in the context menu.
+     * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
+     *                 In most cases, this will be a QgsAttributeTableFilterModel
      */
-    void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
+    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+
+    /**
+     * Emitted when a column in the view has been resized.
+     * \param column column index (starts at 0)
+     * \param width new width in pixel
+     * \since QGIS 2.16
+     */
+    void columnResized( int column, int width );
 
     void finished();
 
   public slots:
-    void repaintRequested( const QModelIndexList& indexes );
+    void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
-    virtual void selectAll() override;
+    void selectAll() override;
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 
@@ -141,22 +172,23 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void showHorizontalSortIndicator();
     void actionTriggered();
     void columnSizeChanged( int index, int oldWidth, int newWidth );
+    void onActionColumnItemPainted( const QModelIndex &index );
+    void recreateActionWidgets();
 
   private:
-    void updateActionImage( QWidget* widget );
-    QWidget* createActionWidget( QgsFeatureId fid );
+    void updateActionImage( QWidget *widget );
+    QWidget *createActionWidget( QgsFeatureId fid );
 
     void selectRow( int row, bool anchor );
-    QgsAttributeTableModel* mMasterModel;
-    QgsAttributeTableFilterModel* mFilterModel;
-    QgsFeatureSelectionModel* mFeatureSelectionModel;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
-    QgsAttributeTableDelegate* mTableDelegate;
-    QAbstractItemModel* mModel; // Most likely the filter model
-    QMenu *mActionPopup;
-    int mRowSectionAnchor;
-    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
-    QWidget* mActionWidget;
+    QgsAttributeTableFilterModel *mFilterModel = nullptr;
+    QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
+    QgsAttributeTableDelegate *mTableDelegate = nullptr;
+    QMenu *mActionPopup = nullptr;
+    int mRowSectionAnchor = 0;
+    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
+    QMap< QModelIndex, QWidget * > mActionWidgets;
+    QgsAttributeTableConfig mConfig;
 };
 
 #endif

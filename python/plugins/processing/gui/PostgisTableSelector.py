@@ -27,16 +27,19 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from qgis.PyQt.QtCore import QSettings
+import warnings
+
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QMessageBox
 from qgis.PyQt import uic
-from processing.algs.qgis.postgis_utils import GeoDB
-from qgis.core import QgsDataSourceURI, QgsCredentials
+from qgis.core import QgsSettings
+from processing.tools.postgis import GeoDB
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgPostgisTableSelector.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgPostgisTableSelector.ui'))
 
 
 class PostgisTableSelector(BASE, WIDGET):
@@ -47,7 +50,7 @@ class PostgisTableSelector(BASE, WIDGET):
         self.table = None
         self.schema = None
         self.setupUi(self)
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         names = settings.childGroups()
         settings.endGroup()
@@ -100,23 +103,10 @@ class ConnectionItem(QTreeWidgetItem):
     def populateSchemas(self):
         if self.childCount() != 0:
             return
-        settings = QSettings()
-        connSettings = '/PostgreSQL/connections/' + self.connection
-        database = settings.value(connSettings + '/database')
-        user = settings.value(connSettings + '/username')
-        host = settings.value(connSettings + '/host')
-        port = settings.value(connSettings + '/port')
-        passwd = settings.value(connSettings + '/password')
-        uri = QgsDataSourceURI()
-        uri.setConnection(host, str(port), database, user, passwd)
-        connInfo = uri.connectionInfo()
-        (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
-        if success:
-            QgsCredentials.instance().put(connInfo, user, passwd)
-            geodb = GeoDB(host, int(port), database, user, passwd)
-            schemas = geodb.list_schemas()
-            for oid, name, owner, perms in schemas:
-                item = QTreeWidgetItem()
-                item.setText(0, name)
-                item.setIcon(0, self.schemaIcon)
-                self.addChild(item)
+        geodb = GeoDB.from_name(self.connection)
+        schemas = geodb.list_schemas()
+        for oid, name, owner, perms in schemas:
+            item = QTreeWidgetItem()
+            item.setText(0, name)
+            item.setIcon(0, self.schemaIcon)
+            self.addChild(item)

@@ -17,16 +17,14 @@
 #define QGSMAPTOOLSPLITPARTS_H
 
 #include "qgsmaptoolcapture.h"
-#include "qgsmapmouseevent.h"
 
-/** A map tool that draws a line and splits the parts cut by the line*/
+//! A map tool that draws a line and splits the parts cut by the line
 class QgsMapToolSplitParts: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    explicit QgsMapToolSplitParts( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolSplitParts();
-    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
+    explicit QgsMapToolSplitParts( QgsMapCanvas *canvas );
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 
 #endif

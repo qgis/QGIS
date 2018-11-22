@@ -16,14 +16,16 @@
 #define QGS_LEGEND_FILTER_BUTTON_H
 
 #include <QToolButton>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
-/** \ingroup gui
- * \class QgsFilterLegendButton
+/**
+ * \ingroup gui
+ * \class QgsLegendFilterButton
  * A tool button that allows enabling or disabling legend filter by contents of the map.
  * An additional pop down menu allows defining a boolean expression to refine the filtering.
- * @note added in 2.14
+ * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsLegendFilterButton: public QToolButton
@@ -31,13 +33,13 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new filter legend button
      *
-     * @param parent The parent QWidget
+     * \param parent The parent QWidget
      */
-    QgsLegendFilterButton( QWidget* parent = nullptr );
-    ~QgsLegendFilterButton();
+    QgsLegendFilterButton( QWidget *parent = nullptr );
 
     /**
      * Returns the current text used as filter expression
@@ -48,34 +50,36 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      * Sets the current text used as filter expression.
      * This will update the menu
      */
-    void setExpressionText( const QString& expression );
+    void setExpressionText( const QString &expression );
 
     /**
      * Returns the current associated vectorLayer
      * May be null
      */
-    QgsVectorLayer* vectorLayer() const;
+    QgsVectorLayer *vectorLayer() const;
+
     /**
      * Sets the associated vectorLayer
      * May be null
      */
-    void setVectorLayer( QgsVectorLayer* layer );
+    void setVectorLayer( QgsVectorLayer *layer );
 
   signals:
+
     /**
      * Emitted when the expression text changes
      */
     void expressionTextChanged();
 
   private:
-    QMenu* mMenu;
-    QAction* mSetExpressionAction;
-    QAction* mClearExpressionAction;
+    QMenu *mMenu = nullptr;
+    QAction *mSetExpressionAction = nullptr;
+    QAction *mClearExpressionAction = nullptr;
     QString mExpression;
 
     void updateMenu();
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
   private slots:
     void onSetLegendFilterExpression();
     void onClearFilterExpression();

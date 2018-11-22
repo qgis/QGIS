@@ -17,22 +17,22 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgspointmarkeritem.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssnappingutils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
-#include "qgssymbollayerv2.h"
-#include "qgsdatadefined.h"
+#include "qgssymbollayer.h"
 #include "qgisapp.h"
+#include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
+#include "qgsmapmouseevent.h"
 
 #include <QGraphicsPixmapItem>
-#include <QMouseEvent>
 
-QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas* canvas )
-    : QgsMapToolPointSymbol( canvas )
-    , mOffsetting( false )
-    , mOffsetItem( nullptr )
-    , mSymbolRotation( 0.0 )
+QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
+  : QgsMapToolPointSymbol( canvas )
+  , mOffsetting( false )
+  , mSymbolRotation( 0.0 )
 {}
 
 QgsMapToolOffsetPointSymbol::~QgsMapToolOffsetPointSymbol()
@@ -40,7 +40,7 @@ QgsMapToolOffsetPointSymbol::~QgsMapToolOffsetPointSymbol()
   delete mOffsetItem;
 }
 
-bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer* ml )
+bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer *ml )
 {
   if ( !ml )
   {
@@ -48,14 +48,14 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer* ml )
   }
 
   //a vector layer
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( ml );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( ml );
   if ( !vLayer )
   {
     return false;
   }
 
   //does it have point or multipoint type?
-  if ( vLayer->geometryType() != QGis::Point )
+  if ( vLayer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     return false;
   }
@@ -65,7 +65,7 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer* ml )
   return true;
 }
 
-void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 {
   mMarkerSymbol.reset( nullptr );
   mClickedPoint = e->mapPoint();
@@ -73,41 +73,36 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent* e )
   QgsMapToolPointSymbol::canvasPressEvent( e );
 }
 
-void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint )
+void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
   Q_UNUSED( e );
   mClickedFeature = feature;
-  createPreviewItem( mMarkerSymbol.data() );
+  createPreviewItem( mMarkerSymbol.get() );
   mOffsetItem->setPointLocation( snappedPoint );
   updateOffsetPreviewItem( mClickedPoint, mClickedPoint );
   mOffsetting = true;
 }
 
-bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbolV2* markerSymbol, QgsRenderContext &context )
+bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context )
 {
   bool ok = false;
 
-  Q_FOREACH ( QgsSymbolLayerV2* layer, markerSymbol->symbolLayers() )
+  Q_FOREACH ( QgsSymbolLayer *layer, markerSymbol->symbolLayers() )
   {
-    if ( !layer->hasDataDefinedProperty( "offset" ) )
+    if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    if ( layer->getDataDefinedProperty( "offset" )->useExpression() )
+    QgsProperty p = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    if ( p.propertyType() != QgsProperty::FieldBasedProperty )
       continue;
 
     ok = true;
-    if ( mMarkerSymbol.isNull() )
+    if ( !mMarkerSymbol )
     {
       double symbolRotation = markerSymbol->angle();
-      if ( layer->hasDataDefinedProperty( "angle" ) )
+      if ( layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyAngle ) )
       {
-        QString rotationExp = layer->getDataDefinedProperty( "angle" )->expressionOrField();
-        QgsExpression exp( rotationExp );
-        QVariant val = exp.evaluate( &context.expressionContext() );
-        bool convertOk = false;
-        double rotation = val.toDouble( &convertOk );
-        if ( convertOk )
-          symbolRotation = rotation;
+        symbolRotation = layer->dataDefinedProperties().valueAsDouble( QgsSymbolLayer::PropertyAngle, context.expressionContext(), symbolRotation );
       }
 
       mSymbolRotation = symbolRotation;
@@ -119,10 +114,10 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbolV2* m
 
 void QgsMapToolOffsetPointSymbol::noCompatibleSymbols()
 {
-  emit messageEmitted( tr( "The selected point does not have an offset attribute set." ), QgsMessageBar::CRITICAL );
+  emit messageEmitted( tr( "The selected point does not have an offset attribute set." ), Qgis::Critical );
 }
 
-void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mOffsetting )
   {
@@ -132,7 +127,7 @@ void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent* e )
   updateOffsetPreviewItem( mClickedPoint, e->mapPoint() );
 }
 
-void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 
@@ -164,10 +159,11 @@ void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent* e )
   mOffsetting = false;
   delete mOffsetItem;
   mOffsetItem = nullptr;
-  mCanvas->refresh();
+  if ( mActiveLayer )
+    mActiveLayer->triggerRepaint();
 }
 
-void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbolV2* markerSymbol )
+void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymbol )
 {
   delete mOffsetItem;
   mOffsetItem = nullptr;
@@ -178,34 +174,35 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbolV2* markerSy
   }
 
   mOffsetItem = new QgsPointMarkerItem( mCanvas );
-  mOffsetItem->setTransparency( 0.3 );
+  mOffsetItem->setOpacity( 0.7 );
   mOffsetItem->setSymbol( markerSymbol->clone() );
 }
 
-QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPoint& startPoint, const QgsPoint& endPoint ) const
+QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const
 {
   QMap<int, QVariant> newAttrValues;
-  Q_FOREACH ( QgsSymbolLayerV2* layer, mMarkerSymbol->symbolLayers() )
+  Q_FOREACH ( QgsSymbolLayer *layer, mMarkerSymbol->symbolLayers() )
   {
-    if ( !layer->hasDataDefinedProperty( "offset" ) )
+    if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::PropertyOffset ) )
       continue;
 
-    if ( layer->getDataDefinedProperty( "offset" )->useExpression() )
+    QgsProperty ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::PropertyOffset );
+    if ( ddOffset.propertyType() != QgsProperty::FieldBasedProperty )
       continue;
 
-    QgsMarkerSymbolLayerV2* ml = dynamic_cast< QgsMarkerSymbolLayerV2* >( layer );
+    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer * >( layer );
     if ( !ml )
       continue;
 
     QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
-    int fieldIdx = mActiveLayer->fields().indexFromName( layer->getDataDefinedProperty( "offset" )->field() );
+    int fieldIdx = mActiveLayer->fields().indexFromName( ddOffset.field() );
     if ( fieldIdx >= 0 )
-      newAttrValues[ fieldIdx ] = QgsSymbolLayerV2Utils::encodePoint( offset );
+      newAttrValues[ fieldIdx ] = QgsSymbolLayerUtils::encodePoint( offset );
   }
   return newAttrValues;
 }
 
-void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPoint& startPoint, const QgsPoint& endPoint )
+void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPointXY &startPoint, const QgsPointXY &endPoint )
 {
   if ( !mOffsetItem )
     return;
@@ -222,7 +219,7 @@ void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPoint& start
   mOffsetItem->updateSize();
 }
 
-QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint, const QgsPoint& endPoint, QgsSymbolV2::OutputUnit unit ) const
+QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoint, const QgsPointXY &endPoint, QgsUnitTypes::RenderUnit unit ) const
 {
   double dx = endPoint.x() - startPoint.x();
   double dy = -( endPoint.y() - startPoint.y() );
@@ -231,20 +228,37 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint
 
   switch ( unit )
   {
-    case QgsSymbolV2::MM:
-      factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+    case QgsUnitTypes::RenderMillimeters:
+      factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
-    case QgsSymbolV2::Pixel:
+    case QgsUnitTypes::RenderPoints:
+      factor = 2.83464567 * 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
+      break;
+
+    case QgsUnitTypes::RenderInches:
+      factor = 1.0 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
+      break;
+
+    case QgsUnitTypes::RenderPixels:
       factor = 1.0 / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
-    case QgsSymbolV2::MapUnit:
+    case QgsUnitTypes::RenderMapUnits:
       factor = 1.0;
       break;
 
-    case QgsSymbolV2::Mixed:
-    case QgsSymbolV2::Percentage:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      QgsDistanceArea distanceArea;
+      distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+      distanceArea.setEllipsoid( mCanvas->mapSettings().ellipsoid() );
+      // factor=1.0 / 1 meter in MapUnits
+      factor = 1.0 / distanceArea.measureLineProjected( startPoint );
+    }
+    break;
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
       //no sensible value
       factor = 1.0;
       break;
@@ -256,7 +270,7 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint& startPoint
 QPointF QgsMapToolOffsetPointSymbol::rotatedOffset( QPointF offset, double angle ) const
 {
   angle = DEG2RAD( 360 - angle );
-  double c = cos( angle ), s = sin( angle );
+  double c = std::cos( angle ), s = std::sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 

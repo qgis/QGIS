@@ -19,16 +19,16 @@
 #define QGSMAPTOOLSVGANNOTATION_H
 
 #include "qgsmaptoolannotation.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolSvgAnnotation: public QgsMapToolAnnotation
 {
     Q_OBJECT
 
   public:
-    QgsMapToolSvgAnnotation( QgsMapCanvas* canvas );
-    ~QgsMapToolSvgAnnotation();
+    QgsMapToolSvgAnnotation( QgsMapCanvas *canvas );
   protected:
-    QgsAnnotationItem* createItem( QMouseEvent* e ) override;
+    QgsAnnotation *createItem() const override;
 };
 
 #endif // QGSMAPTOOLSVGANNOTATION_H

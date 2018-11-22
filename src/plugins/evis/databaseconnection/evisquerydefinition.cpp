@@ -29,15 +29,5 @@
 /**
 * Constructor
 */
-eVisQueryDefinition::eVisQueryDefinition()
-{
-  mDatabaseType = "";
-  mDatabaseHost = "";
-  mDatabasePort = -1;
-  mDatabaseName = "";
-  mDatabaseUsername = "";
-  mDatabasePassword = "";
-  mSqlStatement = "";
-  mAutoConnect = false;
-}
+eVisQueryDefinition::eVisQueryDefinition() = default;
 

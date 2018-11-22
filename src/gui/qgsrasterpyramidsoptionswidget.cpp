@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsrasterpyramidsoptionswidget.h"
+#include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgsdialog.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTextEdit>
@@ -27,12 +28,13 @@
 #include <QMenu>
 #include <QCheckBox>
 
-
-QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, const QString& provider )
-    : QWidget( parent )
-    , mProvider( provider )
+QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
+  : QWidget( parent )
+  , mProvider( provider )
 {
   setupUi( this );
+  connect( cbxPyramidsLevelsCustom, &QCheckBox::toggled, this, &QgsRasterPyramidsOptionsWidget::cbxPyramidsLevelsCustom_toggled );
+  connect( cbxPyramidsFormat, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterPyramidsOptionsWidget::cbxPyramidsFormat_currentIndexChanged );
 
   mSaveOptionsWidget->setProvider( provider );
   mSaveOptionsWidget->setPyramidsFormat( QgsRaster::PyramidsGTiff );
@@ -41,25 +43,20 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent,
   updateUi();
 }
 
-QgsRasterPyramidsOptionsWidget::~QgsRasterPyramidsOptionsWidget()
-{
-}
-
-
 void QgsRasterPyramidsOptionsWidget::updateUi()
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
-  // cbxPyramidsInternal->setChecked( mySettings.value( prefix + "internal", false ).toBool() );
-  tmpStr = mySettings.value( prefix + "format", "gtiff" ).toString();
-  if ( tmpStr == "internal" )
-    cbxPyramidsFormat->setCurrentIndex( 1 );
-  else if ( tmpStr == "external_erdas" )
-    cbxPyramidsFormat->setCurrentIndex( 2 );
+  // keep it in sync with qgsrasterlayerproperties.cpp
+  tmpStr = mySettings.value( prefix + "format", "external" ).toString();
+  if ( tmpStr == QLatin1String( "internal" ) )
+    cbxPyramidsFormat->setCurrentIndex( INTERNAL );
+  else if ( tmpStr == QLatin1String( "external_erdas" ) )
+    cbxPyramidsFormat->setCurrentIndex( ERDAS );
   else
-    cbxPyramidsFormat->setCurrentIndex( 0 );
+    cbxPyramidsFormat->setCurrentIndex( GTIFF );
 
   // initialize resampling methods
   cboResamplingMethod->clear();
@@ -68,14 +65,15 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   {
     cboResamplingMethod->addItem( method.second, method.first );
   }
-  cboResamplingMethod->setCurrentIndex( cboResamplingMethod->findData(
-                                          mySettings.value( prefix + "resampling", "AVERAGE" ).toString() ) );
+  QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
+  int idx = cboResamplingMethod->findData( defaultMethod );
+  cboResamplingMethod->setCurrentIndex( idx );
 
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );
   lePyramidsLevels->setValidator( new QRegExpValidator( QRegExp( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
-  connect( lePyramidsLevels, SIGNAL( textEdited( const QString & ) ),
-           this, SLOT( setOverviewList() ) );
+  connect( lePyramidsLevels, &QLineEdit::textEdited,
+           this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
 
   // overview list
   if ( mOverviewCheckBoxes.isEmpty() )
@@ -86,18 +84,18 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     Q_FOREACH ( int i, overviewList )
     {
       mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
-      connect( mOverviewCheckBoxes[ i ], SIGNAL( toggled( bool ) ),
-               this, SLOT( setOverviewList() ) );
+      connect( mOverviewCheckBoxes[ i ], &QCheckBox::toggled,
+               this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
       layoutPyramidsLevels->addWidget( mOverviewCheckBoxes[ i ] );
     }
   }
   else
   {
-    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-      mOverviewCheckBoxes[ i ]->setChecked( false );
+    for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+      it.value()->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-  Q_FOREACH ( const QString& lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
+  Q_FOREACH ( const QString &lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
       mOverviewCheckBoxes[ lev.toInt()]->setChecked( true );
@@ -106,42 +104,42 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   mSaveOptionsWidget->updateProfiles();
 
-  connect( cbxPyramidsFormat, SIGNAL( currentIndexChanged( int ) ),
-           this, SIGNAL( someValueChanged() ) );
-  connect( cboResamplingMethod, SIGNAL( currentIndexChanged( int ) ),
-           this, SIGNAL( someValueChanged() ) );
-  connect( mSaveOptionsWidget, SIGNAL( optionsChanged() ),
-           this, SIGNAL( someValueChanged() ) );
+  connect( cbxPyramidsFormat, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsRasterPyramidsOptionsWidget::someValueChanged );
+  connect( cboResamplingMethod, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsRasterPyramidsOptionsWidget::someValueChanged );
+  connect( mSaveOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged,
+           this, &QgsRasterPyramidsOptionsWidget::someValueChanged );
 }
 
 QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const
 {
-  return cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString();
+  return cboResamplingMethod->currentData().toString();
 }
 
 void QgsRasterPyramidsOptionsWidget::apply()
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
-  if ( cbxPyramidsFormat->currentIndex() == 1 )
-    tmpStr = "internal";
-  else if ( cbxPyramidsFormat->currentIndex() == 2 )
-    tmpStr = "external_erdas";
+  if ( cbxPyramidsFormat->currentIndex() == INTERNAL )
+    tmpStr = QStringLiteral( "internal" );
+  else if ( cbxPyramidsFormat->currentIndex() == ERDAS )
+    tmpStr = QStringLiteral( "external_erdas" );
   else
-    tmpStr = "external";
+    tmpStr = QStringLiteral( "external" );
   mySettings.setValue( prefix + "format", tmpStr );
   mySettings.setValue( prefix + "resampling", resamplingMethod() );
   mySettings.setValue( prefix + "overviewStr", lePyramidsLevels->text().trimmed() );
 
   // overview list
-  tmpStr = "";
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
+  tmpStr.clear();
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
   {
-    if ( mOverviewCheckBoxes[ i ]->isChecked() )
-      tmpStr += QString::number( i ) + ' ';
+    if ( it.value()->isChecked() )
+      tmpStr += QString::number( it.key() ) + ' ';
   }
   mySettings.setValue( prefix + "overviewList", tmpStr.trimmed() );
 
@@ -150,28 +148,44 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
 void QgsRasterPyramidsOptionsWidget::checkAllLevels( bool checked )
 {
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-    mOverviewCheckBoxes[ i ]->setChecked( checked );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setChecked( checked );
 }
 
-void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool toggled )
+void QgsRasterPyramidsOptionsWidget::cbxPyramidsLevelsCustom_toggled( bool toggled )
 {
   // if toggled, disable checkboxes and enable line edit
   lePyramidsLevels->setEnabled( toggled );
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-    mOverviewCheckBoxes[ i ]->setEnabled( ! toggled );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setEnabled( ! toggled );
   setOverviewList();
 }
 
-void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( int index )
+void QgsRasterPyramidsOptionsWidget::cbxPyramidsFormat_currentIndexChanged( int index )
 {
-  mSaveOptionsWidget->setEnabled( index != 2 );
-  mSaveOptionsWidget->setPyramidsFormat(( QgsRaster::RasterPyramidsFormat ) index );
+  mSaveOptionsWidget->setEnabled( index != ERDAS );
+  QgsRaster::RasterPyramidsFormat format;
+  switch ( index )
+  {
+    case GTIFF:
+      format = QgsRaster::PyramidsGTiff;
+      break;
+    case INTERNAL:
+      format = QgsRaster::PyramidsInternal;
+      break;
+    case ERDAS:
+      format = QgsRaster::PyramidsErdas;
+      break;
+    default:
+      QgsDebugMsg( QStringLiteral( "Should not happen !" ) );
+      format = QgsRaster::PyramidsGTiff;
+      break;
+  }
+  mSaveOptionsWidget->setPyramidsFormat( format );
 }
 
 void QgsRasterPyramidsOptionsWidget::setOverviewList()
 {
-  QgsDebugMsg( "Entered" );
 
   mOverviewList.clear();
 
@@ -179,7 +193,7 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-    Q_FOREACH ( const QString& lev, lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts ) )
+    Q_FOREACH ( const QString &lev, lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts ) )
     {
       QgsDebugMsg( "lev= " + lev );
       int tmpInt = lev.toInt();
@@ -193,10 +207,10 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   }
   else
   {
-    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
+    for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
     {
-      if ( mOverviewCheckBoxes[ i ]->isChecked() )
-        mOverviewList << i;
+      if ( it.value()->isChecked() )
+        mOverviewList << it.key();
     }
   }
 

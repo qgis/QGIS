@@ -18,15 +18,15 @@
 #define WKBPTR_H
 
 #include <QSharedData>
+#include <QVector>
 
 union wkbPtr
 {
-  void *vPtr;
+  void *vPtr = nullptr;
   double *dPtr;
   int *iPtr;
   unsigned char *ucPtr;
   char *cPtr;
-
 };
 
 const int SDO_ARRAY_SIZE = 1024;
@@ -38,24 +38,28 @@ const int SDO_ARRAY_SIZE = 1024;
 
 enum SDO_GTYPE_TT
 {
-  gtUnknown = 0,
-  gtPoint = 1,
-  gtLine = 2,
-  gtPolygon = 3,
-  gtCollection = 4,
-  gtMultiPoint = 5,
-  gtMultiLine = 6,
-  gtMultiPolygon = 7,
+  GtUnknown = 0,
+  GtPoint = 1,
+  GtLine = 2,
+  GtPolygon = 3,
+  GtCollection = 4,
+  GtMultiPoint = 5,
+  GtMultiLine = 6,
+  GtMultiPolygon = 7,
 };
 
 
 class QOCISpatialGeometry : public QSharedData
 {
   public:
-    bool isNull;
-    int gtype;
-    int srid;
-    double x, y, z;
+    QOCISpatialGeometry() = default;
+
+    bool isNull = true;
+    int gtype = -1;
+    int srid = -1;
+    double x = 0.0;
+    double y = 0.0;
+    double z = 0.0;
 
     QVector<int> eleminfo;
     QVector<double> ordinates;

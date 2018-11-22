@@ -19,16 +19,14 @@
 #include <QSettings>
 #include <QLabel>
 
-
+#include "qgsproject.h"
 #include "qgsexternalresourcewidget.h"
 #include "qgsfilterlineedit.h"
 
 
-QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLineEdit( nullptr )
-    , mLabel( nullptr )
-    , mQgsWidget( nullptr )
+QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+
 {
 }
 
@@ -41,7 +39,7 @@ QVariant QgsExternalResourceWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    if ( mLineEdit->text().isEmpty() || mLineEdit->text() == QgsApplication::nullRepresentation() )
     {
       return QVariant( field().type() );
     }
@@ -77,76 +75,128 @@ bool QgsExternalResourceWidgetWrapper::valid() const
   return mLineEdit || mLabel || mQgsWidget;
 }
 
-QWidget* QgsExternalResourceWidgetWrapper::createWidget( QWidget* parent )
+void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
+{
+  if ( mQgsWidget && mPropertyCollection.hasActiveProperties() )
+  {
+    QgsExpressionContext expressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer() ) );
+    expressionContext.setFeature( feature );
+    bool ok = false;
+
+    if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::RootPath ) )
+    {
+      QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
+      if ( ok )
+      {
+        mQgsWidget->setDefaultRoot( path );
+      }
+    }
+    if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::DocumentViewerContent ) )
+    {
+      QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::DocumentViewerContent, expressionContext, QStringLiteral( "NoContent" ), &ok );
+      if ( ok )
+      {
+        QgsExternalResourceWidget::DocumentViewerContent dvc;
+        if ( dvcString.compare( QLatin1String( "image" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Image;
+        }
+        else if ( dvcString.compare( QLatin1String( "web" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Web;
+        }
+        else
+        {
+          dvc = QgsExternalResourceWidget::NoContent;
+        }
+        mQgsWidget->setDocumentViewerContent( dvc );
+      }
+    }
+  }
+
+  QgsEditorWidgetWrapper::setFeature( feature );
+}
+
+QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsExternalResourceWidget( parent );
 }
 
-void QgsExternalResourceWidgetWrapper::initWidget( QWidget* editor )
+void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
 {
-  mLineEdit = qobject_cast<QLineEdit*>( editor );
-  mLabel = qobject_cast<QLabel*>( editor );
-  mQgsWidget = qobject_cast<QgsExternalResourceWidget*>( editor );
+  mLineEdit = qobject_cast<QLineEdit *>( editor );
+  mLabel = qobject_cast<QLabel *>( editor );
+  mQgsWidget = qobject_cast<QgsExternalResourceWidget *>( editor );
 
   if ( mLineEdit )
   {
-    QgsFilterLineEdit* fle = qobject_cast<QgsFilterLineEdit*>( editor );
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( editor );
     if ( fle )
     {
-      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      fle->setNullValue( QgsApplication::nullRepresentation() );
     }
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
   }
+  else
+    mLineEdit = editor->findChild<QLineEdit *>();
 
   if ( mQgsWidget )
   {
     mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
-    if ( config().contains( "UseLink" ) )
+
+    QVariantMap cfg = config();
+
+    if ( cfg.contains( QStringLiteral( "UseLink" ) ) )
     {
-      mQgsWidget->fileWidget()->setUseLink( config( "UseLink" ).toBool() );
+      mQgsWidget->fileWidget()->setUseLink( cfg.value( QStringLiteral( "UseLink" ) ).toBool() );
     }
-    if ( config().contains( "FullUrl" ) )
+    if ( cfg.contains( QStringLiteral( "FullUrl" ) ) )
     {
-      mQgsWidget->fileWidget()->setFullUrl( config( "FullUrl" ).toBool() );
+      mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
     }
-    if ( config().contains( "DefaultRoot" ) )
+
+    mPropertyCollection.loadVariant( cfg.value( QStringLiteral( "PropertyCollection" ) ), propertyDefinitions() );
+    if ( !mPropertyCollection.isActive( QgsWidgetWrapper::RootPath ) )
     {
-      mQgsWidget->fileWidget()->setDefaultRoot( config( "DefaultRoot" ).toString() );
+      mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
     }
-    if ( config().contains( "StorageMode" ) )
+    if ( cfg.contains( QStringLiteral( "StorageMode" ) ) )
     {
-      mQgsWidget->fileWidget()->setStorageMode(( QgsFileWidget::StorageMode )config( "StorageMode" ).toInt() );
+      mQgsWidget->fileWidget()->setStorageMode( ( QgsFileWidget::StorageMode )cfg.value( QStringLiteral( "StorageMode" ) ).toInt() );
     }
-    if ( config().contains( "RelativeStorage" ) )
+    if ( cfg.contains( QStringLiteral( "RelativeStorage" ) ) )
     {
-      mQgsWidget->fileWidget()->setRelativeStorage(( QgsFileWidget::RelativeStorage )config( "RelativeStorage" ).toInt() );
+      mQgsWidget->setRelativeStorage( ( QgsFileWidget::RelativeStorage )cfg.value( QStringLiteral( "RelativeStorage" ) ).toInt() );
     }
-    if ( config().contains( "FileWidget" ) )
+    if ( cfg.contains( QStringLiteral( "FileWidget" ) ) )
     {
-      mQgsWidget->setFileWidgetVisible( config( "FileWidget" ).toBool() );
+      mQgsWidget->setFileWidgetVisible( cfg.value( QStringLiteral( "FileWidget" ) ).toBool() );
     }
-    if ( config().contains( "FileWidgetButton" ) )
+    if ( cfg.contains( QStringLiteral( "FileWidgetButton" ) ) )
     {
-      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( config( "FileWidgetButton" ).toBool() );
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() );
     }
-    if ( config().contains( "DocumentViewer" ) )
+    if ( cfg.contains( QStringLiteral( "DocumentViewer" ) ) )
     {
-      mQgsWidget->setDocumentViewerContent(( QgsExternalResourceWidget::DocumentViewerContent )config( "DocumentViewer" ).toInt() );
+      mQgsWidget->setDocumentViewerContent( ( QgsExternalResourceWidget::DocumentViewerContent )cfg.value( QStringLiteral( "DocumentViewer" ) ).toInt() );
     }
-    if ( config().contains( "FileWidgetFilter" ) )
+    if ( cfg.contains( QStringLiteral( "FileWidgetFilter" ) ) )
     {
-      mQgsWidget->fileWidget()->setFilter( config( "FileWidgetFilter" ).toString() );
+      mQgsWidget->fileWidget()->setFilter( cfg.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
     }
   }
+
+  if ( mLineEdit )
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
+
 }
 
-void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
+void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mLineEdit )
   {
     if ( value.isNull() )
     {
-      mLineEdit->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->setText( QgsApplication::nullRepresentation() );
     }
     else
     {
@@ -156,15 +206,15 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant& value )
 
   if ( mLabel )
   {
-    mLabel->setText( value.toString() ) ;
-    valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
+    mLabel->setText( value.toString() );
+    emit valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
   }
 
   if ( mQgsWidget )
   {
     if ( value.isNull() )
     {
-      mQgsWidget->setDocumentPath( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mQgsWidget->setDocumentPath( QgsApplication::nullRepresentation() );
     }
     else
     {
@@ -181,4 +231,32 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
 
   if ( mQgsWidget )
     mQgsWidget->setReadOnly( !enabled );
+}
+
+void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()
+{
+  if ( mLineEdit )
+  {
+    if ( !constraintResultVisible() )
+    {
+      widget()->setStyleSheet( QString() );
+    }
+    else
+    {
+      switch ( constraintResult() )
+      {
+        case ConstraintResultPass:
+          mLineEdit->setStyleSheet( QString() );
+          break;
+
+        case ConstraintResultFailHard:
+          mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+          break;
+
+        case ConstraintResultFailSoft:
+          mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
+          break;
+      }
+    }
+  }
 }

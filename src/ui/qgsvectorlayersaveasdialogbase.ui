@@ -17,33 +17,23 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Save vector layer as...</string>
+   <string>Save Vector Layer as…</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
+      <item row="3" column="0">
+       <widget class="QLabel" name="mCrsLabel">
         <property name="text">
          <string>CRS</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="leFilename">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="2">
-       <widget class="QPushButton" name="browseFilename">
+       <widget class="QgsFileWidget" name="mFilename">
         <property name="enabled">
          <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Browse</string>
         </property>
        </widget>
       </item>
@@ -57,23 +47,40 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
+      <item row="0" column="2">
        <widget class="QComboBox" name="mFormatComboBox"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Save as</string>
+         <string>File name</string>
         </property>
         <property name="buddy">
-         <cstring>leFilename</cstring>
+         <cstring>mFilename</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="3" column="2">
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Layer name</string>
+        </property>
+        <property name="buddy">
+         <cstring>leLayername</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="leLayername">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -81,7 +88,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -89,9 +96,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>550</width>
-        <height>953</height>
+        <y>-303</y>
+        <width>557</width>
+        <height>1004</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -122,10 +129,10 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mAttributesSelection">
          <property name="title">
-          <string>Limit attributes to export</string>
+          <string>Select fields to export and their export options</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="checked">
           <bool>false</bool>
@@ -185,16 +192,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="mAddToCanvas">
-         <property name="text">
-          <string>Add saved file to map</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="mSymbologyExportLabel">
@@ -218,15 +215,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="mScaleSpinBox">
-           <property name="prefix">
-            <string>1:</string>
-           </property>
-           <property name="maximum">
-            <number>999999999</number>
-           </property>
-           <property name="value">
-            <number>50000</number>
+          <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
            </property>
           </widget>
          </item>
@@ -270,7 +261,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsExtentGroupBox" name="mExtentGroupBox"/>
+        <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+         <property name="title">
+          <string>Extent</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mDatasourceOptionsGroupBox">
@@ -394,27 +389,89 @@
          <zorder>mOgrLayerOptions</zorder>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout1">
+     <item>
+      <widget class="QDialogButtonBox" name="mHelpButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Help</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mAddToCanvas">
+       <property name="text">
+        <string>Add saved file to map</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="mButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -424,32 +481,37 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
+   <class>QgsScaleWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mFormatComboBox</tabstop>
-  <tabstop>leFilename</tabstop>
-  <tabstop>browseFilename</tabstop>
+  <tabstop>mFilename</tabstop>
+  <tabstop>leLayername</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
-  <tabstop>mAttributesSelection</tabstop>
-  <tabstop>mAttributeTable</tabstop>
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
-  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
-  <tabstop>mScaleSpinBox</tabstop>
+  <tabstop>mScaleWidget</tabstop>
   <tabstop>mGeometryTypeComboBox</tabstop>
   <tabstop>mForceMultiCheckBox</tabstop>
   <tabstop>mIncludeZCheckBox</tabstop>
+  <tabstop>mAttributeTable</tabstop>
+  <tabstop>mReplaceRawFieldValues</tabstop>
   <tabstop>mOgrDatasourceOptions</tabstop>
   <tabstop>mOgrLayerOptions</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
  </tabstops>
  <resources/>
  <connections>

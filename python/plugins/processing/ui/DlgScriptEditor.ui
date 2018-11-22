@@ -1,301 +1,260 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgScriptEditor</class>
- <widget class="QDialog" name="DlgScriptEditor">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>480</height>
+    <width>721</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Script editor</string>
+   <string>Processing Script Editor</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>6</number>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="ScriptEdit" name="editor"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QWidget" name="searchWidget" native="true">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="chkCaseSensitive">
+         <property name="text">
+          <string>Case sensitive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="chkWholeWord">
+         <property name="text">
+          <string>Whole word</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4" colspan="2">
+        <widget class="QPushButton" name="btnReplace">
+         <property name="text">
+          <string>Replace</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Find what:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Replace with:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="leReplaceText"/>
+       </item>
+       <item row="0" column="4" colspan="2">
+        <widget class="QPushButton" name="btnFind">
+         <property name="text">
+          <string>Find</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLineEdit" name="leFindText"/>
+       </item>
+       <item row="0" column="1" rowspan="2">
+        <widget class="Line" name="line_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>Toolbar</string>
    </property>
-   <property name="margin">
-    <number>9</number>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOpenScript"/>
+   <addaction name="actionSaveScript"/>
+   <addaction name="actionSaveScriptAs"/>
+   <addaction name="separator"/>
+   <addaction name="actionRunScript"/>
+   <addaction name="separator"/>
+   <addaction name="actionCut"/>
+   <addaction name="actionCopy"/>
+   <addaction name="actionPaste"/>
+   <addaction name="separator"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
+   <addaction name="separator"/>
+   <addaction name="actionFindReplace"/>
+   <addaction name="separator"/>
+   <addaction name="actionIncreaseFontSize"/>
+   <addaction name="actionDecreaseFontSize"/>
+  </widget>
+  <action name="actionOpenScript">
+   <property name="text">
+    <string>Open Script…</string>
    </property>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>6</number>
-     </property>
-     <property name="leftMargin">
-      <number>3</number>
-     </property>
-     <property name="topMargin">
-      <number>3</number>
-     </property>
-     <property name="rightMargin">
-      <number>3</number>
-     </property>
-     <item>
-      <widget class="QToolButton" name="btnOpen">
-       <property name="toolTip">
-        <string>Open script</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+O, Return</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnSave">
-       <property name="toolTip">
-        <string>Save</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+S</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnSaveAs">
-       <property name="toolTip">
-        <string>Save as...</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+Shift+S</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnEditHelp">
-       <property name="toolTip">
-        <string>Edit script help</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnRun">
-       <property name="toolTip">
-        <string>Run algorithm</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>F5</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnCut">
-       <property name="toolTip">
-        <string>Cut</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+X</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnCopy">
-       <property name="toolTip">
-        <string>Copy</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+C</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnPaste">
-       <property name="toolTip">
-        <string>Paste</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+V</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line_4">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnUndo">
-       <property name="toolTip">
-        <string>Undo</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+Z</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnRedo">
-       <property name="toolTip">
-        <string>Redo</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+Shift+Z</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line_5">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnSnippets">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line_6">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnIncreaseFont">
-       <property name="text">
-        <string>A+</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnDecreaseFont">
-       <property name="text">
-        <string>A-</string>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="ScriptEdit" name="editor"/>
-   </item>
-  </layout>
+   <property name="toolTip">
+    <string>Open Script</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSaveScript">
+   <property name="text">
+    <string>Save Script…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Script</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveScriptAs">
+   <property name="text">
+    <string>Save Script as…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Script as</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionRunScript">
+   <property name="text">
+    <string>Run Script</string>
+   </property>
+   <property name="toolTip">
+    <string>Run Script</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="actionIncreaseFontSize">
+   <property name="text">
+    <string>Increase Font Size</string>
+   </property>
+   <property name="toolTip">
+    <string>Increase Font Size</string>
+   </property>
+  </action>
+  <action name="actionDecreaseFontSize">
+   <property name="text">
+    <string>Decrease Font Size</string>
+   </property>
+   <property name="toolTip">
+    <string>Decrease Font Size</string>
+   </property>
+  </action>
+  <action name="actionFindReplace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+   <property name="text">
+    <string>Find &amp;&amp; &amp;Replace</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>ScriptEdit</class>
    <extends>QTextEdit</extends>
-   <header>processing.gui.ScriptEdit</header>
+   <header location="global">processing.script.ScriptEdit</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>btnSave</tabstop>
-  <tabstop>btnSaveAs</tabstop>
-  <tabstop>btnEditHelp</tabstop>
-  <tabstop>btnRun</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

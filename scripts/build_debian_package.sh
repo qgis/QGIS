@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    build_debian_package.sh
 #    ---------------------
@@ -15,7 +15,7 @@
 ###########################################################################
 
 set -x
-if [ -d `pwd`/src ]
+if [ -d $(pwd)/src ]
 then
   #src exists so we are prolly in the right dir
   echo "good we are in  qgis checkout dir!"
@@ -24,9 +24,9 @@ else
   exit 1
 fi
 
-if [ -d `pwd`/debian ]
+if [ -d $(pwd)/debian ]
 then
-  cd debian
+  cd debian || exit
   svn update
   cd ..
 else

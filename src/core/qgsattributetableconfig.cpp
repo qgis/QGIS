@@ -14,26 +14,40 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributetableconfig.h"
-
+#include "qgsfields.h"
 #include <QStringList>
-
-QgsAttributeTableConfig::QgsAttributeTableConfig()
-    : mActionWidgetStyle( DropDown )
-{
-
-}
 
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
 {
   return mColumns;
 }
 
-void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig>& columns )
+bool QgsAttributeTableConfig::isEmpty() const
+{
+  return mColumns.isEmpty();
+}
+
+int QgsAttributeTableConfig::mapVisibleColumnToIndex( int visibleColumn ) const
+{
+  for ( int i = 0; i < mColumns.size(); ++i )
+  {
+    if ( mColumns.at( i ).hidden )
+    {
+      visibleColumn++;
+      continue;
+    }
+    if ( visibleColumn == i )
+      return i;
+  }
+  return -1;
+}
+
+void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig> &columns )
 {
   mColumns = columns;
 }
 
-void QgsAttributeTableConfig::update( const QgsFields& fields )
+void QgsAttributeTableConfig::update( const QgsFields &fields )
 {
   QStringList columns;
 
@@ -41,32 +55,32 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
 
   for ( int i = mColumns.count() - 1; i >= 0; --i )
   {
-    const ColumnConfig& column = mColumns.at( i );
-    if ( column.mType == Field )
+    const ColumnConfig &column = mColumns.at( i );
+    if ( column.type == Field )
     {
-      if ( fields.fieldNameIndex( column.mName ) == -1 )
+      if ( fields.indexOf( column.name ) == -1 )
       {
         mColumns.remove( i );
       }
       else
       {
-        columns.append( column.mName );
+        columns.append( column.name );
       }
     }
-    else if ( column.mType == Action )
+    else if ( column.type == Action )
     {
       containsActionColumn = true;
     }
   }
 
-  Q_FOREACH ( const QgsField& field, fields )
+  for ( const auto &field : fields )
   {
     if ( !columns.contains( field.name() ) )
     {
       ColumnConfig newColumn;
-      newColumn.mHidden = false;
-      newColumn.mType = Field;
-      newColumn.mName = field.name();
+      newColumn.hidden = false;
+      newColumn.type = Field;
+      newColumn.name = field.name();
 
       mColumns.append( newColumn );
     }
@@ -76,8 +90,8 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
   {
     ColumnConfig actionConfig;
 
-    actionConfig.mType = Action;
-    actionConfig.mHidden = true;
+    actionConfig.type = Action;
+    actionConfig.hidden = true;
 
     mColumns.append( actionConfig );
   }
@@ -85,9 +99,9 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
 
 bool QgsAttributeTableConfig::actionWidgetVisible() const
 {
-  Q_FOREACH ( const ColumnConfig& columnConfig, mColumns )
+  Q_FOREACH ( const ColumnConfig &columnConfig, mColumns )
   {
-    if ( columnConfig.mType == Action && columnConfig.mHidden == false )
+    if ( columnConfig.type == Action && !columnConfig.hidden )
       return true;
   }
   return false;
@@ -97,9 +111,9 @@ void QgsAttributeTableConfig::setActionWidgetVisible( bool visible )
 {
   for ( int i = 0; i < mColumns.size(); ++i )
   {
-    if ( mColumns.at( i ).mType == Action )
+    if ( mColumns.at( i ).type == Action )
     {
-      mColumns[i].mHidden = !visible;
+      mColumns[i].hidden = !visible;
     }
   }
 }
@@ -109,20 +123,20 @@ QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeTableConfig::actionWidget
   return mActionWidgetStyle;
 }
 
-void QgsAttributeTableConfig::setActionWidgetStyle( const ActionWidgetStyle& actionWidgetStyle )
+void QgsAttributeTableConfig::setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle )
 {
   mActionWidgetStyle = actionWidgetStyle;
 }
 
 
-void QgsAttributeTableConfig::readXml( const QDomNode& node )
+void QgsAttributeTableConfig::readXml( const QDomNode &node )
 {
   mColumns.clear();
 
-  QDomNode configNode = node.namedItem( "attributetableconfig" );
+  QDomNode configNode = node.namedItem( QStringLiteral( "attributetableconfig" ) );
   if ( !configNode.isNull() )
   {
-    QDomNode columnsNode = configNode.toElement().namedItem( "columns" );
+    QDomNode columnsNode = configNode.toElement().namedItem( QStringLiteral( "columns" ) );
 
     QDomNodeList columns = columnsNode.childNodes();
 
@@ -132,22 +146,23 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
 
       ColumnConfig column;
 
-      if ( columnElement.attribute( "type" ) == "actions" )
+      if ( columnElement.attribute( QStringLiteral( "type" ) ) == QLatin1String( "actions" ) )
       {
-        column.mType = Action;
+        column.type = Action;
       }
       else
       {
-        column.mType = Field;
-        column.mName = columnElement.attribute( "name" );
+        column.type = Field;
+        column.name = columnElement.attribute( QStringLiteral( "name" ) );
       }
 
-      column.mHidden = columnElement.attribute( "hidden" ) == "1";
+      column.hidden = columnElement.attribute( QStringLiteral( "hidden" ) ) == QLatin1String( "1" );
+      column.width = columnElement.attribute( QStringLiteral( "width" ), QStringLiteral( "-1" ) ).toDouble();
 
       mColumns.append( column );
     }
 
-    if ( configNode.toElement().attribute( "actionWidgetStyle" ) == "buttonList" )
+    if ( configNode.toElement().attribute( QStringLiteral( "actionWidgetStyle" ) ) == QLatin1String( "buttonList" ) )
       mActionWidgetStyle = ButtonList;
     else
       mActionWidgetStyle = DropDown;
@@ -156,25 +171,27 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
   {
     // Before QGIS 2.16 the attribute table would hide "Hidden" widgets.
     // They are migrated to hidden columns here.
-    QDomNodeList editTypeNodes = node.namedItem( "edittypes" ).childNodes();
+    QDomNodeList editTypeNodes = node.namedItem( QStringLiteral( "edittypes" ) ).childNodes();
 
     for ( int i = 0; i < editTypeNodes.size(); i++ )
     {
       QDomElement editTypeElement = editTypeNodes.at( i ).toElement();
 
-      if ( editTypeElement.attribute( "widgetv2type" ) == "Hidden" )
+      if ( editTypeElement.attribute( QStringLiteral( "widgetv2type" ) ) == QLatin1String( "Hidden" ) )
       {
         ColumnConfig column;
 
-        column.mName = editTypeElement.attribute( "name" );
-        column.mHidden = true;
-        column.mType = Field;
+        column.name = editTypeElement.attribute( QStringLiteral( "name" ) );
+        column.hidden = true;
+        column.type = Field;
         mColumns.append( column );
       }
     }
   }
 
-  mSortExpression = configNode.toElement().attribute( "sortExpression" );
+  mSortExpression = configNode.toElement().attribute( QStringLiteral( "sortExpression" ) );
+  Qt::SortOrder sortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( QStringLiteral( "sortOrder" ) ).toInt() );
+  setSortOrder( sortOrder );
 }
 
 QString QgsAttributeTableConfig::sortExpression() const
@@ -182,37 +199,81 @@ QString QgsAttributeTableConfig::sortExpression() const
   return mSortExpression;
 }
 
-void QgsAttributeTableConfig::setSortExpression( const QString& sortExpression )
+void QgsAttributeTableConfig::setSortExpression( const QString &sortExpression )
 {
   mSortExpression = sortExpression;
 }
 
-void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
+int QgsAttributeTableConfig::columnWidth( int column ) const
+{
+  return mColumns.at( column ).width;
+}
+
+void QgsAttributeTableConfig::setColumnWidth( int column, int width )
+{
+  mColumns[ column ].width = width;
+}
+
+bool QgsAttributeTableConfig::columnHidden( int column ) const
+{
+  return mColumns.at( column ).hidden;
+}
+
+void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
+{
+  mColumns[ column ].hidden = hidden;
+}
+
+bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
+{
+  return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder;
+}
+
+Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
+{
+  return mSortOrder;
+}
+
+void QgsAttributeTableConfig::setSortOrder( Qt::SortOrder sortOrder )
+{
+  // fix https://hub.qgis.org/issues/15803
+  if ( sortOrder != Qt::AscendingOrder && sortOrder != Qt::DescendingOrder )
+  {
+    sortOrder = Qt::AscendingOrder;
+  }
+
+  mSortOrder = sortOrder;
+}
+
+void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
-  QDomElement configElement  = doc.createElement( "attributetableconfig" );
-  configElement.setAttribute( "actionWidgetStyle", mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
+  QDomElement configElement  = doc.createElement( QStringLiteral( "attributetableconfig" ) );
+  configElement.setAttribute( QStringLiteral( "actionWidgetStyle" ), mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
 
-  configElement.setAttribute( "sortExpression", mSortExpression );
+  configElement.setAttribute( QStringLiteral( "sortExpression" ), mSortExpression );
 
-  QDomElement columnsElement  = doc.createElement( "columns" );
+  configElement.setAttribute( QStringLiteral( "sortOrder" ), mSortOrder );
 
-  Q_FOREACH ( const ColumnConfig& column, mColumns )
+  QDomElement columnsElement  = doc.createElement( QStringLiteral( "columns" ) );
+
+  Q_FOREACH ( const ColumnConfig &column, mColumns )
   {
-    QDomElement columnElement = doc.createElement( "column" );
+    QDomElement columnElement = doc.createElement( QStringLiteral( "column" ) );
 
-    if ( column.mType == Action )
+    if ( column.type == Action )
     {
-      columnElement.setAttribute( "type", "actions" );
+      columnElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "actions" ) );
     }
     else
     {
-      columnElement.setAttribute( "type", "field" );
-      columnElement.setAttribute( "name", column.mName );
+      columnElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "field" ) );
+      columnElement.setAttribute( QStringLiteral( "name" ), column.name );
     }
 
-    columnElement.setAttribute( "hidden", column.mHidden );
+    columnElement.setAttribute( QStringLiteral( "hidden" ), column.hidden );
+    columnElement.setAttribute( QStringLiteral( "width" ), QString::number( column.width ) );
 
     columnsElement.appendChild( columnElement );
   }
@@ -220,4 +281,28 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
   configElement.appendChild( columnsElement );
 
   node.appendChild( configElement );
+}
+
+bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &other ) const
+{
+  if ( columns().size() == other.columns().size() )
+  {
+    for ( int i = 0; i < columns().size(); i++ )
+    {
+      if ( columns().at( i ).name != other.columns().at( i ).name ||
+           columns().at( i ).type != other.columns().at( i ).type ||
+           columns().at( i ).hidden != other.columns().at( i ).hidden )
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
+bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig &other ) const
+{
+  return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
 }

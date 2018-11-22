@@ -17,18 +17,18 @@
 
 #include "qgswfsrequest.h"
 
-/** Manages the Transaction requests */
-class QgsWFSTransactionRequest : public QgsWFSRequest
+//! Manages the Transaction requests
+class QgsWFSTransactionRequest : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSTransactionRequest( const QString& theUri );
+    explicit QgsWFSTransactionRequest( const QgsWFSDataSourceURI &uri );
 
-    /** Send the transaction document and return the server response */
-    bool send( const QDomDocument& doc, QDomDocument& serverResponse );
+    //! Send the transaction document and return the server response
+    bool send( const QDomDocument &doc, QDomDocument &serverResponse );
 
   protected:
-    virtual QString errorMessageWithReason( const QString& reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 };
 
 #endif // QGSWFSTRANSACTIONREQUEST_H

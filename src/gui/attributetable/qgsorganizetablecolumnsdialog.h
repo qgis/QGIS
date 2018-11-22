@@ -22,34 +22,59 @@
 #include "ui_qgsorganizetablecolumnsdialog.h"
 
 #include "qgsattributetableconfig.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
+/**
+ * \class QgsOrganizeTableColumnsDialog
+ * \ingroup gui
+ * Dialog for organising (hiding and reordering) columns in the attributes table.
+ * \since QGIS 2.16
+ */
 class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::QgsOrganizeTableColumnsDialog
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
-     * @param vl The concerned vector layer
-     * @param parent parent object
-     * @param flags window flags
+     * \param vl The concerned vector layer
+     * \param parent parent object
+     * \param config attribute table config to use.
+     * \param flags window flags
      */
-    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QgsAttributeTableConfig config, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
 
     /**
-     * Destructor
+     * Constructor
+     * \param vl The concerned vector layer
+     * \param parent parent object
+     * \param flags window flags
      */
-    ~QgsOrganizeTableColumnsDialog();
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
 
     /**
-     * Get the updated configuration
+     * Gets the updated configuration
      */
     QgsAttributeTableConfig config() const;
 
+  public slots:
+
+    /**
+     * showAll checks all the  fields to show them all in the attribute table
+     */
+    void showAll();
+
+    /**
+     * hideAll unchecks all the fields to hide them all in the attribute table
+     */
+    void hideAll();
+
   private:
     QgsAttributeTableConfig mConfig;
+
 };
 
 #endif

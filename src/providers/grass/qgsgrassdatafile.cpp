@@ -20,12 +20,11 @@
 #endif
 
 QgsGrassDataFile::QgsGrassDataFile( QObject *parent )
-    : QFile( parent )
-    , mFh( 0 )
+  : QFile( parent )
 {
 }
 
-bool QgsGrassDataFile::open( FILE * fh )
+bool QgsGrassDataFile::open( FILE *fh )
 {
   bool ret = QFile::open( fh, QIODevice::ReadOnly | QIODevice::Unbuffered );
   if ( ret )
@@ -35,7 +34,7 @@ bool QgsGrassDataFile::open( FILE * fh )
   return ret;
 }
 
-qint64 QgsGrassDataFile::readData( char * data, qint64 len )
+qint64 QgsGrassDataFile::readData( char *data, qint64 len )
 {
   qint64 readSoFar = 0;
   forever
@@ -56,7 +55,7 @@ qint64 QgsGrassDataFile::readData( char * data, qint64 len )
     }
     readSoFar += read;
 
-    //fprintf(stderr, "len = %d readSoFar = %d feof = %d", (int)len, (int)readSoFar, (int)feof(mFh)  );
+    //fprintf(stderr, "len = %d readSoFar = %d feof = %d", static_cast<int>(len), static_cast<int>(readSoFar), static_cast<int>(feof(mFh))  );
     if ( readSoFar == len )
     {
       break;

@@ -24,14 +24,13 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgis_grass_lib.h"
 
 extern "C"
 {
 #include <grass/version.h>
 #include <grass/gis.h>
-#if GRASS_VERSION_MAJOR > 6
 #include <grass/raster.h>
-#endif
 }
 
 #include <QString>
@@ -54,23 +53,28 @@ class QgsCoordinateTransform;
 class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
-    QgsGrassRasterValue();
+    QgsGrassRasterValue() = default;
     ~QgsGrassRasterValue();
 
-    void set( const QString & gisdbase, const QString & location, const QString & mapset, const QString & map );
+    QgsGrassRasterValue( const QgsGrassRasterValue &other ) = delete;
+    QgsGrassRasterValue &operator=( const QgsGrassRasterValue &other ) = delete;
+
+    void set( const QString &gisdbase, const QString &location, const QString &mapset, const QString &map );
     void stop();
     // returns raster value, NaN for no data
-    // ok is set to true if ok or false on error
+    // OK is set to true if OK or false on error
     double value( double x, double y, bool *ok );
   private:
+
     void start();
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
     QString mMapName;       // map name
     QTemporaryFile mGisrcFile;
-    QProcess *mProcess;
+    QProcess *mProcess = nullptr;
 };
+
 /**
 
   \brief Data provider for GRASS raster layers.
@@ -85,6 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -92,25 +97,22 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsGrassRasterProvider( QString const & uri = 0 );
+    explicit QgsGrassRasterProvider( QString const &uri = QString() );
 
-    //! Destructor
-    ~QgsGrassRasterProvider();
 
-    QgsRasterInterface * clone() const override;
+    ~QgsGrassRasterProvider() override;
 
-    /** \brief   Renders the layer as an image
-     */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
+    QgsRasterInterface *clone() const override;
 
-    /** Return a provider name
+    /**
+     * Returns a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
      * if more than one provider supports a given format, the user is able to
      * select a specific provider to open that file.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -120,11 +122,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** Return description
+    /**
+     * Returns description
      *
-     * Return a terse string describing what the provider is.
+     * Returns a terse string describing what the provider is.
      *
-     * @note
+     * \note
      *
      * Instead of being pure virtual, might be better to generalize this
      * behavior and presume that none of the sub-classes are going to do
@@ -133,22 +136,16 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QString description() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
-     */
-    virtual QgsCoordinateReferenceSystem crs() override;
+    QgsCoordinateReferenceSystem crs() const override;
 
-    /** Return the extent for this data layer
+    /**
+     * Returns the extent for this data layer
      */
-    virtual QgsRectangle extent() override;
+    QgsRectangle extent() const override;
 
-    /** Returns true if layer is valid
-     */
-    bool isValid() override;
+    bool isValid() const override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -171,15 +168,16 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QString lastError() override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on which
         sublayers are visible on this provider, so it may
         be prudent to check this value per intended operation.
       */
     int capabilities() const override;
 
-    QGis::DataType dataType( int bandNo ) const override;
-    QGis::DataType srcDataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
 
     int bandCount() const override;
 
@@ -192,49 +190,50 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     int ySize() const override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    QgsRasterBandStats bandStatistics( int theBandNo,
-                                       int theStats = QgsRasterBandStats::All,
-                                       const QgsRectangle & theExtent = QgsRectangle(),
-                                       int theSampleSize = 0 ) override;
+    QgsRasterBandStats bandStatistics( int bandNo,
+                                       int stats = QgsRasterBandStats::All,
+                                       const QgsRectangle &boundingBox = QgsRectangle(),
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
-    // void buildSupportedRasterFileFilter( QString & theFileFiltersString );
+    // void buildSupportedRasterFileFilter( QString & fileFiltersString );
 
     /**
-     * Get metadata in a format suitable for feeding directly
+     * Gets metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString metadata() override;
+    QString htmlMetadata() override;
 
-    virtual QDateTime dataTimestamp() const override;
+    QDateTime dataTimestamp() const override;
 
     // used by GRASS tools
     void freeze();
     void thaw();
 
   private:
-    void setLastError( QString error );
+    void setLastError( const QString &error );
     void clearLastError();
     // append error if it is not empty
-    void appendIfError( QString error );
+    void appendIfError( const QString &error );
+
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
     QString mMapName;       // map name
 
-    RASTER_MAP_TYPE mGrassDataType; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
+    RASTER_MAP_TYPE mGrassDataType = 0; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
 
-    int mCols;
-    int mRows;
-    int mYBlockSize;
+    int mCols = 0;
+    int mRows = 0;
+    int mYBlockSize = 0;
 
     QHash<QString, QString> mInfo;
 

@@ -16,15 +16,18 @@
 #ifndef QGSMULTIEDITTOOLBUTTON_H
 #define QGSMULTIEDITTOOLBUTTON_H
 
-#include "qgsfield.h"
+#include "qgsfields.h"
+#include "qgis.h"
 #include <QToolButton>
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMultiEditToolButton
  * A tool button widget which is displayed next to editor widgets in attribute forms, and
  * allows for controlling how the widget behaves and interacts with the form while in multi
  * edit mode.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 {
@@ -35,53 +38,58 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     //! Button states
     enum State
     {
-      Default, /*!< Default state, all features have same value for widget */
-      MixedValues, /*!< Mixed state, some features have different values for the widget */
-      Changed, /*!< Value for widget has changed but changes have not yet been committed */
+      Default, //!< Default state, all features have same value for widget
+      MixedValues, //!< Mixed state, some features have different values for the widget
+      Changed, //!< Value for widget has changed but changes have not yet been committed
     };
 
-    /** Constructor for QgsMultiEditToolButton.
-     * @param parent parent object
+    /**
+     * Constructor for QgsMultiEditToolButton.
+     * \param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent = nullptr );
+    explicit QgsMultiEditToolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns the current displayed state of the button.
+    /**
+     * Returns the current displayed state of the button.
      */
     State state() const { return mState; }
 
-    /** Sets the field associated with this button. This is used to customise the widget menu
+    /**
+     * Sets the field associated with this button. This is used to customize the widget menu
      * and tooltips to match the field properties.
-     * @param field associated field
+     * \param field associated field
      */
-    void setField( const QgsField& field ) { mField = field; }
+    void setField( const QgsField &field ) { mField = field; }
 
   public slots:
 
-    /** Sets whether the associated field contains mixed values.
-     * @param mixed whether field values are mixed
-     * @see isMixed()
-     * @see setIsChanged()
-     * @see resetChanges()
+    /**
+     * Sets whether the associated field contains mixed values.
+     * \param mixed whether field values are mixed
+     * \see setIsChanged()
+     * \see resetChanges()
      */
     void setIsMixed( bool mixed ) { mIsMixedValues = mixed; updateState(); }
 
-    /** Sets whether the associated field has changed.
-     * @param changed whether field has changed
-     * @see isChanged()
-     * @see setIsMixed()
-     * @see resetChanges()
+    /**
+     * Sets whether the associated field has changed.
+     * \param changed whether field has changed
+     * \see setIsMixed()
+     * \see resetChanges()
      */
     void setIsChanged( bool changed ) { mIsChanged = changed; updateState(); }
 
-    /** Resets the changed state for the field.
-     * @see setIsMixed()
-     * @see setIsChanged()
-     * @see changesCommitted()
+    /**
+     * Resets the changed state for the field.
+     * \see setIsMixed()
+     * \see setIsChanged()
+     * \see changesCommitted()
      */
     void resetChanges() { mIsChanged = false; updateState(); }
 
-    /** Called when field values have been changed and field now contains all the same values.
-     * @see resetChanges()
+    /**
+     * Called when field values have been changed and field now contains all the same values.
+     * \see resetChanges()
      */
     void changesCommitted() { mIsMixedValues = false; mIsChanged = false; updateState(); }
 
@@ -101,12 +109,12 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 
   private:
 
-    bool mIsMixedValues;
-    bool mIsChanged;
-    State mState;
+    bool mIsMixedValues = false;
+    bool mIsChanged = false;
+    State mState = Default;
     QgsField mField;
 
-    QMenu* mMenu;
+    QMenu *mMenu = nullptr;
 
     void updateState();
 

@@ -19,8 +19,11 @@
 #define QGSGPSCONNECTION_H
 
 #include <QDateTime>
+#include "qgis.h"
 #include <QObject>
 #include <QString>
+
+#include "qgis_core.h"
 
 class QIODevice;
 
@@ -33,7 +36,7 @@ struct CORE_EXPORT QgsSatelliteInfo
   int signal;
 };
 
-struct CORE_EXPORT QgsGPSInformation
+struct CORE_EXPORT QgsGpsInformation
 {
   double latitude;
   double longitude;
@@ -44,8 +47,8 @@ struct CORE_EXPORT QgsGPSInformation
   double pdop;
   double hdop;
   double vdop;
-  double hacc; //horizontal accurancy in meters
-  double vacc; //vertical accurancy in meters
+  double hacc; //horizontal accuracy in meters
+  double vacc; //vertical accuracy in meters
   QDateTime utcDateTime;
   QChar fixMode;
   int fixType;
@@ -56,9 +59,28 @@ struct CORE_EXPORT QgsGPSInformation
   bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 };
 
-/** Abstract base class for connection to a GPS device*/
-class CORE_EXPORT QgsGPSConnection : public QObject
+/**
+ * \ingroup core
+ * Abstract base class for connection to a GPS device*/
+class CORE_EXPORT QgsGpsConnection : public QObject
 {
+#ifdef SIP_RUN
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsGpsdConnection" ) )
+      sipType = sipType_QgsGpsdConnection;
+    else if ( sipCpp->inherits( "QgsNmeaConnection" ) )
+      sipType = sipType_QgsNmeaConnection;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
@@ -70,44 +92,45 @@ class CORE_EXPORT QgsGPSConnection : public QObject
       GPSDataReceived
     };
 
-    /** Constructor
-        @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
+    /**
+     * Constructor
+        \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
-    QgsGPSConnection( QIODevice* dev );
-    virtual ~QgsGPSConnection();
-    /** Opens connection to device*/
+    QgsGpsConnection( QIODevice *dev SIP_TRANSFER );
+    ~QgsGpsConnection() override;
+    //! Opens connection to device
     bool connect();
-    /** Closes connection to device*/
+    //! Closes connection to device
     bool close();
 
-    /** Sets the GPS source. The class takes ownership of the device class*/
-    void setSource( QIODevice* source );
+    //! Sets the GPS source. The class takes ownership of the device class
+    void setSource( QIODevice *source SIP_TRANSFER );
 
-    /** Returns the status. Possible state are not connected, connected, data received*/
+    //! Returns the status. Possible state are not connected, connected, data received
     Status status() const { return mStatus; }
 
-    /** Returns the current gps information (lat, lon, etc.)*/
-    QgsGPSInformation currentGPSInformation() const { return mLastGPSInformation; }
+    //! Returns the current gps information (lat, lon, etc.)
+    QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
 
   signals:
-    void stateChanged( const QgsGPSInformation& info );
-    void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
+    void stateChanged( const QgsGpsInformation &info );
+    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
 
   protected:
-    /** Data source (e.g. serial device, socket, file,...)*/
-    QIODevice* mSource;
-    /** Last state of the gps related variables (e.g. position, time, ...)*/
-    QgsGPSInformation mLastGPSInformation;
-    /** Connection status*/
+    //! Data source (e.g. serial device, socket, file,...)
+    QIODevice *mSource = nullptr;
+    //! Last state of the gps related variables (e.g. position, time, ...)
+    QgsGpsInformation mLastGPSInformation;
+    //! Connection status
     Status mStatus;
 
   private:
-    /** Closes and deletes mSource*/
+    //! Closes and deletes mSource
     void cleanupSource();
     void clearLastGPSInformation();
 
   protected slots:
-    /** Parse available data source content*/
+    //! Parse available data source content
     virtual void parseData() = 0;
 };
 

@@ -19,7 +19,7 @@
 
 #include <gdal_alg.h> // just needed for GDALTransformerFunc, forward?
 
-#include <qgspoint.h>
+#include "qgspoint.h"
 #include <QVector>
 #include <stdexcept>
 
@@ -28,9 +28,9 @@
 class QgsGeorefTransformInterface
 {
   public:
-    virtual ~QgsGeorefTransformInterface() { }
+    virtual ~QgsGeorefTransformInterface() = default;
 
-    virtual bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) = 0;
+    virtual bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) = 0;
 
     /**
      * Returns the minimum number of GCPs required for parameter fitting.
@@ -38,11 +38,11 @@ class QgsGeorefTransformInterface
     virtual int getMinimumGCPCount() const = 0;
 
     /**
-     * Return funtion pointer to the GDALTransformer function.
+     * Returns function pointer to the GDALTransformer function.
      * Used by GDALwarp.
      */
     virtual GDALTransformerFunc  GDALTransformer()     const = 0;
-    virtual void*                GDALTransformerArgs() const = 0;
+    virtual void                *GDALTransformerArgs() const = 0;
 };
 
 /**
@@ -74,7 +74,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
 
     explicit QgsGeorefTransform( TransformParametrisation parametrisation );
     QgsGeorefTransform();
-    ~QgsGeorefTransform();
+    ~QgsGeorefTransform() override;
 
     /**
      * Switches the used transform type to the given parametrisation.
@@ -90,7 +90,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     bool hasCrs() const { return mRasterChangeCoords.hasCrs(); }
 
     //! \returns Coordinates of image
-    QgsPoint toColumnLine( const QgsPoint &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    QgsPointXY toColumnLine( const QgsPointXY &pntMap ) { return mRasterChangeCoords.toColumnLine( pntMap ); }
 
     //! \returns Bounding box of image(transform to coordinate of Map or Image )
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel ) { return mRasterChangeCoords.getBoundingBox( rect, toPixel ); }
@@ -98,7 +98,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     //! \brief The transform parametrisation currently in use.
     TransformParametrisation transformParametrisation() const;
 
-    /** True for linear, Helmert, first order polynomial*/
+    //! True for linear, Helmert, first order polynomial
     bool providesAccurateInverseTransformation() const;
 
     //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
@@ -109,34 +109,34 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \returns true on success, false on failure
      */
-    bool updateParametersFromGCPs( const QVector<QgsPoint> &mapCoords, const QVector<QgsPoint> &pixelCoords ) override;
+    bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
 
     //! \brief Returns the minimum number of GCPs required for parameter fitting.
     int getMinimumGCPCount() const override;
 
     /**
-     * \brief Return funtion pointer to the GDALTransformer function.
+     * Returns function pointer to the GDALTransformer function.
      *
      * Used by the transform routines \ref transform, \ref transformRasterToWorld
      * \ref transformWorldToRaster and by the GDAL warping code
      * in \ref QgsImageWarper::warpFile.
      */
     GDALTransformerFunc  GDALTransformer()     const override;
-    void*                GDALTransformerArgs() const override;
+    void                *GDALTransformerArgs() const override;
 
     /**
      * \brief Transform from pixel coordinates to georeferenced coordinates.
      *
      * \note Negative y-axis points down in raster CS.
      */
-    bool transformRasterToWorld( const QgsPoint &raster, QgsPoint &world );
+    bool transformRasterToWorld( const QgsPointXY &raster, QgsPointXY &world );
 
     /**
      * \brief Transform from referenced coordinates to raster coordinates.
      *
      * \note Negative y-axis points down in raster CS.
      */
-    bool transformWorldToRaster( const QgsPoint &world, QgsPoint &raster );
+    bool transformWorldToRaster( const QgsPointXY &world, QgsPointXY &raster );
 
     /**
      * \brief Transforms from raster to world if rasterToWorld is true,
@@ -144,13 +144,13 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \note Negative y-axis points down in raster CS.
      */
-    bool transform( const QgsPoint &src, QgsPoint &dst, bool rasterToWorld );
+    bool transform( const QgsPointXY &src, QgsPointXY &dst, bool rasterToWorld );
 
     //! \brief Returns origin and scale if this is a linear transform, fails otherwise.
-    bool getLinearOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
+    bool getLinearOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
     //! \brief Returns origin, scale and rotation for linear and helmert transform, fails otherwise.
-    bool getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const;
+    bool getOriginScaleRotation( QgsPointXY &origin, double &scaleX, double &scaleY, double &rotation ) const;
 
   private:
     // shallow copy constructor
@@ -160,9 +160,9 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     static QgsGeorefTransformInterface *createImplementation( TransformParametrisation parametrisation );
 
     // convenience wrapper around GDALTransformerFunc
-    bool gdal_transform( const QgsPoint &src, QgsPoint &dst, int dstToSrc ) const;
+    bool gdal_transform( const QgsPointXY &src, QgsPointXY &dst, int dstToSrc ) const;
 
-    QgsGeorefTransformInterface *mGeorefTransformImplementation;
+    QgsGeorefTransformInterface *mGeorefTransformImplementation = nullptr;
     TransformParametrisation     mTransformParametrisation;
     bool                         mParametersInitialized;
     QgsRasterChangeCoords        mRasterChangeCoords;

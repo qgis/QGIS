@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -142,7 +142,7 @@ def main():
     host = options['host']
     port = options['port']
     database = options['database']
-    #schema = options['schema']
+    # schema = options['schema']
     user = options['user']
     password = options['password']
 
@@ -159,6 +159,7 @@ def main():
 
     if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer) != 0:
         grass.fatal("Cannot export vector to database.")
+
 
 if __name__ == "__main__":
     options, flags = grass.parser()

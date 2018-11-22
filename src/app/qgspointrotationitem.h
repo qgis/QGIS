@@ -19,8 +19,9 @@
 #include "qgsmapcanvasitem.h"
 #include <QFontMetricsF>
 #include <QPixmap>
+#include "qgis_app.h"
 
-/** An item that shows a rotated point symbol (e.g. arrow) centered to a map location together with a text displaying the rotation value*/
+//! An item that shows a rotated point symbol (e.g. arrow) centered to a map location together with a text displaying the rotation value
 class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
 {
   public:
@@ -31,33 +32,33 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
       Counterclockwise
     };
 
-    QgsPointRotationItem( QgsMapCanvas* canvas );
-    ~QgsPointRotationItem();
+    QgsPointRotationItem( QgsMapCanvas *canvas );
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter *painter ) override;
 
-    /** Sets the center point of the rotation symbol (in map coordinates)*/
-    void setPointLocation( const QgsPoint& p );
+    //! Sets the center point of the rotation symbol (in map coordinates)
+    void setPointLocation( const QgsPointXY &p );
 
-    /** Sets the rotation of the symbol and displays the new rotation number.
+    /**
+     * Sets the rotation of the symbol and displays the new rotation number.
     Units are degrees, starting from north direction, clockwise direction*/
     void setSymbolRotation( int r ) {mRotation = r;}
 
-    /** Sets rotation symbol from image (takes ownership)*/
-    void setSymbol( const QImage& symbolImage );
+    //! Sets rotation symbol from image (takes ownership)
+    void setSymbol( const QImage &symbolImage );
 
     void setOrientation( Orientation o ) { mOrientation = o; }
     Orientation orientation() const { return mOrientation; }
 
   private:
-    QgsPointRotationItem();
-    /** Converts rotation into QPainter rotation considering mOrientation*/
+
+    //! Converts rotation into QPainter rotation considering mOrientation
     int painterRotation( int rotation ) const;
-    /** Clockwise (default) or counterclockwise*/
+    //! Clockwise (default) or counterclockwise
     Orientation mOrientation;
-    /** Font to display the numerical rotation values*/
+    //! Font to display the numerical rotation values
     QFont mFont;
-    /** Symboll pixmap*/
+    //! Symbol pixmap
     QPixmap mPixmap;
     int mRotation;
 };

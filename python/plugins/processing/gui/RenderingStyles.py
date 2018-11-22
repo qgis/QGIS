@@ -46,27 +46,25 @@ class RenderingStyles:
     def loadStyles():
         if not os.path.isfile(RenderingStyles.configFile()):
             return
-        lines = open(RenderingStyles.configFile())
-        line = lines.readline().strip('\n')
-        while line != '':
-            tokens = line.split('|')
-            if tokens[0] in RenderingStyles.styles.keys():
-                RenderingStyles.styles[tokens[0]][tokens[1]] = tokens[2]
-            else:
-                alg = {}
-                alg[tokens[1]] = tokens[2]
-                RenderingStyles.styles[tokens[0]] = alg
+        with open(RenderingStyles.configFile()) as lines:
             line = lines.readline().strip('\n')
-        lines.close()
+            while line != '':
+                tokens = line.split('|')
+                if tokens[0] in list(RenderingStyles.styles.keys()):
+                    RenderingStyles.styles[tokens[0]][tokens[1]] = tokens[2]
+                else:
+                    alg = {}
+                    alg[tokens[1]] = tokens[2]
+                    RenderingStyles.styles[tokens[0]] = alg
+                line = lines.readline().strip('\n')
 
     @staticmethod
     def saveSettings():
-        fout = open(RenderingStyles.configFile(), 'w')
-        for alg in RenderingStyles.styles.keys():
-            for out in RenderingStyles.styles[alg].keys():
-                fout.write(alg + '|' + out + '|'
-                           + RenderingStyles.styles[alg][out] + '\n')
-        fout.close()
+        with open(RenderingStyles.configFile(), 'w') as fout:
+            for alg in list(RenderingStyles.styles.keys()):
+                for out in list(RenderingStyles.styles[alg].keys()):
+                    fout.write(alg + '|' + out + '|' +
+                               RenderingStyles.styles[alg][out] + '\n')
 
     @staticmethod
     def getStyle(algname, outputname):

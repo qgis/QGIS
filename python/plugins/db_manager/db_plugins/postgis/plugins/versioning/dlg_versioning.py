@@ -61,6 +61,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.editPkey.textChanged.connect(self.updateSql)
         self.editStart.textChanged.connect(self.updateSql)
         self.editEnd.textChanged.connect(self.updateSql)
+        self.editUser.textChanged.connect(self.updateSql)
 
         self.updateSql()
 
@@ -114,6 +115,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.colPkey = self.db.connector.quoteId(self.editPkey.text())
         self.colStart = self.db.connector.quoteId(self.editStart.text())
         self.colEnd = self.db.connector.quoteId(self.editEnd.text())
+        self.colUser = self.db.connector.quoteId(self.editUser.text())
 
         self.columns = [self.db.connector.quoteId(x.name) for x in self.table.fields()]
 
@@ -173,8 +175,8 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         QMessageBox.information(self, "Help", helpText)
 
     def sql_alterTable(self):
-        return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp, ADD %s timestamp;" % (
-            self.schematable, self.colPkey, self.colStart, self.colEnd)
+        return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp, ADD %s timestamp, ADD %s varchar;" % (
+            self.schematable, self.colPkey, self.colStart, self.colEnd, self.colUser)
 
     def sql_setPkey(self):
         return u"ALTER TABLE %s DROP CONSTRAINT %s, ADD PRIMARY KEY (%s);" % (
@@ -209,6 +211,7 @@ BEGIN
   IF NEW.%(end)s IS NULL THEN
     INSERT INTO %(schematable)s (%(cols)s, %(start)s, %(end)s) VALUES (%(oldcols)s, OLD.%(start)s, current_timestamp);
     NEW.%(start)s = current_timestamp;
+    NEW.%(user)s = current_user;
   END IF;
   RETURN NEW;
 END;
@@ -222,12 +225,13 @@ BEGIN
   if NEW.%(start)s IS NULL then
     NEW.%(start)s = now();
     NEW.%(end)s = null;
+    NEW.%(user)s = current_user;
   end if;
   RETURN NEW;
 END;
 $$
 LANGUAGE 'plpgsql';""" % {'view': self.view, 'schematable': self.schematable, 'cols': cols, 'oldcols': old_cols,
-                          'start': self.colStart, 'end': self.colEnd, 'func_at_time': self.func_at_time,
+                          'start': self.colStart, 'end': self.colEnd, 'user': self.colUser, 'func_at_time': self.func_at_time,
                           'func_update': self.func_update, 'func_insert': self.func_insert}
         return sql
 
@@ -254,7 +258,7 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD
   DELETE FROM %(schematable)s WHERE %(origpkey)s = old.%(origpkey)s;
 CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO %(view)s DO INSTEAD
-  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s);
+  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s) RETURNING %(cols)s;
 CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
   UPDATE %(schematable)s SET %(assign)s WHERE %(origpkey)s = NEW.%(origpkey)s;""" % {'view': self.view,
                                                                                      'schematable': self.schematable,
@@ -276,5 +280,5 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
         finally:
             QApplication.restoreOverrideCursor()
 
-        QMessageBox.information(self, "good!", "everything went fine!")
+        QMessageBox.information(self, "DB Manager", "Versioning was successfully created.")
         self.accept()

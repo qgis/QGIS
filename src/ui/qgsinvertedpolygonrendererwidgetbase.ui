@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="mRendererLabel">
        <property name="text">
-        <string>Sub renderer:</string>
+        <string>Sub renderer</string>
        </property>
       </widget>
      </item>

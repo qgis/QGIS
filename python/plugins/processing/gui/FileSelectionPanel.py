@@ -26,16 +26,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QFileDialog
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 
 from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class FileSelectionPanel(BASE, WIDGET):
@@ -51,7 +55,7 @@ class FileSelectionPanel(BASE, WIDGET):
 
     def showSelectionDialog(self):
         # Find the file dialog's working directory
-        settings = QSettings()
+        settings = QgsSettings()
         text = self.leText.text()
         if os.path.isdir(text):
             path = text
@@ -64,14 +68,14 @@ class FileSelectionPanel(BASE, WIDGET):
 
         if self.isFolder:
             folder = QFileDialog.getExistingDirectory(self,
-                                                      self.tr('Select folder'), path)
+                                                      self.tr('Select Folder'), path)
             if folder:
                 self.leText.setText(folder)
                 settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(folder))
         else:
-            filenames = QFileDialog.getOpenFileNames(self,
-                                                     self.tr('Select file'), path, '*.' + self.ext)
+            filenames, selected_filter = QFileDialog.getOpenFileNames(self,
+                                                                      self.tr('Select File'), path, self.tr('{} files').format(self.ext.upper()) + ' (*.' + self.ext + self.tr(');;All files (*.*)'))
             if filenames:
                 self.leText.setText(u';'.join(filenames))
                 settings.setValue('/Processing/LastInputPath',

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QStringList>
 #include <QApplication>
@@ -26,12 +26,13 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgsquickprint.h>
 //qgis test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsQuickPrint : public QObject
@@ -39,10 +40,10 @@ class TestQgsQuickPrint : public QObject
     Q_OBJECT
   public:
     TestQgsQuickPrint()
-        : mpMapRenderer( 0 )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
+      : mpMapRenderer( 0 )
+      , mpPointsLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mpPolysLayer( 0 )
     {}
 
   private slots:
@@ -53,11 +54,11 @@ class TestQgsQuickPrint : public QObject
 
     void basicMapTest();
   private:
-    bool imageCheck( QString theType ); //as above
-    QgsMapRenderer * mpMapRenderer;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
+    bool imageCheck( QString type ); //as above
+    QgsMapRenderer *mpMapRenderer = nullptr;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsMapLayer *mpLinesLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -82,7 +83,7 @@ void TestQgsQuickPrint::initTestCase()
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpPointsLayer );
+  QgsProject::instance()->addMapLayer( mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -92,7 +93,7 @@ void TestQgsQuickPrint::initTestCase()
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+  QgsProject::instance()->addMapLayer( mpPolysLayer );
 
   //
   // Create a line layer that will be used in all tests...
@@ -102,7 +103,7 @@ void TestQgsQuickPrint::initTestCase()
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpLinesLayer );
+  QgsProject::instance()->addMapLayer( mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -148,9 +149,9 @@ void TestQgsQuickPrint::basicMapTest()
   myQuickPrint.setTitle( "Map Title" );
   myQuickPrint.setName( "Map Name" );
   myQuickPrint.setCopyright( "Copyright Text" );
-  //void setNorthArrow(QString theFileName);
-  //void setLogo1(QString theFileName);
-  //void setLogo2(QString theFileName);
+  //void setNorthArrow(QString fileName);
+  //void setLogo1(QString fileName);
+  //void setLogo2(QString fileName);
   myQuickPrint.printMap();
 }
 
@@ -159,19 +160,19 @@ void TestQgsQuickPrint::basicMapTest()
 // Helper functions below
 //
 
-bool TestQgsQuickPrint::imageCheck( QString theTestType )
+bool TestQgsQuickPrint::imageCheck( QString testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mpMapRenderer->setExtent( mpPointsLayer->extent() );
-  QString myExpectedImage = mTestDataDir + "expected_" + theTestType + ".png";
+  QString myExpectedImage = mTestDataDir + "expected_" + testType + ".png";
   QgsRenderChecker myChecker;
   myChecker.setExpectedImage( myExpectedImage );
   myChecker.setMapRenderer( mpMapRenderer );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsQuickPrint )
+QGSTEST_MAIN( TestQgsQuickPrint )
 #include "testqgsquickprint.moc"

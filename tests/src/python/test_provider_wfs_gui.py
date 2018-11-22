@@ -13,22 +13,16 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 __revision__ = '$Format:%H$'
 
 import hashlib
-import os
 import sys
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoop
-from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDialogButtonBox, QTreeView, QComboBox
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QEventLoop
+from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDialogButtonBox, QComboBox
 from qgis.PyQt.QtTest import QTest
 
-from qgis.core import (
-    QgsProviderRegistry
-)
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from providertestbase import ProviderTestCase
+from qgis.core import QgsProviderRegistry, QgsSettings
+from qgis.testing import start_app, unittest
 
 
 def sanitize(endpoint, x):
@@ -52,7 +46,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp().replace('\\', '/')
@@ -60,7 +54,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        QSettings().clear()
+        QgsSettings().clear()
         if cls.basetestpath is not None:
             shutil.rmtree(cls.basetestpath, True)
 
@@ -90,13 +84,13 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
 
     def test(self):
 
-        # This test is quite fragile as it depends on windows manager behaviour
+        # This test is quite fragile as it depends on windows manager behavior
         # regarding focus, so not surprising it doesn't pass
         # on other platforms than Linux.
-        #if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
+        # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
-        main_dialog = QgsProviderRegistry.instance().selectWidget("WFS")
+        main_dialog = QgsProviderRegistry.instance().createSelectionWidget("WFS")
         main_dialog.setProperty("hideDialogs", True)
 
         self.assertIsNotNone(main_dialog)
@@ -223,9 +217,9 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # Add layer
         self.addWfsLayer_uri = None
         self.addWfsLayer_layer_name = None
-        main_dialog.addWfsLayer.connect(self.slotAddWfsLayer)
+        main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' retrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
+        self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # Click on Build Query
@@ -296,17 +290,18 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
 
         self.addWfsLayer_uri = None
         self.addWfsLayer_layer_name = None
-        main_dialog.addWfsLayer.connect(self.slotAddWfsLayer)
+        main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
-        self.assertEqual(self.addWfsLayer_uri, ' retrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
+        self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
-        #main_dialog.setProperty("hideDialogs", None)
-        #main_dialog.exec_()
+        # main_dialog.setProperty("hideDialogs", None)
+        # main_dialog.exec_()
 
     def slotAddWfsLayer(self, uri, layer_name):
         self.addWfsLayer_uri = uri
         self.addWfsLayer_layer_name = layer_name
+
 
 if __name__ == '__main__':
     unittest.main()

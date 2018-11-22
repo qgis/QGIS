@@ -1,0 +1,124 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmessageoutput.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsMessageOutput
+{
+%Docstring
+Interface for showing messages from QGIS in GUI independent way.
+This class provides abstraction of a dialog for showing output to the user.
+By default QgsMessageConsoleOutput will be used if not overridden with other
+message output creator function.
+
+QGIS application uses QgsMessageView class for displaying a dialog to the user.
+
+Object deletes itself when it's not needed anymore. Children should use
+signal destroyed() to notify the deletion
+%End
+
+%TypeHeaderCode
+#include "qgsmessageoutput.h"
+%End
+  public:
+
+    enum MessageType { MessageText, MessageHtml };
+
+    virtual ~QgsMessageOutput();
+
+    virtual void setMessage( const QString &message, MessageType msgType ) = 0;
+%Docstring
+Sets message, it won't be displayed until
+%End
+
+    virtual void appendMessage( const QString &message ) = 0;
+%Docstring
+message to be appended to the current text
+%End
+
+    virtual void setTitle( const QString &title ) = 0;
+%Docstring
+Sets title for the messages
+%End
+
+    virtual void showMessage( bool blocking = true ) = 0;
+%Docstring
+display the message to the user and deletes itself
+%End
+
+    static void showMessage( const QString &title, const QString &message, MessageType msgType );
+%Docstring
+Display the blocking message to the user.
+
+.. versionadded:: 2.10
+%End
+
+
+    static QgsMessageOutput *createMessageOutput();
+%Docstring
+function that returns new class derived from QgsMessageOutput
+(don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+%End
+
+};
+
+
+class QgsMessageOutputConsole : QObject, QgsMessageOutput
+{
+%Docstring
+Default implementation of message output interface
+
+This class outputs messages to the standard output. Therefore it might
+be the right choice for apps without GUI.
+%End
+
+%TypeHeaderCode
+#include "qgsmessageoutput.h"
+%End
+  public:
+
+    QgsMessageOutputConsole();
+%Docstring
+Constructor for QgsMessageOutputConsole.
+%End
+
+    virtual void setMessage( const QString &message, MessageType msgType );
+
+
+    virtual void appendMessage( const QString &message );
+
+
+    virtual void setTitle( const QString &title );
+
+
+    virtual void showMessage( bool blocking = true );
+
+%Docstring
+sends the message to the standard output
+%End
+
+  signals:
+
+    void destroyed();
+%Docstring
+signals that object will be destroyed and shouldn't be used anymore
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmessageoutput.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -107,8 +107,8 @@ public:
     /**
      * Sets the margins for scrolling the screen.
      *
-     * @param topLine The top line of the new scrolling margin.
-     * @param bottomLine The bottom line of the new scrolling margin.
+     * \param topLine The top line of the new scrolling margin.
+     * \param bottomLine The bottom line of the new scrolling margin.
      */
     void setMargins(int topLine , int bottomLine);
     /** Returns the top line of the scrolling region. */
@@ -262,33 +262,33 @@ public:
      * Enables the given @p rendition flag.  Rendition flags control the appearance
      * of characters on the screen.
      *
-     * @see Character::rendition
+     * \see Character::rendition
      */
     void setRendition(int rendition);
     /**
      * Disables the given @p rendition flag.  Rendition flags control the appearance
      * of characters on the screen.
      *
-     * @see Character::rendition
+     * \see Character::rendition
      */
     void resetRendition(int rendition);
 
     /**
      * Sets the cursor's foreground color.
-     * @param space The color space used by the @p color argument
-     * @param color The new foreground color.  The meaning of this depends on
+     * \param space The color space used by the @p color argument
+     * \param color The new foreground color.  The meaning of this depends on
      * the color @p space used.
      *
-     * @see CharacterColor
+     * \see CharacterColor
      */
     void setForeColor(int space, int color);
     /**
      * Sets the cursor's background color.
-     * @param space The color space used by the @p color argumnet.
-     * @param color The new background color.  The meaning of this depends on
+     * \param space The color space used by the @p color argumnet.
+     * \param color The new background color.  The meaning of this depends on
      * the color @p space used.
      *
-     * @see CharacterColor
+     * \see CharacterColor
      */
     void setBackColor(int space, int color);
     /**
@@ -363,10 +363,10 @@ public:
      * The result is an array of Characters of size [getLines()][getColumns()] which
      * must be freed by the caller after use.
      *
-     * @param dest Buffer to copy the characters into
-     * @param size Size of @p dest in Characters
-     * @param startLine Index of first line to copy
-     * @param endLine Index of last line to copy
+     * \param dest Buffer to copy the characters into
+     * \param size Size of @p dest in Characters
+     * \param startLine Index of first line to copy
+     * \param endLine Index of last line to copy
      */
     void getImage( Character* dest , int size , int startLine , int endLine ) const;
 
@@ -379,13 +379,13 @@ public:
     QVector<LineProperty> getLineProperties( int startLine , int endLine ) const;
 
 
-    /** Return the number of lines. */
+    /** Returns the number of lines. */
     int getLines() const
     { return lines; }
-    /** Return the number of columns. */
+    /** Returns the number of columns. */
     int getColumns() const
     { return columns; }
-    /** Return the number of lines in the history buffer. */
+    /** Returns the number of lines in the history buffer. */
     int getHistLines() const;
     /**
      * Sets the type of storage used to keep lines in the history.
@@ -404,17 +404,17 @@ public:
     /**
      * Sets the start of the selection.
      *
-     * @param column The column index of the first character in the selection.
-     * @param line The line index of the first character in the selection.
-     * @param blockSelectionMode True if the selection is in column mode.
+     * \param column The column index of the first character in the selection.
+     * \param line The line index of the first character in the selection.
+     * \param blockSelectionMode True if the selection is in column mode.
      */
     void setSelectionStart(const int column, const int line, const bool blockSelectionMode);
 
     /**
      * Sets the end of the current selection.
      *
-     * @param column The column index of the last character in the selection.
-     * @param line The line index of the last character in the selection.
+     * \param column The column index of the last character in the selection.
+     * \param line The line index of the last character in the selection.
      */
     void setSelectionEnd(const int column, const int line);
 
@@ -441,7 +441,7 @@ public:
 
     /**
      * Convenience method.  Returns the currently selected text.
-     * @param preserveLineBreaks Specifies whether new line characters should
+     * \param preserveLineBreaks Specifies whether new line characters should
      * be inserted into the returned text at the end of each terminal line.
      */
     QString selectedText(bool preserveLineBreaks) const;
@@ -449,20 +449,20 @@ public:
     /**
      * Copies part of the output to a stream.
      *
-     * @param decoder A decoder which converts terminal characters into text
-     * @param fromLine The first line in the history to retrieve
-     * @param toLine The last line in the history to retrieve
+     * \param decoder A decoder which converts terminal characters into text
+     * \param fromLine The first line in the history to retrieve
+     * \param toLine The last line in the history to retrieve
      */
     void writeLinesToStream(TerminalCharacterDecoder* decoder, int fromLine, int toLine) const;
 
     /**
-     * Copies the selected characters, set using @see setSelBeginXY and @see setSelExtentXY
+     * Copies the selected characters, set using \see setSelBeginXY and \see setSelExtentXY
      * into a stream.
      *
-     * @param decoder A decoder which converts terminal characters into text.
+     * \param decoder A decoder which converts terminal characters into text.
      * PlainTextDecoder is the most commonly used decoder which converts characters
      * into plain text with no formatting.
-     * @param preserveLineBreaks Specifies whether new line characters should
+     * \param preserveLineBreaks Specifies whether new line characters should
      * be inserted into the returned text at the end of each terminal line.
      */
     void writeSelectionToStream(TerminalCharacterDecoder* decoder , bool
@@ -475,15 +475,15 @@ public:
      * The loc(x,y) macro can be used to generate these values from a
      * column,line pair.
      *
-     * @param from The start of the area to check.
-     * @param to The end of the area to check
+     * \param from The start of the area to check.
+     * \param to The end of the area to check
      */
     void checkSelection(int from, int to);
 
     /**
      * Sets or clears an attribute of the current line.
      *
-     * @param property The attribute to set or clear
+     * \param property The attribute to set or clear
      * Possible properties are:
      * LINE_WRAPPED:     Specifies that the line is wrapped.
      * LINE_DOUBLEWIDTH: Specifies that the characters in the current line
@@ -495,7 +495,7 @@ public:
      *                   This allows other parts of the code to work on the
      *                   assumption that all lines are the same height.
      *
-     * @param enable true to apply the attribute to the current line or false to remove it
+     * \param enable true to apply the attribute to the current line or false to remove it
      */
     void setLineProperty(LineProperty property , bool enable);
 

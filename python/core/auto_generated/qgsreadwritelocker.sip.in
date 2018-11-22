@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsreadwritelocker.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsReadWriteLocker
+{
+%Docstring
+The QgsReadWriteLocker class is a convenience class that simplifies locking and unlocking QReadWriteLocks.
+
+Locking and unlocking a QReadWriteLocks in complex functions and statements or in exception handling code
+is error-prone and difficult to debug.
+QgsReadWriteLocker can be used in such situations to ensure that the state of the lock is always well-defined.
+
+QgsReadWriteLocker should be created within a function where a QReadWriteLock needs to be locked.
+The lock may be locked when QgsReadWriteLocker is created or when changeMode is called.
+You can unlock and relock the lock with unlock() and changeMode().
+If locked, the lock will be unlocked when the QgsReadWriteLocker is destroyed.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsreadwritelocker.h"
+%End
+  public:
+
+    enum Mode
+    {
+      Read,
+      Write,
+      Unlocked
+    };
+
+    QgsReadWriteLocker( QReadWriteLock &lock, Mode mode );
+%Docstring
+Create a new QgsReadWriteLocker for ``lock`` and initialize in ``mode``.
+%End
+
+    void changeMode( Mode mode );
+%Docstring
+Change the mode of the lock to ``mode``.
+The lock will be unlocked and relocked as required.
+%End
+
+    void unlock();
+%Docstring
+Unlocks the lock.
+Equivalent to doing ``changeMode( QgsReadWriteLocker.Unlock );``
+%End
+
+    ~QgsReadWriteLocker();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsreadwritelocker.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

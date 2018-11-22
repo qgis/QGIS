@@ -17,34 +17,42 @@
 #define QGSBROWSERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis.h"
+#include "qgis_gui.h"
 
-//class QgsBrowserModel;
+class QgsBrowserModel;
 
 /**
+ * \ingroup gui
  * The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
  *
- * @see QgsBrowserModel
- * @note added in 2.8
+ * \see QgsBrowserModel
+ * \since QGIS 2.8
  */
 class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    QgsBrowserTreeView( QWidget *parent = nullptr );
-    ~QgsBrowserTreeView();
 
-    virtual void setModel( QAbstractItemModel* model ) override;
-    virtual void showEvent( QShowEvent * e ) override;
-    virtual void hideEvent( QHideEvent * e ) override;
+    //! Constructor for QgsBrowserTreeView
+    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setModel( QAbstractItemModel *model ) override;
+    //! Sets the browser model
+    void setBrowserModel( QgsBrowserModel *model );
+    //! Returns the browser model
+    QgsBrowserModel *browserModel() { return mBrowserModel; }
+    void showEvent( QShowEvent *e ) override;
+    void hideEvent( QHideEvent *e ) override;
 
     // returns true if at least one descendat is expanded, used in refresh
-    bool hasExpandedDescendant( const QModelIndex& index ) const;
+    bool hasExpandedDescendant( const QModelIndex &index ) const;
 
     // Set section where to store settings (because we have 2 browser dock widgets)
-    void setSettingsSection( const QString & section ) { mSettingsSection = section; }
+    void setSettingsSection( const QString &section ) { mSettingsSection = section; }
 
   protected slots:
-    virtual void rowsInserted( const QModelIndex & parentIndex, int start, int end ) override;
+    void rowsInserted( const QModelIndex &parentIndex, int start, int end ) override;
 
   private:
     QString mSettingsSection;
@@ -56,13 +64,14 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     QString expandedPathsKey() const;
 
     // Get list of expanded items paths recursively
-    QStringList expandedPathsList( const QModelIndex & index );
+    QStringList expandedPathsList( const QModelIndex &index );
 
     // Expand path recursively to root
-    void expandTree( const QModelIndex & index );
+    void expandTree( const QModelIndex &index );
 
     // returns true if expanded from root to item
-    bool treeExpanded( const QModelIndex & index );
+    bool treeExpanded( const QModelIndex &index );
+    QgsBrowserModel *mBrowserModel = nullptr;
 };
 
 #endif // QGSBROWSERTREEVIEW_H

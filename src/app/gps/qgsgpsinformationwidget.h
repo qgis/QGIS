@@ -19,9 +19,10 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 
-#include <qgsmapcanvas.h>
-#include <qgsgpsmarker.h>
-#include <qgsmaptoolcapture.h>
+#include "gmath.h"
+#include "info.h"
+#include "qgsgpsmarker.h"
+#include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
@@ -30,47 +31,51 @@
 #endif
 
 class QextSerialPort;
-class QgsGPSConnection;
-class QgsGPSTrackerThread;
-struct QgsGPSInformation;
+class QgsGpsConnection;
+class QgsGpsTrackerThread;
+struct QgsGpsInformation;
+class QgsMapCanvas;
 
 class QFile;
 class QColor;
 
-/** A dock widget that displays information from a GPS device and
+/**
+ * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
-class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase
+class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsGPSInformationWidget();
+    QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsGpsInformationWidget() override;
 
   private slots:
-    void on_mConnectButton_toggled( bool theFlag );
-    void displayGPSInformation( const QgsGPSInformation& info );
-    void logNmeaSentence( const QString& nmeaString ); // added to handle 'raw' data
-    void updateCloseFeatureButton( QgsMapLayer * lyr );
+    void mConnectButton_toggled( bool flag );
+    void displayGPSInformation( const QgsGpsInformation &info );
+    void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
+    void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
-    void on_mBtnTrackColor_clicked();
-    void on_mSpinTrackWidth_valueChanged( int theValue );
-    void on_mBtnPosition_clicked();
-    void on_mBtnSignal_clicked();
-    void on_mBtnSatellites_clicked();
-    void on_mBtnOptions_clicked();
-    void on_mBtnDebug_clicked();
-    void on_mBtnRefreshDevices_clicked();
-    void on_mBtnAddVertex_clicked();
-    void on_mBtnCloseFeature_clicked();
-    void on_mBtnResetFeature_clicked();
-// not needed    void on_mCbxAutoAddVertices_toggled( bool theFlag );
-    void on_mBtnLogFile_clicked();
+    void trackColorChanged( const QColor &color );
+    void mSpinTrackWidth_valueChanged( int value );
+    void mBtnPosition_clicked();
+    void mBtnSignal_clicked();
+    void mBtnSatellites_clicked();
+    void mBtnOptions_clicked();
+    void mBtnDebug_clicked();
+    void mBtnRefreshDevices_clicked();
+    void mBtnAddVertex_clicked();
+    void mBtnCloseFeature_clicked();
+    void mBtnResetFeature_clicked();
+// not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
+    void mBtnLogFile_clicked();
 
-    void connected( QgsGPSConnection * );
+    void connected( QgsGpsConnection * );
     void timedout();
-
+    void switchAcquisition();
+    void cboAcquisitionIntervalEdited();
+    void cboDistanceThresholdEdited();
   private:
     enum FixStatus  //GPS status
     {
@@ -81,30 +86,39 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void connectGpsSlot();
     void disconnectGps();
     void populateDevices();
-    void setStatusIndicator( const FixStatus statusValue );
-    void showStatusBarMessage( const QString& msg );
-    QgsGPSConnection* mNmea;
-    QgsMapCanvas * mpCanvas;
-    QgsGpsMarker * mpMapMarker;
-    QwtPlot * mpPlot;
-    QwtPlotCurve * mpCurve;
+    void setStatusIndicator( FixStatus statusValue );
+    void showStatusBarMessage( const QString &msg );
+    void setAcquisitionInterval( uint );
+    void setDistanceThreshold( uint );
+    QgsGpsConnection *mNmea = nullptr;
+    QgsMapCanvas *mpCanvas = nullptr;
+    QgsGpsMarker *mpMapMarker = nullptr;
+    QwtPlot *mpPlot = nullptr;
+    QwtPlotCurve *mpCurve = nullptr;
 #ifdef WITH_QWTPOLAR
-    QwtPolarPlot * mpSatellitesWidget;
-    QwtPolarGrid *mpSatellitesGrid;
+    QwtPolarPlot *mpSatellitesWidget = nullptr;
+    QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
+
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
-    QgsRubberBand * mpRubberBand;
-    QgsPoint mLastGpsPosition;
-    QList<QgsPoint> mCaptureList;
+    QgsRubberBand *mpRubberBand = nullptr;
+    QgsPointXY mLastGpsPosition;
+    QList<QgsPointXY> mCaptureList;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QgsVectorLayer * mpLastLayer;
-    QFile * mLogFile;
+    QPointer< QgsVectorLayer > mpLastLayer;
+    QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-    QColor mTrackColor;
+    QIntValidator *mAcquisitionIntValidator = nullptr;
+    QIntValidator *mDistanceThresholdValidator = nullptr;
+    nmeaPOS mLastNmeaPosition;
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    unsigned int mAcquisitionInterval = 0;
+    unsigned int mDistanceThreshold = 0;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

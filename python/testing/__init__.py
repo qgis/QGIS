@@ -31,11 +31,12 @@ import difflib
 import functools
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
-from nose2.compat import unittest
+from qgis.core import QgsApplication, QgsFeatureRequest, NULL
+import unittest
 
 # Get a backup, we will patch this one later
 _TestCase = unittest.TestCase
+unittest.util._MAX_LENGTH = 2000
 
 
 class TestCase(_TestCase):
@@ -50,6 +51,29 @@ class TestCase(_TestCase):
         :keyword compare: A map of comparison options. e.g.
                          { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
                          { fields: { __all__: cast( str ) } }
+        :keyword pk: "Primary key" type field - used to match features
+        from the expected table to their corresponding features in the result table. If not specified
+        features are compared by their order in the layer (e.g. first feature compared with first feature,
+        etc)
+        """
+        self.checkLayersEqual(layer_expected, layer_result, True, **kwargs)
+
+    def checkLayersEqual(self, layer_expected, layer_result, use_asserts=False, **kwargs):
+        """
+        :param layer_expected: The first layer to compare
+        :param layer_result: The second layer to compare
+        :param use_asserts: If true, asserts are used to test conditions, if false, asserts
+        are not used and the function will only return False if the test fails
+        :param request: Optional, A feature request. This can be used to specify
+                        an order by clause to make sure features are compared in
+                        a given sequence if they don't match by default.
+        :keyword compare: A map of comparison options. e.g.
+                         { fields: { a: skip, b: { precision: 2 }, geometry: { precision: 5 } }
+                         { fields: { __all__: cast( str ) } }
+        :keyword pk: "Primary key" type field - used to match features
+        from the expected table to their corresponding features in the result table. If not specified
+        features are compared by their order in the layer (e.g. first feature compared with first feature,
+        etc)
         """
 
         try:
@@ -63,84 +87,102 @@ class TestCase(_TestCase):
             compare = {}
 
         # Compare CRS
-        _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+        if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
+            if use_asserts:
+                _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+            elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+                return False
 
         # Compare features
-        _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+        if use_asserts:
+            _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+        elif layer_expected.featureCount() != layer_result.featureCount():
+            return False
 
         try:
             precision = compare['geometry']['precision']
         except KeyError:
             precision = 14
 
-        for feats in zip(layer_expected.getFeatures(request), layer_result.getFeatures(request)):
-            if feats[0].geometry() is not None:
-                geom0 = feats[0].geometry().geometry().asWkt(precision)
+        try:
+            topo_equal_check = compare['geometry']['topo_equal_check']
+        except KeyError:
+            topo_equal_check = False
+
+        try:
+            unordered = compare['unordered']
+        except KeyError:
+            unordered = False
+
+        if unordered:
+            features_expected = [f for f in layer_expected.getFeatures(request)]
+            for feat in layer_result.getFeatures(request):
+                feat_expected_equal = None
+                for feat_expected in features_expected:
+                    if self.checkGeometriesEqual(feat.geometry(), feat_expected.geometry(),
+                                                 feat.id(), feat_expected.id(),
+                                                 False, precision, topo_equal_check) and \
+                       self.checkAttributesEqual(feat, feat_expected, layer_expected.fields(), False, compare):
+                        feat_expected_equal = feat_expected
+                        break
+
+                if feat_expected_equal is not None:
+                    features_expected.remove(feat_expected_equal)
+                else:
+                    if use_asserts:
+                        _TestCase.assertTrue(
+                            self, False,
+                            'Unexpected result feature: fid {}, geometry: {}, attributes: {}'.format(
+                                feat.id(),
+                                feat.geometry().constGet().asWkt(precision) if feat.geometry() else 'NULL',
+                                feat.attributes())
+                        )
+                    else:
+                        return False
+
+            if len(features_expected) != 0:
+                if use_asserts:
+                    lst_missing = []
+                    for feat in features_expected:
+                        lst_missing.append('fid {}, geometry: {}, attributes: {}'.format(
+                            feat.id(),
+                            feat.geometry().constGet().asWkt(precision) if feat.geometry() else 'NULL',
+                            feat.attributes())
+                        )
+                    _TestCase.assertTrue(self, False, 'Some expected features not found in results:\n' + '\n'.join(lst_missing))
+                else:
+                    return False
+
+            return True
+
+        def sort_by_pk_or_fid(f):
+            if 'pk' in kwargs and kwargs['pk'] is not None:
+                key = kwargs['pk']
+                if isinstance(key, list) or isinstance(key, tuple):
+                    return [f[k] for k in key]
+                else:
+                    return f[kwargs['pk']]
             else:
-                geom0 = None
-            if feats[1].geometry() is not None:
-                geom1 = feats[1].geometry().geometry().asWkt(precision)
-            else:
-                geom1 = None
-            _TestCase.assertEqual(
-                self,
-                geom0,
-                geom1,
-                'Features {}/{} differ in geometry: \n\n {}\n\n vs \n\n {}'.format(
-                    feats[0].id(),
-                    feats[1].id(),
-                    geom0,
-                    geom1
-                )
-            )
+                return f.id()
 
-            for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
-                attr_result = feats[1][field_expected.name()]
-                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
-                try:
-                    cmp = compare['fields'][field1.name()]
-                except KeyError:
-                    try:
-                        cmp = compare['fields']['__all__']
-                    except KeyError:
-                        cmp = {}
+        expected_features = sorted(layer_expected.getFeatures(request), key=sort_by_pk_or_fid)
+        result_features = sorted(layer_result.getFeatures(request), key=sort_by_pk_or_fid)
 
-                # Skip field
-                if 'skip' in cmp:
-                    continue
+        for feats in zip(expected_features, result_features):
 
-                # Cast field to a given type
-                if 'cast' in cmp:
-                    if cmp['cast'] == 'int':
-                        attr_expected = int(attr_expected) if attr_expected else None
-                        attr_result = int(attr_result) if attr_result else None
-                    if cmp['cast'] == 'float':
-                        attr_expected = float(attr_expected) if attr_expected else None
-                        attr_result = float(attr_result) if attr_result else None
-                    if cmp['cast'] == 'str':
-                        attr_expected = str(attr_expected) if attr_expected else None
-                        attr_result = str(attr_result) if attr_result else None
+            eq = self.checkGeometriesEqual(feats[0].geometry(),
+                                           feats[1].geometry(),
+                                           feats[0].id(),
+                                           feats[1].id(),
+                                           use_asserts, precision, topo_equal_check)
+            if not eq and not use_asserts:
+                return False
 
-                # Round field (only numeric so it works with __all__)
-                if 'precision' in cmp and field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong]:
-                    attr_expected = round(attr_expected, cmp['precision'])
-                    attr_result = round(attr_result, cmp['precision'])
+            eq = self.checkAttributesEqual(feats[0], feats[1], layer_expected.fields(), use_asserts, compare)
+            if not eq and not use_asserts:
+                return False
 
-                _TestCase.assertEqual(
-                    self,
-                    attr_expected,
-                    attr_result,
-                    'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
-                        feats[0].id(),
-                        feats[1].id(),
-                        field_expected.name(),
-                        field_expected.typeName(),
-                        field_result.name(),
-                        field_result.typeName(),
-                        repr(attr_expected),
-                        repr(attr_result)
-                    )
-                )
+        return True
 
     def assertFilesEqual(self, filepath_expected, filepath_result):
         with open(filepath_expected, 'r') as file_expected:
@@ -153,6 +195,106 @@ class TestCase(_TestCase):
                 )
                 diff = list(diff)
                 self.assertEqual(0, len(diff), ''.join(diff))
+
+    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False):
+        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check)
+
+    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False):
+        """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
+        or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
+        order of vertices)
+        .. versionadded:: 3.2
+        """
+        if not geom0.isNull() and not geom1.isNull():
+            if topo_equal_check:
+                equal = geom0.isGeosEqual(geom1)
+            else:
+                equal = geom0.constGet().asWkt(precision) == geom1.constGet().asWkt(precision)
+        elif geom0.isNull() and geom1.isNull():
+            equal = True
+        else:
+            equal = False
+
+        if use_asserts:
+            _TestCase.assertTrue(
+                self,
+                equal,
+                'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
+                    geom0_id,
+                    geom1_id,
+                    geom0.constGet().asWkt(precision) if not geom0.isNull() else 'NULL',
+                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL'
+                )
+            )
+        else:
+            return equal
+
+    def checkAttributesEqual(self, feat0, feat1, fields_expected, use_asserts, compare):
+        """ Checks whether attributes of two features are the same
+        .. versionadded:: 3.2
+        """
+
+        for attr_expected, field_expected in zip(feat0.attributes(), fields_expected.toList()):
+            try:
+                cmp = compare['fields'][field_expected.name()]
+            except KeyError:
+                try:
+                    cmp = compare['fields']['__all__']
+                except KeyError:
+                    cmp = {}
+
+            # Skip field
+            if 'skip' in cmp:
+                continue
+
+            if use_asserts:
+                _TestCase.assertIn(
+                    self,
+                    field_expected.name().lower(),
+                    [name.lower() for name in feat1.fields().names()])
+
+            attr_result = feat1[field_expected.name()]
+            field_result = [fld for fld in fields_expected.toList() if fld.name() == field_expected.name()][0]
+
+            # Cast field to a given type
+            if 'cast' in cmp:
+                if cmp['cast'] == 'int':
+                    attr_expected = int(attr_expected) if attr_expected else None
+                    attr_result = int(attr_result) if attr_result else None
+                if cmp['cast'] == 'float':
+                    attr_expected = float(attr_expected) if attr_expected else None
+                    attr_result = float(attr_result) if attr_result else None
+                if cmp['cast'] == 'str':
+                    attr_expected = str(attr_expected) if attr_expected else None
+                    attr_result = str(attr_result) if attr_result else None
+
+            # Round field (only numeric so it works with __all__)
+            if 'precision' in cmp and field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong]:
+                if not attr_expected == NULL:
+                    attr_expected = round(attr_expected, cmp['precision'])
+                if not attr_result == NULL:
+                    attr_result = round(attr_result, cmp['precision'])
+
+            if use_asserts:
+                _TestCase.assertEqual(
+                    self,
+                    attr_expected,
+                    attr_result,
+                    'Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}'.format(
+                        feat0.id(),
+                        feat1.id(),
+                        field_expected.name(),
+                        field_expected.typeName(),
+                        field_result.name(),
+                        field_result.typeName(),
+                        repr(attr_expected),
+                        repr(attr_result)
+                    )
+                )
+            elif attr_expected != attr_result:
+                return False
+
+        return True
 
 
 class _UnexpectedSuccess(Exception):
@@ -218,6 +360,7 @@ def expectedFailure(*args):
 
         return realExpectedFailure
 
+
 # Patch unittest
 unittest.TestCase = TestCase
 unittest.expectedFailure = expectedFailure
@@ -251,6 +394,11 @@ def start_app(cleanup=True):
     except NameError:
         myGuiFlag = True  # All test will run qgis in gui mode
 
+        try:
+            sys.argv
+        except:
+            sys.argv = ['']
+
         # In python3 we need to convert to a bytes object (or should
         # QgsApplication accept a QString instead of const char* ?)
         try:
@@ -264,6 +412,11 @@ def start_app(cleanup=True):
 
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
+
+        def debug_log_message(message, tag, level):
+            print('{}({}): {}'.format(tag, level, message))
+
+        QgsApplication.instance().messageLog().messageReceived.connect(debug_log_message)
 
         if cleanup:
             import atexit

@@ -22,22 +22,22 @@
 #include <QStringList>
 
 
-QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t )
-    : mNodeType( t )
-    , mParent( nullptr )
-    , mExpanded( true )
+QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
+  : mNodeType( t )
+  , mChecked( checked )
+  , mExpanded( true )
 {
 }
 
-QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode& other )
-    : QObject()
-    , mNodeType( other.mNodeType )
-    , mParent( nullptr )
-    , mExpanded( other.mExpanded )
-    , mProperties( other.mProperties )
+QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
+  : QObject( nullptr )
+  , mNodeType( other.mNodeType )
+  , mChecked( other.mChecked )
+  , mExpanded( other.mExpanded )
+  , mProperties( other.mProperties )
 {
-  QList<QgsLayerTreeNode*> clonedChildren;
-  Q_FOREACH ( QgsLayerTreeNode* child, other.mChildren )
+  QList<QgsLayerTreeNode *> clonedChildren;
+  Q_FOREACH ( QgsLayerTreeNode *child, other.mChildren )
     clonedChildren << child->clone();
   insertChildrenPrivate( -1, clonedChildren );
 }
@@ -47,15 +47,56 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
   qDeleteAll( mChildren );
 }
 
-QgsLayerTreeNode* QgsLayerTreeNode::readXML( QDomElement& element )
+QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsLayerTreeNode* node = nullptr;
-  if ( element.tagName() == "layer-tree-group" )
-    node = QgsLayerTreeGroup::readXML( element );
-  else if ( element.tagName() == "layer-tree-layer" )
-    node = QgsLayerTreeLayer::readXML( element );
+  QgsLayerTreeNode *node = nullptr;
+  if ( element.tagName() == QLatin1String( "layer-tree-group" ) )
+    node = QgsLayerTreeGroup::readXml( element, context );
+  else if ( element.tagName() == QLatin1String( "layer-tree-layer" ) )
+    node = QgsLayerTreeLayer::readXml( element, context );
 
   return node;
+}
+
+QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsProject *project )
+{
+  QgsReadWriteContext context;
+  QgsPathResolver resolver;
+  if ( project )
+    resolver = project->pathResolver();
+  context.setPathResolver( resolver );
+  context.setProjectTranslator( const_cast<QgsProject *>( project ) );
+
+  QgsLayerTreeNode *node = readXml( element, context );
+  if ( node )
+    node->resolveReferences( project );
+  return node;
+}
+
+
+void QgsLayerTreeNode::setItemVisibilityChecked( bool checked )
+{
+  if ( mChecked == checked )
+    return;
+  mChecked = checked;
+  emit visibilityChanged( this );
+}
+
+void QgsLayerTreeNode::setItemVisibilityCheckedRecursive( bool checked )
+{
+  setItemVisibilityChecked( checked );
+}
+
+void QgsLayerTreeNode::setItemVisibilityCheckedParentRecursive( bool checked )
+{
+  setItemVisibilityChecked( checked );
+  if ( mParent )
+    mParent->setItemVisibilityCheckedParentRecursive( checked );
+}
+
+bool QgsLayerTreeNode::isVisible() const
+{
+  return mChecked && ( !mParent || mParent->isVisible() );
 }
 
 
@@ -64,6 +105,51 @@ bool QgsLayerTreeNode::isExpanded() const
   return mExpanded;
 }
 
+bool QgsLayerTreeNode::isItemVisibilityCheckedRecursive() const
+{
+  if ( !mChecked )
+    return false;
+  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+  {
+    if ( !child->isItemVisibilityCheckedRecursive() )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsLayerTreeNode::isItemVisibilityUncheckedRecursive() const
+{
+  if ( mChecked )
+    return false;
+  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+  {
+    if ( !child->isItemVisibilityUncheckedRecursive() )
+      return false;
+  }
+
+  return true;
+}
+
+void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &layers )
+{
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    const QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+    if ( nodeLayer->isVisible() )
+      layers << nodeLayer->layer();
+  }
+
+  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    fetchCheckedLayers( child, layers );
+}
+
+QList<QgsMapLayer *> QgsLayerTreeNode::checkedLayers() const
+{
+  QList<QgsMapLayer *> layers;
+  fetchCheckedLayers( this, layers );
+  return layers;
+}
 
 void QgsLayerTreeNode::setExpanded( bool expanded )
 {
@@ -97,18 +183,18 @@ QStringList QgsLayerTreeNode::customProperties() const
   return mProperties.keys();
 }
 
-void QgsLayerTreeNode::readCommonXML( QDomElement& element )
+void QgsLayerTreeNode::readCommonXml( QDomElement &element )
 {
   mProperties.readXml( element );
 }
 
-void QgsLayerTreeNode::writeCommonXML( QDomElement& element )
+void QgsLayerTreeNode::writeCommonXml( QDomElement &element )
 {
   QDomDocument doc( element.ownerDocument() );
   mProperties.writeXml( element, doc );
 }
 
-void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes )
+void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode *> nodes )
 {
   if ( nodes.isEmpty() )
     return;
@@ -126,16 +212,18 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
   emit willAddChildren( this, index, indexTo );
   for ( int i = 0; i < nodes.count(); ++i )
   {
-    mChildren.insert( index + i, nodes[i] );
+    QgsLayerTreeNode *node = nodes.at( i );
+    mChildren.insert( index + i, node );
 
     // forward the signal towards the root
-    connect( nodes[i], SIGNAL( willAddChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( willAddChildren( QgsLayerTreeNode*, int, int ) ) );
-    connect( nodes[i], SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ) );
-    connect( nodes[i], SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( willRemoveChildren( QgsLayerTreeNode*, int, int ) ) );
-    connect( nodes[i], SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ), this, SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ) );
-    connect( nodes[i], SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ) );
-    connect( nodes[i], SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ) );
-    connect( nodes[i], SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ), this, SIGNAL( expandedChanged( QgsLayerTreeNode*, bool ) ) );
+    connect( node, &QgsLayerTreeNode::willAddChildren, this, &QgsLayerTreeNode::willAddChildren );
+    connect( node, &QgsLayerTreeNode::addedChildren, this, &QgsLayerTreeNode::addedChildren );
+    connect( node, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeNode::willRemoveChildren );
+    connect( node, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeNode::removedChildren );
+    connect( node, &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeNode::customPropertyChanged );
+    connect( node, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeNode::visibilityChanged );
+    connect( node, &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeNode::expandedChanged );
+    connect( node, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeNode::nameChanged );
   }
   emit addedChildren( this, index, indexTo );
 }

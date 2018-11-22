@@ -26,7 +26,6 @@
 **/
 #include "evisdatabaseconnectiongui.h"
 
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
 #include <QMessageBox>
@@ -43,54 +42,59 @@
 
 /**
 * Constructor
-* @param parent - Pointer the to parent QWidget for modality
-* @param fl - Windown flags
+* \param parent - Pointer the to parent QWidget for modality
+* \param fl - Windown flags
 */
-eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* theTemoraryFileList, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *temporaryFileList, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &eVisDatabaseConnectionGui::buttonBox_accepted );
+  connect( cboxDatabaseType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged );
+  connect( cboxPredefinedQueryList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisDatabaseConnectionGui::cboxPredefinedQueryList_currentIndexChanged );
+  connect( pbtnConnect, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnConnect_clicked );
+  connect( pbtnLoadPredefinedQueries, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnLoadPredefinedQueries_clicked );
+  connect( pbtnOpenFile, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnOpenFile_clicked );
+  connect( pbtnRunQuery, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnRunQuery_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &eVisDatabaseConnectionGui::showHelp );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/eVis/db-geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "eVis/db-geometry" ) ).toByteArray() );
 
-  mTempOutputFileList = theTemoraryFileList;
+  mTempOutputFileList = temporaryFileList;
 
-  //Initialize varaibles
+  //Initialize variables
   mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
   mDatabaseConnection = nullptr;
 
   //Create a new instance of the file selector
   mDatabaseLayerFieldSelector = new eVisDatabaseLayerFieldSelectionGui( this, fl );
-  connect( mDatabaseLayerFieldSelector, SIGNAL( eVisDatabaseLayerFieldsSelected( QString, QString, QString ) ), this, SLOT( drawNewVectorLayer( QString, QString, QString ) ) );
+  connect( mDatabaseLayerFieldSelector, &eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldsSelected, this, &eVisDatabaseConnectionGui::drawNewVectorLayer );
 
   //Populate gui components
 #ifdef Q_OS_WIN
   cboxDatabaseType->insertItem( 0, "MSAccess" );
 #endif
-  cboxDatabaseType->insertItem( 0, "MYSQL" );
-  cboxDatabaseType->insertItem( 0, "ODBC" );
-  cboxDatabaseType->insertItem( 0, "PostGreSQL" );
-  cboxDatabaseType->insertItem( 0, "SQLITE" );
+  cboxDatabaseType->insertItem( 0, QStringLiteral( "MYSQL" ) );
+  cboxDatabaseType->insertItem( 0, QStringLiteral( "ODBC" ) );
+  cboxDatabaseType->insertItem( 0, QStringLiteral( "PostGreSQL" ) );
+  cboxDatabaseType->insertItem( 0, QStringLiteral( "SQLITE" ) );
   cboxDatabaseType->insertItem( 0, tr( "Undefined" ) );
   cboxDatabaseType->setCurrentIndex( 0 );
   cboxPredefinedQueryList->insertItem( 0, tr( "No predefined queries loaded" ) );
 
   //set icons
   QString myThemePath = QgsApplication::activeThemePath();
-  pbtnOpenFile->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.png" ) ) );
+  pbtnOpenFile->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
   pbtnOpenFile->setToolTip( tr( "Open File" ) );
-  pbtnLoadPredefinedQueries->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.png" ) ) );
+  pbtnLoadPredefinedQueries->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
   pbtnLoadPredefinedQueries->setToolTip( tr( "Open File" ) );
 }
 
-/**
-* Destructor
-*/
 eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 {
   QSettings settings;
-  settings.setValue( "/eVis/db-geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "eVis/db-geometry" ), saveGeometry() );
 }
 
 /*
@@ -101,11 +105,11 @@ eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 
 /**
 * Slot called after the user selects the x, y fields in the field selection gui component
-* @param layerName - Name to display in the legend
-* @param xCoordinate - Name of the field containing the x coordinate
-* @param yCoordinate - Name of the field containing the y coordinate
+* \param layerName - Name to display in the legend
+* \param xCoordinate - Name of the field containing the x coordinate
+* \param yCoordinate - Name of the field containing the y coordinate
 */
-void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, const QString& xCoordinate, const QString& yCoordinate )
+void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, const QString &xCoordinate, const QString &yCoordinate )
 {
   //if coorindate fields are defined, load as a delimited text layer
   if ( !xCoordinate.isEmpty() && !yCoordinate.isEmpty() && !mTempOutputFileList->isEmpty() )
@@ -114,11 +118,11 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, co
     //the last file in the list is always the newest
     mTempOutputFileList->last()->open();
     QUrl url = QUrl::fromLocalFile( mTempOutputFileList->last()->fileName() );
-    url.addQueryItem( "delimiter", "\t" );
-    url.addQueryItem( "delimiterType", "regexp" );
-    url.addQueryItem( "xField", xCoordinate );
-    url.addQueryItem( "yField", yCoordinate );
-    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), layerName, "delimitedtext" );
+    url.addQueryItem( QStringLiteral( "delimiter" ), QStringLiteral( "\t" ) );
+    url.addQueryItem( QStringLiteral( "delimiterType" ), QStringLiteral( "regexp" ) );
+    url.addQueryItem( QStringLiteral( "xField" ), xCoordinate );
+    url.addQueryItem( QStringLiteral( "yField" ), yCoordinate );
+    emit drawVectorLayer( QString::fromLatin1( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
     mTempOutputFileList->last()->close();
   }
 }
@@ -126,18 +130,18 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString& layerName, co
 /**
 * Slot called when the accept button is pressed
 */
-void eVisDatabaseConnectionGui::on_buttonBox_accepted()
+void eVisDatabaseConnectionGui::buttonBox_accepted()
 {
   //Deallocate memory, basically a predescructor
   if ( mDatabaseConnection )
   {
     mDatabaseConnection->close();
-    delete( mDatabaseConnection );
+    delete ( mDatabaseConnection );
   }
 
   if ( mDatabaseLayerFieldSelector )
   {
-    delete( mDatabaseLayerFieldSelector );
+    delete ( mDatabaseLayerFieldSelector );
   }
 
   if ( mQueryDefinitionMap )
@@ -151,69 +155,69 @@ void eVisDatabaseConnectionGui::on_buttonBox_accepted()
 
 /**
 * Slot called when the cboxDatabaseType combo box index changes
-* @param currentIndex - The new index of the currently selected field
+* \param currentIndex - The new index of the currently selected field
 */
-void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int currentIndex )
+void eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged( int currentIndex )
 {
   Q_UNUSED( currentIndex );
-  if ( cboxDatabaseType->currentText() == "MYSQL" )
+  if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
   {
     lblDatabaseHost->setEnabled( true );
     leDatabaseHost->setEnabled( true );
     lblDatabasePort->setEnabled( true );
-    leDatabasePort->setText( "3306" );
+    leDatabasePort->setText( QStringLiteral( "3306" ) );
     leDatabasePort->setEnabled( true );
     pbtnOpenFile->setEnabled( false );
     lblDatabaseUsername->setEnabled( true );
     leDatabaseUsername->setEnabled( true );
     lblDatabasePassword->setEnabled( true );
     leDatabasePassword->setEnabled( true );
-    leDatabaseName->setText( "" );
+    leDatabaseName->clear();
   }
-  else if ( cboxDatabaseType->currentText() == "PostGreSQL" )
+  else if ( cboxDatabaseType->currentText() == QLatin1String( "PostGreSQL" ) )
   {
     lblDatabaseHost->setEnabled( true );
     leDatabaseHost->setEnabled( true );
     lblDatabasePort->setEnabled( true );
-    leDatabasePort->setText( "5432" );
+    leDatabasePort->setText( QStringLiteral( "5432" ) );
     leDatabasePort->setEnabled( true );
     pbtnOpenFile->setEnabled( false );
     lblDatabaseUsername->setEnabled( true );
     leDatabaseUsername->setEnabled( true );
     lblDatabasePassword->setEnabled( true );
     leDatabasePassword->setEnabled( true );
-    leDatabaseName->setText( "" );
+    leDatabaseName->clear();
   }
-  else if ( cboxDatabaseType->currentText() == "SQLITE" || cboxDatabaseType->currentText() == "MSAccess" )
+  else if ( cboxDatabaseType->currentText() == QLatin1String( "SQLITE" ) || cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
   {
     lblDatabaseHost->setEnabled( false );
-    leDatabaseHost->setText( "" );
+    leDatabaseHost->clear();
     leDatabaseHost->setEnabled( false );
     lblDatabasePort->setEnabled( false );
-    leDatabasePort->setText( "" );
+    leDatabasePort->clear();
     leDatabasePort->setEnabled( false );
     pbtnOpenFile->setEnabled( true );
     lblDatabaseUsername->setEnabled( false );
-    leDatabaseUsername->setText( "" );
+    leDatabaseUsername->clear();
     leDatabaseUsername->setEnabled( false );
     lblDatabasePassword->setEnabled( false );
-    leDatabasePassword->setText( "" );
+    leDatabasePassword->clear();
     leDatabasePassword->setEnabled( false );
-    leDatabaseName->setText( "" );
+    leDatabaseName->clear();
   }
   else
   {
     lblDatabaseHost->setEnabled( true );
     leDatabaseHost->setEnabled( true );
     lblDatabasePort->setEnabled( false );
-    leDatabasePort->setText( "" );
+    leDatabasePort->clear();
     leDatabasePort->setEnabled( false );
     pbtnOpenFile->setEnabled( false );
     lblDatabaseUsername->setEnabled( true );
     leDatabaseUsername->setEnabled( true );
     lblDatabasePassword->setEnabled( true );
     leDatabasePassword->setEnabled( true );
-    leDatabaseName->setText( "" );
+    leDatabaseName->clear();
   }
 }
 
@@ -221,9 +225,9 @@ void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int cur
 * Slot called when pbtnConnect button pressed. This function does some basic error checking before
 * requesting a new database connection
 */
-void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
+void eVisDatabaseConnectionGui::pbtnConnect_clicked()
 {
-  teditConsole->append( tr( "New Database connection requested..." ) );
+  teditConsole->append( tr( "New Database connection requested…" ) );
   bool errors = false;
 
   if ( cboxDatabaseType->currentText() == tr( "Undefined" ) )
@@ -232,7 +236,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
     errors = true;
   }
 
-  if ( !errors && ( cboxDatabaseType->currentText() == "MYSQL" || cboxDatabaseType->currentText() == "PostGreSQL" ) )
+  if ( !errors && ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) || cboxDatabaseType->currentText() == QLatin1String( "PostGreSQL" ) ) )
   {
     if ( leDatabaseHost->text().isEmpty() )
     {
@@ -250,29 +254,29 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
   //If no errors thus far, request a new database connection
   if ( !errors )
   {
-    eVisDatabaseConnection::DATABASE_TYPE myDatabaseType;
-    if ( cboxDatabaseType->currentText() == "MSAccess" )
+    eVisDatabaseConnection::DatabaseType myDatabaseType;
+    if ( cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
     {
-      myDatabaseType = eVisDatabaseConnection::MSACCESS;
+      myDatabaseType = eVisDatabaseConnection::MSAccess;
     }
-    else if ( cboxDatabaseType->currentText() == "MYSQL" )
+    else if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
     {
-      myDatabaseType = eVisDatabaseConnection::QMYSQL;
+      myDatabaseType = eVisDatabaseConnection::QMySQL;
     }
-    else if ( cboxDatabaseType->currentText() == "ODBC" )
+    else if ( cboxDatabaseType->currentText() == QLatin1String( "ODBC" ) )
     {
       myDatabaseType = eVisDatabaseConnection::QODBC;
     }
-    else if ( cboxDatabaseType->currentText() == "PostGreSQL" )
+    else if ( cboxDatabaseType->currentText() == QLatin1String( "PostGreSQL" ) )
     {
       myDatabaseType = eVisDatabaseConnection::QPSQL;
     }
     else
     {
-      myDatabaseType = eVisDatabaseConnection::QSQLITE;
+      myDatabaseType = eVisDatabaseConnection::QSqlite;
     }
 
-    //If there is aready a database connection object, reset with the current parameters
+    //If there is already a database connection object, reset with the current parameters
     if ( mDatabaseConnection )
     {
       mDatabaseConnection->resetConnectionParameters( leDatabaseHost->text(), leDatabasePort->text().toInt(), leDatabaseName->text(), leDatabaseUsername->text(), leDatabasePassword->text(), myDatabaseType );
@@ -308,13 +312,13 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
 * Slot called when pbtnLoadPredefinedQueries button is pressed. The method will open a file dialog and then
 * try to parse through an XML file of predefined queries.
 */
-void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
+void eVisDatabaseConnectionGui::pbtnLoadPredefinedQueries_clicked()
 {
   //There probably needs to be some more error checking, but works for now.
 
   //Select the XML file to parse
-  QString myFilename = QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), "XML ( *.xml )" );
-  if ( myFilename != "" )
+  QString myFilename = QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), QStringLiteral( "XML ( *.xml )" ) );
+  if ( !myFilename.isEmpty() )
   {
     //Display the name of the file being parsed
     lblPredefinedQueryFilename->setText( myFilename );
@@ -333,7 +337,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
         cboxPredefinedQueryList->clear();
         if ( !mQueryDefinitionMap->empty() )
         {
-          delete( mQueryDefinitionMap );
+          delete ( mQueryDefinitionMap );
           mQueryDefinitionMap = new QMap<int, eVisQueryDefinition>;
         }
 
@@ -342,7 +346,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
         QDomNode myNode = myXmlDoc.documentElement().firstChild();
         while ( !myNode.isNull() )
         {
-          if ( myNode.toElement().tagName() == "query" )
+          if ( myNode.toElement().tagName() == QLatin1String( "query" ) )
           {
             bool insert = false;
             eVisQueryDefinition myQueryDefinition;
@@ -350,50 +354,50 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
             while ( !myChildNodes.isNull() )
             {
               QDomNode myDataNode = myChildNodes.toElement().firstChild();
-              QString myDataNodeContent = "";
+              QString myDataNodeContent;
               if ( !myDataNode.isNull() )
               {
                 myDataNodeContent = myDataNode.toText().data();
               }
 
-              if ( myChildNodes.toElement().tagName() == "shortdescription" )
+              if ( myChildNodes.toElement().tagName() == QLatin1String( "shortdescription" ) )
               {
-                if ( myDataNodeContent != "" )
+                if ( !myDataNodeContent.isEmpty() )
                 {
                   myQueryDefinition.setShortDescription( myDataNodeContent );
                   myQueryCount++;
                   insert = true;
                 }
               }
-              else if ( myChildNodes.toElement().tagName() == "description" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "description" ) )
               {
                 myQueryDefinition.setDescription( myDataNodeContent );
               }
-              else if ( myChildNodes.toElement().tagName() == "databasetype" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "databasetype" ) )
               {
                 myQueryDefinition.setDatabaseType( myDataNodeContent );
               }
-              else if ( myChildNodes.toElement().tagName() == "databasehost" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "databasehost" ) )
               {
                 myQueryDefinition.setDatabaseHost( myDataNodeContent );
               }
-              else if ( myChildNodes.toElement().tagName() == "databaseport" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "databaseport" ) )
               {
                 myQueryDefinition.setDatabasePort( myDataNodeContent.toInt() );
               }
-              else if ( myChildNodes.toElement().tagName() == "databasename" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "databasename" ) )
               {
                 myQueryDefinition.setDatabaseName( myDataNodeContent );
               }
-              else if ( myChildNodes.toElement().tagName() == "databaseusername" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "databaseusername" ) )
               {
                 myQueryDefinition.setDatabaseUsername( myDataNodeContent );
               }
-              else if ( myChildNodes.toElement().tagName() == "databasepassword" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "databasepassword" ) )
               {
                 myQueryDefinition.setDatabasePassword( myDataNodeContent );
               }
-              else if ( myChildNodes.toElement().tagName() == "sqlstatement" )
+              else if ( myChildNodes.toElement().tagName() == QLatin1String( "sqlstatement" ) )
               {
                 myQueryDefinition.setSqlStatement( myDataNodeContent );
               }
@@ -417,16 +421,16 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
     }
     else
     {
-      teditConsole->append( tr( "Error: Unabled to open file [%1]" ).arg( myFilename ) );
+      teditConsole->append( tr( "Error: Unable to open file [%1]" ).arg( myFilename ) );
     }
   }
 }
 
 /**
 * Slot called when cboxPredefinedQueryList combo box index changes
-* @param index - The current index of the selected item
+* \param index - The current index of the selected item
 */
-void eVisDatabaseConnectionGui::on_cboxPredefinedQueryList_currentIndexChanged( int index )
+void eVisDatabaseConnectionGui::cboxPredefinedQueryList_currentIndexChanged( int index )
 {
   if ( !mQueryDefinitionMap->isEmpty() )
   {
@@ -439,7 +443,7 @@ void eVisDatabaseConnectionGui::on_cboxPredefinedQueryList_currentIndexChanged( 
     teditQueryDescription->setText( myQueryDefinition.description() );
     cboxDatabaseType->setCurrentIndex( cboxDatabaseType->findText( myQueryDefinition.databaseType() ) );
     leDatabaseHost->setText( myQueryDefinition.databaseHost() );
-    leDatabasePort->setText( QString( "%1" ).arg( myQueryDefinition.databasePort() ) );
+    leDatabasePort->setText( QStringLiteral( "%1" ).arg( myQueryDefinition.databasePort() ) );
     leDatabaseName->setText( myQueryDefinition.databaseName() );
     leDatabaseUsername->setText( myQueryDefinition.databaseUsername() );
     leDatabasePassword->setText( myQueryDefinition.databasePassword() );
@@ -450,18 +454,18 @@ void eVisDatabaseConnectionGui::on_cboxPredefinedQueryList_currentIndexChanged( 
 /**
 * Slot called when pbtnOpenFile button is pressed
 */
-void eVisDatabaseConnectionGui::on_pbtnOpenFile_clicked()
+void eVisDatabaseConnectionGui::pbtnOpenFile_clicked()
 {
-  if ( cboxDatabaseType->currentText() == "MSAccess" )
-    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), "MSAccess ( *.mdb )" ) );
+  if ( cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
+    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), QStringLiteral( "MSAccess ( *.mdb )" ) ) );
   else
-    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), "Sqlite ( *.db )" ) );
+    leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), QStringLiteral( "Sqlite ( *.db )" ) ) );
 }
 
 /**
 * Slot called when the pbtnRunQuery button is pressed
 */
-void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
+void eVisDatabaseConnectionGui::pbtnRunQuery_clicked()
 {
   //Check to see if we have a query
   if ( !teditSqlStatement->toPlainText().isEmpty() )
@@ -470,7 +474,7 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
     if ( mDatabaseConnection )
     {
       //Execute query
-      QSqlQuery* myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText() );
+      QSqlQuery *myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText() );
       if ( !myResults )
       {
         teditConsole->append( tr( "Error: Query failed: %1" ).arg( mDatabaseConnection->lastError() ) );
@@ -537,4 +541,9 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
       teditConsole->append( tr( "Error: A database connection is not currently established" ) );
     }
   }
+}
+
+void eVisDatabaseConnectionGui::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) );
 }

@@ -1,29 +1,29 @@
 QGIS
 Building QGIS from source - step by step
-Friday April 15, 2016
+Tuesday November 15, 2018
 
 
-Last Updated: Friday April 15, 2016
-Last Change : Friday April 15, 2016
+Last Updated: Tuesday November 15, 2018
+Last Change : Tuesday November 15, 2018
 
 
   1. Introduction
   2. Overview
   3. Building on GNU/Linux
-    3.1. Building QGIS with Qt 4.x
+    3.1. Building QGIS with Qt 5.x
     3.2. Prepare apt
     3.3. Install build dependencies
-    3.4. Setup ccache (Optional)
+    3.4. Setup ccache (Optional, but recommended)
     3.5. Prepare your development environment
     3.6. Check out the QGIS Source Code
     3.7. Starting the compile
     3.8. Building Debian packages
-    3.9. Building QGIS with Qt 5.x
-    3.10. On Fedora Linux
+    3.9. On Fedora Linux
   4. Building on Windows
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
     4.3. Creation of MSYS environment for compilation of QGIS
+    4.4. Building on Linux with mxe
   5. Building on MacOS X
     5.1. Install Developer Tools
     5.2. Install Qt4 from disk image
@@ -62,14 +62,12 @@ liable to any duties or guarantees. The editors and publishers do not take
 any responsibility or liability for failures and their consequences. You are 
 always welcome for indicating possible mistakes.
 
-You can download this document as part of the QGIS 'User and 
-Installation Guide' in HTML and PDF format via http://qgis.org. A current 
-version is also available at:
-http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html
-
-Translations of this document can also be downloaded at the documentation area 
-of the QGIS project at http://qgis.org. More information is 
-available via http://qgis.org/en/site/getinvolved/governance/organisation/governance.html#community-resources. 
+Because the code of QGIS evolves from release to release, These instructions are
+regularly updated to match the corresponding release. Instructions for the current
+master branch are available at
+http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html.
+If you wish to build another version of QGIS, ensure to checkout the appropriate
+release branch. The QGIS source code can be found in the repository (https://github.com/qgis/QGIS).
 
 Please visit http://qgis.org for information on joining our mailing lists 
 and getting involved in the project further.
@@ -77,7 +75,7 @@ and getting involved in the project further.
 /!\ Note to document writers: Please use this document as the central
 place for describing build procedures. Please do not remove this notice. 
 
-/!\ Note to document writers: This documented is generated from 
+/!\ Note to document writers: This document is generated from 
 doc/INSTALL.t2t - if you need to edit this document, be sure to edit that 
 file rather than the generated INSTALL document found in the root of the 
 source directory.
@@ -86,45 +84,47 @@ source directory.
   2. Overview
   ===========
 
-QGIS, like a number of major projects (eg. KDE 4.0), uses CMake
+QGIS, like a number of major projects (e.g., KDE 4.0), uses CMake
 (http://www.cmake.org) for building from source.
 
 Following a summary of the required dependencies for building:
 
 Required build tools:
 
-- CMake >= 2.8.6
+- CMake >= 3.0.0
 - Flex >= 2.5.6
 - Bison >= 2.4
 
 Required build dependencies:
 
-- Qt >= 4.8.0
+- Qt >= 5.9.0
 - Proj >= 4.4.x
 - GEOS >= 3.4
 - Sqlite3 >= 3.0.0
-- GDAL/OGR >= 1.4.x
+- SpatiaLite >= 4.2.0
+- libspatialindex
+- GDAL/OGR >= 2.1
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 - expat >= 1.95
 - QScintilla2
+- QCA
+- qtkeychain (>= 0.5)
+- libzip
 
 Optional dependencies:
 
-- for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
-  It can also be compiled with both GRASS versions in a single build but only if QGIS
-  is not installed with rpath. The desired GRASS version is chosen on runtime by setting
-  LD_LIBRARY_PATH or PATH.
+- for GRASS providers and plugin - GRASS >= 7.0.0.
 - for georeferencer - GSL >= 1.8
-- for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
+- for PostGIS support - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
-- for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
-- for python support - SIP >= 4.12, PyQt >= 4.8.3 must match Qt version, Qscintilla2
+- for mapserver export and PyQGIS - Python >= 3.3
+- for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
 - for oracle provider - Oracle OCI library
 
 Indirect dependencies:
 
-Some proprietary formats (eg. ECW and MrSid) supported by GDAL require
+Some proprietary formats (e.g., ECW and MrSid) supported by GDAL require
 proprietary third party libraries.  QGIS doesn't need any of those itself to
 build, but will only support those formats if GDAL is built accordingly.  Refer
 to http://gdal.org/formats_list.html ff. for instructions how to include
@@ -135,13 +135,13 @@ those formats in GDAL.
   ========================
 
 
-  3.1. Building QGIS with Qt 4.x
+  3.1. Building QGIS with Qt 5.x
   ==============================
 
 Requires: Ubuntu / Debian derived distro
 
 /!\ Note: Refer to the section Building Debian packages for building
-debian packages.  Unless you plan to develop on QGIS, that is probably the
+debian packages. Unless you plan to develop on QGIS, that is probably the
 easiest option to compile and install QGIS.
 
 These notes are for Ubuntu - other versions and Debian derived distros may
@@ -180,26 +180,30 @@ Now update your local sources database:
   ===============================
 
   || Distribution | install command for packages |
-  | wheezy | ``apt-get install bison cmake doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-dev python-gdal python-mock python-nose2 python-psycopg2 python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | jessie | ``apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | stretch | ``apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | precise | ``apt-get install bison cmake doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-gdal python-mock python-psycopg2 python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | trusty | ``apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | wily | ``apt-get install bison cmake cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | xenial | ``apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
-  | sid | ``apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | stretch | ``apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+  | buster | ``apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+  | xenial | ``apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+  | bionic | ``apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+  | cosmic | ``apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+  | sid | ``apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
 
 (extracted from the control.in file in debian/)
 
+See http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
+currently supported distributions (plain xenial's GDAL for instance is to old
+and we build with GDAL2 from ubuntugis).
 
-  3.4. Setup ccache (Optional)
-  ============================
+
+  3.4. Setup ccache (Optional, but recommended)
+  =============================================
 
 You should also setup ccache to speed up compile times:
 
   cd /usr/local/bin
   sudo ln -s /usr/bin/ccache gcc
   sudo ln -s /usr/bin/ccache g++
+
+or simply add /usr/lib/ccache to your PATH.
 
 
   3.5. Prepare your development environment
@@ -263,29 +267,67 @@ be pressed several times before the 'g' option becomes available.
 After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
+/!\ Warning: Make sure that your build directory is completely empty when you
+enter the command. Do never try to "re-use" an existing Qt4 build directory.
+If you want to use `ccmake` or other interactive tools, run the command in
+the empty build directory once before starting to use the interactive tools.
+
 Now on with the build:
 
-  make
-  make install
+  make -jX
 
-It may take a little while to build depending on your platform.
+where X is the number of available cores. Depending on your platform,
+this can speed up the build time considerably.
+
+Then you can directly run from the build directory:
+
+  ./output/bin/qgis
+
+Another option is to install to your system:
+
+  make install
 
 After that you can try to run QGIS:
 
   $HOME/apps/bin/qgis
 
 If all has worked properly the QGIS application should start up and appear
-on your screen.  If you get the error message "error while loading shared libraries",
+on your screen. If you get the error message "error while loading shared libraries",
 execute this command in your shell.
 
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
+
+Optionally, if you already know what aspects you want in your custom build
+then you can skip the interactive ccmake .. part by using the cmake -D
+option for each aspect, e.g.:
+
+  cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+
+Also, if you want to speed your build times, you can easily do it with ninja,
+an alternative to make with similar build options.
+
+For example, to configure your build you can do either one of:
+
+  ccmake -G Ninja ..
+
+  cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+
+Build and install with ninja:
+
+  ninja (uses all cores by default; also supports the above described -jX option)
+  ninja install
+
+You can build just the targets you need using, for example:
+
+  ninja qgis
+  ninja pycore
 
 
   3.8. Building Debian packages
   =============================
 
 Instead of creating a personal installation as in the previous step you can
-also create debian package.  This is done from the QGIS root directory, where
+also create debian package. This is done from the QGIS root directory, where
 you'll find a debian directory.
 
 First you need to install the debian packaging tools once:
@@ -321,37 +363,21 @@ Install them using dpkg.  E.g.:
   sudo debi
 
 
-  3.9. Building QGIS with Qt 5.x
-  ==============================
-
-/!\ Warning: Qt 5 is not officially supported. Building against Qt 5
-libraries seems to work quiet well alrady but be prepared that you are one
-of very few with this setup. We strongly recommend using QGIS with Qt 4.
-
-Python bindings in particular are not expected to be compatible. When Qt 5
-is enabled, the build system automatically activates Python 3 and PyQt5 as well.
-There are no plugins and not even the python code shipped along the QGIS source
-code is compatible with PyQt5.
-
-You have been warned.
-
-
-  3.10. On Fedora Linux
-  =====================
+  3.9. On Fedora Linux
+  ====================
 
 We assume that you have the source code of QGIS ready and created a
 new subdirectory called `build` or `build-qt5` in it.
 
 
-    3.10.1. Install build dependencies
-    ==================================
+    3.9.1. Install build dependencies
+    =================================
 
-  dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static
-  qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel 
-  qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5
-  clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
-  qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
-  qwt-devel gsl-devel postgresql-devel
+  dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qca-qt5-devel qca-qt5-ossl qt5-qt3d-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel sip-devel libzip-devel exiv2-devel
+
+To build QGIS server additional dependencies are required:
+
+  dnf install fcgi-devel
 
 Make sure that your build directory is completely empty when you enter the
 following command. Do never try to "re-use" an existing Qt4 build directory.
@@ -359,9 +385,9 @@ If you want to use `ccmake` or other interactive tools, run the following
 command in the empty build directory once before starting to use the interactive
 tools.
 
-  cmake -DENABLE_QT5=ON -DWITH_QWTPOLAR=OFF ..
+  cmake ..
 
-If everything went ok you can finally start to compile. (As usual append a -jX
+If everything went OK you can finally start to compile. (As usual append a -jX
 where X is the number of available cores option to make to speed up your build
 process)
 
@@ -376,6 +402,20 @@ Or install to your system
   make install
 
 
+    3.9.2. Suggested system tweaks
+    ==============================
+
+By default Fedora disables debugging calls from Qt applications. This prevents
+the useful debug output which is normally printed when running the unit tests.
+
+To enable debug prints for the current user, execute:
+
+  cat > ~/.config/QtProject/qtlogging.ini << EOL
+  [Rules]
+  default.debug=true
+  EOL
+
+
   4. Building on Windows
   ======================
 
@@ -383,24 +423,19 @@ Or install to your system
   4.1. Building with Microsoft Visual Studio
   ==========================================
 
-This section describes how to build QGIS using Visual Studio on Windows.  This
-is currently also how the binary QGIS packages are made (earlier versions used
-MinGW).
+This section describes how to build QGIS using Visual Studio (MSVC) 2015 on Windows.
+This is currently also how the binary QGIS packages are made (earlier versions used MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
-build QGIS. 
+build QGIS.
 
 
-    4.1.1. Visual C++ Express Edition
-    =================================
+    4.1.1. Visual C++ Community Edition
+    ===================================
 
-The free (as in free beer) Express Edition installer is available under:
+The free (as in free beer) Community installer is available under:
 
-  http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe
-
-You also need the Windows SDK for Windows 7 and .NET Framework 4:
-
-  http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe
+  http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
 
 
     4.1.2. Other tools and dependencies
@@ -409,13 +444,10 @@ You also need the Windows SDK for Windows 7 and .NET Framework 4:
 Download and install following packages:
 
   || Tool | Website |
-  | CMake | http://www.cmake.org/files/v3.0/cmake-3.0.2-win32-x86.exe |
+  | CMake | https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi |
   | GNU flex, GNU bison and GIT | http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit) |
   | OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit) |
-
-OSGeo4W does not only provide ready packages for the current QGIS release and
-nightly builds of master, but also offers most of the dependencies needs to
-build it.
+  | ninja | https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip |
 
 For the QGIS build you need to install following packages from cygwin:
 
@@ -425,30 +457,21 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select Advanced Installation):
 
-- expat
-- fcgi
-- gdal
-- grass
-- gsl-devel
-- iconv
-- pyqt4
-- qt4-devel
-- qwt5-devel-qt4
-- sip
-- spatialite
-- libspatialindex-devel
-- python-qscintilla
+- qgis-dev-deps
 
 This will also select packages the above packages depend on.
 
-If you install other packages, this might cause issues. Particularly, make sure
-not to install the msinttypes package. It installs a stdint.h file in
-OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
-example breaks the build of the virtuallayer provider.
+  If you install other packages, this might cause issues. Particularly, make sure
+  not to install the msinttypes package. It installs a stdint.h file in
+  OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
+  example breaks the build of the virtual layer provider.
 
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
+
+ninja:
+  copy ninja.exe to d:\OSGeo4W64\bin\
 
 
     4.1.3. Setting up the Visual Studio project with CMake
@@ -464,65 +487,78 @@ variables create the following batch file (assuming the above packages were
 installed in the default locations):
 
   @echo off
-  set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
-  call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
-  
-  set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\include
-  set LIB=%LIB%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\lib
-  
-  set OSGEO4W_ROOT=C:\OSGeo4W
-  call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-  path %PATH%;%PROGRAMFILES%\CMake\bin;c:\cygwin\bin
-  
-  @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.4
-  @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
-  @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
-  
+  call X:\src\qgis\ms-windows\osgeo4w\msvc-env.bat x86_64
   @cmd
 
-Start the batch file and on the command prompt checkout the QGIS source from
+Save the batch file as d:\OSGeo4W64\OSGeo4W-dev.bat and run it.
+On the command prompt checkout the QGIS source from
 git to the source directory QGIS:
 
   git clone git://github.com/qgis/QGIS.git
 
-Create a 'build' directory somewhere. This will be where all the build output
-will be generated.
+Using configonly.cmd to create the MSVC solution file:
+  We will be using the file ms-windows/osgeo4w/configonly.cmd to create an MSVC solution file.
+  There are a few options for a solution file, following are the options: ninja, native MSVC.
+  The advantage of using native MSVC solution is that you can find the root of build problems much easily.
+  configonly.cmd is meant to create a configured build directory with a MSVC solution file:
 
-Now run cmake-gui (still from cmd) and in the Where is the source code:
-box, browse to the top level QGIS directory.
+  ```
+  configonly.cmd
+  ```
 
-In the Where to build the binaries: box, browse to the 'build' directory you
-created.
+Compiling QGIS with MSVC:
+  We will need to run MSVC with all the environment variables set, thus we will run it as follows:
+  Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: devenv
+  From MSVC, open the solution file
+  d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis2.99.0.sln
+  Try to build the solution go grab a cup of tea, it may take a (while).
+  If it fails, run it again and again until there are [hopefully] no errors.
 
-If the path to bison and flex contains blanks, you need to use the short name
-for the directory (i.e. C:\Program Files should be rewritten to
-C:\Progra~n, where n is the number as shown in `dir /x C:\``).
+Running QGIS from within MSVC:
+  Edit the properties of the project ALL_BUILD:
+  Debugging -> Command -> D:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe
+  Run.
+  Ignore the "These projects are out of date" message, it appeares even if no files were was changed.
 
-Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
-bindings are placed into the output directory when you run the INSTALL target.
+Old alternative method that might still work using cmake-gui:
+  Create a 'build' directory somewhere. This will be where all the build output
+  will be generated.
 
-Hit Configure to start the configuration and select Visual Studio 9 2008
-and keep native compilers and click Finish.
+  Now run cmake-gui (still from cmd) and in the Where is the source code:
+  box, browse to the top level QGIS directory.
 
-The configuration should complete without any further questions and allow you to
-click Generate.
+  In the Where to build the binaries: box, browse to the 'build' directory you
+  created.
 
-Now close cmake-gui and continue on the command prompt by starting
-vcexpress.  Use File / Open / Project/Solutions and open the
-qgis-x.y.z.sln File in your project directory.
+  If the path to bison and flex contains blanks, you need to use the short name
+  for the directory (i.e. C:\Program Files should be rewritten to
+  C:\Progra~n, where n is the number as shown in `dir /x C:\``).
 
-Change Solution Configuration from Debug to RelWithDebInfo (Release
-with Debug Info)  or Release before you build QGIS using the ALL_BUILD
-target (otherwise you need debug libraries that are not included).
+  Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
+  bindings are placed into the output directory when you run the INSTALL target.
 
-After the build completed you should install QGIS using the INSTALL target.
+  Hit Configure to start the configuration and select Visual Studio 9 2008
+  and keep native compilers and click Finish.
 
-Install QGIS by building the INSTALL project. By default this will install to
-c:\Program Files\qgis<version> (this can be changed by changing the
-CMAKE_INSTALL_PREFIX variable in cmake-gui). 
+  The configuration should complete without any further questions and allow you to
+  click Generate.
 
-You will also either need to add all the dependency DLLs to the QGIS install
-directory or add their respective directories to your PATH.
+  Now close cmake-gui and continue on the command prompt by starting
+  vcexpress.  Use File / Open / Project/Solutions and open the
+  qgis-x.y.z.sln File in your project directory.
+
+  Change Solution Configuration from Debug to RelWithDebInfo (Release
+  with Debug Info)  or Release before you build QGIS using the ALL_BUILD
+  target (otherwise you need debug libraries that are not included).
+
+  After the build completed you should install QGIS using the INSTALL target.
+
+  Install QGIS by building the INSTALL project. By default this will install to
+  c:\Program Files\qgis<version> (this can be changed by changing the
+  CMAKE_INSTALL_PREFIX variable in cmake-gui).
+
+  You will also either need to add all the dependency DLLs to the QGIS install
+  directory or add their respective directories to your PATH.
 
 
     4.1.4. Packaging
@@ -562,7 +598,7 @@ Now create a package.
 
   ./quickpackage.sh
 
-After this you should now have a nsis installer containing your own build 
+After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
 
 
@@ -619,23 +655,23 @@ it, just point the installer to c:\msys\mingw
 
 When Qt installation is complete:
 
-Edit C:\Qt\4.8.0\bin\qtvars.bat and add the following lines:
+Edit C:\Qt\5.9.1\bin\qtvars.bat and add the following lines:
 
   set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
   set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
 
-I suggest you also add C:\Qt\4.8.0\bin\ to your Environment Variables Path in
+I suggest you also add C:\Qt\5.9.1\bin\ to your Environment Variables Path in
 the windows system preferences.
 
 If you plan to do some debugging, you'll need to compile debug version of Qt:
-C:\Qt\4.8.0\bin\qtvars.bat compile_debug
+C:\Qt\5.9.1\bin\qtvars.bat compile_debug
 
 Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
 this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
 compile the debug version you have to go out of src directory and execute the
 following command:
 
-  c:\Qt\4.8.0 make 
+  c:\Qt\5.9.1 make 
 
 
     4.2.3. Flex and Bison
@@ -646,12 +682,15 @@ http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424
 (the zip bin) and extract it into c:\msys\mingw\bin
 
 
-    4.2.4. Python stuff (optional)
-    ==============================
+    4.2.4. Python
+    =============
 
 Follow this section in case you would like to use Python bindings for QGIS.  To
-be able to compile bindings, you need to compile SIP and PyQt4 from sources as
+be able to compile bindings, you need to compile SIP and PyQt5 from sources as
 their installer doesn't include some development files which are necessary.
+
+Note that even if you compile without the Python bindings, Python3 is still
+a necessary dependency for building QGIS.
 
 
       4.2.4.1. Download and install Python - use Windows installer
@@ -662,7 +701,7 @@ their installer doesn't include some development files which are necessary.
 http://python.org/download/
 
 
-      4.2.4.2. Download SIP and PyQt4 sources
+      4.2.4.2. Download SIP and PyQt5 sources
       =======================================
 
 http://www.riverbankcomputing.com/software/sip/download
@@ -675,7 +714,7 @@ to get versions that match your current Qt installed version.
       4.2.4.3. Compile SIP
       ====================
 
-  c:\Qt\4.8.0\bin\qtvars.bat 
+  c:\Qt\5.9.1\bin\qtvars.bat 
   python configure.py -p win32-g++ 
   make 
   make install 
@@ -684,7 +723,7 @@ to get versions that match your current Qt installed version.
       4.2.4.4. Compile PyQt
       =====================
 
-  c:\Qt\4.8.0\bin\qtvars.bat 
+  c:\Qt\5.9.1\bin\qtvars.bat 
   python configure.py 
   make 
   make install 
@@ -693,8 +732,8 @@ to get versions that match your current Qt installed version.
       4.2.4.5. Final python notes
       ===========================
 
-/!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
-successfull install, they're not needed anymore.
+/!\ You can delete the directories with unpacked SIP and PyQt5 sources after a
+successful install, they're not needed anymore.
 
 
     4.2.5. git
@@ -703,7 +742,7 @@ successfull install, they're not needed anymore.
 In order to check out QGIS sources from the repository, you need a git client.
 This installer should work fine:
 
-http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
+https://git-scm.com/download/win
 
 
     4.2.6. CMake
@@ -711,7 +750,7 @@ http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
 
 CMake is build system used by QGIS. Download it from here:
 
-http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
+https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi
 
 
     4.2.7. QGIS
@@ -737,9 +776,9 @@ this document.
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
 already.  Add paths to compiler and our MSYS environment:
 
-  c:\Qt\4.8.0\bin\qtvars.bat 
+  c:\Qt\5.9.1\bin\qtvars.bat 
 
-For ease of use add c:\Qt\4.8.0\bin\ to your system path in system
+For ease of use add c:\Qt\5.9.1\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 
@@ -999,6 +1038,58 @@ We're done with preparation of MSYS environment. Now you can delete all stuff in
 of space and it's not necessary at all.
 
 
+  4.4. Building on Linux with mxe
+  ===============================
+
+With this approach you can cross build a Windows binary on Linux using MXE (M cross environment).
+You can find the build script and a README.md file in the ms-windows/mxe directory.
+
+For now, Python buildings cannot be built with mxe.
+
+
+    4.4.1. Building with Docker
+    ===========================
+
+This is the simplest way, but you need to have Docker installed
+on your system.
+
+You can use a Docker image to cross build QGIS by calling
+the script ms-windows/mxe/build.sh from the root directory of QGIS repository.
+
+=== Building without Docker ====
+
+This requires to install mxe toolchain on your system and build
+all dependencies by yourself.
+
+
+      4.4.1.1. Initial setup
+      ======================
+
+Please follow the instructions on mxe website to setup your building toolchain http://mxe.cc/,
+take note of the path where you have installed mxe.
+
+
+      4.4.1.2. Building the dependencies
+      ==================================
+
+Please see README.md under ms-windows/mxe for detailed instructions and for the
+list of dependencies that need to be built in mxe before attempting to build QGIS.
+
+
+      4.4.1.3. Cross-Building QGIS
+      ============================
+
+Edit the build-mxe.sh script and optionally adjust the path where your mxe installation is located, you
+can also change the build and release directories.
+
+
+    4.4.2. Testing QGIS
+    ===================
+
+Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
+is required.
+
+
   5. Building on MacOS X
   ======================
 
@@ -1201,14 +1292,14 @@ osgEarth), try bypassing ccache.
   =========================================================
 
 Download William Kyngesburye's excellent GDAL Complete package that includes
-PROJ, GEOS, GDAL, SQLite3, Spatialite, and image libraries, as frameworks.
+PROJ, GEOS, GDAL, SQLite3, SpatiaLite, and image libraries, as frameworks.
 There are also GSL and FreeType frameworks.
 
 http://www.kyngchaos.com/software/frameworks
 
 Once downloaded, open and install the frameworks.
 
-William provides an additional installer package for Postgresql (for PostGIS
+William provides an additional installer package for PostgreSQL (for PostGIS
 support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
 package.  It's available here:
@@ -1755,7 +1846,6 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
-  -D WITH_PYSPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
   -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
@@ -1800,7 +1890,7 @@ script and add arch flags to the configuration:
   
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
-  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
+  -D WITH_INTERNAL_SPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
@@ -1868,13 +1958,13 @@ to the QGIS application.  Assuming you installed QGIS in your home folder:
 If you installed in /Applications, adjust the path accordingly and prefix the
 whole command with 'sudo '.
 
-QGIS Mapserver
+QGIS Server
 
-See the QGIS Mapserver wiki page at:
+See the QGIS Server documentation page at:
 
-http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial
+http://docs.qgis.org/2.18/en/docs/user_manual/working_with_ogc/ogc_server_support.html
 
-for instructions on setting up Apache fastcgi and testing Mapserver, including
+for instructions on setting up Apache fastcgi and testing qgis server, including
 installing the mod-fastcgi that is missing on Lion.
 
 

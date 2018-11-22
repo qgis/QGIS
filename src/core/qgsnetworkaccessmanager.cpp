@@ -19,36 +19,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsnetworkaccessmanager.h>
+#include "qgsnetworkaccessmanager.h"
 
-#include <qgsapplication.h>
-#include <qgsmessagelog.h>
-#include <qgslogger.h>
-#include <qgis.h>
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgslogger.h"
+#include "qgis.h"
+#include "qgssettings.h"
+#include "qgsnetworkdiskcache.h"
+#include "qgsauthmanager.h"
 
 #include <QUrl>
-#include <QSettings>
 #include <QTimer>
 #include <QNetworkReply>
 #include <QThreadStorage>
+#include <QAuthenticator>
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif
 
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 
-QgsNetworkAccessManager *QgsNetworkAccessManager::smMainNAM = 0;
+QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
-    QgsNetworkProxyFactory() {}
-    virtual ~QgsNetworkProxyFactory() {}
+    QgsNetworkProxyFactory() = default;
 
-    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
+    QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery &query = QNetworkProxyQuery() ) override
     {
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
@@ -64,66 +66,60 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
           return proxies;
       }
 
-      // no proxies from the proxy factor list check for excludes
+      // no proxies from the proxy factory list check for excludes
       if ( query.queryType() != QNetworkProxyQuery::UrlRequest )
         return QList<QNetworkProxy>() << nam->fallbackProxy();
 
       QString url = query.url().toString();
 
-      Q_FOREACH ( const QString& exclude, nam->excludeList() )
+      Q_FOREACH ( const QString &exclude, nam->excludeList() )
       {
         if ( url.startsWith( exclude ) )
         {
-          QgsDebugMsg( QString( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ) );
+          QgsDebugMsgLevel( QStringLiteral( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
           return QList<QNetworkProxy>() << QNetworkProxy();
         }
       }
 
       if ( nam->useSystemProxy() )
       {
-        QgsDebugMsg( QString( "requesting system proxy for query %1" ).arg( url ) );
+        QgsDebugMsgLevel( QStringLiteral( "requesting system proxy for query %1" ).arg( url ), 4 );
         QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery( query );
         if ( !proxies.isEmpty() )
         {
-          QgsDebugMsg( QString( "using system proxy %1:%2 for query" )
-                       .arg( proxies.first().hostName() ).arg( proxies.first().port() ) );
+          QgsDebugMsgLevel( QStringLiteral( "using system proxy %1:%2 for query" )
+                            .arg( proxies.first().hostName() ).arg( proxies.first().port() ), 4 );
           return proxies;
         }
       }
 
-      QgsDebugMsg( QString( "using fallback proxy for %1" ).arg( url ) );
+      QgsDebugMsgLevel( QStringLiteral( "using fallback proxy for %1" ).arg( url ), 4 );
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
 ///@endcond
 
 //
-// Static calls to enforce singleton behaviour
+// Static calls to enforce singleton behavior
 //
-QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
+QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType connectionType )
 {
   static QThreadStorage<QgsNetworkAccessManager> sInstances;
   QgsNetworkAccessManager *nam = &sInstances.localData();
 
   if ( nam->thread() == qApp->thread() )
-    smMainNAM = nam;
+    sMainNAM = nam;
 
   if ( !nam->mInitialized )
-    nam->setupDefaultProxyAndCache();
+    nam->setupDefaultProxyAndCache( connectionType );
 
   return nam;
 }
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
-    : QNetworkAccessManager( parent )
-    , mUseSystemProxy( false )
-    , mInitialized( false )
+  : QNetworkAccessManager( parent )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
-}
-
-QgsNetworkAccessManager::~QgsNetworkAccessManager()
-{
 }
 
 void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
@@ -141,7 +137,7 @@ const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() co
   return mProxyFactories;
 }
 
-const QStringList &QgsNetworkAccessManager::excludeList() const
+QStringList QgsNetworkAccessManager::excludeList() const
 {
   return mExcludedURLs;
 }
@@ -153,18 +149,18 @@ const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const
 
 void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes )
 {
-  QgsDebugMsg( QString( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
-               .arg( proxy.type() == QNetworkProxy::DefaultProxy ? "DefaultProxy" :
-                     proxy.type() == QNetworkProxy::Socks5Proxy ? "Socks5Proxy" :
-                     proxy.type() == QNetworkProxy::NoProxy ? "NoProxy" :
-                     proxy.type() == QNetworkProxy::HttpProxy ? "HttpProxy" :
-                     proxy.type() == QNetworkProxy::HttpCachingProxy ? "HttpCachingProxy" :
-                     proxy.type() == QNetworkProxy::FtpCachingProxy ? "FtpCachingProxy" :
-                     "Undefined",
-                     proxy.hostName() )
-               .arg( proxy.port() )
-               .arg( proxy.user(),
-                     proxy.password().isEmpty() ? "not set" : "set" ) );
+  QgsDebugMsgLevel( QStringLiteral( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
+                    .arg( proxy.type() == QNetworkProxy::DefaultProxy ? QStringLiteral( "DefaultProxy" ) :
+                          proxy.type() == QNetworkProxy::Socks5Proxy ? QStringLiteral( "Socks5Proxy" ) :
+                          proxy.type() == QNetworkProxy::NoProxy ? QStringLiteral( "NoProxy" ) :
+                          proxy.type() == QNetworkProxy::HttpProxy ? QStringLiteral( "HttpProxy" ) :
+                          proxy.type() == QNetworkProxy::HttpCachingProxy ? QStringLiteral( "HttpCachingProxy" ) :
+                          proxy.type() == QNetworkProxy::FtpCachingProxy ? QStringLiteral( "FtpCachingProxy" ) :
+                          QStringLiteral( "Undefined" ),
+                          proxy.hostName() )
+                    .arg( proxy.port() )
+                    .arg( proxy.user(),
+                          proxy.password().isEmpty() ? QStringLiteral( "not set" ) : QStringLiteral( "set" ) ), 4 );
 
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
@@ -172,32 +168,32 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
 
 QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
-  QSettings s;
+  QgsSettings s;
 
   QNetworkRequest *pReq( const_cast< QNetworkRequest * >( &req ) ); // hack user agent
 
-  QString userAgent = s.value( "/qgis/networkAndProxy/userAgent", "Mozilla/5.0" ).toString();
+  QString userAgent = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
   if ( !userAgent.isEmpty() )
     userAgent += ' ';
-  userAgent += QString( "QGIS/%1" ).arg( QGis::QGIS_VERSION );
+  userAgent += QStringLiteral( "QGIS/%1" ).arg( Qgis::QGIS_VERSION );
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
-#ifndef QT_NO_OPENSSL
-  bool ishttps = pReq->url().scheme().toLower() == "https";
-  if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
+#ifndef QT_NO_SSL
+  bool ishttps = pReq->url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
+  if ( ishttps && !QgsApplication::authManager()->isDisabled() )
   {
-    QgsDebugMsg( "Adding trusted CA certs to request" );
+    QgsDebugMsgLevel( QStringLiteral( "Adding trusted CA certs to request" ), 3 );
     QSslConfiguration sslconfig( pReq->sslConfiguration() );
-    sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
-
+    // Merge trusted CAs with any additional CAs added by the authentication methods
+    sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCertsCache(), sslconfig.caCertificates( ) ) );
     // check for SSL cert custom config
-    QString hostport( QString( "%1:%2" )
+    QString hostport( QStringLiteral( "%1:%2" )
                       .arg( pReq->url().host().trimmed() )
                       .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
-    QgsAuthConfigSslServer servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
+    QgsAuthConfigSslServer servconfig = QgsApplication::authManager()->sslCertCustomConfigByHost( hostport.trimmed() );
     if ( !servconfig.isNull() )
     {
-      QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );
+      QgsDebugMsg( QStringLiteral( "Adding SSL custom config to request for %1" ).arg( hostport ) );
       sslconfig.setProtocol( servconfig.sslProtocol() );
       sslconfig.setPeerVerifyMode( servconfig.sslPeerVerifyMode() );
       sslconfig.setPeerVerifyDepth( servconfig.sslPeerVerifyDepth() );
@@ -212,15 +208,19 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   emit requestCreated( reply );
 
-  // abort request, when network timeout happens
+  // The timer will call abortRequest slot to abort the connection if needed.
+  // The timer is stopped by the finished signal and is restarted on downloadProgress and
+  // uploadProgress.
   QTimer *timer = new QTimer( reply );
-  timer->setObjectName( "timeoutTimer" );
-  connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
+  timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
+  connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
   timer->setSingleShot( true );
-  timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
+  timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
 
-  connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
-  connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
+  connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
+  connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
+  connect( reply, &QNetworkReply::finished, timer, &QTimer::stop );
+  QgsDebugMsgLevel( QStringLiteral( "Created [reply:%1]" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ), 3 );
 
   return reply;
 }
@@ -233,101 +233,101 @@ void QgsNetworkAccessManager::abortRequest()
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( timer->parent() );
   Q_ASSERT( reply );
 
-  QgsDebugMsg( QString( "Abort [reply:%1]" ).arg(( qint64 ) reply, 0, 16 ) );
-
+  reply->abort();
+  QgsDebugMsgLevel( QStringLiteral( "Abort [reply:%1] %2" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ).arg( reply->url().toString() ), 3 );
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
-
-  if ( reply->isRunning() )
-    reply->close();
-
+  // Notify the application
   emit requestTimedOut( reply );
+
 }
 
-QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
+
+QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
 {
-  switch ( theControl )
+  switch ( control )
   {
     case QNetworkRequest::AlwaysNetwork:
-      return "AlwaysNetwork";
+      return QStringLiteral( "AlwaysNetwork" );
     case QNetworkRequest::PreferNetwork:
-      return "PreferNetwork";
+      return QStringLiteral( "PreferNetwork" );
     case QNetworkRequest::PreferCache:
-      return "PreferCache";
+      return QStringLiteral( "PreferCache" );
     case QNetworkRequest::AlwaysCache:
-      return "AlwaysCache";
+      return QStringLiteral( "AlwaysCache" );
     default:
       break;
   }
-  return "PreferNetwork";
+  return QStringLiteral( "PreferNetwork" );
 }
 
-QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromName( const QString &theName )
+QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromName( const QString &name )
 {
-  if ( theName == "AlwaysNetwork" )
+  if ( name == QLatin1String( "AlwaysNetwork" ) )
   {
     return QNetworkRequest::AlwaysNetwork;
   }
-  else if ( theName == "PreferNetwork" )
+  else if ( name == QLatin1String( "PreferNetwork" ) )
   {
     return QNetworkRequest::PreferNetwork;
   }
-  else if ( theName == "PreferCache" )
+  else if ( name == QLatin1String( "PreferCache" ) )
   {
     return QNetworkRequest::PreferCache;
   }
-  else if ( theName == "AlwaysCache" )
+  else if ( name == QLatin1String( "AlwaysCache" ) )
   {
     return QNetworkRequest::AlwaysCache;
   }
   return QNetworkRequest::PreferNetwork;
 }
 
-void QgsNetworkAccessManager::setupDefaultProxyAndCache()
+void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType connectionType )
 {
   mInitialized = true;
   mUseSystemProxy = false;
 
-  Q_ASSERT( smMainNAM );
+  Q_ASSERT( sMainNAM );
 
-  if ( smMainNAM != this )
+  if ( sMainNAM != this )
   {
-    connect( this, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
-             smMainNAM, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
-             Qt::BlockingQueuedConnection );
+    connect( this, &QNetworkAccessManager::authenticationRequired,
+             sMainNAM, &QNetworkAccessManager::authenticationRequired,
+             connectionType );
 
-    connect( this, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
-             smMainNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
-             Qt::BlockingQueuedConnection );
+    connect( this, &QNetworkAccessManager::proxyAuthenticationRequired,
+             sMainNAM, &QNetworkAccessManager::proxyAuthenticationRequired,
+             connectionType );
 
-    connect( this, SIGNAL( requestTimedOut( QNetworkReply* ) ),
-             smMainNAM, SIGNAL( requestTimedOut( QNetworkReply* ) ) );
+    connect( this, &QgsNetworkAccessManager::requestTimedOut,
+             sMainNAM, &QgsNetworkAccessManager::requestTimedOut );
 
-#ifndef QT_NO_OPENSSL
-    connect( this, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
-             smMainNAM, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
-             Qt::BlockingQueuedConnection );
+#ifndef QT_NO_SSL
+    connect( this, &QNetworkAccessManager::sslErrors,
+             sMainNAM, &QNetworkAccessManager::sslErrors,
+             connectionType );
 #endif
   }
 
   // check if proxy is enabled
-  QSettings settings;
+  QgsSettings settings;
   QNetworkProxy proxy;
   QStringList excludes;
 
-  bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
+  bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {
-    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( '|', QString::SkipEmptyParts );
+    excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toString().split( '|', QString::SkipEmptyParts );
 
     //read type, host, port, user, passw from settings
-    QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
-    int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
-    QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
-    QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+    QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
+    int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), "" ).toString().toInt();
 
-    QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
+    QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), "" ).toString();
+    QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString();
 
-    if ( proxyTypeString == "DefaultProxy" )
+    QString proxyTypeString = settings.value( QStringLiteral( "proxy/proxyType" ), "" ).toString();
+
+    if ( proxyTypeString == QLatin1String( "DefaultProxy" ) )
     {
       mUseSystemProxy = true;
       QNetworkProxyFactory::setUseSystemConfiguration( true );
@@ -336,69 +336,61 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
       {
         proxy = proxies.first();
       }
-      QgsDebugMsg( "setting default proxy" );
+      QgsDebugMsgLevel( QStringLiteral( "setting default proxy" ), 4 );
     }
     else
     {
       QNetworkProxy::ProxyType proxyType = QNetworkProxy::DefaultProxy;
-      if ( proxyTypeString == "Socks5Proxy" )
+      if ( proxyTypeString == QLatin1String( "Socks5Proxy" ) )
       {
         proxyType = QNetworkProxy::Socks5Proxy;
       }
-      else if ( proxyTypeString == "HttpProxy" )
+      else if ( proxyTypeString == QLatin1String( "HttpProxy" ) )
       {
         proxyType = QNetworkProxy::HttpProxy;
       }
-      else if ( proxyTypeString == "HttpCachingProxy" )
+      else if ( proxyTypeString == QLatin1String( "HttpCachingProxy" ) )
       {
         proxyType = QNetworkProxy::HttpCachingProxy;
       }
-      else if ( proxyTypeString == "FtpCachingProxy" )
+      else if ( proxyTypeString == QLatin1String( "FtpCachingProxy" ) )
       {
         proxyType = QNetworkProxy::FtpCachingProxy;
       }
-      QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+      QgsDebugMsg( QStringLiteral( "setting proxy %1 %2:%3 %4/%5" )
                    .arg( proxyType )
                    .arg( proxyHost ).arg( proxyPort )
                    .arg( proxyUser, proxyPassword )
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
+    // Setup network proxy authentication configuration
+    QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
+    if ( !authcfg.isEmpty( ) )
+    {
+      QgsDebugMsg( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ) );
+      // Never crash! Never.
+      if ( QgsApplication::authManager() )
+        QgsApplication::authManager()->updateNetworkProxy( proxy, authcfg );
+    }
   }
 
   setFallbackProxyAndExcludes( proxy, excludes );
 
-  QgsNetworkDiskCache *newcache = qobject_cast<QgsNetworkDiskCache*>( cache() );
+  QgsNetworkDiskCache *newcache = qobject_cast<QgsNetworkDiskCache *>( cache() );
   if ( !newcache )
     newcache = new QgsNetworkDiskCache( this );
 
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
-  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+  if ( cacheDirectory.isEmpty() )
+    cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
+  qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
-  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ) );
-  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ) );
+  QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ), 4 );
 
   if ( cache() != newcache )
     setCache( newcache );
 }
 
-void QgsNetworkAccessManager::sendGet( const QNetworkRequest & request )
-{
-  QgsDebugMsg( "Entered" );
-  QNetworkReply * reply = get( request );
-  emit requestSent( reply, QObject::sender() );
-}
-
-void QgsNetworkAccessManager::deleteReply( QNetworkReply * reply )
-{
-  QgsDebugMsg( "Entered" );
-  if ( !reply )
-  {
-    return;
-  }
-  reply->abort();
-  reply->deleteLater();
-}

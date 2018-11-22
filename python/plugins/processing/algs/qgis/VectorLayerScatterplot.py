@@ -25,55 +25,68 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
+import plotly as plt
+import plotly.graph_objs as go
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
-
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFileDestination)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
-class VectorLayerScatterplot(GeoAlgorithm):
+class VectorLayerScatterplot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Vector layer scatterplot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def group(self):
+        return self.tr('Graphics')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.XFIELD,
-                                              self.tr('X attribute'), self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.YFIELD,
-                                              self.tr('Y attribute'), self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+    def groupId(self):
+        return 'graphics'
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        xfieldname = self.getParameterValue(self.XFIELD)
-        yfieldname = self.getParameterValue(self.YFIELD)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.XFIELD,
+                                                      self.tr('X attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
+        self.addParameter(QgsProcessingParameterField(self.YFIELD,
+                                                      self.tr('Y attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
 
-        output = self.getOutputValue(self.OUTPUT)
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot'), self.tr('HTML files (*.html)')))
 
-        values = vector.values(layer, xfieldname, yfieldname)
-        plt.close()
-        plt.scatter(values[xfieldname], values[yfieldname])
-        plt.ylabel(yfieldname)
-        plt.xlabel(xfieldname)
-        plotFilename = output + '.png'
-        lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+    def name(self):
+        return 'vectorlayerscatterplot'
+
+    def displayName(self):
+        return self.tr('Vector layer scatterplot')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
+        yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
+
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+
+        values = vector.values(source, xfieldname, yfieldname)
+        data = [go.Scatter(x=values[xfieldname],
+                           y=values[yfieldname],
+                           mode='markers')]
+        plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

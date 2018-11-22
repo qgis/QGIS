@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QFile>
 #include <QTextStream>
 #include <QObject>
@@ -35,7 +35,7 @@ class TestQgsClipper: public QObject
     void cleanup() {} // will be called after every testfunction.
     void basic();
   private:
-    bool checkBoundingBox( const QPolygonF& polygon, const QgsRectangle& clipRect );
+    bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
 };
 
 void TestQgsClipper::initTestCase()
@@ -78,12 +78,12 @@ void TestQgsClipper::basic()
   QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
 }
 
-bool TestQgsClipper::checkBoundingBox( const QPolygonF& polygon, const QgsRectangle& clipRect )
+bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect )
 {
   QgsRectangle bBox( polygon.boundingRect() );
 
   return clipRect.contains( bBox );
 }
 
-QTEST_MAIN( TestQgsClipper )
+QGSTEST_MAIN( TestQgsClipper )
 #include "testqgsclipper.moc"

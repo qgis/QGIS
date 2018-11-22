@@ -14,32 +14,32 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QTemporaryFile>
 
 //qgis includes...
-#include <qgsvectorlayercache.h>
-#include <qgsvectordataprovider.h>
-#include <qgsapplication.h>
-#include <qgsvectorlayereditbuffer.h>
-#include <qgscacheindexfeatureid.h>
+#include "qgsfeatureiterator.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectordataprovider.h"
+#include "qgsapplication.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgscacheindexfeatureid.h"
+#include "qgsvectorlayer.h"
+
 #include <QDebug>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer cache
  *
- * @see QgsVectorLayerCache
+ * \see QgsVectorLayerCache
  */
 class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
   public:
-    TestVectorLayerCache()
-        : mVectorLayerCache( 0 )
-        , mFeatureIdIndex( 0 )
-        , mPointsLayer( 0 )
-    {}
+    TestVectorLayerCache() = default;
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.
@@ -51,13 +51,18 @@ class TestVectorLayerCache : public QObject
     void testCacheAttrActions(); // Test attribute add/ attribute delete
     void testFeatureActions();   // Test adding/removing features works
     void testSubsetRequest();
+    void testFullCache();
+    void testFullCacheThroughRequest();
+    void testCanUseCacheForRequest();
+    void testCacheGeom();
+    void testFullCacheWithRect(); // Test that if rect is set then no full cache can exist, see #19468
 
-    void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
+    void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
   private:
-    QgsVectorLayerCache*           mVectorLayerCache;
-    QgsCacheIndexFeatureId*        mFeatureIdIndex;
-    QgsVectorLayer*                mPointsLayer;
+    QgsVectorLayerCache           *mVectorLayerCache = nullptr;
+    QgsCacheIndexFeatureId        *mFeatureIdIndex = nullptr;
+    QgsVectorLayer                *mPointsLayer = nullptr;
     QgsFeatureList                 mAddedFeatures;
     QMap<QString, QString> mTmpFiles;
 };
@@ -71,12 +76,12 @@ void TestVectorLayerCache::initTestCase()
 
   // Backup test shape file and attributes
   QStringList backupFiles;
-  backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
+  backupFiles << QStringLiteral( "points.shp" ) << QStringLiteral( "points.shx" ) << QStringLiteral( "points.dbf" ) << QStringLiteral( "points.prj" );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
 
-  Q_FOREACH ( const QString& f, backupFiles )
+  Q_FOREACH ( const QString &f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );
@@ -95,7 +100,7 @@ void TestVectorLayerCache::initTestCase()
   QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                     myPointFileInfo.completeBaseName(), "ogr" );
+                                     myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 
 void TestVectorLayerCache::init()
@@ -126,7 +131,7 @@ void TestVectorLayerCache::cleanupTestCase()
   }
 
   // also clean up newly created .qix file
-  QFile::remove( QString( TEST_DATA_DIR ) + "/points.qix" );
+  QFile::remove( QStringLiteral( TEST_DATA_DIR ) + "/points.qix" );
 
   QgsApplication::exitQgis();
 }
@@ -155,14 +160,14 @@ void TestVectorLayerCache::testCacheAttrActions()
   // Add an attribute, make sure it is returned also if a cached feature is requested
   mPointsLayer->startEditing();
   QVariant::Type attrType = QVariant::Int;
-  mPointsLayer->addAttribute( QgsField( "newAttr", attrType, "Int", 5, 0 ) );
+  mPointsLayer->addAttribute( QgsField( QStringLiteral( "newAttr" ), attrType, QStringLiteral( "Int" ), 5, 0 ) );
   mPointsLayer->commitChanges();
 
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
   QVERIFY( f.attribute( "newAttr" ).isValid() );
 
   QgsFields allFields = mPointsLayer->fields();
-  int idx = allFields.indexFromName( "newAttr" );
+  int idx = allFields.indexFromName( QStringLiteral( "newAttr" ) );
 
   mPointsLayer->startEditing();
   mPointsLayer->deleteAttribute( idx );
@@ -205,7 +210,7 @@ void TestVectorLayerCache::testSubsetRequest()
 
   QgsFields fields = mPointsLayer->fields();
   QStringList requiredFields;
-  requiredFields << "Class" << "Cabin Crew";
+  requiredFields << QStringLiteral( "Class" ) << QStringLiteral( "Cabin Crew" );
 
   mVectorLayerCache->featureAtId( 16, f );
   QVariant a = f.attribute( 3 );
@@ -218,11 +223,208 @@ void TestVectorLayerCache::testSubsetRequest()
   QVERIFY( a == f.attribute( 3 ) );
 }
 
-void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )
+void TestVectorLayerCache::testFullCache()
+{
+  // cache is too small to fit all features
+  QgsVectorLayerCache cache( mPointsLayer, 2 );
+  QVERIFY( !cache.hasFullCache() );
+  QVERIFY( cache.cacheSize() < mPointsLayer->featureCount() );
+  // but we set it to full cache
+  cache.setFullCache( true );
+  // so now it should have sufficient size for all features
+  QVERIFY( cache.cacheSize() >= mPointsLayer->featureCount() );
+  QVERIFY( cache.hasFullCache() );
+
+  // double check that everything is indeed in the cache
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( cache.isFidCached( f.id() ) );
+  }
+
+  // add a feature to the layer
+  mPointsLayer->startEditing();
+  QgsFeature f2( mPointsLayer->fields() );
+  QVERIFY( mPointsLayer->addFeature( f2 ) );
+  QVERIFY( cache.hasFullCache() );
+  QVERIFY( cache.isFidCached( f2.id() ) );
+
+  mPointsLayer->rollBack();
+}
+
+void TestVectorLayerCache::testFullCacheThroughRequest()
+{
+  // make sure cache is sufficient size for all features
+  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->featureCount() * 2 );
+  QVERIFY( !cache.hasFullCache() );
+
+  // now request all features from cache
+  QgsFeatureIterator it = cache.getFeatures( QgsFeatureRequest() );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    // suck in all features
+  }
+
+  // cache should now contain all features
+  it = mPointsLayer->getFeatures();
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( cache.isFidCached( f.id() ) );
+  }
+
+  // so it should be a full cache!
+  QVERIFY( cache.hasFullCache() );
+}
+
+void TestVectorLayerCache::testCanUseCacheForRequest()
+{
+  //first get some feature ids from layer
+  QgsFeature f;
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  it.nextFeature( f );
+  QgsFeatureId id1 = f.id();
+  it.nextFeature( f );
+  QgsFeatureId id2 = f.id();
+
+  QgsVectorLayerCache cache( mPointsLayer, 10 );
+  // initially nothing in cache, so can't use it to fulfill the request
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+
+  // get just the first feature into the cache
+  it = cache.getFeatures( QgsFeatureRequest().setFilterFid( id1 ) );
+  while ( it.nextFeature( f ) ) { }
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  //verify that the returned iterator was correct
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.id(), id1 );
+  QVERIFY( !it.nextFeature( f ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+
+  // get feature 2 into cache
+  it = cache.getFeatures( QgsFeatureRequest().setFilterFid( id2 ) );
+  while ( it.nextFeature( f ) ) { }
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 << id2 );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.id(), id1 );
+  QVERIFY( !it.nextFeature( f ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.id(), id2 );
+  QVERIFY( !it.nextFeature( f ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( it.nextFeature( f ) );
+  QgsFeatureIds result;
+  result << f.id();
+  QVERIFY( it.nextFeature( f ) );
+  result << f.id();
+  QCOMPARE( result, QgsFeatureIds() << id1 << id2 );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+
+  // can only use rect/expression requests if cache has everything
+  cache.setFullCache( true );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+}
+
+void TestVectorLayerCache::testCacheGeom()
+{
+  QgsVectorLayerCache cache( mPointsLayer, 2 );
+  // cache geometry
+  cache.setCacheGeometry( true );
+
+  //first get some feature ids from layer
+  QgsFeature f;
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  it.nextFeature( f );
+  QgsFeatureId id1 = f.id();
+  it.nextFeature( f );
+  QgsFeatureId id2 = f.id();
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry ); // should be ignored by cache
+  req.setFilterFids( QgsFeatureIds() << id1 << id2 );
+
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // disabled geometry caching
+  cache.setCacheGeometry( false );
+  // we should still have cached features... no need to lose these!
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 << id2 );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // now upgrade cache from no geometry -> geometry, should be cleared since we
+  // cannot be confident that features existing in the cache have geometry
+  cache.setCacheGeometry( true );
+  QVERIFY( cache.cachedFeatureIds().isEmpty() );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // another test...
+  cache.setCacheGeometry( false );
+  cache.setFullCache( true );
+  QVERIFY( cache.hasFullCache() );
+  cache.setCacheGeometry( true );
+  QVERIFY( !cache.hasFullCache() );
+}
+
+void TestVectorLayerCache::testFullCacheWithRect()
+{
+  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  // cache geometry
+  cache.setCacheGeometry( true );
+  QVERIFY( ! cache.hasFullCache() );
+  QgsFeatureRequest req;
+  req.setFilterRect( mPointsLayer->dataProvider()->extent().buffered( - mPointsLayer->dataProvider()->extent().width() / 2 ) );
+  QgsFeatureIterator it = cache.getFeatures( req );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+  QVERIFY( ! cache.hasFullCache() );
+
+  // Filter rect contains extent
+  req.setFilterRect( mPointsLayer->dataProvider()->extent().buffered( 1 ) );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+  QVERIFY( cache.hasFullCache() );
+
+}
+
+void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )
 {
   Q_UNUSED( layerId )
   mAddedFeatures.append( features );
 }
 
-QTEST_MAIN( TestVectorLayerCache )
+QGSTEST_MAIN( TestVectorLayerCache )
 #include "testqgsvectorlayercache.moc"

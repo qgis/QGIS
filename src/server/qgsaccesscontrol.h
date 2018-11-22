@@ -22,6 +22,10 @@
 #include "qgsaccesscontrolfilter.h"
 
 #include <QMultiMap>
+#include "qgis_server.h"
+#include "qgis_sip.h"
+
+SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 class QgsAccessControlPlugin;
 
@@ -29,100 +33,129 @@ class QgsAccessControlPlugin;
 /**
  * \ingroup server
  * \class QgsAccessControl
- * \brief A helper class that centralise the restrictions given by all the
- *        access control filter plugins.
- **/
+ * \brief A helper class that centralizes restrictions given by all the access control filter plugins.
+ * \since QGIS 2.14
+ */
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 {
+#ifdef SIP_RUN
+#include "qgsaccesscontrolfilter.h"
+#endif
+
   public:
-    /** Constructor */
+    //! Constructor
     QgsAccessControl()
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap();
+      mResolved = false;
     }
 
-    /** Constructor */
-    QgsAccessControl( const QgsAccessControl& copy )
+    //! Constructor
+    QgsAccessControl( const QgsAccessControl &copy )
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
+      mFilterFeaturesExpressions = copy.mFilterFeaturesExpressions;
+      mResolved = copy.mResolved;
     }
 
-    /** Destructor */
-    ~QgsAccessControl()
+
+    ~QgsAccessControl() override
     {
       delete mPluginsAccessControls;
     }
 
-    /** Filter the features of the layer
-     * @param layer the layer to control
-     * @param filterFeatures the request to fill
+    /**
+     * Resolve features' filter of layers
+     * \param layers to filter
      */
-    void filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& filterFeatures ) const;
+    void resolveFilterFeatures( const QList<QgsMapLayer *> &layers );
 
-    /** Return a clone of the object
-     * @return A clone
+    /**
+     * Filter the features of the layer
+     * \param layer the layer to control
+     * \param filterFeatures the request to fill
      */
-    QgsFeatureFilterProvider* clone() const;
+    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
 
-    /** Return an additional subset string (typically SQL) filter
-     * @param layer the layer to control
-     * @return the subset string to use
+    /**
+     * Returns a clone of the object
+     * \returns A clone
      */
-    QString extraSubsetString( const QgsVectorLayer* layer ) const;
+    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
-    /** Return the layer read right
-     * @param layer the layer to control
-     * @return true if it can be read
+    /**
+     * Returns an additional subset string (typically SQL) filter
+     * \param layer the layer to control
+     * \returns the subset string to use
      */
-    bool layerReadPermission( const QgsMapLayer* layer ) const;
+    QString extraSubsetString( const QgsVectorLayer *layer ) const;
 
-    /** Return the layer insert right
-     * @param layer the layer to control
-     * @return true if we can insert on it
+    /**
+     * Returns the layer read right
+     * \param layer the layer to control
+     * \returns true if it can be read
      */
-    bool layerInsertPermission( const QgsVectorLayer* layer ) const;
+    bool layerReadPermission( const QgsMapLayer *layer ) const;
 
-    /** Return the layer update right
-     * @param layer the layer to control
-     * @return true if we can do an update
+    /**
+     * Returns the layer insert right
+     * \param layer the layer to control
+     * \returns true if we can insert on it
      */
-    bool layerUpdatePermission( const QgsVectorLayer* layer ) const;
+    bool layerInsertPermission( const QgsVectorLayer *layer ) const;
 
-    /** Return the layer delete right
-     * @param layer the layer to control
-     * @return true if we can do a delete
+    /**
+     * Returns the layer update right
+     * \param layer the layer to control
+     * \returns true if we can do an update
      */
-    bool layerDeletePermission( const QgsVectorLayer* layer ) const;
+    bool layerUpdatePermission( const QgsVectorLayer *layer ) const;
 
-    /** Return the authorized layer attributes
-     * @param layer the layer to control
-     * @param attributes the list of attribute
-     * @return the list of visible attributes
+    /**
+     * Returns the layer delete right
+     * \param layer the layer to control
+     * \returns true if we can do a delete
      */
-    QStringList layerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
+    bool layerDeletePermission( const QgsVectorLayer *layer ) const;
 
-    /** Are we authorized to modify the following geometry
-     * @param layer the layer to control
-     * @param feature the concerned feature
-     * @return true if we are allowed to edit the feature
+    /**
+     * Returns the authorized layer attributes
+     * \param layer the layer to control
+     * \param attributes the list of attribute
+     * \returns the list of visible attributes
      */
-    bool allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const;
+    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 
-    /** Fill the capabilities caching key
-     * @param cacheKey the list to fill with a cache variant
-     * @return false if we cant create a cache
+    /**
+     * Are we authorized to modify the following geometry
+     * \param layer the layer to control
+     * \param feature the concerned feature
+     * \returns true if we are allowed to edit the feature
      */
-    bool fillCacheKey( QStringList& cacheKey ) const;
+    bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 
-    /** Register an access control filter
-     * @param accessControl the access control to add
-     * @priority the priority used to define the order
+    /**
+     * Fill the capabilities caching key
+     * \param cacheKey the list to fill with a cache variant
+     * \returns false if we can't create a cache
      */
-    void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 );
+    bool fillCacheKey( QStringList &cacheKey ) const;
+
+    /**
+     * Register an access control filter
+     * \param accessControl the access control to add
+     * \param priority the priority used to define the order
+     */
+    void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 );
 
   private:
-    /** The AccessControl plugins registry */
-    QgsAccessControlFilterMap* mPluginsAccessControls;
+    QString resolveFilterFeatures( const QgsVectorLayer *layer ) const;
+
+    //! The AccessControl plugins registry
+    QgsAccessControlFilterMap *mPluginsAccessControls = nullptr;
+
+    QMap<QString, QString> mFilterFeaturesExpressions;
+    bool mResolved;
 };
 
 #endif

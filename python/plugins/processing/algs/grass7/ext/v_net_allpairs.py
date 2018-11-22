@@ -26,8 +26,13 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from .v_net import incorporatePoints
+from .v_net import incorporatePoints, variableOutput
 
 
-def processCommand(alg):
-    incorporatePoints(alg)
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
+
+
+def processOutputs(alg, parameters, context, feedback):
+    outputParameter = {'output': ['output', 'line', 1, True]}
+    variableOutput(alg, outputParameter, parameters, context)

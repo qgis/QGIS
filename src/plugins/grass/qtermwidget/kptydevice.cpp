@@ -130,7 +130,7 @@ bool KPtyDevicePrivate::_k_canRead()
         }
         if (readBytes < 0) {
             readBuffer.unreserve(available);
-            q->setErrorString("Error reading from PTY");
+            q->setErrorString(QStringLiteral("Error reading from PTY"));
             return false;
         }
         readBuffer.unreserve(available - readBytes); // *should* be a no-op
@@ -164,7 +164,7 @@ bool KPtyDevicePrivate::_k_canWrite()
             write(q->masterFd(),
                   writeBuffer.readPointer(), writeBuffer.readSize()));
     if (wroteBytes < 0) {
-        q->setErrorString("Error writing to PTY");
+        q->setErrorString(QStringLiteral("Error writing to PTY"));
         return false;
     }
     writeBuffer.free(wroteBytes);
@@ -249,7 +249,7 @@ bool KPtyDevicePrivate::doWait(int msecs, bool reading)
                 break;
             return false;
         case 0:
-            q->setErrorString("PTY operation timed out");
+            q->setErrorString(QStringLiteral("PTY operation timed out"));
             return false;
         default:
             if (FD_ISSET(q->masterFd(), &rfds)) {
@@ -305,7 +305,7 @@ bool KPtyDevice::open(OpenMode mode)
         return true;
 
     if (!KPty::open()) {
-        setErrorString("Error opening PTY");
+        setErrorString(QStringLiteral("Error opening PTY"));
         return false;
     }
 
@@ -319,7 +319,7 @@ bool KPtyDevice::open(int fd, OpenMode mode)
     Q_D(KPtyDevice);
 
     if (!KPty::open(fd)) {
-        setErrorString("Error opening PTY");
+        setErrorString(QStringLiteral("Error opening PTY"));
         return false;
     }
 
@@ -400,14 +400,14 @@ bool KPtyDevice::isSuspended() const
 qint64 KPtyDevice::readData(char *data, qint64 maxlen)
 {
     Q_D(KPtyDevice);
-    return d->readBuffer.read(data, (int)qMin<qint64>(maxlen, KMAXINT));
+    return d->readBuffer.read(data, static_cast<int>(std::min<qint64>(maxlen, KMAXINT)));
 }
 
 // protected
 qint64 KPtyDevice::readLineData(char *data, qint64 maxlen)
 {
     Q_D(KPtyDevice);
-    return d->readBuffer.readLine(data, (int)qMin<qint64>(maxlen, KMAXINT));
+    return d->readBuffer.readLine(data, static_cast<int>(std::min<qint64>(maxlen, KMAXINT)));
 }
 
 // protected

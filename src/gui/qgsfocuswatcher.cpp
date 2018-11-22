@@ -16,14 +16,14 @@
 #include "qgsfocuswatcher.h"
 #include <QEvent>
 
-QgsFocusWatcher::QgsFocusWatcher( QObject* parent )
-    : QObject( parent )
+QgsFocusWatcher::QgsFocusWatcher( QObject *parent )
+  : QObject( parent )
 {
   Q_ASSERT( parent );
   parent->installEventFilter( this );
 }
 
-bool QgsFocusWatcher::eventFilter( QObject*, QEvent* event )
+bool QgsFocusWatcher::eventFilter( QObject *, QEvent *event )
 {
   switch ( event->type() )
   {

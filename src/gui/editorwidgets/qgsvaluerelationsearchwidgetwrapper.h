@@ -17,53 +17,57 @@
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include "qgsvaluerelationwidgetwrapper.h"
+#include "qgis.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
-#include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 
 /**
+ * \ingroup gui
  * Wraps a value relation search  widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * It will be used as a search widget and produces expression to look for in the layer.
- * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
-
   public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
 
-  public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    //! Constructor for QgsValueRelationSearchWidgetWrapper
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     bool applyDirectly() override;
-    QString expression() override;
+    QString expression() const override;
     bool valid() const override;
     QVariant value() const;
-
-  protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
-    void valueChanged();
+    void clearWidget() override;
+    void setEnabled( bool enabled ) override;
+
+  protected:
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   protected slots:
-    void setExpression( QString exp ) override;
+    //! Called when current value of search widget changes
+    void onValueChanged();
+
+    void setExpression( const QString &exp ) override;
 
   private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+    QComboBox *mComboBox = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 
-    ValueRelationCache mCache;
-    QgsVectorLayer* mLayer;
+    QgsValueRelationFieldFormatter::ValueRelationCache mCache;
+    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsValueRelationWidgetFactory;
 };

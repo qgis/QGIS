@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsBrowserDockWidgetBase</class>
- <widget class="QDockWidget" name="QgsBrowserDockWidgetBase">
+ <widget class="QgsDockWidget" name="QgsBrowserDockWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -205,7 +205,7 @@
   <action name="mActionRefresh">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
    </property>
    <property name="text">
     <string>Refresh</string>
@@ -262,6 +262,12 @@
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>qgsdockwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

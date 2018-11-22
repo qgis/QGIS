@@ -1,5 +1,0 @@
- <!DOCTYPE RCC><RCC version="1.0">
- <qresource prefix="/raster">
-     <file>dem.png</file>
- </qresource>
- </RCC>
