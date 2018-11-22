@@ -763,11 +763,9 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       // NOTE: SpatiaLite provider ignores position of geometry column
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
       QgsAttributes attrs = f.attributes();
-      int column = 0;
       // on GPKG newAttrs has an addition FID attribute, so we have to add a dummy in the original set
-      if ( containerType == GPKG )
-        column++;
-      QgsAttributes newAttrs( attrs.count() + column );
+      QgsAttributes newAttrs( containerType == GPKG ? attrs.count() + 1 : attrs.count() );
+      int column = 0;
       for ( int it = 0; it < attrs.count(); ++it )
       {
         newAttrs[column++] = attrs.at( it );
