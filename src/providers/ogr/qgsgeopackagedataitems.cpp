@@ -153,7 +153,7 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsGeoPackageCollectionItem *o = dynamic_cast<const QgsGeoPackageCollectionItem *>( other );
+  const QgsGeoPackageCollectionItem *o = qobject_cast<const QgsGeoPackageCollectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
 
 }
@@ -546,7 +546,6 @@ void QgsGeoPackageVectorLayerItem::renameLayer()
 
   // Get layer name from layer URI
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( providerKey(), mUri ) );
-  QString baseUri = pieces[QStringLiteral( "path" )].toString();
   QString layerName = pieces[QStringLiteral( "layerName" )].toString();
 
   // Collect existing table names
@@ -589,8 +588,8 @@ bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &path, const
     if ( status != SQLITE_OK || errmsg )
     {
       errCause = tr( "There was an error compacting (VACUUM) the database <b>%1</b>: %2" )
-                 .arg( name )
-                 .arg( QString::fromUtf8( errmsg ) );
+                 .arg( name,
+                       QString::fromUtf8( errmsg ) );
     }
     else
     {
@@ -725,7 +724,7 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsGeoPackageConnectionItem *o = dynamic_cast<const QgsGeoPackageConnectionItem *>( other );
+  const QgsGeoPackageConnectionItem *o = qobject_cast<const QgsGeoPackageConnectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
 
 }
@@ -743,7 +742,7 @@ bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
   return false;
 }
 
-static int collect_strings( void *names, int argc, char **argv, char ** )
+static int collect_strings( void *names, int, char **argv, char ** )
 {
   *static_cast<QList<QString>*>( names ) << QString::fromUtf8( argv[ 0 ] );
   return 0;
@@ -752,7 +751,6 @@ static int collect_strings( void *names, int argc, char **argv, char ** )
 QList<QString> QgsGeoPackageAbstractLayerItem::tableNames()
 {
   QList<QString> names;
-  QString errCause;
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( providerKey(), mUri ) );
   QString baseUri = pieces[QStringLiteral( "path" )].toString();
   if ( !baseUri.isEmpty() )
@@ -846,7 +844,7 @@ bool QgsGeoPackageVectorLayerItem::rename( const QString &name )
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mUri );
   QString errCause;
-  if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( "layerName" ).isNull() )
+  if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( QStringLiteral( "layerName" ) ).isNull() )
   {
     errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( mUri );
   }
