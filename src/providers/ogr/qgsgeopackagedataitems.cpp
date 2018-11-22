@@ -743,6 +743,12 @@ bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
   return false;
 }
 
+static int collect_strings( void *names, int argc, char **argv, char ** )
+{
+  *static_cast<QList<QString>*>( names ) << QString::fromUtf8( argv[ 0 ] );
+  return 0;
+}
+
 QList<QString> QgsGeoPackageAbstractLayerItem::tableNames()
 {
   QList<QString> names;
@@ -758,15 +764,11 @@ QList<QString> QgsGeoPackageAbstractLayerItem::tableNames()
     {
       char *sql = sqlite3_mprintf( "SELECT table_name FROM gpkg_contents;" );
       status = sqlite3_exec(
-                 database.get(),               /* An open database */
-                 sql,                          /* SQL to be evaluated */
-                 +[]( void *names, int, char **argv, char ** )
-      {
-        *static_cast<QList<QString>*>( names ) << QString( argv[ 0 ] );
-        return 0;
-      },                            /* Callback function */
-      &names,                       /* 1st argument to callback */
-      &errmsg                       /* Error msg written here */
+                 database.get(),              /* An open database */
+                 sql,                         /* SQL to be evaluated */
+                 collect_strings,             /* Callback function */
+                 &names,                      /* 1st argument to callback */
+                 &errmsg                      /* Error msg written here */
                );
       sqlite3_free( sql );
       if ( status != SQLITE_OK )

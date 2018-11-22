@@ -646,7 +646,7 @@ datasets with maximum width and height specified below.</string>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer1">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>

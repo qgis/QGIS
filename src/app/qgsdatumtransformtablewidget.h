@@ -44,6 +44,7 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
     };
 
     QgsDatumTransformTableModel( QObject *parent = nullptr );
+    ~QgsDatumTransformTableModel() {}
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
