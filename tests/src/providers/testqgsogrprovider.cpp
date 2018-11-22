@@ -45,6 +45,7 @@ class TestQgsOgrProvider : public QObject
     void cleanup() {}// will be called after every testfunction.
 
     void setupProxy();
+    void decodeUri();
 
   private:
     QString mTestDataDir;
@@ -117,6 +118,16 @@ void TestQgsOgrProvider::setupProxy()
     QCOMPARE( proxyCredentials, "username" );
   }
 
+}
+
+void TestQgsOgrProvider::decodeUri()
+{
+  auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "database_name" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MYSQL:westholland,user=root,password=psv9570,port=3306,tables=bedrijven" ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "westholland" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
 
 
