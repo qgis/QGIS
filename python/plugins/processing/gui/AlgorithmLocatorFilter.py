@@ -95,9 +95,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.setMessage(message)
                 dlg.exec_()
                 return
-            dlg = alg.createCustomParametersWidget(None)
+            dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
             if not dlg:
-                dlg = AlgorithmDialog(alg)
+                dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
             canvas = iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
@@ -173,9 +173,9 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
 
             if [d for d in alg.parameterDefinitions() if
                     d.name() not in ('INPUT', 'OUTPUT')]:
-                dlg = alg.createCustomParametersWidget(None)
+                dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
                 if not dlg:
-                    dlg = AlgorithmDialog(alg, True)
+                    dlg = AlgorithmDialog(alg, True, parent=iface.mainWindow())
                 canvas = iface.mapCanvas()
                 prevMapTool = canvas.mapTool()
                 dlg.show()

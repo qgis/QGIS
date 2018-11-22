@@ -137,7 +137,7 @@ def createAlgorithmDialog(algOrName, parameters={}):
     dlg = alg.createCustomParametersWidget(iface.mainWindow())
 
     if not dlg:
-        dlg = AlgorithmDialog(alg)
+        dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
 
     dlg.setParameters(parameters)
 
