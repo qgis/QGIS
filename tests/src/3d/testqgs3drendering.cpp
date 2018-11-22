@@ -16,8 +16,12 @@
 #include "qgstest.h"
 #include "qgsrenderchecker.h"
 
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmapthemecollection.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrastershader.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include "qgs3dmapscene.h"
@@ -43,6 +47,7 @@ class TestQgs3DRendering : public QObject
     void testFlatTerrain();
     void testDemTerrain();
     void testExtrudedPolygons();
+    void testMapTheme();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -88,6 +93,39 @@ void TestQgs3DRendering::initTestCase()
   mLayerBuildings->setRenderer3D( renderer3d );
 
   mProject->setCrs( mLayerDtm->crs() );
+
+  //
+  // prepare styles for DTM layer
+  //
+
+  mLayerDtm->styleManager()->addStyleFromLayer( "grayscale" );
+
+  double vMin = 44, vMax = 198;
+  QColor cMin = Qt::red, cMax = Qt::yellow;
+
+  // change renderer for the new style
+  std::unique_ptr<QgsColorRampShader> colorRampShader( new QgsColorRampShader( vMin, vMax ) );
+  colorRampShader->setColorRampItemList( QList<QgsColorRampShader::ColorRampItem>()
+                                         << QgsColorRampShader::ColorRampItem( vMin, cMin )
+                                         << QgsColorRampShader::ColorRampItem( vMax, cMax ) );
+  std::unique_ptr<QgsRasterShader> shader( new QgsRasterShader( vMin, vMax ) );
+  shader->setRasterShaderFunction( colorRampShader.release() );
+  QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( mLayerDtm->renderer()->input(), 1, shader.release() );
+  mLayerDtm->setRenderer( r );
+  mLayerDtm->styleManager()->addStyleFromLayer( "my_style" );
+
+  mLayerDtm->styleManager()->setCurrentStyle( "grayscale" );
+
+  //
+  // add map theme
+  //
+
+  QgsMapThemeCollection::MapThemeLayerRecord layerRecord( mLayerDtm );
+  layerRecord.usingCurrentStyle = true;
+  layerRecord.currentStyle = "my_style";
+  QgsMapThemeCollection::MapThemeRecord record;
+  record.addLayerRecord( layerRecord );
+  mProject->mapThemeCollection()->insert( "theme_dtm", record );
 }
 
 //runs after all tests
@@ -202,6 +240,40 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
+}
+
+void TestQgs3DRendering::testMapTheme()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
+
+  // set theme - this should override what we set in setLayers()
+  map->setMapThemeCollection( mProject->mapThemeCollection() );
+  map->setTerrainMapTheme( "theme_dtm" );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "terrain_theme", img, 40 ) );
 }
 
 

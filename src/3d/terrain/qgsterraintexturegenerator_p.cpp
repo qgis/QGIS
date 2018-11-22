@@ -18,6 +18,7 @@
 #include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsmapsettings.h>
+#include <qgsmapthemecollection.h>
 #include <qgsproject.h>
 
 #include "qgs3dmapsettings.h"
@@ -127,13 +128,26 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
 QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
-  mapSettings.setLayers( mMap.layers() );
+
   mapSettings.setOutputSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) );
   mapSettings.setDestinationCrs( mMap.crs() );
   mapSettings.setBackgroundColor( mMap.backgroundColor() );
   mapSettings.setFlag( QgsMapSettings::DrawLabeling, mMap.showLabels() );
   mapSettings.setTransformContext( mMap.transformContext() );
   mapSettings.setPathResolver( mMap.pathResolver() );
+
+  QgsMapThemeCollection *mapThemes = mMap.mapThemeCollection();
+  QString mapThemeName = mMap.terrainMapTheme();
+  if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
+  {
+    mapSettings.setLayers( mMap.layers() );
+  }
+  else
+  {
+    mapSettings.setLayers( mapThemes->mapThemeVisibleLayers( mapThemeName ) );
+    mapSettings.setLayerStyleOverrides( mapThemes->mapThemeStyleOverrides( mapThemeName ) );
+  }
+
   return mapSettings;
 }
 
