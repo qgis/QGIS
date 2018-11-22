@@ -38,7 +38,6 @@
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
 #include "qgsactionscoperegistry.h"
-#include "qgsproxyprogresstask.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 
@@ -112,14 +111,6 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
   resultsDialog()->clear();
-
-  QgsProxyProgressTask *task = new QgsProxyProgressTask( tr( "Identifying features" ) );
-  QgsApplication::taskManager()->addTask( task );
-
-  connect( this, &QgsMapToolIdentifyAction::identifyProgress, task, [ = ]( int i, int n )
-  {
-    task->setProxyProgress( static_cast<double>( i ) * 100.0 / n );
-  } );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   QgsGeometry geometry = mSelectionHandler->selectedGeometry();
@@ -139,7 +130,6 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers );
 
-  task->finalize( true );
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   if ( results.isEmpty() )
