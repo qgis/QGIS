@@ -1,5 +1,6 @@
 usr/lib/qgis/crssync
 usr/lib/qgis/plugins/libbasicauthmethod.so
+usr/lib/qgis/plugins/libesritokenauthmethod.so
 usr/lib/qgis/plugins/libdelimitedtextprovider.so
 usr/lib/qgis/plugins/libgdalprovider.so
 usr/lib/qgis/plugins/libgeonodeprovider.so
