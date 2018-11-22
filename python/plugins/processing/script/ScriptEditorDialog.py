@@ -248,9 +248,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
         alg.initAlgorithm()
 
-        dlg = alg.createCustomParametersWidget(self)
+        dlg = alg.createCustomParametersWidget(iface.mainWindow())
         if not dlg:
-            dlg = AlgorithmDialog(alg)
+            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
 
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
