@@ -306,6 +306,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/doc/" ^
 	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/esritokenauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
