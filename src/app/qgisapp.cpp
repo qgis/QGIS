@@ -4956,6 +4956,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
     QgsLayerTreeGroup *group = nullptr;
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
+    bool newLayersVisible = settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool();
     if ( addToGroup )
     {
       group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, layer->name() );
@@ -4989,6 +4990,10 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
         }
       }
     }
+
+    // Respect if user don't want the new group of layers visible.
+    if ( addToGroup && ! newLayersVisible )
+      group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
 }
 
@@ -5153,6 +5158,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   {
     QgsSettings settings;
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
+    bool newLayersVisible = settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool();
     QgsLayerTreeGroup *group = nullptr;
     if ( addToGroup )
       group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, name );
@@ -5166,6 +5172,10 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       if ( addToGroup )
         group->addLayer( l );
     }
+
+    // Respect if user don't want the new group of layers visible.
+    if ( addToGroup && ! newLayersVisible )
+      group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
 }
 
