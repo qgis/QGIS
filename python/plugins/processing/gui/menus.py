@@ -250,9 +250,9 @@ def _executeAlgorithm(alg_id):
         return
 
     if (alg.countVisibleParameters()) > 0:
-        dlg = alg.createCustomParametersWidget(None)
+        dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not dlg:
-            dlg = AlgorithmDialog(alg)
+            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
