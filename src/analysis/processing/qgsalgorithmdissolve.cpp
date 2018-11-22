@@ -212,9 +212,14 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 
 QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  return processCollection( parameters, context, feedback, []( const QVector< QgsGeometry > &parts )->QgsGeometry
+  return processCollection( parameters, context, feedback, [ & ]( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
-    return QgsGeometry::unaryUnion( parts );
+    QgsGeometry result( QgsGeometry::unaryUnion( parts ) );
+    if ( ! result.lastError().isEmpty() )
+    {
+      feedback->reportError( result.lastError(), true );
+    }
+    return result;
   }, 10000 );
 }
 
