@@ -218,6 +218,8 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     if ( ! result.lastError().isEmpty() )
     {
       feedback->reportError( result.lastError(), true );
+      if ( result.isEmpty() )
+        throw QgsProcessingException( QObject::tr( "The algorithm returned no output." ) );
     }
     return result;
   }, 10000 );
