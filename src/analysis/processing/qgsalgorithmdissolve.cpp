@@ -210,11 +210,30 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
   return new QgsDissolveAlgorithm();
 }
 
+
 QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  return processCollection( parameters, context, feedback, []( const QVector< QgsGeometry > &parts )->QgsGeometry
+  return processCollection( parameters, context, feedback, [ & ]( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
-    return QgsGeometry::unaryUnion( parts );
+    QgsGeometry result( QgsGeometry::unaryUnion( parts ) );
+    // Geos may fail in some cases, let's try a slower but safer approach
+    // See: https://issues.qgis.org/issues/20591 - Dissolve tool failing to produce outputs
+    if ( ! result.lastError().isEmpty() && parts.count() >  2 )
+    {
+      feedback->pushDebugInfo( QStringLiteral( "GEOS exception: taking the slower route ..." ) );
+      result = QgsGeometry();
+      for ( const auto &p : parts )
+      {
+        result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p );
+      }
+    }
+    if ( ! result.lastError().isEmpty() )
+    {
+      feedback->reportError( result.lastError(), true );
+      if ( result.isEmpty() )
+        throw QgsProcessingException( QObject::tr( "The algorithm returned no output." ) );
+    }
+    return result;
   }, 10000 );
 }
 
