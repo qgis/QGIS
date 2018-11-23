@@ -1455,7 +1455,7 @@ namespace QgsWfs
     QString encodeValueToText( const QVariant &value, const QgsEditorWidgetSetup &setup )
     {
       if ( value.isNull() )
-        return QStringLiteral( "null" );
+        return QString();
 
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
