@@ -33,15 +33,6 @@ class QgsRenderContext;
 class QgsCoordinateTransform;
 class QgsRectangle;
 
-//! Mesh - vertices and faces
-struct CORE_EXPORT QgsMesh
-{
-  //! vertices
-  QVector<QgsMeshVertex> vertices;
-  //! faces
-  QVector<QgsMeshFace> faces;
-};
-
 ///@cond PRIVATE
 
 /**
