@@ -219,7 +219,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     // See: https://issues.qgis.org/issues/20591 - Dissolve tool failing to produce outputs
     if ( ! result.lastError().isEmpty() && parts.count() >  2 )
     {
-      feedback->pushDebugInfo( QStringLiteral( "GEOS exception: taking the slower route ..." ) );
+      feedback->pushDebugInfo( QObject::tr( "GEOS exception: taking the slower route ..." ) );
       result = QgsGeometry();
       for ( const auto &p : parts )
       {
