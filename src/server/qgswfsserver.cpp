@@ -2242,7 +2242,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
 QString QgsWFSServer::encodeValueToText( const QVariant& value )
 {
   if ( value.isNull() )
-    return "null";
+    return QString();
 
   switch ( value.type() )
   {
