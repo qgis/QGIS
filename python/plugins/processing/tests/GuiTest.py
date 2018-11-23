@@ -55,7 +55,7 @@ testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 class AlgorithmDialogTest(unittest.TestCase):
 
     def testCreation(self):
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         a = AlgorithmDialog(alg)
         self.assertEqual(a.mainWidget().alg, alg)
 
@@ -67,7 +67,7 @@ class WrappersTest(unittest.TestCase):
         ProcessingConfig.initialize()
 
     def checkConstructWrapper(self, param, expected_wrapper_class):
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
 
         # algorithm dialog
         dlg = AlgorithmDialog(alg)
@@ -77,6 +77,7 @@ class WrappersTest(unittest.TestCase):
         self.assertEqual(wrapper.dialog, dlg)
         self.assertIsNotNone(wrapper.widget)
 
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         # batch dialog
         dlg = BatchAlgorithmDialog(alg)
         wrapper = WidgetWrapperFactory.create_wrapper_from_class(param, dlg)
@@ -84,6 +85,8 @@ class WrappersTest(unittest.TestCase):
         self.assertIsInstance(wrapper, expected_wrapper_class)
         self.assertEqual(wrapper.dialog, dlg)
         self.assertIsNotNone(wrapper.widget)
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
 
         # modeler dialog
         model = QgsProcessingModelAlgorithm()
@@ -138,7 +141,7 @@ class WrappersTest(unittest.TestCase):
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayer(layer)
 
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         dlg = AlgorithmDialog(alg)
         param = QgsProcessingParameterFeatureSource('test')
         wrapper = FeatureSourceWidgetWrapper(param, dlg)
@@ -175,7 +178,7 @@ class WrappersTest(unittest.TestCase):
         # minimal test to check if wrapper generate GUI for each processign context
         self.checkConstructWrapper(QgsProcessingParameterRange('test'), RangeWidgetWrapper)
 
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         dlg = AlgorithmDialog(alg)
         param = QgsProcessingParameterRange(
             name='test',
@@ -237,7 +240,7 @@ class WrappersTest(unittest.TestCase):
     def testDistance(self):
         self.checkConstructWrapper(QgsProcessingParameterDistance('test'), DistanceWidgetWrapper)
 
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         dlg = AlgorithmDialog(alg)
         param = QgsProcessingParameterDistance('test')
         wrapper = DistanceWidgetWrapper(param, dlg)
@@ -322,7 +325,7 @@ class WrappersTest(unittest.TestCase):
     def testMatrix(self):
         self.checkConstructWrapper(QgsProcessingParameterMatrix('test'), FixedTableWidgetWrapper)
 
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         dlg = AlgorithmDialog(alg)
         param = QgsProcessingParameterMatrix('test', 'test', 2, True, ['x', 'y'], [['a', 'b'], ['c', 'd']])
         wrapper = FixedTableWidgetWrapper(param, dlg)
@@ -346,7 +349,7 @@ class WrappersTest(unittest.TestCase):
 
     def testFeatureSink(self):
         param = QgsProcessingParameterFeatureSink('test')
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
 
         panel.setValue('memory:')
@@ -382,7 +385,7 @@ class WrappersTest(unittest.TestCase):
 
     def testVectorDestination(self):
         param = QgsProcessingParameterVectorDestination('test')
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
 
         panel.setValue('''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
@@ -412,7 +415,7 @@ class WrappersTest(unittest.TestCase):
 
     def testRasterDestination(self):
         param = QgsProcessingParameterRasterDestination('test')
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
 
         panel.setValue('/home/me/test.tif')
@@ -430,7 +433,7 @@ class WrappersTest(unittest.TestCase):
 
     def testFolderDestination(self):
         param = QgsProcessingParameterFolderDestination('test')
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
 
         panel.setValue('/home/me/test.tif')
@@ -444,7 +447,7 @@ class WrappersTest(unittest.TestCase):
 
     def testFileDestination(self):
         param = QgsProcessingParameterFileDestination('test')
-        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
 
         panel.setValue('/home/me/test.tif')
