@@ -215,6 +215,17 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
   return processCollection( parameters, context, feedback, [ & ]( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
     QgsGeometry result( QgsGeometry::unaryUnion( parts ) );
+    // Geos may fail in some cases, let's try a slower but safer approach
+    // See: https://issues.qgis.org/issues/20591 - Dissolve tool failing to produce outputs
+    if ( ! result.lastError().isEmpty() && parts.count() >  2 )
+    {
+      QgsDebugMsg( QStringLiteral( "GEOS exception, taking the slower route ..." ) );
+      result = QgsGeometry();
+      for ( const auto &p : parts )
+      {
+        result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p );
+      }
+    }
     if ( ! result.lastError().isEmpty() )
     {
       feedback->reportError( result.lastError(), true );
