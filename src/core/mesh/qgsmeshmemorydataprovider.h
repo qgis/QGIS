@@ -34,6 +34,8 @@ struct QgsMeshMemoryDataset
   QVector<QgsMeshDatasetValue> values;
   double time = -1;
   bool valid = false;
+  double minimum = std::numeric_limits<double>::quiet_NaN();
+  double maximum = std::numeric_limits<double>::quiet_NaN();
 };
 
 struct QgsMeshMemoryDatasetGroup
@@ -43,6 +45,8 @@ struct QgsMeshMemoryDatasetGroup
   QString name;
   bool isScalar = true;
   bool isOnVertices = true;
+  double minimum = std::numeric_limits<double>::quiet_NaN();
+  double maximum = std::numeric_limits<double>::quiet_NaN();
 };
 
 /**
@@ -87,9 +91,8 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
 
     int vertexCount() const override;
     int faceCount() const override;
-    QgsMeshVertex vertex( int index ) const override;
-    QgsMeshFace face( int index ) const override;
-
+    void populateMesh( QgsMesh *mesh ) const override;
+    QgsRectangle extent() const override;
 
     /**
      * Adds dataset to a mesh in-memory data provider from data string
@@ -128,7 +131,9 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
+    QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
+    QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
 
     //! Returns the memory provider key
     static QString providerKey();
@@ -136,7 +141,12 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     static QString providerDescription();
     //! Provider factory
     static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+
   private:
+    void calculateMinMaxForDatasetGroup( QgsMeshMemoryDatasetGroup &grp ) const;
+    void calculateMinMaxForDataset( QgsMeshMemoryDataset &dataset ) const;
+    QgsRectangle calculateExtent( ) const;
+
     bool splitMeshSections( const QString &uri );
     bool addMeshVertices( const QString &def );
     bool addMeshFaces( const QString &def );

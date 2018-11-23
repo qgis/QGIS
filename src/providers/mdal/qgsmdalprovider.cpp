@@ -18,6 +18,7 @@
 #include <string>
 
 #include "qgsmdalprovider.h"
+#include "qgstriangularmesh.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -82,26 +83,91 @@ int QgsMdalProvider::faceCount() const
     return 0;
 }
 
-QgsMeshVertex QgsMdalProvider::vertex( int index ) const
+void QgsMdalProvider::populateMesh( QgsMesh *mesh ) const
 {
-  Q_ASSERT( index < vertexCount() );
-  double x = MDAL_M_vertexXCoordinatesAt( mMeshH, index );
-  double y = MDAL_M_vertexYCoordinatesAt( mMeshH, index );
-  QgsMeshVertex vertex( x, y );
-  return vertex;
+  if ( mesh )
+  {
+    mesh->faces = faces();
+    mesh->vertices = vertices();
+  }
 }
 
-QgsMeshFace QgsMdalProvider::face( int index ) const
+QVector<QgsMeshVertex> QgsMdalProvider::vertices( ) const
 {
-  Q_ASSERT( index < faceCount() );
-  QgsMeshFace face;
-  int n_face_vertices = MDAL_M_faceVerticesCountAt( mMeshH, index );
-  for ( int j = 0; j < n_face_vertices; ++j )
+  const int bufferSize = std::min( vertexCount(), 1000 );
+  QVector<QgsMeshVertex> ret( vertexCount() );
+  QVector<double> buffer( bufferSize * 3 );
+  MeshVertexIteratorH it = MDAL_M_vertexIterator( mMeshH );
+  int vertexIndex = 0;
+  while ( vertexIndex < vertexCount() )
   {
-    int vertex_index = MDAL_M_faceVerticesIndexAt( mMeshH, index, j );
-    face.push_back( vertex_index );
+    int verticesRead = MDAL_VI_next( it, bufferSize, buffer.data() );
+    if ( verticesRead == 0 )
+      break;
+    for ( int i = 0; i < verticesRead; i++ )
+    {
+      QgsMeshVertex vertex(
+        buffer[3 * i],
+        buffer[3 * i + 1],
+        buffer[3 * i + 2]
+      );
+      ret[vertexIndex + i] = vertex;
+    }
+    vertexIndex += verticesRead;
   }
-  return face;
+  MDAL_VI_close( it );
+  return ret;
+}
+
+QVector<QgsMeshFace> QgsMdalProvider::faces( ) const
+{
+  const int faceOffsetsBufferLen = std::min( faceCount(), 1000 );
+  const int vertexIndicesBufferLen = faceOffsetsBufferLen * 4; // most usually we have quads
+  int facesCount = faceCount();
+
+  QVector<QgsMeshFace> ret( facesCount );
+  QVector<int> faceOffsetsBuffer( faceOffsetsBufferLen );
+  QVector<int> vertexIndicesBuffer( vertexIndicesBufferLen );
+
+  MeshFaceIteratorH it = MDAL_M_faceIterator( mMeshH );
+  int faceIndex = 0;
+  while ( faceIndex < facesCount )
+  {
+    int facesRead = MDAL_FI_next( it,
+                                  faceOffsetsBufferLen,
+                                  faceOffsetsBuffer.data(),
+                                  vertexIndicesBufferLen,
+                                  vertexIndicesBuffer.data() );
+    if ( facesRead == 0 )
+      break;
+
+    for ( int i = 0; i < facesRead; i++ )
+    {
+      QgsMeshFace face;
+      int startIndex = 0;
+      if ( i > 0 )
+        startIndex = faceOffsetsBuffer[ i - 1 ];
+      int endIndex = faceOffsetsBuffer[ i ];
+
+      for ( int j = startIndex; j < endIndex; ++j )
+      {
+        int vertexIndex = vertexIndicesBuffer[j];
+        face.push_back( vertexIndex );
+      }
+      ret[faceIndex + i] = face;
+    }
+    faceIndex += facesRead;
+  }
+  MDAL_FI_close( it );
+  return ret;
+}
+
+QgsRectangle QgsMdalProvider::extent() const
+{
+  double xMin, yMin, xMax, yMax;
+  MDAL_M_extent( mMeshH, &xMin, &xMax, &yMin, &yMax );
+  QgsRectangle ret( xMin, yMin, xMax, yMax );
+  return ret;
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -155,6 +221,8 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   bool isScalar = MDAL_G_hasScalarData( group );
   bool isOnVertices = MDAL_G_isOnVertices( group );
   QString name = MDAL_G_name( group );
+  double min, max;
+  MDAL_G_minimumMaximum( group, &min, &max );
 
   QMap<QString, QString> metadata;
   int n = MDAL_G_metadataCount( group );
@@ -169,6 +237,8 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     name,
     isScalar,
     isOnVertices,
+    min,
+    max,
     metadata
   );
 
@@ -187,10 +257,14 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex ind
 
   bool isValid = MDAL_D_isValid( dataset );
   double time = MDAL_D_time( dataset );
+  double min, max;
+  MDAL_D_minimumMaximum( dataset, &min, &max );
 
   QgsMeshDatasetMetadata meta(
     time,
-    isValid
+    isValid,
+    min,
+    max
   );
 
   return meta;
@@ -199,40 +273,57 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex ind
 
 QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
 {
+  QgsMeshDataBlock vals = datasetValues( index, valueIndex, 1 );
+  return vals.value( 0 );
+}
+
+QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const
+{
   DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
-    return QgsMeshDatasetValue();
+    return QgsMeshDataBlock();
 
   DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
-    return QgsMeshDatasetValue();
+    return QgsMeshDataBlock();
 
-  QgsMeshDatasetValue val;
+  bool isScalar = MDAL_G_hasScalarData( group );
 
-  if ( MDAL_G_hasScalarData( group ) )
-  {
-    val.setX( MDAL_D_value( dataset, valueIndex ) );
-  }
-  else
-  {
-    val.setX( MDAL_D_valueX( dataset, valueIndex ) );
-    val.setY( MDAL_D_valueY( dataset, valueIndex ) );
-  }
+  QgsMeshDataBlock ret( isScalar ? QgsMeshDataBlock::ScalarDouble : QgsMeshDataBlock::Vector2DDouble, count );
+  int valRead = MDAL_D_data( dataset,
+                             valueIndex,
+                             count,
+                             isScalar ? MDAL_DataType::SCALAR_DOUBLE : MDAL_DataType::VECTOR_2D_DOUBLE,
+                             ret.buffer() );
+  if ( valRead != count )
+    return QgsMeshDataBlock();
 
-  return val;
+  return ret;
 }
 
 bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
 {
+  QgsMeshDataBlock vals = areFacesActive( index, faceIndex, 1 );
+  return vals.active( 0 );
+}
+
+QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const
+{
   DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
-    return false;
+    return QgsMeshDataBlock();
 
   DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
-    return false;
+    return QgsMeshDataBlock();
 
-  return MDAL_D_active( dataset, faceIndex );
+  QgsMeshDataBlock ret( QgsMeshDataBlock::ActiveFlagInteger, count );
+
+  int valRead = MDAL_D_data( dataset, faceIndex, count, MDAL_DataType::ACTIVE_INTEGER, ret.buffer() );
+  if ( valRead != count )
+    return ret;
+
+  return ret;
 }
 
 /*----------------------------------------------------------------------------------------------*/

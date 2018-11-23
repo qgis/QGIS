@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
+#include "qgstriangularmesh.h"
 
 /**
  * \ingroup UnitTests
@@ -126,21 +127,31 @@ void TestQgsMeshLayer::test_read_mesh()
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
 
+    QgsMesh mesh;
+    dp->populateMesh( &mesh );
+
     QCOMPARE( 5, dp->vertexCount() );
-    QCOMPARE( QgsMeshVertex( 1000.0, 2000.0 ), dp->vertex( 0 ) );
-    QCOMPARE( QgsMeshVertex( 2000.0, 2000.0 ), dp->vertex( 1 ) );
-    QCOMPARE( QgsMeshVertex( 3000.0, 2000.0 ), dp->vertex( 2 ) );
-    QCOMPARE( QgsMeshVertex( 2000.0, 3000.0 ), dp->vertex( 3 ) );
-    QCOMPARE( QgsMeshVertex( 1000.0, 3000.0 ), dp->vertex( 4 ) );
+    const QVector<QgsMeshVertex> vertices = mesh.vertices;
+    QCOMPARE( 1000.0, vertices.at( 0 ).x() );
+    QCOMPARE( 2000.0, vertices.at( 1 ).x() );
+    QCOMPARE( 3000.0, vertices.at( 2 ).x() );
+    QCOMPARE( 2000.0, vertices.at( 3 ).x() );
+    QCOMPARE( 1000.0, vertices.at( 4 ).x() );
+    QCOMPARE( 2000.0, vertices.at( 0 ).y() );
+    QCOMPARE( 2000.0, vertices.at( 1 ).y() );
+    QCOMPARE( 2000.0, vertices.at( 2 ).y() );
+    QCOMPARE( 3000.0, vertices.at( 3 ).y() );
+    QCOMPARE( 3000.0, vertices.at( 4 ).y() );
 
     QCOMPARE( 2, dp->faceCount() );
+    const QVector<QgsMeshFace> faces = mesh.faces;
     QgsMeshFace f1;
     f1 << 0 << 1 << 3 << 4;
-    QCOMPARE( f1, dp->face( 0 ) );
+    QCOMPARE( f1, faces.at( 0 ) );
 
     QgsMeshFace f2;
     f2 << 1 << 2 << 3;
-    QCOMPARE( f2, dp->face( 1 ) );
+    QCOMPARE( f2, faces.at( 1 ) );
   }
 }
 

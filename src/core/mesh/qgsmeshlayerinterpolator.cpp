@@ -29,7 +29,7 @@
 #include "qgsmeshlayerutils.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
-    const QVector<double> &datasetValues, const QVector<bool> &activeFaceFlagValues,
+    const QVector<double> &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues,
     bool dataIsOnVertices,
     const QgsRenderContext &context,
     const QSize &size )
@@ -87,7 +87,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     const QgsPoint p1 = vertices[v1], p2 = vertices[v2], p3 = vertices[v3];
 
     const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[i];
-    const bool isActive = mActiveFaceFlagValues[nativeFaceIndex];
+    const bool isActive = mActiveFaceFlagValues.active( nativeFaceIndex );
     if ( !isActive )
       continue;
 

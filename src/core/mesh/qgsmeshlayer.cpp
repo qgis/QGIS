@@ -177,17 +177,7 @@ void QgsMeshLayer::fillNativeMesh()
   if ( !( dataProvider() && dataProvider()->isValid() ) )
     return;
 
-  mNativeMesh->vertices.resize( dataProvider()->vertexCount() );
-  for ( int i = 0; i < dataProvider()->vertexCount(); ++i )
-  {
-    mNativeMesh->vertices[i] = dataProvider()->vertex( i );
-  }
-
-  mNativeMesh->faces.resize( dataProvider()->faceCount() );
-  for ( int i = 0; i < dataProvider()->faceCount(); ++i )
-  {
-    mNativeMesh->faces[i] = dataProvider()->face( i );
-  }
+  dataProvider()->populateMesh( mNativeMesh.get() );
 }
 
 void QgsMeshLayer::onDatasetGroupsAdded( int count )
@@ -224,8 +214,9 @@ static QgsColorRamp *_createDefaultColorRamp()
 
 void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 {
-  double groupMin, groupMax;
-  QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( groupMin, groupMax, mDataProvider, groupIndex );
+  const QgsMeshDatasetGroupMetadata metadata = mDataProvider->datasetGroupMetadata( groupIndex );
+  double groupMin = metadata.minimum();
+  double groupMax = metadata.maximum();
 
   QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp() );
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
