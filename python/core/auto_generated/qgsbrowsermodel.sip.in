@@ -130,6 +130,16 @@ Returns true if the model has been initialized.
 .. seealso:: :py:func:`initialize`
 %End
 
+    QMap<QString, QgsDirectoryItem *> driveItems() const;
+%Docstring
+Returns a map of the root drive items shown in the browser.
+
+These correspond to the top-level directory items shown, e.g. on Windows the C:\, D:\, etc,
+and on Linux the "/" root directory.
+
+.. versionadded:: 3.6
+%End
+
   signals:
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
