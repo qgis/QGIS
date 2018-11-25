@@ -96,7 +96,7 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
     void editDatumTransform();
 
   private:
-    QgsDatumTransformTableModel *mModel = new QgsDatumTransformTableModel( this );
+    QgsDatumTransformTableModel *mModel = nullptr;
 };
 
 
