@@ -128,9 +128,6 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'saga'
 
-    def helpId(self):
-        return 'saga'
-
     def defaultVectorFileExtension(self, hasGeometry=True):
         return 'shp' if hasGeometry else 'dbf'
 
