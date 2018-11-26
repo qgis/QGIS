@@ -106,6 +106,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     virtual int numPoints() const = 0;
 
+#ifdef SIP_RUN
+    int __len__() const;
+    % Docstring
+    Returns the number of points in the curve.
+    % End
+    % MethodCode
+    sipRes = sipCpp->numPoints();
+    % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+#endif
+
     /**
      * Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */

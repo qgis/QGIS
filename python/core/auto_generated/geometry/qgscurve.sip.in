@@ -101,6 +101,20 @@ Returns a list of points within the curve.
 Returns the number of points in the curve.
 %End
 
+    int __len__() const;
+%Docstring
+    Returns the number of points in the curve.
+%End
+%MethodCode
+    sipRes = sipCpp->numPoints();
+%End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
+%End
+
     virtual void sumUpArea( double &sum /Out/ ) const = 0;
 %Docstring
 Sums up the area of the curve by iterating over the vertices (shoelace formula).
