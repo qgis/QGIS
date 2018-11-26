@@ -11146,13 +11146,11 @@ bool QgisApp::saveDirty()
   QgsSettings settings;
   bool askThem = settings.value( QStringLiteral( "qgis/askToSaveProjectChanges" ), true ).toBool();
 
-  if ( askThem && QgsProject::instance()->isDirty() && QgsProject::instance()->count() > 0 )
+  if ( askThem && QgsProject::instance()->isDirty() )
   {
     // flag project as dirty since dirty state of canvas is reset if "dirty"
     // is based on a zoom or pan
     markDirty();
-
-    // old code: mProjectIsDirtyFlag = true;
 
     // prompt user to save
     answer = QMessageBox::question( this, tr( "Save Project" ),
