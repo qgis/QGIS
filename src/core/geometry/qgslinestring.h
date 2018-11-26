@@ -98,10 +98,53 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Returns the specified point from inside the line string.
      * \param i index of point, starting at 0 for the first point
      */
+#ifndef SIP_RUN
     QgsPoint pointN( int i ) const;
+#else
+    SIP_PYOBJECT pointN( int i ) const;
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      std::unique_ptr< QgsPoint > p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
+    }
+    % End
+#endif
 
     double xAt( int index ) const override;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyFloat_FromDouble( sipCpp->xAt( a0 ) );
+    }
+    % End
+#endif
+
     double yAt( int index ) const override;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyFloat_FromDouble( sipCpp->yAt( a0 ) );
+    }
+    % End
+#endif
 
     /**
      * Returns a const pointer to the x vertex data.
@@ -171,6 +214,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       else
         return std::numeric_limits<double>::quiet_NaN();
     }
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyFloat_FromDouble( sipCpp->zAt( a0 ) );
+    }
+    % End
+#endif
 
     /**
      * Returns the m value of the specified node in the line string.
@@ -186,6 +242,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       else
         return std::numeric_limits<double>::quiet_NaN();
     }
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyFloat_FromDouble( sipCpp->mAt( a0 ) );
+    }
+    % End
+#endif
 
     /**
      * Sets the x-coordinate of the specified node in the line string.
@@ -195,6 +264,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see xAt()
      */
     void setXAt( int index, double x );
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setXAt( a0, a1 );
+    }
+    % End
+#endif
 
     /**
      * Sets the y-coordinate of the specified node in the line string.
@@ -204,6 +286,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yAt()
      */
     void setYAt( int index, double y );
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setYAt( a0, a1 );
+    }
+    % End
+#endif
 
     /**
      * Sets the z-coordinate of the specified node in the line string.
@@ -217,6 +312,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       if ( index >= 0 && index < mZ.size() )
         mZ[ index ] = z;
     }
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setZAt( a0, a1 );
+    }
+    % End
+#endif
 
     /**
      * Sets the m value of the specified node in the line string.
@@ -230,6 +338,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       if ( index >= 0 && index < mM.size() )
         mM[ index ] = m;
     }
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setMAt( a0, a1 );
+    }
+    % End
+#endif
 
     /**
      * Resets the line string to match the specified list of points. The line string will
@@ -362,6 +483,65 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QString str = QStringLiteral( "<QgsLineString: %1>" ).arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+
+    SIP_PYOBJECT __getitem__( int index );
+    % Docstring
+    Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
+
+    .. versionadded:: 3.6
+    % End
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+      {
+        PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        std::unique_ptr< QgsPoint > p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
+      }
+    % End
+
+    void __setitem__( int index, const QgsPoint &point );
+    % Docstring
+    Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+
+    .. versionadded:: 3.6
+    % End
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setXAt( a0, a1->x() );
+      sipCpp->setYAt( a0, a1->y() );
+      if ( sipCpp->isMeasure() )
+        sipCpp->setMAt( a0, a1->m() );
+      if ( sipCpp->is3D() )
+        sipCpp->setZAt( a0, a1->z() );
+    }
+    % End
+
+    void __delitem__( int index );
+    % Docstring
+    Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+
+    .. versionadded:: 3.6
+    % End
+    % MethodCode
+    if ( a0 >= 0 && a0 < sipCpp->numPoints() )
+      sipCpp->deleteVertex( QgsVertexId( -1, -1, a0 ) );
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+
 #endif
 
   protected:

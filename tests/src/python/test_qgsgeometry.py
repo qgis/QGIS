@@ -255,6 +255,144 @@ class TestQgsGeometry(unittest.TestCase):
         ])
         self.assertEqual(myMultiPolygon.wkbType(), QgsWkbTypes.MultiPolygon)
 
+    def testLineStringPythonAdditions(self):
+        """
+        Tests Python specific additions to the QgsLineString API
+        """
+        ls = QgsLineString()
+        self.assertTrue(bool(ls))
+        self.assertEqual(len(ls), 0)
+        ls = QgsLineString([QgsPoint(1, 2), QgsPoint(11, 12)])
+        self.assertTrue(bool(ls))
+        self.assertEqual(len(ls), 2)
+
+        # pointN
+        with self.assertRaises(IndexError):
+            ls.pointN(-1)
+        with self.assertRaises(IndexError):
+            ls.pointN(2)
+        self.assertEqual(ls.pointN(0), QgsPoint(1, 2))
+        self.assertEqual(ls.pointN(1), QgsPoint(11, 12))
+
+        # xAt
+        with self.assertRaises(IndexError):
+            ls.xAt(-1)
+        with self.assertRaises(IndexError):
+            ls.xAt(2)
+        self.assertEqual(ls.xAt(0), 1)
+        self.assertEqual(ls.xAt(1), 11)
+
+        # yAt
+        with self.assertRaises(IndexError):
+            ls.yAt(-1)
+        with self.assertRaises(IndexError):
+            ls.yAt(2)
+        self.assertEqual(ls.yAt(0), 2)
+        self.assertEqual(ls.yAt(1), 12)
+
+        # zAt
+        with self.assertRaises(IndexError):
+            ls.zAt(-1)
+        with self.assertRaises(IndexError):
+            ls.zAt(2)
+
+        # mAt
+        with self.assertRaises(IndexError):
+            ls.mAt(-1)
+        with self.assertRaises(IndexError):
+            ls.mAt(2)
+
+        ls = QgsLineString([QgsPoint(1, 2, 3, 4), QgsPoint(11, 12, 13, 14)])
+        self.assertEqual(ls.zAt(0), 3)
+        self.assertEqual(ls.zAt(1), 13)
+        self.assertEqual(ls.mAt(0), 4)
+        self.assertEqual(ls.mAt(1), 14)
+
+        # setXAt
+        with self.assertRaises(IndexError):
+            ls.setXAt(-1, 55)
+        with self.assertRaises(IndexError):
+            ls.setXAt(2, 55)
+        ls.setXAt(0, 5)
+        ls.setXAt(1, 15)
+        self.assertEqual(ls.xAt(0), 5)
+        self.assertEqual(ls.xAt(1), 15)
+
+        # setYAt
+        with self.assertRaises(IndexError):
+            ls.setYAt(-1, 66)
+        with self.assertRaises(IndexError):
+            ls.setYAt(2, 66)
+        ls.setYAt(0, 6)
+        ls.setYAt(1, 16)
+        self.assertEqual(ls.yAt(0), 6)
+        self.assertEqual(ls.yAt(1), 16)
+
+        # setZAt
+        with self.assertRaises(IndexError):
+            ls.setZAt(-1, 77)
+        with self.assertRaises(IndexError):
+            ls.setZAt(2, 77)
+        ls.setZAt(0, 7)
+        ls.setZAt(1, 17)
+        self.assertEqual(ls.zAt(0), 7)
+        self.assertEqual(ls.zAt(1), 17)
+
+        # setMAt
+        with self.assertRaises(IndexError):
+            ls.setMAt(-1, 88)
+        with self.assertRaises(IndexError):
+            ls.setMAt(2, 88)
+        ls.setMAt(0, 8)
+        ls.setMAt(1, 18)
+        self.assertEqual(ls.mAt(0), 8)
+        self.assertEqual(ls.mAt(1), 18)
+
+        # get item
+        with self.assertRaises(IndexError):
+            ls[-1]
+        with self.assertRaises(IndexError):
+            ls[2]
+        self.assertEqual(ls[0], QgsPoint(5, 6, 7, 8))
+        self.assertEqual(ls[1], QgsPoint(15, 16, 17, 18))
+
+        # set item
+        with self.assertRaises(IndexError):
+            ls[-1] = QgsPoint(33, 34)
+        with self.assertRaises(IndexError):
+            ls[2] = QgsPoint(33, 34)
+        ls[0] = QgsPoint(33, 34, 35, 36)
+        ls[1] = QgsPoint(43, 44, 45, 46)
+        self.assertEqual(ls[0], QgsPoint(33, 34, 35, 36))
+        self.assertEqual(ls[1], QgsPoint(43, 44, 45, 46))
+
+        # set item, z/m handling
+        ls[0] = QgsPoint(66, 67)
+        self.assertEqual(ls[0], QgsPoint(66, 67, None, None, QgsWkbTypes.PointZM))
+        ls[0] = QgsPoint(77, 78, 79)
+        self.assertEqual(ls[0], QgsPoint(77, 78, 79, None, QgsWkbTypes.PointZM))
+        ls[0] = QgsPoint(77, 78, None, 80, QgsWkbTypes.PointZM)
+        self.assertEqual(ls[0], QgsPoint(77, 78, None, 80, QgsWkbTypes.PointZM))
+
+        ls = QgsLineString([QgsPoint(1, 2), QgsPoint(11, 12)])
+        ls[0] = QgsPoint(66, 67)
+        self.assertEqual(ls[0], QgsPoint(66, 67))
+        ls[0] = QgsPoint(86, 87, 89, 90)
+        self.assertEqual(ls[0], QgsPoint(86, 87))
+
+        # del item
+        ls = QgsLineString([QgsPoint(1, 2), QgsPoint(11, 12), QgsPoint(33, 34)])
+        with self.assertRaises(IndexError):
+            del ls[-1]
+        with self.assertRaises(IndexError):
+            del ls[3]
+        del ls[1]
+        self.assertEqual(len(ls), 2)
+        self.assertEqual(ls[0], QgsPoint(1, 2))
+        self.assertEqual(ls[1], QgsPoint(33, 34))
+        with self.assertRaises(IndexError):
+            del ls[2]
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
