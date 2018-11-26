@@ -323,103 +323,135 @@ class TestQgsGeometry(unittest.TestCase):
 
         # pointN
         with self.assertRaises(IndexError):
-            ls.pointN(-1)
+            ls.pointN(-3)
         with self.assertRaises(IndexError):
             ls.pointN(2)
         self.assertEqual(ls.pointN(0), QgsPoint(1, 2))
         self.assertEqual(ls.pointN(1), QgsPoint(11, 12))
+        self.assertEqual(ls.pointN(-2), QgsPoint(1, 2))
+        self.assertEqual(ls.pointN(-1), QgsPoint(11, 12))
 
         # xAt
         with self.assertRaises(IndexError):
-            ls.xAt(-1)
+            ls.xAt(-3)
         with self.assertRaises(IndexError):
             ls.xAt(2)
         self.assertEqual(ls.xAt(0), 1)
         self.assertEqual(ls.xAt(1), 11)
+        self.assertEqual(ls.xAt(-2), 1)
+        self.assertEqual(ls.xAt(-1), 11)
 
         # yAt
         with self.assertRaises(IndexError):
-            ls.yAt(-1)
+            ls.yAt(-3)
         with self.assertRaises(IndexError):
             ls.yAt(2)
         self.assertEqual(ls.yAt(0), 2)
         self.assertEqual(ls.yAt(1), 12)
+        self.assertEqual(ls.yAt(-2), 2)
+        self.assertEqual(ls.yAt(-1), 12)
 
         # zAt
         with self.assertRaises(IndexError):
-            ls.zAt(-1)
+            ls.zAt(-3)
         with self.assertRaises(IndexError):
             ls.zAt(2)
 
         # mAt
         with self.assertRaises(IndexError):
-            ls.mAt(-1)
+            ls.mAt(-3)
         with self.assertRaises(IndexError):
             ls.mAt(2)
 
         ls = QgsLineString([QgsPoint(1, 2, 3, 4), QgsPoint(11, 12, 13, 14)])
         self.assertEqual(ls.zAt(0), 3)
         self.assertEqual(ls.zAt(1), 13)
+        self.assertEqual(ls.zAt(-2), 3)
+        self.assertEqual(ls.zAt(-1), 13)
         self.assertEqual(ls.mAt(0), 4)
         self.assertEqual(ls.mAt(1), 14)
+        self.assertEqual(ls.mAt(-2), 4)
+        self.assertEqual(ls.mAt(-1), 14)
 
         # setXAt
         with self.assertRaises(IndexError):
-            ls.setXAt(-1, 55)
+            ls.setXAt(-3, 55)
         with self.assertRaises(IndexError):
             ls.setXAt(2, 55)
         ls.setXAt(0, 5)
         ls.setXAt(1, 15)
         self.assertEqual(ls.xAt(0), 5)
         self.assertEqual(ls.xAt(1), 15)
+        ls.setXAt(-2, 25)
+        ls.setXAt(-1, 26)
+        self.assertEqual(ls.xAt(0), 25)
+        self.assertEqual(ls.xAt(1), 26)
 
         # setYAt
         with self.assertRaises(IndexError):
-            ls.setYAt(-1, 66)
+            ls.setYAt(-3, 66)
         with self.assertRaises(IndexError):
             ls.setYAt(2, 66)
         ls.setYAt(0, 6)
         ls.setYAt(1, 16)
         self.assertEqual(ls.yAt(0), 6)
         self.assertEqual(ls.yAt(1), 16)
+        ls.setYAt(-2, 16)
+        ls.setYAt(-1, 22)
+        self.assertEqual(ls.yAt(0), 16)
+        self.assertEqual(ls.yAt(1), 22)
 
         # setZAt
         with self.assertRaises(IndexError):
-            ls.setZAt(-1, 77)
+            ls.setZAt(-3, 77)
         with self.assertRaises(IndexError):
             ls.setZAt(2, 77)
         ls.setZAt(0, 7)
         ls.setZAt(1, 17)
         self.assertEqual(ls.zAt(0), 7)
         self.assertEqual(ls.zAt(1), 17)
+        ls.setZAt(-2, 37)
+        ls.setZAt(-1, 47)
+        self.assertEqual(ls.zAt(0), 37)
+        self.assertEqual(ls.zAt(1), 47)
 
         # setMAt
         with self.assertRaises(IndexError):
-            ls.setMAt(-1, 88)
+            ls.setMAt(-3, 88)
         with self.assertRaises(IndexError):
             ls.setMAt(2, 88)
         ls.setMAt(0, 8)
         ls.setMAt(1, 18)
         self.assertEqual(ls.mAt(0), 8)
         self.assertEqual(ls.mAt(1), 18)
+        ls.setMAt(-2, 58)
+        ls.setMAt(-1, 68)
+        self.assertEqual(ls.mAt(0), 58)
+        self.assertEqual(ls.mAt(1), 68)
 
         # get item
         with self.assertRaises(IndexError):
-            ls[-1]
+            ls[-3]
         with self.assertRaises(IndexError):
             ls[2]
-        self.assertEqual(ls[0], QgsPoint(5, 6, 7, 8))
-        self.assertEqual(ls[1], QgsPoint(15, 16, 17, 18))
+        self.assertEqual(ls[0], QgsPoint(25, 16, 37, 58))
+        self.assertEqual(ls[1], QgsPoint(26, 22, 47, 68))
+        self.assertEqual(ls[-2], QgsPoint(25, 16, 37, 58))
+        self.assertEqual(ls[-1], QgsPoint(26, 22, 47, 68))
 
         # set item
         with self.assertRaises(IndexError):
-            ls[-1] = QgsPoint(33, 34)
+            ls[-3] = QgsPoint(33, 34)
         with self.assertRaises(IndexError):
             ls[2] = QgsPoint(33, 34)
         ls[0] = QgsPoint(33, 34, 35, 36)
         ls[1] = QgsPoint(43, 44, 45, 46)
         self.assertEqual(ls[0], QgsPoint(33, 34, 35, 36))
         self.assertEqual(ls[1], QgsPoint(43, 44, 45, 46))
+        ls[-2] = QgsPoint(133, 134, 135, 136)
+        ls[-1] = QgsPoint(143, 144, 145, 146)
+        self.assertEqual(ls[0], QgsPoint(133, 134, 135, 136))
+        self.assertEqual(ls[1], QgsPoint(143, 144, 145, 146))
 
         # set item, z/m handling
         ls[0] = QgsPoint(66, 67)
@@ -438,7 +470,7 @@ class TestQgsGeometry(unittest.TestCase):
         # del item
         ls = QgsLineString([QgsPoint(1, 2), QgsPoint(11, 12), QgsPoint(33, 34)])
         with self.assertRaises(IndexError):
-            del ls[-1]
+            del ls[-4]
         with self.assertRaises(IndexError):
             del ls[3]
         del ls[1]
@@ -447,6 +479,14 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(ls[1], QgsPoint(33, 34))
         with self.assertRaises(IndexError):
             del ls[2]
+
+        ls = QgsLineString([QgsPoint(1, 2), QgsPoint(11, 12), QgsPoint(33, 34)])
+        del ls[-3]
+        self.assertEqual(len(ls), 2)
+        self.assertEqual(ls[0], QgsPoint(11, 12))
+        self.assertEqual(ls[1], QgsPoint(33, 34))
+        with self.assertRaises(IndexError):
+            del ls[-3]
 
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
