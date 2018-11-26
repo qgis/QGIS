@@ -632,6 +632,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
   mDataSourceManagerNonModal->setChecked( mSettings->value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
+  cbxCheckVersion->setVisible( mSettings->value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() );
   cbxAddOracleDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addOracleDC" ), false ).toBool() );
