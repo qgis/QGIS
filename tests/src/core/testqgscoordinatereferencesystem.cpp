@@ -26,7 +26,7 @@ Email                : sherman at mrcc dot com
 
 #ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 #define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif	
+#endif
 #include <proj_api.h>
 #include <gdal.h>
 #include <cpl_conv.h>
