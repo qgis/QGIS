@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import inspect
 
-from qgis.core import QgsProcessingAlgorithm
+from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
@@ -47,7 +47,7 @@ class EditScriptAction(ContextAction):
         return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
-        filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+        filePath = ScriptUtils.findAlgorithmSource(self.itemData.name())
         if filePath is not None:
             dlg = ScriptEditorDialog(filePath, iface.mainWindow())
             dlg.show()
