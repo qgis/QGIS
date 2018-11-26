@@ -1420,7 +1420,7 @@ class CORE_EXPORT QgsGeometry
      * is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
      * and the interior rings in a counter-clockwise direction.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsGeometry forceRHR() const;
 

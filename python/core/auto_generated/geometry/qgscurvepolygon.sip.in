@@ -144,7 +144,7 @@ bounded by the polygon is to the right of the boundary. In particular, the exter
 ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
 direction.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
     virtual void draw( QPainter &p ) const;

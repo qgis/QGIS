@@ -243,7 +243,7 @@ Returns the curve's orientation, e.g. clockwise or counter-clockwise.
 
    The result is not predictable for non-closed curves.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
 

@@ -386,7 +386,7 @@ class CORE_EXPORT QgsSymbol
      * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
      * direction.
      * \see forceRHR()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     void setForceRHR( bool force ) { mForceRHR = force; }
 
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsSymbol
      * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
      * direction.
      * \see setForceRHR()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     bool forceRHR() const { return mForceRHR; }
 

@@ -382,7 +382,7 @@ direction.
 
 .. seealso:: :py:func:`forceRHR`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
     bool forceRHR() const;
@@ -395,7 +395,7 @@ direction.
 
 .. seealso:: :py:func:`setForceRHR`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;

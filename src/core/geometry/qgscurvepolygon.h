@@ -140,7 +140,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
      * direction.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     void forceRHR();
 
