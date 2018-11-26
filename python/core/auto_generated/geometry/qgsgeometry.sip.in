@@ -415,7 +415,7 @@ if the parts are not going to be modified.
 
 .. seealso:: :py:func:`vertices`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
     QgsGeometryConstPartIterator constParts() const;
@@ -449,7 +449,7 @@ iteration only is required.
 
 .. seealso:: :py:func:`vertices`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
     double hausdorffDistance( const QgsGeometry &geom ) const;

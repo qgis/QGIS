@@ -641,7 +641,7 @@ can safely be used to modify parts of the geometry.
 
 .. seealso:: :py:func:`vertices`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
 
@@ -831,7 +831,7 @@ class QgsGeometryPartIterator
 %Docstring
 Java-style iterator for traversal of parts of a geometry
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
 %TypeHeaderCode
@@ -879,7 +879,7 @@ class QgsGeometryConstPartIterator
 %Docstring
 Java-style iterator for const traversal of parts of a geometry
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
 %TypeHeaderCode

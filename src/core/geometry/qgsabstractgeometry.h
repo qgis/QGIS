@@ -609,7 +609,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * \ingroup core
      * The part_iterator class provides STL-style iterator for geometry parts.
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     class CORE_EXPORT part_iterator
     {
@@ -650,7 +650,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see parts_end()
      * \see parts()
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     part_iterator parts_begin()
     {
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see parts_begin()
      * \see parts()
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     part_iterator parts_end();
 
@@ -672,14 +672,14 @@ class CORE_EXPORT QgsAbstractGeometry
      * returns read-only references to parts and cannot be used to modify the parts.
      *
      * \note Not available in Python bindings
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsGeometryConstPartIterator parts() const;
 
     /**
      * \ingroup core
      * The part_iterator class provides STL-style iterator for const references to geometry parts.
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     class CORE_EXPORT const_part_iterator
     {
@@ -719,7 +719,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \see const_parts_end()
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     const_part_iterator const_parts_begin() const
     {
@@ -731,7 +731,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \see const_parts_begin()
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     const_part_iterator const_parts_end() const;
 
@@ -844,7 +844,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \endcode
      *
      * \see vertices()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsGeometryPartIterator parts();
 
@@ -1057,7 +1057,7 @@ class CORE_EXPORT QgsVertexIterator
 /**
  * \ingroup core
  * \brief Java-style iterator for traversal of parts of a geometry
- * \since QGIS 3.6
+ * \since QGIS 3.4.3
  */
 class CORE_EXPORT QgsGeometryPartIterator
 {
@@ -1107,7 +1107,7 @@ class CORE_EXPORT QgsGeometryPartIterator
 /**
  * \ingroup core
  * \brief Java-style iterator for const traversal of parts of a geometry
- * \since QGIS 3.6
+ * \since QGIS 3.4.3
  */
 class CORE_EXPORT QgsGeometryConstPartIterator
 {
