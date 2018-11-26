@@ -5329,6 +5329,19 @@ tests:
         name: expected/multiring_buffer.gml
         type: vector
 
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring negative buffer with polygons
+    params:
+      DISTANCE: -0.05
+      INPUT:
+        name: polys.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/multiring_negative_buffer.gml
+        type: vector
+
   - algorithm: native:segmentizebymaxangle
     name: Segmentize by angle
     params:
