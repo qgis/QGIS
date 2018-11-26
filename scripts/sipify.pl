@@ -520,14 +520,14 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # do not process SIP code %XXXCode
-    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/ ){
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
         $LINE = "%$1$2";
         $COMMENT = '';
         dbg_info("do not process SIP code");
         while ( $LINE !~ m/^ *% *End/ ){
             write_output("COD", $LINE."\n");
             $LINE = read_line();
-            $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/%$1$2/;
+            $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/%$1$2/;
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
         $LINE =~ s/^\s*% End/%End/;
