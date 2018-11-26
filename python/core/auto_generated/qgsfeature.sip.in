@@ -337,7 +337,7 @@ The feature will be made valid after calling this method.
 
 .. seealso:: :py:func:`clearGeometry`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 %MethodCode
     sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );

@@ -351,7 +351,7 @@ class CORE_EXPORT QgsFeature
      * The feature will be made valid after calling this method.
      * \see geometry()
      * \see clearGeometry()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
 #ifndef SIP_RUN
     void setGeometry( std::unique_ptr< QgsAbstractGeometry > geometry );
