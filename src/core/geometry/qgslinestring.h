@@ -94,54 +94,97 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool equals( const QgsCurve &other ) const override;
 
+#ifndef SIP_RUN
+
     /**
      * Returns the specified point from inside the line string.
      * \param i index of point, starting at 0 for the first point
      */
-#ifndef SIP_RUN
     QgsPoint pointN( int i ) const;
 #else
+
+    /**
+     * Returns the point at the specified index. An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+     */
     SIP_PYOBJECT pointN( int i ) const;
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      std::unique_ptr< QgsPoint > p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      std::unique_ptr< QgsPoint > p;
+      if ( a0 >= 0 )
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      else // negative index, count backwards from end
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
 #endif
 
+#ifndef SIP_RUN
     double xAt( int index ) const override;
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Returns the x-coordinate of the specified node in the line string.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+    */
+    double xAt( int index ) const override;
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->xAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->xAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->xAt( count + a0 ) );
     }
     % End
 #endif
 
+#ifndef SIP_RUN
     double yAt( int index ) const override;
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Returns the y-coordinate of the specified node in the line string.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+    */
+    double yAt( int index ) const override;
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->yAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->yAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->yAt( count + a0 ) );
     }
     % End
 #endif
@@ -200,6 +243,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return mM.constData();
     }
 
+#ifndef SIP_RUN
+
     /**
      * Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
@@ -214,19 +259,37 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       else
         return std::numeric_limits<double>::quiet_NaN();
     }
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Returns the z-coordinate of the specified node in the line string.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * If the LineString does not have a z-dimension then ``nan`` will be returned.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+    */
+    double zAt( int index ) const;
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->zAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->zAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->zAt( count + a0 ) );
     }
     % End
 #endif
+
+#ifndef SIP_RUN
 
     /**
      * Returns the m value of the specified node in the line string.
@@ -242,19 +305,37 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       else
         return std::numeric_limits<double>::quiet_NaN();
     }
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Returns the m-coordinate of the specified node in the line string.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * If the LineString does not have a m-dimension then ``nan`` will be returned.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+    */
+    double mAt( int index ) const;
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->mAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->mAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->mAt( count + a0 ) );
     }
     % End
 #endif
+
+#ifndef SIP_RUN
 
     /**
      * Sets the x-coordinate of the specified node in the line string.
@@ -264,19 +345,38 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see xAt()
      */
     void setXAt( int index, double x );
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Sets the x-coordinate of the specified node in the line string.
+     * The corresponding node must already exist in line string.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+     *
+     * \see xAt()
+     */
+    void setXAt( int index, double x );
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setXAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setXAt( a0, a1 );
+      else
+        sipCpp->setXAt( count + a0, a1 );
     }
     % End
 #endif
+
+#ifndef SIP_RUN
 
     /**
      * Sets the y-coordinate of the specified node in the line string.
@@ -286,19 +386,38 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yAt()
      */
     void setYAt( int index, double y );
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Sets the y-coordinate of the specified node in the line string.
+     * The corresponding node must already exist in line string.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+     *
+     * \see yAt()
+     */
+    void setYAt( int index, double y );
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setYAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setYAt( a0, a1 );
+      else
+        sipCpp->setYAt( count + a0, a1 );
     }
     % End
 #endif
+
+#ifndef SIP_RUN
 
     /**
      * Sets the z-coordinate of the specified node in the line string.
@@ -312,19 +431,38 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       if ( index >= 0 && index < mZ.size() )
         mZ[ index ] = z;
     }
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Sets the z-coordinate of the specified node in the line string.
+     * The corresponding node must already exist in line string and the line string must have z-dimension.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+     *
+     * \see zAt()
+     */
+    void setZAt( int index, double z );
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setZAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setZAt( a0, a1 );
+      else
+        sipCpp->setZAt( count + a0, a1 );
     }
     % End
 #endif
+
+#ifndef SIP_RUN
 
     /**
      * Sets the m value of the specified node in the line string.
@@ -338,16 +476,33 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       if ( index >= 0 && index < mM.size() )
         mM[ index ] = m;
     }
-#ifdef SIP_RUN
+#else
+
+    /**
+     * Sets the m-coordinate of the specified node in the line string.
+     * The corresponding node must already exist in line string and the line string must have m-dimension.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+     *
+     * \see mAt()
+     */
+    void setMAt( int index, double m );
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setMAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setMAt( a0, a1 );
+      else
+        sipCpp->setMAt( count + a0, a1 );
     }
     % End
 #endif
@@ -487,39 +642,53 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
+    /**
+    * Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
+    *
+    * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+    * corresponds to the last point in the line.
+    *
+    * \since QGIS 3.6
+    */
     SIP_PYOBJECT __getitem__( int index );
-    % Docstring
-    Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
-
-    .. versionadded:: 3.6
-    % End
     % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
-      {
-        PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-        sipIsErr = 1;
-      }
-      else
-      {
-        std::unique_ptr< QgsPoint > p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
-        sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
-      }
-    % End
-
-    void __setitem__( int index, const QgsPoint &point );
-    % Docstring
-    Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
-
-    .. versionadded:: 3.6
-    % End
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
+      std::unique_ptr< QgsPoint > p;
+      if ( a0 >= 0 )
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      else
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+      sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
+    }
+    % End
+
+    /**
+    * Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+    *
+    * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+    * corresponds to the last point in the line.
+    *
+    * \since QGIS 3.6
+    */
+    void __setitem__( int index, const QgsPoint &point );
+    % MethodCode
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      if ( a0 < 0 )
+        a0 = count + a0;
       sipCpp->setXAt( a0, a1->x() );
       sipCpp->setYAt( a0, a1->y() );
       if ( sipCpp->isMeasure() )
@@ -529,15 +698,22 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
     % End
 
-    void __delitem__( int index );
-    % Docstring
-    Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
 
-    .. versionadded:: 3.6
-    % End
+    /**
+     * Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+     *
+     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+     * corresponds to the last point in the line.
+     *
+     * \since QGIS 3.6
+     */
+    void __delitem__( int index );
     % MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 >= 0 && a0 < count )
       sipCpp->deleteVertex( QgsVertexId( -1, -1, a0 ) );
+    else if ( a0 < 0 && a0 >= -count )
+      sipCpp->deleteVertex( QgsVertexId( -1, -1, count + a0 ) );
     else
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
