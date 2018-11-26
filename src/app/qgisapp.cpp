@@ -349,6 +349,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #ifdef PROJ_HAS_INFO
 #include <proj.h>
 #endif
+#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <proj_api.h>
 
 //
