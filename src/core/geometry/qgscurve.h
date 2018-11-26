@@ -225,7 +225,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      *
      * \warning The result is not predictable for non-closed curves.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     Orientation orientation() const;
 

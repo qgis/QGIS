@@ -833,7 +833,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      * for a polygon.
      *
      * \see setRingFilter()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     RenderRingFilter ringFilter() const;
 
@@ -845,7 +845,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      * for a polygon.
      *
      * \see ringFilter()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     void setRingFilter( QgsLineSymbolLayer::RenderRingFilter filter );
 

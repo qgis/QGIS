@@ -893,7 +893,7 @@ for a polygon.
 
 .. seealso:: :py:func:`setRingFilter`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
     void setRingFilter( QgsLineSymbolLayer::RenderRingFilter filter );
@@ -906,7 +906,7 @@ for a polygon.
 
 .. seealso:: :py:func:`ringFilter`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.3
 %End
 
   protected:
