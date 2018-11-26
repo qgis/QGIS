@@ -33,7 +33,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     ~QgsTransformSettingsDialog() override;
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,
+                               QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
                                double &resX, double &resY );
     static void resetSettings();
 

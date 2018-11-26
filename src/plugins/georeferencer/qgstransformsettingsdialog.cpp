@@ -121,6 +121,8 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   cbxZeroAsTrans->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/zeroastrans" ), false ).toBool() );
   cbxLoadInQgisWhenDone->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), false ).toBool() );
+  saveGcpCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/save_gcp_points" ), false ).toBool() );
+
 }
 
 QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
@@ -132,7 +134,7 @@ QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,
+    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
     double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -162,6 +164,10 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
     resX = dsbHorizRes->value();
     resY = dsbVerticalRes->value();
   }
+  if ( saveGcpCheckBox->isChecked() )
+  {
+    gcpPoints = mOutputRaster->filePath();
+  }
 }
 
 void QgsTransformSettingsDialog::resetSettings()
@@ -173,6 +179,7 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ), QString() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/zeroastrans" ), false );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), false );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/save_gcp_points" ), false );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resolution" ), false );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resx" ),  1.0 );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resy" ), -1.0 );
@@ -227,6 +234,8 @@ void QgsTransformSettingsDialog::accept()
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resx" ), dsbHorizRes->value() );
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resy" ), dsbVerticalRes->value() );
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/word_file_checkbox" ), mWorldFileCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/save_gcp_points" ), saveGcpCheckBox->isChecked() );
+
 
   QDialog::accept();
 }
