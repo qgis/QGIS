@@ -81,52 +81,86 @@ Construct a linestring from a single 2d line segment.
     virtual bool equals( const QgsCurve &other ) const;
 
 
+
     SIP_PYOBJECT pointN( int i ) const;
 %Docstring
-Returns the specified point from inside the line string.
+Returns the point at the specified index. An IndexError will be raised if no point with the specified index exists.
 
-:param i: index of point, starting at 0 for the first point
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      std::unique_ptr< QgsPoint > p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      std::unique_ptr< QgsPoint > p;
+      if ( a0 >= 0 )
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      else // negative index, count backwards from end
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
 %End
 
+
     virtual double xAt( int index ) const;
 
+%Docstring
+Returns the x-coordinate of the specified node in the line string.
+
+An IndexError will be raised if no point with the specified index exists.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
+%End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->xAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->xAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->xAt( count + a0 ) );
     }
 %End
+
 
     virtual double yAt( int index ) const;
 
+%Docstring
+Returns the y-coordinate of the specified node in the line string.
+
+An IndexError will be raised if no point with the specified index exists.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
+%End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->yAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->yAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->yAt( count + a0 ) );
     }
 %End
+
 
 
 
@@ -136,133 +170,170 @@ Returns the specified point from inside the line string.
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
 
-:param index: index of node, where the first node in the line is 0
+An IndexError will be raised if no point with the specified index exists.
 
-:return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
-         does not have a z dimension
+If the LineString does not have a z-dimension then ``nan`` will be returned.
 
-.. seealso:: :py:func:`setZAt`
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->zAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->zAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->zAt( count + a0 ) );
     }
 %End
+
 
     double mAt( int index ) const;
 %Docstring
-Returns the m value of the specified node in the line string.
+Returns the m-coordinate of the specified node in the line string.
 
-:param index: index of node, where the first node in the line is 0
+An IndexError will be raised if no point with the specified index exists.
 
-:return: m value of node, or ``nan`` if index is out of bounds or the line
-         does not have m values
+If the LineString does not have a m-dimension then ``nan`` will be returned.
 
-.. seealso:: :py:func:`setMAt`
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return PyFloat_FromDouble( sipCpp->mAt( a0 ) );
+      if ( a0 >= 0 )
+        return PyFloat_FromDouble( sipCpp->mAt( a0 ) );
+      else
+        return PyFloat_FromDouble( sipCpp->mAt( count + a0 ) );
     }
 %End
+
 
     void setXAt( int index, double x );
 %Docstring
 Sets the x-coordinate of the specified node in the line string.
+The corresponding node must already exist in line string.
 
-:param index: index of node, where the first node in the line is 0. Corresponding
-              node must already exist in line string.
-:param x: x-coordinate of node
+An IndexError will be raised if no point with the specified index exists.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 
 .. seealso:: :py:func:`xAt`
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setXAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setXAt( a0, a1 );
+      else
+        sipCpp->setXAt( count + a0, a1 );
     }
 %End
+
 
     void setYAt( int index, double y );
 %Docstring
 Sets the y-coordinate of the specified node in the line string.
+The corresponding node must already exist in line string.
 
-:param index: index of node, where the first node in the line is 0. Corresponding
-              node must already exist in line string.
-:param y: y-coordinate of node
+An IndexError will be raised if no point with the specified index exists.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 
 .. seealso:: :py:func:`yAt`
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setYAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setYAt( a0, a1 );
+      else
+        sipCpp->setYAt( count + a0, a1 );
     }
 %End
+
 
     void setZAt( int index, double z );
 %Docstring
 Sets the z-coordinate of the specified node in the line string.
+The corresponding node must already exist in line string and the line string must have z-dimension.
 
-:param index: index of node, where the first node in the line is 0. Corresponding
-              node must already exist in line string, and the line string must have z-dimension.
-:param z: z-coordinate of node
+An IndexError will be raised if no point with the specified index exists.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 
 .. seealso:: :py:func:`zAt`
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setZAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setZAt( a0, a1 );
+      else
+        sipCpp->setZAt( count + a0, a1 );
     }
 %End
 
+
     void setMAt( int index, double m );
 %Docstring
-Sets the m value of the specified node in the line string.
+Sets the m-coordinate of the specified node in the line string.
+The corresponding node must already exist in line string and the line string must have m-dimension.
 
-:param index: index of node, where the first node in the line is 0. Corresponding
-              node must already exist in line string, and the line string must have m values.
-:param m: m value of node
+An IndexError will be raised if no point with the specified index exists.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
 
 .. seealso:: :py:func:`mAt`
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      sipCpp->setMAt( a0, a1 );
+      if ( a0 >= 0 )
+        sipCpp->setMAt( a0, a1 );
+      else
+        sipCpp->setMAt( count + a0, a1 );
     }
 %End
 
@@ -436,37 +507,51 @@ of the curve.
 
     SIP_PYOBJECT __getitem__( int index );
 %Docstring
-    Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
+Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
 
-    .. versionadded:: 3.6
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
+
+.. versionadded:: 3.6
 %End
 %MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
-      {
-        PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-        sipIsErr = 1;
-      }
-      else
-      {
-        std::unique_ptr< QgsPoint > p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
-        sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
-      }
-%End
-
-    void __setitem__( int index, const QgsPoint &point );
-%Docstring
-    Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
-
-    .. versionadded:: 3.6
-%End
-%MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
+      std::unique_ptr< QgsPoint > p;
+      if ( a0 >= 0 )
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+      else
+        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+      sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
+    }
+%End
+
+    void __setitem__( int index, const QgsPoint &point );
+%Docstring
+Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
+
+.. versionadded:: 3.6
+%End
+%MethodCode
+    const int count = sipCpp->numPoints();
+    if ( a0 < -count || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      if ( a0 < 0 )
+        a0 = count + a0;
       sipCpp->setXAt( a0, a1->x() );
       sipCpp->setYAt( a0, a1->y() );
       if ( sipCpp->isMeasure() )
@@ -476,15 +561,22 @@ of the curve.
     }
 %End
 
+
     void __delitem__( int index );
 %Docstring
-    Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
 
-    .. versionadded:: 3.6
+Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
+corresponds to the last point in the line.
+
+.. versionadded:: 3.6
 %End
 %MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->numPoints() )
+    const int count = sipCpp->numPoints();
+    if ( a0 >= 0 && a0 < count )
       sipCpp->deleteVertex( QgsVertexId( -1, -1, a0 ) );
+    else if ( a0 < 0 && a0 >= -count )
+      sipCpp->deleteVertex( QgsVertexId( -1, -1, count + a0 ) );
     else
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
