@@ -214,14 +214,15 @@ set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
 cmake --build %BUILDDIR% --target NightlyTest --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
-cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
-if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
+
+:skiptests
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%
 PATH %oldpath%
 
-:skiptests
+cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
 
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
