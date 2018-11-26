@@ -38,6 +38,9 @@
 #include "qgssettings.h"
 
 #include <sqlite3.h>
+#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <proj_api.h>
 
 //gdal and ogr includes (needed for == operator)
@@ -45,6 +48,7 @@
 #include <cpl_error.h>
 #include <cpl_conv.h>
 #include <cpl_csv.h>
+
 
 //! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
