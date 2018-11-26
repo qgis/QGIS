@@ -659,7 +659,7 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
   return block;
 }
 
-void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
+void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
@@ -677,25 +677,25 @@ void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block
   // We have to read with correct data type consistent with other readBlock functions
   int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
-  gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, block, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 );
+  gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 );
 }
 
-void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
+void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *data, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return;
 
-  QgsDebugMsgLevel( "thePixelWidth = "  + QString::number( pixelWidth ), 5 );
-  QgsDebugMsgLevel( "thePixelHeight = "  + QString::number( pixelHeight ), 5 );
-  QgsDebugMsgLevel( "theExtent: " + extent.toString(), 5 );
+  QgsDebugMsgLevel( "pixelWidth = "  + QString::number( pixelWidth ), 5 );
+  QgsDebugMsgLevel( "pixelHeight = "  + QString::number( pixelHeight ), 5 );
+  QgsDebugMsgLevel( "extent: " + extent.toString(), 5 );
 
   for ( int i = 0; i < 6; i++ )
   {
     QgsDebugMsgLevel( QStringLiteral( "transform : %1" ).arg( mGeoTransform[i] ), 5 );
   }
 
-  int dataSize = dataTypeSize( bandNo );
+  size_t dataSize = static_cast<size_t>( dataTypeSize( bandNo ) );
 
   // moved to block()
 #if 0
@@ -713,14 +713,14 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   }
 #endif
 
-  QgsRectangle myRasterExtent = extent.intersect( mExtent );
-  if ( myRasterExtent.isEmpty() )
+  QgsRectangle rasterExtent = extent.intersect( mExtent );
+  if ( rasterExtent.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "draw request outside view extent." ) );
     return;
   }
-  QgsDebugMsgLevel( "mExtent: " + mExtent.toString(), 5 );
-  QgsDebugMsgLevel( "myRasterExtent: " + myRasterExtent.toString(), 5 );
+  QgsDebugMsgLevel( "extent: " + mExtent.toString(), 5 );
+  QgsDebugMsgLevel( "rasterExtent: " + rasterExtent.toString(), 5 );
 
   double xRes = extent.width() / pixelWidth;
   double yRes = extent.height() / pixelHeight;
@@ -751,7 +751,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     right = std::round( ( myRasterExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
   }
 #endif
-  QRect subRect = QgsRasterBlock::subRect( extent, pixelWidth, pixelHeight, myRasterExtent );
+  QRect subRect = QgsRasterBlock::subRect( extent, pixelWidth, pixelHeight, rasterExtent );
   int top = subRect.top();
   int bottom = subRect.bottom();
   int left = subRect.left();
@@ -804,23 +804,23 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   // another resampling here which appeares to be quite fast
 
   // Get necessary src extent aligned to src resolution
-  if ( mExtent.xMinimum() < myRasterExtent.xMinimum() )
+  if ( mExtent.xMinimum() < rasterExtent.xMinimum() )
   {
-    srcLeft = static_cast<int>( std::floor( ( myRasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcLeft = static_cast<int>( std::floor( ( rasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
   }
-  if ( mExtent.xMaximum() > myRasterExtent.xMaximum() )
+  if ( mExtent.xMaximum() > rasterExtent.xMaximum() )
   {
-    srcRight = static_cast<int>( std::floor( ( myRasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcRight = static_cast<int>( std::floor( ( rasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
   }
 
   // GDAL states that mGeoTransform[3] is top, may it also be bottom and mGeoTransform[5] positive?
-  if ( mExtent.yMaximum() > myRasterExtent.yMaximum() )
+  if ( mExtent.yMaximum() > rasterExtent.yMaximum() )
   {
-    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMaximum() ) / srcYRes ) );
+    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - rasterExtent.yMaximum() ) / srcYRes ) );
   }
-  if ( mExtent.yMinimum() < myRasterExtent.yMinimum() )
+  if ( mExtent.yMinimum() < rasterExtent.yMinimum() )
   {
-    srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMinimum() ) / srcYRes ) );
+    srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - rasterExtent.yMinimum() ) / srcYRes ) );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ), 5 );
@@ -847,19 +847,20 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   QgsDebugMsgLevel( QStringLiteral( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ), 5 );
 
   // Allocate temporary block
-  char *tmpBlock = ( char * )qgsMalloc( dataSize * tmpWidth * tmpHeight );
+  size_t bufferSize = dataSize * static_cast<size_t>( tmpWidth ) * static_cast<size_t>( tmpHeight );
+  char *tmpBlock = static_cast<char *>( qgsMalloc( bufferSize ) );
   if ( ! tmpBlock )
   {
     QgsDebugMsgLevel( QStringLiteral( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
     return;
   }
   GDALRasterBandH gdalBand = getBand( bandNo );
-  GDALDataType type = ( GDALDataType )mGdalDataType.at( bandNo - 1 );
+  GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
   CPLErrorReset();
 
   CPLErr err = gdalRasterIO( gdalBand, GF_Read,
                              srcLeft, srcTop, srcWidth, srcHeight,
-                             ( void * )tmpBlock,
+                             static_cast<void *>( tmpBlock ),
                              tmpWidth, tmpHeight, type,
                              0, 0, feedback );
 
@@ -873,15 +874,15 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   double tmpXRes = srcWidth * srcXRes / tmpWidth;
   double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
 
-  double y = myRasterExtent.yMaximum() - 0.5 * yRes;
+  double y = rasterExtent.yMaximum() - 0.5 * yRes;
   for ( int row = 0; row < height; row++ )
   {
     int tmpRow = static_cast<int>( std::floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
-    char *dstRowBlock = ( char * )block + dataSize * ( top + row ) * pixelWidth;
+    char *dstRowBlock = ( char * )data + dataSize * ( top + row ) * pixelWidth;
 
-    double x = ( myRasterExtent.xMinimum() + 0.5 * xRes - tmpXMin ) / tmpXRes; // cell center
+    double x = ( rasterExtent.xMinimum() + 0.5 * xRes - tmpXMin ) / tmpXRes; // cell center
     double increment = xRes / tmpXRes;
 
     char *dst = dstRowBlock + dataSize * left;
