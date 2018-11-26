@@ -425,7 +425,7 @@ class CORE_EXPORT QgsGeometry
      * This method forces a detach. Use const_parts_begin() to avoid the detach
      * if the parts are not going to be modified.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsAbstractGeometry::part_iterator parts_begin();
 
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsGeometry
      * This method forces a detach. Use const_parts_begin() to avoid the detach
      * if the parts are not going to be modified.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsAbstractGeometry::part_iterator parts_end();
 
@@ -445,7 +445,7 @@ class CORE_EXPORT QgsGeometry
      * This method avoids a detach and is more efficient then parts_begin() for read
      * only iteration.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsAbstractGeometry::const_part_iterator const_parts_begin() const;
 
@@ -455,7 +455,7 @@ class CORE_EXPORT QgsGeometry
      * This method avoids a detach and is more efficient then parts_end() for read
      * only iteration.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsAbstractGeometry::const_part_iterator const_parts_end() const;
 #endif
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \see constParts()
      * \see vertices()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsGeometryPartIterator parts();
 
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \see parts()
      * \see vertices()
-     * \since QGIS 3.6
+     * \since QGIS 3.4.3
      */
     QgsGeometryConstPartIterator constParts() const;
 
