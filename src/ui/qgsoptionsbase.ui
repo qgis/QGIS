@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>13</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -694,6 +694,20 @@
                     <property name="topMargin">
                      <number>0</number>
                     </property>
+                    <item row="2" column="0">
+                     <widget class="QCheckBox" name="cbxCheckVersion">
+                      <property name="text">
+                       <string>Check QGIS version at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
+                      <property name="text">
+                       <string>Use native color chooser dialogs</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="mDataSourceManagerNonModal">
                       <property name="toolTip">
@@ -711,13 +725,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QCheckBox" name="cbxCheckVersion">
-                      <property name="text">
-                       <string>Check QGIS version at startup</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="cbxHideSplash">
                       <property name="sizePolicy">
@@ -728,13 +735,6 @@
                       </property>
                       <property name="text">
                        <string>Hide splash screen at startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
-                      <property name="text">
-                       <string>Use native color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
@@ -5544,6 +5544,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboTranslation</tabstop>
+  <tabstop>cboGlobalLocale</tabstop>
+  <tabstop>cbShowGroupSeparator</tabstop>
   <tabstop>cmbStyle</tabstop>
   <tabstop>cmbUITheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
@@ -5553,10 +5555,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>spinFontSize</tabstop>
   <tabstop>mMessageTimeoutSpnBx</tabstop>
   <tabstop>cbxHideSplash</tabstop>
-  <tabstop>cbxCheckVersion</tabstop>
+  <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mDataSourceManagerNonModal</tabstop>
   <tabstop>mCustomGroupBoxChkBx</tabstop>
-  <tabstop>mNativeColorDialogsChkBx</tabstop>
+  <tabstop>cbxCheckVersion</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
@@ -5648,6 +5650,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
+  <tabstop>mMapTipsDelaySpinBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
@@ -5667,13 +5670,15 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mColorSchemesComboBox</tabstop>
+  <tabstop>mSchemeToolButton</tabstop>
+  <tabstop>mTreeCustomColors</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
-  <tabstop>mTreeCustomColors</tabstop>
   <tabstop>mOptionsScrollArea_07</tabstop>
   <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>chkReuseLastValues</tabstop>
@@ -5691,6 +5696,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
   <tabstop>mSnappingMainDialogComboBox</tabstop>
   <tabstop>mSnappingMarkerColorButton</tabstop>
+  <tabstop>mSnappingTooltipsCheckbox</tabstop>
+  <tabstop>mEnableSnappingOnInvisibleFeatureCheckbox</tabstop>
   <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
@@ -5736,6 +5743,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
+  <tabstop>mOpenClDevicesCombo</tabstop>
+  <tabstop>mGPUInfoTextBrowser</tabstop>
+  <tabstop>mGPUEnableCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
