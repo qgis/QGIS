@@ -55,6 +55,8 @@ class TestQgsRasterCalculator : public QObject
     void calcWithReprojectedLayers();
 
     void errors();
+    void toString();
+    void findNodes();
 
   private:
 
@@ -530,7 +532,37 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   delete block;
 }
 
-void TestQgsRasterCalculator::errors()
+void TestQgsRasterCalculator::findNodes()
+{
+
+  std::unique_ptr< QgsRasterCalcNode > calcNode;
+
+  auto _test =
+    [ & ]( QString exp, const QgsRasterCalcNode::Type type ) -> QStringList
+  {
+    QList<const QgsRasterCalcNode *> nodeList;
+    QString error;
+    calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( exp, error ) );
+    if ( error.isEmpty() )
+      calcNode->findNodes( type, nodeList );
+    QStringList result;
+    for ( const auto &n : nodeList )
+    {
+      result.push_back( n->toString( true ) );
+    }
+    return result;
+  };
+
+  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), QgsRasterCalcNode::Type::tOperator ).length(), 4 );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"" ), QgsRasterCalcNode::Type::tOperator ).length(), 0 );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"" ), QgsRasterCalcNode::Type::tRasterRef ).length(), 1 );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"" ), QgsRasterCalcNode::Type::tMatrix ).length(), 0 );
+  QCOMPARE( _test( QStringLiteral( "2 + 3" ), QgsRasterCalcNode::Type::tNumber ).length(), 2 );
+  QCOMPARE( _test( QStringLiteral( "2 + 3" ), QgsRasterCalcNode::Type::tOperator ).length(), 1 );
+
+}
+
+void TestQgsRasterCalculator::errors( )
 {
   QgsRasterCalculatorEntry entry1;
   entry1.bandNumber = 0; // bad band
