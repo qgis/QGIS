@@ -188,6 +188,8 @@ Constructor for PdfExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QgsRenderContext::TextRenderFormat textRenderFormat;
+
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
@@ -285,6 +287,8 @@ Constructor for SvgExportSettings
       bool exportMetadata;
 
       QgsLayoutRenderContext::Flags flags;
+
+      QgsRenderContext::TextRenderFormat textRenderFormat;
 
     };
 
