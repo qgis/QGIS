@@ -203,12 +203,13 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
   if ( !symbol )
     return;
 
+  std::unique_ptr< QgsSymbol > s( symbol ); // this method takes ownership of symbol
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return;
 
-  mItem.setSymbol( symbol );
-  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), symbol );
+  mItem.setSymbol( s.get() ); // doesn't transfer ownership
+  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), s.release() ); // DOES transfer ownership!
 
   mPixmap = QPixmap();
 

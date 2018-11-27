@@ -796,9 +796,9 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   if ( !originalSymbol )
     return;
 
-  QgsSymbol *newSymbol = originalSymbol->clone();
+  std::unique_ptr< QgsSymbol > newSymbol( originalSymbol->clone() );
   newSymbol->setColor( color );
-  node->setSymbol( newSymbol );
+  node->setSymbol( newSymbol.release() );
   if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
   {
     layer->emitStyleChanged();
