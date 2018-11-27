@@ -5683,14 +5683,14 @@ void QgisApp::showRasterCalculator()
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(), d.outputFile(), d.outputFormat(), d.outputRectangle(), d.outputCrs(), d.numberOfColumns(), d.numberOfRows(), d.rasterEntries() );
 
-    QProgressDialog p( tr( "Calculating…" ), tr( "Abort" ), 0, 0 );
+    QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
     p.setMaximum( 100.0 );
     QgsFeedback feedback;
     connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
     connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
     p.show();
-    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &feedback ) );
+    QgsRasterCalculator::Result res = rc.processCalculation( &feedback );
     switch ( res )
     {
       case QgsRasterCalculator::Success:
