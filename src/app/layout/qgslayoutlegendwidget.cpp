@@ -1106,7 +1106,7 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
   }
 
   bool ok;
-  QString newText = QInputDialog::getText( this, tr( "Legend item properties" ), tr( "Item text" ),
+  QString newText = QInputDialog::getText( this, tr( "Legend Item Properties" ), tr( "Item text" ),
                     QLineEdit::Normal, currentText, &ok );
   if ( !ok || newText == currentText )
     return;

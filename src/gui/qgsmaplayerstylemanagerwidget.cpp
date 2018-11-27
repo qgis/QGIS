@@ -139,7 +139,7 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 void QgsMapLayerStyleManagerWidget::addStyle()
 {
   bool ok;
-  QString text = QInputDialog::getText( nullptr, tr( "New style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )

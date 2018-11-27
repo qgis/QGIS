@@ -490,7 +490,7 @@ bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QStri
     while ( ok && ! QgsOgrDbConnection( connName, ogrDriverName ).path( ).isEmpty( ) )
     {
 
-      connName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( connName ),
+      connName = QInputDialog::getText( nullptr, tr( "Add Connection" ),
                                         tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
                                         QString(), &ok );
     }
