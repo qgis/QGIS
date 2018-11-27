@@ -36,6 +36,9 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   // search method
   cboSearchMethod->setCurrentIndex( engineSettings.searchMethod() );
 
+  mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
+  mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
+
   // candidate numbers
   int candPoint, candLine, candPolygon;
   engineSettings.numCandidatePositions( candPoint, candLine, candPolygon );
@@ -47,9 +50,9 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   chkShowAllLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
 
   chkShowPartialsLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
-  mDrawOutlinesChkBox->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::RenderOutlineLabels ) );
-}
 
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( engineSettings.defaultTextRenderFormat() ) );
+}
 
 void QgsLabelEngineConfigDialog::onOK()
 {
@@ -63,7 +66,8 @@ void QgsLabelEngineConfigDialog::onOK()
   engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, chkShowCandidates->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::UseAllLabels, chkShowAllLabels->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
-  engineSettings.setFlag( QgsLabelingEngineSettings::RenderOutlineLabels, mDrawOutlinesChkBox->isChecked() );
+
+  engineSettings.setDefaultTextRenderFormat( static_cast< QgsRenderContext::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
 
   QgsProject::instance()->setLabelingEngineSettings( engineSettings );
 
@@ -80,7 +84,7 @@ void QgsLabelEngineConfigDialog::setDefaults()
   chkShowCandidates->setChecked( false );
   chkShowAllLabels->setChecked( false );
   chkShowPartialsLabels->setChecked( p.getShowPartial() );
-  mDrawOutlinesChkBox->setChecked( true );
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QgsRenderContext::TextFormatAlwaysOutlines ) );
 }
 
 void QgsLabelEngineConfigDialog::showHelp()
