@@ -413,6 +413,7 @@ class Grass7Utils:
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
                     env=grassenv,
+                    encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
                     startupinfo=si if isWindows() else None
             ) as proc:
                 for line in iter(proc.stdout.readline, ''):
