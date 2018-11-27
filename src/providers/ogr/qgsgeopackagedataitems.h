@@ -43,11 +43,10 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      */
     QList<QString> tableNames();
 
-#ifdef HAVE_GUI
-
     //! Checks if the data source has any layer in the current project returns them
     QList<QgsMapLayer *> layersInProject() const;
 
+#ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *menu ) override;
 
   public slots:
