@@ -93,6 +93,7 @@ typedef QtClass<QVariant> QtClassQVariantBase;
       QString mName;
       int mCount;
       QgsMapLayer *mLayer;
+      QList<QAction *> contextMenuActions;
     };
 
     static const int MONTHS;
