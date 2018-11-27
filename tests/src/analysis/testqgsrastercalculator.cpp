@@ -538,19 +538,11 @@ void TestQgsRasterCalculator::findNodes()
   std::unique_ptr< QgsRasterCalcNode > calcNode;
 
   auto _test =
-    [ & ]( QString exp, const QgsRasterCalcNode::Type type ) -> QStringList
+    [ & ]( QString exp, const QgsRasterCalcNode::Type type ) -> QList<const QgsRasterCalcNode *>
   {
-    QList<const QgsRasterCalcNode *> nodeList;
     QString error;
     calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( exp, error ) );
-    if ( error.isEmpty() )
-      calcNode->findNodes( type, nodeList );
-    QStringList result;
-    for ( const auto &n : nodeList )
-    {
-      result.push_back( n->toString( true ) );
-    }
-    return result;
+    return calcNode->findNodes( type );
   };
 
   QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), QgsRasterCalcNode::Type::tOperator ).length(), 4 );
@@ -641,6 +633,25 @@ void TestQgsRasterCalculator::errors( )
   QCOMPARE( static_cast< int >( rc.processCalculation( &feedback ) ), 3 );
   QVERIFY( rc.lastError().isEmpty() );
 }
+
+void TestQgsRasterCalculator::toString()
+{
+  auto _test = [ ]( QString exp, bool cStyle ) -> QString
+  {
+    QString error;
+    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( exp, error ) );
+    if ( ! error.isEmpty() )
+      return error;
+    return calcNode->toString( cStyle );
+  };
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), false ), QString( "\"raster@1\" + 2" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), true ), QString( "\"raster@1\" + 2" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), false ), QString( "\"raster@1\"^3 + 2" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "pow( \"raster@1\", 3 ) + 2" ) );
+  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), false ), QString( "atan( \"raster@1\" ) * cos( 3 + 2 )" ) );
+  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( \"raster@1\" ) * cos( 3 + 2 )" ) );
+}
+
 
 QGSTEST_MAIN( TestQgsRasterCalculator )
 #include "testqgsrastercalculator.moc"

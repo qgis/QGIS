@@ -16,6 +16,7 @@
 #include "qgsrasterblock.h"
 #include "qgsrastermatrix.h"
 #include <cfloat>
+#include <QtDebug>
 
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
@@ -78,6 +79,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     {
       for ( int dataCol = 0; dataCol < nCols; ++dataCol )
       {
+        //qDebug() << "Reading value:" << dataRow <<  dataCol << ( *it )->value( dataRow, dataCol );
         data[ dataCol + nCols * outRow] = ( *it )->isNoData( dataRow, dataCol ) ? result.nodataValue() : ( *it )->value( dataRow, dataCol );
       }
     }
@@ -308,14 +310,16 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
   return result;
 }
 
-void QgsRasterCalcNode::findNodes( const QgsRasterCalcNode::Type type, QList<const QgsRasterCalcNode *> &nodeList ) const
+QList<const QgsRasterCalcNode *> QgsRasterCalcNode::findNodes( const QgsRasterCalcNode::Type type ) const
 {
+  QList<const QgsRasterCalcNode *> nodeList;
   if ( mType == type )
     nodeList.push_back( this );
   if ( mLeft )
-    mLeft->findNodes( type, nodeList );
+    nodeList.append( mLeft->findNodes( type ) );
   if ( mRight )
-    mRight->findNodes( type, nodeList );
+    nodeList.append( mRight->findNodes( type ) );
+  return nodeList;
 }
 
 QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str, QString &parserErrorMsg )

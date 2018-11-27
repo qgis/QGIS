@@ -74,6 +74,22 @@ QgsRasterCalcNode cannot be copied
     void setRight( QgsRasterCalcNode *right );
 
 
+    QString toString( bool cStyle = false ) const;
+%Docstring
+Returns a string representation of the expression
+
+:param cStyle: if true operators will follow C syntax
+
+.. versionadded:: 3.6
+%End
+
+    QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
+%Docstring
+Populates a list of nodes of a specific type.
+
+.. versionadded:: 3.6
+%End
+
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 
   private:

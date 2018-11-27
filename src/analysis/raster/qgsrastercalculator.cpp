@@ -70,53 +70,19 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     return ParserError;
   }
 
-  QMap< QString, QgsRasterBlock * > inputBlocks;
-  QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
-  for ( ; it != mRasterEntries.constEnd(); ++it )
+  // Check input layers and bands
+  for ( const auto &entry : qgis::as_const( mRasterEntries ) )
   {
-    if ( !it->raster ) // no raster layer in entry
+    if ( !entry.raster ) // no raster layer in entry
     {
-      mLastError = QObject::tr( "No raster layer for entry %1" ).arg( it->ref );
-      qDeleteAll( inputBlocks );
+      mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
       return InputLayerError;
     }
-
-    if ( it->bandNumber <= 0 || it->bandNumber > it->raster->bandCount() )
+    if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
     {
-      mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( it->bandNumber ).arg( it->ref );
-      qDeleteAll( inputBlocks );
+      mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
       return BandError;
     }
-
-    std::unique_ptr< QgsRasterBlock > block;
-    // if crs transform needed
-    if ( it->raster->crs() != mOutputCrs )
-    {
-      QgsRasterProjector proj;
-      proj.setCrs( it->raster->crs(), mOutputCrs );
-      proj.setInput( it->raster->dataProvider() );
-      proj.setPrecision( QgsRasterProjector::Exact );
-
-      QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
-      QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
-      block.reset( proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows, rasterBlockFeedback ) );
-      if ( rasterBlockFeedback->isCanceled() )
-      {
-        qDeleteAll( inputBlocks );
-        return Canceled;
-      }
-    }
-    else
-    {
-      block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
-    }
-    if ( block->isEmpty() )
-    {
-      mLastError = QObject::tr( "Could not allocate required memory for %1" ).arg( it->ref );
-      qDeleteAll( inputBlocks );
-      return MemoryError;
-    }
-    inputBlocks.insert( it->ref, block.release() );
   }
 
   //open output dataset for writing
@@ -140,52 +106,194 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
 
-  QgsRasterMatrix resultMatrix;
-  resultMatrix.setNodataValue( outputNodataValue );
 
-  //read / write line by line
-  for ( int i = 0; i < mNumOutputRows; ++i )
+  // If we need to read the raster as a whole
+  bool requiresMatrix = ! calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty();
+
+
+  if ( ! requiresMatrix )
   {
+    // Map of raster names -> blocks
+    std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
+    std::map<QString, QgsRasterCalculatorEntry> uniqueRasterEntries;
+    for ( const auto &r : calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ) )
+    {
+      QString layerRef( r->toString().remove( 0, 1 ) );
+      layerRef.chop( 1 );
+      if ( ! inputBlocks.count( layerRef ) )
+      {
+        for ( const auto &ref : mRasterEntries )
+        {
+          if ( ref.ref == layerRef )
+          {
+            uniqueRasterEntries[layerRef] = ref;
+            inputBlocks[layerRef ] = qgis::make_unique<QgsRasterBlock>();
+          }
+        }
+      }
+    }
+
+    //read / write line by line
+    QMap<QString, QgsRasterBlock * > _rasterData;
+    // Cast to float
+    std::vector<float> castedResult;
+    castedResult.reserve( static_cast<size_t>( mNumOutputColumns ) );
+    auto rowHeight = mOutputRectangle.height() / mNumOutputRows;
+    for ( size_t row = 0; row < mNumOutputRows; ++row )
+    {
+      if ( feedback )
+      {
+        feedback->setProgress( 100.0 * static_cast< double >( row ) / mNumOutputRows );
+      }
+
+      if ( feedback && feedback->isCanceled() )
+      {
+        break;
+      }
+
+      // Read one row
+      QgsRectangle rect( mOutputRectangle );
+      rect.setYMaximum( rect.yMaximum() - rowHeight * row );
+      rect.setYMinimum( rect.yMaximum() - rowHeight );
+
+      // Read blocks
+      for ( auto &layerRef : inputBlocks )
+      {
+        QgsRasterCalculatorEntry ref = uniqueRasterEntries[layerRef.first];
+        if ( uniqueRasterEntries[layerRef.first].raster->crs() != mOutputCrs )
+        {
+          QgsRasterProjector proj;
+          proj.setCrs( ref.raster->crs(), mOutputCrs );
+          proj.setInput( ref.raster->dataProvider() );
+          proj.setPrecision( QgsRasterProjector::Exact );
+          layerRef.second.reset( proj.block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
+        }
+        else
+        {
+          inputBlocks[layerRef.first].reset( ref.raster->dataProvider()->block( ref.bandNumber, rect, mNumOutputColumns, 1 ) );
+        }
+      }
+
+      QgsRasterMatrix resultMatrix;
+      resultMatrix.setNodataValue( outputNodataValue );
+
+      _rasterData.clear();
+      for ( const auto &layerRef : inputBlocks )
+      {
+        _rasterData.insert( layerRef.first, inputBlocks[layerRef.first].get() );
+        //for ( int i = 0; i < mNumOutputColumns; i++ )
+        //  qDebug() << "Input: " << row << i << " = " << inputBlocks[layerRef.first]->value(0, i);
+      }
+
+      if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
+      {
+        //write scanline to the dataset
+        for ( size_t i = 0; i < static_cast<size_t>( mNumOutputColumns ); i++ )
+        {
+          castedResult[i] = static_cast<float>( resultMatrix.data()[i] );
+          // qDebug() << "Calculated: " << row << i << " = " << castedResult[i];
+        }
+        if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
+        {
+          QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
+        }
+      }
+    }
+
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( i ) / mNumOutputRows );
+      feedback->setProgress( 100.0 );
     }
 
-    if ( feedback && feedback->isCanceled() )
-    {
-      break;
-    }
-
-    if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
-    {
-      bool resultIsNumber = resultMatrix.isNumber();
-      float *calcData = new float[mNumOutputColumns];
-
-      for ( int j = 0; j < mNumOutputColumns; ++j )
-      {
-        calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
-      }
-
-      //write scanline to the dataset
-      if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, mNumOutputColumns, 1, calcData, mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
-      {
-        QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
-      }
-
-      delete[] calcData;
-    }
 
   }
-
-  if ( feedback )
+  else
   {
-    feedback->setProgress( 100.0 );
+    QMap< QString, QgsRasterBlock * > inputBlocks;
+    QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
+    for ( ; it != mRasterEntries.constEnd(); ++it )
+    {
+
+      std::unique_ptr< QgsRasterBlock > block;
+      // if crs transform needed
+      if ( it->raster->crs() != mOutputCrs )
+      {
+        QgsRasterProjector proj;
+        proj.setCrs( it->raster->crs(), mOutputCrs );
+        proj.setInput( it->raster->dataProvider() );
+        proj.setPrecision( QgsRasterProjector::Exact );
+
+        QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
+        QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
+        block.reset( proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows, rasterBlockFeedback ) );
+        if ( rasterBlockFeedback->isCanceled() )
+        {
+          qDeleteAll( inputBlocks );
+          return Canceled;
+        }
+      }
+      else
+      {
+        block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
+      }
+      if ( block->isEmpty() )
+      {
+        mLastError = QObject::tr( "Could not allocate required memory for %1" ).arg( it->ref );
+        qDeleteAll( inputBlocks );
+        return MemoryError;
+      }
+      inputBlocks.insert( it->ref, block.release() );
+    }
+
+    QgsRasterMatrix resultMatrix;
+    resultMatrix.setNodataValue( outputNodataValue );
+
+    //read / write line by line
+    for ( int i = 0; i < mNumOutputRows; ++i )
+    {
+      if ( feedback )
+      {
+        feedback->setProgress( 100.0 * static_cast< double >( i ) / mNumOutputRows );
+      }
+
+      if ( feedback && feedback->isCanceled() )
+      {
+        break;
+      }
+
+      if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
+      {
+        bool resultIsNumber = resultMatrix.isNumber();
+        float *calcData = new float[mNumOutputColumns];
+
+        for ( int j = 0; j < mNumOutputColumns; ++j )
+        {
+          calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
+        }
+
+        //write scanline to the dataset
+        if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, mNumOutputColumns, 1, calcData, mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
+        {
+          QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
+        }
+
+        delete[] calcData;
+      }
+
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 );
+    }
+
+    //close datasets and release memory
+    calcNode.reset();
+    qDeleteAll( inputBlocks );
+    inputBlocks.clear();
+
   }
 
-  //close datasets and release memory
-  calcNode.reset();
-  qDeleteAll( inputBlocks );
-  inputBlocks.clear();
 
   if ( feedback && feedback->isCanceled() )
   {

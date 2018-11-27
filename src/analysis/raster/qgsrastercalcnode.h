@@ -117,7 +117,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * Populates a list of nodes of a specific type.
      * \since QGIS 3.6
      */
-    void findNodes( const QgsRasterCalcNode::Type type, QList<const QgsRasterCalcNode *> &nodeList ) const;
+    QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
