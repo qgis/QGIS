@@ -204,6 +204,24 @@ If ``layer`` is -1, all item layers should be rendered.
 .. seealso:: :py:func:`setCurrentExportLayer`
 %End
 
+    QgsRenderContext::TextRenderFormat textRenderFormat() const;
+%Docstring
+Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`setTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+%Docstring
+Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`textRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutRenderContext::Flags flags );
