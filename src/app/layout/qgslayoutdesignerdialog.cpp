@@ -2169,16 +2169,11 @@ void QgsLayoutDesignerDialog::exportToSvg()
     outputFileName += QLatin1String( ".svg" );
   }
 
-  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   setLastExportPath( outputFileName );
 
   QgsLayoutExporter::SvgExportSettings svgSettings;
-  bool exportAsText = false;
-  if ( !getSvgExportSettings( svgSettings, exportAsText ) )
+  if ( !getSvgExportSettings( svgSettings ) )
     return;
-
-  //temporarily override label draw outlines setting
-  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
@@ -2245,7 +2240,6 @@ void QgsLayoutDesignerDialog::exportToSvg()
   }
 
   mView->setPaintingEnabled( true );
-  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
 }
 
 void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
@@ -2759,14 +2753,9 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     return;
   }
 
-  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   QgsLayoutExporter::SvgExportSettings svgSettings;
-  bool exportAsText = false;
-  if ( !getSvgExportSettings( svgSettings, exportAsText ) )
+  if ( !getSvgExportSettings( svgSettings ) )
     return;
-
-  //temporarily override label draw outlines setting
-  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
@@ -2863,7 +2852,6 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   }
 
   mView->setPaintingEnabled( true );
-  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToPdf()
@@ -3223,16 +3211,11 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QgisApp::instance()->activateWindow();
   this->raise();
 #endif
-  bool prevSettingLabelsAsOutlines = mMasterLayout->layoutProject()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   setLastExportPath( outputFileName );
 
   QgsLayoutExporter::SvgExportSettings svgSettings;
-  bool exportAsText = false;
-  if ( !getSvgExportSettings( svgSettings, exportAsText ) )
+  if ( !getSvgExportSettings( svgSettings ) )
     return;
-
-  //temporarily override label draw outlines setting
-  mMasterLayout->layoutProject()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
@@ -3328,7 +3311,6 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   }
 
   mView->setPaintingEnabled( true );
-  mMasterLayout->layoutProject()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
 }
 
 void QgsLayoutDesignerDialog::exportReportToPdf()
@@ -3974,10 +3956,10 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   return true;
 }
 
-bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings, bool &exportAsText )
+bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings )
 {
   bool groupLayers = false;
-  bool prevSettingLabelsAsOutlines = mMasterLayout->layoutProject()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  bool prevSettingLabelsAsOutlines = false;
   bool clipToContent = false;
   double marginTop = 0.0;
   double marginRight = 0.0;
@@ -4001,6 +3983,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     bottomMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt();
     leftMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt();
     includeMetadata = mLayout->customProperty( QStringLiteral( "svgIncludeMetadata" ), 1 ).toBool();
+    prevSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "svgRenderTextAsOutlines" ), 1 ).toBool();
   }
 
   // open options dialog
@@ -4027,6 +4010,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   marginBottom = options.mBottomMarginSpinBox->value();
   marginLeft = options.mLeftMarginSpinBox->value();
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
+  QgsRenderContext::TextRenderFormat textRenderFormat = options.chkTextAsOutline->isChecked() ? QgsRenderContext::TextFormatAlwaysOutlines : QgsRenderContext::TextFormatAlwaysText;
 
   if ( mLayout )
   {
@@ -4038,6 +4022,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
     mLayout->setCustomProperty( QStringLiteral( "svgIncludeMetadata" ), includeMetadata ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "svgRenderTextAsOutlines" ), textRenderFormat == QgsRenderContext::TextFormatAlwaysOutlines ? 1 : 0 );
   }
 
   settings.cropToContents = clipToContent;
@@ -4045,8 +4030,8 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
   settings.exportAsLayers = groupLayers;
   settings.exportMetadata = includeMetadata;
+  settings.textRenderFormat = textRenderFormat;
 
-  exportAsText = options.chkTextAsOutline->isChecked();
   return true;
 }
 
