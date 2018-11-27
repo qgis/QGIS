@@ -329,8 +329,8 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
 void QgsExpressionBuilderWidget::btnNewFile_pressed()
 {
   bool ok;
-  QString text = QInputDialog::getText( this, tr( "Enter new file name" ),
-                                        tr( "File name:" ), QLineEdit::Normal,
+  QString text = QInputDialog::getText( this, tr( "New File" ),
+                                        tr( "New file name:" ), QLineEdit::Normal,
                                         QString(), &ok );
   if ( ok && !text.isEmpty() )
   {
