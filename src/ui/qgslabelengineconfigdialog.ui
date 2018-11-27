@@ -205,18 +205,25 @@
     </layout>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <property name="verticalSpacing">
-      <number>6</number>
-     </property>
-     <item row="3" column="0">
-      <widget class="QCheckBox" name="chkShowCandidates">
+    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Show candidates (for debugging)</string>
+        <string>Text rendering</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="0" column="1">
+      <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QCheckBox" name="chkShowPartialsLabels">
+       <property name="text">
+        <string>Allow truncated labels on edges of map</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="2">
       <widget class="QCheckBox" name="chkShowAllLabels">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -232,17 +239,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="mDrawOutlinesChkBox">
+     <item row="3" column="0" colspan="2">
+      <widget class="QCheckBox" name="chkShowCandidates">
        <property name="text">
-        <string>Draw text as outlines (recommended)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="chkShowPartialsLabels">
-       <property name="text">
-        <string>Show partial labels</string>
+        <string>Show candidates (for debugging)</string>
        </property>
       </widget>
      </item>
@@ -278,11 +278,10 @@
   <tabstop>spinCandPoint</tabstop>
   <tabstop>spinCandLine</tabstop>
   <tabstop>spinCandPolygon</tabstop>
-  <tabstop>mDrawOutlinesChkBox</tabstop>
+  <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>chkShowPartialsLabels</tabstop>
   <tabstop>chkShowAllLabels</tabstop>
   <tabstop>chkShowCandidates</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

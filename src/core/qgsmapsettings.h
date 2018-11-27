@@ -267,12 +267,18 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
      *
+     * \warning Calling the setLabelingEngineSettings() method will reset the text render format to match the default
+     * text render format from the label engine settings.
+     *
      * \see textRenderFormat()
      * \since QGIS 3.4.3
      */
     void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
     {
       mTextRenderFormat = format;
+      // ensure labeling engine setting is also kept in sync, just in case anyone accesses QgsMapSettings::labelingEngineSettings().defaultTextRenderFormat()
+      // instead of correctly calling QgsMapSettings::textRenderFormat(). It can't hurt to be consistent!
+      mLabelingEngineSettings.setDefaultTextRenderFormat( format );
     }
 
     //! sets format of internal QImage
@@ -433,13 +439,26 @@ class CORE_EXPORT QgsMapSettings
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
     /**
-     * Sets global configuration of the labeling engine
+     * Sets the global configuration of the labeling engine.
+     *
+     * \note Calling this method will reset the textRenderFormat() to match the default
+     * text render format from the label engine \a settings.
+     *
+     * \see labelingEngineSettings()
+     *
      * \since QGIS 3.0
      */
-    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings ) { mLabelingEngineSettings = settings; }
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
+    {
+      mLabelingEngineSettings = settings;
+      mTextRenderFormat = settings.defaultTextRenderFormat();
+    }
 
     /**
-     * Returns global configuration of the labeling engine
+     * Returns the global configuration of the labeling engine.
+     *
+     * \see setLabelingEngineSettings()
+     *
      * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
