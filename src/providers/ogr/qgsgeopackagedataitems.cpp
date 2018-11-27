@@ -782,6 +782,7 @@ QList<QString> QgsGeoPackageAbstractLayerItem::tableNames()
   return  names;
 }
 
+#ifdef HAVE_GUI
 QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
 {
   // Check if the layer(s) are in the registry
@@ -796,7 +797,7 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
   }
   return layersList;
 }
-
+#endif
 
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
