@@ -1359,7 +1359,19 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * \class QgsProcessingParameterNumber
  * \ingroup core
  * A numeric parameter for processing algorithms.
-  * \since QGIS 3.0
+ *
+ * For numeric parameters with a dataType() of Double, the number of decimals places
+ * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
+ *
+ * * \code{.py}
+ *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDefinition
 {
@@ -1449,7 +1461,19 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
  * \ingroup core
  * A double numeric parameter for distance values. Linked to a source layer or CRS parameter
  * to determine what units the distance values are in.
-  * \since QGIS 3.2
+ *
+ * The number of decimals places shown in a distance parameter's widget can be specified by
+ * setting the parameter's metadata. For example:
+ *
+ * * \code{.py}
+ *   param = QgsProcessingParameterDistance( 'VAL', 'Threshold')
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameterNumber
 {
