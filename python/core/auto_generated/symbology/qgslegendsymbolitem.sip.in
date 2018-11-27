@@ -122,7 +122,6 @@ Returns extra information for data-defined size legend rendering. Normally it re
 
 };
 
-
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
 /************************************************************************
