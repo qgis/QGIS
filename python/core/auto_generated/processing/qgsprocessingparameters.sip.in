@@ -1364,6 +1364,17 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 %Docstring
 A numeric parameter for processing algorithms.
 
+For numeric parameters with a dataType() of Double, the number of decimals places
+shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
+
+.. code-block:: python
+
+       param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+       # only show two decimal places in parameter's widgets, not 6:
+       param.setMetadata( {'widget_wrapper':
+         { 'decimals': 2 }
+       })
+
 .. versionadded:: 3.0
 %End
 
@@ -1462,6 +1473,17 @@ class QgsProcessingParameterDistance : QgsProcessingParameterNumber
 %Docstring
 A double numeric parameter for distance values. Linked to a source layer or CRS parameter
 to determine what units the distance values are in.
+
+The number of decimals places shown in a distance parameter's widget can be specified by
+setting the parameter's metadata. For example:
+
+.. code-block:: python
+
+       param = QgsProcessingParameterDistance( 'VAL', 'Threshold')
+       # only show two decimal places in parameter's widgets, not 6:
+       param.setMetadata( {'widget_wrapper':
+         { 'decimals': 2 }
+       })
 
 .. versionadded:: 3.2
 %End
