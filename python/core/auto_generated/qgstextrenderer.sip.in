@@ -1555,6 +1555,7 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 :return: font pixel size
 %End
 
+
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
@@ -1569,7 +1570,8 @@ Draws text within a rectangle using the specified settings.
 :param format: text format
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1586,7 +1588,8 @@ Draws text at a point origin using the specified settings.
 :param format: text format
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1606,7 +1609,8 @@ Draws a single component of rendered text using the specified settings.
              with the text or background parts)
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1626,7 +1630,8 @@ Draws a single component of rendered text using the specified settings.
              with the text or background parts)
 :param drawAsOutlines: set to false to render text as text. This allows outputs to
                        formats like SVG to maintain text as text objects, but at the cost of degraded
-                       rendering and may result in side effects like misaligned text buffers.
+                       rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+                       as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );

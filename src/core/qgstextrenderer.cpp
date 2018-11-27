@@ -1708,38 +1708,38 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUni
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
 {
   QgsTextFormat tmpFormat = updateShadowPosition( format );
 
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Background, drawAsOutlines );
+    drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Background );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Buffer, drawAsOutlines );
+    drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Buffer );
   }
 
-  drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Text, drawAsOutlines );
+  drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Text );
 }
 
-void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
+void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
 {
   QgsTextFormat tmpFormat = updateShadowPosition( format );
 
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( point, rotation, alignment, textLines, context, tmpFormat, Background, drawAsOutlines );
+    drawPart( point, rotation, alignment, textLines, context, tmpFormat, Background );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( point, rotation, alignment, textLines, context, tmpFormat, Buffer, drawAsOutlines );
+    drawPart( point, rotation, alignment, textLines, context, tmpFormat, Buffer );
   }
 
-  drawPart( point, rotation, alignment, textLines, context, tmpFormat, Text, drawAsOutlines );
+  drawPart( point, rotation, alignment, textLines, context, tmpFormat, Text );
 }
 
 QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format )
@@ -1764,7 +1764,7 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format
 }
 
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment alignment,
-                                const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
+                                const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
   if ( !context.painter() )
   {
@@ -1821,14 +1821,13 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
       drawTextInternal( part, context, format, component,
                         textLines,
                         &fm,
-                        alignment,
-                        drawAsOutlines );
+                        alignment );
       break;
     }
   }
 }
 
-void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
   if ( !context.painter() )
   {
@@ -1866,7 +1865,6 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
                         textLines,
                         &fm,
                         alignment,
-                        drawAsOutlines,
                         Point );
       break;
     }
@@ -2511,9 +2509,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
                                         const Component &component,
                                         const QStringList &textLines,
                                         const QFontMetricsF *fontMetrics,
-                                        HAlignment alignment,
-                                        bool drawAsOutlines
-                                        , DrawMode mode )
+                                        HAlignment alignment, DrawMode mode )
 {
   if ( !context.painter() )
   {
@@ -2665,21 +2661,25 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       // scale for any print output or image saving @ specific dpi
       context.painter()->scale( subComponent.dpiRatio, subComponent.dpiRatio );
 
-      if ( drawAsOutlines )
+      switch ( context.textRenderFormat() )
       {
-        // draw outlined text
-        _fixQPictureDPI( context.painter() );
-        context.painter()->drawPicture( 0, 0, textPict );
-      }
-      else
-      {
-        // draw text as text (for SVG and PDF exports)
-        context.painter()->setFont( format.scaledFont( context ) );
-        QColor textColor = format.color();
-        textColor.setAlphaF( format.opacity() );
-        context.painter()->setPen( textColor );
-        context.painter()->setRenderHint( QPainter::TextAntialiasing );
-        context.painter()->drawText( 0, 0, subComponent.text );
+        case QgsRenderContext::TextFormatAlwaysOutlines:
+        {
+          // draw outlined text
+          _fixQPictureDPI( context.painter() );
+          context.painter()->drawPicture( 0, 0, textPict );
+          break;
+        }
+
+        case QgsRenderContext::TextFormatAlwaysText:
+        {
+          context.painter()->setFont( format.scaledFont( context ) );
+          QColor textColor = format.color();
+          textColor.setAlphaF( format.opacity() );
+          context.painter()->setPen( textColor );
+          context.painter()->setRenderHint( QPainter::TextAntialiasing );
+          context.painter()->drawText( 0, 0, subComponent.text );
+        }
       }
     }
     context.painter()->restore();

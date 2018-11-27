@@ -76,6 +76,16 @@ class CORE_EXPORT QgsRenderContext
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
+     * Options for rendering text.
+     * \since QGIS 3.4.3
+     */
+    enum TextRenderFormat
+    {
+      TextFormatAlwaysOutlines, //!< Always render text using path objects (AKA outlines/curves). This always results in the best quality rendering.
+      TextFormatAlwaysText, //!< Always render text as text objects. This may result in rendering artefacts or poor quality rendering, depending on the text format settings.
+    };
+
+    /**
      * Set combination of flags that will be used for rendering.
      * \since QGIS 2.14
      */
@@ -386,6 +396,28 @@ class CORE_EXPORT QgsRenderContext
      */
     double convertMetersToMapUnits( double meters ) const;
 
+    /**
+     * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see setTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    TextRenderFormat textRenderFormat() const
+    {
+      return mTextRenderFormat;
+    }
+
+    /**
+     * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see textRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setTextRenderFormat( TextRenderFormat format )
+    {
+      mTextRenderFormat = format;
+    }
+
   private:
 
     Flags mFlags;
@@ -441,6 +473,8 @@ class CORE_EXPORT QgsRenderContext
     QgsCoordinateTransformContext mTransformContext;
 
     QgsPathResolver mPathResolver;
+
+    TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
