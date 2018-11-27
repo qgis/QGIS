@@ -1024,7 +1024,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
   printer.setOutputFileName( filePath );
-  // setOutputFormat should come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
+  // setOutputFormat MUST come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
+
   // [LS] This should be QPrinter::NativeFormat for Mac, otherwise fonts are not embed-able
   // and text is not searchable; however, there are several bugs with <= Qt 4.8.5, 5.1.1, 5.2.0:
   // https://bugreports.qt.io/browse/QTBUG-10094 - PDF font embedding fails
