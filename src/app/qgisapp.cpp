@@ -8923,7 +8923,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
   {
     bool ok;
     QString defaultName = tr( "Pasted" );
-    layerNameCopy = QInputDialog::getText( this, tr( "New temporary scratch layer name" ),
+    layerNameCopy = QInputDialog::getText( this, tr( "Paste as Scratch Layer" ),
                                            tr( "Layer name" ), QLineEdit::Normal,
                                            defaultName, &ok );
     if ( !ok )

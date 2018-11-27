@@ -462,7 +462,7 @@ void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 void QgsAuthOAuth2Method::onAuthCode()
 {
   bool ok = false;
-  QString code = QInputDialog::getText( QApplication::activeWindow(), QStringLiteral( "Enter the authorization code" ), QStringLiteral( "Authoriation code" ), QLineEdit::Normal, QStringLiteral( "Required" ), &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
+  QString code = QInputDialog::getText( QApplication::activeWindow(), QStringLiteral( "Authoriation Code" ), QStringLiteral( "Enter the authorization code" ), QLineEdit::Normal, QStringLiteral( "Required" ), &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
   if ( ok && !code.isEmpty() )
   {
     emit setAuthCode( code );
