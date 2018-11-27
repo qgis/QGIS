@@ -40,6 +40,7 @@ class TestQgsLabelingEngine : public QObject
     void cleanupTestCase();
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testEngineSettings();
     void testBasic();
     void testDiagrams();
     void testRuleBased();
@@ -97,6 +98,42 @@ void TestQgsLabelingEngine::cleanup()
 {
   QgsProject::instance()->removeMapLayer( vl->id() );
   vl = nullptr;
+}
+
+void TestQgsLabelingEngine::testEngineSettings()
+{
+  // test labeling engine settings
+
+  // getters/setters
+  QgsLabelingEngineSettings settings;
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // reading from project
+  QgsProject p;
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  settings.writeSettingsToProject( &p );
+  QgsLabelingEngineSettings settings2;
+  settings2.readSettingsFromProject( &p );
+  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.writeSettingsToProject( &p );
+  settings2.readSettingsFromProject( &p );
+  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // test that older setting is still respected as a fallback
+  QgsProject p2;
+  QgsLabelingEngineSettings settings3;
+  p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), false );
+  settings3.readSettingsFromProject( &p2 );
+  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+
+  p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  settings3.readSettingsFromProject( &p2 );
+  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
 }
 
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )

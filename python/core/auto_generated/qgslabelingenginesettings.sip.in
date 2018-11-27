@@ -8,7 +8,6 @@
 
 
 
-
 class QgsLabelingEngineSettings
 {
 %Docstring
@@ -25,6 +24,7 @@ Stores global configuration for labeling engine
     {
       UseAllLabels,
       UsePartialCandidates,
+      // TODO QGIS 4.0: remove
       RenderOutlineLabels,
       DrawLabelRectOnly,
       DrawCandidates,
@@ -90,6 +90,25 @@ Read configuration of the labeling engine from a project
     void writeSettingsToProject( QgsProject *project );
 %Docstring
 Write configuration of the labeling engine to a project
+%End
+
+
+    QgsRenderContext::TextRenderFormat defaultTextRenderFormat() const;
+%Docstring
+Returns the default text rendering format for the labels.
+
+.. seealso:: :py:func:`setDefaultTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setDefaultTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+%Docstring
+Sets the default text rendering ``format`` for the labels.
+
+.. seealso:: :py:func:`defaultTextRenderFormat`
+
+.. versionadded:: 3.4.3
 %End
 
 };

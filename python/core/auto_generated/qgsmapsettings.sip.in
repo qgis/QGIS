@@ -296,6 +296,11 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 %Docstring
 Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
 
+.. warning::
+
+   Calling the setLabelingEngineSettings() method will reset the text render format to match the default
+   text render format from the label engine settings.
+
 .. seealso:: :py:func:`textRenderFormat`
 
 .. versionadded:: 3.4.3
@@ -504,14 +509,24 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
 %Docstring
-Sets global configuration of the labeling engine
+Sets the global configuration of the labeling engine.
+
+.. note::
+
+   Calling this method will reset the textRenderFormat() to match the default
+   text render format from the label engine ``settings``.
+
+.. seealso:: :py:func:`labelingEngineSettings`
+
 
 .. versionadded:: 3.0
 %End
 
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 %Docstring
-Returns global configuration of the labeling engine
+Returns the global configuration of the labeling engine.
+
+.. seealso:: :py:func:`setLabelingEngineSettings`
 
 .. versionadded:: 3.0
 %End
