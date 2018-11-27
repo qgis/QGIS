@@ -847,7 +847,17 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   QgsDebugMsgLevel( QStringLiteral( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ), 5 );
 
   // Allocate temporary block
-  char *tmpBlock = ( char * )qgsMalloc( dataSize * tmpWidth * tmpHeight );
+  size_t bufferSize = dataSize * static_cast<size_t>( tmpWidth ) * static_cast<size_t>( tmpHeight );
+#ifdef Q_PROCESSOR_X86_32
+  // Safety check for 32 bit systems
+  qint64 _buffer_size = dataSize * static_cast<qint64>( tmpWidth ) * static_cast<qint64>( tmpHeight );
+  if ( _buffer_size != static_cast<qint64>( bufferSize ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Integer overflow calculating buffer size on a 32 bit system." ) );
+    return;
+  }
+#endif
+  char *tmpBlock = static_cast<char *>( qgsMalloc( bufferSize ) );
   if ( ! tmpBlock )
   {
     QgsDebugMsgLevel( QStringLiteral( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
