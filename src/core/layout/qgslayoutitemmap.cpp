@@ -1113,6 +1113,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
 
   jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
+  jobMapSettings.setTextRenderFormat( mLayout->renderContext().textRenderFormat() );
 
   return jobMapSettings;
 }

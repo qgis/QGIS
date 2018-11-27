@@ -43,6 +43,7 @@ class TestQgsLayoutContext: public QObject
     void layer();
     void dpi();
     void renderContextFlags();
+    void textFormat();
     void boundingBoxes();
     void exportLayer();
     void geometry();
@@ -191,6 +192,15 @@ void TestQgsLayoutContext::renderContextFlags()
   QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( flags & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+}
+
+void TestQgsLayoutContext::textFormat()
+{
+  QgsLayoutRenderContext context( nullptr );
+  context.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( context.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  context.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( context.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
 }
 
 void TestQgsLayoutContext::boundingBoxes()
