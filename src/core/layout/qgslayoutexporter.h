@@ -278,6 +278,14 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
 
+      /**
+       * Text rendering format, which controls how text should be rendered in the export (e.g.
+       * as paths or real text objects).
+       *
+       * \since QGIS 3.4.3
+       */
+      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
     };
 
     /**
@@ -416,6 +424,14 @@ class CORE_EXPORT QgsLayoutExporter
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
+
+      /**
+       * Text rendering format, which controls how text should be rendered in the export (e.g.
+       * as paths or real text objects).
+       *
+       * \since QGIS 3.4.3
+       */
+      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
     };
 

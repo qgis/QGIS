@@ -299,6 +299,7 @@ class LayoutContextSettingsRestorer
       : mLayout( layout )
       , mPreviousDpi( layout->renderContext().dpi() )
       , mPreviousFlags( layout->renderContext().flags() )
+      , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
     {
     }
@@ -307,6 +308,7 @@ class LayoutContextSettingsRestorer
     {
       mLayout->renderContext().setDpi( mPreviousDpi );
       mLayout->renderContext().setFlags( mPreviousFlags );
+      mLayout->renderContext().setTextRenderFormat( mPreviousTextFormat );
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
     }
 
@@ -317,6 +319,7 @@ class LayoutContextSettingsRestorer
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
     QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
+    QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
 };
 ///@endcond PRIVATE
@@ -496,6 +499,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
+  mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
+
   QPrinter printer;
   preparePrintAsPdf( mLayout, printer, filePath );
   preparePrint( mLayout, printer, false );
@@ -564,6 +569,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
 
     iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+    iterator->layout()->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
     if ( first )
     {
@@ -780,6 +787,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
 
   QFileInfo fi( filePath );
   PageExportDetails pageDetails;

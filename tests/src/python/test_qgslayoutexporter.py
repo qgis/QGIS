@@ -31,6 +31,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsRectangle,
                        QgsLayoutItemPage,
                        QgsLayoutItemMap,
+                       QgsLayoutItemScaleBar,
                        QgsLayoutPoint,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
@@ -40,6 +41,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsCoordinateReferenceSystem,
                        QgsPrintLayout,
                        QgsSingleSymbolRenderer,
+                       QgsRenderContext,
                        QgsReport)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
 from qgis.PyQt.QtGui import QImage, QPainter
@@ -614,6 +616,53 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
         for f in [svg_file_path, svg_file_path_2]:
             checkMetadata(f, False)
+
+    def testExportToSvgTextRenderFormat(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add a map and scalebar
+        mapitem = QgsLayoutItemMap(l)
+        mapitem.attemptSetSceneRect(QRectF(110, 120, 200, 250))
+        mapitem.zoomToExtent(QgsRectangle(1, 1, 10, 10))
+        mapitem.setScale(666)  # unlikely to appear in the SVG by accident... unless... oh no! RUN!
+        l.addItem(mapitem)
+
+        item1 = QgsLayoutItemScaleBar(l)
+        item1.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item1.setLinkedMap(mapitem)
+        item1.setStyle('Numeric')
+        l.addItem(item1)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.SvgExportSettings()
+        settings.dpi = 80
+        settings.forceVectorOutput = False
+        settings.exportMetadata = True
+        settings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+
+        svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvgtextformattext.svg')
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+
+        # expect svg to contain a text object with the scale
+        with open(svg_file_path, 'r') as f:
+            lines = ''.join(f.readlines())
+        self.assertIn('<text', lines)
+        self.assertIn('>1:666<', lines)
+
+        # force use of outlines
+        os.unlink(svg_file_path)
+        settings.textRenderFormat = QgsRenderContext.TextFormatAlwaysOutlines
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+
+        # expect svg NOT to contain a text object with the scale
+        with open(svg_file_path, 'r') as f:
+            lines = ''.join(f.readlines())
+        self.assertNotIn('<text', lines)
+        self.assertNotIn('>1:666<', lines)
 
     def testPrint(self):
         l = QgsLayout(QgsProject.instance())
