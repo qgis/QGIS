@@ -400,6 +400,11 @@ class Grass7Utils:
         # commands again.
         if not grassOutDone and outputCommands:
             command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
+            # For MS-Windows, we need to hide the console window.
+            if isWindows():
+                si = subprocess.STARTUPINFO()
+                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                si.wShowWindow = subprocess.SW_HIDE
             with subprocess.Popen(
                     command,
                     shell=False,
@@ -408,6 +413,7 @@ class Grass7Utils:
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
                     env=grassenv,
+                    encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
                     startupinfo=si if isWindows() else None
             ) as proc:
                 for line in iter(proc.stdout.readline, ''):
