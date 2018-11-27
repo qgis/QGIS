@@ -2072,6 +2072,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  pdfSettings.textRenderFormat = mLayout->project()->labelingEngineSettings().defaultTextRenderFormat();
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -2970,6 +2971,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  pdfSettings.textRenderFormat = mLayout->project()->labelingEngineSettings().defaultTextRenderFormat();
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3351,8 +3353,10 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
   }
   QgsLayoutExporter::PdfExportSettings pdfSettings;
+  // TODO - show a dialog allowing users to control these settings on a per-output basis
   pdfSettings.rasterizeWholeImage = rasterize;
   pdfSettings.forceVectorOutput = forceVectorOutput;
+  pdfSettings.textRenderFormat = mLayout->project()->labelingEngineSettings().defaultTextRenderFormat();
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
