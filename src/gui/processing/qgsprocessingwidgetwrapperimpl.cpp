@@ -420,6 +420,8 @@ QgsProcessingNumericWidgetWrapper::QgsProcessingNumericWidgetWrapper( const QgsP
 QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterNumber *numberDef = static_cast< const QgsProcessingParameterNumber * >( parameterDefinition() );
+  const QVariantMap metadata = numberDef->metadata();
+  const int decimals = metadata.value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "decimals" ), 6 ).toInt();
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -433,13 +435,14 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         case QgsProcessingParameterNumber::Double:
           mDoubleSpinBox = new QgsDoubleSpinBox();
           mDoubleSpinBox->setExpressionsEnabled( true );
-          mDoubleSpinBox->setDecimals( 6 );
+          mDoubleSpinBox->setDecimals( decimals );
 
           // guess reasonable step value for double spin boxes
           if ( !qgsDoubleNear( numberDef->maximum(), std::numeric_limits<double>::max() ) &&
                !qgsDoubleNear( numberDef->minimum(), std::numeric_limits<double>::lowest() + 1 ) )
           {
-            const double singleStep = calculateStep( numberDef->minimum(), numberDef->maximum() );
+            double singleStep = calculateStep( numberDef->minimum(), numberDef->maximum() );
+            singleStep = std::max( singleStep, std::pow( 10, -decimals ) );
             mDoubleSpinBox->setSingleStep( singleStep );
           }
 

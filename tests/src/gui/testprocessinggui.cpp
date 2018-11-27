@@ -1005,6 +1005,19 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
 
     delete w;
+
+    // with decimals
+    QgsProcessingParameterNumber paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1, 1.02 );
+    QVariantMap metadata;
+    QVariantMap wrapperMetadata;
+    wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+    metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+    paramDecimals.setMetadata( metadata );
+    QgsProcessingNumericWidgetWrapper wrapperDecimals( &paramDecimals, type );
+    w = wrapperDecimals.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperDecimals.wrappedWidget() )->decimals(), 2 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperDecimals.wrappedWidget() )->singleStep(), 0.01 ); // single step should never be less than set number of decimals
+    delete w;
   };
 
   // standard wrapper
@@ -1278,6 +1291,19 @@ void TestProcessingGui::testDistanceWrapper()
   wrapper.setParameterValue( 5, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
 
+  delete w;
+
+  // with decimals
+  QgsProcessingParameterDistance paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), QString(), true, 1, 1.02 );
+  QVariantMap metadata;
+  QVariantMap wrapperMetadata;
+  wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+  metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+  paramDecimals.setMetadata( metadata );
+  QgsProcessingDistanceWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  w = wrapperDecimals.createWrappedWidget( context );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
   delete w;
 
   // batch wrapper
