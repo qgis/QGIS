@@ -16,7 +16,7 @@
 #define QGSLABELINGENGINESETTINGS_H
 
 #include "qgis_core.h"
-
+#include "qgsrendercontext.h"
 #include <QFlags>
 
 class QgsProject;
@@ -34,7 +34,8 @@ class CORE_EXPORT QgsLabelingEngineSettings
     {
       UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions
       UsePartialCandidates  = 1 << 2,  //!< Whether to use also label candidates that are partially outside of the map view
-      RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
     };
@@ -82,6 +83,32 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Write configuration of the labeling engine to a project
     void writeSettingsToProject( QgsProject *project );
 
+    // TODO QGIS 4.0: In reality the text render format settings don't only apply to labels, but also
+    // ANY text rendered using QgsTextRenderer (including some non-label text items in layouts).
+    // These methods should possibly be moved out of here and into the general QgsProject settings.
+
+    /**
+     * Returns the default text rendering format for the labels.
+     *
+     * \see setDefaultTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    QgsRenderContext::TextRenderFormat defaultTextRenderFormat() const
+    {
+      return mDefaultTextRenderFormat;
+    }
+
+    /**
+     * Sets the default text rendering \a format for the labels.
+     *
+     * \see defaultTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setDefaultTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    {
+      mDefaultTextRenderFormat = format;
+    }
+
   private:
     //! Flags
     Flags mFlags;
@@ -89,6 +116,8 @@ class CORE_EXPORT QgsLabelingEngineSettings
     Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
     int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
+
+    QgsRenderContext::TextRenderFormat mDefaultTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
 };
 
