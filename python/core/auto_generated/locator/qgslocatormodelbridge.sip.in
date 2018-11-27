@@ -59,7 +59,7 @@ Returns true if the a search is currently running
 
     void triggerResult( const QModelIndex &index,  const QAction *action = 0 );
 %Docstring
-Triggers the result at given ``index`` and with optional \action if context menu entry was triggered
+Triggers the result at given ``index`` and with optional ``action`` if context menu entry was triggered
 %End
 
   signals:
