@@ -88,8 +88,14 @@ class CORE_EXPORT QgsLegendSymbolItem
      */
     QString parentRuleKey() const { return mParentKey; }
 
-    //! Sets symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbol *s SIP_TRANSFER );
+    /**
+     * Sets the symbol of the item.
+     *
+     * Does not take ownership of symbol -- an internal clone is made of the symbol.
+     *
+     * \see symbol()
+     */
+    void setSymbol( QgsSymbol *s );
 
     /**
      * Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
