@@ -31,6 +31,7 @@
 #include "qgsogrprovider.h"
 #include "qgsogrdataitems.h"
 #ifdef HAVE_GUI
+#include "qgsnewnamedialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #endif
 #include "qgsmessageoutput.h"
@@ -39,7 +40,7 @@
 #include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsproxyprogresstask.h"
-#include "qgsnewnamedialog.h"
+
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
