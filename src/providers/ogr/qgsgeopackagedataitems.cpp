@@ -31,6 +31,7 @@
 #include "qgsogrprovider.h"
 #include "qgsogrdataitems.h"
 #ifdef HAVE_GUI
+#include "qgsnewnamedialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #endif
 #include "qgsmessageoutput.h"
@@ -39,7 +40,7 @@
 #include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsproxyprogresstask.h"
-#include "qgsnewnamedialog.h"
+
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
@@ -781,6 +782,7 @@ QList<QString> QgsGeoPackageAbstractLayerItem::tableNames()
   return  names;
 }
 
+
 QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
 {
   // Check if the layer(s) are in the registry
@@ -795,7 +797,6 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
   }
   return layersList;
 }
-
 
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
