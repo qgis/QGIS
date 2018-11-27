@@ -32,28 +32,22 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &labe
 }
 
 QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
-
 {
   *this = other;
 }
 
-QgsLegendSymbolItem::~QgsLegendSymbolItem()
-{
-  delete mSymbol;
-  delete mDataDefinedSizeLegendSettings;
-}
+QgsLegendSymbolItem::~QgsLegendSymbolItem() = default;
 
 QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &other )
 {
   if ( this == &other )
     return *this;
 
-  setSymbol( other.mSymbol );
+  mSymbol.reset( other.mSymbol ? other.mSymbol->clone() : nullptr );
   mLabel = other.mLabel;
   mKey = other.mKey;
   mCheckable = other.mCheckable;
-  delete mDataDefinedSizeLegendSettings;
-  mDataDefinedSizeLegendSettings = other.mDataDefinedSizeLegendSettings ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegendSettings ) : nullptr;
+  mDataDefinedSizeLegendSettings.reset( other.mDataDefinedSizeLegendSettings ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegendSettings ) : nullptr );
   mOriginalSymbolPointer = other.mOriginalSymbolPointer;
   mScaleMinDenom = other.mScaleMinDenom;
   mScaleMaxDenom = other.mScaleMaxDenom;
@@ -78,18 +72,16 @@ bool QgsLegendSymbolItem::isScaleOK( double scale ) const
 
 void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
 {
-  delete mSymbol;
-  mSymbol = s ? s->clone() : nullptr;
+  mSymbol.reset( s );
   mOriginalSymbolPointer = s;
 }
 
 void QgsLegendSymbolItem::setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings )
 {
-  delete mDataDefinedSizeLegendSettings;
-  mDataDefinedSizeLegendSettings = settings;
+  mDataDefinedSizeLegendSettings.reset( settings );
 }
 
 QgsDataDefinedSizeLegend *QgsLegendSymbolItem::dataDefinedSizeLegendSettings() const
 {
-  return mDataDefinedSizeLegendSettings;
+  return mDataDefinedSizeLegendSettings.get();
 }
