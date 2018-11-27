@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSELLIPSESYMBOLLAYERV2_H
-#define QGSELLIPSESYMBOLLAYERV2_H
+#ifndef QGSELLIPSESYMBOLLAYER_H
+#define QGSELLIPSESYMBOLLAYER_H
 
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
@@ -173,6 +173,6 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSELLIPSESYMBOLLAYERV2_H
+#endif // QGSELLIPSESYMBOLLAYER_H
 
 

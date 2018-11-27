@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOLYGONV2_H
-#define QGSPOLYGONV2_H
+#ifndef QGSPOLYGON_H
+#define QGSPOLYGON_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -97,4 +97,4 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     friend class QgsCurvePolygon;
 
 };
-#endif // QGSPOLYGONV2_H
+#endif // QGSPOLYGON_H

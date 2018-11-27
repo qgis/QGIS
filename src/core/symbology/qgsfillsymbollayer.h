@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFILLSYMBOLLAYERV2_H
-#define QGSFILLSYMBOLLAYERV2_H
+#ifndef QGSFILLSYMBOLLAYER_H
+#define QGSFILLSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgis.h"

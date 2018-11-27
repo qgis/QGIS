@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCURVEV2_H
-#define QGSCURVEV2_H
+#ifndef QGSCURVE_H
+#define QGSCURVE_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -292,4 +292,4 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     mutable QgsRectangle mBoundingBox;
 };
 
-#endif // QGSCURVEV2_H
+#endif // QGSCURVE_H

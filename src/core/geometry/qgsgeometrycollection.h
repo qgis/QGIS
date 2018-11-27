@@ -13,8 +13,8 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYCOLLECTIONV2_H
-#define QGSGEOMETRYCOLLECTIONV2_H
+#ifndef QGSGEOMETRYCOLLECTION_H
+#define QGSGEOMETRYCOLLECTION_H
 
 #include <QVector>
 
@@ -232,4 +232,4 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSGEOMETRYCOLLECTIONV2_H
+#endif // QGSGEOMETRYCOLLECTION_H

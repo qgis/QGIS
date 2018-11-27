@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLINESTRINGV2_H
-#define QGSLINESTRINGV2_H
+#ifndef QGSLINESTRING_H
+#define QGSLINESTRING_H
 
 
 #include <QPolygonF>
@@ -750,4 +750,4 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSLINESTRINGV2_H
+#endif // QGSLINESTRING_H

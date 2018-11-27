@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOMPOUNDCURVEV2_H
-#define QGSCOMPOUNDCURVEV2_H
+#ifndef QGSCOMPOUNDCURVE_H
+#define QGSCOMPOUNDCURVE_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -173,4 +173,4 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSCOMPOUNDCURVEV2_H
+#endif // QGSCOMPOUNDCURVE_H

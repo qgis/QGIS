@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMARKERSYMBOLLAYERV2_H
-#define QGSMARKERSYMBOLLAYERV2_H
+#ifndef QGSMARKERSYMBOLLAYER_H
+#define QGSMARKERSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

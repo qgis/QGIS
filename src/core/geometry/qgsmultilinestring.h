@@ -13,8 +13,8 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTILINESTRINGV2_H
-#define QGSMULTILINESTRINGV2_H
+#ifndef QGSMULTILINESTRING_H
+#define QGSMULTILINESTRING_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -80,4 +80,4 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSMULTILINESTRINGV2_H
+#endif // QGSMULTILINESTRING_H

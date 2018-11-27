@@ -13,8 +13,8 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTIPOLYGONV2_H
-#define QGSMULTIPOLYGONV2_H
+#ifndef QGSMULTIPOLYGON_H
+#define QGSMULTIPOLYGON_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -80,4 +80,4 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSMULTIPOLYGONV2_H
+#endif // QGSMULTIPOLYGON_H

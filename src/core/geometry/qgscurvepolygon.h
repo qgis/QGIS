@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCURVEPOLYGONV2_H
-#define QGSCURVEPOLYGONV2_H
+#ifndef QGSCURVEPOLYGON_H
+#define QGSCURVEPOLYGON_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -239,4 +239,4 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSCURVEPOLYGONV2_H
+#endif // QGSCURVEPOLYGON_H

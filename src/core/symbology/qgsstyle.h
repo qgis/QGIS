@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSTYLEV2_H
-#define QGSSTYLEV2_H
+#ifndef QGSSTYLE_H
+#define QGSSTYLE_H
 
 #include "qgis_core.h"
 #include "qgis.h"

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLEGENDSYMBOLITEMV2_H
-#define QGSLEGENDSYMBOLITEMV2_H
+#ifndef QGSLEGENDSYMBOLITEM_H
+#define QGSLEGENDSYMBOLITEM_H
 
 #include <memory>
 #include <QString>
@@ -141,7 +141,6 @@ class CORE_EXPORT QgsLegendSymbolItem
     QString mParentKey;
 };
 
-
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
-#endif // QGSLEGENDSYMBOLITEMV2_H
+#endif // QGSLEGENDSYMBOLITEM_H

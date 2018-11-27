@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINT_H
-#define QGSPOINT_H
+#ifndef QGSPOINTXY_H
+#define QGSPOINTXY_H
 
 #include "qgis_core.h"
 #include "qgsvector.h"
@@ -369,4 +369,4 @@ inline uint qHash( const QgsPointXY &p ) SIP_SKIP
 }
 
 
-#endif //QGSPOINT_H
+#endif //QGSPOINTXY_H
