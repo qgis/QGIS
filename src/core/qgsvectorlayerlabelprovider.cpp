@@ -623,8 +623,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     QgsTextRenderer::Component component;
     component.origin = outPt;
     component.rotation = label->getAlpha();
+
     QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, multiLineList, labelfm,
-                                       hAlign, mEngine->engineSettings().testFlag( QgsLabelingEngineSettings::RenderOutlineLabels ), QgsTextRenderer::Label );
+                                       hAlign, QgsTextRenderer::Label );
 
   }
 

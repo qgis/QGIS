@@ -253,6 +253,28 @@ class CORE_EXPORT QgsMapSettings
     //! Check whether a particular flag is enabled
     bool testFlag( Flag flag ) const;
 
+    /**
+     * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see setTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    QgsRenderContext::TextRenderFormat textRenderFormat() const
+    {
+      return mTextRenderFormat;
+    }
+
+    /**
+     * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see textRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    {
+      mTextRenderFormat = format;
+    }
+
     //! sets format of internal QImage
     void setOutputImageFormat( QImage::Format format ) { mImageFormat = format; }
     //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
@@ -469,6 +491,8 @@ class CORE_EXPORT QgsMapSettings
     QgsCoordinateTransformContext mTransformContext;
 
     QgsPathResolver mPathResolver;
+
+    QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

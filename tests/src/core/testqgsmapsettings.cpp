@@ -35,6 +35,7 @@ class TestQgsMapSettings: public QObject
     void initTestCase();
     void cleanupTestCase();
     void testDefaults();
+    void testGettersSetters();
     void visibleExtent();
     void mapUnitsPerPixel();
     void testDevicePixelRatio();
@@ -80,6 +81,17 @@ void TestQgsMapSettings::testDefaults()
 {
   QgsMapSettings ms;
   QCOMPARE( ms.destinationCrs(), QgsCoordinateReferenceSystem() );
+}
+
+void TestQgsMapSettings::testGettersSetters()
+{
+  // basic getter/setter tests
+  QgsMapSettings ms;
+
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
 }
 
 void TestQgsMapSettings::visibleExtent()

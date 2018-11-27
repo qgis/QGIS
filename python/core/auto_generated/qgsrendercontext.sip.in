@@ -45,6 +45,12 @@ to be rendered etc.
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
 
+    enum TextRenderFormat
+    {
+      TextFormatAlwaysOutlines,
+      TextFormatAlwaysText,
+    };
+
     void setFlags( QgsRenderContext::Flags flags );
 %Docstring
 Set combination of flags that will be used for rendering.
@@ -392,6 +398,24 @@ Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersIn
 When the sourceCrs() is geographic, the center of the Extent will be used
 
 .. versionadded:: 3.0
+%End
+
+    TextRenderFormat textRenderFormat() const;
+%Docstring
+Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`setTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setTextRenderFormat( TextRenderFormat format );
+%Docstring
+Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`textRenderFormat`
+
+.. versionadded:: 3.4.3
 %End
 
 };
