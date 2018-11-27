@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
     //! Returns associated symbol. May be null.
-    QgsSymbol *symbol() const { return mSymbol; }
+    QgsSymbol *symbol() const { return mSymbol.get(); }
     //! Returns text label
     QString label() const { return mLabel; }
     //! Returns unique identifier of the rule for identification of the item within renderer
@@ -107,8 +107,8 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 
   private:
-    //! symbol. owned by the struct. can be null.
-    QgsSymbol *mSymbol = nullptr;
+    //! Legend symbol -- may be null.
+    std::unique_ptr< QgsSymbol > mSymbol;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
     //! unique identifier of the symbol item (within renderer)
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLegendSymbolItem
      * optional pointer to data-defined legend size settings - if set, the output legend
      * node should be QgsDataDefinedSizeLegendNode rather than ordinary QgsSymbolLegendNode
      */
-    QgsDataDefinedSizeLegend *mDataDefinedSizeLegendSettings = nullptr;
+    std::unique_ptr< QgsDataDefinedSizeLegend > mDataDefinedSizeLegendSettings;
 
     // additional data that may be used for filtering
 
