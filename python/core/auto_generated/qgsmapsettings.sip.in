@@ -283,6 +283,24 @@ Returns combination of flags used for rendering
 Check whether a particular flag is enabled
 %End
 
+    QgsRenderContext::TextRenderFormat textRenderFormat() const;
+%Docstring
+Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`setTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
+%Docstring
+Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`textRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
     void setOutputImageFormat( QImage::Format format );
 %Docstring
 sets format of internal QImage
@@ -499,6 +517,7 @@ Returns global configuration of the labeling engine
 %End
 
   protected:
+
 
 
 

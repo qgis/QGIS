@@ -1332,6 +1332,8 @@ class CORE_EXPORT QgsTextRenderer
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
+    // TODO QGIS 4.0 -- remove drawAsOutlines from below methods!
+
     /**
      * Draws text within a rectangle using the specified settings.
      * \param rect destination rectangle for text
@@ -1342,7 +1344,8 @@ class CORE_EXPORT QgsTextRenderer
      * \param format text format
      * \param drawAsOutlines set to false to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1358,7 +1361,8 @@ class CORE_EXPORT QgsTextRenderer
      * \param format text format
      * \param drawAsOutlines set to false to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1377,7 +1381,8 @@ class CORE_EXPORT QgsTextRenderer
      * with the text or background parts)
      * \param drawAsOutlines set to false to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1396,7 +1401,8 @@ class CORE_EXPORT QgsTextRenderer
      * with the text or background parts)
      * \param drawAsOutlines set to false to render text as text. This allows outputs to
      * formats like SVG to maintain text as text objects, but at the cost of degraded
-     * rendering and may result in side effects like misaligned text buffers.
+     * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
+     * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
@@ -1490,7 +1496,6 @@ class CORE_EXPORT QgsTextRenderer
                                   const QStringList &textLines,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
-                                  bool drawAsOutlines,
                                   DrawMode mode = Rect );
 
     friend class QgsVectorLayerLabelProvider;

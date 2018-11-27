@@ -34,6 +34,32 @@ start_app()
 
 class TestQgsRenderContext(unittest.TestCase):
 
+    def testGettersSetters(self):
+        """
+        Basic getter/setter tests
+        """
+        c = QgsRenderContext()
+
+        c.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
+        self.assertEqual(c.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+        c.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
+        self.assertEqual(c.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
+
+    def testCopyConstructor(self):
+        """
+        Test the copy constructor
+        """
+        c1 = QgsRenderContext()
+
+        c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
+
+        c2 = QgsRenderContext(c1)
+        self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+
+        c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
+        c2 = QgsRenderContext(c1)
+        self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
+
     def testFromQPainter(self):
         """ test QgsRenderContext.fromQPainter """
 
@@ -57,6 +83,20 @@ class TestQgsRenderContext(unittest.TestCase):
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
+
+    def testFromMapSettings(self):
+        """
+        test QgsRenderContext.fromMapSettings()
+        """
+        ms = QgsMapSettings()
+
+        ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+
+        ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
     def testRenderMetersInMapUnits(self):
 
