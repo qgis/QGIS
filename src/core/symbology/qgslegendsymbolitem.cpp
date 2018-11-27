@@ -72,7 +72,7 @@ bool QgsLegendSymbolItem::isScaleOK( double scale ) const
 
 void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
 {
-  mSymbol.reset( s );
+  mSymbol.reset( s ? s->clone() : nullptr );
   mOriginalSymbolPointer = s;
 }
 
