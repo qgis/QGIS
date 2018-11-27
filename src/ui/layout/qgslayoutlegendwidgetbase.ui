@@ -213,7 +213,7 @@
                <string>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</string>
               </property>
               <property name="text">
-               <string>Update all</string>
+               <string>Update All</string>
               </property>
              </widget>
             </item>
