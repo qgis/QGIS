@@ -191,6 +191,7 @@ QHash<int, QByteArray> QgsLocatorModel::roleNames() const
   roles[ResultScoreRole] = "ResultScore";
   roles[ResultFilterNameRole] = "ResultFilterName";
   roles[ResultFilterGroupSortingRole] = "ResultFilterGroupSorting";
+  roles[ResultContextMenuActionsRole] = "ResultContextMenuActions";
   roles[Qt::DisplayRole] = "Text";
   return roles;
 }
