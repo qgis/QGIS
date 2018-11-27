@@ -1773,7 +1773,7 @@ class WidgetWrapperFactory:
     @staticmethod
     def create_wrapper(param, dialog, row=0, col=0):
 
-        if param.metadata().get('widget_wrapper', None) is not None:
+        if param.metadata().get('widget_wrapper', {}).get('class', None) is not None:
             return WidgetWrapperFactory.create_wrapper_from_metadata(param, dialog, row, col)
         else:
             # try from c++ registry first
