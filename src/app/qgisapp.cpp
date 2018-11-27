@@ -2571,6 +2571,7 @@ void QgisApp::refreshProfileMenu()
     QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), profileGroup );
     action->setToolTip( namedProfile->folder() );
     action->setCheckable( true );
+    action->setObjectName( "mActionProfile_" + namedProfile->alias() );
     mConfigMenu->addAction( action );
 
     if ( name == activeName )
@@ -2589,18 +2590,21 @@ void QgisApp::refreshProfileMenu()
   mConfigMenu->addSeparator( );
 
   QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
+  openProfileFolderAction->setObjectName( "mActionOpenActiveProfileFolder" );
   connect( openProfileFolderAction, &QAction::triggered, this, [this]()
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) );
   } );
 
   QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
+  newProfileAction->setObjectName( "mActionNewProfile" );
   connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
 }
 
 void QgisApp::createProfileMenu()
 {
   mConfigMenu = new QMenu();
+  mConfigMenu->setObjectName( "mUserProfileMenu" );
 
   settingsMenu()->insertMenu( settingsMenu()->actions().first(), mConfigMenu );
 
