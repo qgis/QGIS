@@ -18,12 +18,14 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
+#include <QAction>
+#include <QIcon>
+#include <QString>
+#include <QVariant>
+
 #include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
-#include <QString>
-#include <QVariant>
-#include <QIcon>
 
 class QgsFeedback;
 class QgsLocatorFilter;
@@ -90,6 +92,11 @@ class CORE_EXPORT QgsLocatorResult
       * \since 3.2
       */
     QString group = QString();
+
+    /**
+      * Actions to be used in a context menu for the result
+      */
+    QList<QAction *> contextMenuActions = QList<QAction *>();
 
 };
 
@@ -208,6 +215,15 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * result.
      */
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
+
+    /**
+     * Triggers a filter \a result from this filter for a given action.
+     * Actions are specified in the result given by this filter and shown
+     * as context menu entries.
+     * \see triggerResult()
+     * \since QGIS 3.6
+     */
+    virtual void triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action );
 
     /**
      * This method will be called on main thread on the original filter (not a clone)

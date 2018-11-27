@@ -24,6 +24,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
+class QAction;
+
 class QgsLocatorResult;
 class QgsLocator;
 class QgsLocatorContext;
@@ -61,8 +63,8 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
     //! Returns true if the a search is currently running
     bool isRunning() const;
 
-    //! Triggers the result at given index
-    void triggerResult( const QModelIndex &index );
+    //! Triggers the result at given \a index and with optional \action if context menu entry was triggered
+    void triggerResult( const QModelIndex &index,  const QAction *action = nullptr );
 
   signals:
     //! Emitted when a result is added

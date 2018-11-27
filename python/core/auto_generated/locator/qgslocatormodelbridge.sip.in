@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLocatorModelBridge : QObject
 {
 %Docstring
@@ -56,9 +57,9 @@ Returns true if some text to be search is pending in the queue
 Returns true if the a search is currently running
 %End
 
-    void triggerResult( const QModelIndex &index );
+    void triggerResult( const QModelIndex &index,  const QAction *action = 0 );
 %Docstring
-Triggers the result at given index
+Triggers the result at given ``index`` and with optional \action if context menu entry was triggered
 %End
 
   signals:

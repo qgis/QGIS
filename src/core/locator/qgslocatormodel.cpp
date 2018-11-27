@@ -160,6 +160,9 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return 1;
       else
         return 0;
+
+    case ResultContextMenuActionsRole:
+      return QVariant::fromValue( mResults.at( index.row() ).result.contextMenuActions );
   }
 
   return QVariant();

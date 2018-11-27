@@ -33,6 +33,12 @@ QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
   return nullptr;
 }
 
+void QgsLocatorFilter::triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action )
+{
+  Q_UNUSED( result );
+  Q_UNUSED( action );
+}
+
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
 {
   return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive );

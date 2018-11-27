@@ -74,9 +74,12 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mResultsView->setUniformRowHeights( true );
   mResultsView->setIconSize( QSize( 16, 16 ) );
   mResultsView->recalculateSize();
+  mResultsView->setContextMenuPolicy( Qt::CustomContextMenu );
 
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsLocatorWidget::scheduleDelayedPopup );
   connect( mResultsView, &QAbstractItemView::activated, this, &QgsLocatorWidget::acceptCurrentEntry );
+  connect( mResultsView, &QAbstractItemView::customContextMenuRequested, this, &QgsLocatorWidget::showContextMenu );
+
   connect( mModelBridge, &QgsLocatorModelBridge::resultAdded, this, &QgsLocatorWidget::resultAdded );
   connect( mModelBridge, &QgsLocatorModelBridge::isRunningChanged, this, [ = ]() {mLineEdit->setShowSpinner( mModelBridge->isRunning() );} );
   connect( mModelBridge, & QgsLocatorModelBridge::resultsCleared, this, [ = ]() {mHasSelectedResult = false;} );
@@ -170,6 +173,23 @@ void QgsLocatorWidget::resultAdded()
     if ( selectable )
       mResultsView->setCurrentIndex( mModelBridge->proxyModel()->index( row, 0 ) );
   }
+}
+
+void QgsLocatorWidget::showContextMenu( const QPoint &point )
+{
+  QModelIndex index = mResultsView->indexAt( point );
+  if ( !index.isValid() )
+    return;
+
+  const QList<QAction *> actions = mResultsView->model()->data( index, QgsLocatorModel::ResultContextMenuActionsRole ).value<QList<QAction *>>();
+  for ( const QAction *action : actions )
+  {
+    connect( action, &QAction::triggered, this, [ = ]() {mModelBridge->triggerResult( index, action );} );
+  }
+
+  QMenu *contextMenu = new QMenu( mResultsView );
+  contextMenu->addActions( actions );
+  contextMenu->exec( mResultsView->viewport()->mapToGlobal( point ) );
 }
 
 void QgsLocatorWidget::performSearch()

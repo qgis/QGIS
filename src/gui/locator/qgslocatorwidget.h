@@ -94,6 +94,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     void configMenuAboutToShow();
     void scheduleDelayedPopup();
     void resultAdded();
+    void showContextMenu( const QPoint &point );
 
   private:
     QgsLocatorModelBridge *mModelBridge = nullptr;

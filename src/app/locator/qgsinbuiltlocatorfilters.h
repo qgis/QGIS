@@ -140,6 +140,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+    void triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action ) override;
 
   private:
     int mMaxResultsPerLayer = 6;

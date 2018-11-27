@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLocatorResult
 {
 %Docstring
@@ -46,6 +47,8 @@ Constructor for QgsLocatorResult.
     double score;
 
     QString group;
+
+    QList<QAction *> contextMenuActions;
 
 };
 
@@ -172,6 +175,17 @@ by a user. The filter subclass must implement logic here
 to perform the desired operation for the search result.
 E.g. a file search filter would open file associated with the triggered
 result.
+%End
+
+    virtual void triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action );
+%Docstring
+Triggers a filter ``result`` from this filter for a given action.
+Actions are specified in the result given by this filter and shown
+as context menu entries.
+
+.. seealso:: :py:func:`triggerResult`
+
+.. versionadded:: 3.6
 %End
 
     virtual void clearPreviousResults();
