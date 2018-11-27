@@ -286,7 +286,6 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mNullValue;
     QString mDefaultValue;
     QString mStyleSheet;
-    bool mFocusInEvent = false;
     bool mWaitingForMouseRelease = false;
     bool mSelectOnFocus = false;
 
@@ -325,6 +324,9 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
       setModified( true );
       emit cleared();
     }
+
+  protected:
+    void focusInEvent( QFocusEvent *e ) override;
 };
 /// @endcond
 
