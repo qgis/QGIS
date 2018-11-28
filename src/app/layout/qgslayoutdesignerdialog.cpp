@@ -65,6 +65,7 @@
 #include "qgsreportorganizerwidget.h"
 #include "qgsreadwritecontext.h"
 #include "ui_qgssvgexportoptions.h"
+#include "ui_qgspdfexportoptions.h"
 #include "qgsproxyprogresstask.h"
 #include "ui_defaults.h"
 
@@ -2067,13 +2068,15 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+
+  QgsLayoutExporter::PdfExportSettings pdfSettings;
+  if ( !getPdfExportSettings( pdfSettings ) )
+    return;
+
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
   QgsApplication::taskManager()->addTask( proxyTask );
 
-  QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-  pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
-  pdfSettings.textRenderFormat = mLayout->project()->labelingEngineSettings().defaultTextRenderFormat();
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -2970,9 +2973,10 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
+  if ( !getPdfExportSettings( pdfSettings ) )
+    return;
+
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-  pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
-  pdfSettings.textRenderFormat = mLayout->project()->labelingEngineSettings().defaultTextRenderFormat();
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3347,17 +3351,15 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   bool rasterize = false;
-  bool forceVectorOutput = false;
   if ( mLayout )
   {
     rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-    forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
   }
   QgsLayoutExporter::PdfExportSettings pdfSettings;
-  // TODO - show a dialog allowing users to control these settings on a per-output basis
+  if ( !getPdfExportSettings( pdfSettings ) )
+    return;
+
   pdfSettings.rasterizeWholeImage = rasterize;
-  pdfSettings.forceVectorOutput = forceVectorOutput;
-  pdfSettings.textRenderFormat = mLayout->project()->labelingEngineSettings().defaultTextRenderFormat();
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -4043,6 +4045,55 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
   settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
   settings.exportAsLayers = groupLayers;
+  settings.exportMetadata = includeMetadata;
+  settings.textRenderFormat = textRenderFormat;
+
+  return true;
+}
+
+bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings )
+{
+  QgsRenderContext::TextRenderFormat prevTextRenderFormat = mMasterLayout->layoutProject()->labelingEngineSettings().defaultTextRenderFormat();
+  bool previousForceVector = false;
+  bool includeMetadata = true;
+  if ( mLayout )
+  {
+    mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+    includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
+    const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
+    if ( prevLayoutSettingLabelsAsOutlines >= 0 )
+    {
+      // previous layout setting takes default over project setting
+      prevTextRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( prevLayoutSettingLabelsAsOutlines );
+    }
+  }
+
+  // open options dialog
+  QDialog dialog;
+  Ui::QgsPdfExportOptionsDialog options;
+  options.setupUi( &dialog );
+
+  options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
+  options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
+
+  options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
+  options.mForceVectorCheckBox->setChecked( previousForceVector );
+  options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
+
+  if ( dialog.exec() != QDialog::Accepted )
+    return false;
+
+  includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
+  QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
+
+  if ( mLayout )
+  {
+    //save dialog settings
+    mLayout->setCustomProperty( QStringLiteral( "pdfIncludeMetadata" ), includeMetadata ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
+  }
+
+  settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
 
