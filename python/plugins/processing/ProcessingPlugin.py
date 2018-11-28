@@ -242,6 +242,7 @@ class ProcessingPlugin:
         self.editInPlaceAction.setObjectName('editInPlaceFeatures')
         self.editInPlaceAction.setCheckable(True)
         self.editInPlaceAction.toggled.connect(self.editSelected)
+        self.menu.addAction(self.editInPlaceAction)
         self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
 
         self.toolbox.processingToolbar.addSeparator()
