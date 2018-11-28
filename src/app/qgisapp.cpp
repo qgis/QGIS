@@ -5689,6 +5689,7 @@ void QgisApp::showRasterCalculator()
     QgsFeedback feedback;
     connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
     connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
+    p.show();
     QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &feedback ) );
     switch ( res )
     {
@@ -5735,6 +5736,7 @@ void QgisApp::showRasterCalculator()
                                    Qgis::Critical );
         break;
     }
+    p.hide();
   }
 }
 
