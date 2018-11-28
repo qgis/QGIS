@@ -173,7 +173,12 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     tooltip.replace( QStringLiteral( "…" ), QString() );
     searchText.replace( QStringLiteral( "..." ), QString() );
     searchText.replace( QStringLiteral( "…" ), QString() );
-    if ( searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0 )
+    bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
+    if ( action->isChecked() )
+    {
+      searchText += QStringLiteral( " [%1]" ).arg( tr( "Active" ) );
+    }
+    if ( uniqueTooltip )
     {
       searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
     }
