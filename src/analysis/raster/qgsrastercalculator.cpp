@@ -140,7 +140,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     std::vector<float> castedResult;
     castedResult.reserve( static_cast<size_t>( mNumOutputColumns ) );
     auto rowHeight = mOutputRectangle.height() / mNumOutputRows;
-    for ( size_t row = 0; row < mNumOutputRows; ++row )
+    for ( size_t row = 0; row < static_cast<size_t>( mNumOutputRows ); ++row )
     {
       if ( feedback )
       {
