@@ -114,7 +114,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QString toString( bool cStyle = false ) const;
 
     /**
-     * Populates a list of nodes of a specific type.
+     * Returns a list of nodes of a specific \a type
      * \since QGIS 3.6
      */
     QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
