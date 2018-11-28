@@ -395,7 +395,7 @@ void QgsHandleBadLayers::accept()
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,
                              tr( "Unhandled layer will be lost." ),
-                             tr( "There are still %n unhandled layer(s), that will be lost if you closed now.",
+                             tr( "There are still %n unhandled layer(s). If they are not fixed, they will be disabled/deactivated until the project is opened again.",
                                  "unhandled layers",
                                  mLayerList->rowCount() ),
                              QMessageBox::Ok | QMessageBox::Cancel,
