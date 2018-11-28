@@ -212,6 +212,7 @@
 %Include auto_generated/qgstextpreview.sip
 %Include auto_generated/qgstreewidgetitem.sip
 %Include auto_generated/qgsunitselectionwidget.sip
+%Include auto_generated/qgsvaliditycheckresultswidget.sip
 %Include auto_generated/qgsvariableeditorwidget.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip

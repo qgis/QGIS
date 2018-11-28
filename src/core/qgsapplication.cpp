@@ -49,6 +49,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsvaliditycheckregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1778,6 +1779,11 @@ QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry(
   return members()->mNetworkContentFetcherRegistry;
 }
 
+QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry()
+{
+  return members()->mValidityCheckRegistry;
+}
+
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
 {
   return members()->mSymbolLayerRegistry;
@@ -1859,10 +1865,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   m3DRendererRegistry = new Qgs3DRendererRegistry();
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+  mValidityCheckRegistry = new QgsValidityCheckRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
+  delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
   delete mAnnotationRegistry;
