@@ -526,6 +526,10 @@ SET(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  validity/qgsabstractvaliditycheck.cpp
+  validity/qgsvaliditycheckcontext.cpp
+  validity/qgsvaliditycheckregistry.cpp
+
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -765,6 +769,8 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+
+  validity/qgsabstractvaliditycheck.h
 
   qgsuserprofilemanager.h
 )
@@ -1182,6 +1188,9 @@ SET(QGIS_CORE_HDRS
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
+
+  validity/qgsvaliditycheckcontext.h
+  validity/qgsvaliditycheckregistry.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
@@ -1220,6 +1229,7 @@ INCLUDE_DIRECTORIES(
   symbology
   metadata
   mesh
+  validity
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri

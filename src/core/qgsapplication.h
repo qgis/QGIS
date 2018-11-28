@@ -48,6 +48,7 @@ class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
+class QgsValidityCheckRegistry;
 class QTranslator;
 
 /**
@@ -606,6 +607,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
 
     /**
+     * Returns the application's validity check registry, used for managing validity checks.
+     * \since QGIS 3.6
+     */
+    static QgsValidityCheckRegistry *validityCheckRegistry();
+
+    /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * \since QGIS 3.0
      */
@@ -857,6 +864,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
+      QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;

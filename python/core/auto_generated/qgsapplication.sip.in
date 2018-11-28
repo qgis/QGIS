@@ -659,6 +659,13 @@ Returns the application's network content registry used for fetching temporary f
 .. versionadded:: 3.2
 %End
 
+    static QgsValidityCheckRegistry *validityCheckRegistry();
+%Docstring
+Returns the application's validity check registry, used for managing validity checks.
+
+.. versionadded:: 3.6
+%End
+
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 %Docstring
 Returns the application's symbol layer registry, used for managing symbol layers.

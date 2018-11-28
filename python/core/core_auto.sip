@@ -305,6 +305,8 @@
 %Include auto_generated/fieldformatter/qgsvaluemapfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsvaluerelationfieldformatter.sip
 %Include auto_generated/geocms/geonode/qgsgeonodeconnection.sip
+%Include auto_generated/validity/qgsvaliditycheckcontext.sip
+%Include auto_generated/validity/qgsvaliditycheckregistry.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/qgsapplication.sip
@@ -450,6 +452,7 @@
 %Include auto_generated/layertree/qgslayertreemodellegendnode.sip
 %Include auto_generated/layertree/qgslayertreenode.sip
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
+%Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/qgsuserprofile.sip
