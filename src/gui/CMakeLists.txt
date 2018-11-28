@@ -380,6 +380,7 @@ SET(QGIS_GUI_SRCS
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputwidget.cpp
+  qgsvaliditycheckresultswidget.cpp
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
@@ -552,6 +553,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputwidget.h
+  qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
   qgsvscrollarea.h
   qgsfiledownloaderdialog.h
@@ -952,6 +954,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/native
 
   ${CMAKE_BINARY_DIR}/src/core
