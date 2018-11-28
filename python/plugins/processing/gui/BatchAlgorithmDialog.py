@@ -70,7 +70,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setMainWidget(BatchPanel(self, self.algorithm()))
         self.hideShortHelp()
 
-    def accept(self):
+    def runAlgorithm(self):
         alg_parameters = []
 
         feedback = self.createFeedback()
