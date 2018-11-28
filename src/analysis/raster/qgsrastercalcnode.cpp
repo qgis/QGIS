@@ -79,7 +79,6 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     {
       for ( int dataCol = 0; dataCol < nCols; ++dataCol )
       {
-        //qDebug() << "Reading value:" << dataRow <<  dataCol << ( *it )->value( dataRow, dataCol );
         data[ dataCol + nCols * outRow] = ( *it )->isNoData( dataRow, dataCol ) ? result.nodataValue() : ( *it )->value( dataRow, dataCol );
       }
     }
