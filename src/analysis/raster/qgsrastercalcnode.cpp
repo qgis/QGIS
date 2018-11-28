@@ -264,7 +264,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
           if ( cStyle )
             result = QStringLiteral( "%1 || %2" ).arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 OR%2" ).arg( left ).arg( right );
+            result = QStringLiteral( "%1 OR %2" ).arg( left ).arg( right );
           break;
         case opSQRT:
           result = QStringLiteral( "sqrt( %1 )" ).arg( left );
