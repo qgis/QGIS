@@ -106,11 +106,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
 
-
-  // If we need to read the raster as a whole
+  // Check if we need to read the raster as a whole (which is memory inefficient
+  // and not interruptable by the user) by checking if any raster matrix nodes are
+  // in the expression
   bool requiresMatrix = ! calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty();
 
-
+  // Take the fast route (process one line at a time) if we can
   if ( ! requiresMatrix )
   {
     // Map of raster names -> blocks
@@ -151,12 +152,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         break;
       }
 
-      // Read one row
+      // Calculates the rect for a single row read
       QgsRectangle rect( mOutputRectangle );
       rect.setYMaximum( rect.yMaximum() - rowHeight * row );
       rect.setYMinimum( rect.yMaximum() - rowHeight );
 
-      // Read blocks
+      // Read rows into input blocks
       for ( auto &layerRef : inputBlocks )
       {
         QgsRasterCalculatorEntry ref = uniqueRasterEntries[layerRef.first];
@@ -181,17 +182,14 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       for ( const auto &layerRef : inputBlocks )
       {
         _rasterData.insert( layerRef.first, inputBlocks[layerRef.first].get() );
-        //for ( int i = 0; i < mNumOutputColumns; i++ )
-        //  qDebug() << "Input: " << row << i << " = " << inputBlocks[layerRef.first]->value(0, i);
       }
 
       if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
       {
-        //write scanline to the dataset
+        // write scanline to the dataset
         for ( size_t i = 0; i < static_cast<size_t>( mNumOutputColumns ); i++ )
         {
           castedResult[i] = static_cast<float>( resultMatrix.data()[i] );
-          // qDebug() << "Calculated: " << row << i << " = " << castedResult[i];
         }
         if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
@@ -204,10 +202,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     {
       feedback->setProgress( 100.0 );
     }
-
-
   }
-  else
+  else  // Original code (memory inefficient route)
   {
     QMap< QString, QgsRasterBlock * > inputBlocks;
     QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
@@ -293,7 +289,6 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     inputBlocks.clear();
 
   }
-
 
   if ( feedback && feedback->isCanceled() )
   {
