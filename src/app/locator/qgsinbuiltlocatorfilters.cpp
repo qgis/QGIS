@@ -146,6 +146,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
   }
 
   QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
+  QRegularExpression newLineToSpace( QStringLiteral( "[\\s\\n\\r]+" ) );
 
   Q_FOREACH ( QAction *action, parent->actions() )
   {
@@ -164,6 +165,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     searchText.replace( '&', QString() );
 
     QString tooltip = action->toolTip();
+    tooltip.replace( newLineToSpace, QStringLiteral( " " ) );
     QRegularExpressionMatch match = extractFromTooltip.match( tooltip );
     if ( match.hasMatch() )
     {
