@@ -402,7 +402,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
       result.icon = preparedLayer.layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
 
-      result.contextMenuActions << new QAction( tr( "Open form" ) );
+      result.contextMenuActions.insert( OpenForm, new QAction( tr( "Open form" ) ) );
       emit resultFetched( result );
 
       foundInCurrentLayer++;
@@ -417,28 +417,23 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  triggerResultFromContextMenu( result, nullptr );
+  triggerResultFromContextMenu( result, NoEntry );
 }
 
-void QgsAllLayersFeaturesLocatorFilter::triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action )
+void QgsAllLayersFeaturesLocatorFilter::triggerResultFromContextMenu( const QgsLocatorResult &result, const int id )
 {
   QVariantList dataList = result.userData.toList();
-  QgsFeatureId id = dataList.at( 0 ).toLongLong();
+  QgsFeatureId fid = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
-  if ( !action )
+  if ( id == OpenForm )
   {
-    QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
-  }
-  else
-  {
-    // no need to check for which action, since the filter shows only one
     QgsFeature f;
     QgsFeatureRequest request;
-    request.setFilterFid( id );
+    request.setFilterFid( fid );
     bool fetched = layer->getFeatures( request ).nextFeature( f );
     if ( !fetched )
       return;
@@ -451,6 +446,10 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromContextMenu( const QgsL
     {
       action.viewFeatureForm();
     }
+  }
+  else
+  {
+    QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
   }
 }
 

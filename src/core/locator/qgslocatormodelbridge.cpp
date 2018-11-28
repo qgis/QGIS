@@ -37,14 +37,14 @@ bool QgsLocatorModelBridge::isRunning() const
   return mIsRunning;
 }
 
-void QgsLocatorModelBridge::triggerResult( const QModelIndex &index, const QAction *action )
+void QgsLocatorModelBridge::triggerResult( const QModelIndex &index, const int id )
 {
   mLocator->clearPreviousResults();
   QgsLocatorResult result = mProxyModel->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
   if ( result.filter )
   {
-    if ( action )
-      result.filter->triggerResultFromContextMenu( result, action );
+    if ( id >= 0 )
+      result.filter->triggerResultFromContextMenu( result, id );
     else
       result.filter->triggerResult( result );
   }

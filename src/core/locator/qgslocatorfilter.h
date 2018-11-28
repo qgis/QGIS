@@ -89,14 +89,19 @@ class CORE_EXPORT QgsLocatorResult
       * If left as empty string, this means that results are all shown without being grouped.
       * If a group is given, the results will be grouped by \a group under a header.
       * \note This should be translated.
-      * \since 3.2
+      * \since QGIS 3.2
       */
     QString group = QString();
 
     /**
-      * Actions to be used in a context menu for the result
+      * Actions to be used in a context menu for the result.
+      * The key of the map is populated with IDs used to recognized
+      * entry when the result is triggered. The IDs should be 0 or greater
+      * otherwise, the result will be triggered normally.
+      * Entries in the context menu will be ordered by IDs.
+      * \since QGIS 3.6
       */
-    QList<QAction *> contextMenuActions = QList<QAction *>();
+    QMap<int, QAction *> contextMenuActions = QMap<int, QAction *>();
 
 };
 
@@ -217,13 +222,12 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 
     /**
-     * Triggers a filter \a result from this filter for a given action.
-     * Actions are specified in the result given by this filter and shown
-     * as context menu entries.
+     * Triggers a filter \a result from this filter for an entry in the context menu.
+     * The entry is identified by its \id as specified in the result of this filter.
      * \see triggerResult()
      * \since QGIS 3.6
      */
-    virtual void triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action );
+    virtual void triggerResultFromContextMenu( const QgsLocatorResult &result, const int id );
 
     /**
      * This method will be called on main thread on the original filter (not a clone)

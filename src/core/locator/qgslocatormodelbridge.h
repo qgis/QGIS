@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
     bool isRunning() const;
 
     //! Triggers the result at given \a index and with optional \a action if context menu entry was triggered
-    void triggerResult( const QModelIndex &index,  const QAction *action = nullptr );
+    void triggerResult( const QModelIndex &index,  const int id = -1 );
 
   signals:
     //! Emitted when a result is added

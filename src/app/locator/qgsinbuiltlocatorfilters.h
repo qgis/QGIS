@@ -119,6 +119,12 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
+    enum ContextMenuEntry
+    {
+      NoEntry,
+      OpenForm
+    };
+
     struct PreparedLayer
     {
       public:
@@ -128,7 +134,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         QString layerName;
         QString layerId;
         QIcon layerIcon;
-    } ;
+    };
 
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsAllLayersFeaturesLocatorFilter *clone() const override;
@@ -140,7 +146,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-    void triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action ) override;
+    void triggerResultFromContextMenu( const QgsLocatorResult &result, const int id ) override;
 
   private:
     int mMaxResultsPerLayer = 6;

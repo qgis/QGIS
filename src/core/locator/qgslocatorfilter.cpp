@@ -33,10 +33,10 @@ QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
   return nullptr;
 }
 
-void QgsLocatorFilter::triggerResultFromContextMenu( const QgsLocatorResult &result, const QAction *action )
+void QgsLocatorFilter::triggerResultFromContextMenu( const QgsLocatorResult &result, const int id )
 {
   Q_UNUSED( result );
-  Q_UNUSED( action );
+  Q_UNUSED( id );
 }
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )

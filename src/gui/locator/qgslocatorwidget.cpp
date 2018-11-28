@@ -181,14 +181,14 @@ void QgsLocatorWidget::showContextMenu( const QPoint &point )
   if ( !index.isValid() )
     return;
 
-  const QList<QAction *> actions = mResultsView->model()->data( index, QgsLocatorModel::ResultContextMenuActionsRole ).value<QList<QAction *>>();
-  for ( const QAction *action : actions )
+  const QMap<int, QAction *> actions = mResultsView->model()->data( index, QgsLocatorModel::ResultContextMenuActionsRole ).value<QMap<int, QAction *>>();
+  QMap<int, QAction *>::const_iterator it = actions.constBegin();
+  for ( ; it != actions.constEnd(); ++it )
   {
-    connect( action, &QAction::triggered, this, [ = ]() {mModelBridge->triggerResult( index, action );} );
+    connect( it.value(), &QAction::triggered, this, [ = ]() {mModelBridge->triggerResult( index, it.key() );} );
   }
-
   QMenu *contextMenu = new QMenu( mResultsView );
-  contextMenu->addActions( actions );
+  contextMenu->addActions( actions.values() );
   contextMenu->exec( mResultsView->viewport()->mapToGlobal( point ) );
 }
 
