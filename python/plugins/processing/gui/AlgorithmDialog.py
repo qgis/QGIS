@@ -97,7 +97,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def runAsBatch(self):
         self.close()
-        dlg = BatchAlgorithmDialog(self.algorithm(), parent=iface.mainWindow())
+        dlg = BatchAlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
         dlg.show()
         dlg.exec_()
 
