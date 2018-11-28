@@ -505,6 +505,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     bool showFileSizeWarning();
     bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
     bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
+    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings );
 
     void toggleAtlasActions( bool enabled );
 
