@@ -28,6 +28,13 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for raster calculator dialog
+     * \param rasterLayer main raster layer, will be used for default extent and projection
+     * \param parent widget
+     * \param f window flags
+     */
     QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     QString formulaString() const;
@@ -43,6 +50,10 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     //! Number of pixels in y-direction
     int numberOfRows() const;
 
+    /**
+     * Extract raster layer information from the current project
+     * \return a vector of raster entries from the current project
+     */
     QVector<QgsRasterCalculatorEntry> rasterEntries() const;
 
   private slots:
@@ -102,6 +113,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QList<QgsRasterCalculatorEntry> mAvailableRasterBands;
 
     bool mExtentSizeSet = false;
+
+    friend class TestQgsRasterCalcDialog;
 };
 
 #endif // QGSRASTERCALCDIALOG_H

@@ -44,8 +44,9 @@ from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.tools import dataobjects
 from processing.tools.system import userFolder
 
-
 from processing.gui.wrappers import InvalidParameterValue
+
+from qgis.analysis import QgsRasterCalculatorEntry
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
@@ -203,12 +204,10 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+            entries = QgsRasterCalculatorEntry.rasterEntries()
             options = {}
-            for lyr in layers:
-                for n in range(lyr.bandCount()):
-                    name = '{:s}@{:d}'.format(lyr.name(), n + 1)
-                    options[name] = name
+            for entry in entries:
+                options[entry.ref] = entry.ref
             return self._panel(options)
         elif self.dialogType == DIALOG_BATCH:
             return QLineEdit()

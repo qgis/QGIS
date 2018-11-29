@@ -41,6 +41,12 @@ class ANALYSIS_EXPORT QgsRasterCalculatorEntry
   public:
 
     /**
+     * Creates a list of raster entries from the current project
+     * \return the list of raster entries form the current project
+     */
+    static QList<QgsRasterCalculatorEntry> rasterEntries();
+
+    /**
      * Name of entry.
      */
     QString ref;
