@@ -23,7 +23,7 @@ Represents an individual raster layer/band number entry within a raster calculat
 %End
   public:
 
-    static QList<QgsRasterCalculatorEntry> rasterEntries();
+    static QVector<QgsRasterCalculatorEntry> rasterEntries();
 %Docstring
 Creates a list of raster entries from the current project.
 

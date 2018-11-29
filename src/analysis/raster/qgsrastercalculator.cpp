@@ -351,9 +351,9 @@ QString QgsRasterCalculator::lastError() const
   return mLastError;
 }
 
-QList<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
+QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
 {
-  QList<QgsRasterCalculatorEntry> availableEntries;
+  QVector<QgsRasterCalculatorEntry> availableEntries;
   const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
 
   auto uniqueRasterBandIdentifier = [ & ]( QgsRasterCalculatorEntry & entry ) -> bool

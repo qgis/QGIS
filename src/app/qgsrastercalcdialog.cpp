@@ -167,7 +167,7 @@ void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbo
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
-  mAvailableRasterBands = QgsRasterCalculatorEntry::rasterEntries();
+  mAvailableRasterBands = QgsRasterCalculatorEntry::rasterEntries().toList();
   for ( const auto &entry : qgis::as_const( mAvailableRasterBands ) )
   {
     QgsRasterLayer *rlayer = entry.raster;

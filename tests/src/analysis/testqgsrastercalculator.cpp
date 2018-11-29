@@ -575,7 +575,7 @@ void TestQgsRasterCalculator::testRasterEntries()
   rlayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/analysis/slope.tif",  QStringLiteral( "slope2" ) );
   layers << rlayer ;
   QgsProject::instance()->addMapLayers( layers );
-  QList<QgsRasterCalculatorEntry> availableRasterBands = QgsRasterCalculatorEntry::rasterEntries();
+  QVector<QgsRasterCalculatorEntry> availableRasterBands = QgsRasterCalculatorEntry::rasterEntries();
   QMap<QString, QgsRasterCalculatorEntry> entryMap;
   for ( const auto &rb : qgis::as_const( availableRasterBands ) )
   {

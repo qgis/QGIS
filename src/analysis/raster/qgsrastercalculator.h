@@ -50,7 +50,7 @@ class ANALYSIS_EXPORT QgsRasterCalculatorEntry
      * \return the list of raster entries form the current project
      * \since QGIS 3.6
      */
-    static QList<QgsRasterCalculatorEntry> rasterEntries();
+    static QVector<QgsRasterCalculatorEntry> rasterEntries();
 
     /**
      * Name of entry.
