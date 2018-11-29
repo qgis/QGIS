@@ -106,6 +106,19 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      */
     bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const SIP_SKIP;
 
+    /**
+     * Returns a string representation of the expression
+     * \param cStyle if true operators will follow C syntax
+     * \since QGIS 3.6
+     */
+    QString toString( bool cStyle = false ) const;
+
+    /**
+     * Returns a list of nodes of a specific \a type
+     * \since QGIS 3.6
+     */
+    QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
+
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
   private:

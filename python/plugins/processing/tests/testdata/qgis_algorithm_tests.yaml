@@ -2537,7 +2537,7 @@ tests:
       EXPRESSION: dem@1
     results:
       OUTPUT:
-        hash: ef97a22ee16e0e28bbdc0341449777b1527e37febc3c4339b2c057c9
+        hash: 525577c05dd999239d9c6f95fd5e70d96355da3a0ea71bfcf021e729
         type: rasterhash
 
   - algorithm: qgis:rastercalculator
@@ -2552,7 +2552,7 @@ tests:
       EXPRESSION: dem@1 * 2
     results:
       OUTPUT:
-        hash: fe6e018be13c5a3c17f3f4d0f0dc7686c628cb440b74c4642aa0c939
+        hash: 98daf025230ec9d031f7502c6a80a3b04dd060808d6b7bcb4328e87c
         type: rasterhash
 
   - algorithm: native:orientedminimumboundingbox
