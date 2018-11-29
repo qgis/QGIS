@@ -153,6 +153,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
   return entries;
 }
 
+
 void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbox )
 {
   mNColumnsSpinBox->setValue( width );
@@ -168,6 +169,7 @@ void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbo
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
   mAvailableRasterBands = QgsRasterCalculatorEntry::rasterEntries().toList();
+  mRasterBandsListWidget->clear();
   for ( const auto &entry : qgis::as_const( mAvailableRasterBands ) )
   {
     QgsRasterLayer *rlayer = entry.raster;
