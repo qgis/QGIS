@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QToolButton>
+#include <QClipboard>
 
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
@@ -25,8 +27,7 @@
 #include "qgsmaplayermodel.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
-#include <QToolButton>
-#include <QClipboard>
+#include "qgsfeatureaction.h"
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -400,6 +401,8 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
       result.userData = QVariantList() << f.id() << preparedLayer.layerId;
       result.icon = preparedLayer.layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
+
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
       emit resultFetched( result );
 
       foundInCurrentLayer++;
@@ -414,14 +417,40 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
+  triggerResultFromAction( result, NoEntry );
+}
+
+void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
+{
   QVariantList dataList = result.userData.toList();
-  QgsFeatureId id = dataList.at( 0 ).toLongLong();
+  QgsFeatureId fid = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
-  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+  if ( actionId == OpenForm )
+  {
+    QgsFeature f;
+    QgsFeatureRequest request;
+    request.setFilterFid( fid );
+    bool fetched = layer->getFeatures( request ).nextFeature( f );
+    if ( !fetched )
+      return;
+    QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QString(), -1, QgisApp::instance() );
+    if ( layer->isEditable() )
+    {
+      action.editFeature( false );
+    }
+    else
+    {
+      action.viewFeatureForm();
+    }
+  }
+  else
+  {
+    QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+  }
 }
 
 //

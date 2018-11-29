@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLocatorResult
 {
 %Docstring
@@ -47,7 +48,30 @@ Constructor for QgsLocatorResult.
 
     QString group;
 
+    struct ResultAction
+    {
+      public:
+        ResultAction();
+%Docstring
+Constructor for ResultAction
+%End
+
+        ResultAction( int id, QString text, QString iconPath = QString() );
+%Docstring
+Constructor for ResultAction
+The ``id`` used to recognized the action when the result is triggered.
+It should be 0 or greater as otherwise, the result will be triggered
+normally.
+%End
+        int id;
+        QString text;
+        QString iconPath;
+    };
+
+    QList<QgsLocatorResult::ResultAction> actions;
 };
+
+
 
 class QgsLocatorFilter : QObject
 {
@@ -172,6 +196,16 @@ by a user. The filter subclass must implement logic here
 to perform the desired operation for the search result.
 E.g. a file search filter would open file associated with the triggered
 result.
+%End
+
+    virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
+%Docstring
+Triggers a filter ``result`` from this filter for an entry in the context menu.
+The entry is identified by its ``actionId`` as specified in the result of this filter.
+
+.. seealso:: :py:func:`triggerResult`
+
+.. versionadded:: 3.6
 %End
 
     virtual void clearPreviousResults();

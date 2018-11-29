@@ -134,6 +134,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       QString mName;
       int mCount = 100;
       QgsMapLayer *mLayer = nullptr;
+      QList<QAction *> contextMenuActions = QList<QAction *>();
     };
 
     static const int MONTHS = 60 * 60 * 24 * 30; // something

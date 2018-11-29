@@ -18,12 +18,14 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
+#include <QAction>
+#include <QIcon>
+#include <QString>
+#include <QVariant>
+
 #include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
-#include <QString>
-#include <QVariant>
-#include <QIcon>
 
 class QgsFeedback;
 class QgsLocatorFilter;
@@ -87,11 +89,49 @@ class CORE_EXPORT QgsLocatorResult
       * If left as empty string, this means that results are all shown without being grouped.
       * If a group is given, the results will be grouped by \a group under a header.
       * \note This should be translated.
-      * \since 3.2
+      * \since QGIS 3.2
       */
     QString group = QString();
 
+    /**
+     * The ResultAction stores basic information for additional
+     * actions to be used in a locator widget for the result.
+     * They could be used in a context menu for instance.
+     * \since QGIS 3.6
+     */
+    struct CORE_EXPORT ResultAction
+    {
+      public:
+        //! Constructor for ResultAction
+        ResultAction() = default;
+
+        /**
+         * Constructor for ResultAction
+         * The \a id used to recognized the action when the result is triggered.
+         * It should be 0 or greater as otherwise, the result will be triggered
+         * normally.
+         */
+        ResultAction( int id, QString text, QString iconPath = QString() )
+          : id( id )
+          , text( text )
+          , iconPath( iconPath )
+        {}
+        int id = -1;
+        QString text;
+        QString iconPath;
+    };
+
+    /**
+      * Additional actions to be used in a locator widget
+      * for the given result. They could be displayed in
+      * a context menu.
+      * \since QGIS 3.6
+      */
+    QList<QgsLocatorResult::ResultAction> actions;
 };
+
+Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
+
 
 /**
  * \class QgsLocatorFilter
@@ -208,6 +248,14 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * result.
      */
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
+
+    /**
+     * Triggers a filter \a result from this filter for an entry in the context menu.
+     * The entry is identified by its \a actionId as specified in the result of this filter.
+     * \see triggerResult()
+     * \since QGIS 3.6
+     */
+    virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
 
     /**
      * This method will be called on main thread on the original filter (not a clone)
