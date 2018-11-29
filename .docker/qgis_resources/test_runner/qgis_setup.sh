@@ -8,7 +8,7 @@
 # - create the folders
 # - install startup.py monkey patches
 # - disable tips
-# - enable the plugin
+# - enable the plugin (optionally)
 
 PLUGIN_NAME=$1
 CONF_MASTER_FOLDER="/root/.local/share/QGIS/QGIS3/profiles/default/QGIS/"
@@ -42,20 +42,17 @@ if [ -n "$PLUGIN_NAME" ]; then
     # Enable plugin
     printf '[PythonPlugins]\n' >> $CONF_MASTER_FILE
     printf "%s=true\n\n" "$PLUGIN_NAME" >> $CONF_MASTER_FILE
+    # Install the plugin
+    if [ ! -d "${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}" ]; then
+        ln -s "/tests_directory/${PLUGIN_NAME}" "${PLUGIN_MASTER_FOLDER}"
+        echo "Plugin master folder linked in ${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}"
+    fi
 fi
 
 # Disable firstRunVersionFlag for master
-{
-    printf
-    "\n[migration]\n"
-    "fileVersion=2\n"
-    "firstRunVersionFlag=30500\n"
-    "settings=true\n\n"
-} >> $CONF_MASTER_FILE
-
-
-# Install the plugin
-if [ ! -d "${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}" ]; then
-    ln -s "/tests_directory/${PLUGIN_NAME}" "${PLUGIN_MASTER_FOLDER}"
-    echo "Plugin master folder linked in ${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}"
-fi
+echo "
+[migration]
+fileVersion=2
+firstRunVersionFlag=30500
+settings=true
+" >> $CONF_MASTER_FILE
