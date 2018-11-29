@@ -15,8 +15,6 @@
 #include "qgsrastercalcnode.h"
 #include "qgsrasterblock.h"
 #include "qgsrastermatrix.h"
-#include <cfloat>
-#include <QtDebug>
 
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
