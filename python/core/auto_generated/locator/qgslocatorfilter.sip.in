@@ -68,7 +68,7 @@ normally.
         QString iconPath;
     };
 
-    QList<ResultAction> actions;
+    QList<QgsLocatorResult::ResultAction> actions;
 };
 
 

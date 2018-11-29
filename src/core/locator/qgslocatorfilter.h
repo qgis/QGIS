@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLocatorResult
       * a context menu.
       * \since QGIS 3.6
       */
-    QList<ResultAction> actions;
+    QList<QgsLocatorResult::ResultAction> actions;
 };
 
 Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
