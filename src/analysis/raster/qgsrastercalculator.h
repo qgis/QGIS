@@ -41,8 +41,14 @@ class ANALYSIS_EXPORT QgsRasterCalculatorEntry
   public:
 
     /**
-     * Creates a list of raster entries from the current project
+     * Creates a list of raster entries from the current project.
+     *
+     * If there are more than one layers with the same data source
+     * only one of them is added to the list, duplicate names are
+     * also handled by appending an _n integer to the base name.
+     *
      * \return the list of raster entries form the current project
+     * \since QGIS 3.6
      */
     static QList<QgsRasterCalculatorEntry> rasterEntries();
 
