@@ -55,7 +55,14 @@ Constructor for QgsLocatorResult.
 %Docstring
 Constructor for ResultAction
 %End
+
         ResultAction( int id, QString text, QString iconPath = QString() );
+%Docstring
+Constructor for ResultAction
+The ``id`` used to recognized the action when the result is triggered.
+It should be 0 or greater as otherwise, the result will be triggered
+normally.
+%End
         int id;
         QString text;
         QString iconPath;

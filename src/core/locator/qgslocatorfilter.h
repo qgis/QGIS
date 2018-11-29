@@ -94,12 +94,9 @@ class CORE_EXPORT QgsLocatorResult
     QString group = QString();
 
     /**
-     * The ResultActions stores basic informations for additional
-     * actions to be used in a locator widget, in a context menu
-     * for instance.
-     * The \a id used to recognized the action when the result is triggered.
-     * It should be 0 or greater as otherwise, the result will be triggered
-     * normally.
+     * The ResultAction stores basic information for additional
+     * actions to be used in a locator widget for the result.
+     * They could be used in a context menu for instance.
      * \since QGIS 3.6
      */
     struct CORE_EXPORT ResultAction
@@ -107,6 +104,13 @@ class CORE_EXPORT QgsLocatorResult
       public:
         //! Constructor for ResultAction
         ResultAction() = default;
+
+        /**
+         * Constructor for ResultAction
+         * The \a id used to recognized the action when the result is triggered.
+         * It should be 0 or greater as otherwise, the result will be triggered
+         * normally.
+         */
         ResultAction( int id, QString text, QString iconPath = QString() )
           : id( id )
           , text( text )
