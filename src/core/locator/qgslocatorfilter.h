@@ -107,12 +107,14 @@ class CORE_EXPORT QgsLocatorResult
       public:
         //! Constructor for ResultAction
         ResultAction() = default;
-        ResultAction( int id, QString text )
+        ResultAction( int id, QString text, QString iconPath = QString() )
           : id( id )
           , text( text )
+          , iconPath( iconPath )
         {}
         int id = -1;
         QString text;
+        QString iconPath;
     };
 
     /**

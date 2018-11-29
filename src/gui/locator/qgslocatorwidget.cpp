@@ -183,10 +183,12 @@ void QgsLocatorWidget::showContextMenu( const QPoint &point )
 
   const QList<QgsLocatorResult::ResultAction> actions = mResultsView->model()->data( index, QgsLocatorModel::ResultActionsRole ).value<QList<QgsLocatorResult::ResultAction>>();
   QMenu *contextMenu = new QMenu( mResultsView );
-  for ( auto action : actions )
+  for ( auto resultAction : actions )
   {
-    QAction *menuAction = new QAction( action.text, contextMenu );
-    connect( menuAction, &QAction::triggered, this, [ = ]() {mModelBridge->triggerResult( index, action.id );} );
+    QAction *menuAction = new QAction( resultAction.text, contextMenu );
+    if ( !resultAction.iconPath.isEmpty() )
+      menuAction->setIcon( QIcon( resultAction.iconPath ) );
+    connect( menuAction, &QAction::triggered, this, [ = ]() {mModelBridge->triggerResult( index, resultAction.id );} );
     contextMenu->addAction( menuAction );
   }
   contextMenu->exec( mResultsView->viewport()->mapToGlobal( point ) );
