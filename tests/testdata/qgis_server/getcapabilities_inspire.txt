@@ -2,7 +2,7 @@ Content-Length: 7202
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
-<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd ?MAP=tests/testdata/qgis_server/test_project_inspire.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" version="1.3.0" xmlns:sld="http://www.opengis.net/sld" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0">
+<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd ?MAP=tests/testdata/qgis_server/test_project_inspire.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" version="1.3.0" xmlns:sld="http://www.opengis.net/sld" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0">
  <Service>
   <Name>WMS</Name>
   <Title>QGIS TestProject</Title>
