@@ -402,7 +402,7 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
       result.icon = preparedLayer.layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
 
-      result.contextMenuActions.insert( OpenForm, new QAction( tr( "Open form" ) ) );
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
       emit resultFetched( result );
 
       foundInCurrentLayer++;
@@ -417,10 +417,10 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  triggerResultFromContextMenu( result, NoEntry );
+  triggerResultFromAction( result, NoEntry );
 }
 
-void QgsAllLayersFeaturesLocatorFilter::triggerResultFromContextMenu( const QgsLocatorResult &result, const int id )
+void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
   QVariantList dataList = result.userData.toList();
   QgsFeatureId fid = dataList.at( 0 ).toLongLong();
@@ -429,7 +429,7 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromContextMenu( const QgsL
   if ( !layer )
     return;
 
-  if ( id == OpenForm )
+  if ( actionId == OpenForm )
   {
     QgsFeature f;
     QgsFeatureRequest request;

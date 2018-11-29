@@ -48,9 +48,22 @@ Constructor for QgsLocatorResult.
 
     QString group;
 
-    QMap<int, QAction *> contextMenuActions = QMap<int, QAction *>();
+    struct ResultAction
+    {
+      public:
+        ResultAction();
+%Docstring
+Constructor for ResultAction
+%End
+        ResultAction( int id, QString text );
+        int id;
+        QString text;
+    };
 
+    QList<ResultAction> actions;
 };
+
+
 
 class QgsLocatorFilter : QObject
 {
@@ -177,10 +190,10 @@ E.g. a file search filter would open file associated with the triggered
 result.
 %End
 
-    virtual void triggerResultFromContextMenu( const QgsLocatorResult &result, const int id );
+    virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
 %Docstring
 Triggers a filter ``result`` from this filter for an entry in the context menu.
-The entry is identified by its \id as specified in the result of this filter.
+The entry is identified by its ``actionId`` as specified in the result of this filter.
 
 .. seealso:: :py:func:`triggerResult`
 

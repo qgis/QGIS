@@ -94,16 +94,38 @@ class CORE_EXPORT QgsLocatorResult
     QString group = QString();
 
     /**
-      * Actions to be used in a context menu for the result.
-      * The key of the map is populated with IDs used to recognized
-      * entry when the result is triggered. The IDs should be 0 or greater
-      * otherwise, the result will be triggered normally.
-      * Entries in the context menu will be ordered by IDs.
+     * The ResultActions stores basic informations for additional
+     * actions to be used in a locator widget, in a context menu
+     * for instance.
+     * The \a id used to recognized the action when the result is triggered.
+     * It should be 0 or greater as otherwise, the result will be triggered
+     * normally.
+     * \since QGIS 3.6
+     */
+    struct CORE_EXPORT ResultAction
+    {
+      public:
+        //! Constructor for ResultAction
+        ResultAction() = default;
+        ResultAction( int id, QString text )
+          : id( id )
+          , text( text )
+        {}
+        int id = -1;
+        QString text;
+    };
+
+    /**
+      * Additional actions to be used in a locator widget
+      * for the given result. They could be displayed in
+      * a context menu.
       * \since QGIS 3.6
       */
-    QMap<int, QAction *> contextMenuActions = QMap<int, QAction *>();
-
+    QList<ResultAction> actions;
 };
+
+Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
+
 
 /**
  * \class QgsLocatorFilter
@@ -223,11 +245,11 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     /**
      * Triggers a filter \a result from this filter for an entry in the context menu.
-     * The entry is identified by its \id as specified in the result of this filter.
+     * The entry is identified by its \a actionId as specified in the result of this filter.
      * \see triggerResult()
      * \since QGIS 3.6
      */
-    virtual void triggerResultFromContextMenu( const QgsLocatorResult &result, const int id );
+    virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
 
     /**
      * This method will be called on main thread on the original filter (not a clone)

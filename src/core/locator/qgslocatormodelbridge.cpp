@@ -44,7 +44,7 @@ void QgsLocatorModelBridge::triggerResult( const QModelIndex &index, const int i
   if ( result.filter )
   {
     if ( id >= 0 )
-      result.filter->triggerResultFromContextMenu( result, id );
+      result.filter->triggerResultFromAction( result, id );
     else
       result.filter->triggerResult( result );
   }

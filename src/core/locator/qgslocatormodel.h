@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
       ResultScoreRole, //!< Result match score, used by QgsLocatorProxyModel for sorting roles.
       ResultFilterNameRole, //!< Associated filter name which created the result
       ResultFilterGroupSortingRole, //!< Group results within the same filter results
-      ResultContextMenuActionsRole, //!< The actions to be shown for the given result in a context menu
+      ResultActionsRole, //!< The actions to be shown for the given result in a context menu
     };
 
     /**
