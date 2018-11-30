@@ -328,6 +328,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
 #include "qgsappwindowmanager.h"
+#include "qgsvaliditycheckregistry.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -422,6 +423,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationdock.h"
 #include "qgsmaptooltrimextendfeature.h"
+#include "qgslayoutvaliditychecks.h"
 
 #include "vertextool/qgsvertextool.h"
 
@@ -1230,6 +1232,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     settings.setValue( QStringLiteral( "/qgis/iconSize" ), size );
     setIconSizes( size );
   }
+
+  QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutMapCrsValidityCheck() );
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
