@@ -83,7 +83,7 @@ class MultipleInputPanel(BASE, WIDGET):
         selectedoptions = []
         selected = [self.options[i] if isinstance(i, int) else i for i in self.selectedoptions]
         for sel in selected:
-            if isinstance(sel, int):
+            if not isinstance(sel, int):
                 try:
                     idx = options.index(sel)
                     selectedoptions.append(idx)
