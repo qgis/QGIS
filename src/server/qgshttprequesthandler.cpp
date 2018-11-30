@@ -27,6 +27,7 @@
 #include "qgsmapserviceexception.h"
 #include <QBuffer>
 #include <QByteArray>
+#include <QTextCodec>
 #include <QDomDocument>
 #include <QFile>
 #include <QImage>
@@ -602,7 +603,12 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         continue; //only http and ftp supported at the moment
       }
-      value = QString( fileContents );
+      QTextCodec* codec = QTextCodec::codecForUtfText( fileContents, nullptr );
+      if ( !codec )
+      {
+        codec = QTextCodec::codecForName( "UTF-8" );
+      }
+      value = codec->toUnicode( fileContents );
 #else
       QgsMessageLog::logMessage( "http and ftp methods not supported with Qt5." );
       continue;
