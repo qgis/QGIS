@@ -46,6 +46,7 @@ class TestQgsOpenClUtils: public QObject
     void testProgramSource();
     void testContext();
     void testDevices();
+    void testActiveDeviceVersion();
 
     // For benchmarking performance testing
     void testHillshadeCPU();
@@ -149,7 +150,7 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
   QVERIFY( err == 0 );
 
   cl::Context ctx = QgsOpenClUtils::context();
-  cl::CommandQueue queue( ctx );
+  cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
   std::vector<float> a_vec = {1, 10, 100};
   std::vector<float> b_vec = {1, 10, 100};
@@ -158,7 +159,7 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
   cl::Buffer b_buf( queue, b_vec.begin(), b_vec.end(), true );
   cl::Buffer c_buf( queue, c_vec.begin(), c_vec.end(), false );
 
-  cl::Program program = QgsOpenClUtils::buildProgram( ctx, QString::fromStdString( source() ) );
+  cl::Program program = QgsOpenClUtils::buildProgram( QString::fromStdString( source() ) );
 
   auto kernel =
     cl::KernelFunctor <
@@ -205,6 +206,13 @@ void TestQgsOpenClUtils::testDevices()
   QVERIFY( _devices.size() > 0 );
   qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, _devices.at( 0 ) );
   qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, _devices.at( 0 ) );
+}
+
+void TestQgsOpenClUtils::testActiveDeviceVersion()
+{
+  QString version = QgsOpenClUtils::activePlatformVersion();
+  qDebug() << "OPENCL VERSION" << version;
+  QVERIFY( version.length() == 3 );
 }
 
 void TestQgsOpenClUtils::_testMakeHillshade( const int loops )

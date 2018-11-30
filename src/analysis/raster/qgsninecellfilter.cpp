@@ -215,7 +215,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
   // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
-  cl::CommandQueue queue( ctx );
+  cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
   QgsOpenClUtils::CPLAllocator<float> scanLine( xSize + 2 );
@@ -245,7 +245,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
 
   // Create a program from the kernel source
-  cl::Program program( QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
+  cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
   auto kernel = cl::KernelFunctor <
