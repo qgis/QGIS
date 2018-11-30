@@ -55,7 +55,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
      * \return a vector of raster entries from the current project
      * \deprecated since QGIS 3.6 use QgsRasterCalculatorEntry::rasterEntries() instead
      */
-    Q_DECL_DEPRECATED QVector<QgsRasterCalculatorEntry> rasterEntries() const;
+    Q_DECL_DEPRECATED QVector<QgsRasterCalculatorEntry> rasterEntries() const SIP_DEPRECATED;
 
   private slots:
     void mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );

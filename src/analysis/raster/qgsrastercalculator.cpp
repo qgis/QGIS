@@ -386,10 +386,9 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layerIt.value() );
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layerIt.value() );
     if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == QLatin1String( "gdal" ) )
     {
-
       //get number of bands
       for ( int i = 0; i < rlayer->bandCount(); ++i )
       {
