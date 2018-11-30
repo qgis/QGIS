@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Tuesday November 13, 2018</H3>
+<H3>Friday November 30, 2018</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Tuesday November 13, 2018
-Last Change : Tuesday November 13, 2018
+Last Updated: Friday November 30, 2018
+Last Change : Friday November 30, 2018
 </P>
 <DIV CLASS="toc">
 
@@ -798,15 +798,23 @@ git clone git://github.com/qgis/QGIS.git
 </PRE></div>
 
 <P>
-Using configonly.cmd to create the MSVC solution file:
-  We will be using the file ms-windows/osgeo4w/configonly.cmd to create an MSVC solution file.
+And, to avoid Git in Windows reporting changes to files not actually modified:
+</P>
+
+<div class="code"><PRE>
+git config core.filemode false
+</PRE></div>
+
+<P>
+Using configonly.bat to create the MSVC solution file:
+  We will be using the file ms-windows/osgeo4w/configonly.bat to create an MSVC solution file.
   There are a few options for a solution file, following are the options: ninja, native MSVC.
   The advantage of using native MSVC solution is that you can find the root of build problems much easily.
-  configonly.cmd is meant to create a configured build directory with a MSVC solution file:
+  configonly.bat is meant to create a configured build directory with a MSVC solution file:
 </P>
 <P>
   ```
-  configonly.cmd
+  configonly.bat
   ```
 </P>
 <P>
@@ -814,7 +822,7 @@ Compiling QGIS with MSVC:
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
   Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: <CODE>devenv</CODE>
   From MSVC, open the solution file
-  <CODE>d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis2.99.0.sln</CODE>
+  <CODE>d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln</CODE>
   Try to build the solution <A HREF="while">go grab a cup of tea, it may take a</A>.
   If it fails, run it again and again until there are [hopefully] no errors.
 </P>

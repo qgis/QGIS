@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Tuesday November 15, 2018
+Friday November 30, 2018
 
 
-Last Updated: Tuesday November 15, 2018
-Last Change : Tuesday November 15, 2018
+Last Updated: Friday November 30, 2018
+Last Change : Friday November 30, 2018
 
 
   1. Introduction
@@ -496,21 +496,25 @@ git to the source directory QGIS:
 
   git clone git://github.com/qgis/QGIS.git
 
-Using configonly.cmd to create the MSVC solution file:
-  We will be using the file ms-windows/osgeo4w/configonly.cmd to create an MSVC solution file.
+And, to avoid Git in Windows reporting changes to files not actually modified:
+
+  git config core.filemode false
+
+Using configonly.bat to create the MSVC solution file:
+  We will be using the file ms-windows/osgeo4w/configonly.bat to create an MSVC solution file.
   There are a few options for a solution file, following are the options: ninja, native MSVC.
   The advantage of using native MSVC solution is that you can find the root of build problems much easily.
-  configonly.cmd is meant to create a configured build directory with a MSVC solution file:
+  configonly.bat is meant to create a configured build directory with a MSVC solution file:
 
   ```
-  configonly.cmd
+  configonly.bat
   ```
 
 Compiling QGIS with MSVC:
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
   Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: devenv
   From MSVC, open the solution file
-  d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis2.99.0.sln
+  d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln
   Try to build the solution go grab a cup of tea, it may take a (while).
   If it fails, run it again and again until there are [hopefully] no errors.
 
