@@ -549,7 +549,6 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
   {
     program = cl::Program( QgsOpenClUtils::context(), source.toStdString( ) );
     // OpenCL version for compatibility with older hardware
-    // TODO: make this configurable
     program.build( QStringLiteral( "-cl-std=CL%1 -I%2" )
                    .arg( QgsOpenClUtils::activePlatformVersion( ) )
                    .arg( sourcePath() ).toStdString().c_str() );
