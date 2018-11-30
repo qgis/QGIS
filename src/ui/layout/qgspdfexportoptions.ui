@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>190</height>
+    <height>197</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
      <property name="title">
-      <string>PDF Options</string>
+      <string>Export Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
       <item row="1" column="0" colspan="2">

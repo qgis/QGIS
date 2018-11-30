@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>533</width>
-    <height>394</height>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,18 +15,11 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
      <property name="title">
       <string>Export Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Export resolution</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="label_13">
         <property name="text">
@@ -47,6 +40,13 @@
         </property>
         <property name="showClearButton" stdset="0">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Export resolution</string>
         </property>
        </widget>
       </item>
@@ -114,6 +114,26 @@
         </property>
        </spacer>
       </item>
+      <item row="4" column="0" colspan="5">
+       <widget class="QCheckBox" name="mGenerateWorldFile">
+        <property name="toolTip">
+         <string>If checked, a separate world file which georeferences exported images will be created</string>
+        </property>
+        <property name="text">
+         <string>Generate world file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="5">
+       <widget class="QCheckBox" name="mAntialiasingCheckBox">
+        <property name="toolTip">
+         <string>If unchecked, the generated images will not be antialiased</string>
+        </property>
+        <property name="text">
+         <string>Enable antialiasing</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -143,7 +163,7 @@
           <item>
            <widget class="QgsSpinBox" name="mLeftMarginSpinBox">
             <property name="suffix">
-             <string> px</string>
+             <string/>
             </property>
             <property name="maximum">
              <number>1000</number>
@@ -160,7 +180,7 @@
           <item>
            <widget class="QgsSpinBox" name="mRightMarginSpinBox">
             <property name="suffix">
-             <string> px</string>
+             <string/>
             </property>
             <property name="maximum">
              <number>1000</number>
@@ -179,7 +199,7 @@
         <item row="0" column="1">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>Top margin</string>
+           <string>Top margin (px)</string>
           </property>
          </widget>
         </item>
@@ -212,7 +232,7 @@
         <item row="0" column="2">
          <widget class="QgsSpinBox" name="mTopMarginSpinBox">
           <property name="suffix">
-           <string> px</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>1000</number>
@@ -222,7 +242,7 @@
         <item row="2" column="2">
          <widget class="QgsSpinBox" name="mBottomMarginSpinBox">
           <property name="suffix">
-           <string> px</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>1000</number>
@@ -232,26 +252,6 @@
        </layout>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="mGenerateWorldFile">
-     <property name="toolTip">
-      <string>If checked, a separate world file which georeferences exported images will be created</string>
-     </property>
-     <property name="text">
-      <string>Generate world file</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="mAntialiasingCheckBox">
-     <property name="toolTip">
-      <string>If unchecked, the generated images will not be antialiased</string>
-     </property>
-     <property name="text">
-      <string>Enable antialiasing</string>
-     </property>
     </widget>
    </item>
    <item>
@@ -283,7 +283,7 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -296,6 +296,8 @@
   <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mAntialiasingCheckBox</tabstop>
+  <tabstop>mGenerateWorldFile</tabstop>
   <tabstop>mClipToContentGroupBox</tabstop>
   <tabstop>mTopMarginSpinBox</tabstop>
   <tabstop>mLeftMarginSpinBox</tabstop>

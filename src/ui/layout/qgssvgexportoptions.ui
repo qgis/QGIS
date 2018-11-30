@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>351</height>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
      <property name="title">
-      <string>SVG Options</string>
+      <string>Export Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
       <item row="0" column="0" colspan="2">
