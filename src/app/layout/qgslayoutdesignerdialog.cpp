@@ -3998,7 +3998,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   }
 
   // open options dialog
-  QDialog dialog;
+  QDialog dialog( this );
   Ui::QgsSvgExportOptionsDialog options;
   options.setupUi( &dialog );
 
@@ -4068,7 +4068,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   // open options dialog
-  QDialog dialog;
+  QDialog dialog( this );
   Ui::QgsPdfExportOptionsDialog options;
   options.setupUi( &dialog );
 
