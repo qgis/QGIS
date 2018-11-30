@@ -204,6 +204,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutscalebarwidget.cpp
   layout/qgslayoutshapewidget.cpp
   layout/qgslayouttablebackgroundcolorsdialog.cpp
+  layout/qgslayoutvaliditychecks.cpp
   layout/qgsreportfieldgroupsectionwidget.cpp
   layout/qgsreportlayoutsectionwidget.cpp
   layout/qgsreportorganizerwidget.cpp
@@ -433,6 +434,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutscalebarwidget.h
   layout/qgslayoutshapewidget.h
   layout/qgslayouttablebackgroundcolorsdialog.h
+  layout/qgslayoutvaliditychecks.h
   layout/qgsreportfieldgroupsectionwidget.h
   layout/qgsreportlayoutsectionwidget.h
   layout/qgsreportorganizerwidget.h
