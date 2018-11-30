@@ -536,6 +536,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QString defaultExportPath() const;
     void setLastExportPath( const QString &path ) const;
 
+    bool checkBeforeExport();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H
