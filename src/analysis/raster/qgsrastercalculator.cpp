@@ -25,6 +25,7 @@
 #include "qgsrasterprojector.h"
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
+#include "qgsproject.h"
 
 #include <QFile>
 
@@ -348,4 +349,57 @@ void QgsRasterCalculator::outputGeoTransform( double *transform ) const
 QString QgsRasterCalculator::lastError() const
 {
   return mLastError;
+}
+
+QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
+{
+  QVector<QgsRasterCalculatorEntry> availableEntries;
+  const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
+
+  auto uniqueRasterBandIdentifier = [ & ]( QgsRasterCalculatorEntry & entry ) -> bool
+  {
+    unsigned int i( 1 );
+    entry.ref = QStringLiteral( "%1@%2" ).arg( entry.raster->name() ).arg( entry.bandNumber );
+    while ( true )
+    {
+      bool unique( true );
+      for ( const auto &ref : qgis::as_const( availableEntries ) )
+      {
+        // Safety belt
+        if ( !( entry.raster && ref.raster ) )
+          continue;
+        // Check if a layer with the same data source was already added to the list
+        if ( ref.raster->publicSource() == entry.raster->publicSource() )
+          return false;
+        // If same name but different source
+        if ( ref.ref == entry.ref )
+        {
+          unique = false;
+          entry.ref = QStringLiteral( "%1_%2@%3" ).arg( entry.raster->name() ).arg( i++ ).arg( entry.bandNumber );
+        }
+      }
+      if ( unique )
+        return true;
+    }
+  };
+
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
+  {
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layerIt.value() );
+    if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == QLatin1String( "gdal" ) )
+    {
+      //get number of bands
+      for ( int i = 0; i < rlayer->bandCount(); ++i )
+      {
+        QgsRasterCalculatorEntry entry;
+        entry.raster = rlayer;
+        entry.bandNumber = i + 1;
+        if ( ! uniqueRasterBandIdentifier( entry ) )
+          continue;
+        availableEntries.push_back( entry );
+      }
+    }
+  }
+  return availableEntries;
 }

@@ -58,6 +58,8 @@ class TestQgsRasterCalculator : public QObject
     void toString();
     void findNodes();
 
+    void testRasterEntries();
+
   private:
 
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
@@ -552,6 +554,36 @@ void TestQgsRasterCalculator::findNodes()
   QCOMPARE( _test( QStringLiteral( "2 + 3" ), QgsRasterCalcNode::Type::tNumber ).length(), 2 );
   QCOMPARE( _test( QStringLiteral( "2 + 3" ), QgsRasterCalcNode::Type::tOperator ).length(), 1 );
 
+}
+
+void TestQgsRasterCalculator::testRasterEntries()
+{
+  // Create some test layers
+  QList<QgsMapLayer *> layers;
+  QgsRasterLayer *rlayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/analysis/dem.tif",  QStringLiteral( "dem" ) );
+  layers << rlayer;
+  // Duplicate name, same source
+  rlayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/analysis/dem.tif",  QStringLiteral( "dem" ) );
+  layers << rlayer;
+  // Duplicated name different source
+  rlayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/analysis/dem_int16.tif",  QStringLiteral( "dem" ) );
+  layers << rlayer;
+  // Different name and different source
+  rlayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/analysis/slope.tif",  QStringLiteral( "slope" ) );
+  layers << rlayer ;
+  // Different name and same source
+  rlayer = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/analysis/slope.tif",  QStringLiteral( "slope2" ) );
+  layers << rlayer ;
+  QgsProject::instance()->addMapLayers( layers );
+  QVector<QgsRasterCalculatorEntry> availableRasterBands = QgsRasterCalculatorEntry::rasterEntries();
+  QMap<QString, QgsRasterCalculatorEntry> entryMap;
+  for ( const auto &rb : qgis::as_const( availableRasterBands ) )
+  {
+    entryMap[rb.ref] = rb;
+  }
+  QStringList keys( entryMap.keys() );
+  keys.sort();
+  QCOMPARE( keys.join( ',' ), QStringLiteral( "dem@1,dem_1@1,landsat@1,landsat_4326@1,slope2@1" ) );
 }
 
 void TestQgsRasterCalculator::errors( )
