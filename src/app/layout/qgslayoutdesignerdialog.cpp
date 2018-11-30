@@ -2066,12 +2066,12 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
   setLastExportPath( outputFileName );
 
-  mView->setPaintingEnabled( false );
-  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
-
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   if ( !getPdfExportSettings( pdfSettings ) )
     return;
+
+  mView->setPaintingEnabled( false );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
   QgsApplication::taskManager()->addTask( proxyTask );
@@ -2969,13 +2969,12 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     outputFileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   }
 
-  mView->setPaintingEnabled( false );
-  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
-
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   if ( !getPdfExportSettings( pdfSettings ) )
     return;
 
+  mView->setPaintingEnabled( false );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
   QString error;
@@ -3347,9 +3346,6 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   }
   setLastExportPath( outputFileName );
 
-  mView->setPaintingEnabled( false );
-  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
-
   bool rasterize = false;
   if ( mLayout )
   {
@@ -3358,6 +3354,9 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   if ( !getPdfExportSettings( pdfSettings ) )
     return;
+
+  mView->setPaintingEnabled( false );
+  QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
   pdfSettings.rasterizeWholeImage = rasterize;
 
