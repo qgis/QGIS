@@ -34,8 +34,20 @@ class QgsLayout;
  */
 class CORE_EXPORT QgsValidityCheckContext
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsLayoutValidityCheckContext *>( sipCpp ) != NULL )
+      sipType = sipType_QgsLayoutValidityCheckContext;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
     // initially nothing in the base class!
+
+    virtual ~QgsValidityCheckContext() = default;
 
 };
 

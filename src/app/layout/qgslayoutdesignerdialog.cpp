@@ -67,6 +67,9 @@
 #include "ui_qgssvgexportoptions.h"
 #include "ui_qgspdfexportoptions.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsvaliditycheckresultswidget.h"
+#include "qgsabstractvaliditycheck.h"
+#include "qgsvaliditycheckcontext.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -1835,6 +1838,9 @@ void QgsLayoutDesignerDialog::deleteLayout()
 
 void QgsLayoutDesignerDialog::print()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
@@ -1941,6 +1947,9 @@ void QgsLayoutDesignerDialog::print()
 
 void QgsLayoutDesignerDialog::exportToRaster()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   if ( containsWmsLayers() )
     showWmsPrintingWarning();
 
@@ -2032,6 +2041,9 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
 void QgsLayoutDesignerDialog::exportToPdf()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
@@ -2150,6 +2162,9 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
 void QgsLayoutDesignerDialog::exportToSvg()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
@@ -2406,6 +2421,9 @@ void QgsLayoutDesignerDialog::atlasLast()
 
 void QgsLayoutDesignerDialog::printAtlas()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
@@ -2551,6 +2569,9 @@ void QgsLayoutDesignerDialog::printAtlas()
 
 void QgsLayoutDesignerDialog::exportAtlasToRaster()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
@@ -2709,6 +2730,9 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
 void QgsLayoutDesignerDialog::exportAtlasToSvg()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
@@ -2877,6 +2901,9 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
 void QgsLayoutDesignerDialog::exportAtlasToPdf()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
@@ -3102,6 +3129,9 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
 void QgsLayoutDesignerDialog::exportReportToRaster()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
   QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report As" ), outputFileName );
@@ -3209,6 +3239,9 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
 void QgsLayoutDesignerDialog::exportReportToSvg()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   showSvgExportWarning();
 
   const QString defaultPath = defaultExportPath();
@@ -3337,6 +3370,9 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
 void QgsLayoutDesignerDialog::exportReportToPdf()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   const QString defaultPath = defaultExportPath();
 
   QString outputFileName = defaultPath + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
@@ -3466,6 +3502,9 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
 void QgsLayoutDesignerDialog::printReport()
 {
+  if ( !checkBeforeExport() )
+    return;
+
   QPrintDialog printDialog( printer(), nullptr );
   if ( printDialog.exec() != QDialog::Accepted )
   {
@@ -4407,6 +4446,13 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Layouts" ), QStringLiteral( "/lastLayoutExportDir" ), savePath );
   QgsSettings().setValue( QStringLiteral( "lastLayoutExportDir" ), savePath, QgsSettings::App );
+}
+
+bool QgsLayoutDesignerDialog::checkBeforeExport()
+{
+  QgsLayoutValidityCheckContext context( mLayout );
+  return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+         tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
 }
 
 void QgsLayoutDesignerDialog::updateWindowTitle()

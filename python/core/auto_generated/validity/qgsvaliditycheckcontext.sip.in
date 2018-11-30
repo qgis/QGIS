@@ -24,7 +24,15 @@ context, containing a reference to the QgsLayout to be checked.
 %TypeHeaderCode
 #include "qgsvaliditycheckcontext.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsLayoutValidityCheckContext *>( sipCpp ) != NULL )
+      sipType = sipType_QgsLayoutValidityCheckContext;
+    else
+      sipType = 0;
+%End
   public:
+
+    virtual ~QgsValidityCheckContext();
 
 };
 
