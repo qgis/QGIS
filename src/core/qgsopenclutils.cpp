@@ -41,8 +41,7 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
   {
     std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
     QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
-    // Check both versions 1 and 2
-    if ( platver.find( "OpenCL 1." ) != std::string::npos || platver.find( "OpenCL 2." ) != std::string::npos )
+    if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       std::vector<cl::Device> _devices;
       // Check for a device
@@ -219,8 +218,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
         break;
       std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
       QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
-      // Checks both versions 1 and 2
-      if ( platver.find( "OpenCL 1." ) != std::string::npos || platver.find( "OpenCL 2." ) != std::string::npos )
+      if ( platver.find( "OpenCL " ) != std::string::npos )
       {
         std::vector<cl::Device> devices;
         // Search for a device
@@ -262,7 +260,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
           {
             for ( const auto &_dev : devices )
             {
-              if ( _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_GPU )
+              if ( _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_CPU )
               {
                 // Got one!
                 plat = p;
@@ -548,10 +546,21 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
   try
   {
     program = cl::Program( QgsOpenClUtils::context(), source.toStdString( ) );
-    // OpenCL version for compatibility with older hardware
-    program.build( QStringLiteral( "-cl-std=CL%1 -I%2" )
-                   .arg( QgsOpenClUtils::activePlatformVersion( ) )
-                   .arg( sourcePath() ).toStdString().c_str() );
+    // OpenCL version for compatibility with older hardware, but it's up to
+    // llvm to support latest CL versions
+    bool ok;
+    float version( QgsOpenClUtils::activePlatformVersion().toFloat( &ok ) );
+    if ( ok && version < 2.0f )
+    {
+      program.build( QStringLiteral( "-cl-std=CL%1 -I%2" )
+                     .arg( QgsOpenClUtils::activePlatformVersion( ) )
+                     .arg( sourcePath() ).toStdString().c_str() );
+    }
+    else
+    {
+      program.build( QStringLiteral( "-I%1" )
+                     .arg( sourcePath() ).toStdString().c_str() );
+    }
   }
   catch ( cl::BuildError &e )
   {

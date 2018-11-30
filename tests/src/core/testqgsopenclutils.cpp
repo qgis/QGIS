@@ -57,13 +57,6 @@ class TestQgsOpenClUtils: public QObject
     void _testMakeRunProgram();
     void _testMakeHillshade( const int loops );
 
-    cl::Program buildProgram( const cl::Context &context, const QString &source )
-    {
-      cl::Program program( context, source.toStdString( ) );
-      program.build( "-cl-std=CL1.1" );
-      return program;
-    }
-
     std::string source()
     {
       std::string pgm = R"CL(

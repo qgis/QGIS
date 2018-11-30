@@ -21,7 +21,8 @@
 #define CL_HPP_ENABLE_EXCEPTIONS
 //#define CL_HPP_MINIMUM_OPENCL_VERSION 110
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
-#define CL_HPP_TARGET_OPENCL_VERSION 200
+#define CL_HPP_TARGET_OPENCL_VERSION 220
+#define CL_TARGET_OPENCL_VERSION 220
 #include <CL/cl2.hpp>
 
 #include "qgis_core.h"
@@ -175,6 +176,12 @@ class CORE_EXPORT QgsOpenClUtils
     //! Returns a string representation from an OpenCL \a errorCode
     static QString errorText( const int errorCode );
 
+    /**
+     * Create an OpenCL command queue from the default context.
+     *
+     * This wrapper is required in order to prevent a crash when
+     * running on OpenCL platforms < 2
+     */
     static cl::CommandQueue commandQueue();
 
     /**
