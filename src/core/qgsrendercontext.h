@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRenderContext
     enum TextRenderFormat
     {
       TextFormatAlwaysOutlines, //!< Always render text using path objects (AKA outlines/curves). This always results in the best quality rendering.
-      TextFormatAlwaysText, //!< Always render text as text objects. This may result in rendering artefacts or poor quality rendering, depending on the text format settings.
+      TextFormatAlwaysText, //!< Always render text as text objects. This may result in rendering artifacts or poor quality rendering, depending on the text format settings.
     };
 
     /**
