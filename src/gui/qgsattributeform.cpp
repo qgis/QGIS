@@ -1497,8 +1497,8 @@ void QgsAttributeForm::init()
 
   // This triggers a refresh of the form widget and gives a chance to re-format the
   // value to those widgets that have a different representation when in edit mode
-  connect( mLayer, &QgsVectorLayer::editingStarted, this, [ = ] { setFeature( feature() ); } );
-  connect( mLayer, &QgsVectorLayer::editingStopped, this,  [ = ] { setFeature( feature() ); } );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeForm::resetValues );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::resetValues );
 
 
   Q_FOREACH ( QgsAttributeFormInterface *iface, mInterfaces )
