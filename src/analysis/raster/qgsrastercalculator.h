@@ -151,6 +151,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
       \param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double *transform ) const;
 
+    //! Execute calculations on GPU
+    Result processCalculationGPU( QgsFeedback *feedback = nullptr );
+
     QString mFormulaString;
     QString mOutputFile;
     QString mOutputFormat;
