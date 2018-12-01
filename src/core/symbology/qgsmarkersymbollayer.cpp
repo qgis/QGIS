@@ -19,6 +19,8 @@
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
 #include "qgsexpression.h"
+#include "qgsimagecache.h"
+#include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
 #include "qgslogger.h"
 #include "qgssvgcache.h"
@@ -2541,6 +2543,377 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
 
   return symbolBounds;
 
+}
+
+//////////
+
+QgsRasterMarkerSymbolLayer::QgsRasterMarkerSymbolLayer( const QString &path, double size, double angle, QgsSymbol::ScaleMethod scaleMethod )
+  : mPath( path )
+{
+  mSize = size;
+  mAngle = angle;
+  mOffset = QPointF( 0, 0 );
+  mScaleMethod = scaleMethod;
+  updateDefaultAspectRatio();
+}
+
+
+QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QgsStringMap &props )
+{
+  QString path;
+  double size = DEFAULT_RASTERMARKER_SIZE;
+  double angle = DEFAULT_RASTERMARKER_ANGLE;
+  QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
+
+  if ( props.contains( QStringLiteral( "imageFile" ) ) )
+    path = props[QStringLiteral( "imageFile" )];
+  if ( props.contains( QStringLiteral( "size" ) ) )
+    size = props[QStringLiteral( "size" )].toDouble();
+  if ( props.contains( QStringLiteral( "angle" ) ) )
+    angle = props[QStringLiteral( "angle" )].toDouble();
+  if ( props.contains( QStringLiteral( "scale_method" ) ) )
+    scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[QStringLiteral( "scale_method" )] );
+
+  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( path, size, angle, scaleMethod );
+
+  if ( props.contains( QStringLiteral( "alpha" ) ) )
+  {
+    m->setOpacity( props[QStringLiteral( "alpha" )].toDouble() );
+  }
+
+  if ( props.contains( QStringLiteral( "size_unit" ) ) )
+    m->setSizeUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "size_unit" )] ) );
+  if ( props.contains( QStringLiteral( "size_map_unit_scale" ) ) )
+    m->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "size_map_unit_scale" )] ) );
+  if ( props.contains( QStringLiteral( "fixedAspectRatio" ) ) )
+    m->setFixedAspectRatio( props[QStringLiteral( "fixedAspectRatio" )].toDouble() );
+
+  if ( props.contains( QStringLiteral( "offset" ) ) )
+    m->setOffset( QgsSymbolLayerUtils::decodePoint( props[QStringLiteral( "offset" )] ) );
+  if ( props.contains( QStringLiteral( "offset_unit" ) ) )
+    m->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )] ) );
+  if ( props.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+    m->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )] ) );
+
+  if ( props.contains( QStringLiteral( "horizontal_anchor_point" ) ) )
+  {
+    m->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( props[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
+  }
+  if ( props.contains( QStringLiteral( "vertical_anchor_point" ) ) )
+  {
+    m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
+  }
+
+  m->restoreOldDataDefinedProperties( props );
+  m->updateDefaultAspectRatio();
+
+  return m;
+}
+
+void QgsRasterMarkerSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "name" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value(), pathResolver );
+    else
+      it.value() = QgsSymbolLayerUtils::svgSymbolNameToPath( it.value(), pathResolver );
+  }
+}
+
+void QgsRasterMarkerSymbolLayer::setPath( const QString &path )
+{
+  mPath = path;
+  updateDefaultAspectRatio();
+}
+
+bool QgsRasterMarkerSymbolLayer::setPreservedAspectRatio( bool par )
+{
+  bool aPreservedAspectRatio = preservedAspectRatio();
+  if ( aPreservedAspectRatio && !par )
+  {
+    mFixedAspectRatio = mDefaultAspectRatio;
+  }
+  else if ( !aPreservedAspectRatio && par )
+  {
+    mFixedAspectRatio = 0.0;
+  }
+  return preservedAspectRatio();
+}
+
+double QgsRasterMarkerSymbolLayer::updateDefaultAspectRatio()
+{
+  if ( mDefaultAspectRatio == 0.0 )
+  {
+    QSize size = QgsApplication::imageCache()->originalSize( mPath );
+    mDefaultAspectRatio = ( !size.isNull() && size.isValid() && size.width() > 0 ) ? static_cast< double >( size.height() ) / static_cast< double >( size.width() ) : 0.0;
+  }
+  return mDefaultAspectRatio;
+}
+
+QString QgsRasterMarkerSymbolLayer::layerType() const
+{
+  return QStringLiteral( "RasterMarker" );
+}
+
+void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
+{
+  QPainter *p = context.renderContext().painter();
+  if ( !p )
+    return;
+
+  bool hasDataDefinedSize = false;
+  double scaledSize = calculateSize( context, hasDataDefinedSize );
+  double width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
+  bool hasDataDefinedAspectRatio = false;
+  double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
+  double height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
+
+  //don't render symbols with size below one or above 10,000 pixels
+  if ( static_cast< int >( width ) < 1 || 10000.0 < width )
+  {
+    return;
+  }
+
+  p->save();
+
+  QString path = mPath;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
+  {
+    context.setOriginalValueVariable( mPath );
+    path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), mPath );
+    if ( preservedAspectRatio() && path != mPath )
+    {
+      QSize size = QgsApplication::imageCache()->originalSize( path );
+      if ( !size.isNull() && size.isValid() && size.width() > 0 )
+      {
+        height = width * ( static_cast< double >( size.height() ) / static_cast< double >( size.width() ) );
+      }
+    }
+  }
+
+  QPointF outputOffset;
+  double angle = 0.0;
+  calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
+
+  p->translate( point + outputOffset );
+
+  bool rotated = !qgsDoubleNear( angle, 0 );
+  if ( rotated )
+    p->rotate( angle );
+
+  double opacity = mOpacity;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOpacity ) )
+  {
+    context.setOriginalValueVariable( mOpacity );
+    opacity = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOpacity, context.renderContext().expressionContext(), opacity * 100 ) / 100.0;
+  }
+  opacity *= context.opacity();
+
+  bool cached;
+  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached );
+  if ( !img.isNull() )
+  {
+    if ( context.selected() )
+      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0 );
+
+    p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+  }
+
+  p->restore();
+}
+
+double QgsRasterMarkerSymbolLayer::calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const
+{
+  double scaledSize = mSize;
+  hasDataDefinedSize = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySize );
+
+  bool ok = true;
+  if ( hasDataDefinedSize )
+  {
+    context.setOriginalValueVariable( mSize );
+    scaledSize = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertySize, context.renderContext().expressionContext(), mSize, &ok );
+  }
+  else
+  {
+    hasDataDefinedSize = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth );
+    if ( hasDataDefinedSize )
+    {
+      context.setOriginalValueVariable( mSize );
+      scaledSize = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mSize, &ok );
+    }
+  }
+
+  if ( hasDataDefinedSize && ok )
+  {
+    switch ( mScaleMethod )
+    {
+      case QgsSymbol::ScaleArea:
+        scaledSize = std::sqrt( scaledSize );
+        break;
+      case QgsSymbol::ScaleDiameter:
+        break;
+    }
+  }
+
+  return scaledSize;
+}
+
+double QgsRasterMarkerSymbolLayer::calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const
+{
+  hasDataDefinedAspectRatio = mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight );
+  if ( !hasDataDefinedAspectRatio )
+    return mFixedAspectRatio;
+
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) && mFixedAspectRatio <= 0.0 )
+    return 0.0;
+
+  double scaledAspectRatio = mDefaultAspectRatio;
+  if ( mFixedAspectRatio > 0.0 )
+    scaledAspectRatio = mFixedAspectRatio;
+
+  double defaultHeight = mSize * scaledAspectRatio;
+  scaledAspectRatio = defaultHeight / scaledSize;
+
+  bool ok = true;
+  double scaledHeight = scaledSize * scaledAspectRatio;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) )
+  {
+    context.setOriginalValueVariable( defaultHeight );
+    scaledHeight = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyHeight, context.renderContext().expressionContext(), defaultHeight, &ok );
+  }
+
+  if ( hasDataDefinedAspectRatio && ok )
+  {
+    switch ( mScaleMethod )
+    {
+      case QgsSymbol::ScaleArea:
+        scaledHeight = sqrt( scaledHeight );
+        break;
+      case QgsSymbol::ScaleDiameter:
+        break;
+    }
+  }
+
+  scaledAspectRatio = scaledHeight / scaledSize;
+
+  return scaledAspectRatio;
+}
+
+void QgsRasterMarkerSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const
+{
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( context, scaledWidth, scaledHeight, offsetX, offsetY );
+  offset = QPointF( offsetX, offsetY );
+
+  angle = mAngle + mLineAngle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  {
+    context.setOriginalValueVariable( mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle ) + mLineAngle;
+  }
+
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle );
+  if ( hasDataDefinedRotation )
+  {
+    const QgsFeature *f = context.feature();
+    if ( f )
+    {
+      if ( f->hasGeometry() && f->geometry().type() == QgsWkbTypes::PointGeometry )
+      {
+        const QgsMapToPixel &m2p = context.renderContext().mapToPixel();
+        angle += m2p.mapRotation();
+      }
+    }
+  }
+
+  if ( angle )
+    offset = _rotatedOffset( offset, angle );
+}
+
+
+QgsStringMap QgsRasterMarkerSymbolLayer::properties() const
+{
+  QgsStringMap map;
+  map[QStringLiteral( "imageFile" )] = mPath;
+  map[QStringLiteral( "size" )] = QString::number( mSize );
+  map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
+  map[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
+  map[QStringLiteral( "fixedAspectRatio" )] = QString::number( mFixedAspectRatio );
+  map[QStringLiteral( "angle" )] = QString::number( mAngle );
+  map[QStringLiteral( "alpha" )] = QString::number( mOpacity );
+  map[QStringLiteral( "offset" )] = QgsSymbolLayerUtils::encodePoint( mOffset );
+  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map[QStringLiteral( "scale_method" )] = QgsSymbolLayerUtils::encodeScaleMethod( mScaleMethod );
+  map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
+  map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
+  return map;
+}
+
+QgsRasterMarkerSymbolLayer *QgsRasterMarkerSymbolLayer::clone() const
+{
+  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( mPath, mSize, mAngle );
+  m->setFixedAspectRatio( mFixedAspectRatio );
+  m->setOpacity( mOpacity );
+  m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
+  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  m->setSizeUnit( mSizeUnit );
+  m->setSizeMapUnitScale( mSizeMapUnitScale );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  copyDataDefinedProperties( m );
+  copyPaintEffect( m );
+  return m;
+}
+
+void QgsRasterMarkerSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+{
+  QgsMarkerSymbolLayer::setMapUnitScale( scale );
+}
+
+QgsMapUnitScale QgsRasterMarkerSymbolLayer::mapUnitScale() const
+{
+  return QgsMarkerSymbolLayer::mapUnitScale();
+}
+
+QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
+{
+  bool hasDataDefinedSize = false;
+  double scaledSize = calculateSize( context, hasDataDefinedSize );
+  double width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
+  bool hasDataDefinedAspectRatio = false;
+  double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
+  double height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
+
+  //don't render symbols with size below one or above 10,000 pixels
+  if ( static_cast< int >( scaledSize ) < 1 || 10000.0 < scaledSize )
+  {
+    return QRectF();
+  }
+
+  QPointF outputOffset;
+  double angle = 0.0;
+  calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
+
+  QMatrix transform;
+
+  // move to the desired position
+  transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
+
+  if ( !qgsDoubleNear( angle, 0.0 ) )
+    transform.rotate( angle );
+
+  QRectF symbolBounds = transform.mapRect( QRectF( -width / 2.0,
+                        -height / 2.0,
+                        width,
+                        height ) );
+
+  return symbolBounds;
 }
 
 //////////

@@ -411,6 +411,11 @@ void QgsMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context );
 }
 
+void QgsMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
+{
+  Q_UNUSED( context );
+}
+
 void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   startRender( context );
