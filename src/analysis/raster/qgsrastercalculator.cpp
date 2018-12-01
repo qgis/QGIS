@@ -479,11 +479,11 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( QgsFeedb
 
   auto kernel = cl::Kernel( program, "rasterCalculator" );
 
-  for ( int i = 0; i < inputBuffers.size() ; i++ )
+  for ( unsigned int i = 0; i < inputBuffers.size() ; i++ )
   {
     kernel.setArg( i, inputBuffers.at( i ) );
   }
-  kernel.setArg( inputBuffers.size(), resultLineBuffer );
+  kernel.setArg( static_cast<unsigned int>( inputBuffers.size() ), resultLineBuffer );
 
   QgsOpenClUtils::CPLAllocator<float> resultLine( resultBufferSize );
 
