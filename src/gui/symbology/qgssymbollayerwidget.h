@@ -571,6 +571,62 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 ///////////
 
+#include "ui_widget_rastermarker.h"
+
+class QgsRasterMarkerSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsRasterMarkerSymbolLayerWidget
+ * \brief Widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
+ * \since QGIS 3.6
+ */
+class GUI_EXPORT QgsRasterMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetRasterMarker
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsRasterMarkerSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsRasterMarkerSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsRasterMarkerSymbolLayerWidget( vl ); }
+
+    // from base class
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+
+  protected:
+
+    QgsRasterMarkerSymbolLayer *mLayer = nullptr;
+
+  private slots:
+    void mBrowseToolButton_clicked();
+    void mImageLineEdit_editingFinished();
+    void mSizeUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void setWidth();
+    void setHeight();
+    void setLockAspectRatio( bool locked );
+    void setAngle();
+    void setOffset();
+    void setOpacity( double value );
+    void updatePreviewImage();
+
+};
+
+///////////
+
 #include "ui_widget_rasterfill.h"
 
 class QgsRasterFillSymbolLayer;

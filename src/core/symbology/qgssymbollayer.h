@@ -70,6 +70,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsFilledMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "SvgMarker" )
           sipType = sipType_QgsSvgMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterMarker" )
+          sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
         else
@@ -475,6 +477,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     };
 
     void startRender( QgsSymbolRenderContext &context ) override;
+
+    void stopRender( QgsSymbolRenderContext &context ) override;
 
     /**
      * Renders a marker at the specified point. Derived classes must implement this to

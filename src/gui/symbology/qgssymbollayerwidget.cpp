@@ -3072,6 +3072,324 @@ void QgsCentroidFillSymbolLayerWidget::mDrawAllPartsCheckBox_stateChanged( int s
   emit changed();
 }
 
+///////////
+
+QgsRasterMarkerSymbolLayerWidget::QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+
+  setupUi( this );
+
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsRasterMarkerSymbolLayerWidget::mBrowseToolButton_clicked );
+  connect( mImageLineEdit, &QLineEdit::editingFinished, this, &QgsRasterMarkerSymbolLayerWidget::mImageLineEdit_editingFinished );
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
+  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setAngle );
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
+  connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setWidth );
+  connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setHeight );
+  connect( mLockAspectRatio, static_cast < void ( QgsRatioLockButton::* )( bool ) > ( &QgsRatioLockButton::lockChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setLockAspectRatio );
+
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mSpinOffsetX->setClearValue( 0.0 );
+  mSpinOffsetY->setClearValue( 0.0 );
+  mRotationSpinBox->setClearValue( 0.0 );
+
+  connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setOffset );
+  connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setOffset );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsRasterMarkerSymbolLayerWidget::setOpacity );
+
+  connect( mHorizontalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged );
+  connect( mVerticalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged );
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != QLatin1String( "RasterMarker" ) )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsRasterMarkerSymbolLayer *>( layer );
+
+  // set values
+  whileBlocking( mImageLineEdit )->setText( mLayer->path() );
+
+  whileBlocking( mWidthSpinBox )->setValue( mLayer->size() );
+  bool preservedAspectRatio = mLayer->preservedAspectRatio();
+  mHeightSpinBox->blockSignals( true );
+  if ( preservedAspectRatio )
+  {
+    mHeightSpinBox->setValue( mLayer->size() );
+  }
+  else
+  {
+    mHeightSpinBox->setValue( mLayer->size() * mLayer->fixedAspectRatio() );
+  }
+  mHeightSpinBox->setEnabled( mLayer->defaultAspectRatio() > 0.0 );
+  mHeightSpinBox->blockSignals( false );
+  whileBlocking( mLockAspectRatio )->setLocked( preservedAspectRatio );
+
+  whileBlocking( mRotationSpinBox )->setValue( mLayer->angle() );
+  whileBlocking( mOpacityWidget )->setOpacity( mLayer->opacity() );
+
+  whileBlocking( mSpinOffsetX )->setValue( mLayer->offset().x() );
+  whileBlocking( mSpinOffsetY )->setValue( mLayer->offset().y() );
+
+  mSizeUnitWidget->blockSignals( true );
+  mSizeUnitWidget->setUnit( mLayer->sizeUnit() );
+  mSizeUnitWidget->setMapUnitScale( mLayer->sizeMapUnitScale() );
+  mSizeUnitWidget->blockSignals( false );
+  mOffsetUnitWidget->blockSignals( true );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  mOffsetUnitWidget->blockSignals( false );
+
+  //anchor points
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyName );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+
+  updatePreviewImage();
+}
+
+QgsSymbolLayer *QgsRasterMarkerSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mBrowseToolButton_clicked()
+{
+  QgsSettings s;
+  QString openDir;
+  QString lineEditText = mImageLineEdit->text();
+  if ( !lineEditText.isEmpty() )
+  {
+    QFileInfo openDirFileInfo( lineEditText );
+    openDir = openDirFileInfo.path();
+  }
+
+  if ( openDir.isEmpty() )
+  {
+    openDir = s.value( QStringLiteral( "/UI/lastRasterMarkerImageDir" ), QDir::homePath() ).toString();
+  }
+
+  //show file dialog
+  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select Image File" ), openDir );
+  if ( !filePath.isNull() )
+  {
+    //check if file exists
+    QFileInfo fileInfo( filePath );
+    if ( !fileInfo.exists() || !fileInfo.isReadable() )
+    {
+      QMessageBox::critical( nullptr, QStringLiteral( "Select Image File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
+      return;
+    }
+
+    s.setValue( QStringLiteral( "/UI/lastRasterMarkerImageDir" ), fileInfo.absolutePath() );
+    mImageLineEdit->setText( filePath );
+    mImageLineEdit_editingFinished();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mImageLineEdit_editingFinished()
+{
+  QFileInfo fi( mImageLineEdit->text() );
+  if ( !fi.exists() )
+  {
+    QUrl url( mImageLineEdit->text() );
+    if ( !url.isValid() )
+    {
+      return;
+    }
+  }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  mLayer->setPath( mImageLineEdit->text() );
+  updatePreviewImage();
+  QApplication::restoreOverrideCursor();
+
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
+{
+  QImage image( mLayer->path() );
+  if ( image.isNull() )
+  {
+    mLabelImagePreview->setPixmap( QPixmap() );
+    return;
+  }
+
+  if ( image.height() > 150 || image.width() > 150 )
+  {
+    image = image.scaled( 150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+  }
+
+  QImage previewImage( 150, 150, QImage::Format_ARGB32 );
+  previewImage.fill( Qt::transparent );
+  QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  QPainter p;
+  p.begin( &previewImage );
+  //draw a checkerboard background
+  uchar pixDataRGB[] = { 150, 150, 150, 150,
+                         100, 100, 100, 150,
+                         100, 100, 100, 150,
+                         150, 150, 150, 150
+                       };
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+  QBrush checkerBrush;
+  checkerBrush.setTexture( pix );
+  p.fillRect( imageRect, checkerBrush );
+
+  if ( mLayer->opacity() < 1.0 )
+  {
+    p.setOpacity( mLayer->opacity() );
+  }
+
+  p.drawImage( imageRect.left(), imageRect.top(), image );
+  p.end();
+  mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setWidth()
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  mHeightSpinBox->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    mHeightSpinBox->setValue( mWidthSpinBox->value() );
+  }
+  else if ( mLockAspectRatio->locked() )
+  {
+    mHeightSpinBox->setValue( mWidthSpinBox->value() * defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = mHeightSpinBox->value() / mWidthSpinBox->value();
+  }
+  mHeightSpinBox->blockSignals( false );
+  mLayer->setSize( mWidthSpinBox->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setHeight()
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  mWidthSpinBox->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    mWidthSpinBox->setValue( mHeightSpinBox->value() );
+  }
+  else if ( mLockAspectRatio->locked() )
+  {
+    mWidthSpinBox->setValue( mHeightSpinBox->value() / defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = mHeightSpinBox->value() / mWidthSpinBox->value();
+  }
+  mWidthSpinBox->blockSignals( false );
+  mLayer->setSize( mWidthSpinBox->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setLockAspectRatio( const bool locked )
+{
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    whileBlocking( mLockAspectRatio )->setLocked( true );
+  }
+  else if ( locked )
+  {
+    mLayer->setFixedAspectRatio( 0.0 );
+    setWidth();
+  }
+  else
+  {
+    mLayer->setFixedAspectRatio( mHeightSpinBox->value() / mWidthSpinBox->value() );
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setAngle()
+{
+  mLayer->setAngle( mRotationSpinBox->value() );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setOpacity( double value )
+{
+  mLayer->setOpacity( value );
+  emit changed();
+  updatePreviewImage();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setOffset()
+{
+  mLayer->setOffset( QPointF( mSpinOffsetX->value(), mSpinOffsetY->value() ) );
+  emit changed();
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mSizeUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit( mSizeUnitWidget->unit() );
+    mLayer->setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+    mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+void QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
 ///////////////
 
 QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )

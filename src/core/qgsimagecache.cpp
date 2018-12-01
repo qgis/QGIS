@@ -132,6 +132,7 @@ QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const 
   }
   else
   {
+    QgsDebugMsg( "HITTTTTTTTTTTTTTTTTTTTTTTTT!!!!!!!!!!!!!!" );
     result = currentEntry->image;
   }
 

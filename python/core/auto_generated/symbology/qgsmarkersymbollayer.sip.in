@@ -697,6 +697,166 @@ Calculates the marker aspect ratio between width and height.
 
 
 
+class QgsRasterMarkerSymbolLayer : QgsMarkerSymbolLayer
+{
+%Docstring
+Raster marker symbol layer class.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmarkersymbollayer.h"
+%End
+  public:
+    QgsRasterMarkerSymbolLayer( const QString &path = QString(),
+                                double size = DEFAULT_SVGMARKER_SIZE,
+                                double angle = DEFAULT_SVGMARKER_ANGLE,
+                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+%Docstring
+Constructs raster marker symbol layer with picture from given absolute path to a raster image file
+%End
+
+
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a raster marker symbol layer from a string map of properties.
+
+:param properties: QgsStringMap properties object
+%End
+
+    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+%Docstring
+Turns relative paths in properties map to absolute when reading and vice versa when writing.
+Used internally when reading/writing symbols.
+
+.. versionadded:: 3.0
+%End
+
+
+    virtual QString layerType() const;
+
+
+    virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
+
+
+    virtual QgsStringMap properties() const;
+
+
+    virtual QgsRasterMarkerSymbolLayer *clone() const /Factory/;
+
+
+    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
+%Docstring
+Calculates the marker aspect ratio between width and height.
+
+:param context: symbol render context
+:param scaledSize: size of symbol to render
+:param hasDataDefinedAspectRatio: will be set to true if marker has data defined aspectRatio
+%End
+
+    QString path() const;
+%Docstring
+Returns the marker raster image path.
+
+.. seealso:: :py:func:`setPath`
+%End
+
+    void setPath( const QString &path );
+%Docstring
+Set the marker raster image path.
+
+:param path: raster image path
+
+.. seealso:: :py:func:`path`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the marker opacity.
+
+:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Set the marker opacity.
+
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    double defaultAspectRatio() const;
+%Docstring
+Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
+
+.. seealso:: :py:func:`updateDefaultAspectRatio`
+%End
+
+    double updateDefaultAspectRatio();
+%Docstring
+Calculates the default marker aspect ratio between width and height.
+
+:return: the default aspect ratio value
+
+.. seealso:: :py:func:`defaultAspectRatio`
+%End
+
+    bool preservedAspectRatio() const;
+%Docstring
+Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+
+.. seealso:: :py:func:`setPreservedAspectRatio`
+%End
+
+    bool setPreservedAspectRatio( bool par );
+%Docstring
+Set preserved the marker aspect ratio between width and height.
+
+:param par: Preserved Aspect Ratio
+
+:return: the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+
+.. seealso:: :py:func:`preservedAspectRatio`
+%End
+
+    double fixedAspectRatio() const;
+%Docstring
+Returns the marker aspect ratio between width and height to be used in rendering,
+if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+
+.. seealso:: :py:func:`setFixedAspectRatio`
+%End
+
+    void setFixedAspectRatio( double ratio );
+%Docstring
+Set the marker aspect ratio between width and height to be used in rendering,
+if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+
+:param ratio: Fixed Aspect Ratio
+
+.. seealso:: :py:func:`fixedAspectRatio`
+%End
+
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale );
+
+    virtual QgsMapUnitScale mapUnitScale() const;
+
+
+    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
+
+
+  protected:
+
+
+};
+
+
+
+
 
 class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 {

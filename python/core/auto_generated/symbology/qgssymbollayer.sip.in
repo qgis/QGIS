@@ -33,6 +33,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsFilledMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "SvgMarker" )
           sipType = sipType_QgsSvgMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterMarker" )
+          sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
         else
@@ -461,6 +463,9 @@ Abstract base class for marker symbol layers.
     };
 
     virtual void startRender( QgsSymbolRenderContext &context );
+
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
 
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context ) = 0;

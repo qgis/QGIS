@@ -417,6 +417,47 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
 
 
 
+class QgsRasterMarkerSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring
+Widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRasterMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsRasterMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+  protected:
+
+
+};
+
+
+
+
 class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 
