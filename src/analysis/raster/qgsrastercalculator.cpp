@@ -315,31 +315,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 #ifdef HAVE_OPENCL
 QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( QgsFeedback *feedback )
 {
-  //prepare search string / tree
   std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-  if ( !calcNode )
-  {
-    //error
-    return ParserError;
-  }
-
   QString cExpression( calcNode->toString( true ) );
-
-  // Safety check
-  for ( const auto &r : mRasterEntries )
-  {
-    if ( !r.raster ) // no raster layer in entry
-    {
-      mLastError = QObject::tr( "No raster layer for entry %1" ).arg( r.ref );
-      return InputLayerError;
-    }
-
-    if ( r.bandNumber <= 0 || r.bandNumber > r.raster->bandCount() )
-    {
-      mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( r.bandNumber ).arg( r.ref );
-      return BandError;
-    }
-  }
 
   QList<const QgsRasterCalcNode *> nodeList( calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ) );
   QSet<QString> capturedTexts;
