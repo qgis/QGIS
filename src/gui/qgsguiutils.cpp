@@ -195,12 +195,7 @@ namespace QgsGuiUtils
     // parent is intentionally not set to 'this' as
     // that would make it follow the style sheet font
     // see also #12233 and #4937
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
-#else
     return QFontDialog::getFont( &ok, initial, nullptr, title );
-#endif
   }
 
   void saveGeometry( QWidget *widget, const QString &keyName )
