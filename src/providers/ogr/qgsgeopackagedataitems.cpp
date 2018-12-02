@@ -771,8 +771,10 @@ QList<QString> QgsGeoPackageAbstractLayerItem::tableNames()
                );
       sqlite3_free( sql );
       if ( status != SQLITE_OK )
+      {  
         QgsDebugMsg( QStringLiteral( "There was an error reading tables from GPKG layer %1: %2" ).arg( mUri, QString::fromUtf8( errmsg ) ) );
       sqlite3_free( errmsg );
+      }  
     }
     else
     {
