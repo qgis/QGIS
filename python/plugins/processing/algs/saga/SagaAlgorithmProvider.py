@@ -140,6 +140,9 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def supportedOutputVectorLayerExtensions(self):
         return ['shp', 'dbf']
 
+    def supportedOutputTableExtensions(self):
+        return ['dbf']
+
     def supportsNonFileBasedOutput(self):
         """
         SAGA Provider doesn't support non file based outputs
