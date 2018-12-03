@@ -3754,11 +3754,11 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case QgsProcessing::TypeVectorPoint:
     case QgsProcessing::TypeVectorLine:
     case QgsProcessing::TypeVectorPolygon:
-    case QgsProcessing::TypeVector:
       return true;
 
     case QgsProcessing::TypeRaster:
     case QgsProcessing::TypeFile:
+    case QgsProcessing::TypeVector:
       return false;
   }
   return true;
@@ -4314,11 +4314,11 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case QgsProcessing::TypeVectorPoint:
     case QgsProcessing::TypeVectorLine:
     case QgsProcessing::TypeVectorPolygon:
-    case QgsProcessing::TypeVector:
       return true;
 
     case QgsProcessing::TypeRaster:
     case QgsProcessing::TypeFile:
+    case QgsProcessing::TypeVector:
       return false;
   }
   return true;
