@@ -385,27 +385,7 @@ class DummyProviderNoLoad : public DummyProvider
 
 };
 
-class DummyProvider3 : public QgsProcessingProvider
-{
-  public:
 
-    DummyProvider3()  = default;
-    QString id() const override { return QStringLiteral( "dummy3" ); }
-    QString name() const override { return QStringLiteral( "dummy3" ); }
-
-    QStringList supportedOutputVectorLayerExtensions() const override
-    {
-      return QStringList() << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
-    }
-
-    QStringList supportedOutputRasterLayerExtensions() const override
-    {
-      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "asc" );
-    }
-
-    void loadAlgorithms() override {}
-
-};
 
 class DummyAlgorithm2 : public QgsProcessingAlgorithm
 {
@@ -432,6 +412,36 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
 
 };
 
+
+class DummyProvider3 : public QgsProcessingProvider
+{
+  public:
+
+    DummyProvider3()  = default;
+    QString id() const override { return QStringLiteral( "dummy3" ); }
+    QString name() const override { return QStringLiteral( "dummy3" ); }
+
+    QStringList supportedOutputVectorLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
+    }
+
+    QStringList supportedOutputTableExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "dbf" );
+    }
+
+    QStringList supportedOutputRasterLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "asc" );
+    }
+
+    void loadAlgorithms() override
+    {
+      QVERIFY( addAlgorithm( new DummyAlgorithm2( "alg1" ) ) );
+    }
+
+};
 
 class DummyProvider4 : public QgsProcessingProvider
 {
@@ -564,6 +574,7 @@ class TestQgsProcessing: public QObject
     void indicesToFields();
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
+    void supportedExtensions();
     void supportsNonFileBasedOutput();
     void addParameterType();
     void removeParameterType();
@@ -4678,6 +4689,30 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "OUTPUT" ) ), QStringLiteral( "Could not create destination layer for OUTPUT: d:/test3.shp" ) );
   params.insert( QStringLiteral( "OUTPUT" ), QgsProcessingFeatureSourceDefinition( QStringLiteral( "source" ) ) );
   QCOMPARE( QgsProcessingAlgorithm::invalidSinkError( params, QStringLiteral( "OUTPUT" ) ), QStringLiteral( "Could not create destination layer for OUTPUT: invalid value" ) );
+
+  // test supported output vector layer extensions
+
+  def.reset( new QgsProcessingParameterFeatureSink( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
+  DummyProvider3 provider;
+  provider.loadAlgorithms();
+  def->mOriginalProvider = &provider;
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 2 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "mif" ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 1 ), QStringLiteral( "tab" ) );
+  def->mOriginalProvider = nullptr;
+  def->mAlgorithm = const_cast< QgsProcessingAlgorithm * >( provider.algorithms().at( 0 ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 2 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "mif" ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 1 ), QStringLiteral( "tab" ) );
+
+  def.reset( new QgsProcessingParameterFeatureSink( "no_geom", QString(), QgsProcessing::TypeVector, QString(), true ) );
+  def->mOriginalProvider = &provider;
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 1 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "dbf" ) );
+  def->mOriginalProvider = nullptr;
+  def->mAlgorithm = const_cast< QgsProcessingAlgorithm * >( provider.algorithms().at( 0 ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 1 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "dbf" ) );
 }
 
 void TestQgsProcessing::parameterVectorOut()
@@ -4811,6 +4846,30 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "x" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::Vector );
+
+  // test supported output vector layer extensions
+
+  def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
+  DummyProvider3 provider;
+  provider.loadAlgorithms();
+  def->mOriginalProvider = &provider;
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 2 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "mif" ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 1 ), QStringLiteral( "tab" ) );
+  def->mOriginalProvider = nullptr;
+  def->mAlgorithm = const_cast< QgsProcessingAlgorithm * >( provider.algorithms().at( 0 ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 2 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "mif" ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 1 ), QStringLiteral( "tab" ) );
+
+  def.reset( new QgsProcessingParameterVectorDestination( "no_geom", QString(), QgsProcessing::TypeVector, QString(), true ) );
+  def->mOriginalProvider = &provider;
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 1 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "dbf" ) );
+  def->mOriginalProvider = nullptr;
+  def->mAlgorithm = const_cast< QgsProcessingAlgorithm * >( provider.algorithms().at( 0 ) );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 1 );
+  QCOMPARE( def->supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "dbf" ) );
 }
 
 void TestQgsProcessing::parameterRasterOut()
@@ -6969,6 +7028,17 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "ecw" ), QgsSettings::Core );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+}
+
+void TestQgsProcessing::supportedExtensions()
+{
+  DummyProvider4 provider;
+  QCOMPARE( provider.supportedOutputVectorLayerExtensions().count(), 1 );
+  QCOMPARE( provider.supportedOutputVectorLayerExtensions().at( 0 ), QStringLiteral( "mif" ) );
+
+  // if supportedOutputTableExtensions is not implemented, supportedOutputVectorLayerExtensions should be used instead
+  QCOMPARE( provider.supportedOutputTableExtensions().count(), 1 );
+  QCOMPARE( provider.supportedOutputTableExtensions().at( 0 ), QStringLiteral( "mif" ) );
 }
 
 void TestQgsProcessing::supportsNonFileBasedOutput()
