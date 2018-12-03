@@ -70,19 +70,21 @@ class TestQgsImageCache(unittest.TestCase):
 
         # first should be waiting image
         self.assertTrue(self.imageCheck('Remote Image', 'waiting_image', image))
+        self.assertFalse(QgsApplication.imageCache().originalSize(url).isValid())
         self.waitForFetch()
 
         # second should be correct image
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True)
 
         self.assertTrue(self.imageCheck('Remote Image', 'remote_image', image))
+        self.assertEqual(QgsApplication.imageCache().originalSize(url), QSize(511, 800))
 
-    def testRemoteSvgMissing(self):
+    def testRemoteImageMissing(self):
         """Test fetching remote image with bad url"""
         url = 'http://localhost:{}/qgis_local_server/xxx.png'.format(str(TestQgsImageCache.port))  # oooo naughty
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True)
 
-        self.assertTrue(self.imageCheck('Remote SVG missing', 'waiting_image', image))
+        self.assertTrue(self.imageCheck('Remote image missing', 'waiting_image', image))
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

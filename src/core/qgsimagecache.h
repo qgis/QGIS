@@ -113,6 +113,18 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      */
     QImage pathAsImage( const QString &path, QSize size, bool keepAspectRatio, bool &fitsInCache SIP_OUT );
 
+    /**
+     * Returns the original size (in pixels) of the image at the specified \a path.
+     *
+     * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+     *
+     * If \a path is a remote file, then an invalid size may be returned while the image is in the process
+     * of being fetched.
+     *
+     * If the image could not be read then an invalid QSize is returned.
+     */
+    QSize originalSize( const QString &path ) const;
+
   signals:
 
     /**

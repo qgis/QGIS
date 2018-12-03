@@ -137,6 +137,30 @@ QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const 
   return result;
 }
 
+QSize QgsImageCache::originalSize( const QString &path ) const
+{
+  // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
+  if ( QFile::exists( path ) )
+  {
+    return QImage( path ).size();
+  }
+  else
+  {
+    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ) );
+
+    if ( ba != "broken" && ba != "fetching" )
+    {
+      QBuffer buffer( &ba );
+      buffer.open( QIODevice::ReadOnly );
+
+      QImageReader reader( &buffer );
+      QImage im = reader.read();
+      return im.isNull() ? QSize() : im.size();
+    }
+  }
+  return QSize();
+}
+
 QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio ) const
 {
   QImage im;
