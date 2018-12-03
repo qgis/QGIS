@@ -102,6 +102,11 @@ QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
   return QgsVectorFileWriter::supportedFormatExtensions();
 }
 
+QStringList QgsProcessingProvider::supportedOutputTableExtensions() const
+{
+  return supportedOutputVectorLayerExtensions();
+}
+
 QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) const
 {
   QgsSettings settings;

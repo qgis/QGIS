@@ -3729,11 +3729,17 @@ QStringList QgsProcessingParameterFeatureSink::supportedOutputVectorLayerExtensi
 {
   if ( originalProvider() )
   {
-    return originalProvider()->supportedOutputVectorLayerExtensions();
+    if ( hasGeometry() )
+      return originalProvider()->supportedOutputVectorLayerExtensions();
+    else
+      return originalProvider()->supportedOutputTableExtensions();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
-    return p->supportedOutputVectorLayerExtensions();
+    if ( hasGeometry() )
+      return p->supportedOutputVectorLayerExtensions();
+    else
+      return p->supportedOutputTableExtensions();
   }
   else
   {
@@ -4289,11 +4295,17 @@ QStringList QgsProcessingParameterVectorDestination::supportedOutputVectorLayerE
 {
   if ( originalProvider() )
   {
-    return originalProvider()->supportedOutputVectorLayerExtensions();
+    if ( hasGeometry() )
+      return originalProvider()->supportedOutputVectorLayerExtensions();
+    else
+      return originalProvider()->supportedOutputTableExtensions();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
-    return p->supportedOutputVectorLayerExtensions();
+    if ( hasGeometry() )
+      return p->supportedOutputVectorLayerExtensions();
+    else
+      return p->supportedOutputTableExtensions();
   }
   else
   {

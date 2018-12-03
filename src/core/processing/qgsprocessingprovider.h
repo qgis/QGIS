@@ -118,11 +118,27 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
+     * \see supportedOutputTableExtensions()
      * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
      * \see supportsNonFileBasedOutput()
      */
     virtual QStringList supportedOutputVectorLayerExtensions() const;
+
+    /**
+     * Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
+     *
+     * By default this is the same as supportedOutputVectorLayerExtensions(). Providers which utilize different
+     * formats for geometry-less layers can override this method to return a different list of supported formats.
+     *
+     * \see supportedOutputVectorLayerExtensions()
+     * \see defaultVectorFileExtension()
+     * \see supportedOutputRasterLayerExtensions()
+     * \see supportsNonFileBasedOutput()
+     *
+     * \since QGIS 3.4.3
+     */
+    virtual QStringList supportedOutputTableExtensions() const;
 
     /**
      * Returns the default file extension to use for vector outputs created by the
