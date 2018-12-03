@@ -139,6 +139,7 @@ SET(QGIS_CORE_SRCS
   scalebar/qgsticksscalebarrenderer.cpp
 
   qgis.cpp
+  qgsabstractcontentcache.cpp
   qgsapplication.cpp
   qgsaction.cpp
   qgsactionscope.cpp
@@ -586,6 +587,7 @@ ELSE(NOT MSVC)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
+  qgsabstractcontentcache.h
   qgsapplication.h
   qgsactionmanager.h
   qgsactionscoperegistry.h
