@@ -25,7 +25,7 @@ SET(TS_FILES qgis_ar.ts qgis_bg.ts qgis_bs.ts qgis_ca.ts qgis_cs.ts qgis_da.ts q
 
 ADD_TRANSLATION_FILES (QM_FILES ${TS_FILES})
 
-IF (UNIX AND NOT APPLE)
+IF (UNIX AND NOT APPLE AND PYQT5_FOUND)
   ADD_CUSTOM_COMMAND(
     OUTPUT ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
