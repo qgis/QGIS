@@ -53,6 +53,18 @@ If the resultant raster was of a sufficiently small size to store in the cache, 
 will be set to true.
 %End
 
+    QSize originalSize( const QString &path ) const;
+%Docstring
+Returns the original size (in pixels) of the image at the specified ``path``.
+
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+
+If ``path`` is a remote file, then an invalid size may be returned while the image is in the process
+of being fetched.
+
+If the image could not be read then an invalid QSize is returned.
+%End
+
   signals:
 
     void remoteImageFetched( const QString &url );
