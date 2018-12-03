@@ -310,8 +310,6 @@ class CORE_EXPORT QgsOpenClUtils
     static void init();
 
     static bool sAvailable;
-    static cl::Device sActiveDevice;
-    static cl::Platform sDefaultPlatform;
     static QLatin1String SETTINGS_GLOBAL_ENABLED_KEY;
     static QLatin1String SETTINGS_DEFAULT_DEVICE_KEY;
     static QString sSourcePath;
