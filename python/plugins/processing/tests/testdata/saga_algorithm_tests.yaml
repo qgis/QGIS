@@ -499,4 +499,19 @@ tests:
       DISTANCES:
         name: expected/saga/point_distances.dbf
         type: vector
-  
+
+  - algorithm: saga:patching
+    name: Patching
+    params:
+      ADDITIONAL:
+        name: dem.tif
+        type: raster
+      ORIGINAL:
+        name: custom/dem_gaps.tif
+        type: raster
+      RESAMPLING: 0
+    results:
+      COMPLETED:
+        hash: e016ba480e7c9a7cfe7bbbec50f4f3df0e796be7641fe68744f541b5
+        type: rasterhash
+
