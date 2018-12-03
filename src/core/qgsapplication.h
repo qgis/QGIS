@@ -34,6 +34,7 @@ class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
+class QgsImageCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
@@ -595,9 +596,19 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
      * within SVG files.
+     *
+     * \see imageCache()
      * \since QGIS 3.0
      */
     static QgsSvgCache *svgCache();
+
+    /**
+     * Returns the application's image cache, used for caching resampled versions of raster images.
+     *
+     * \see svgCache()
+     * \since QGIS 3.6
+     */
+    static QgsImageCache *imageCache();
 
     /**
      * Returns the application's network content registry used for fetching temporary files during QGIS session
@@ -867,6 +878,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsRuntimeProfiler *mProfiler = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
+      QgsImageCache *mImageCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;

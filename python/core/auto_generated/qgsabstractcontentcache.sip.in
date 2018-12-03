@@ -33,7 +33,6 @@ Constructor for QgsAbstractContentCacheEntry for an entry relating to the specif
     virtual ~QgsAbstractContentCacheEntry();
 
 
-
     QString path;
 
     QDateTime fileModified;

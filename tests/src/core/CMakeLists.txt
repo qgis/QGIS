@@ -117,6 +117,7 @@ SET(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgshstoreutils.cpp
+ testqgsimagecache.cpp
  testqgsimageoperation.cpp
  testqgsinternalgeometryengine.cpp
  testqgsinvertedpolygonrenderer.cpp
