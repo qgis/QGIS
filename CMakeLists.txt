@@ -112,6 +112,8 @@ IF(WITH_CORE)
 
   SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
+  SET (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library")
+
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
   SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
@@ -143,6 +145,10 @@ IF(WITH_CORE)
     ENDIF(WITH_CUSTOM_WIDGETS)
   ELSE ()
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
+  ENDIF()
+
+  IF ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
   # try to configure and build MDAL support
