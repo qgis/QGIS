@@ -112,7 +112,7 @@ IF(WITH_CORE)
 
   SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
-  SET (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library")
+  SET (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
