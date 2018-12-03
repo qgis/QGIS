@@ -649,7 +649,18 @@ providers that may add items to the browser tree.
 Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
 within SVG files.
 
+.. seealso:: :py:func:`imageCache`
+
 .. versionadded:: 3.0
+%End
+
+    static QgsImageCache *imageCache();
+%Docstring
+Returns the application's image cache, used for caching resampled versions of raster images.
+
+.. seealso:: :py:func:`svgCache`
+
+.. versionadded:: 3.6
 %End
 
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();

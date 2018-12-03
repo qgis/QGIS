@@ -52,8 +52,6 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
 
     virtual ~QgsAbstractContentCacheEntry() = default;
 
-    QgsAbstractContentCacheEntry() = delete;
-
     //! QgsAbstractContentCacheEntry cannot be copied.
     QgsAbstractContentCacheEntry( const QgsAbstractContentCacheEntry &rh ) = delete;
     //! QgsAbstractContentCacheEntry cannot be copied.
@@ -176,7 +174,7 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
 #ifndef SIP_RUN
 
 /**
- * \class QgsAbstractContentCacheBase
+ * \class QgsAbstractContentCache
  * \ingroup core
  *
  * Abstract base class for file content caches, such as SVG or raster image caches.
@@ -560,6 +558,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     QString mTypeString;
 
     friend class TestQgsSvgCache;
+    friend class TestQgsImageCache;
 };
 
 #endif

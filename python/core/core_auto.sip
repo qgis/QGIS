@@ -332,6 +332,7 @@
 %Include auto_generated/qgsgeometryvalidator.sip
 %Include auto_generated/qgsgml.sip
 %Include auto_generated/qgsgmlschema.sip
+%Include auto_generated/qgsimagecache.sip
 %Include auto_generated/qgsmaplayer.sip
 %Include auto_generated/qgsmaplayerlegend.sip
 %Include auto_generated/qgsmaplayermodel.sip

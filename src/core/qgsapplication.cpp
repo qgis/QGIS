@@ -30,6 +30,7 @@
 #include "qgstaskmanager.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
@@ -1772,6 +1773,11 @@ QgsSvgCache *QgsApplication::svgCache()
   return members()->mSvgCache;
 }
 
+QgsImageCache *QgsApplication::imageCache()
+{
+  return members()->mImageCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
@@ -1842,6 +1848,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
+  mImageCache = new QgsImageCache();
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
@@ -1878,6 +1885,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;
+  delete mImageCache;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
