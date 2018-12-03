@@ -17,7 +17,6 @@
 
 #include "qgsgdalutils.h"
 #include "qgsrastercalculator.h"
-#include "qgsrastercalcnode.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
@@ -95,7 +94,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   // Check for matrix nodes, GPU implementation does not support them
   QList<const QgsRasterCalcNode *> nodeList;
   if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty() )
-    return processCalculationGPU( feedback );
+    return processCalculationGPU( std::move( calcNode ), feedback );
 #endif
 
   //open output dataset for writing
@@ -313,9 +312,9 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 }
 
 #ifdef HAVE_OPENCL
-QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( QgsFeedback *feedback )
+QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::unique_ptr< QgsRasterCalcNode > calcNode, QgsFeedback *feedback )
 {
-  std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+
   QString cExpression( calcNode->toString( true ) );
 
   QList<const QgsRasterCalcNode *> nodeList( calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ) );

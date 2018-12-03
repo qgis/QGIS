@@ -25,6 +25,7 @@
 #include "gdal.h"
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsrastercalcnode.h"
 
 class QgsRasterLayer;
 class QgsFeedback;
@@ -152,7 +153,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     void outputGeoTransform( double *transform ) const;
 
     //! Execute calculations on GPU
-    Result processCalculationGPU( QgsFeedback *feedback = nullptr );
+    Result processCalculationGPU( std::unique_ptr< QgsRasterCalcNode > calcNode, QgsFeedback *feedback = nullptr );
 
     QString mFormulaString;
     QString mOutputFile;
