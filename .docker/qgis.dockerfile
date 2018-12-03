@@ -8,6 +8,7 @@ FROM  qgis/qgis3-build-deps:${DOCKER_TAG}
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
+
 ENV CC=/usr/lib/ccache/clang
 ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
@@ -26,7 +27,7 @@ RUN cmake \
   -DUSE_CCACHE=OFF \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/usr \
-  -DWITH_DESKTOP=OFF \
+  -DWITH_DESKTOP=ON \
   -DWITH_SERVER=ON \
   -DWITH_3D=ON \
   -DWITH_BINDINGS=ON \
@@ -46,4 +47,28 @@ RUN cmake \
  && ninja install \
  && rm -rf /usr/src/QGIS
 
+################################################################################
+# Python testing environment setup
+
+# Add QGIS test runner
+COPY .docker/qgis_resources/test_runner/qgis_* /usr/bin/
+
+# Make all scripts executable
+RUN chmod +x /usr/bin/qgis_*
+
+# Add supervisor service configuration script
+COPY .docker/qgis_resources/supervisor/supervisord.conf /etc/supervisor/
+COPY .docker/qgis_resources/supervisor/supervisor.xvfb.conf /etc/supervisor/supervisor.d/
+
+# Python paths are for
+# - kartoza images (compiled)
+# - deb installed
+# - built from git
+# needed to find PyQt wrapper provided by QGIS
+ENV PYTHONPATH=/usr/share/qgis/python/:/usr/lib/python3/dist-packages/qgis:/usr/share/qgis/python/qgis
+
+
 WORKDIR /
+
+# Run supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

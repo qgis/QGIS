@@ -31,3 +31,7 @@ PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
 PyQgsAuthManagerOgrPostgresTest
 PyQgsDbManagerPostgis
+
+# Needs an OpenCL device, the library is not enough
+qgis_openclutilstest
+
