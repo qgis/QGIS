@@ -486,3 +486,17 @@ tests:
         hash: 6f81c858fc7575eaff6258b6e75bf4427d0568d5134837523b730929
         type: rasterhash
 
+  - algorithm: saga:pointdistances
+    name: Point distances
+    params:
+      FORMAT: 1
+      ID_POINTS: fid
+      MAX_DIST: 0.0
+      POINTS:
+        name: custom/points.shp
+        type: vector
+    results:
+      DISTANCES:
+        name: expected/saga/point_distances.dbf
+        type: vector
+  
