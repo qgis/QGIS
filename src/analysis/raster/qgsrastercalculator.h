@@ -25,6 +25,7 @@
 #include "gdal.h"
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsrastercalcnode.h"
 
 class QgsRasterLayer;
 class QgsFeedback;
@@ -150,6 +151,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
       \param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double *transform ) const;
+
+    //! Execute calculations on GPU
+    Result processCalculationGPU( std::unique_ptr< QgsRasterCalcNode > calcNode, QgsFeedback *feedback = nullptr );
 
     QString mFormulaString;
     QString mOutputFile;
