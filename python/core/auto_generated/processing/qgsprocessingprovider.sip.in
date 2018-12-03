@@ -113,11 +113,31 @@ Returns a list of the raster format file extensions supported by this provider.
 %Docstring
 Returns a list of the vector format file extensions supported by this provider.
 
+.. seealso:: :py:func:`supportedOutputTableExtensions`
+
 .. seealso:: :py:func:`defaultVectorFileExtension`
 
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 
 .. seealso:: :py:func:`supportsNonFileBasedOutput`
+%End
+
+    virtual QStringList supportedOutputTableExtensions() const;
+%Docstring
+Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
+
+By default this is the same as supportedOutputVectorLayerExtensions(). Providers which utilize different
+formats for geometry-less layers can override this method to return a different list of supported formats.
+
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
+
+.. seealso:: :py:func:`defaultVectorFileExtension`
+
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
+
+.. seealso:: :py:func:`supportsNonFileBasedOutput`
+
+.. versionadded:: 3.4.3
 %End
 
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
