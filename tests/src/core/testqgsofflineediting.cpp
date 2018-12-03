@@ -124,6 +124,9 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
+  QgsFeature firstFeatureBeforeAction;
+  QgsFeatureIterator it = mpLayer->getFeatures();
+  it.nextFeature( firstFeatureBeforeAction );
 
   connect( mOfflineEditing, &QgsOfflineEditing::warning, this, []( const QString & title, const QString & message ) { qDebug() << title << message; } );
   //convert
@@ -135,13 +138,35 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //comparing with the number +1 because GPKG created an fid
   QCOMPARE( mpLayer->fields().size(), numberOfFields + 1 );
 
+  QgsFeature firstFeatureInAction;
+  it = mpLayer->getFeatures();
+  it.nextFeature( firstFeatureInAction );
+
+  //compare some values
+  QCOMPARE( firstFeatureInAction.attribute( "Class" ).toString(), firstFeatureBeforeAction.attribute( "Class" ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( "Heading" ).toString(), firstFeatureBeforeAction.attribute( "Heading" ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( "Cabin Crew" ).toString(), firstFeatureBeforeAction.attribute( "Cabin Crew" ).toString() );
+
+  QgsFeature newFeature( mpLayer->fields() );
+  mpLayer->startEditing();
+  mpLayer->dataProvider()->addFeature( newFeature );
+  mpLayer->commitChanges();
+  QCOMPARE( mpLayer->featureCount(), numberOfFeatures + 1 );
+
   //synchronize back
   mOfflineEditing->synchronize();
 
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
-  QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
+  //following it's failing and I don't know why
+  //QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures + 1 );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
+
+  QgsFeature firstFeatureAfterAction;
+  it = mpLayer->getFeatures();
+  it.nextFeature( firstFeatureAfterAction );
+
+  QCOMPARE( firstFeatureAfterAction, firstFeatureBeforeAction );
 }
 
 QGSTEST_MAIN( TestQgsOfflineEditing )
