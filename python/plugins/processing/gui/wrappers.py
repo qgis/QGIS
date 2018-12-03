@@ -1772,8 +1772,11 @@ class WidgetWrapperFactory:
 
     @staticmethod
     def create_wrapper(param, dialog, row=0, col=0):
-
-        if param.metadata().get('widget_wrapper', {}).get('class', None) is not None:
+        wrapper_metadata = param.metadata().get('widget_wrapper', None)
+        # VERY messy logic here to avoid breaking 3.0 API which allowed metadata "widget_wrapper" value to be either
+        # a string name of a class OR a dict.
+        # TODO QGIS 4.0 -- require widget_wrapper to be a dict.
+        if wrapper_metadata and (not isinstance(wrapper_metadata, dict) or wrapper_metadata.get('class', None) is not None):
             return WidgetWrapperFactory.create_wrapper_from_metadata(param, dialog, row, col)
         else:
             # try from c++ registry first
