@@ -34,6 +34,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -300,6 +301,16 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
     // have been generated using the temporary "downloading" svg. In this case
     // we require the preview to be regenerated to use the correct fetched
     // svg
+    symbolChanged();
+    updatePreview();
+  } );
+  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, [ = ]
+  {
+    // when a remote image has been fetched, update the widget's previews
+    // this is required if the symbol utilizes remote images, and the current previews
+    // have been generated using the temporary "downloading" image. In this case
+    // we require the preview to be regenerated to use the correct fetched
+    // image
     symbolChanged();
     updatePreview();
   } );
