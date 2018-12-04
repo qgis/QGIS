@@ -44,7 +44,8 @@ size, and then the result cached for subsequent lookups.
 ``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
 
 The ``size`` parameter dictates the target size of the image. An invalid size indicates the
-original raster image size (with no resampling).
+original raster image size (with no resampling). A size in which the width or height is
+set to zero will have the zeroed value automatically computed when keepAspectRatio is true.
 
 If ``keepAspectRatio`` is true, then the original raster aspect ratio will be maintained during
 any resampling operations.

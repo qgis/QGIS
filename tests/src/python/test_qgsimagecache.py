@@ -77,7 +77,7 @@ class TestQgsImageCache(unittest.TestCase):
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True)
 
         self.assertTrue(self.imageCheck('Remote Image', 'remote_image', image))
-        self.assertEqual(QgsApplication.imageCache().originalSize(url), QSize(511, 800))
+        self.assertEqual(QgsApplication.imageCache().originalSize(url), QSize(511, 800), 1.0)
 
     def testRemoteImageMissing(self):
         """Test fetching remote image with bad url"""
