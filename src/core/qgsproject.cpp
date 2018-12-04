@@ -384,8 +384,8 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this, &QgsProject::removeAll );
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
-  Q_ASSERT( QgsApplication::instance() );
-  connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
+  if ( QgsApplication::instance() )
+    connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
   connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QList<QgsMapLayer *> & )>( &QgsMapLayerStore::layersWillBeRemoved ),
            [ = ]( const QList<QgsMapLayer *> &layers )
   {
