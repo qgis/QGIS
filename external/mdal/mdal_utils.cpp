@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <sstream>
 #include <math.h>
+#include <assert.h>
 
 bool MDAL::fileExists( const std::string &filename )
 {
@@ -253,4 +254,143 @@ double MDAL::parseTimeUnits( const std::string &units )
   }
 
   return divBy;
+}
+
+MDAL::Statistics _calculateStatistics( const std::vector<double> &values, size_t count, bool isVector )
+{
+  MDAL::Statistics ret;
+
+  double min = std::numeric_limits<double>::quiet_NaN();
+  double max = std::numeric_limits<double>::quiet_NaN();
+  bool firstIteration = true;
+
+  for ( size_t i = 0; i < count; ++i )
+  {
+    double magnitude;
+    if ( isVector )
+    {
+      double x = values[2 * i];
+      double y = values[2 * i + 1];
+      if ( isnan( x ) || isnan( y ) )
+        continue;
+      magnitude = sqrt( x * x + y * y );
+    }
+    else
+    {
+      double x = values[i];
+      if ( isnan( x ) )
+        continue;
+      magnitude = x;
+    }
+
+    if ( firstIteration )
+    {
+      firstIteration = false;
+      min = magnitude;
+      max = magnitude;
+    }
+    else
+    {
+      if ( magnitude < min )
+      {
+        min = magnitude;
+      }
+      if ( magnitude > max )
+      {
+        max = magnitude;
+      }
+    }
+  }
+
+  ret.minimum = min;
+  ret.maximum = max;
+  return ret;
+}
+
+MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<DatasetGroup> grp )
+{
+  Statistics ret;
+  if ( !grp )
+    return ret;
+
+  for ( std::shared_ptr<Dataset> ds : grp->datasets )
+  {
+    MDAL::Statistics dsStats = ds->statistics();
+    combineStatistics( ret, dsStats );
+  }
+  return ret;
+}
+
+MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
+{
+  Statistics ret;
+  if ( !dataset )
+    return ret;
+
+  bool isVector = !dataset->group()->isScalar();
+  size_t bufLen = 2000;
+  std::vector<double> buffer( isVector ? bufLen * 2 : bufLen );
+
+  size_t i = 0;
+  while ( i < dataset->valuesCount() )
+  {
+    size_t valsRead;
+    if ( isVector )
+    {
+      valsRead = dataset->vectorData( i, bufLen, buffer.data() );
+    }
+    else
+    {
+      valsRead = dataset->scalarData( i, bufLen, buffer.data() );
+    }
+    MDAL::Statistics dsStats = _calculateStatistics( buffer, valsRead, isVector );
+    combineStatistics( ret, dsStats );
+    i += valsRead;
+  }
+
+  return ret;
+}
+
+void MDAL::combineStatistics( MDAL::Statistics &main, const MDAL::Statistics &other )
+{
+  if ( isnan( main.minimum ) ||
+       ( !isnan( other.minimum ) && ( main.minimum > other.minimum ) ) )
+  {
+    main.minimum = other.minimum;
+  }
+
+  if ( isnan( main.maximum ) ||
+       ( !isnan( other.maximum ) && ( main.maximum < other.maximum ) ) )
+  {
+    main.maximum = other.maximum;
+  }
+}
+
+void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices, const Faces &faces )
+{
+  if ( !mesh )
+    return;
+
+  if ( 0 == mesh->facesCount() )
+    return;
+
+  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          mesh,
+                                          mesh->uri(),
+                                          "Bed Elevation"
+                                        );
+  group->setIsOnVertices( true );
+  group->setIsScalar( true );
+
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  dataset->setTime( 0.0 );
+  double *vals = dataset->values();
+  for ( size_t i = 0; i < vertices.size(); ++i )
+  {
+    vals[i] = vertices[i].z;
+  }
+  dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+  group->datasets.push_back( dataset );
+  group->setStatistics( MDAL::calculateStatistics( group ) );
+  mesh->datasetGroups.push_back( group );
 }

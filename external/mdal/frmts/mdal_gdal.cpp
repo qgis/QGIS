@@ -258,13 +258,15 @@ void MDAL::LoaderGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
   }
 }
 
-void MDAL::LoaderGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<Dataset> tos, bool is_vector, bool is_x )
+void MDAL::LoaderGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x )
 {
   assert( raster_band );
 
   double nodata =  GDALGetRasterNoDataValue( raster_band, nullptr );
   unsigned int mXSize = meshGDALDataset()->mXSize;
   unsigned int mYSize = meshGDALDataset()->mYSize;
+
+  double *values = tos->values();
 
   for ( unsigned int y = 0; y < mYSize; ++y )
   {
@@ -292,53 +294,65 @@ void MDAL::LoaderGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
     {
       unsigned int idx = x + mXSize * y;
       double val = mPafScanline[x];
-      bool noData = false;
-      if ( MDAL::equals( val, nodata ) )
+      if ( !MDAL::equals( val, nodata ) )
       {
-        // store all nodata value as this hardcoded number
-        val = MDAL_NODATA;
-        noData = true;
-      }
-
-      if ( is_vector )
-      {
-        if ( is_x )
+        // values is prepolulated with NODATA values, so store only legal values
+        if ( is_vector )
         {
-          tos->values[idx].x = val;
-          tos->values[idx].noData = noData;
+          if ( is_x )
+          {
+            values[2 * idx] = val;
+          }
+          else
+          {
+            values[2 * idx + 1] = val;
+          }
         }
         else
         {
-          tos->values[idx].y = val;
-          tos->values[idx].noData = noData;
+          values[idx] = val;
         }
-      }
-      else
-      {
-        tos->values[idx].x = val;
-        tos->values[idx].noData = noData;
       }
     }
   }
 }
 
-void MDAL::LoaderGdal::activateFaces( std::shared_ptr<Dataset> tos )
+void MDAL::LoaderGdal::activateFaces( std::shared_ptr<MemoryDataset> tos )
 {
+  // only for data on vertices
+  if ( !tos->group()->isOnVertices() )
+    return;
+
+  bool isScalar = tos->group()->isScalar();
+
   // Activate only Faces that do all Vertex's outputs with some data
+  int *active = tos->active();
+  const double *values = tos->constValues();
+
   for ( unsigned int idx = 0; idx < meshGDALDataset()->mNVolumes; ++idx )
   {
     Face elem = mMesh->faces.at( idx );
-
-    if ( tos->values[elem[0]].noData ||
-         tos->values[elem[1]].noData ||
-         tos->values[elem[2]].noData ||
-         tos->values[elem[3]].noData )
+    for ( size_t i = 0; i < 4; ++i )
     {
-      tos->active[idx] = 0; //NOT ACTIVE
-    }
-    else
-    {
-      tos->active[idx] = 1; //ACTIVE
+      if ( isScalar )
+      {
+        double val = values[elem[i]];
+        if ( std::isnan( val ) )
+        {
+          active[idx] = 0; //NOT ACTIVE
+          break;
+        }
+      }
+      else
+      {
+        double x = values[elem[2 * i]];
+        double y = values[elem[2 * i + 1]];
+        if ( std::isnan( x ) || std::isnan( y ) )
+        {
+          active[idx] = 0; //NOT ACTIVE
+          break;
+        }
+      }
     }
   }
 }
@@ -348,32 +362,35 @@ void MDAL::LoaderGdal::addDatasetGroups()
   // Add dataset to mMesh
   for ( data_hash::const_iterator band = mBands.begin(); band != mBands.end(); band++ )
   {
-    std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >();
-    group->uri = mFileName;
-    group->setName( band->first );
-    group->isOnVertices = true;
+    if ( band->second.empty() )
+      continue;
+
+    std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                            mMesh.get(),
+                                            mFileName,
+                                            band->first
+                                          );
+    group->setIsOnVertices( true );
+    bool is_vector = ( band->second.begin()->second.size() > 1 );
+    group->setIsScalar( !is_vector );
 
     for ( timestep_map::const_iterator time_step = band->second.begin(); time_step != band->second.end(); time_step++ )
     {
       std::vector<GDALRasterBandH> raster_bands = time_step->second;
-      bool is_vector = ( raster_bands.size() > 1 );
+      std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );
 
-      std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
-      group->isScalar = !is_vector;
-
-      dataset->time = time_step->first;
-      dataset->values.resize( meshGDALDataset()->mNPoints );
-      dataset->active.resize( meshGDALDataset()->mNVolumes );
-      dataset->parent = group.get();
-
+      dataset->setTime( time_step->first );
       for ( std::vector<GDALRasterBandH>::size_type i = 0; i < raster_bands.size(); ++i )
       {
         addDataToOutput( raster_bands[i], dataset, is_vector, i == 0 );
       }
       activateFaces( dataset );
-
+      dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
       group->datasets.push_back( dataset );
     }
+
+    // TODO use GDALComputeRasterMinMax
+    group->setStatistics( MDAL::calculateStatistics( group ) );
     mMesh->datasetGroups.push_back( group );
   }
 }
@@ -386,7 +403,14 @@ void MDAL::LoaderGdal::createMesh()
   Faces faces( meshGDALDataset()->mNVolumes );
   initFaces( vertices, faces, is_longitude_shifted );
 
-  mMesh.reset( new Mesh() );
+  mMesh.reset( new MemoryMesh(
+                 vertices.size(),
+                 faces.size(),
+                 4, //maximum quads
+                 computeExtent( vertices ),
+                 mFileName
+               )
+             );
   mMesh->vertices = vertices;
   mMesh->faces = faces;
   bool proj_added = addSrcProj();

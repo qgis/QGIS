@@ -36,6 +36,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_loader.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
@@ -46,6 +47,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_loader.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
@@ -53,6 +55,7 @@ IF (WITH_INTERNAL_MDAL)
 
   IF(HDF5_FOUND)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hdf5.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xmdf.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}

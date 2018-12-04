@@ -12,9 +12,11 @@
 #include <limits>
 
 #include "mdal_data_model.hpp"
+#include "mdal_memory_data_model.hpp"
 
 // avoid unused variable warnings
 #define MDAL_UNUSED(x) (void)x;
+#define MDAL_NAN std::numeric_limits<double>::quiet_NaN()
 
 namespace MDAL
 {
@@ -88,9 +90,21 @@ namespace MDAL
   BBox computeExtent( const Vertices &vertices );
 
   // time
-
   //! Returns a delimiter to get time in hours
   double parseTimeUnits( const std::string &units );
+
+  // statistics
+  void combineStatistics( Statistics &main, const Statistics &other );
+
+  //! Calculates statistics for dataset group
+  Statistics calculateStatistics( std::shared_ptr<DatasetGroup> grp );
+
+  //! Calculates statistics for dataset
+  Statistics calculateStatistics( std::shared_ptr<Dataset> dataset );
+
+  // mesh & datasets
+  //! Add bed elevatiom dataset group to mesh
+  void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices, const Faces &faces );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP
