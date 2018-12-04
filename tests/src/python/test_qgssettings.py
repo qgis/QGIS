@@ -181,6 +181,7 @@ class TestQgsSettings(unittest.TestCase):
         self.addToDefaults('testqgissettings/name', 'qgisrocks')
 
         self.settings.beginGroup('testqgissettings')
+        self.assertEqual(self.settings.group(), 'testqgissettings')
         self.assertEqual(['names'], self.settings.childGroups())
 
         self.settings.setValue('surnames/name1', 'qgisrocks-1')
@@ -189,11 +190,14 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.setValue('names/name1', 'qgisrocks-1')
         self.assertEqual('qgisrocks-1', self.settings.value('names/name1'))
         self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
         self.settings.beginGroup('testqgissettings/names')
+        self.assertEqual(self.settings.group(), 'testqgissettings/names')
         self.settings.setValue('name4', 'qgisrocks-4')
         keys = sorted(self.settings.childKeys())
         self.assertEqual(keys, ['name1', 'name2', 'name3', 'name4'])
         self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
         self.assertEqual('qgisrocks-1', self.settings.value('testqgissettings/names/name1'))
         self.assertEqual('qgisrocks-4', self.settings.value('testqgissettings/names/name4'))
 
@@ -205,9 +209,11 @@ class TestQgsSettings(unittest.TestCase):
         self.addToDefaults('testqgissettings/foo/last', 'rocks')
 
         self.settings.beginGroup('testqgissettings')
+        self.assertEqual(self.settings.group(), 'testqgissettings')
         self.assertEqual(['foo'], self.settings.childGroups())
         self.assertEqual(['foo'], self.settings.globalChildGroups())
         self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
 
         self.settings.setValue('testqgissettings/bar/first', 'qgis')
         self.settings.setValue('testqgissettings/bar/last', 'rocks')
@@ -227,6 +233,7 @@ class TestQgsSettings(unittest.TestCase):
     def test_group_section(self):
         # Test group by using Section
         self.settings.beginGroup('firstgroup', section=QgsSettings.Core)
+        self.assertEqual(self.settings.group(), 'core/firstgroup')
         self.assertEqual([], self.settings.childGroups())
         self.settings.setValue('key', 'value')
         self.settings.setValue('key2/subkey1', 'subvalue1')
@@ -237,6 +244,7 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(['key', 'key3'], self.settings.childKeys())
         self.assertEqual(['key2'], self.settings.childGroups())
         self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
         # Set value by writing the group manually
         self.settings.setValue('firstgroup/key4', 'value4', section=QgsSettings.Core)
         # Checking the value that have been set
