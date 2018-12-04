@@ -143,13 +143,14 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   it.nextFeature( firstFeatureInAction );
 
   //compare some values
-  QCOMPARE( firstFeatureInAction.attribute( "Class" ).toString(), firstFeatureBeforeAction.attribute( "Class" ).toString() );
-  QCOMPARE( firstFeatureInAction.attribute( "Heading" ).toString(), firstFeatureBeforeAction.attribute( "Heading" ).toString() );
-  QCOMPARE( firstFeatureInAction.attribute( "Cabin Crew" ).toString(), firstFeatureBeforeAction.attribute( "Cabin Crew" ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Class" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Class" ) ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Heading" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Heading" ) ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString() );
 
-  QgsFeature newFeature( mpLayer->fields() );
+  QgsFeature newFeature( mpLayer->dataProvider()->fields() );
+  newFeature.setAttribute( QStringLiteral( "Class" ), QStringLiteral( "Superjet" ) );
   mpLayer->startEditing();
-  mpLayer->dataProvider()->addFeature( newFeature );
+  mpLayer->addFeature( newFeature );
   mpLayer->commitChanges();
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures + 1 );
 
@@ -158,15 +159,24 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
 
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
-  //following it's failing and I don't know why
-  //QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures + 1 );
+  QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures + 1 );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
+  //get last feature
+  QgsFeature f = mpLayer->getFeature( mpLayer->dataProvider()->featureCount() - 1 );
+  qDebug() << "FID:" << f.id() << "Class:" << f.attribute( "Class" ).toString();
+  QCOMPARE( f.attribute( QStringLiteral( "Class" ) ).toString(), QStringLiteral( "Superjet" ) );
 
   QgsFeature firstFeatureAfterAction;
   it = mpLayer->getFeatures();
   it.nextFeature( firstFeatureAfterAction );
 
   QCOMPARE( firstFeatureAfterAction, firstFeatureBeforeAction );
+
+  //and delete the feature again
+  QgsFeatureIds idsToClean;
+  idsToClean << f.id();
+  mpLayer->dataProvider()->deleteFeatures( idsToClean );
+  QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures );
 }
 
 QGSTEST_MAIN( TestQgsOfflineEditing )
