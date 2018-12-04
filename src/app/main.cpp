@@ -430,6 +430,9 @@ APP_EXPORT
 #endif
 int main( int argc, char *argv[] )
 {
+  //log messages written before creating QgsApplicatoin
+  QStringList preApplicationLogMessages;
+
 #ifdef Q_OS_MACX
   // Increase file resource limits (i.e., number of allowed open files)
   // (from code provided by Larry Biehl, Purdue University, USA, from 'MultiSpec' project)
@@ -866,11 +869,11 @@ int main( int argc, char *argv[] )
   {
     if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
     else
     {
-      QgsMessageLog::logMessage( QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      preApplicationLogMessages << QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
   }
 
@@ -969,6 +972,10 @@ int main( int argc, char *argv[] )
   }
 
   QgsApplication myApp( argc, argv, myUseGuiFlag );
+
+  //write the log messages written before creating QgsApplicatoin
+  for ( QString const &preApplicationLogMessage : preApplicationLogMessages )
+    QgsMessageLog::logMessage( preApplicationLogMessage );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == QLatin1String( "default" ) )
