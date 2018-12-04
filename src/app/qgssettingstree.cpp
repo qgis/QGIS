@@ -47,6 +47,9 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 
+#include <QMenu>
+#include <QMessageBox>
+
 QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   : QTreeWidget( parent )
 {
@@ -69,6 +72,10 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   setEditTriggers( QAbstractItemView::AllEditTriggers );
 
   connect( &mRefreshTimer, &QTimer::timeout, this, &QgsSettingsTree::maybeRefresh );
+
+  setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( this, &QTreeWidget::customContextMenuRequested, this, &QgsSettingsTree::showContextMenu );
+  mContextMenu = new QMenu( this );
 }
 
 void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
@@ -166,6 +173,63 @@ void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
     refresh();
 }
 
+void QgsSettingsTree::showContextMenu( QPoint pos )
+{
+  QTreeWidgetItem *item = itemAt( pos );
+  if ( !item )
+    return;
+
+  Type itemType = item->data( 0, TypeRole ).value< Type >();
+  const QString itemText = item->data( 0, Qt::DisplayRole ).toString();
+  const QString itemPath = item->data( 0, PathRole ).toString();
+  mContextMenu->clear();
+
+  switch ( itemType )
+  {
+    case Group:
+    {
+      QAction *deleteAction = new QAction( tr( "Delete Group…" ), mContextMenu );
+      connect( deleteAction, &QAction::triggered, this, [ = ]
+      {
+        if ( QMessageBox::question( nullptr, tr( "Delete Group" ),
+                                    tr( "Are you sure you want to delete the %1 group?" ).arg( itemText ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return;
+
+
+        mSettings->remove( itemPath );
+        if ( mAutoRefresh )
+          refresh();
+
+      } );
+      mContextMenu->addAction( deleteAction );
+      break;
+    }
+
+    case Setting:
+    {
+      QAction *deleteSetting = new QAction( tr( "Delete Setting…" ), mContextMenu );
+      connect( deleteSetting, &QAction::triggered, this, [ = ]
+      {
+        if ( QMessageBox::question( nullptr, tr( "Delete Setting" ),
+                                    tr( "Are you sure you want to delete the %1 setting?" ).arg( itemPath ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return;
+
+        mSettings->remove( itemPath );
+        if ( mAutoRefresh )
+          refresh();
+      } );
+
+      mContextMenu->addAction( deleteSetting );
+      break;
+    }
+
+  }
+
+  mContextMenu->exec( mapToGlobal( pos ) );
+}
+
 void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 {
   int dividerIndex = 0;
@@ -184,7 +248,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     }
     else
     {
-      child = createItem( group, parent, dividerIndex );
+      child = createItem( group, parent, dividerIndex, true );
     }
     child->setIcon( 0, mGroupIcon );
     ++dividerIndex;
@@ -210,7 +274,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
       }
       else
       {
-        child = createItem( key, parent, dividerIndex );
+        child = createItem( key, parent, dividerIndex, false );
       }
       child->setIcon( 0, mKeyIcon );
       ++dividerIndex;
@@ -238,7 +302,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 }
 
 QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
-    QTreeWidgetItem *parent, int index )
+    QTreeWidgetItem *parent, int index, const bool isGroup )
 {
   QTreeWidgetItem *after = nullptr;
   if ( index != 0 )
@@ -251,7 +315,11 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
     item = new QTreeWidgetItem( this, after );
 
   item->setText( 0, text );
-  item->setFlags( item->flags() | Qt::ItemIsEditable );
+  if ( !isGroup )
+    item->setFlags( item->flags() | Qt::ItemIsEditable );
+
+  item->setData( 0, TypeRole, isGroup ? Group : Setting );
+  item->setData( 0, PathRole, mSettings->group().isEmpty() ? text : mSettings->group() + '/' + text );
 
   QString key = itemKey( item );
   QgsDebugMsgLevel( key, 4 );
