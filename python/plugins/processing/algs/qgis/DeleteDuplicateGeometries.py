@@ -45,6 +45,9 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
     def groupId(self):
         return 'vectorgeneral'
 
+    def tags(self):
+        return self.tr('drop,remove,same,points,coincident,overlapping,filter').split(',')
+
     def __init__(self):
         super().__init__()
 

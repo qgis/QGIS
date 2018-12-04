@@ -26,12 +26,12 @@ QString QgsRemoveDuplicatesByAttributeAlgorithm::name() const
 
 QString QgsRemoveDuplicatesByAttributeAlgorithm::displayName() const
 {
-  return QObject::tr( "Remove duplicates by attribute" );
+  return QObject::tr( "Delete duplicates by attribute" );
 }
 
 QStringList QgsRemoveDuplicatesByAttributeAlgorithm::tags() const
 {
-  return QObject::tr( "field,value,same,filter" ).split( ',' );
+  return QObject::tr( "drop,remove,field,value,same,filter" ).split( ',' );
 }
 
 QString QgsRemoveDuplicatesByAttributeAlgorithm::group() const
