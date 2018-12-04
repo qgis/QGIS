@@ -27,8 +27,6 @@ QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1Literal( "Ope
 QLatin1String QgsOpenClUtils::SETTINGS_DEFAULT_DEVICE_KEY = QLatin1Literal( "OpenClDefaultDevice" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
 bool QgsOpenClUtils::sAvailable = false;
-cl::Platform QgsOpenClUtils::sDefaultPlatform = cl::Platform();
-cl::Device QgsOpenClUtils::sActiveDevice = cl::Device();
 QString QgsOpenClUtils::sSourcePath = QString();
 
 
@@ -163,15 +161,15 @@ bool QgsOpenClUtils::enabled()
 
 cl::Device QgsOpenClUtils::activeDevice()
 {
-  return sActiveDevice;
+  return cl::Device::getDefault();
 }
 
 QString QgsOpenClUtils::activePlatformVersion()
 {
   QString version;
-  if ( QgsOpenClUtils::sDefaultPlatform() )
+  if ( cl::Platform::getDefault()() )
   {
-    std::string platver = QgsOpenClUtils::sDefaultPlatform.getInfo<CL_PLATFORM_VERSION>();
+    std::string platver = cl::Platform::getDefault().getInfo<CL_PLATFORM_VERSION>();
     if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       version = QString::fromStdString( platver.substr( 7 ) ).split( ' ' ).first();
@@ -203,6 +201,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
 {
   if ( deviceId( activeDevice() ) == preferredDeviceId )
   {
+    sAvailable = true;
     return false;
   }
   try
@@ -306,8 +305,6 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
                                    .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ),
                                    LOGMESSAGE_TAG, Qgis::Success );
         sAvailable = true;
-        sActiveDevice = dev;
-        sDefaultPlatform = plat;
       }
     }
   }
@@ -526,9 +523,9 @@ cl::Context QgsOpenClUtils::context()
   static std::once_flag contextCreated;
   std::call_once( contextCreated, [ = ]()
   {
-    if ( available() && sDefaultPlatform() && sActiveDevice() )
+    if ( available() && cl::Platform::getDefault()() && cl::Device::getDefault()() )
     {
-      context = cl::Context( sActiveDevice );
+      context = cl::Context( cl::Device::getDefault() );
     }
   } );
   return context;
