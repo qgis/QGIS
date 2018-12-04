@@ -41,18 +41,21 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
   public:
 
     /**
-     * Constructor for QgsImageCacheEntry, corresponding to the specified image \a path and \a size.
+     * Constructor for QgsImageCacheEntry, corresponding to the specified image \a path , \a size and \a opacity.
      *
      * If \a keepAspectRatio is true then the original raster aspect ratio will always be preserved
      * when resizing.
      */
-    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio ) ;
+    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity ) ;
 
     //! Rendered image size
     QSize size;
 
     //! True if original raster aspect ratio was kept during resizing
     bool keepAspectRatio = true;
+
+    //! Rendered image opacity
+    double opacity = 1.0;
 
     //! Rendered, resampled image.
     QImage image;
@@ -108,10 +111,12 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * If \a keepAspectRatio is true, then the original raster aspect ratio will be maintained during
      * any resampling operations.
      *
+     * An \a opacity parameter dictates the opacity of the image.
+     *
      * If the resultant raster was of a sufficiently small size to store in the cache, then \a fitsInCache
      * will be set to true.
      */
-    QImage pathAsImage( const QString &path, QSize size, bool keepAspectRatio, bool &fitsInCache SIP_OUT );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT );
 
     /**
      * Returns the original size (in pixels) of the image at the specified \a path.
@@ -134,7 +139,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio ) const;
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity ) const;
 
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;
