@@ -6360,4 +6360,41 @@ tests:
         name: expected/force_rhr_multipolys.gml
         type: vector
 
+  - algorithm: native:splitlinesbylength
+    name: Split multilines by length
+    params:
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      LENGTH: 1.1
+    results:
+      OUTPUT:
+        name: expected/split_multiline_by_length.gml
+        type: vector
+
+  - algorithm: native:splitlinesbylength
+    name: Split lines by length
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      LENGTH: 2.2
+    results:
+      OUTPUT:
+        name: expected/split_lines_by_length.gml
+        type: vector
+
+  - algorithm: native:splitlinesbylength
+    name: Split linesz by length
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      LENGTH: 3.1
+    results:
+      OUTPUT:
+        name: expected/split_linez_by_length.shp
+        type: vector
+
+
 # See ../README.md for a description of the file format

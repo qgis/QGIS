@@ -175,6 +175,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:difference', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:dropgeometries', ALL)
         self._support_inplace_edit_tester('native:splitwithlines', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:splitlinesbylength', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:buffer', POLYGON_ONLY_NOT_M_NOT_Z)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
