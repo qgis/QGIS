@@ -21,4 +21,4 @@ QgsProcessingParameterNumber|B_RANGE_MAX|Rescale Range for BLUE max|QgsProcessin
 QgsProcessingParameterNumber|B_PERCTL_MIN|Percentiles Range for BLUE max|QgsProcessingParameterNumber.Integer|1|False|1|99
 QgsProcessingParameterNumber|B_PERCTL_MAX|Percentiles Range for BLUE max|QgsProcessingParameterNumber.Integer|99|False|1|99
 QgsProcessingParameterNumber|B_STDDEV|Standard deviation for BLUE|QgsProcessingParameterNumber.Double|2.0|False|0|None
-QgsProcessingParameterRasterDestination|RGB|Output RGB
+SagaImageOutput|RGB|Output RGB
