@@ -41,10 +41,11 @@
 
 ///@cond PRIVATE
 
-QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const bool keepAspectRatio )
+QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const bool keepAspectRatio, const double opacity )
   : QgsAbstractContentCacheEntry( path )
   , size( size )
   , keepAspectRatio( keepAspectRatio )
+  , opacity( opacity )
 {
 }
 
@@ -52,7 +53,7 @@ bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) co
 {
   const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->size != size || otherImage->path != path )
+  if ( !otherImage || otherImage->keepAspectRatio != keepAspectRatio || otherImage->size != size || otherImage->path != path || otherImage->opacity != opacity )
     return false;
 
   return true;
@@ -99,13 +100,13 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
-QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const bool keepAspectRatio, bool &fitsInCache )
+QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache )
 {
   QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
 
-  QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio ) );
+  QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity ) );
 
   QImage result;
 
@@ -115,7 +116,7 @@ QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const 
   if ( currentEntry->image.isNull() )
   {
     long cachedDataSize = 0;
-    result = renderImage( file, size, keepAspectRatio );
+    result = renderImage( file, size, keepAspectRatio, opacity );
     cachedDataSize += result.width() * result.height() * 32;
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
@@ -161,7 +162,7 @@ QSize QgsImageCache::originalSize( const QString &path ) const
   return QSize();
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio ) const
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity ) const
 {
   QImage im;
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
@@ -210,6 +211,12 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
       im = reader.read();
     }
   }
+
+  if ( !im.hasAlphaChannel() )
+    im = im.convertToFormat( QImage::Format_ARGB32 );
+
+  if ( opacity < 1.0 )
+    QgsSymbolLayerUtils::multiplyImageOpacity( &im, opacity );
 
   // render image at desired size -- null size means original size
   if ( !size.isValid() || size.isNull() || im.size() == size )
