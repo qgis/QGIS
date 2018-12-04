@@ -142,6 +142,18 @@ are based on the group. By default, no group is set.
 %Docstring
 Resets the group to what it was before the corresponding beginGroup() call.
 %End
+
+    QString group() const;
+%Docstring
+Returns the current group.
+
+.. seealso:: :py:func:`beginGroup`
+
+.. seealso:: :py:func:`endGroup`
+
+.. versionadded:: 3.6
+%End
+
     QStringList allKeys() const;
 %Docstring
 Returns a list of all keys, including subkeys, that can be read using the QSettings object.
