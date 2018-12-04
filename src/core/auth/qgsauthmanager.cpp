@@ -175,7 +175,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   mAuthInit = true;
 
   QgsDebugMsg( QStringLiteral( "Initializing QCA..." ) );
-  mQcaInitializer = new QCA::Initializer( QCA::Practical, 256 );
+  mQcaInitializer = qgis::make_unique<QCA::Initializer>( QCA::Practical, 256 );
 
   QgsDebugMsg( QStringLiteral( "QCA initialized." ) );
   QCA::scanForPlugins();
@@ -2974,8 +2974,6 @@ QgsAuthManager::~QgsAuthManager()
   mMutex = nullptr;
   delete mScheduledDbEraseTimer;
   mScheduledDbEraseTimer = nullptr;
-  delete mQcaInitializer;
-  mQcaInitializer = nullptr;
   QSqlDatabase::removeDatabase( QStringLiteral( "authentication.configs" ) );
 }
 

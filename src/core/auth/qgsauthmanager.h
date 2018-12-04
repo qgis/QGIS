@@ -848,7 +848,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit = false;
     QString mAuthDbPath;
 
-    QCA::Initializer *mQcaInitializer = nullptr;
+    std::unique_ptr<QCA::Initializer> mQcaInitializer;
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod *> mAuthMethods;
