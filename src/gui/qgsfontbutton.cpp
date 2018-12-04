@@ -773,6 +773,8 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
+#elif defined(Q_OS_MAC)
+      mIconSize = QSize( buttonSize.width() - 10, height() - 2 );
 #else
       mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
 #endif
