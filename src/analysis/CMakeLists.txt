@@ -92,6 +92,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
   processing/qgsalgorithmsnaptogrid.cpp
+  processing/qgsalgorithmsplitlinesbylength.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
