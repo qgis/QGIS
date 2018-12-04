@@ -430,7 +430,7 @@ APP_EXPORT
 #endif
 int main( int argc, char *argv[] )
 {
-  //log messages written before creating QgsApplicatoin
+  //log messages written before creating QgsApplication
   QStringList preApplicationLogMessages;
 
 #ifdef Q_OS_MACX
@@ -973,8 +973,8 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
-  //write the log messages written before creating QgsApplicatoin
-  for ( QString const &preApplicationLogMessage : preApplicationLogMessages )
+  //write the log messages written before creating QgsApplication
+  for ( const QString &preApplicationLogMessage : qgis::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage );
 
   // Settings migration is only supported on the default profile for now.
