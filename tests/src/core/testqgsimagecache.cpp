@@ -49,7 +49,8 @@ class TestQgsImageCache : public QObject
     void cleanup() {} // will be called after every testfunction.
     void fillCache();
     void threadSafeImage();
-    void changeImage(); //check that cache is updated if image source file changes
+    void changeImage(); // check that cache is updated if image source file changes
+    void size(); // check various size-specific handling
     void base64();
 
 };
@@ -191,6 +192,29 @@ void TestQgsImageCache::changeImage()
   // existing cached image should be used
   img = cache2.pathAsImage( tempImagePath, QSize( 200, 200 ), true, inCache );
   QVERIFY( imageCheck( "imagecache_changed_before", img, 30 ) );
+}
+
+void TestQgsImageCache::size()
+{
+  QgsImageCache cache;
+  QImage img;
+  bool inCache;
+  QString originalImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+
+  // null size should return image using original size
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache );
+  QCOMPARE( img.width(), 511 );
+  QCOMPARE( img.height(), 800 );
+
+  // a size with an height set to 0 while keep aspect ratio is true should return an image with automatically computed height
+  img = cache.pathAsImage( originalImage, QSize( 100, 0 ), true, 1.0, inCache );
+  QCOMPARE( img.width(), 100 );
+  QCOMPARE( img.height(), 157 );
+
+  // a size with an width set to 0 while keep aspect ratio is true should return an image with automatically computed width
+  img = cache.pathAsImage( originalImage, QSize( 0, 100 ), true, 1.0, inCache );
+  QCOMPARE( img.width(), 64 );
+  QCOMPARE( img.height(), 100 );
 }
 
 void TestQgsImageCache::base64()

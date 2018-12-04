@@ -115,8 +115,8 @@ QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const 
   if ( currentEntry->image.isNull() )
   {
     long cachedDataSize = 0;
-    cachedDataSize += currentEntry->size.width() * currentEntry->size.height() * 32;
     result = renderImage( file, size, keepAspectRatio );
+    cachedDataSize += result.width() * result.height() * 32;
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
       fitsInCache = false;
@@ -214,6 +214,12 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   // render image at desired size -- null size means original size
   if ( !size.isValid() || size.isNull() || im.size() == size )
     return im;
+  // when original aspect ratio is respected and provided height value is 0, automatically compute height
+  else if ( keepAspectRatio && size.height() == 0 )
+    return im.scaledToWidth( size.width(), Qt::SmoothTransformation );
+  // when original aspect ratio is respected and provided width value is 0, automatically compute width
+  else if ( keepAspectRatio && size.width() == 0 )
+    return im.scaledToHeight( size.height(), Qt::SmoothTransformation );
   else
     return im.scaled( size, keepAspectRatio ? Qt::KeepAspectRatio : Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
 }
