@@ -76,7 +76,7 @@ namespace MDAL
 
     protected:
       virtual CFDimensions populateDimensions() = 0;
-      virtual void populateFacesAndVertices( MDAL::Mesh *mesh ) = 0;
+      virtual void populateFacesAndVertices( Vertices &vertices, Faces &faces ) = 0;
       virtual void addBedElevation( MDAL::Mesh *mesh ) = 0;
       virtual std::string getCoordinateSystemVariableName() = 0;
       virtual std::set<std::string> ignoreNetCDFVariables() = 0;
@@ -87,10 +87,13 @@ namespace MDAL
       void setProjection( MDAL::Mesh *m );
       cfdataset_info_map parseDatasetGroupInfo();
       void parseTime( std::vector<double> &times );
-      std::shared_ptr<MDAL::Dataset> createFace2DDataset( size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
-          const std::vector<double> &vals_x,
-          const std::vector<double> &vals_y,
-          double fill_val_x, double fill_val_y );
+      std::shared_ptr<MDAL::Dataset> createFace2DDataset(
+        std::shared_ptr<MDAL::DatasetGroup> group,
+        size_t ts,
+        const MDAL::CFDatasetGroupInfo &dsi,
+        const std::vector<double> &vals_x,
+        const std::vector<double> &vals_y,
+        double fill_val_x, double fill_val_y );
 
       void addDatasetGroups( Mesh *mesh,
                              const std::vector<double> &times,

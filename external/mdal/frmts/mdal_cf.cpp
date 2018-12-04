@@ -132,30 +132,22 @@ MDAL::cfdataset_info_map MDAL::LoaderCF::parseDatasetGroupInfo()
   return dsinfo_map;
 }
 
-static void populate_vals( bool is_vector, std::vector<MDAL::Value> &vals, size_t i,
+static void populate_vals( bool is_vector, double *vals, size_t i,
                            const std::vector<double> &vals_x, const std::vector<double> &vals_y,
                            size_t idx, double fill_val_x, double fill_val_y )
 {
-
-  vals[i].x = MDAL::safeValue( vals_x[idx], fill_val_x );
   if ( is_vector )
   {
-    vals[i].y = MDAL::safeValue( vals_y[idx], fill_val_y );
+    vals[2 * i] =   MDAL::safeValue( vals_x[idx], fill_val_x );
+    vals[2 * i + 1] =   MDAL::safeValue( vals_y[idx], fill_val_y );
   }
-}
-
-static void populate_nodata( std::vector<MDAL::Value> &vals, size_t from_i, size_t to_i )
-{
-  for ( size_t i = from_i; i < to_i; ++i )
+  else
   {
-    vals[i].noData = true;
-    vals[i].x = std::numeric_limits<double>::quiet_NaN();
-    vals[i].y = std::numeric_limits<double>::quiet_NaN();
+    vals[i] =   MDAL::safeValue( vals_x[idx], fill_val_x );
   }
 }
 
-
-std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
+std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( std::shared_ptr<DatasetGroup> group, size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
     const std::vector<double> &vals_x, const std::vector<double> &vals_y,
     double fill_val_x, double fill_val_y )
 {
@@ -163,18 +155,13 @@ std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( size_t ts, c
   size_t nFaces2D = mDimensions.size( CFDimensions::Face2D );
   size_t nLine1D = mDimensions.size( CFDimensions::Line1D );
 
-  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared<MDAL::Dataset>();
-  dataset->values.resize( mDimensions.faceCount() );
-
-  populate_nodata( dataset->values,
-                   0,
-                   nLine1D );
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared<MDAL::MemoryDataset>( group.get() );
 
   for ( size_t i = 0; i < nFaces2D; ++i )
   {
     size_t idx = ts * nFaces2D + i;
     populate_vals( dsi.is_vector,
-                   dataset->values,
+                   dataset->values(),
                    nLine1D + i,
                    vals_x,
                    vals_y,
@@ -194,10 +181,13 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
   {
     const CFDatasetGroupInfo dsi = it.second;
     // Create a dataset group
-    std::shared_ptr<MDAL::DatasetGroup> group = std::make_shared<MDAL::DatasetGroup>();
-    group->uri = mFileName;
-    group->setName( dsi.name );
-    group->isScalar = !dsi.is_vector;
+    std::shared_ptr<MDAL::DatasetGroup> group = std::make_shared<MDAL::DatasetGroup>(
+          mesh,
+          mFileName,
+          dsi.name
+        );
+    group->setIsScalar( !dsi.is_vector );
+    group->setIsOnVertices( false );
 
     // read X data
     double fill_val_x = mNcFile.getFillValue( dsi.ncid_x );
@@ -221,18 +211,20 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
 
       if ( dsi.outputType == CFDimensions::Face2D )
       {
-        group->isOnVertices = false;
-        dataset = createFace2DDataset( ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
+        dataset = createFace2DDataset( group, ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
       }
 
-      dataset->parent = group.get();
-      dataset->time = time;
+      dataset->setTime( time );
+      dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
       group->datasets.push_back( dataset );
     }
 
     // Add to mesh
     if ( !group->datasets.empty() )
+    {
+      group->setStatistics( MDAL::calculateStatistics( group ) );
       mesh->datasetGroups.push_back( group );
+    }
   }
 }
 
@@ -299,9 +291,6 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
 {
   if ( status ) *status = MDAL_Status::None;
 
-  std::unique_ptr< MDAL::Mesh > mesh( new MDAL::Mesh );
-  mesh->uri = mFileName;
-
   //Dimensions dims;
   std::vector<double> times;
 
@@ -314,7 +303,21 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
     mDimensions = populateDimensions();
 
     // Create mMesh
-    populateFacesAndVertices( mesh.get() );
+    Faces faces;
+    Vertices vertices;
+    populateFacesAndVertices( vertices, faces );
+    std::unique_ptr< MemoryMesh > mesh(
+      new MemoryMesh(
+        vertices.size(),
+        faces.size(),
+        mDimensions.MaxVerticesInFace,
+        computeExtent( vertices ),
+        mFileName
+      )
+    );
+    mesh->faces = faces;
+    mesh->vertices = vertices;
+
     addBedElevation( mesh.get() );
     setProjection( mesh.get() );
 
@@ -326,14 +329,14 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
 
     // Create datasets
     addDatasetGroups( mesh.get(), times, dsinfo_map );
+
+    return mesh;
   }
   catch ( MDAL_Status error )
   {
     if ( status ) *status = ( error );
-    if ( mesh ) mesh.reset();
+    return std::unique_ptr<Mesh>();
   }
-
-  return mesh;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

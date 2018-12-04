@@ -82,9 +82,9 @@ namespace MDAL
       bool meshes_equals( const GdalDataset *ds1, const GdalDataset *ds2 ) const;
 
       metadata_hash parseMetadata( GDALMajorObjectH gdalBand, const char *pszDomain = nullptr );
-      void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<Dataset> tos, bool is_vector, bool is_x );
+      void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x );
       bool addSrcProj();
-      void activateFaces( std::shared_ptr<Dataset> tos );
+      void activateFaces( std::shared_ptr<MemoryDataset> tos );
       void addDatasetGroups();
       void createMesh();
       void parseRasterBands( const GdalDataset *cfGDALDataset );
@@ -92,7 +92,7 @@ namespace MDAL
       const std::string mFileName;
       const std::string mDriverName; /* GDAL driver name */
       double *mPafScanline; /* temporary buffer for reading one raster line */
-      std::unique_ptr< Mesh > mMesh;
+      std::unique_ptr< MemoryMesh > mMesh;
       gdal_datasets_vector gdal_datasets;
       data_hash mBands; /* raster bands GDAL handle */
   };

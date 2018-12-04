@@ -3,18 +3,20 @@
  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
 */
 
-#ifndef MDAL_DEFINES_HPP
-#define MDAL_DEFINES_HPP
+#ifndef MDAL_DATA_MODEL_HPP
+#define MDAL_DATA_MODEL_HPP
 
 #include <stddef.h>
 #include <vector>
 #include <memory>
 #include <map>
 #include <string>
+#include "mdal.h"
 
 namespace MDAL
 {
   class DatasetGroup;
+  class Mesh;
 
   struct BBox
   {
@@ -27,45 +29,42 @@ namespace MDAL
     double maxY;
   };
 
-
   typedef struct
   {
-    double x;
-    double y;
-    double z; // Bed elevation
-  } Vertex;
-
-  typedef std::vector<size_t> Face;
-
-  typedef std::vector<Vertex> Vertices;
-  typedef std::vector<Face> Faces;
-
-  typedef struct
-  {
-    double x;
-    double y;
-
-    bool noData = false;
-  } Value; //Dataset Value
+    double minimum = std::numeric_limits<double>::quiet_NaN();
+    double maximum = std::numeric_limits<double>::quiet_NaN();
+  } Statistics;
 
   typedef std::vector< std::pair< std::string, std::string > > Metadata;
 
   class Dataset
   {
     public:
-      double time;
+      Dataset( DatasetGroup *parent );
+      virtual ~Dataset();
 
-      /**
-       * size - face count if !isOnVertices
-       * size - vertex count if isOnVertices
-       */
-      std::vector<Value> values;
-      std::vector<bool> active; // size - face count. Whether the output for this is active...
+      size_t valuesCount() const;
+      virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) = 0;
+      virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) = 0;
+      virtual size_t activeData( size_t indexStart, size_t count, int *buffer ) = 0;
 
-      bool isValid = true;
-      DatasetGroup *parent = nullptr;
+      Statistics statistics() const;
+      void setStatistics( const Statistics &statistics );
 
-      bool isActive( size_t faceIndex );
+      bool isValid() const;
+      void setIsValid( bool isValid );
+
+      DatasetGroup *group() const;
+      Mesh *mesh() const;
+
+      double time() const;
+      void setTime( double time );
+
+    private:
+      double mTime = std::numeric_limits<double>::quiet_NaN();
+      bool mIsValid = true;
+      DatasetGroup *mParent = nullptr;
+      Statistics mStatistics;
   };
 
   typedef std::vector<std::shared_ptr<Dataset>> Datasets;
@@ -73,43 +72,103 @@ namespace MDAL
   class DatasetGroup
   {
     public:
-      std::string getMetadata( const std::string &key );
+      DatasetGroup( Mesh *parent,
+                    const std::string &uri );
 
+      DatasetGroup( Mesh *parent,
+                    const std::string &uri,
+                    const std::string &name );
+
+      std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );
 
       std::string name();
       void setName( const std::string &name );
 
       Metadata metadata;
-
-      bool isScalar = true;
-      bool isOnVertices = true;
       Datasets datasets;
-      std::string uri; // file/uri from where it came
+
+      bool isScalar() const;
+      void setIsScalar( bool isScalar );
+
+      bool isOnVertices() const;
+      void setIsOnVertices( bool isOnVertices );
+
+      std::string uri() const;
+
+      Statistics statistics() const;
+      void setStatistics( const Statistics &statistics );
+
+      Mesh *mesh() const;
+
+    private:
+      Mesh *mParent = nullptr;
+      bool mIsScalar = true;
+      bool mIsOnVertices = true;
+      std::string mUri; // file/uri from where it came
+      Statistics mStatistics;
   };
 
   typedef std::vector<std::shared_ptr<DatasetGroup>> DatasetGroups;
 
-  struct Mesh
+  class MeshVertexIterator
   {
-    std::string uri; // file/uri from where it came
-    std::string crs;
+    public:
+      virtual ~MeshVertexIterator();
 
-    Vertices vertices;
-    std::map<size_t, size_t> vertexIDtoIndex; // only for 2DM and DAT files
-
-    Faces faces;
-    std::map<size_t, size_t> faceIDtoIndex; // only for 2DM and DAT files
-
-    DatasetGroups datasetGroups;
-
-    void setSourceCrs( const std::string &str );
-    void setSourceCrsFromWKT( const std::string &wkt );
-    void setSourceCrsFromEPSG( int code );
-
-    void addBedElevationDataset();
+      virtual size_t next( size_t vertexCount, double *coordinates ) = 0;
   };
 
+  class MeshFaceIterator
+  {
+    public:
+      virtual ~MeshFaceIterator();
+
+      virtual size_t next( size_t faceOffsetsBufferLen,
+                           int *faceOffsetsBuffer,
+                           size_t vertexIndicesBufferLen,
+                           int *vertexIndicesBuffer ) = 0;
+  };
+
+  class Mesh
+  {
+    public:
+      Mesh( size_t verticesCount,
+            size_t facesCount,
+            size_t faceVerticesMaximumCount,
+            BBox extent,
+            const std::string &uri );
+      virtual ~Mesh();
+
+      void setSourceCrs( const std::string &str );
+      void setSourceCrsFromWKT( const std::string &wkt );
+      void setSourceCrsFromEPSG( int code );
+
+      void setVerticesCount( size_t verticesCount );
+      void setFacesCount( size_t facesCount );
+      void setFaceVerticesMaximumCount( size_t faceVerticesMaximumCount );
+      void setExtent( const BBox &extent );
+
+      virtual std::unique_ptr<MDAL::MeshVertexIterator> readVertices() = 0;
+      virtual std::unique_ptr<MDAL::MeshFaceIterator> readFaces() = 0;
+
+      DatasetGroups datasetGroups;
+
+      size_t verticesCount() const;
+      size_t facesCount() const;
+      std::string uri() const;
+      BBox extent() const;
+      std::string crs() const;
+      size_t faceVerticesMaximumCount() const;
+
+    private:
+      size_t mVerticesCount = 0;
+      size_t mFacesCount = 0;
+      size_t mFaceVerticesMaximumCount = 0; //typically 3 or 4, sometimes up to 9
+      BBox mExtent;
+      const std::string mUri; // file/uri from where it came
+      std::string mCrs;
+  };
 } // namespace MDAL
-#endif //MDAL_DEFINES_HPP
+#endif //MDAL_DATA_MODEL_HPP
 
