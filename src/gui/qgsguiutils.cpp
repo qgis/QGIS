@@ -195,9 +195,12 @@ namespace QgsGuiUtils
     // parent is intentionally not set to 'this' as
     // that would make it follow the style sheet font
     // see also #12233 and #4937
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
+#if defined(Q_OS_MAC)
+    // Native dialog broken on macOS with Qt5
+    // probably only broken in Qt5.11.1 and .2
+    //    (see https://successfulsoftware.net/2018/11/02/qt-is-broken-on-macos-right-now/ )
+    // possible upstream bug: https://bugreports.qt.io/browse/QTBUG-69878 (fixed in Qt 5.12 ?)
+    return QFontDialog::getFont( &ok, initial, nullptr, title, QFontDialog::DontUseNativeDialog );
 #else
     return QFontDialog::getFont( &ok, initial, nullptr, title );
 #endif
