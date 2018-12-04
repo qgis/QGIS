@@ -7118,7 +7118,6 @@ void QgisApp::commitError( QgsVectorLayer *vlayer )
   const QStringList commitErrors = vlayer->commitErrors();
   if ( !vlayer->allowCommit() && commitErrors.empty() )
   {
-    QgsMessageLog::logMessage( tr( "Could not save changes. Geometry validation failed." ) );
     return;
   }
 
