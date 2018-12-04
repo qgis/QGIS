@@ -106,7 +106,8 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
      *
      * The \a size parameter dictates the target size of the image. An invalid size indicates the
-     * original raster image size (with no resampling).
+     * original raster image size (with no resampling). A size in which the width or height is
+     * set to zero will have the zeroed value automatically computed when keepAspectRatio is true.
      *
      * If \a keepAspectRatio is true, then the original raster aspect ratio will be maintained during
      * any resampling operations.
