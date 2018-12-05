@@ -27,6 +27,11 @@ QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   setBackgroundEnabled( false );
 }
 
+QgsLayoutItem::Flags QgsResidualPlotItem::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint;
+}
+
 void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );

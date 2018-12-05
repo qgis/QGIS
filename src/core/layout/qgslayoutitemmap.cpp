@@ -77,6 +77,11 @@ QIcon QgsLayoutItemMap::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemMap.svg" ) );
 }
 
+QgsLayoutItem::Flags QgsLayoutItemMap::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint;
+}
+
 void QgsLayoutItemMap::assignFreeId()
 {
   if ( !mLayout )

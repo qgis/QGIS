@@ -64,6 +64,11 @@ QIcon QgsLayoutItemLegend::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLegend.svg" ) );
 }
 
+QgsLayoutItem::Flags QgsLayoutItemLegend::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint;
+}
+
 void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   if ( !painter )
