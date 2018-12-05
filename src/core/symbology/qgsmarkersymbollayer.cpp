@@ -2676,8 +2676,6 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
     return;
   }
 
-  p->save();
-
   QString path = mPath;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
@@ -2692,6 +2690,11 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
       }
     }
   }
+
+  if ( path.isEmpty() )
+    return;
+
+  p->save();
 
   QPointF outputOffset;
   double angle = 0.0;
