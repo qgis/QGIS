@@ -83,6 +83,7 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QWidget
     QLineEdit *mFileLineEdit = nullptr;
     QToolButton *mFileToolButton = nullptr;
     QString mLastPathKey;
+    QString mBase64;
 
     QString defaultPath() const;
     QString settingsKey() const;
