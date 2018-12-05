@@ -145,8 +145,9 @@ class CORE_EXPORT QgsMeshDatasetValue
 /**
  * \ingroup core
  *
- * QgsMeshDataBlock is a block that can be used to retrieve a block of
- * active flag (e.g. face's active integer flag)
+ * QgsMeshDataBlock is a block of integers/doubles that can be used
+ * to retrieve:
+ * active flags (e.g. face's active integer flag)
  * scalars (e.g. scalar dataset double values)
  * vectors (e.g. vector dataset doubles x,y values)
  *
