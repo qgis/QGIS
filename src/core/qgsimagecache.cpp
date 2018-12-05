@@ -133,7 +133,6 @@ QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const 
   }
   else
   {
-    QgsDebugMsg( "HITTTTTTTTTTTTTTTTTTTTTTTTT!!!!!!!!!!!!!!" );
     result = currentEntry->image;
   }
 
@@ -145,7 +144,11 @@ QSize QgsImageCache::originalSize( const QString &path ) const
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
   if ( QFile::exists( path ) )
   {
-    return QImage( path ).size();
+    QImageReader reader( path );
+    if ( reader.size().isValid() )
+      return reader.size();
+    else
+      return QImage( path ).size();
   }
   else
   {
