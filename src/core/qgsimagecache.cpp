@@ -194,6 +194,11 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
 
     if ( ba == "broken" )
     {
+      // if image size is set to respect aspect ratio, correct for broken image aspect ratio
+      if ( size.width() == 0 )
+        size.setWidth( size.height() );
+      if ( size.height() == 0 )
+        size.setHeight( size.width() );
       // render "broken" svg
       im = QImage( size, QImage::Format_ARGB32_Premultiplied );
       im.fill( 0 ); // transparent background
@@ -208,6 +213,12 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     }
     else if ( ba == "fetching" )
     {
+      // if image size is set to respect aspect ratio, correct for broken image aspect ratio
+      if ( size.width() == 0 )
+        size.setWidth( size.height() );
+      if ( size.height() == 0 )
+        size.setHeight( size.width() );
+
       // render "fetching" svg
       im = QImage( size, QImage::Format_ARGB32_Premultiplied );
       im.fill( 0 ); // transparent background
