@@ -77,5 +77,6 @@ class TestQgsImageSourceLineEdit(unittest.TestCase):
         self.assertEqual(len(spy), 5)
         self.assertEqual(spy[4][0], '')
 
+
 if __name__ == '__main__':
     unittest.main()
