@@ -6976,13 +6976,13 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
     QgsMimeDataUtils::Uri uri( dlg.uri() );
     if ( uri.isValid() )
     {
-      bool layerIsValid( layer->isValid() );
+      bool layerWasValid( layer->isValid() );
       // Store subset string form vlayer if we are fixing a bad layer
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QString subsetString;
       // Get the subset string directly from the data provider because
       // layer's method will return a null string from invalid layers
-      if ( !layerIsValid && vlayer && vlayer->dataProvider() &&
+      if ( !layerWasValid && vlayer && vlayer->dataProvider() &&
            vlayer->dataProvider()->supportsSubsetString() &&
            !vlayer->dataProvider()->subsetString( ).isEmpty() )
       {
@@ -6990,7 +6990,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
       }
       layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
       // Re-apply original style and subset string  when fixing bad layers
-      if ( !( layerIsValid || layer->originalXmlProperties().isEmpty() ) )
+      if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
       {
         if ( ! subsetString.isEmpty() )
         {
@@ -7029,6 +7029,12 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
           tl->setItemVisibilityChecked( false );
           tl->setItemVisibilityChecked( true );
         }
+      }
+
+      // Tell the bridge that we have fixed a layer
+      if ( ! layerWasValid && layer->isValid() )
+      {
+        QgsProject::instance()->layerTreeRoot()->customLayerOrderChanged( );
       }
     }
   }
