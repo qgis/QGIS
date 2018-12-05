@@ -78,6 +78,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
+    QgsLayoutItem::Flags itemFlags() const override;
     //Overridden to show legend title
     QString displayName() const override;
 

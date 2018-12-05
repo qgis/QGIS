@@ -27,6 +27,7 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitempage.h"
+#include "qgsimageoperation.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -121,6 +122,11 @@ QString QgsLayoutItem::displayName() const
 int QgsLayoutItem::type() const
 {
   return QgsLayoutItemRegistry::LayoutItem;
+}
+
+QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const
+{
+  return nullptr;
 }
 
 void QgsLayoutItem::setId( const QString &id )
@@ -325,6 +331,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       draw( itemRenderContext );
       drawFrame( context );
       p.end();
+
+      QgsImageOperation::multiplyOpacity( image, mEvaluatedOpacity );
 
       painter->save();
       // scale painter from mm to dots
@@ -854,7 +862,9 @@ void QgsLayoutItem::setBlendMode( const QPainter::CompositionMode mode )
 void QgsLayoutItem::setItemOpacity( double opacity )
 {
   mOpacity = opacity;
-  refreshOpacity( true );
+  refreshOpacity( mItemCachedImage.isNull() );
+  if ( !mItemCachedImage.isNull() )
+    invalidateCache();
 }
 
 bool QgsLayoutItem::excludeFromExports() const
@@ -870,12 +880,13 @@ void QgsLayoutItem::setExcludeFromExports( bool exclude )
 
 bool QgsLayoutItem::containsAdvancedEffects() const
 {
-  return false;
+  return itemFlags() & Flag::FlagOverridesPaint ? false : mEvaluatedOpacity < 1.0;
 }
 
 bool QgsLayoutItem::requiresRasterization() const
 {
-  return itemOpacity() < 1.0 || blendMode() != QPainter::CompositionMode_SourceOver;
+  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) ||
+         blendMode() != QPainter::CompositionMode_SourceOver;
 }
 
 double QgsLayoutItem::estimatedFrameBleed() const
@@ -1360,7 +1371,14 @@ void QgsLayoutItem::refreshOpacity( bool updateItem )
   double opacity = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::Opacity, createExpressionContext(), mOpacity * 100.0 );
 
   // Set the QGraphicItem's opacity
-  setOpacity( opacity / 100.0 );
+  mEvaluatedOpacity = opacity / 100.0;
+
+  if ( itemFlags() & QgsLayoutItem::FlagOverridesPaint )
+  {
+    // item handles it's own painting, so it won't use the built-in opacity handling in QgsLayoutItem::paint, and
+    // we have to rely on QGraphicsItem opacity to handle this
+    setOpacity( mEvaluatedOpacity );
+  }
 
   if ( updateItem )
   {

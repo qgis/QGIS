@@ -71,6 +71,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
+    QgsLayoutItem::Flags itemFlags() const override;
 
     /**
      * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.

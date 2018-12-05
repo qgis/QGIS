@@ -288,6 +288,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     };
 
     /**
+     * Flags for controlling how an item behaves.
+     * \since QGIS 3.4.3
+     */
+    enum Flag
+    {
+      FlagOverridesPaint = 1 << 1,  //!< Item overrides the default layout item painting method
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
      *
      * If \a manageZValue is true, the z-Value of this item will be managed by the layout.
@@ -323,6 +333,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setId()
     */
     virtual QString uuid() const { return mUuid; }
+
+    /**
+     * Returns the item's flags, which indicate how the item behaves.
+     * \since QGIS 3.4.3
+     */
+    virtual Flags itemFlags() const;
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
@@ -1109,6 +1125,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Item opacity, between 0 and 1
     double mOpacity = 1.0;
+    double mEvaluatedOpacity = 1.0;
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
@@ -1137,7 +1154,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void preparePainter( QPainter *painter );
     bool shouldDrawAntialiased() const;
     bool shouldDrawDebugRect() const;
-
     QSizeF applyMinimumSize( QSizeF targetSize );
     QSizeF applyFixedSize( QSizeF targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
@@ -1156,6 +1172,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     friend class QgsLayoutItemGroup;
     friend class QgsCompositionConverter;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItem::Flags )
 
 #endif //QGSLAYOUTITEM_H
 
