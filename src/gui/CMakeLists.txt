@@ -270,6 +270,7 @@ SET(QGIS_GUI_SRCS
   qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
+  qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfloatingwidget.cpp
@@ -369,7 +370,6 @@ SET(QGIS_GUI_SRCS
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
-  qgssvgsourcelineedit.cpp
   qgssymbolbutton.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
@@ -450,6 +450,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfeaturelistcombobox.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
+  qgsfilecontentsourcelineedit.h
   qgsfilewidget.h
   qgsfilterlineedit.h
   qgsfloatingwidget.h
@@ -542,7 +543,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsstatusbar.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
-  qgssvgsourcelineedit.h
   qgssymbolbutton.h
   qgstablewidgetbase.h
   qgstabwidget.h

@@ -614,7 +614,7 @@
   <customwidget>
    <class>QgsSvgSourceLineEdit</class>
    <extends>QWidget</extends>
-   <header>qgssvgsourcelineedit.h</header>
+   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
