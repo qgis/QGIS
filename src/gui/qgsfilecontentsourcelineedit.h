@@ -137,6 +137,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     QLineEdit *mFileLineEdit = nullptr;
     QToolButton *mFileToolButton = nullptr;
     QString mLastPathKey;
+    QString mBase64;
 
     QString defaultPath() const;
     QString settingsKey() const;

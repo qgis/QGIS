@@ -70,7 +70,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
 
 QString QgsAbstractFileContentSourceLineEdit::source() const
 {
-  return mFileLineEdit->text();
+  return mBase64.isEmpty() ? mFileLineEdit->text() : mBase64;
 }
 
 void QgsAbstractFileContentSourceLineEdit::setLastPathSettingsKey( const QString &key )
@@ -80,8 +80,15 @@ void QgsAbstractFileContentSourceLineEdit::setLastPathSettingsKey( const QString
 
 void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 {
-  if ( source == mFileLineEdit->text() )
+  const bool isBase64 = source.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive );
+
+  if ( ( !isBase64 && source == mFileLineEdit->text() ) || ( isBase64 && source == mBase64 ) )
     return;
+
+  if ( isBase64 )
+    mBase64 = source;
+  else
+    mBase64.clear();
 
   mFileLineEdit->setText( source );
   emit sourceChanged( source );
@@ -99,6 +106,7 @@ void QgsAbstractFileContentSourceLineEdit::selectFile()
   {
     return;
   }
+  mBase64.clear();
   mFileLineEdit->setText( file );
   s.setValue( settingsKey(), fi.absolutePath() );
   emit sourceChanged( mFileLineEdit->text() );
@@ -110,6 +118,7 @@ void QgsAbstractFileContentSourceLineEdit::selectUrl()
   const QString path = QInputDialog::getText( this, fileFromUrlTitle(), fileFromUrlText(), QLineEdit::Normal, mFileLineEdit->text(), &ok );
   if ( ok && path != source() )
   {
+    mBase64.clear();
     mFileLineEdit->setText( path );
     emit sourceChanged( mFileLineEdit->text() );
   }
@@ -145,8 +154,9 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
   if ( path == source() )
     return;
 
+  mBase64 = path;
   mFileLineEdit->setText( path );
-  emit sourceChanged( mFileLineEdit->text() );
+  emit sourceChanged( path );
 }
 
 void QgsAbstractFileContentSourceLineEdit::extractFile()
@@ -168,7 +178,7 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
   QString path = mFileLineEdit->text().trimmed();
   if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
   {
-    QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+    QByteArray base64 = mBase64.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
     QByteArray decoded = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
 
     QFile fileOut( file );
