@@ -153,9 +153,6 @@
      <property name="text">
       <string>Size</string>
      </property>
-     <property name="buddy">
-      <cstring>mSizeSpinBox</cstring>
-     </property>
     </widget>
    </item>
    <item row="0" column="0" colspan="4">
@@ -489,12 +486,11 @@
   <tabstop>mImageLineEdit</tabstop>
   <tabstop>mBrowseToolButton</tabstop>
   <tabstop>mFilenameDDBtn</tabstop>
-  <tabstop>mWidgthSpinBox</tabstop>
+  <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
-  <tabstop>cboCoordinateMode</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
