@@ -189,7 +189,7 @@ void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited( const QStri
 
 void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_editingFinished()
 {
-  if ( !QFileInfo::exists( mFileLineEdit->text() ) )
+  if ( !mFileLineEdit->text().isEmpty() && !QFileInfo::exists( mFileLineEdit->text() ) )
   {
     QUrl url( mFileLineEdit->text() );
     if ( !url.isValid() )
