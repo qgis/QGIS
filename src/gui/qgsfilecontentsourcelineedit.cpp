@@ -1,5 +1,5 @@
 /***************************************************************************
- qgssvgsourcelineedit.cpp
+ qgsfilecontentsourcelineedit.cpp
  -----------------------
  begin                : July 2018
  copyright            : (C) 2018 by Nyall Dawson
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssvgsourcelineedit.h"
+#include "qgsfilecontentsourcelineedit.h"
 #include "qgssettings.h"
 #include <QMenu>
 #include <QLineEdit>
@@ -22,7 +22,11 @@
 #include <QFileDialog>
 #include <QInputDialog>
 
-QgsSvgSourceLineEdit::QgsSvgSourceLineEdit( QWidget *parent )
+//
+// QgsAbstractFileContentSourceLineEdit
+//
+
+QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWidget *parent )
   : QWidget( parent )
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
@@ -36,15 +40,15 @@ QgsSvgSourceLineEdit::QgsSvgSourceLineEdit( QWidget *parent )
   QMenu *sourceMenu = new QMenu( mFileToolButton );
 
   QAction *selectFileAction = new QAction( tr( "Select File…" ), sourceMenu );
-  connect( selectFileAction, &QAction::triggered, this, &QgsSvgSourceLineEdit::selectFile );
+  connect( selectFileAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::selectFile );
   sourceMenu->addAction( selectFileAction );
 
   QAction *embedFileAction = new QAction( tr( "Embed File…" ), sourceMenu );
-  connect( embedFileAction, &QAction::triggered, this, &QgsSvgSourceLineEdit::embedFile );
+  connect( embedFileAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::embedFile );
   sourceMenu->addAction( embedFileAction );
 
   QAction *extractFileAction = new QAction( tr( "Extract Embedded File…" ), sourceMenu );
-  connect( extractFileAction, &QAction::triggered, this, &QgsSvgSourceLineEdit::extractFile );
+  connect( extractFileAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::extractFile );
   sourceMenu->addAction( extractFileAction );
 
   connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction]
@@ -53,28 +57,28 @@ QgsSvgSourceLineEdit::QgsSvgSourceLineEdit( QWidget *parent )
   } );
 
   QAction *enterUrlAction = new QAction( tr( "From URL…" ), sourceMenu );
-  connect( enterUrlAction, &QAction::triggered, this, &QgsSvgSourceLineEdit::selectUrl );
+  connect( enterUrlAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::selectUrl );
   sourceMenu->addAction( enterUrlAction );
 
   mFileToolButton->setMenu( sourceMenu );
   mFileToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mFileToolButton, &QToolButton::clicked, this, &QgsSvgSourceLineEdit::selectFile );
+  connect( mFileToolButton, &QToolButton::clicked, this, &QgsAbstractFileContentSourceLineEdit::selectFile );
 
-  connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsSvgSourceLineEdit::mFileLineEdit_textEdited );
-  connect( mFileLineEdit, &QLineEdit::editingFinished, this, &QgsSvgSourceLineEdit::mFileLineEdit_editingFinished );
+  connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited );
+  connect( mFileLineEdit, &QLineEdit::editingFinished, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_editingFinished );
 }
 
-QString QgsSvgSourceLineEdit::source() const
+QString QgsAbstractFileContentSourceLineEdit::source() const
 {
   return mFileLineEdit->text();
 }
 
-void QgsSvgSourceLineEdit::setLastPathSettingsKey( const QString &key )
+void QgsAbstractFileContentSourceLineEdit::setLastPathSettingsKey( const QString &key )
 {
   mLastPathKey = key;
 }
 
-void QgsSvgSourceLineEdit::setSource( const QString &source )
+void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 {
   if ( source == mFileLineEdit->text() )
     return;
@@ -83,13 +87,13 @@ void QgsSvgSourceLineEdit::setSource( const QString &source )
   emit sourceChanged( source );
 }
 
-void QgsSvgSourceLineEdit::selectFile()
+void QgsAbstractFileContentSourceLineEdit::selectFile()
 {
   QgsSettings s;
   QString file = QFileDialog::getOpenFileName( nullptr,
-                 tr( "Select SVG file" ),
+                 selectFileTitle(),
                  defaultPath(),
-                 tr( "SVG files" ) + " (*.svg)" );
+                 fileFilter() );
   QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() || file == source() )
   {
@@ -100,10 +104,10 @@ void QgsSvgSourceLineEdit::selectFile()
   emit sourceChanged( mFileLineEdit->text() );
 }
 
-void QgsSvgSourceLineEdit::selectUrl()
+void QgsAbstractFileContentSourceLineEdit::selectUrl()
 {
   bool ok = false;
-  const QString path = QInputDialog::getText( this, tr( "SVG From URL" ), tr( "Enter SVG URL" ), QLineEdit::Normal, mFileLineEdit->text(), &ok );
+  const QString path = QInputDialog::getText( this, fileFromUrlTitle(), fileFromUrlText(), QLineEdit::Normal, mFileLineEdit->text(), &ok );
   if ( ok && path != source() )
   {
     mFileLineEdit->setText( path );
@@ -111,13 +115,13 @@ void QgsSvgSourceLineEdit::selectUrl()
   }
 }
 
-void QgsSvgSourceLineEdit::embedFile()
+void QgsAbstractFileContentSourceLineEdit::embedFile()
 {
   QgsSettings s;
   QString file = QFileDialog::getOpenFileName( nullptr,
-                 tr( "Embed SVG File" ),
+                 embedFileTitle(),
                  defaultPath(),
-                 tr( "SVG files" ) + " (*.svg)" );
+                 fileFilter() );
   QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {
@@ -145,13 +149,13 @@ void QgsSvgSourceLineEdit::embedFile()
   emit sourceChanged( mFileLineEdit->text() );
 }
 
-void QgsSvgSourceLineEdit::extractFile()
+void QgsAbstractFileContentSourceLineEdit::extractFile()
 {
   QgsSettings s;
   QString file = QFileDialog::getSaveFileName( nullptr,
-                 tr( "Extract SVG File" ),
+                 extractFileTitle(),
                  defaultPath(),
-                 tr( "SVG files" ) + " (*.svg)" );
+                 fileFilter() );
   if ( file.isEmpty() )
   {
     return;
@@ -174,7 +178,7 @@ void QgsSvgSourceLineEdit::extractFile()
   }
 }
 
-void QgsSvgSourceLineEdit::mFileLineEdit_textEdited( const QString &text )
+void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited( const QString &text )
 {
   if ( !QFileInfo::exists( text ) )
   {
@@ -183,7 +187,7 @@ void QgsSvgSourceLineEdit::mFileLineEdit_textEdited( const QString &text )
   emit sourceChanged( text );
 }
 
-void QgsSvgSourceLineEdit::mFileLineEdit_editingFinished()
+void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_editingFinished()
 {
   if ( !QFileInfo::exists( mFileLineEdit->text() ) )
   {
@@ -197,7 +201,7 @@ void QgsSvgSourceLineEdit::mFileLineEdit_editingFinished()
   emit sourceChanged( mFileLineEdit->text() );
 }
 
-QString QgsSvgSourceLineEdit::defaultPath() const
+QString QgsAbstractFileContentSourceLineEdit::defaultPath() const
 {
   if ( QFileInfo::exists( source() ) )
     return source();
@@ -205,8 +209,92 @@ QString QgsSvgSourceLineEdit::defaultPath() const
   return QgsSettings().value( settingsKey(), QDir::homePath() ).toString();
 }
 
-QString QgsSvgSourceLineEdit::settingsKey() const
+QString QgsAbstractFileContentSourceLineEdit::settingsKey() const
 {
-  return mLastPathKey.isEmpty() ? QStringLiteral( "/UI/lastSVGDir" ) : mLastPathKey;
+  return mLastPathKey.isEmpty() ? defaultSettingsKey() : mLastPathKey;
 }
 
+//
+// QgsSvgSourceLineEdit
+//
+
+///@cond PRIVATE
+
+QString QgsSvgSourceLineEdit::fileFilter() const
+{
+  return tr( "SVG files" ) + " (*.svg)";
+}
+
+QString QgsSvgSourceLineEdit::selectFileTitle() const
+{
+  return tr( "Select SVG File" );
+}
+
+QString QgsSvgSourceLineEdit::fileFromUrlTitle() const
+{
+  return tr( "SVG From URL" );
+}
+
+QString QgsSvgSourceLineEdit::fileFromUrlText() const
+{
+  return tr( "Enter SVG URL" );
+}
+
+QString QgsSvgSourceLineEdit::embedFileTitle() const
+{
+  return tr( "Embed SVG File" );
+}
+
+QString QgsSvgSourceLineEdit::extractFileTitle() const
+{
+  return tr( "Extract SVG File" );
+}
+
+QString QgsSvgSourceLineEdit::defaultSettingsKey() const
+{
+  return QStringLiteral( "/UI/lastSVGDir" );
+}
+///@endcond
+
+//
+// QgsImageSourceLineEdit
+//
+
+///@cond PRIVATE
+
+QString QgsImageSourceLineEdit::fileFilter() const
+{
+  return tr( "All files" ) + " (*.*)";
+}
+
+QString QgsImageSourceLineEdit::selectFileTitle() const
+{
+  return tr( "Select Image File" );
+}
+
+QString QgsImageSourceLineEdit::fileFromUrlTitle() const
+{
+  return tr( "Image From URL" );
+}
+
+QString QgsImageSourceLineEdit::fileFromUrlText() const
+{
+  return tr( "Enter image URL" );
+}
+
+QString QgsImageSourceLineEdit::embedFileTitle() const
+{
+  return tr( "Embed Image File" );
+}
+
+QString QgsImageSourceLineEdit::extractFileTitle() const
+{
+  return tr( "Extract Image File" );
+}
+
+QString QgsImageSourceLineEdit::defaultSettingsKey() const
+{
+  return QStringLiteral( "/UI/lastImageDir" );
+}
+
+///@endcond
