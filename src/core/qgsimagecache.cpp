@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsimagecache.h"
+
 #include "qgis.h"
+#include "qgsimageoperation.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
-#include "qgssymbollayerutils.h"
 #include "qgsnetworkcontentfetchertask.h"
 
 #include <QApplication>
@@ -217,7 +218,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     im = im.convertToFormat( QImage::Format_ARGB32 );
 
   if ( opacity < 1.0 )
-    QgsSymbolLayerUtils::multiplyImageOpacity( &im, opacity );
+    QgsImageOperation::multiplyOpacity( im, opacity );
 
   // render image at desired size -- null size means original size
   if ( !size.isValid() || size.isNull() || im.size() == size )
