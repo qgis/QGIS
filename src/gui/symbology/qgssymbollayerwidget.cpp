@@ -41,6 +41,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsimagecache.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -3081,8 +3082,9 @@ QgsRasterMarkerSymbolLayerWidget::QgsRasterMarkerSymbolLayerWidget( QgsVectorLay
 
   setupUi( this );
 
-  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsRasterMarkerSymbolLayerWidget::mBrowseToolButton_clicked );
-  connect( mImageLineEdit, &QLineEdit::editingFinished, this, &QgsRasterMarkerSymbolLayerWidget::mImageLineEdit_editingFinished );
+  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+
+  connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterMarkerSymbolLayerWidget::imageSourceChanged );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setAngle );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
@@ -3121,7 +3123,7 @@ void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = static_cast<QgsRasterMarkerSymbolLayer *>( layer );
 
   // set values
-  whileBlocking( mImageLineEdit )->setText( mLayer->path() );
+  whileBlocking( mImageSourceLineEdit )->setSource( mLayer->path() );
 
   whileBlocking( mWidthSpinBox )->setValue( mLayer->size() );
   bool preservedAspectRatio = mLayer->preservedAspectRatio();
@@ -3174,72 +3176,21 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsRasterMarkerSymbolLayerWidget::mBrowseToolButton_clicked()
+void QgsRasterMarkerSymbolLayerWidget::imageSourceChanged( const QString &text )
 {
-  QgsSettings s;
-  QString openDir;
-  QString lineEditText = mImageLineEdit->text();
-  if ( !lineEditText.isEmpty() )
-  {
-    QFileInfo openDirFileInfo( lineEditText );
-    openDir = openDirFileInfo.path();
-  }
-
-  if ( openDir.isEmpty() )
-  {
-    openDir = s.value( QStringLiteral( "/UI/lastRasterMarkerImageDir" ), QDir::homePath() ).toString();
-  }
-
-  //show file dialog
-  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select Image File" ), openDir );
-  if ( !filePath.isNull() )
-  {
-    //check if file exists
-    QFileInfo fileInfo( filePath );
-    if ( !fileInfo.exists() || !fileInfo.isReadable() )
-    {
-      QMessageBox::critical( nullptr, QStringLiteral( "Select Image File" ), QStringLiteral( "Error, file does not exist or is not readable." ) );
-      return;
-    }
-
-    s.setValue( QStringLiteral( "/UI/lastRasterMarkerImageDir" ), fileInfo.absolutePath() );
-    mImageLineEdit->setText( filePath );
-    mImageLineEdit_editingFinished();
-  }
-}
-
-void QgsRasterMarkerSymbolLayerWidget::mImageLineEdit_editingFinished()
-{
-  QFileInfo fi( mImageLineEdit->text() );
-  if ( !fi.exists() )
-  {
-    QUrl url( mImageLineEdit->text() );
-    if ( !url.isValid() )
-    {
-      return;
-    }
-  }
-
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  mLayer->setPath( mImageLineEdit->text() );
+  mLayer->setPath( text );
   updatePreviewImage();
-  QApplication::restoreOverrideCursor();
-
   emit changed();
 }
 
 void QgsRasterMarkerSymbolLayerWidget::updatePreviewImage()
 {
-  QImage image( mLayer->path() );
+  bool fitsInCache = false;
+  QImage image = QgsApplication::imageCache()->pathAsImage( mLayer->path(), QSize( 150, 150 ), true, 1.0, fitsInCache );
   if ( image.isNull() )
   {
     mLabelImagePreview->setPixmap( QPixmap() );
     return;
-  }
-
-  if ( image.height() > 150 || image.width() > 150 )
-  {
-    image = image.scaled( 150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation );
   }
 
   QImage previewImage( 150, 150, QImage::Format_ARGB32 );

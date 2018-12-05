@@ -609,8 +609,7 @@ class GUI_EXPORT QgsRasterMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     QgsRasterMarkerSymbolLayer *mLayer = nullptr;
 
   private slots:
-    void mBrowseToolButton_clicked();
-    void mImageLineEdit_editingFinished();
+    void imageSourceChanged( const QString &text );
     void mSizeUnitWidget_changed();
     void mOffsetUnitWidget_changed();
     void mHorizontalAnchorComboBox_currentIndexChanged( int index );
