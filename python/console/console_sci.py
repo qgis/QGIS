@@ -509,11 +509,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         subMenu.addAction(
             QCoreApplication.translate("PythonConsole", "Show"),
             self.showHistory, 'Ctrl+Shift+SPACE')
-        subMenu.addSeparator()
-        subMenu.addAction(
-            QCoreApplication.translate("PythonConsole", "Save"),
-            self.writeHistoryFile)
-        subMenu.addSeparator()
         subMenu.addAction(
             QCoreApplication.translate("PythonConsole", "Clear File"),
             self.clearHistory)
