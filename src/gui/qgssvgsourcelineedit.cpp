@@ -66,7 +66,7 @@ QgsSvgSourceLineEdit::QgsSvgSourceLineEdit( QWidget *parent )
 
 QString QgsSvgSourceLineEdit::source() const
 {
-  return mFileLineEdit->text();
+  return mBase64.isEmpty() ? mFileLineEdit->text() : mBase64;
 }
 
 void QgsSvgSourceLineEdit::setLastPathSettingsKey( const QString &key )
@@ -76,8 +76,15 @@ void QgsSvgSourceLineEdit::setLastPathSettingsKey( const QString &key )
 
 void QgsSvgSourceLineEdit::setSource( const QString &source )
 {
-  if ( source == mFileLineEdit->text() )
+  const bool isBase64 = source.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive );
+
+  if ( ( !isBase64 && source == mFileLineEdit->text() ) || ( isBase64 && source == mBase64 ) )
     return;
+
+  if ( isBase64 )
+    mBase64 = source;
+  else
+    mBase64.clear();
 
   mFileLineEdit->setText( source );
   emit sourceChanged( source );
@@ -95,6 +102,7 @@ void QgsSvgSourceLineEdit::selectFile()
   {
     return;
   }
+  mBase64.clear();
   mFileLineEdit->setText( file );
   s.setValue( settingsKey(), fi.absolutePath() );
   emit sourceChanged( mFileLineEdit->text() );
@@ -106,6 +114,7 @@ void QgsSvgSourceLineEdit::selectUrl()
   const QString path = QInputDialog::getText( this, tr( "SVG From URL" ), tr( "Enter SVG URL" ), QLineEdit::Normal, mFileLineEdit->text(), &ok );
   if ( ok && path != source() )
   {
+    mBase64.clear();
     mFileLineEdit->setText( path );
     emit sourceChanged( mFileLineEdit->text() );
   }
@@ -141,8 +150,9 @@ void QgsSvgSourceLineEdit::embedFile()
   if ( path == source() )
     return;
 
+  mBase64 = path;
   mFileLineEdit->setText( path );
-  emit sourceChanged( mFileLineEdit->text() );
+  emit sourceChanged( path );
 }
 
 void QgsSvgSourceLineEdit::extractFile()
@@ -164,7 +174,7 @@ void QgsSvgSourceLineEdit::extractFile()
   QString path = mFileLineEdit->text().trimmed();
   if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
   {
-    QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+    QByteArray base64 = mBase64.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
     QByteArray decoded = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
 
     QFile fileOut( file );
