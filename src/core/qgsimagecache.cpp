@@ -160,6 +160,11 @@ QSize QgsImageCache::originalSize( const QString &path ) const
       buffer.open( QIODevice::ReadOnly );
 
       QImageReader reader( &buffer );
+      // if QImageReader::size works, then it's more efficient as it doesn't
+      // read the whole image (see Qt docs)
+      const QSize s = reader.size();
+      if ( s.isValid() )
+        return s;
       QImage im = reader.read();
       return im.isNull() ? QSize() : im.size();
     }
