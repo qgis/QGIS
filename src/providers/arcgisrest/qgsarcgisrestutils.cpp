@@ -576,8 +576,8 @@ std::unique_ptr<QgsSymbol> QgsArcGisRestUtils::parseEsriSymbolJson( const QVaria
   }
   else if ( type == QLatin1String( "esriPMS" ) )
   {
-    // picture marker - not supported
-    return nullptr;
+    // picture marker
+    return parseEsriPictureMarkerSymbolJson( symbolData );
   }
   else if ( type == QLatin1String( "esriTS" ) )
   {
@@ -674,6 +674,41 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   markerLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
   markerLayer->setStrokeStyle( penStyle );
   markerLayer->setStrokeWidth( penWidthInPoints );
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  bool ok = false;
+  const double widthInPixels = symbolData.value( QStringLiteral( "width" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+  const double heightInPixels = symbolData.value( QStringLiteral( "height" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  //const QString contentType = symbolData.value( QStringLiteral( "contentType" ) ).toString();
+
+  QString symbolPath( symbolData.value( QStringLiteral( "imageData" ) ).toString() );
+  symbolPath.prepend( QLatin1String( "base64:" ) );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
+  markerLayer->setSizeUnit( QgsUnitTypes::RenderPixels );
+  markerLayer->setFixedAspectRatio( static_cast< double >( widthInPixels ) / heightInPixels );
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
   markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
   layers.append( markerLayer.release() );

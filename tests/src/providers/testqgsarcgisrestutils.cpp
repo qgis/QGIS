@@ -43,6 +43,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParseEsriLineStyle();
     void testParseEsriColorJson();
     void testParseMarkerSymbol();
+    void testPictureMarkerSymbol();
     void testParseLineSymbol();
     void testParseFillSymbol();
     void testParseRendererSimple();
@@ -197,6 +198,38 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
 
   // invalid json
   symbol = QgsArcGisRestUtils::parseEsriMarkerSymbolJson( QVariantMap() );
+  QVERIFY( !symbol );
+}
+
+void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
+{
+  QVariantMap map = jsonStringToMap( "{"
+                                     "\"type\": \"esriPMS\","
+                                     "\"url\": \"471E7E31\","
+                                     "\"imageData\": \"abcdef\","
+                                     "\"contentType\": \"image/png\","
+                                     "\"width\": 20,"
+                                     "\"height\": 25,"
+                                     "\"angle\": 10,"
+                                     "\"xoffset\": 7,"
+                                     "\"yoffset\": 17"
+                                     "}" );
+  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  QgsMarkerSymbol *marker = dynamic_cast< QgsMarkerSymbol * >( symbol.get() );
+  QVERIFY( marker );
+  QCOMPARE( marker->symbolLayerCount(), 1 );
+  QgsRasterMarkerSymbolLayer *markerLayer = dynamic_cast< QgsRasterMarkerSymbolLayer * >( marker->symbolLayer( 0 ) );
+  QVERIFY( markerLayer );
+  QCOMPARE( markerLayer->path(), QStringLiteral( "base64:abcdef" ) );
+  QCOMPARE( markerLayer->size(), 20.0 );
+  QCOMPARE( markerLayer->fixedAspectRatio(), 0.8 );
+  QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPixels );
+  QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
+  QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
+  QCOMPARE( markerLayer->offsetUnit(), QgsUnitTypes::RenderPoints );
+
+  // invalid json
+  symbol = QgsArcGisRestUtils::parseEsriPictureMarkerSymbolJson( QVariantMap() );
   QVERIFY( !symbol );
 }
 
