@@ -124,12 +124,37 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     virtual bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index );
 
+#ifndef SIP_RUN
+
     /**
      * Removes a geometry from the collection.
      * \param nr index of geometry to remove
      * \returns true if removal was successful.
      */
     virtual bool removeGeometry( int nr );
+#else
+
+    /**
+     * Removes a geometry from the collection by index.
+     *
+     * An IndexError will be raised if no geometry with the specified index exists.
+     *
+     * \returns true if removal was successful.
+     */
+    virtual bool removeGeometry( int nr );
+    % MethodCode
+    const int count = sipCpp->numGeometries();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->removeGeometry( a0 );
+    }
+    % End
+#endif
 
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
@@ -200,6 +225,58 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
         return static_cast<const QgsGeometryCollection *>( geom );
       return nullptr;
     }
+#endif
+
+
+#ifdef SIP_RUN
+
+    /**
+    * Returns the geometry at the specified ``index``. An IndexError will be raised if no geometry with the specified ``index`` exists.
+    *
+    * Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
+    * corresponds to the last geometry in the collection.
+    *
+    * \since QGIS 3.6
+    */
+    SIP_PYOBJECT __getitem__( int index );
+    % MethodCode
+    const int count = sipCpp->numGeometries();
+    if ( a0 < -count || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else if ( a0 >= 0 )
+    {
+      return sipConvertFromType( sipCpp->geometryN( a0 ), sipType_QgsAbstractGeometry, NULL );
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->geometryN( count + a0 ), sipType_QgsAbstractGeometry, NULL );
+    }
+    % End
+
+    /**
+     * Deletes the geometry at the specified ``index``. A geometry at the ``index`` must already exist or an IndexError will be raised.
+     *
+     * Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
+     * corresponds to the last geometry in the collection.
+     *
+     * \since QGIS 3.6
+     */
+    void __delitem__( int index );
+    % MethodCode
+    const int count = sipCpp->numGeometries();
+    if ( a0 >= 0 && a0 < count )
+      sipCpp->removeGeometry( a0 );
+    else if ( a0 < 0 && a0 >= -count )
+      sipCpp->removeGeometry( count + a0 );
+    else
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
 #endif
 
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
