@@ -41,6 +41,8 @@ Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
 
     virtual QIcon icon() const;
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
 
     void assignFreeId();
 %Docstring
