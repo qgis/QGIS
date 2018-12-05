@@ -101,8 +101,13 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
-QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache )
+QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache )
 {
+  const QString file = f.trimmed();
+
+  if ( file.isEmpty() )
+    return QImage();
+
   QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
@@ -141,6 +146,9 @@ QImage QgsImageCache::pathAsImage( const QString &file, const QSize size, const 
 
 QSize QgsImageCache::originalSize( const QString &path ) const
 {
+  if ( path.isEmpty() )
+    return QSize();
+
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
   if ( QFile::exists( path ) )
   {
