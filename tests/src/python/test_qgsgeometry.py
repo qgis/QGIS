@@ -488,6 +488,71 @@ class TestQgsGeometry(unittest.TestCase):
         with self.assertRaises(IndexError):
             del ls[-3]
 
+    def testGeometryCollectionPythonAdditions(self):
+        """
+        Tests Python specific additions to the QgsGeometryCollection API
+        """
+        g = QgsGeometryCollection()
+        self.assertTrue(bool(g))
+        self.assertEqual(len(g), 0)
+        g = QgsGeometryCollection()
+        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12))')
+        self.assertTrue(bool(g))
+        self.assertEqual(len(g), 2)
+
+        # pointN
+        with self.assertRaises(IndexError):
+            g.geometryN(-1)
+        with self.assertRaises(IndexError):
+            g.geometryN(2)
+        self.assertEqual(g.geometryN(0), QgsPoint(1, 2))
+        self.assertEqual(g.geometryN(1), QgsPoint(11, 12))
+
+        # removeGeometry
+        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12), Point(33 34))')
+        with self.assertRaises(IndexError):
+            g.removeGeometry(-1)
+        with self.assertRaises(IndexError):
+            g.removeGeometry(3)
+        g.removeGeometry(1)
+        self.assertEqual(len(g), 2)
+        self.assertEqual(g.geometryN(0), QgsPoint(1, 2))
+        self.assertEqual(g.geometryN(1), QgsPoint(33, 34))
+        with self.assertRaises(IndexError):
+            g.removeGeometry(2)
+
+        g.fromWkt('GeometryCollection( Point(25 16 37 58), Point(26 22 47 68))')
+        # get item
+        with self.assertRaises(IndexError):
+            g[-3]
+        with self.assertRaises(IndexError):
+            g[2]
+        self.assertEqual(g[0], QgsPoint(25, 16, 37, 58))
+        self.assertEqual(g[1], QgsPoint(26, 22, 47, 68))
+        self.assertEqual(g[-2], QgsPoint(25, 16, 37, 58))
+        self.assertEqual(g[-1], QgsPoint(26, 22, 47, 68))
+
+        # del item
+        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12), Point(33 34))')
+        with self.assertRaises(IndexError):
+            del g[-4]
+        with self.assertRaises(IndexError):
+            del g[3]
+        del g[1]
+        self.assertEqual(len(g), 2)
+        self.assertEqual(g[0], QgsPoint(1, 2))
+        self.assertEqual(g[1], QgsPoint(33, 34))
+        with self.assertRaises(IndexError):
+            del g[2]
+
+        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12), Point(33 34))')
+        del g[-3]
+        self.assertEqual(len(g), 2)
+        self.assertEqual(g[0], QgsPoint(11, 12))
+        self.assertEqual(g[1], QgsPoint(33, 34))
+        with self.assertRaises(IndexError):
+            del g[-3]
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
