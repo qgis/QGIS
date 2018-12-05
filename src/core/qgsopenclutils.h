@@ -19,12 +19,18 @@
 #define SIP_NO_FILE
 
 #define CL_HPP_ENABLE_EXCEPTIONS
-// Set target version to 1.10 because it's the best compromise
-// between features and compatibility with "older" graphics
-// cards
-#define CL_HPP_MINIMUM_OPENCL_VERSION 110
-#define CL_HPP_TARGET_OPENCL_VERSION 110
-#define CL_TARGET_OPENCL_VERSION 110
+
+#include <QtGlobal>
+#ifdef Q_OS_MAC
+#define CL_HPP_MINIMUM_OPENCL_VERSION 120
+#define CL_HPP_TARGET_OPENCL_VERSION 120
+#define CL_TARGET_OPENCL_VERSION 120
+#else
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+#define CL_HPP_TARGET_OPENCL_VERSION 220
+#define CL_TARGET_OPENCL_VERSION 200
+#endif
+
 #include <CL/cl2.hpp>
 
 #include "qgis_core.h"
@@ -134,6 +140,13 @@ class CORE_EXPORT QgsOpenClUtils
      */
     static cl::Device activeDevice( );
 
+    /**
+     * Returns the active platform OpenCL version string (e.g. 1.1, 2.0 etc.)
+     * or a blank string if there is no active platform.
+     * \since QGIS 3.6
+     */
+    static QString activePlatformVersion( );
+
     //! Store in the settings the preferred \a deviceId device identifier
     static void storePreferredDevice( const QString deviceId );
 
@@ -172,11 +185,27 @@ class CORE_EXPORT QgsOpenClUtils
     static QString errorText( const int errorCode );
 
     /**
+     * Create an OpenCL command queue from the default context.
+     *
+     * This wrapper is required in order to prevent a crash when
+     * running on OpenCL platforms < 2
+     */
+    static cl::CommandQueue commandQueue();
+
+    /**
      * Build the program from \a source in the given \a context and depending on \a exceptionBehavior
      * can throw or catch the exceptions
      * \return the built program
+     * \deprecated since QGIS 3.6
      */
-    static cl::Program buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior = Catch );
+    Q_DECL_DEPRECATED static cl::Program buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior = Catch );
+
+    /**
+     * Build the program from \a source, depending on \a exceptionBehavior can throw or catch the exceptions
+     * \return the built program
+     */
+    static cl::Program buildProgram( const QString &source, ExceptionBehavior exceptionBehavior = Catch );
+
 
     /**
      * Context factory
