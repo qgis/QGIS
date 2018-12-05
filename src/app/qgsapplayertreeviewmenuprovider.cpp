@@ -480,6 +480,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                          symbolNode, &QgsSymbolLegendNode::checkAllItems );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
                          symbolNode, &QgsSymbolLegendNode::uncheckAllItems );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleAllLayers.svg" ) ), tr( "&Toggle All Items" ),
+                         symbolNode, &QgsSymbolLegendNode::toggleAllItems );
         menu->addSeparator();
       }
 

@@ -251,6 +251,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
      * Checks all items belonging to the same layer as this node.
      * \see uncheckAllItems()
+     * \see toggleAllItems()
      * \since QGIS 2.14
      */
     void checkAllItems();
@@ -258,9 +259,18 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
      * Unchecks all items belonging to the same layer as this node.
      * \see checkAllItems()
+     * \see toggleAllItems()
      * \since QGIS 2.14
      */
     void uncheckAllItems();
+
+    /**
+     * Toggle all items belonging to the same layer as this node.
+     * \see checkAllItems()
+     * \see uncheckAllItems()
+     * \since QGIS 3.4
+     */
+    void toggleAllItems();
 
   private:
     void updateLabel();
