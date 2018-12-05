@@ -217,6 +217,23 @@ void TestQgsImageCache::size()
   img = cache.pathAsImage( originalImage, QSize( 0, 100 ), true, 1.0, inCache );
   QCOMPARE( img.width(), 64 );
   QCOMPARE( img.height(), 100 );
+
+  // broken images should fallback to square aspect ratios, not the originally specified 0 px width or height
+  img = cache.pathAsImage( QStringLiteral( "broken" ), QSize( 0, 100 ), true, 1.0, inCache );
+  QCOMPARE( img.width(), 100 );
+  QCOMPARE( img.height(), 100 );
+
+  img = cache.pathAsImage( QStringLiteral( "broken" ), QSize( 100, 0 ), true, 1.0, inCache );
+  QCOMPARE( img.width(), 100 );
+  QCOMPARE( img.height(), 100 );
+
+  img = cache.pathAsImage( QStringLiteral( "broken" ), QSize( 0, 100 ), false, 1.0, inCache );
+  QCOMPARE( img.width(), 100 );
+  QCOMPARE( img.height(), 100 );
+
+  img = cache.pathAsImage( QStringLiteral( "broken" ), QSize( 100, 0 ), false, 1.0, inCache );
+  QCOMPARE( img.width(), 100 );
+  QCOMPARE( img.height(), 100 );
 }
 
 void TestQgsImageCache::opacity()
@@ -228,7 +245,7 @@ void TestQgsImageCache::opacity()
 
   // null size should return image using original size
   img = cache.pathAsImage( originalImage, QSize( 200, 200 ), true, 0.5, inCache );
-  QVERIFY( imageCheck( "opaque_image", img, 30 ) );
+  QVERIFY( imageCheck( QStringLiteral( "opaque_image" ), img, 30 ) );
 }
 
 void TestQgsImageCache::base64()
