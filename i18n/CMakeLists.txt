@@ -39,7 +39,7 @@ IF (UNIX AND NOT APPLE)
 
   INSTALL(FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop DESTINATION share/applications)
   INSTALL(FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml DESTINATION share/metainfo)
-ENDIF (UNIX AND NOT APPLE)
+ENDIF (UNIX AND NOT APPLE AND PYQT5_FOUND)
 
 # creating a custom target is needed to make the files build
 # "ALL" means that it will be run by default
