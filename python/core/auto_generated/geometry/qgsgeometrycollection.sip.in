@@ -270,6 +270,16 @@ corresponds to the last geometry in the collection.
     }
 %End
 
+    SIP_PYOBJECT __iter__() /TypeHint="QgsGeometryPartIterator"/;
+%Docstring
+Iterates through all geometries in the collection.
+
+.. versionadded:: 3.6
+%End
+%MethodCode
+    sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
+%End
+
     virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
 
 
