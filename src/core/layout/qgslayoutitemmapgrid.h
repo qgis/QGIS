@@ -727,7 +727,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     /**
      * Sets the grid frame margin (in layout units).
      * This property controls distance between the map frame and the grid frame.
-     * \see GridFrameMargin()
+     * \see gridFrameMargin()
+     * \since QGIS 3.6
      */
     void setGridFrameMargin( const double margin ) { mGridFrameMargin = margin; }
 
@@ -735,8 +736,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the grid frame Margin (in layout units).
      * This property controls distance between the map frame and the grid frame.
      * \see setGridFrameMargin()
+     * \since QGIS 3.6
      */
-    double GridFrameMargin() const { return mGridFrameMargin; }
+    double gridFrameMargin() const { return mGridFrameMargin; }
 
     /**
      * Sets the \a width of the stroke drawn in the grid frame.

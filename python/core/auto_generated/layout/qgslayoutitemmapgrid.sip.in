@@ -755,15 +755,19 @@ framePenSize method.
 Sets the grid frame margin (in layout units).
 This property controls distance between the map frame and the grid frame.
 
-.. seealso:: GridFrameMargin
+.. seealso:: :py:func:`gridFrameMargin`
+
+.. versionadded:: 3.6
 %End
 
-    double GridFrameMargin() const;
+    double gridFrameMargin() const;
 %Docstring
 Sets the grid frame Margin (in layout units).
 This property controls distance between the map frame and the grid frame.
 
 .. seealso:: :py:func:`setGridFrameMargin`
+
+.. versionadded:: 3.6
 %End
 
     void setFramePenSize( const double width );
