@@ -122,6 +122,10 @@ class QgsGeometryValidationService : public QObject
     QgsMessageBar *mMessageBar = nullptr;
     QgsMessageBarItem *mMessageBarItem = nullptr;
 
+    // when checks do complete successfully and changes need to be saved
+    // this variable is used to indicate that it's safe to bypass the checks
+    bool mBypassChecks = false;
+
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H
