@@ -46,6 +46,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testPictureMarkerSymbol();
     void testParseLineSymbol();
     void testParseFillSymbol();
+    void testParsePictureFillSymbol();
     void testParseRendererSimple();
     void testParseRendererCategorized();
 
@@ -297,6 +298,46 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
   QCOMPARE( fillLayer->strokeWidth(), 5.0 );
   QCOMPARE( fillLayer->strokeWidthUnit(), QgsUnitTypes::RenderPoints );
   QCOMPARE( fillLayer->strokeStyle(), Qt::DashDotLine );
+}
+
+
+void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
+{
+  QVariantMap map = jsonStringToMap( "{"
+                                     "\"type\": \"esriPFS\","
+                                     "\"url\": \"866880A0\","
+                                     "\"imageData\": \"abcdef\","
+                                     "\"contentType\": \"image/png\","
+                                     "\"width\": 20,"
+                                     "\"height\": 25,"
+                                     "\"angle\": 0,"
+                                     "\"outline\": {"
+                                     "\"type\": \"esriSLS\","
+                                     "\"style\": \"esriSLSDashDot\","
+                                     "\"color\": ["
+                                     "110,"
+                                     "120,"
+                                     "130,"
+                                     "215"
+                                     "],"
+                                     "\"width\": 5"
+                                     "}"
+                                     "}" );
+  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  QgsFillSymbol *fill = dynamic_cast< QgsFillSymbol * >( symbol.get() );
+  QVERIFY( fill );
+  QCOMPARE( fill->symbolLayerCount(), 2 );
+  QgsRasterFillSymbolLayer *fillLayer = dynamic_cast< QgsRasterFillSymbolLayer * >( fill->symbolLayer( 0 ) );
+  QVERIFY( fillLayer );
+  QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
+  QCOMPARE( fillLayer->width(), 20.0 );
+  QCOMPARE( fillLayer->widthUnit(), QgsUnitTypes::RenderPixels );
+  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast< QgsSimpleLineSymbolLayer * >( fill->symbolLayer( 1 ) );
+  QVERIFY( lineLayer );
+  QCOMPARE( lineLayer->color(), QColor( 110, 120, 130, 215 ) );
+  QCOMPARE( lineLayer->width(), 5.0 );
+  QCOMPARE( lineLayer->widthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( lineLayer->penStyle(), Qt::DashDotLine );
 }
 
 void TestQgsArcGisRestUtils::testParseRendererSimple()

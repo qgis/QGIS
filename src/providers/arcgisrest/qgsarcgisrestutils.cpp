@@ -571,8 +571,7 @@ std::unique_ptr<QgsSymbol> QgsArcGisRestUtils::parseEsriSymbolJson( const QVaria
   }
   else if ( type == QLatin1String( "esriPFS" ) )
   {
-    // picture fill - not supported
-    return nullptr;
+    return parseEsriPictureFillSymbolJson( symbolData );
   }
   else if ( type == QLatin1String( "esriPMS" ) )
   {
@@ -623,6 +622,51 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( cons
   std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
   fillLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
   layers.append( fillLayer.release() );
+
+  std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
+  return symbol;
+}
+
+std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJson( const QVariantMap &symbolData )
+{
+  bool ok = false;
+
+  double widthInPixels = symbolData.value( QStringLiteral( "width" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+
+  const double xScale = symbolData.value( QStringLiteral( "xscale" ) ).toDouble( &ok );
+  if ( !qgsDoubleNear( xScale, 0.0 ) )
+    widthInPixels *= xScale;
+
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  QString symbolPath( symbolData.value( QStringLiteral( "imageData" ) ).toString() );
+  symbolPath.prepend( QLatin1String( "base64:" ) );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = qgis::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
+  fillLayer->setWidth( widthInPixels );
+  fillLayer->setAngle( angleCW );
+  fillLayer->setWidthUnit( QgsUnitTypes::RenderPixels );
+  fillLayer->setOffset( QPointF( xOffset, yOffset ) );
+  fillLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( fillLayer.release() );
+
+  const QVariantMap outlineData = symbolData.value( QStringLiteral( "outline" ) ).toMap();
+  QColor lineColor = parseEsriColorJson( outlineData.value( QStringLiteral( "color" ) ) );
+  Qt::PenStyle penStyle = parseEsriLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
+  double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
+
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
+  lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  layers.append( lineLayer.release() );
 
   std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
   return symbol;
