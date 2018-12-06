@@ -43,6 +43,8 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
 
   assignFreeId();
 
+  setCacheMode( QGraphicsItem::NoCache );
+
   connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
   {
     shapeChanged();
