@@ -92,10 +92,10 @@ hid_t HdfDataset::id() const { return d->id; }
 std::vector<hsize_t> HdfDataset::dims() const
 {
   hid_t sid = H5Dget_space( d->id );
-  std::vector<hsize_t> d( H5Sget_simple_extent_ndims( sid ) );
-  H5Sget_simple_extent_dims( sid, d.data(), NULL );
+  std::vector<hsize_t> ret( static_cast<size_t>( H5Sget_simple_extent_ndims( sid ) ) );
+  H5Sget_simple_extent_dims( sid, ret.data(), nullptr );
   H5Sclose( sid );
-  return d;
+  return ret;
 }
 
 hsize_t HdfDataset::elementCount() const
@@ -192,7 +192,7 @@ std::string HdfDataset::readString() const
 
 HdfDataspace::HdfDataspace( const std::vector<hsize_t> &dims )
   : d( std::make_shared< Handle >( H5Screate_simple(
-                                     dims.size(),
+                                     static_cast<int>( dims.size() ),
                                      dims.data(),
                                      dims.data()
                                    )

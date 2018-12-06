@@ -34,14 +34,14 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader::load( const std::string &meshFile, MDA
     return nullptr;
   }
 
-  MDAL::Loader2dm loader( meshFile );
-  std::unique_ptr<MDAL::Mesh> mesh = loader.load( status );
+  MDAL::Loader2dm loader2dm( meshFile );
+  std::unique_ptr<MDAL::Mesh> mesh = loader2dm.load( status );
 
 #ifdef HAVE_NETCDF
   if ( !mesh && status && *status == MDAL_Status::Err_UnknownFormat )
   {
-    MDAL::Loader3Di loader( meshFile );
-    mesh = loader.load( status );
+    MDAL::Loader3Di loader3di( meshFile );
+    mesh = loader3di.load( status );
   }
 #endif
 
@@ -51,14 +51,14 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader::load( const std::string &meshFile, MDA
 #ifdef HAVE_NETCDF
     if ( MDAL::endsWith( meshFile, ".nc" ) )
     {
-      MDAL::LoaderGdalNetCDF loader( meshFile );
-      mesh = loader.load( status );
+      MDAL::LoaderGdalNetCDF loaderNetCDF( meshFile );
+      mesh = loaderNetCDF.load( status );
     }
     else
     {
 #endif // HAVE_GDAL && HAVE_NETCDF
-      MDAL::LoaderGdalGrib loader( meshFile );
-      mesh = loader.load( status );
+      MDAL::LoaderGdalGrib loaderGrib( meshFile );
+      mesh = loaderGrib.load( status );
     }
 #ifdef HAVE_NETCDF
   }
@@ -69,20 +69,20 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader::load( const std::string &meshFile, MDA
 
 void MDAL::Loader::loadDatasets( Mesh *mesh, const std::string &datasetFile, MDAL_Status *status )
 {
-  MDAL::LoaderAsciiDat loader( datasetFile );
-  loader.load( mesh, status );
+  MDAL::LoaderAsciiDat loaderAsciiDat( datasetFile );
+  loaderAsciiDat.load( mesh, status );
 
   if ( status && *status == MDAL_Status::Err_UnknownFormat )
   {
-    MDAL::LoaderBinaryDat loader( datasetFile );
-    loader.load( mesh, status );
+    MDAL::LoaderBinaryDat loaderBinaryDat( datasetFile );
+    loaderBinaryDat.load( mesh, status );
   }
 
 #ifdef HAVE_HDF5
   if ( status && *status == MDAL_Status::Err_UnknownFormat )
   {
-    MDAL::LoaderXmdf loader( datasetFile );
-    loader.load( mesh, status );
+    MDAL::LoaderXmdf loaderXmdf( datasetFile );
+    loaderXmdf.load( mesh, status );
   }
 #endif
 }

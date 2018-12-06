@@ -110,7 +110,7 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   int version;
   int objecttype;
   int sflt;
-  int sflg;
+  int sflg = 0;
   int vectype;
   int objid;
   int numdata;

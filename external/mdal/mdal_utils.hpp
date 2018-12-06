@@ -104,7 +104,7 @@ namespace MDAL
 
   // mesh & datasets
   //! Add bed elevatiom dataset group to mesh
-  void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices, const Faces &faces );
+  void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

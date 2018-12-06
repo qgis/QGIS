@@ -79,6 +79,8 @@ MDAL::DatasetGroup::DatasetGroup( MDAL::Mesh *parent,
   setName( name );
 }
 
+MDAL::DatasetGroup::~DatasetGroup() = default;
+
 MDAL::DatasetGroup::DatasetGroup( MDAL::Mesh *parent, const std::string &uri )
   : mParent( parent )
   , mUri( uri )

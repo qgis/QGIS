@@ -204,8 +204,6 @@ void MDAL::LoaderAsciiDat::readVertexTimestep(
   std::ifstream &stream )
 {
   assert( group );
-
-  size_t vertexCount = mesh->verticesCount();
   size_t faceCount = mesh->facesCount();
 
   std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MDAL::MemoryDataset >( group.get() );

@@ -195,10 +195,11 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
     if ( nc_get_var_double( mNcFile.handle(), dsi.ncid_x, vals_x.data() ) ) CF_THROW_ERR;
 
     // read Y data if vector
-    double fill_val_y = mNcFile.getFillValue( dsi.ncid_y );
+    double fill_val_y = std::numeric_limits<double>::quiet_NaN();
     std::vector<double> vals_y;
     if ( dsi.is_vector )
     {
+      fill_val_y = mNcFile.getFillValue( dsi.ncid_y );
       vals_y.resize( dsi.arr_size );
       if ( nc_get_var_double( mNcFile.handle(), dsi.ncid_y, vals_y.data() ) ) CF_THROW_ERR;
     }
@@ -212,11 +213,10 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
       if ( dsi.outputType == CFDimensions::Face2D )
       {
         dataset = createFace2DDataset( group, ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
+        dataset->setTime( time );
+        dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+        group->datasets.push_back( dataset );
       }
-
-      dataset->setTime( time );
-      dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
-      group->datasets.push_back( dataset );
     }
 
     // Add to mesh
@@ -330,7 +330,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
     // Create datasets
     addDatasetGroups( mesh.get(), times, dsinfo_map );
 
-    return mesh;
+    return std::unique_ptr<Mesh>( mesh.release() );
   }
   catch ( MDAL_Status error )
   {
