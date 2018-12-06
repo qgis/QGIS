@@ -811,37 +811,34 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
   QMap< double, double > pos = borderPos;
 
   double currentCoord = 0.0;
-  if ( ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right ) && testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
-  {
-    currentCoord = -mGridFramePenThickness / 2.0;
-    pos.insert( 0, 0 );
-  }
-  else if ( ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom ) && testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) )
-  {
-    currentCoord = -mGridFramePenThickness / 2.0;
-    pos.insert( 0, 0 );
-  }
   bool color1 = true;
   double x = 0;
   double y = 0;
   double width = 0;
   double height = 0;
 
+  bool drawTLBox = false;
+  bool drawTRBox = false;
+  bool drawBLBox = false;
+  bool drawBRBox = false;
+
   if ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right )
   {
     pos.insert( mMap->rect().height(), mMap->rect().height() );
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) )
     {
-      pos.insert( mMap->rect().height(), mMap->rect().height() );
+      drawBLBox = border == QgsLayoutItemMapGrid::Left;
+      drawBRBox = border == QgsLayoutItemMapGrid::Right;
+    }
+    if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
+    {
+      drawTLBox = border == QgsLayoutItemMapGrid::Left;
+      drawTRBox = border == QgsLayoutItemMapGrid::Right;
     }
   }
   else if ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom )
   {
     pos.insert( mMap->rect().width(), mMap->rect().width() );
-    if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) )
-    {
-      pos.insert( mMap->rect().width(), mMap->rect().width() );
-    }
   }
 
   //set pen to current frame pen
@@ -873,15 +870,19 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
     color1 = !color1;
   }
 
-  if ( mGridFrameStyle == ZebraNautical )
+  if ( mGridFrameStyle == ZebraNautical || qgsDoubleNear( mGridFrameMargin, 0.0 ) )
   {
     //draw corners
     width = height = ( mGridFrameWidth + mGridFrameMargin ) ;
     p->setBrush( QBrush( mGridFrameFillColor1 ) );
-    p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
-    p->drawRect( QRectF( mMap->rect().width(), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
-    p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), mMap->rect().height(), width, height ) );
-    p->drawRect( QRectF( mMap->rect().width(), mMap->rect().height(), width, height ) );
+    if ( drawTLBox )
+      p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+    if ( drawTRBox )
+      p->drawRect( QRectF( mMap->rect().width(), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+    if ( drawBLBox )
+      p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), mMap->rect().height(), width, height ) );
+    if ( drawBRBox )
+      p->drawRect( QRectF( mMap->rect().width(), mMap->rect().height(), width, height ) );
   }
 }
 
