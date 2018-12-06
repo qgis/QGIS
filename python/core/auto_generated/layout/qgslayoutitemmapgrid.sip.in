@@ -202,7 +202,8 @@ An individual grid which is drawn above the map content in a
       InteriorTicks,
       ExteriorTicks,
       InteriorExteriorTicks,
-      LineBorder
+      LineBorder,
+      LineBorderNautical
     };
 
     enum FrameSideFlag
