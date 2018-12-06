@@ -447,7 +447,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QFrame" name="moperationListGroup">
+         <widget class="QFrame" name="mOperationListGroup">
           <layout class="QGridLayout" name="gridLayout_6">
            <item row="0" column="0">
             <widget class="QSplitter" name="functionsplit">
@@ -455,15 +455,22 @@
               <enum>Qt::Horizontal</enum>
              </property>
              <widget class="QWidget" name="layoutWidget1">
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <item>
+              <layout class="QGridLayout" name="gridLayout_9">
+               <item row="0" column="0">
                 <widget class="QgsFilterLineEdit" name="txtSearchEdit">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
                 </widget>
                </item>
-               <item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="mShowHelpButton">
+                 <property name="text">
+                  <string>Show Help</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" colspan="2">
                 <widget class="QTreeView" name="expressionTree">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
@@ -490,7 +497,13 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="layoutWidget2">
+             <widget class="QWidget" name="mHelpAndValuesWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <property name="spacing">
                 <number>0</number>
@@ -823,36 +836,6 @@ Saved scripts are auto loaded on QGIS startup.</string>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
