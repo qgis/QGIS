@@ -33,6 +33,8 @@ class QgsSymbol;
 class QgsPaintEffect;
 class QgsRendererWidget;
 class QgsMapCanvas;
+class QgsSymbolWidgetContext;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -62,6 +64,12 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Sets the \a context in which the dialog is shown, e.g., the associated map canvas and expression contexts.
+     * \since QGIS 3.6
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
@@ -148,6 +156,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsPaintEffect *mPaintEffect = nullptr;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsFeatureRequest::OrderBy mOrderBy;
 

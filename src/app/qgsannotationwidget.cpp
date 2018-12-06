@@ -71,7 +71,9 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
     blockAllSignals( false );
   }
   mMapMarkerButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mMapMarkerButton->setMessageBar( QgisApp::instance()->messageBar() );
   mFrameStyleButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mFrameStyleButton->setMessageBar( QgisApp::instance()->messageBar() );
 }
 
 void QgsAnnotationWidget::apply()

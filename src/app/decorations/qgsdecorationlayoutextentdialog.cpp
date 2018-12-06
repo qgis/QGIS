@@ -48,6 +48,7 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationLayoutExtentDialog::showHelp );
 
   mSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
 }
 
 void QgsDecorationLayoutExtentDialog::updateGuiElements()

@@ -42,6 +42,13 @@ map scale and other properties from the canvas.
 .. versionadded:: 2.12
 %End
 
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the dialog is shown, e.g., the associated map canvas and expression contexts.
+
+.. versionadded:: 3.6
+%End
+
     void setDockMode( bool dockMode );
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel

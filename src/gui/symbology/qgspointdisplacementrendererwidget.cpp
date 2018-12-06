@@ -194,6 +194,7 @@ void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContex
   if ( mCenterSymbolToolButton )
   {
     mCenterSymbolToolButton->setMapCanvas( context.mapCanvas() );
+    mCenterSymbolToolButton->setMessageBar( context.messageBar() );
   }
 }
 

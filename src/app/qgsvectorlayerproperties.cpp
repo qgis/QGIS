@@ -68,6 +68,7 @@
 #include "qgsgeometrycheckregistry.h"
 #include "qgsgeometrycheck.h"
 #include "qgsanalysis.h"
+#include "qgssymbolwidgetcontext.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -1515,7 +1516,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   {
     mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
-    mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( QgisApp::instance()->mapCanvas() );
+    context.setMessageBar( QgisApp::instance()->messageBar() );
+    mRendererDialog->setContext( context );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::layerVariablesChanged, this, &QgsVectorLayerProperties::updateVariableEditor );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::widgetChanged, this,  [ = ] { updateAuxiliaryStoragePage(); } );

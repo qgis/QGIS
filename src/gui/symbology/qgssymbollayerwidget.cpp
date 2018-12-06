@@ -2104,6 +2104,12 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
+void QgsSvgMarkerSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mSvgSourceLineEdit->setMessageBar( context.messageBar() );
+}
+
 void QgsSvgMarkerSymbolLayerWidget::setName( const QModelIndex &idx )
 {
   QString name = idx.data( Qt::UserRole ).toString();
@@ -2364,6 +2370,12 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+void QgsSVGFillSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mSvgSourceLineEdit->setMessageBar( context.messageBar() );
 }
 
 void QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged( double d )
@@ -3174,6 +3186,12 @@ void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 QgsSymbolLayer *QgsRasterMarkerSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
+}
+
+void QgsRasterMarkerSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mImageSourceLineEdit->setMessageBar( context.messageBar() );
 }
 
 void QgsRasterMarkerSymbolLayerWidget::imageSourceChanged( const QString &text )

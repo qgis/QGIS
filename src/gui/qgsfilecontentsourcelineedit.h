@@ -23,6 +23,7 @@
 
 class QLineEdit;
 class QToolButton;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -51,6 +52,19 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
      * Constructor for QgsAbstractFileContentSourceLineEdit, with the specified \a parent widget.
      */
     QgsAbstractFileContentSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget.
+     * \see setMessageBar()
+     */
+    QgsMessageBar *messageBar() const;
 
     /**
      * Returns the current file source.
@@ -138,6 +152,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     QToolButton *mFileToolButton = nullptr;
     QString mLastPathKey;
     QString mBase64;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QString defaultPath() const;
     QString settingsKey() const;
