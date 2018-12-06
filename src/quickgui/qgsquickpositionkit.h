@@ -114,6 +114,11 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
      */
     Q_PROPERTY( QVector<double> simulatePositionLongLatRad READ simulatePositionLongLatRad WRITE setSimulatePositionLongLatRad NOTIFY simulatePositionLongLatRadChanged )
 
+    /**
+     * Allows start/stop of its services or access properties.
+     */
+    Q_PROPERTY( QGeoPositionInfoSource *source READ source NOTIFY sourceChanged )
+
   public:
     //! Creates new position kit
     explicit QgsQuickPositionKit( QObject *parent = nullptr );
@@ -159,10 +164,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void setSimulatePositionLongLatRad( const QVector<double> &simulatePositionLongLatRad );
 
-    /**
-     * Allows start/stop of its services or access properties.
-     */
-    Q_INVOKABLE QGeoPositionInfoSource &source() const;
+    QGeoPositionInfoSource *source() const;
 
     /**
      * Coordinate reference system of position - WGS84 (constant)
@@ -222,6 +224,8 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
 
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void simulatePositionLongLatRadChanged( QVector<double> simulatePositionLongLatRad );
+
+    void sourceChanged();
 
   private slots:
     void onPositionUpdated( const QGeoPositionInfo &info );
