@@ -277,6 +277,16 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
       sipIsErr = 1;
     }
     % End
+
+    /**
+     * Iterates through all geometries in the collection.
+     *
+     * \since QGIS 3.6
+     */
+    SIP_PYOBJECT __iter__() SIP_TYPEHINT( QgsGeometryPartIterator );
+    % MethodCode
+    sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
+    % End
 #endif
 
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
