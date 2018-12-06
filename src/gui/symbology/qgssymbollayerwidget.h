@@ -661,8 +661,7 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     QgsRasterFillSymbolLayer *mLayer = nullptr;
 
   private slots:
-    void mBrowseToolButton_clicked();
-    void mImageLineEdit_editingFinished();
+    void imageSourceChanged( const QString &text );
     void setCoordinateMode( int index );
     void opacityChanged( double value );
     void offsetChanged();
