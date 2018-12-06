@@ -160,6 +160,11 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     void setSimulatePositionLongLatRad( const QVector<double> &simulatePositionLongLatRad );
 
     /**
+     * Allows start/stop of its services or access properties.
+     */
+     Q_INVOKABLE QGeoPositionInfoSource &source() const;
+
+    /**
      * Coordinate reference system of position - WGS84 (constant)
      */
     Q_INVOKABLE QgsCoordinateReferenceSystem positionCRS() const;
@@ -184,7 +189,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
      */
     Q_INVOKABLE void useGpsLocation();
 
-  signals:
+signals:
     //! \copydoc QgsQuickPositionKit::position
     void positionChanged();
 

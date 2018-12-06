@@ -59,6 +59,11 @@ QGeoPositionInfoSource  *QgsQuickPositionKit::simulatedSource( double longitude,
   return new QgsQuickSimulatedPositionSource( this, longitude, latitude, radius );
 }
 
+QGeoPositionInfoSource &QgsQuickPositionKit::source() const
+{
+    return *mSource;
+}
+
 void QgsQuickPositionKit::useSimulatedLocation( double longitude, double latitude, double radius )
 {
   std::unique_ptr<QGeoPositionInfoSource> source( simulatedSource( longitude, latitude, radius ) );
