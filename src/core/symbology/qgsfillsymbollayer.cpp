@@ -21,6 +21,7 @@
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
+#include "qgsimagecache.h"
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
@@ -3787,43 +3788,17 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
 
 void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double alpha, const QgsSymbolRenderContext &context )
 {
-  QImage image( imageFilePath );
-  if ( image.isNull() )
-  {
-    return;
-  }
-  if ( !image.hasAlphaChannel() )
-  {
-    image = image.convertToFormat( QImage::Format_ARGB32 );
-  }
-
-  double pixelWidth;
+  QSize size;
   if ( width > 0 )
   {
-    pixelWidth = context.renderContext().convertToPainterUnits( width, mWidthUnit, mWidthMapUnitScale );
-  }
-  else
-  {
-    pixelWidth = image.width();
+    size.setWidth( context.renderContext().convertToPainterUnits( width, mWidthUnit, mWidthMapUnitScale ) );
+    size.setHeight( 0 );
   }
 
-  //reduce alpha of image
-  if ( alpha < 1.0 )
-  {
-    QPainter p;
-    p.begin( &image );
-    p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
-    QColor alphaColor( 0, 0, 0 );
-    alphaColor.setAlphaF( alpha );
-    p.fillRect( image.rect(), alphaColor );
-    p.end();
-  }
+  bool cached;
+  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached );
+  if ( img.isNull() )
+    return;
 
-  //resize image if required
-  if ( !qgsDoubleNear( pixelWidth, image.width() ) )
-  {
-    image = image.scaledToWidth( pixelWidth, Qt::SmoothTransformation );
-  }
-
-  brush.setTextureImage( image );
+  brush.setTextureImage( img );
 }
