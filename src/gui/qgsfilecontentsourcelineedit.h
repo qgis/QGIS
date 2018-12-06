@@ -21,7 +21,7 @@
 #include <QWidget>
 #include <QString>
 
-class QLineEdit;
+class QgsFilterLineEdit;
 class QToolButton;
 class QgsMessageBar;
 
@@ -144,11 +144,10 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     void embedFile();
     void extractFile();
     void mFileLineEdit_textEdited( const QString &text );
-    void mFileLineEdit_editingFinished();
 
   private:
 
-    QLineEdit *mFileLineEdit = nullptr;
+    QgsFilterLineEdit *mFileLineEdit = nullptr;
     QToolButton *mFileToolButton = nullptr;
     QString mLastPathKey;
     QString mBase64;

@@ -16,6 +16,7 @@
 #include "qgsfilecontentsourcelineedit.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
+#include "qgsfilterlineedit.h"
 #include <QMenu>
 #include <QLineEdit>
 #include <QToolButton>
@@ -31,7 +32,8 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   : QWidget( parent )
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
-  mFileLineEdit = new QLineEdit( this );
+  mFileLineEdit = new QgsFilterLineEdit( this );
+  mFileLineEdit->setShowClearButton( true );
   mFileToolButton = new QToolButton( this );
   mFileToolButton->setText( tr( "…" ) );
   layout->addWidget( mFileLineEdit, 1 );
@@ -66,7 +68,13 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( mFileToolButton, &QToolButton::clicked, this, &QgsAbstractFileContentSourceLineEdit::selectFile );
 
   connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited );
-  connect( mFileLineEdit, &QLineEdit::editingFinished, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_editingFinished );
+  connect( mFileLineEdit, &QgsFilterLineEdit::cleared, this, [ = ]
+  {
+    mFileLineEdit->setPlaceholderText( QString() );
+    mBase64.clear();
+    emit sourceChanged( QString() );
+  } );
+
 }
 
 QString QgsAbstractFileContentSourceLineEdit::source() const
@@ -83,15 +91,22 @@ void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 {
   const bool isBase64 = source.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive );
 
-  if ( ( !isBase64 && source == mFileLineEdit->text() ) || ( isBase64 && source == mBase64 ) )
+  if ( ( !isBase64 && source == mFileLineEdit->text() && mBase64.isEmpty() ) || ( isBase64 && source == mBase64 ) )
     return;
 
   if ( isBase64 )
+  {
     mBase64 = source;
+    mFileLineEdit->clear();
+    mFileLineEdit->setPlaceholderText( tr( "Embedded file" ) );
+  }
   else
+  {
     mBase64.clear();
+    mFileLineEdit->setText( source );
+    mFileLineEdit->setPlaceholderText( QString() );
+  }
 
-  mFileLineEdit->setText( source );
   emit sourceChanged( source );
 }
 
@@ -109,6 +124,7 @@ void QgsAbstractFileContentSourceLineEdit::selectFile()
   }
   mBase64.clear();
   mFileLineEdit->setText( file );
+  mFileLineEdit->setPlaceholderText( QString() );
   s.setValue( settingsKey(), fi.absolutePath() );
   emit sourceChanged( mFileLineEdit->text() );
 }
@@ -121,6 +137,7 @@ void QgsAbstractFileContentSourceLineEdit::selectUrl()
   {
     mBase64.clear();
     mFileLineEdit->setText( path );
+    mFileLineEdit->setPlaceholderText( QString() );
     emit sourceChanged( mFileLineEdit->text() );
   }
 }
@@ -156,7 +173,10 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
     return;
 
   mBase64 = path;
-  mFileLineEdit->setText( path );
+
+  mFileLineEdit->clear();
+  mFileLineEdit->setPlaceholderText( tr( "Embedded file" ) );
+
   emit sourceChanged( path );
 }
 
@@ -198,25 +218,17 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
 
 void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited( const QString &text )
 {
-  if ( !QFileInfo::exists( text ) )
+  mFileLineEdit->setPlaceholderText( QString() );
+  mBase64.clear();
+  if ( !text.isEmpty() && !QFileInfo::exists( text ) )
   {
-    return;
-  }
-  emit sourceChanged( text );
-}
-
-void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_editingFinished()
-{
-  if ( !mFileLineEdit->text().isEmpty() && !QFileInfo::exists( mFileLineEdit->text() ) )
-  {
-    QUrl url( mFileLineEdit->text() );
+    QUrl url( text );
     if ( !url.isValid() )
     {
       return;
     }
   }
-
-  emit sourceChanged( mFileLineEdit->text() );
+  emit sourceChanged( text );
 }
 
 QString QgsAbstractFileContentSourceLineEdit::defaultPath() const
