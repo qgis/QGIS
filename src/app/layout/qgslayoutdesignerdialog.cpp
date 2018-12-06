@@ -3969,7 +3969,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   double marginRight = 0.0;
   double marginBottom = 0.0;
   double marginLeft = 0.0;
-  bool previousForceVector = false;
+  bool forceVector = false;
   bool layersAsGroup = false;
   bool cropToContents = false;
   double topMargin = 0.0;
@@ -3979,7 +3979,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   bool includeMetadata = true;
   if ( mLayout )
   {
-    mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+    forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
     layersAsGroup = mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool();
     cropToContents = mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool();
     topMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginTop" ), 0 ).toInt();
@@ -4006,7 +4006,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
   options.chkMapLayersAsGroup->setChecked( layersAsGroup );
   options.mClipToContentGroupBox->setChecked( cropToContents );
-  options.mForceVectorCheckBox->setChecked( previousForceVector );
+  options.mForceVectorCheckBox->setChecked( forceVector );
   options.mTopMarginSpinBox->setValue( topMargin );
   options.mRightMarginSpinBox->setValue( rightMargin );
   options.mBottomMarginSpinBox->setValue( bottomMargin );
@@ -4023,6 +4023,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   marginBottom = options.mBottomMarginSpinBox->value();
   marginLeft = options.mLeftMarginSpinBox->value();
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
+  forceVector = options.mForceVectorCheckBox->isChecked();
   QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
 
   if ( mLayout )
@@ -4035,12 +4036,13 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
     mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
     mLayout->setCustomProperty( QStringLiteral( "svgIncludeMetadata" ), includeMetadata ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "forceVector" ), forceVector ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "svgTextFormat" ), static_cast< int >( textRenderFormat ) );
   }
 
   settings.cropToContents = clipToContent;
   settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
-  settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
+  settings.forceVectorOutput = forceVector;
   settings.exportAsLayers = groupLayers;
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
@@ -4051,11 +4053,11 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
 bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings )
 {
   QgsRenderContext::TextRenderFormat prevTextRenderFormat = mMasterLayout->layoutProject()->labelingEngineSettings().defaultTextRenderFormat();
-  bool previousForceVector = false;
+  bool forceVector = false;
   bool includeMetadata = true;
   if ( mLayout )
   {
-    mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+    forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
@@ -4074,23 +4076,25 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   options.mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
 
   options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
-  options.mForceVectorCheckBox->setChecked( previousForceVector );
+  options.mForceVectorCheckBox->setChecked( forceVector );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
 
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
+  forceVector = options.mForceVectorCheckBox->isChecked();
   QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
 
   if ( mLayout )
   {
     //save dialog settings
+    mLayout->setCustomProperty( QStringLiteral( "forceVector" ), forceVector ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfIncludeMetadata" ), includeMetadata ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
   }
 
-  settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
+  settings.forceVectorOutput = forceVector;
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
 
