@@ -43,7 +43,7 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void mCrossWidthSpinBox_valueChanged( double val );
     void mFrameWidthSpinBox_valueChanged( double val );
     void mGridFrameMarginSpinBox_valueChanged( double val );
-    void mFrameStyleComboBox_currentIndexChanged( const QString &text );
+    void mFrameStyleComboBox_currentIndexChanged( int );
     void mGridFramePenSizeSpinBox_valueChanged( double d );
     void mGridFramePenColorButton_colorChanged( const QColor &newColor );
     void mGridFrameFill1ColorButton_colorChanged( const QColor &newColor );

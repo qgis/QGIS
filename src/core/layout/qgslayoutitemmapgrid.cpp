@@ -784,6 +784,7 @@ void QgsLayoutItemMapGrid::drawGridFrameBorder( QPainter *p, const QMap< double,
       break;
 
     case QgsLayoutItemMapGrid::LineBorder:
+    case QgsLayoutItemMapGrid::LineBorderNautical:
       drawGridFrameLineBorder( p, border, extension );
       break;
 
@@ -972,12 +973,14 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
   p->setBrush( Qt::NoBrush );
   p->setPen( framePen );
 
+  const bool drawDiagonals = mGridFrameStyle == LineBorderNautical && !qgsDoubleNear( mGridFrameMargin, 0.0 );
+
   switch ( border )
   {
     case QgsLayoutItemMapGrid::Left:
       p->drawLine( QLineF( 0 - mGridFrameMargin, 0 - mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
       //corner left-top
-      if ( !qgsDoubleNear( mGridFrameMargin, 0.0 ) )
+      if ( drawDiagonals )
       {
         const double X1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0;
         const double Y1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0;
@@ -987,7 +990,7 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
     case QgsLayoutItemMapGrid::Right:
       p->drawLine( QLineF( mMap->rect().width() + mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
       //corner right-bottom
-      if ( !qgsDoubleNear( mGridFrameMargin, 0.0 ) )
+      if ( drawDiagonals )
       {
         const double X1 = mMap->rect().width() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
         const double Y1 = mMap->rect().height() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
@@ -997,7 +1000,7 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
     case QgsLayoutItemMapGrid::Top:
       p->drawLine( QLineF( 0 - mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, 0 - mGridFrameMargin ) );
       //corner right-top
-      if ( !qgsDoubleNear( mGridFrameMargin, 0.0 ) )
+      if ( drawDiagonals )
       {
         const double X1 = mMap->rect().width() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
         const double Y1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0 ;
@@ -1007,7 +1010,7 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
     case QgsLayoutItemMapGrid::Bottom:
       p->drawLine( QLineF( 0 - mGridFrameMargin, mMap->rect().height() + mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
       //corner left-bottom
-      if ( !qgsDoubleNear( mGridFrameMargin, 0.0 ) )
+      if ( drawDiagonals )
       {
         const double X1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0 ;
         const double Y1 = mMap->rect().height() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
@@ -1055,13 +1058,22 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
   int rotation = 0;
 
   double gridFrameDistance = 0;
-  if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame && mGridFrameStyle != QgsLayoutItemMapGrid::LineBorder )
+  switch ( mGridFrameStyle )
   {
-    gridFrameDistance = mGridFrameWidth;
-  }
-  if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::LineBorder )
-  {
-    gridFrameDistance += ( mGridFramePenThickness / 2.0 );
+    case InteriorTicks:
+    case ExteriorTicks:
+    case InteriorExteriorTicks:
+      gridFrameDistance = mGridFrameWidth;
+      break;
+
+    case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::LineBorder:
+    case QgsLayoutItemMapGrid::LineBorderNautical:
+      gridFrameDistance += ( mGridFramePenThickness / 2.0 );
+      break;
+
+    case QgsLayoutItemMapGrid::NoFrame:
+      break;
   }
 
   if ( frameBorder == QgsLayoutItemMapGrid::Left )
