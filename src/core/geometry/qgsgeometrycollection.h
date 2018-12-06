@@ -88,7 +88,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #ifndef SIP_RUN
     QgsAbstractGeometry *geometryN( int n );
 #else
-    SIP_PYOBJECT geometryN( int n );
+    SIP_PYOBJECT geometryN( int n ) SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     *
     * \since QGIS 3.6
     */
-    SIP_PYOBJECT __getitem__( int index );
+    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
     const int count = sipCpp->numGeometries();
     if ( a0 < -count || a0 >= count )

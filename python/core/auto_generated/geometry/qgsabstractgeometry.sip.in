@@ -816,7 +816,7 @@ Returns next vertex of the geometry (undefined behavior if hasNext() returns fal
     sipRes = sipCpp;
 %End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() /TypeHint="QgsPoint"/;
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
@@ -863,7 +863,7 @@ Returns next part of the geometry (undefined behavior if hasNext() returns false
     sipRes = sipCpp;
 %End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() /TypeHint="QgsAbstractGeometry"/;
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
@@ -911,7 +911,7 @@ Returns next part of the geometry (undefined behavior if hasNext() returns false
     sipRes = sipCpp;
 %End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() /TypeHint="QgsAbstractGeometry"/;
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );

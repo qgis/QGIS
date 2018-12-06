@@ -1039,7 +1039,7 @@ class CORE_EXPORT QgsVertexIterator
     sipRes = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsPoint );
     % MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
@@ -1088,7 +1088,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     sipRes = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
@@ -1138,7 +1138,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     sipRes = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
