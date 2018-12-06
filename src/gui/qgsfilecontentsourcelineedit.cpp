@@ -15,6 +15,7 @@
 
 #include "qgsfilecontentsourcelineedit.h"
 #include "qgssettings.h"
+#include "qgsmessagebar.h"
 #include <QMenu>
 #include <QLineEdit>
 #include <QToolButton>
@@ -185,6 +186,13 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
     fileOut.open( QIODevice::WriteOnly );
     fileOut.write( decoded );
     fileOut.close();
+
+    if ( mMessageBar )
+    {
+      mMessageBar->pushMessage( extractFileTitle(),
+                                tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ),
+                                Qgis::Success, 0 );
+    }
   }
 }
 
