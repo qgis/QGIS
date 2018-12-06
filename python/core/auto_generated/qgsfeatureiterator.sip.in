@@ -206,7 +206,7 @@ Wrapper for iterator of features from vector data provider or vector layer
     sipRes = sipCpp;
 %End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() /TypeHint="QgsFeature"/;
 %MethodCode
     std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
     bool result = false;

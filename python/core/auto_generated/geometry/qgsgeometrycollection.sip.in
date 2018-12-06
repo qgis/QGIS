@@ -58,7 +58,7 @@ Returns the number of geometries within the collection.
 
 
 
-    SIP_PYOBJECT geometryN( int n );
+    SIP_PYOBJECT geometryN( int n ) /TypeHint="QgsAbstractGeometry"/;
 %Docstring
 Returns a geometry from within the collection.
 
@@ -222,7 +222,7 @@ Returns a geometry without curves. Caller takes ownership
 
 
 
-    SIP_PYOBJECT __getitem__( int index );
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsAbstractGeometry"/;
 %Docstring
 Returns the geometry at the specified ``index``. An IndexError will be raised if no geometry with the specified ``index`` exists.
 

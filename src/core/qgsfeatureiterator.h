@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureIterator
     sipRes = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsFeature );
     % MethodCode
     std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
     bool result = false;
