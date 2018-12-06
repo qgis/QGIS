@@ -193,7 +193,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
     //check that we have distinct nodes
   }
 
-  std::unique_ptr< MemoryMesh > mesh(
+  std::unique_ptr< Mesh2dm > mesh(
     new Mesh2dm(
       vertices.size(),
       faces.size(),
@@ -205,7 +205,6 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
   );
   mesh->faces = faces;
   mesh->vertices = vertices;
-  mesh->addBedElevationDataset( vertices, faces );
-
-  return mesh;
+  MDAL::addBedElevationDatasetGroup( mesh.get(), vertices );
+  return std::unique_ptr<Mesh>( mesh.release() );
 }

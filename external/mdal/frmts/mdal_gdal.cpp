@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <limits>
 #include <gdal.h>
+#include <cmath>
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 #include "gdal_alg.h"

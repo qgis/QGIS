@@ -11,6 +11,7 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <limits>
 #include "mdal.h"
 
 namespace MDAL
@@ -78,6 +79,8 @@ namespace MDAL
       DatasetGroup( Mesh *parent,
                     const std::string &uri,
                     const std::string &name );
+
+      ~DatasetGroup();
 
       std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );

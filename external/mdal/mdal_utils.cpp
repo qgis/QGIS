@@ -11,6 +11,7 @@
 #include <sstream>
 #include <math.h>
 #include <assert.h>
+#include <cmath>
 
 bool MDAL::fileExists( const std::string &filename )
 {
@@ -150,7 +151,13 @@ std::string MDAL::join( const std::vector<std::string> parts, const std::string 
 std::string MDAL::toLower( const std::string &std )
 {
   std::string res( std );
+#ifdef WIN32
+  //silence algorithm(1443): warning C4244: '=': conversion from 'int' to 'char'
+  std::transform( res.begin(), res.end(), res.begin(),
+  []( char c ) {return static_cast<char>( ::tolower( c ) );} );
+#else
   std::transform( res.begin(), res.end(), res.begin(), ::tolower );
+#endif
   return res;
 }
 
@@ -271,14 +278,14 @@ MDAL::Statistics _calculateStatistics( const std::vector<double> &values, size_t
     {
       double x = values[2 * i];
       double y = values[2 * i + 1];
-      if ( isnan( x ) || isnan( y ) )
+      if ( std::isnan( x ) || std::isnan( y ) )
         continue;
       magnitude = sqrt( x * x + y * y );
     }
     else
     {
       double x = values[i];
-      if ( isnan( x ) )
+      if ( std::isnan( x ) )
         continue;
       magnitude = x;
     }
@@ -353,20 +360,20 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
 
 void MDAL::combineStatistics( MDAL::Statistics &main, const MDAL::Statistics &other )
 {
-  if ( isnan( main.minimum ) ||
-       ( !isnan( other.minimum ) && ( main.minimum > other.minimum ) ) )
+  if ( std::isnan( main.minimum ) ||
+       ( !std::isnan( other.minimum ) && ( main.minimum > other.minimum ) ) )
   {
     main.minimum = other.minimum;
   }
 
-  if ( isnan( main.maximum ) ||
-       ( !isnan( other.maximum ) && ( main.maximum < other.maximum ) ) )
+  if ( std::isnan( main.maximum ) ||
+       ( !std::isnan( other.maximum ) && ( main.maximum < other.maximum ) ) )
   {
     main.maximum = other.maximum;
   }
 }
 
-void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices, const Faces &faces )
+void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices )
 {
   if ( !mesh )
     return;

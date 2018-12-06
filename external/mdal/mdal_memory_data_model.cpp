@@ -15,9 +15,9 @@ MDAL::MemoryDataset::MemoryDataset( MDAL::DatasetGroup *grp )
   : Dataset( grp )
   , mValues( group()->isScalar() ? valuesCount() : 2 * valuesCount(),
              std::numeric_limits<double>::quiet_NaN() )
-  , mActive( group()->isOnVertices() ? mesh()->facesCount() : 0,
-             1 )
 {
+  if ( group()->isOnVertices() )
+    mActive = std::vector<int>( mesh()->facesCount(), 1 );
 }
 
 MDAL::MemoryDataset::~MemoryDataset() = default;
@@ -98,19 +98,14 @@ MDAL::MemoryMesh::MemoryMesh( size_t verticesCount, size_t facesCount, size_t fa
 
 std::unique_ptr<MDAL::MeshVertexIterator> MDAL::MemoryMesh::readVertices()
 {
-  std::unique_ptr<MDAL::MemoryMeshVertexIterator> it( new MemoryMeshVertexIterator( this ) );
+  std::unique_ptr<MDAL::MeshVertexIterator> it( new MemoryMeshVertexIterator( this ) );
   return it;
 }
 
 std::unique_ptr<MDAL::MeshFaceIterator> MDAL::MemoryMesh::readFaces()
 {
-  std::unique_ptr<MDAL::MemoryMeshFaceIterator> it( new MemoryMeshFaceIterator( this ) );
+  std::unique_ptr<MDAL::MeshFaceIterator> it( new MemoryMeshFaceIterator( this ) );
   return it;
-}
-
-void MDAL::MemoryMesh::addBedElevationDataset( const MDAL::Vertices &vertices, const MDAL::Faces &faces )
-{
-  MDAL::addBedElevationDatasetGroup( this, vertices, faces );
 }
 
 MDAL::MemoryMesh::~MemoryMesh() = default;
