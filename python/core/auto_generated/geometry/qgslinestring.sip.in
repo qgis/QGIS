@@ -82,7 +82,7 @@ Construct a linestring from a single 2d line segment.
 
 
 
-    SIP_PYOBJECT pointN( int i ) const;
+    SIP_PYOBJECT pointN( int i ) const /TypeHint="QgsPoint"/;
 %Docstring
 Returns the point at the specified index. An IndexError will be raised if no point with the specified index exists.
 
@@ -505,7 +505,7 @@ of the curve.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    SIP_PYOBJECT __getitem__( int index );
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsPoint"/;
 %Docstring
 Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
 

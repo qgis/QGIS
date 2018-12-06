@@ -198,6 +198,14 @@
 #define SIP_DOC_TEMPLATE
 
 /*
+ * Specifies the type of the value returned by the function as it will appear in any
+ * generated docstrings and PEP 484 type hints. It is usually used with results of type
+ * SIP_PYOBJECT to provide a more specific type.
+ * Available for SIP 4.18+
+ */
+#define SIP_TYPEHINT(type)
+
+/*
  * Sip supports the final keyword since version 4.19.0, earlier than that
  * we will have build issues because it tries to override final methods.
  */
