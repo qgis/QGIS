@@ -708,7 +708,11 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   QgsSymbolLayerList layers;
   std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
   markerLayer->setSizeUnit( QgsUnitTypes::RenderPixels );
-  markerLayer->setFixedAspectRatio( static_cast< double >( widthInPixels ) / heightInPixels );
+
+  // only change the default aspect ratio if the server height setting requires this
+  if ( !qgsDoubleNear( static_cast< double >( widthInPixels ) / heightInPixels, markerLayer->defaultAspectRatio() ) )
+    markerLayer->setFixedAspectRatio( static_cast< double >( widthInPixels ) / heightInPixels );
+
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
   markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
   layers.append( markerLayer.release() );
