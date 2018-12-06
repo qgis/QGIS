@@ -164,6 +164,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void setSimulatePositionLongLatRad( const QVector<double> &simulatePositionLongLatRad );
 
+    //! \copydoc QgsQuickPositionKit::source
     QGeoPositionInfoSource *source() const;
 
     /**
@@ -225,6 +226,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void simulatePositionLongLatRadChanged( QVector<double> simulatePositionLongLatRad );
 
+    //! \copydoc QgsQuickPositionKit::source
     void sourceChanged();
 
   private slots:
