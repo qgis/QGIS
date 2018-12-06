@@ -333,6 +333,8 @@ class CORE_EXPORT QgsMeshDatasetMetadata
      *
      * \param time a time which this dataset represents in the dataset group
      * \param isValid dataset is loadad and valid for fetching the data
+     * \param minimum minimum value (magnitude for vectors) present among dataset values
+     * \param maximum maximum value (magnitude for vectors) present among dataset values
      */
     QgsMeshDatasetMetadata( double time,
                             bool isValid,
