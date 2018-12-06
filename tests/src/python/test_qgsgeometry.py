@@ -553,6 +553,12 @@ class TestQgsGeometry(unittest.TestCase):
         with self.assertRaises(IndexError):
             del g[-3]
 
+        # iteration
+        g = QgsGeometryCollection()
+        self.assertFalse([p for p in g])
+        g.fromWkt('GeometryCollection( Point(1 2), Point(11 12), LineString(33 34, 44 45))')
+        self.assertEqual([p.asWkt() for p in g], ['Point (1 2)', 'Point (11 12)', 'LineString (33 34, 44 45)'])
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
