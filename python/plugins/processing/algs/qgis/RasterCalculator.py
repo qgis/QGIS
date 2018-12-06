@@ -168,8 +168,8 @@ class RasterCalculator(QgisAlgorithm):
 
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        width = math.floor((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
-        height = math.floor((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
+        width = round((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
+        height = round((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
         driverName = GdalUtils.getFormatShortNameFromFilename(output)
 
         calc = QgsRasterCalculator(expression,
