@@ -915,7 +915,7 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
       if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks )
       {
         width = mGridFrameWidth;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? 0 - mGridFrameMargin : mMap->rect().width() - mGridFrameWidth + mGridFrameMargin;
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? 0 + mGridFrameMargin : mMap->rect().width() - mGridFrameWidth - mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
@@ -935,7 +935,7 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
       if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks )
       {
         height = mGridFrameWidth;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? 0 - mGridFrameMargin : mMap->rect().height() - mGridFrameWidth + mGridFrameMargin;
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? 0 + mGridFrameMargin : mMap->rect().height() - mGridFrameWidth - mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
@@ -1895,6 +1895,7 @@ bool QgsLayoutItemMapGrid::shouldShowDivisionForSide( QgsLayoutItemMapGrid::Anno
     case QgsLayoutItemMapGrid::Bottom:
       return shouldShowDivisionForDisplayMode( coordinate, mBottomFrameDivisions );
   }
+  return false; // no warnings
 }
 
 bool QgsLayoutItemMapGrid::shouldShowDivisionForDisplayMode( QgsLayoutItemMapGrid::AnnotationCoordinate coordinate, QgsLayoutItemMapGrid::DisplayMode mode ) const
@@ -2029,6 +2030,7 @@ QgsLayoutItemMapGrid::DisplayMode QgsLayoutItemMapGrid::annotationDisplay( const
     case QgsLayoutItemMapGrid::Bottom:
       return mBottomGridAnnotationDisplay;
   }
+  return mBottomGridAnnotationDisplay; // no warnings
 }
 
 double QgsLayoutItemMapGrid::maxExtension() const
@@ -2252,6 +2254,7 @@ QgsLayoutItemMapGrid::AnnotationPosition QgsLayoutItemMapGrid::annotationPositio
     case QgsLayoutItemMapGrid::Bottom:
       return mBottomGridAnnotationPosition;
   }
+  return mLeftGridAnnotationPosition; // no warnings
 }
 
 QgsLayoutItemMapGrid::AnnotationDirection QgsLayoutItemMapGrid::annotationDirection( const BorderSide border ) const
@@ -2272,6 +2275,7 @@ QgsLayoutItemMapGrid::AnnotationDirection QgsLayoutItemMapGrid::annotationDirect
     case QgsLayoutItemMapGrid::Bottom:
       return mBottomGridAnnotationDirection;
   }
+  return mLeftGridAnnotationDirection; // no warnings
 }
 
 void QgsLayoutItemMapGrid::setFrameDivisions( const QgsLayoutItemMapGrid::DisplayMode divisions, const QgsLayoutItemMapGrid::BorderSide border )
@@ -2311,6 +2315,7 @@ QgsLayoutItemMapGrid::DisplayMode QgsLayoutItemMapGrid::frameDivisions( const Qg
     case QgsLayoutItemMapGrid::Bottom:
       return mBottomFrameDivisions;
   }
+  return mLeftFrameDivisions; // no warnings
 }
 
 int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTransform &inverseTransform ) const
