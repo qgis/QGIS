@@ -811,7 +811,7 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
   QMap< double, double > pos = borderPos;
 
   double currentCoord = 0.0;
-  bool color1 = true;
+  bool color1 = false;
   double x = 0;
   double y = 0;
   double width = 0;
@@ -835,6 +835,8 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
       drawTLBox = border == QgsLayoutItemMapGrid::Left;
       drawTRBox = border == QgsLayoutItemMapGrid::Right;
     }
+    if ( !drawTLBox && border == QgsLayoutItemMapGrid::Left )
+      color1 = true;
   }
   else if ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom )
   {
