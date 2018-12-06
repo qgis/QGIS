@@ -31,6 +31,21 @@ urls.
 Constructor for QgsAbstractFileContentSourceLineEdit, with the specified ``parent`` widget.
 %End
 
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
     QString source() const;
 %Docstring
 Returns the current file source.

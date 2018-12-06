@@ -28,7 +28,7 @@ Constructor for QgsSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
     virtual QgsSymbolLayer *symbolLayer() = 0;
 
-    void setContext( const QgsSymbolWidgetContext &context );
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
@@ -406,6 +406,9 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
   protected:
 
     void populateList();
@@ -448,6 +451,8 @@ Creates a new QgsRasterMarkerSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
 
     virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
   protected:
@@ -519,6 +524,8 @@ Creates a new QgsSVGFillSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
 
     virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
   protected:

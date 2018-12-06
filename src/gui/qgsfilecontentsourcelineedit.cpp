@@ -308,3 +308,13 @@ QString QgsImageSourceLineEdit::defaultSettingsKey() const
 }
 
 ///@endcond
+
+void QgsAbstractFileContentSourceLineEdit::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsAbstractFileContentSourceLineEdit::messageBar() const
+{
+  return mMessageBar;
+}

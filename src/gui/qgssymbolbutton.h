@@ -26,6 +26,7 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsExpressionContextGenerator;
 class QgsPanelWidget;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -121,6 +122,21 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \see mapCanvas()
      */
     void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     * \since QGIS 3.6
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget.
+     * \see setMessageBar()
+     * \since QGIS 3.6
+     */
+    QgsMessageBar *messageBar() const;
 
     /**
      * Returns the layer associated with the widget.
@@ -234,6 +250,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsSymbol::SymbolType mType = QgsSymbol::Fill;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QPoint mDragStartPosition;
 

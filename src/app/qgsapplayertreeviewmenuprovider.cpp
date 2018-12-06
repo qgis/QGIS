@@ -691,6 +691,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
   dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
+  context.setMessageBar( QgisApp::instance()->messageBar() );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
@@ -768,6 +769,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
+  context.setMessageBar( QgisApp::instance()->messageBar() );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
