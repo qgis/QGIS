@@ -476,7 +476,7 @@ void QgsLayoutMapGridWidget::setGridItems()
   mOffsetYSpinBox->setValue( mMapGrid->offsetY() );
   mCrossWidthSpinBox->setValue( mMapGrid->crossLength() );
   mFrameWidthSpinBox->setValue( mMapGrid->frameWidth() );
-  mGridFrameMarginSpinBox->setValue( mMapGrid->gridFrameMargin() );
+  mGridFrameMarginSpinBox->setValue( mMapGrid->frameMargin() );
   mGridFramePenSizeSpinBox->setValue( mMapGrid->framePenSize() );
   mGridFramePenColorButton->setColor( mMapGrid->framePenColor() );
   mGridFrameFill1ColorButton->setColor( mMapGrid->frameFillColor1() );
@@ -533,7 +533,7 @@ void QgsLayoutMapGridWidget::setGridItems()
 
   //grid frame
   mFrameWidthSpinBox->setValue( mMapGrid->frameWidth() );
-  mGridFrameMarginSpinBox->setValue( mMapGrid->gridFrameMargin() );
+  mGridFrameMarginSpinBox->setValue( mMapGrid->frameMargin() );
   QgsLayoutItemMapGrid::FrameStyle gridFrameStyle = mMapGrid->frameStyle();
   mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findData( gridFrameStyle ) );
   switch ( gridFrameStyle )
@@ -709,7 +709,7 @@ void QgsLayoutMapGridWidget::mGridFrameMarginSpinBox_valueChanged( double val )
   }
 
   mMap->beginCommand( tr( "Change Grid Frame Margin" ) );
-  mMapGrid->setGridFrameMargin( val );
+  mMapGrid->setFrameMargin( val );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
