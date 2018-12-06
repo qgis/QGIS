@@ -109,7 +109,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
      */
-    SIP_PYOBJECT pointN( int i ) const;
+    SIP_PYOBJECT pointN( int i ) const SIP_TYPEHINT( QgsPoint );
     % MethodCode
     const int count = sipCpp->numPoints();
     if ( a0 < -count || a0 >= count )
@@ -650,7 +650,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     *
     * \since QGIS 3.6
     */
-    SIP_PYOBJECT __getitem__( int index );
+    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsPoint );
     % MethodCode
     const int count = sipCpp->numPoints();
     if ( a0 < -count || a0 >= count )
