@@ -775,6 +775,7 @@ void QgsLayoutItemMapGrid::drawGridFrameBorder( QPainter *p, const QMap< double,
   switch ( mGridFrameStyle )
   {
     case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::ZebraNautical:
       drawGridFrameZebraBorder( p, borderPos, border, extension );
       break;
     case QgsLayoutItemMapGrid::InteriorTicks:
@@ -871,13 +872,17 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
     currentCoord = posIt.key();
     color1 = !color1;
   }
-  //draw corners
-  width = height = ( mGridFrameWidth + mGridFrameMargin ) ;
-  p->setBrush( QBrush( mGridFrameFillColor1 ) );
-  p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
-  p->drawRect( QRectF( mMap->rect().width(), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
-  p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), mMap->rect().height(),                  width, height ) );
-  p->drawRect( QRectF( mMap->rect().width(), mMap->rect().height(), width, height ) );
+
+  if ( mGridFrameStyle == ZebraNautical )
+  {
+    //draw corners
+    width = height = ( mGridFrameWidth + mGridFrameMargin ) ;
+    p->setBrush( QBrush( mGridFrameFillColor1 ) );
+    p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+    p->drawRect( QRectF( mMap->rect().width(), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+    p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), mMap->rect().height(), width, height ) );
+    p->drawRect( QRectF( mMap->rect().width(), mMap->rect().height(), width, height ) );
+  }
 }
 
 void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, double > &borderPos, QgsLayoutItemMapGrid::BorderSide border, double *extension ) const
@@ -1067,6 +1072,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
       break;
 
     case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::ZebraNautical:
     case QgsLayoutItemMapGrid::LineBorder:
     case QgsLayoutItemMapGrid::LineBorderNautical:
       gridFrameDistance += ( mGridFramePenThickness / 2.0 );
@@ -1091,7 +1097,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mLeftGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1163,7 +1169,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mRightGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1235,7 +1241,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mBottomGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1311,7 +1317,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mTopGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }

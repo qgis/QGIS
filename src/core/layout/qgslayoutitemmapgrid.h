@@ -233,7 +233,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
       ExteriorTicks,  //!< Tick markers drawn outside map frame
       InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
       LineBorder, //!< Simple solid line frame
-      LineBorderNautical //!< Simple solid line frame, with nautical style diagonals on corners
+      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
+      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
     };
 
     /**

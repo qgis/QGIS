@@ -37,12 +37,14 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   mFrameStyleComboBox->addItem( tr( "No Frame" ), QgsLayoutItemMapGrid::NoFrame );
   mFrameStyleComboBox->addItem( tr( "Zebra" ), QgsLayoutItemMapGrid::Zebra );
+  mFrameStyleComboBox->addItem( tr( "Zebra (Nautical)" ), QgsLayoutItemMapGrid::ZebraNautical );
   mFrameStyleComboBox->addItem( tr( "Interior Ticks" ), QgsLayoutItemMapGrid::InteriorTicks );
   mFrameStyleComboBox->addItem( tr( "Exterior Ticks" ), QgsLayoutItemMapGrid::ExteriorTicks );
   mFrameStyleComboBox->addItem( tr( "Interior and Exterior Ticks" ), QgsLayoutItemMapGrid::InteriorExteriorTicks );
   mFrameStyleComboBox->addItem( tr( "Line Border" ), QgsLayoutItemMapGrid::LineBorder );
   mFrameStyleComboBox->addItem( tr( "Line Border (Nautical)" ), QgsLayoutItemMapGrid::LineBorderNautical );
 
+  mGridFrameMarginSpinBox->setShowClearButton( true );
   mGridFrameMarginSpinBox->setClearValue( 0 );
 
   connect( mIntervalXSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished );
@@ -537,6 +539,7 @@ void QgsLayoutMapGridWidget::setGridItems()
   switch ( gridFrameStyle )
   {
     case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::ZebraNautical:
       toggleFrameControls( true, true, true );
       break;
     case QgsLayoutItemMapGrid::InteriorTicks:
@@ -854,6 +857,7 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
   switch ( style )
   {
     case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::ZebraNautical:
       toggleFrameControls( true, true, true );
       break;
     case QgsLayoutItemMapGrid::InteriorTicks:
