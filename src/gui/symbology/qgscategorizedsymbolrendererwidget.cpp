@@ -25,6 +25,9 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include "qgssymbolselectordialog.h"
@@ -635,20 +638,30 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   }
 }
 
-static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, QgsSymbol *symbol )
+static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, QgsSymbol *symbol, QgsVectorLayer *layer, const QString &attrName )
 {
   // sort the categories first
   QgsSymbolLayerUtils::sortVariantList( values, Qt::AscendingOrder );
 
   int num = values.count();
 
+  const QgsFields fields = layer->fields();
   for ( int i = 0; i < num; i++ )
   {
     QVariant value = values[i];
     QgsSymbol *newSymbol = symbol->clone();
     if ( ! value.isNull() )
     {
-      cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
+      int fieldIdx = fields.lookupField( attrName );
+      QString categoryName = value.toString();
+      if ( fieldIdx != -1 )
+      {
+        QgsField field = fields.at( fieldIdx );
+        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+        const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+        categoryName = formatter->representValue( layer, fieldIdx, setup.config(), QVariant(), value );
+      }
+      cats.append( QgsRendererCategory( value, newSymbol,  categoryName, true ) );
     }
   }
 
@@ -710,7 +723,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
 #endif
 
   QgsCategoryList cats;
-  _createCategories( cats, unique_vals, mCategorizedSymbol.get() );
+  _createCategories( cats, unique_vals, mCategorizedSymbol.get(), mLayer, attrName );
   bool deleteExisting = false;
 
   if ( !mOldClassificationAttribute.isEmpty() &&
