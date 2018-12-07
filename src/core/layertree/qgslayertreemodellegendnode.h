@@ -268,7 +268,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Toggle all items belonging to the same layer as this node.
      * \see checkAllItems()
      * \see uncheckAllItems()
-     * \since QGIS 3.4
+     * \since QGIS 3.6
      */
     void toggleAllItems();
 
