@@ -87,7 +87,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case ColorWithAlpha:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>RRGGBBAA</b> as hex or <b>color</b> as color's name" );
+      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>AARRGGBB</b> as hex or <b>color</b> as color's name" );
       break;
 
     case ColorNoAlpha:
