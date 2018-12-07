@@ -115,6 +115,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     Q_PROPERTY( QVector<double> simulatePositionLongLatRad READ simulatePositionLongLatRad WRITE setSimulatePositionLongLatRad NOTIFY simulatePositionLongLatRadChanged )
 
     /**
+     * Internal source of GPS location data.
      * Allows start/stop of its services or access properties.
      */
     Q_PROPERTY( QGeoPositionInfoSource *source READ source NOTIFY sourceChanged )
@@ -164,7 +165,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void setSimulatePositionLongLatRad( const QVector<double> &simulatePositionLongLatRad );
 
-    //! \copydoc QgsQuickPositionKit::source
+    //! Returns pointer to the internal QGeoPositionInfoSource object used to receive GPS location.
     QGeoPositionInfoSource *source() const;
 
     /**
@@ -226,7 +227,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void simulatePositionLongLatRadChanged( QVector<double> simulatePositionLongLatRad );
 
-    //! \copydoc QgsQuickPositionKit::source
+    //! Emitted when the internal source of GPS location data has been replaced.
     void sourceChanged();
 
   private slots:
