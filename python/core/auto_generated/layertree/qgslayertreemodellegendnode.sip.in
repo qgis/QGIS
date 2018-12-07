@@ -269,6 +269,8 @@ Checks all items belonging to the same layer as this node.
 
 .. seealso:: :py:func:`uncheckAllItems`
 
+.. seealso:: :py:func:`toggleAllItems`
+
 .. versionadded:: 2.14
 %End
 
@@ -278,7 +280,20 @@ Unchecks all items belonging to the same layer as this node.
 
 .. seealso:: :py:func:`checkAllItems`
 
+.. seealso:: :py:func:`toggleAllItems`
+
 .. versionadded:: 2.14
+%End
+
+    void toggleAllItems();
+%Docstring
+Toggle all items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 3.6
 %End
 
 };

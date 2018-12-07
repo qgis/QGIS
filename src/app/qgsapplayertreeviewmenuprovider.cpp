@@ -476,6 +476,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
       {
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleAllLayers.svg" ) ), tr( "&Toggle Items" ),
+                         symbolNode, &QgsSymbolLegendNode::toggleAllItems );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
                          symbolNode, &QgsSymbolLegendNode::checkAllItems );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),

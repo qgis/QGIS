@@ -277,6 +277,7 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.svg</file>
+        <file>themes/default/mActionToggleAllLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.svg</file>
         <file>themes/default/mActionHideDeselectedLayers.svg</file>
         <file>themes/default/mActionHistory.svg</file>
