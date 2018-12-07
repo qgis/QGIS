@@ -18,6 +18,8 @@ RUN make MXE_TARGETS=i686-w64-mingw32.shared.posix -j 16 \
     qtwinextras \
     libzip \
     gsl \
-    libspatialindex
+    libspatialindex \
+    exiv2
 
 RUN chmod -R a+rw /mxe/usr/i686-w64-mingw32.shared.posix
+
