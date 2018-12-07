@@ -28,6 +28,7 @@
 #include "geometry/qgspolygon.h"
 #include "geometry/qgspoint.h"
 #include "qgsfeedback.h"
+#include "qgspallabeling.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgsauthmanager.h"
@@ -36,8 +37,11 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsrenderer.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsvectorlayerlabeling.h"
+
 #include <QEventLoop>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -763,6 +767,132 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
 
   std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
   return symbol;
+}
+
+QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::parseEsriLabeling( const QVariantList &labelingData )
+{
+  if ( labelingData.empty() )
+    return nullptr;
+
+  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings(), 0, 0, QString(), QString(), false );
+  root->setActive( true );
+
+  int i = 1;
+  for ( const QVariant &lbl : labelingData )
+  {
+    const QVariantMap labeling = lbl.toMap();
+
+    QgsPalLayerSettings *settings = new QgsPalLayerSettings();
+    QgsTextFormat format;
+
+    const QString placement = labeling.value( QStringLiteral( "labelPlacement" ) ).toString();
+    if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAbove;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelow;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantOver;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantRight;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementBelowStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementCenterStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::OnLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerPolygonPlacementAlwaysHorizontal" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Horizontal;
+    }
+
+    const double minScale = labeling.value( QStringLiteral( "minScale" ) ).toDouble();
+    const double maxScale = labeling.value( QStringLiteral( "maxScale" ) ).toDouble();
+
+    QVariantMap symbol = labeling.value( QStringLiteral( "symbol" ) ).toMap();
+    format.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "color" ) ) ) );
+
+    const QString fontFamily = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+    const QString fontStyle = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
+    const QString fontWeight = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "weight" ) ).toString();
+    const int fontSize = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toInt();
+    QFont font( fontFamily, fontSize );
+    font.setStyleName( fontStyle );
+    font.setWeight( fontWeight == QLatin1String( "bold" ) ? QFont::Bold : QFont::Normal );
+
+    format.setFont( font );
+    format.setSize( fontSize );
+    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+
+    settings->setFormat( format );
+
+    QString where = labeling.value( QStringLiteral( "where" ) ).toString();
+    QgsExpression exp( where );
+    // If the where clause isn't parsed as valid, don't use its
+    if ( !exp.isValid() )
+      where.clear();
+
+    QString expression = labeling.value( QStringLiteral( "labelExpression" ) ).toString();
+    settings->fieldName = expression.replace( '[', '"' ).replace( ']', '"' );
+    settings->isExpression = true;
+
+    QgsRuleBasedLabeling::Rule *child = new QgsRuleBasedLabeling::Rule( settings, maxScale, minScale, where, QObject::tr( "ASF label %1" ).arg( i++ ), false );
+    child->setActive( true );
+    root->appendChild( child );
+  }
+
+  return new QgsRuleBasedLabeling( root );
 }
 
 QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &rendererData )

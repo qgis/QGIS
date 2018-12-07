@@ -23,6 +23,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include <QObject>
@@ -49,6 +50,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParsePictureFillSymbol();
     void testParseRendererSimple();
     void testParseRendererCategorized();
+    void testParseLabeling();
 
   private:
 
@@ -452,6 +454,107 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
   QCOMPARE( catRenderer->categories().at( 1 ).value().toString(), QStringLiteral( "Canada" ) );
   QCOMPARE( catRenderer->categories().at( 1 ).label(), QStringLiteral( "Canada" ) );
   QVERIFY( catRenderer->categories().at( 1 ).symbol() );
+}
+
+void TestQgsArcGisRestUtils::testParseLabeling()
+{
+  QVariantMap map = jsonStringToMap( "{"
+                                     "\"labelingInfo\": ["
+                                     "{"
+                                     "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
+                                     "\"where\": \"1=1\","
+                                     "\"labelExpression\": \"[Name]\","
+                                     "\"useCodedValues\": true,"
+                                     "\"symbol\": {"
+                                     "\"type\": \"esriTS\","
+                                     "\"color\": ["
+                                     "255,"
+                                     "0,"
+                                     "0,"
+                                     "255"
+                                     "],"
+                                     "\"backgroundColor\": null,"
+                                     "\"borderLineColor\": null,"
+                                     "\"borderLineSize\": null,"
+                                     "\"verticalAlignment\": \"bottom\","
+                                     "\"horizontalAlignment\": \"center\","
+                                     "\"rightToLeft\": false,"
+                                     "\"angle\": 0,"
+                                     "\"xoffset\": 0,"
+                                     "\"yoffset\": 0,"
+                                     "\"haloColor\": null,"
+                                     "\"haloSize\": null,"
+                                     "\"font\": {"
+                                     "\"family\": \"Arial\","
+                                     "\"size\": 8,"
+                                     "\"style\": \"normal\","
+                                     "\"weight\": \"bold\","
+                                     "\"decoration\": \"none\""
+                                     "}"
+                                     "},"
+                                     "\"minScale\": 200000,"
+                                     "\"maxScale\": 0"
+                                     "},{"
+                                     "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
+                                     "\"where\": \"1_testing broken where string\","
+                                     "\"labelExpression\": \"[Name]\","
+                                     "\"useCodedValues\": true,"
+                                     "\"symbol\": {"
+                                     "\"type\": \"esriTS\","
+                                     "\"color\": ["
+                                     "255,"
+                                     "0,"
+                                     "0,"
+                                     "255"
+                                     "],"
+                                     "\"backgroundColor\": null,"
+                                     "\"borderLineColor\": null,"
+                                     "\"borderLineSize\": null,"
+                                     "\"verticalAlignment\": \"bottom\","
+                                     "\"horizontalAlignment\": \"center\","
+                                     "\"rightToLeft\": false,"
+                                     "\"angle\": 0,"
+                                     "\"xoffset\": 0,"
+                                     "\"yoffset\": 0,"
+                                     "\"haloColor\": null,"
+                                     "\"haloSize\": null,"
+                                     "\"font\": {"
+                                     "\"family\": \"Arial\","
+                                     "\"size\": 8,"
+                                     "\"style\": \"normal\","
+                                     "\"weight\": \"bold\","
+                                     "\"decoration\": \"none\""
+                                     "}"
+                                     "},"
+                                     "\"minScale\": 200000,"
+                                     "\"maxScale\": 0"
+                                     "}"
+                                     "]"
+                                     "}" );
+  std::unique_ptr< QgsAbstractVectorLayerLabeling > labeling( QgsArcGisRestUtils::parseEsriLabeling( map.value( QStringLiteral( "labelingInfo" ) ).toList() ) );
+  QVERIFY( labeling );
+  QgsRuleBasedLabeling *rules = dynamic_cast< QgsRuleBasedLabeling *>( labeling.get() );
+  QVERIFY( rules );
+  QgsRuleBasedLabeling::Rule *root = rules->rootRule();
+  QVERIFY( root );
+
+  QgsRuleBasedLabeling::RuleList children = root->children();
+  QCOMPARE( children.count(), 2 );
+  //checking filter expression from valid where string
+  QCOMPARE( children.at( 0 )->filterExpression(), QStringLiteral( "1=1" ) );
+  //checking empty filter expression from invalid where string
+  QCOMPARE( children.at( 1 )->filterExpression(), QString( "" ) );
+  QCOMPARE( children.at( 0 )->minimumScale(), 200000.0 );
+  QCOMPARE( children.at( 0 )->maximumScale(), 0.0 );
+
+  QgsPalLayerSettings *settings = children.at( 0 )->settings();
+  QVERIFY( settings );
+  QCOMPARE( settings->placement, QgsPalLayerSettings::OverPoint );
+  QCOMPARE( settings->quadOffset, QgsPalLayerSettings::QuadrantAboveRight );
+
+  QgsTextFormat textFormat = settings->format();
+  QCOMPARE( textFormat.color(), QColor( 255, 0, 0 ) );
+  QCOMPARE( textFormat.size(), 8.0 );
 }
 
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const

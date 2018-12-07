@@ -52,6 +52,7 @@ of feature and attribute information from a spatial datasource.
       WriteLayerMetadata,
       CancelSupport,
       CreateRenderer,
+      CreateLabeling,
     };
 
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
@@ -518,6 +519,23 @@ Only providers which report the CreateRenderer capability will return a feature 
 providers will return None.
 
 .. versionadded:: 3.2
+%End
+
+    virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+%Docstring
+Creates labeling settings, using provider backend specific information.
+
+The ``configuration`` map can be used to pass provider-specific configuration maps to the provider to
+allow customization of the returned labeling object. Support and format of ``configuration`` varies by provider.
+
+When called with an empty ``configuration`` map the provider's default labeling settings will be returned.
+
+This method returns a new labeling settings and the caller takes ownership of the returned object.
+
+Only providers which report the CreateLabeling capability will return labeling settings. Other
+providers will return None.
+
+.. versionadded:: 3.6
 %End
 
     static QVariant convertValue( QVariant::Type type, const QString &value );

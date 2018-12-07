@@ -71,6 +71,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QString dataComment() const override;
     void reloadData() override;
     QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
+    QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
 
   private:
     bool mValid = false;
@@ -80,6 +81,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QString mLayerDescription;
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
+    QVariantList mLabelingDataList;
 };
 
 #endif // QGSAFSPROVIDER_H
