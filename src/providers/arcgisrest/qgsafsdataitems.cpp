@@ -96,15 +96,14 @@ void addFolderItems( QVector< QgsDataItem * > &items, const QVariantMap &service
   }, serviceData, baseUrl );
 }
 
-void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, QgsDataItem *parent,
-                      const QString &parentName )
+void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, QgsDataItem *parent )
 {
   QgsArcGisRestUtils::visitServiceItems(
     [&items, parent, authcfg]( const QString & name, const QString & url )
   {
     std::unique_ptr< QgsAfsServiceItem > serviceItem = qgis::make_unique< QgsAfsServiceItem >( parent, name, url, url, authcfg );
     items.append( serviceItem.release() );
-  }, serviceData, baseUrl, parentName );
+  }, serviceData, baseUrl );
 }
 
 void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, QgsDataItem *parent )
@@ -176,7 +175,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
   }
 
   addFolderItems( items, serviceData, url, authcfg, this );
-  addServiceItems( items, serviceData, url, authcfg, this, QString() );
+  addServiceItems( items, serviceData, url, authcfg, this );
   addLayerItems( items, serviceData, url, authcfg, this );
 
   return items;
@@ -287,7 +286,7 @@ QVector<QgsDataItem *> QgsAfsFolderItem::createChildren()
   }
 
   addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, this );
-  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, this, mName );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, this );
   addLayerItems( items, serviceData, mPath, mAuthCfg, this );
   return items;
 }
@@ -328,7 +327,7 @@ QVector<QgsDataItem *> QgsAfsServiceItem::createChildren()
   }
 
   addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, this );
-  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, this, mName );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, this );
   addLayerItems( items, serviceData, mPath, mAuthCfg, this );
   return items;
 }
