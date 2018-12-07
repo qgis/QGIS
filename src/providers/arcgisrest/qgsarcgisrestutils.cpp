@@ -1056,18 +1056,50 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   }
 }
 
-void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestUtils::adjustBaseUrl( QString &baseUrl, const QString name )
 {
-  const QStringList folderList = serviceData.value( QStringLiteral( "folders" ) ).toStringList();
-  for ( const QString &folder : folderList )
+  QStringList parts = name.split( '/' );
+  QString checkString;
+  for ( const QString &part : parts )
   {
-    visitor( folder, baseUrl + ( baseUrl.endsWith( '/' ) ? QString() : QString( '/' ) ) + folder );
+    if ( !checkString.isEmpty() )
+      checkString += QString( '/' );
+
+    checkString += part;
+    if ( baseUrl.indexOf( QRegularExpression( checkString.replace( '/', QStringLiteral( "\\/" ) ) + QStringLiteral( "\\/?$" ) ) ) > -1 )
+    {
+      baseUrl = baseUrl.left( baseUrl.length() - checkString.length() - 1 );
+      break;
+    }
   }
 }
 
-void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl,
-    const QString &parentName )
+void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
+  QString base( baseUrl );
+  bool baseChecked = false;
+  if ( !base.endsWith( '/' ) )
+    base += QStringLiteral( "/" );
+
+  const QStringList folderList = serviceData.value( QStringLiteral( "folders" ) ).toStringList();
+  for ( const QString &folder : folderList )
+  {
+    if ( !baseChecked )
+    {
+      adjustBaseUrl( base, folder );
+      baseChecked = true;
+    }
+    visitor( folder, base + folder );
+  }
+}
+
+void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+{
+  QString base( baseUrl );
+  bool baseChecked = false;
+  if ( !base.endsWith( '/' ) )
+    base += QStringLiteral( "/" );
+
   const QVariantList serviceList = serviceData.value( QStringLiteral( "services" ) ).toList();
   for ( const QVariant &service : serviceList )
   {
@@ -1077,11 +1109,14 @@ void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QSt
       continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
-    QString displayName = serviceName;
-    if ( displayName.startsWith( parentName + '/' ) )
-      displayName = displayName.mid( parentName.length() + 1 );
+    QString displayName = serviceName.split( '/' ).last();
+    if ( !baseChecked )
+    {
+      adjustBaseUrl( base, serviceName );
+      baseChecked = true;
+    }
 
-    visitor( displayName, baseUrl + ( baseUrl.endsWith( '/' ) ? QString() : QString( '/' ) ) + serviceName + '/' + serviceType );
+    visitor( displayName, base + serviceName + '/' + serviceType );
   }
 }
 
