@@ -41,8 +41,8 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
   const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
 
-  std::function< bool( const QString &, QStandardItem *, const QString & )> visitItemsRecursive;
-  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem, const QString & parentName ) -> bool
+  std::function< bool( const QString &, QStandardItem * )> visitItemsRecursive;
+  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
   {
     const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage );
 
@@ -62,7 +62,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
       else
         mModel->appendRow( QList<QStandardItem *>() << nameItem );
 
-      if ( !visitItemsRecursive( url, nameItem, name ) )
+      if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
     }, serviceInfoMap, baseUrl );
 
@@ -76,9 +76,9 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
       else
         mModel->appendRow( QList<QStandardItem *>() << nameItem );
 
-      if ( !visitItemsRecursive( url, nameItem, name ) )
+      if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl, parentName );
+    }, serviceInfoMap, baseUrl );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
@@ -143,7 +143,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     return res;
   };
 
-  if ( !visitItemsRecursive( baseUrl, nullptr, QString() ) )
+  if ( !visitItemsRecursive( baseUrl, nullptr ) )
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
 
   return true;
