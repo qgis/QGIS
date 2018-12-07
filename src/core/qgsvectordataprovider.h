@@ -41,6 +41,7 @@ class QgsFeatureIterator;
 class QgsTransaction;
 class QgsFeedback;
 class QgsFeatureRenderer;
+class QgsAbstractVectorLayerLabeling;
 
 #include "qgsfeaturerequest.h"
 
@@ -93,6 +94,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       WriteLayerMetadata = 1 << 22, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
       CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
       CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
+      CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -519,6 +521,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.2
      */
     virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
+    /**
+     * Creates labeling settings, using provider backend specific information.
+     *
+     * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
+     * allow customization of the returned labeling object. Support and format of \a configuration varies by provider.
+     *
+     * When called with an empty \a configuration map the provider's default labeling settings will be returned.
+     *
+     * This method returns a new labeling settings and the caller takes ownership of the returned object.
+     *
+     * Only providers which report the CreateLabeling capability will return labeling settings. Other
+     * providers will return nullptr.
+     *
+     * \since QGIS 3.6
+     */
+    virtual QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     static QVariant convertValue( QVariant::Type type, const QString &value );
 

@@ -24,6 +24,7 @@ class QNetworkReply;
 class QgsNetworkAccessManager;
 class QgsFields;
 class QgsAbstractGeometry;
+class QgsAbstractVectorLayerLabeling;
 class QgsCoordinateReferenceSystem;
 class QgsFeedback;
 class QgsSymbol;
@@ -58,6 +59,7 @@ class QgsArcGisRestUtils
     static std::unique_ptr< QgsMarkerSymbol > parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsMarkerSymbol > parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData );
     static QgsFeatureRenderer *parseEsriRenderer( const QVariantMap &rendererData );
+    static QgsAbstractVectorLayerLabeling *parseEsriLabeling( const QVariantList &labelingData );
 
     static QColor parseEsriColorJson( const QVariant &colorData );
     static Qt::PenStyle parseEsriLineStyle( const QString &style );

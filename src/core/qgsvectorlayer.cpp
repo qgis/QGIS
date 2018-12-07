@@ -1531,6 +1531,16 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
     }
 
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+
+    if ( mDataProvider->capabilities() & QgsVectorDataProvider::CreateLabeling )
+    {
+      std::unique_ptr< QgsAbstractVectorLayerLabeling > defaultLabeling( mDataProvider->createLabeling() );
+      if ( defaultLabeling )
+      {
+        setLabeling( defaultLabeling.release() );
+        setLabelsEnabled( true );
+      }
+    }
   }
 
   emit dataSourceChanged();

@@ -699,6 +699,11 @@ QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & )
   return nullptr;
 }
 
+QgsAbstractVectorLayerLabeling *QgsVectorDataProvider::createLabeling( const QVariantMap & ) const
+{
+  return nullptr;
+}
+
 void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QgsDebugMsg( msg );
