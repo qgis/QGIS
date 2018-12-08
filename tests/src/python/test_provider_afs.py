@@ -463,9 +463,41 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
+        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID1,pk,cnt&returnM=false&returnZ=false'), 'wb') as f:
+            f.write("""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+            "x": -71.123,
+            "y": 78.23
+           }
+          }
+         ]
+        }""".encode('UTF-8'))
+
         # Create test layer
         vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
         assert vl.isValid()
+
+        f = vl.getFeature(0)
+        assert f.isValid()
 
     def testDateTime(self):
         """ Test that datetime fields work correctly """
