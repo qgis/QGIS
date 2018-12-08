@@ -120,7 +120,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
           QgsDebugMsg( QStringLiteral( "Invalid value %1 for field %2 of type %3" ).arg( attributesData[mFields.at( idx ).name()].toString(), mFields.at( idx ).name(), mFields.at( idx ).typeName() ) );
         }
         attributes[idx] = attribute;
-        if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
+        if ( mFields.at( idx ).name() == mObjectIdFieldName )
         {
           featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
         }
