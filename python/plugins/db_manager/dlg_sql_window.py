@@ -561,7 +561,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def _getSqlQuery(self):
         sql = self.editSql.selectedText()
         if len(sql) == 0:
-            sql = self.editSql.text()
+            sql = self.editSql.text().replace('\n', ' ').strip()
         return sql
 
     def uniqueChanged(self):
