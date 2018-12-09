@@ -157,7 +157,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return Grass7Utils.getSupportedOutputRasterExtensions()
 
     def canBeActivated(self):
-        return not bool(Grass7Utils.checkGrass7IsInstalled())
+        return not bool(Grass7Utils.checkGrassIsInstalled())
 
     def tr(self, string, context=''):
         if context == '':
