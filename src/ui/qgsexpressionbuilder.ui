@@ -447,7 +447,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QFrame" name="moperationListGroup">
+         <widget class="QFrame" name="mOperationListGroup">
           <layout class="QGridLayout" name="gridLayout_6">
            <item row="0" column="0">
             <widget class="QSplitter" name="functionsplit">
@@ -455,15 +455,22 @@
               <enum>Qt::Horizontal</enum>
              </property>
              <widget class="QWidget" name="layoutWidget1">
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <item>
+              <layout class="QGridLayout" name="gridLayout_9">
+               <item row="0" column="0">
                 <widget class="QgsFilterLineEdit" name="txtSearchEdit">
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
                 </widget>
                </item>
-               <item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="mShowHelpButton">
+                 <property name="text">
+                  <string>Show Help</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" colspan="2">
                 <widget class="QTreeView" name="expressionTree">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
@@ -488,6 +495,26 @@
                  </attribute>
                 </widget>
                </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="mHelpAndValuesWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTextEdit" name="txtHelpText">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <widget class="QFrame" name="mValueGroupBox">
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -495,7 +522,7 @@
                    <number>0</number>
                   </property>
                   <property name="topMargin">
-                   <number>0</number>
+                   <number>10</number>
                   </property>
                   <property name="rightMargin">
                    <number>0</number>
@@ -503,24 +530,6 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                  <item row="4" column="0">
-                   <widget class="QWidget" name="mLoadGroupBox" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                    </layout>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_4">
                     <property name="sizePolicy">
@@ -570,17 +579,6 @@
                    </layout>
                   </item>
                  </layout>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="layoutWidget2">
-              <layout class="QVBoxLayout" name="verticalLayout_2">
-               <item>
-                <widget class="QTextEdit" name="txtHelpText">
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
                 </widget>
                </item>
               </layout>
