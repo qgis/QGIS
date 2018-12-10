@@ -654,14 +654,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         f = QgsVectorLayerUtils.createFeature(vl)
         self.assertEqual(f.attributes(), [None, "qgis 'is good", 5, 5.7, None])
 
-        # check that provider default literals take precedence over passed attribute values
+        # check that provider default literals do not take precedence over passed attribute values
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
-        self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 5.7, None])
+        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 5.7, None])
 
         # test that vector layer default value expression overrides provider default literal
         vl.setDefaultValueDefinition(3, QgsDefaultValue("4*3"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
-        self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 12, None])
+        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 12, None])
 
     def testCreateAttributeIndex(self):
         vl = QgsVectorLayer("dbname=%s table='test_defaults' key='id'" % self.dbname, "test_defaults", "spatialite")
@@ -847,6 +847,18 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         vl_no_pk = QgsVectorLayer('dbname=\'%s\' table="(select * from test_no_pk)" (geometry) sql=' % dbname, 'pk', 'spatialite')
         self.assertTrue(vl_no_pk.isValid())
         _check_features(vl_no_pk, 10)
+
+    def testAliasedQueries(self):
+        """Test regression when sending queries with aliased tables from DB manager"""
+
+        def _test(sql):
+            vl = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="{}" (geom) sql='.format(TEST_DATA_DIR, sql), 'test', 'spatialite')
+            self.assertTrue(vl.isValid())
+
+        _test("(SELECT * FROM somedata as my_alias\n)")
+        _test("(SELECT * FROM somedata as my_alias)")
+        _test("(SELECT * FROM somedata AS my_alias)")
+        _test('(SELECT * FROM \\"somedata\\" as my_alias\n)')
 
 
 if __name__ == '__main__':

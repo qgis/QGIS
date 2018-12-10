@@ -4603,9 +4603,21 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       // 3. check if ROWID injection works
       if ( ! queryGeomTableName.isEmpty() )
       {
+        // Check if the whole sql is aliased (I couldn't find a sqlite API call to get this information)
+        QRegularExpression re { R"re(\s+AS\s+(\w+)\n?\)?$)re" };
+        re.setPatternOptions( QRegularExpression::PatternOption::MultilineOption |
+                              QRegularExpression::PatternOption::CaseInsensitiveOption );
+        QRegularExpressionMatch match { re.match( mTableName ) };
+        regex.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
+        QString tableAlias;
+        if ( match.hasMatch() )
+        {
+          tableAlias = match.captured( 1 );
+        }
         QString newSql( mQuery.replace( QStringLiteral( "SELECT " ),
                                         QStringLiteral( "SELECT %1.%2, " )
-                                        .arg( quotedIdentifier( queryGeomTableName ), QStringLiteral( "ROWID" ) ),
+                                        .arg( quotedIdentifier( tableAlias.isEmpty() ? queryGeomTableName : tableAlias ),
+                                              QStringLiteral( "ROWID" ) ),
                                         Qt::CaseInsensitive ) );
         sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( newSql );
         ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
