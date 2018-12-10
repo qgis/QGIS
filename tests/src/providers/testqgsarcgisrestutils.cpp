@@ -225,7 +225,7 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
   QVERIFY( markerLayer );
   QCOMPARE( markerLayer->path(), QStringLiteral( "base64:abcdef" ) );
   QCOMPARE( markerLayer->size(), 20.0 );
-  QCOMPARE( markerLayer->fixedAspectRatio(), 0.8 );
+  QCOMPARE( markerLayer->fixedAspectRatio(), 1.25 );
   QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPixels );
   QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
   QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
