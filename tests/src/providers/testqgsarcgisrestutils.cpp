@@ -516,8 +516,13 @@ void TestQgsArcGisRestUtils::testParseLabeling()
                                      "\"angle\": 0,"
                                      "\"xoffset\": 0,"
                                      "\"yoffset\": 0,"
-                                     "\"haloColor\": null,"
-                                     "\"haloSize\": null,"
+                                     "\"haloColor\": ["
+                                     "255,"
+                                     "255,"
+                                     "255,"
+                                     "255"
+                                     "],"
+                                     "\"haloSize\": 1,"
                                      "\"font\": {"
                                      "\"family\": \"Arial\","
                                      "\"size\": 8,"
@@ -555,6 +560,15 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QgsTextFormat textFormat = settings->format();
   QCOMPARE( textFormat.color(), QColor( 255, 0, 0 ) );
   QCOMPARE( textFormat.size(), 8.0 );
+  QCOMPARE( textFormat.buffer().enabled(), false );
+
+  settings = children.at( 1 )->settings();
+  QVERIFY( settings );
+  textFormat = settings->format();
+  QCOMPARE( textFormat.buffer().enabled(), true );
+  QCOMPARE( textFormat.buffer().color(), QColor( 255, 255, 255 ) );
+  QCOMPARE( textFormat.buffer().size(), 1.0 );
+  QCOMPARE( textFormat.buffer().sizeUnit(), QgsUnitTypes::RenderPoints );
 }
 
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const
