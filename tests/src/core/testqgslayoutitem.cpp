@@ -1945,31 +1945,46 @@ void TestQgsLayoutItem::opacity()
 {
   QgsProject proj;
   QgsLayout l( &proj );
+  l.initializeDefaults();
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  item->setShapeType( QgsLayoutItemShape::Rectangle );
+  item->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
+  item->setSymbol( fillSymbol->clone() );
+
   l.addLayoutItem( item );
 
   item->setItemOpacity( 0.75 );
   QCOMPARE( item->itemOpacity(), 0.75 );
-  QCOMPARE( item->opacity(), 0.75 );
+
+  // we handle opacity ourselves, so QGraphicsItem opacity should never be set
+  QCOMPARE( item->opacity(), 1.0 );
+
+  QgsLayoutChecker checker( QStringLiteral( "composereffects_transparency75" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::Opacity, QgsProperty::fromExpression( "35" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
-  QCOMPARE( item->opacity(), 0.35 );
+  QCOMPARE( item->opacity(), 1.0 );
 
+  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency35" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 
   QgsLayout l2( QgsProject::instance() );
   l2.initializeDefaults();
   QgsLayoutItemShape *mComposerRect1 = new QgsLayoutItemShape( &l2 );
   mComposerRect1->attemptSetSceneRect( QRectF( 20, 20, 150, 100 ) );
   mComposerRect1->setShapeType( QgsLayoutItemShape::Rectangle );
-  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
-  fillSymbol->changeSymbolLayer( 0, simpleFill );
-  simpleFill->setColor( QColor( 255, 150, 0 ) );
-  simpleFill->setStrokeColor( Qt::black );
-  mComposerRect1->setSymbol( fillSymbol );
+  mComposerRect1->setSymbol( fillSymbol->clone() );
   delete fillSymbol;
 
   l2.addLayoutItem( mComposerRect1 );
@@ -1987,7 +2002,7 @@ void TestQgsLayoutItem::opacity()
 
   mComposerRect2->setItemOpacity( 0.5 );
 
-  QgsLayoutChecker checker( QStringLiteral( "composereffects_transparency" ), &l2 );
+  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency" ), &l2 );
   checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testLayout( mReport ) );
 }
