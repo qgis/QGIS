@@ -862,6 +862,16 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::parseEsriLabeling( const QVa
 
     QVariantMap symbol = labeling.value( QStringLiteral( "symbol" ) ).toMap();
     format.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "color" ) ) ) );
+    const double haloSize = symbol.value( QStringLiteral( "haloSize" ) ).toDouble();
+    if ( !qgsDoubleNear( haloSize, 0.0 ) )
+    {
+      QgsTextBufferSettings buffer;
+      buffer.setEnabled( true );
+      buffer.setSize( haloSize );
+      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      buffer.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "haloColor" ) ) ) );
+      format.setBuffer( buffer );
+    }
 
     const QString fontFamily = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
     const QString fontStyle = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
