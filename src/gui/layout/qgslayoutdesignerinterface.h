@@ -66,6 +66,13 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
   public:
 
+    //! Standard designer tools which are always available for use
+    enum StandardTool
+    {
+      ToolMoveItemContent, //!< Move item content tool
+      ToolMoveItemNodes, //!< Move item nodes tool
+    };
+
     /**
      * Constructor for QgsLayoutDesignerInterface.
      */
@@ -328,6 +335,13 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * \since QGIS 3.4
      */
     virtual void removeDockWidget( QDockWidget *dock ) = 0;
+
+    /**
+     * Activates a standard layout designer \a tool.
+     *
+     * \since QGIS 3.6
+     */
+    virtual void activateTool( StandardTool tool ) = 0;
 
   public slots:
 

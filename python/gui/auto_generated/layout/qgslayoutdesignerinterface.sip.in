@@ -44,6 +44,12 @@ open layout designer dialogs.
 %End
   public:
 
+    enum StandardTool
+    {
+      ToolMoveItemContent,
+      ToolMoveItemNodes,
+    };
+
     QgsLayoutDesignerInterface( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutDesignerInterface.
@@ -389,6 +395,13 @@ Removes the specified ``dock`` widget from layout designer (without deleting it)
 
 
 .. versionadded:: 3.4
+%End
+
+    virtual void activateTool( StandardTool tool ) = 0;
+%Docstring
+Activates a standard layout designer ``tool``.
+
+.. versionadded:: 3.6
 %End
 
   public slots:

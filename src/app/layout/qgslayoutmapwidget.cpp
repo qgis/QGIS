@@ -30,6 +30,7 @@
 #include "qgsstyle.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutdesignerinterface.h"
 #include <QMenu>
 #include <QMessageBox>
 
@@ -41,9 +42,9 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
   setupUi( this );
   connect( mScaleLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutMapWidget::mScaleLineEdit_editingFinished );
-  connect( mSetToMapCanvasExtentButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked );
-  connect( mViewExtentInCanvasButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked );
-  connect( mUpdatePreviewButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mUpdatePreviewButton_clicked );
+  connect( mActionSetToCanvasExtent, &QAction::triggered, this, &QgsLayoutMapWidget::setToMapCanvasExtent );
+  connect( mActionViewExtentInCanvas, &QAction::triggered, this, &QgsLayoutMapWidget::viewExtentInCanvas );
+  connect( mActionUpdatePreview, &QAction::triggered, this, &QgsLayoutMapWidget::updatePreview );
   connect( mFollowVisibilityPresetCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged );
   connect( mKeepLayerListCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mKeepLayerListCheckBox_stateChanged );
   connect( mKeepLayerStylesCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mKeepLayerStylesCheckBox_stateChanged );
@@ -77,8 +78,11 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
   connect( mLabelSettingsButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::showLabelSettings );
 
+  connect( mActionMoveContent, &QAction::triggered, this, &QgsLayoutMapWidget::switchToMoveContentTool );
   setPanelTitle( tr( "Map Properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
+
+  mDockToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, item );
@@ -161,6 +165,11 @@ void QgsLayoutMapWidget::setReportTypeString( const QString &string )
 {
   mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string == tr( "atlas" ) ? tr( "Atlas" ) : tr( "Report" ) ) );
   mAtlasPredefinedScaleRadio->setToolTip( tr( "Use one of the predefined scales of the project where the %1 feature best fits." ).arg( string ) );
+}
+
+void QgsLayoutMapWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
+{
+  mInterface = iface;
 }
 
 bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
@@ -352,6 +361,12 @@ void QgsLayoutMapWidget::showLabelSettings()
   openPanel( w );
 }
 
+void QgsLayoutMapWidget::switchToMoveContentTool()
+{
+  if ( mInterface )
+    mInterface->activateTool( QgsLayoutDesignerInterface::ToolMoveItemContent );
+}
+
 void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
 {
   if ( !mMapItem )
@@ -512,7 +527,7 @@ void QgsLayoutMapWidget::rotationChanged( double value )
   mMapItem->invalidateCache();
 }
 
-void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
+void QgsLayoutMapWidget::setToMapCanvasExtent()
 {
   if ( !mMapItem )
   {
@@ -543,7 +558,7 @@ void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
   mMapItem->layout()->undoStack()->endCommand();
 }
 
-void QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked()
+void QgsLayoutMapWidget::viewExtentInCanvas()
 {
   if ( !mMapItem )
   {
@@ -779,8 +794,8 @@ void QgsLayoutMapWidget::blockAllSignals( bool b )
   mFollowVisibilityPresetCombo->blockSignals( b );
   mKeepLayerListCheckBox->blockSignals( b );
   mKeepLayerStylesCheckBox->blockSignals( b );
-  mSetToMapCanvasExtentButton->blockSignals( b );
-  mUpdatePreviewButton->blockSignals( b );
+  mActionSetToCanvasExtent->blockSignals( b );
+  mActionUpdatePreview->blockSignals( b );
 
   blockOverviewItemsSignals( b );
 }
@@ -830,7 +845,7 @@ void QgsLayoutMapWidget::handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::B
   mMapItem->layout()->undoStack()->endCommand();
 }
 
-void QgsLayoutMapWidget::mUpdatePreviewButton_clicked()
+void QgsLayoutMapWidget::updatePreview()
 {
   if ( !mMapItem )
   {

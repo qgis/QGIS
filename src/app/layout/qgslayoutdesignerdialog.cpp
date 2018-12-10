@@ -214,6 +214,23 @@ void QgsAppLayoutDesignerInterface::removeDockWidget( QDockWidget *dock )
   mDesigner->removeDockWidget( dock );
 }
 
+void QgsAppLayoutDesignerInterface::activateTool( QgsLayoutDesignerInterface::StandardTool tool )
+{
+  switch ( tool )
+  {
+    case QgsLayoutDesignerInterface::ToolMoveItemContent:
+      if ( !mDesigner->mActionMoveItemContent->isChecked() )
+        mDesigner->mActionMoveItemContent->trigger();
+      break;
+
+    case QgsLayoutDesignerInterface::ToolMoveItemNodes:
+      if ( !mDesigner->mActionEditNodesItem->isChecked() )
+        mDesigner->mActionEditNodesItem->trigger();
+      break;
+
+  }
+}
+
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
@@ -1096,6 +1113,7 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
   if ( ! widget )
     return;
 
+  widget->setDesignerInterface( iface() );
   widget->setReportTypeString( reportTypeString() );
 
   if ( QgsLayoutPagePropertiesWidget *ppWidget = qobject_cast< QgsLayoutPagePropertiesWidget * >( widget.get() ) )

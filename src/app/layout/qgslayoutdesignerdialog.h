@@ -77,6 +77,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QToolBar *atlasToolbar() override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
     void removeDockWidget( QDockWidget *dock ) override;
+    void activateTool( StandardTool tool ) override;
 
   public slots:
 

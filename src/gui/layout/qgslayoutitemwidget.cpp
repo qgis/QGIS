@@ -180,6 +180,11 @@ void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
 {
 }
 
+void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface * )
+{
+
+}
+
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
