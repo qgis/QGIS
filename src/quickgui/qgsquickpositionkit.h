@@ -165,7 +165,10 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     //! \copydoc QgsQuickPositionKit::simulatePositionLongLatRad
     void setSimulatePositionLongLatRad( const QVector<double> &simulatePositionLongLatRad );
 
-    //! Returns pointer to the internal QGeoPositionInfoSource object used to receive GPS location.
+    /**
+     * Returns pointer to the internal QGeoPositionInfoSource object used to receive GPS location.
+     * \note The returned pointer is only valid until sourceChanged() signal is emitted
+     */
     QGeoPositionInfoSource *source() const;
 
     /**
