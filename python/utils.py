@@ -694,3 +694,33 @@ if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
         builtins.__import__ = _import
     else:
         __builtin__.__import__ = _import
+
+
+def run_script_from_file(filepath):
+    """
+    Runs a Python script from a given file. Supports loading processing scripts.
+    :param filepath: The .py file to load.
+    """
+    import sys
+    import inspect
+    from qgis.processing import alg
+    try:
+        from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
+        from processing.gui.AlgorithmDialog import AlgorithmDialog
+        _locals = {}
+        exec(open(filepath.replace("\\\\", "/").encode(sys.getfilesystemencoding())).read(), _locals)
+        alginstance = None
+        try:
+            alginstance = alg.instances.pop().createInstance()
+        except IndexError:
+            for name, attr in _locals.items():
+                if inspect.isclass(attr) and issubclass(attr, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and attr.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+                    alginstance = attr()
+                    break
+        if alginstance:
+            alginstance.setProvider(QgsApplication.processingRegistry().providerById("script"))
+            alginstance.initAlgorithm()
+            dlg = AlgorithmDialog(alginstance)
+            dlg.show()
+    except ImportError:
+        pass

@@ -6259,30 +6259,8 @@ void QgisApp::runScript( const QString &filePath )
 
   if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
   {
-    mPythonUtils->runString(
-      QString( "import sys\n"
-               "import inspect\n"
-               "from qgis.utils import iface\n"
-               "try:\n"
-               "    from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm\n"
-               "    from processing.gui.AlgorithmDialog import AlgorithmDialog\n"
-               "except ImportError:\n"
-               "    processing_found = False\n"
-               "else:\n"
-               "    processing_found = True\n"
-               "d={}\n"
-               "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read(), d)\n"
-               "if processing_found:\n"
-               "    alg = None\n"
-               "    for k, v in d.items():\n"
-               "        if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in (\"QgsProcessingAlgorithm\", \"QgsProcessingFeatureBasedAlgorithm\"):\n"
-               "            alg = v()\n"
-               "            break\n"
-               "    if alg:\n"
-               "        alg.setProvider(QgsApplication.processingRegistry().providerById(\"script\"))\n"
-               "        alg.initAlgorithm()\n"
-               "        dlg = AlgorithmDialog(alg)\n"
-               "        dlg.show()\n" ).arg( filePath ), tr( "Failed to run Python script:" ), false );
+    mPythonUtils->runString( QString( "qgis.utils.run_script_from_file(\"%1\")" ).arg( filePath ),
+                             tr( "Failed to run Python script:" ), false );
   }
 #else
   Q_UNUSED( filePath );

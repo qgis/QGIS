@@ -52,7 +52,7 @@ class DeleteScriptAction(ContextAction):
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
-            filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+            filePath = ScriptUtils.findAlgorithmSource(self.itemData.name())
             if filePath is not None:
                 os.remove(filePath)
                 QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
