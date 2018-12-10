@@ -758,8 +758,8 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   markerLayer->setSizeUnit( QgsUnitTypes::RenderPixels );
 
   // only change the default aspect ratio if the server height setting requires this
-  if ( !qgsDoubleNear( static_cast< double >( widthInPixels ) / heightInPixels, markerLayer->defaultAspectRatio() ) )
-    markerLayer->setFixedAspectRatio( static_cast< double >( widthInPixels ) / heightInPixels );
+  if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
+    markerLayer->setFixedAspectRatio( static_cast< double >( heightInPixels ) / widthInPixels );
 
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
   markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
