@@ -81,13 +81,19 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
       return mGeometries.value( n );
     }
 
+#ifndef SIP_RUN
+
     /**
      * Returns a geometry from within the collection.
      * \param n index of geometry to return
      */
-#ifndef SIP_RUN
     QgsAbstractGeometry *geometryN( int n );
 #else
+
+    /**
+     * Returns a geometry from within the collection.
+     * \param n index of geometry to return. An IndexError will be raised if no geometry with the specified index exists.
+     */
     SIP_PYOBJECT geometryN( int n ) SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
@@ -151,7 +157,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     }
     else
     {
-      sipCpp->removeGeometry( a0 );
+      return PyBool_FromLong( sipCpp->removeGeometry( a0 ) );
     }
     % End
 #endif

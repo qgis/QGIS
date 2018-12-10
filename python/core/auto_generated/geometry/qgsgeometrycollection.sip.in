@@ -58,11 +58,12 @@ Returns the number of geometries within the collection.
 
 
 
+
     SIP_PYOBJECT geometryN( int n ) /TypeHint="QgsAbstractGeometry"/;
 %Docstring
 Returns a geometry from within the collection.
 
-:param n: index of geometry to return
+:param n: index of geometry to return. An IndexError will be raised if no geometry with the specified index exists.
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
@@ -127,7 +128,7 @@ An IndexError will be raised if no geometry with the specified index exists.
     }
     else
     {
-      sipCpp->removeGeometry( a0 );
+      return PyBool_FromLong( sipCpp->removeGeometry( a0 ) );
     }
 %End
 
