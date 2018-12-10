@@ -70,11 +70,43 @@ Curve polygon geometry type
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
 
+
     int numInteriorRings() const;
+%Docstring
+Returns the number of interior rings contained with the curve polygon.
+
+.. seealso:: :py:func:`interiorRing`
+%End
 
     const QgsCurve *exteriorRing() const;
+%Docstring
+Returns the curve polygon's exterior ring.
 
-    const QgsCurve *interiorRing( int i ) const;
+.. seealso:: :py:func:`interiorRing`
+%End
+
+
+    SIP_PYOBJECT interiorRing( int i ) /TypeHint="QgsCurve"/;
+%Docstring
+Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+
+An IndexError will be raised if no interior ring with the specified index exists.
+
+.. seealso:: :py:func:`numInteriorRings`
+
+.. seealso:: :py:func:`exteriorRing`
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( const_cast< QgsCurve * >( sipCpp->interiorRing( a0 ) ), sipType_QgsCurve, NULL );
+    }
+%End
 
     virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
@@ -107,13 +139,27 @@ Sets all interior rings (takes ownership)
 Adds an interior ring to the geometry (takes ownership)
 %End
 
-    bool removeInteriorRing( int ringIndex );
+
+    bool removeInteriorRing( int i );
 %Docstring
 Removes an interior ring from the polygon. The first interior ring has index 0.
-The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
-the function will return true.  It is not possible to remove the exterior ring using this method.
+The corresponding ring is removed from the polygon and deleted.
+It is not possible to remove the exterior ring using this method.
+
+An IndexError will be raised if no interior ring with the specified index exists.
 
 .. seealso:: :py:func:`removeInteriorRings`
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyBool_FromLong( sipCpp->removeInteriorRing( a0 ) );
+    }
 %End
 
     void removeInteriorRings( double minimumAllowedArea = -1 );
@@ -135,7 +181,6 @@ For example, this removes unclosed rings and rings with less than 4 vertices.
 
 .. versionadded:: 3.0
 %End
-
 
     void forceRHR();
 %Docstring

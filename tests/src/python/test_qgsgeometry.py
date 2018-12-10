@@ -504,6 +504,48 @@ class TestQgsGeometry(unittest.TestCase):
         g.fromWkt('GeometryCollection( Point(1 2), Point(11 12), LineString(33 34, 44 45))')
         self.assertEqual([p.asWkt() for p in g], ['Point (1 2)', 'Point (11 12)', 'LineString (33 34, 44 45)'])
 
+    def testCurvePolygonPythonAdditions(self):
+        """
+        Tests Python specific additions to the QgsCurvePolygon API
+        """
+        # interiorRing
+        g = QgsPolygon()
+        with self.assertRaises(IndexError):
+            g.interiorRing(-1)
+        with self.assertRaises(IndexError):
+            g.interiorRing(0)
+
+        g.fromWkt('Polygon((0 0, 1 0, 1 1, 0 0),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.1),(0.8 0.8, 0.9 0.8, 0.9 0.9, 0.8 0.8))')
+        with self.assertRaises(IndexError):
+            g.interiorRing(-1)
+        with self.assertRaises(IndexError):
+            g.interiorRing(2)
+        self.assertEqual(g.interiorRing(0).asWkt(1), 'LineString (0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.1)')
+        self.assertEqual(g.interiorRing(1).asWkt(1), 'LineString (0.8 0.8, 0.9 0.8, 0.9 0.9, 0.8 0.8)')
+
+        # removeInteriorRing
+        g = QgsPolygon()
+        with self.assertRaises(IndexError):
+            g.removeInteriorRing(-1)
+        with self.assertRaises(IndexError):
+            g.removeInteriorRing(0)
+
+        g.fromWkt(
+            'Polygon((0 0, 1 0, 1 1, 0 0),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.1),(0.8 0.8, 0.9 0.8, 0.9 0.9, 0.8 0.8))')
+        with self.assertRaises(IndexError):
+            g.removeInteriorRing(-1)
+        with self.assertRaises(IndexError):
+            g.removeInteriorRing(2)
+
+        g.removeInteriorRing(1)
+        self.assertEqual(g.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 0),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.1))')
+        with self.assertRaises(IndexError):
+            g.removeInteriorRing(1)
+        g.removeInteriorRing(0)
+        self.assertEqual(g.asWkt(1), 'Polygon ((0 0, 1 0, 1 1, 0 0))')
+        with self.assertRaises(IndexError):
+            g.removeInteriorRing(0)
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
