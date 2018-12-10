@@ -256,6 +256,7 @@ int QgsMeshDataBlock::count() const
     case Vector2DDouble:
       return static_cast<int>( mDoubleBuffer.size() / 2.0 );
   }
+  return 0; // no warnings
 }
 
 bool QgsMeshDataBlock::isValid() const
@@ -277,6 +278,7 @@ QgsMeshDatasetValue QgsMeshDataBlock::value( int index ) const
                mDoubleBuffer[2 * index + 1]
              );
   }
+  return QgsMeshDatasetValue(); // no warnings
 }
 
 bool QgsMeshDataBlock::active( int index ) const
