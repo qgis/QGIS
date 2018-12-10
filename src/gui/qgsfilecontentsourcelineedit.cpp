@@ -56,7 +56,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
 
   connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction]
   {
-    extractFileAction->setEnabled( mFileLineEdit->text().startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) );
+    extractFileAction->setEnabled( mMode == ModeBase64 );
   } );
 
   QAction *enterUrlAction = new QAction( tr( "From URL…" ), sourceMenu );
@@ -70,6 +70,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited );
   connect( mFileLineEdit, &QgsFilterLineEdit::cleared, this, [ = ]
   {
+    mMode = ModeFile;
     mFileLineEdit->setPlaceholderText( QString() );
     mBase64.clear();
     emit sourceChanged( QString() );
@@ -79,7 +80,16 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
 
 QString QgsAbstractFileContentSourceLineEdit::source() const
 {
-  return mBase64.isEmpty() ? mFileLineEdit->text() : mBase64;
+  switch ( mMode )
+  {
+    case ModeFile:
+      return mFileLineEdit->text();
+
+    case ModeBase64:
+      return mBase64;
+  }
+
+  return QString();
 }
 
 void QgsAbstractFileContentSourceLineEdit::setLastPathSettingsKey( const QString &key )
@@ -96,12 +106,14 @@ void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 
   if ( isBase64 )
   {
+    mMode = ModeBase64;
     mBase64 = source;
     mFileLineEdit->clear();
     mFileLineEdit->setPlaceholderText( tr( "Embedded file" ) );
   }
   else
   {
+    mMode = ModeFile;
     mBase64.clear();
     mFileLineEdit->setText( source );
     mFileLineEdit->setPlaceholderText( QString() );
@@ -122,6 +134,7 @@ void QgsAbstractFileContentSourceLineEdit::selectFile()
   {
     return;
   }
+  mMode = ModeFile;
   mBase64.clear();
   mFileLineEdit->setText( file );
   mFileLineEdit->setPlaceholderText( QString() );
@@ -135,6 +148,7 @@ void QgsAbstractFileContentSourceLineEdit::selectUrl()
   const QString path = QInputDialog::getText( this, fileFromUrlTitle(), fileFromUrlText(), QLineEdit::Normal, mFileLineEdit->text(), &ok );
   if ( ok && path != source() )
   {
+    mMode = ModeFile;
     mBase64.clear();
     mFileLineEdit->setText( path );
     mFileLineEdit->setPlaceholderText( QString() );
@@ -173,6 +187,7 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
     return;
 
   mBase64 = path;
+  mMode = ModeBase64;
 
   mFileLineEdit->clear();
   mFileLineEdit->setPlaceholderText( tr( "Embedded file" ) );
@@ -196,23 +211,19 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
   s.setValue( settingsKey(), fi.absolutePath() );
 
   // decode current base64 embedded file
-  QString path = mFileLineEdit->text().trimmed();
-  if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  QByteArray base64 = mBase64.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+  QByteArray decoded = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+
+  QFile fileOut( file );
+  fileOut.open( QIODevice::WriteOnly );
+  fileOut.write( decoded );
+  fileOut.close();
+
+  if ( mMessageBar )
   {
-    QByteArray base64 = mBase64.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
-    QByteArray decoded = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
-
-    QFile fileOut( file );
-    fileOut.open( QIODevice::WriteOnly );
-    fileOut.write( decoded );
-    fileOut.close();
-
-    if ( mMessageBar )
-    {
-      mMessageBar->pushMessage( extractFileTitle(),
-                                tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ),
-                                Qgis::Success, 0 );
-    }
+    mMessageBar->pushMessage( extractFileTitle(),
+                              tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ),
+                              Qgis::Success, 0 );
   }
 }
 
@@ -220,6 +231,7 @@ void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited( const QStri
 {
   mFileLineEdit->setPlaceholderText( QString() );
   mBase64.clear();
+  mMode = ModeFile;
   if ( !text.isEmpty() && !QFileInfo::exists( text ) )
   {
     QUrl url( text );

@@ -147,6 +147,14 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
 
   private:
 
+    enum Mode
+    {
+      ModeFile,
+      ModeBase64,
+    };
+
+    Mode mMode = ModeFile;
+
     QgsFilterLineEdit *mFileLineEdit = nullptr;
     QToolButton *mFileToolButton = nullptr;
     QString mLastPathKey;
