@@ -226,7 +226,7 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
   QCOMPARE( markerLayer->path(), QStringLiteral( "base64:abcdef" ) );
   QCOMPARE( markerLayer->size(), 20.0 );
   QCOMPARE( markerLayer->fixedAspectRatio(), 1.25 );
-  QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPixels );
+  QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPoints );
   QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
   QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
   QCOMPARE( markerLayer->offsetUnit(), QgsUnitTypes::RenderPoints );
@@ -333,7 +333,7 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
   QCOMPARE( fillLayer->width(), 20.0 );
-  QCOMPARE( fillLayer->widthUnit(), QgsUnitTypes::RenderPixels );
+  QCOMPARE( fillLayer->widthUnit(), QgsUnitTypes::RenderPoints );
   QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast< QgsSimpleLineSymbolLayer * >( fill->symbolLayer( 1 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 110, 120, 130, 215 ) );

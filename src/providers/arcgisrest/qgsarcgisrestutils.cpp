@@ -658,7 +658,7 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = qgis::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
   fillLayer->setWidth( widthInPixels );
   fillLayer->setAngle( angleCW );
-  fillLayer->setWidthUnit( QgsUnitTypes::RenderPixels );
+  fillLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
   fillLayer->setOffset( QPointF( xOffset, yOffset ) );
   fillLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
   layers.append( fillLayer.release() );
@@ -755,7 +755,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
 
   QgsSymbolLayerList layers;
   std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
-  markerLayer->setSizeUnit( QgsUnitTypes::RenderPixels );
+  markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
 
   // only change the default aspect ratio if the server height setting requires this
   if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
