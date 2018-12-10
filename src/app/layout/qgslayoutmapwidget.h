@@ -39,12 +39,13 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     explicit QgsLayoutMapWidget( QgsLayoutItemMap *item );
 
     void setReportTypeString( const QString &string ) override;
+    void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
 
   public slots:
     void mScaleLineEdit_editingFinished();
-    void mSetToMapCanvasExtentButton_clicked();
-    void mViewExtentInCanvasButton_clicked();
-    void mUpdatePreviewButton_clicked();
+    void setToMapCanvasExtent();
+    void viewExtentInCanvas();
+    void updatePreview();
     void mFollowVisibilityPresetCheckBox_stateChanged( int state );
     void mKeepLayerListCheckBox_stateChanged( int state );
     void mKeepLayerStylesCheckBox_stateChanged( int state );
@@ -118,9 +119,12 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mapCrsChanged( const QgsCoordinateReferenceSystem &crs );
     void overviewSymbolChanged();
     void showLabelSettings();
+    void switchToMoveContentTool();
+
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
+    QgsLayoutDesignerInterface *mInterface = nullptr;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();

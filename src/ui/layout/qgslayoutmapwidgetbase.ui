@@ -52,6 +52,25 @@
     </widget>
    </item>
    <item>
+    <widget class="QToolBar" name="mDockToolbar">
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionUpdatePreview"/>
+     <addaction name="separator"/>
+     <addaction name="mActionSetToCanvasExtent"/>
+     <addaction name="mActionViewExtentInCanvas"/>
+     <addaction name="separator"/>
+     <addaction name="mActionMoveContent"/>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -97,7 +116,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
              <widget class="QgsDoubleSpinBox" name="mMapRotationSpinBox">
@@ -124,14 +143,14 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
             <property name="text">
              <string>Draw map canvas items</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QLineEdit" name="mScaleLineEdit">
@@ -149,7 +168,7 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
+          <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Scale</string>
@@ -159,24 +178,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="2" column="1">
            <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="mMapRotationLabel">
             <property name="text">
              <string>Map rotation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="mUpdatePreviewButton">
-            <property name="text">
-             <string>Update Preview</string>
             </property>
            </widget>
           </item>
@@ -790,6 +802,54 @@
     </widget>
    </item>
   </layout>
+  <action name="mActionUpdatePreview">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Update Preview</string>
+   </property>
+   <property name="toolTip">
+    <string>Update Map Preview</string>
+   </property>
+  </action>
+  <action name="mActionSetToCanvasExtent">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Set to Map Canvas Extent</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Map Extent to Match Main Canvas Extent</string>
+   </property>
+  </action>
+  <action name="mActionViewExtentInCanvas">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>View Extent in Map Canvas</string>
+   </property>
+   <property name="toolTip">
+    <string>View Current Map Extent in Main Canvas</string>
+   </property>
+  </action>
+  <action name="mActionMoveContent">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemContent.svg</normaloff>:/images/themes/default/mActionMoveItemContent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Move Map Content</string>
+   </property>
+   <property name="toolTip">
+    <string>Interactively Edit Map Extent</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -845,7 +905,6 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
-  <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
   <tabstop>mScaleDDBtn</tabstop>
   <tabstop>mMapRotationSpinBox</tabstop>
@@ -868,8 +927,6 @@
   <tabstop>mXMaxDDBtn</tabstop>
   <tabstop>mYMaxLineEdit</tabstop>
   <tabstop>mYMaxDDBtn</tabstop>
-  <tabstop>mSetToMapCanvasExtentButton</tabstop>
-  <tabstop>mViewExtentInCanvasButton</tabstop>
   <tabstop>mLabelSettingsButton</tabstop>
   <tabstop>mAtlasCheckBox</tabstop>
   <tabstop>mAtlasMarginRadio</tabstop>

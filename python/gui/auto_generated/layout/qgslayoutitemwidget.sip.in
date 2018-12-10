@@ -10,7 +10,6 @@
 
 
 
-
 class QgsLayoutConfigObject: QObject
 {
 %Docstring
@@ -99,6 +98,14 @@ Sets the ``string`` to use to describe the current report type (e.g.
 "atlas" or "report").
 Subclasses which display this text to users should override this
 and update their widget labels accordingly.
+%End
+
+    virtual void setDesignerInterface( QgsLayoutDesignerInterface *iface );
+%Docstring
+Sets the the layout designer interface in which the widget is
+being shown.
+
+.. versionadded:: 3.6
 %End
 
   protected:
