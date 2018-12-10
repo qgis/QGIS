@@ -25,9 +25,6 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
-#include "qgsfieldformatter.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include "qgssymbolselectordialog.h"
