@@ -47,7 +47,11 @@ to be rendered etc.
 
     enum TextRenderFormat
     {
+      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
+      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
+
       TextFormatAlwaysOutlines,
+
       TextFormatAlwaysText,
     };
 

@@ -81,8 +81,42 @@ class CORE_EXPORT QgsRenderContext
      */
     enum TextRenderFormat
     {
-      TextFormatAlwaysOutlines, //!< Always render text using path objects (AKA outlines/curves). This always results in the best quality rendering.
-      TextFormatAlwaysText, //!< Always render text as text objects. This may result in rendering artifacts or poor quality rendering, depending on the text format settings.
+      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
+      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
+
+      /**
+       * Always render text using path objects (AKA outlines/curves).
+       *
+       * This setting guarantees the best quality rendering, even when using a raster paint surface
+       * (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering).
+       * The downside is that text is converted to paths only, so users cannot open created vector
+       * outputs for post-processing in other applications and retain text editability.
+       *
+       * This setting also guarantees complete compatibility with the full range of formatting options available
+       * through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using
+       * a vector-based paint surface and TextFormatAlwaysText mode.
+       *
+       * A final benefit to this setting is that vector exports created using text as outlines do
+       * not require all users to have the original fonts installed in order to display the
+       * text in its original style.
+       */
+      TextFormatAlwaysOutlines,
+
+      /**
+       * Always render text as text objects.
+       *
+       * While this mode preserves text objects as text for post-processing in external vector editing applications,
+       * it can result in rendering artifacts or poor quality rendering, depending on the text format settings.
+       *
+       * Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality
+       * to TextFormatAlwaysOutlines.
+       *
+       * When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be
+       * taken to ensure that the required fonts are available to users when opening the created files,
+       * or default fallback fonts will be used to display the output instead. (Although PDF exports MAY
+       * automatically embed some fonts when possible, depending on the user's platform).
+       */
+      TextFormatAlwaysText,
     };
 
     /**
