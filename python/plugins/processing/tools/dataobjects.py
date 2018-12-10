@@ -129,7 +129,7 @@ def getTables(sorting=True):
 def extent(layers):
     first = True
     for layer in layers:
-        if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
+        if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
             layer = getObjectFromUri(layer)
             if layer is None:
                 continue
