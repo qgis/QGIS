@@ -254,7 +254,7 @@ QString QgsField::displayString( const QVariant &v ) const
     if ( ok )
       return QLocale().toString( converted );
   }
-  else if ( d->typeName == QLatin1String( "json" ) || d->typeName == QLatin1String( "jsonb" ) )
+  else if ( d->typeName == QLatin1String( "json" ) || d->typeName == QLatin1String( "jsonb" ) || d->typeName == QLatin1String( "JSON" ) )
   {
     QJsonDocument doc = QJsonDocument::fromVariant( v );
     return QString::fromUtf8( doc.toJson().data() );

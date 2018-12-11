@@ -470,7 +470,8 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
-      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
+      << QgsVectorDataProvider::NativeType( tr( "Map (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
 
   bool supportsDate = true;
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
@@ -1009,6 +1010,7 @@ void QgsOgrProvider::loadFields()
     OGRFieldSubType ogrSubType = OFSTNone;
 
     QVariant::Type varType;
+    QVariant::Type varSubType;
     switch ( ogrType )
     {
       case OFTInteger:
@@ -1041,6 +1043,18 @@ void QgsOgrProvider::loadFields()
         break;
 
       case OFTString:
+        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+        {
+          ogrSubType = OFSTJSON;
+          QgsDebugMsg( QStringLiteral( "JSON Field found" ) );
+          varType = QVariant::Map;
+          varSubType = QVariant::String;
+        }
+        else
+        {
+          varType = QVariant::String;
+        }
+        break;
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -1081,7 +1095,7 @@ void QgsOgrProvider::loadFields()
 #else
                           textEncoding()->toUnicode( typeName.toStdString().c_str() ),
 #endif
-                          width, prec
+                          width, prec, QString(), varSubType
                         );
 
     // check if field is nullable
