@@ -260,6 +260,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
     if ( index == mCurrentIndex )
       f.setUnderline( true );
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
+      {
+        f.setItalic( !f.italic() );
+      }
+    }
     return f;
   }
   else if ( role == Qt::ForegroundRole )
@@ -270,7 +278,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
       if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
-        brush.setColor( Qt::lightGray );
+        brush.setColor( Qt::gray );
       }
     }
     return brush;
