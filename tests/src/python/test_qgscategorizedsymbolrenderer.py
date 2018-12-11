@@ -495,5 +495,6 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(result[1].label(), 'Two')
         self.assertEqual(result[2].label(), '(3)')
 
+
 if __name__ == "__main__":
     unittest.main()
