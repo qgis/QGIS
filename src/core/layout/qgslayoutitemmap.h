@@ -398,6 +398,30 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     QgsLayoutItemMapOverview *overview();
 
+    /**
+     * Returns the margin from the map edges in which no labels may be placed.
+     *
+     * If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+     * of the map.
+     *
+     * \see setLabelMargin()
+     *
+     * \since QGIS 3.6
+     */
+    QgsLayoutMeasurement labelMargin() const;
+
+    /**
+     * Sets the \a margin from the map edges in which no labels may be placed.
+     *
+     * If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+     * of the map.
+     *
+     * \see labelMargin()
+     *
+     * \since QGIS 3.6
+     */
+    void setLabelMargin( const QgsLayoutMeasurement &margin );
+
     QgsExpressionContext createExpressionContext() const override;
 
     /**
@@ -620,6 +644,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     std::unique_ptr< QPainter > mPainter;
     std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
+
+    QgsLayoutMeasurement mLabelMargin{ 0 };
 
     void init();
 

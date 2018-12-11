@@ -607,6 +607,8 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   atlasElem.setAttribute( QStringLiteral( "margin" ), qgsDoubleToString( mAtlasMargin ) );
   mapElem.appendChild( atlasElem );
 
+  mapElem.setAttribute( QStringLiteral( "labelMargin" ), mLabelMargin.encodeMeasurement() );
+
   return true;
 }
 
@@ -739,6 +741,8 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
     }
     mAtlasMargin = atlasElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.1" ) ).toDouble();
   }
+
+  mLabelMargin = QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) );
 
   updateBoundingRect();
 
@@ -1127,6 +1131,17 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   // override the default text render format inherited from the labeling engine settings using the layout's render context setting
   jobMapSettings.setTextRenderFormat( mLayout->renderContext().textRenderFormat() );
 
+  if ( mLabelMargin.length() > 0 )
+  {
+    QPolygonF visiblePoly = jobMapSettings.visiblePolygon();
+    visiblePoly.append( visiblePoly.at( 0 ) ); //close polygon
+    const double layoutLabelMargin = mLayout->convertToLayoutUnits( mLabelMargin );
+    const double layoutLabelMarginInMapUnits = layoutLabelMargin / rect().width() * jobMapSettings.extent().width();
+    QgsGeometry mapBoundaryGeom = QgsGeometry::fromQPolygonF( visiblePoly );
+    mapBoundaryGeom = mapBoundaryGeom.buffer( -layoutLabelMarginInMapUnits, 0 );
+    jobMapSettings.setLabelBoundaryGeometry( mapBoundaryGeom );
+  }
+
   return jobMapSettings;
 }
 
@@ -1411,6 +1426,16 @@ void QgsLayoutItemMap::connectUpdateSlot()
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+}
+
+QgsLayoutMeasurement QgsLayoutItemMap::labelMargin() const
+{
+  return mLabelMargin;
+}
+
+void QgsLayoutItemMap::setLabelMargin( const QgsLayoutMeasurement &margin )
+{
+  mLabelMargin = margin;
 }
 
 void QgsLayoutItemMap::updateToolTip()

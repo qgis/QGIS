@@ -187,6 +187,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoMapGridAnnotationFontColor,
       UndoMapGridLineSymbol,
       UndoMapGridMarkerSymbol,
+      UndoMapLabelMargin,
       UndoPictureRotation,
       UndoPictureFillColor,
       UndoPictureStrokeColor,

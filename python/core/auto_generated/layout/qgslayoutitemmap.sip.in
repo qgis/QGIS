@@ -450,6 +450,30 @@ Returns the map item's first overview. This is a convenience function.
 .. seealso:: :py:func:`overviews`
 %End
 
+    QgsLayoutMeasurement labelMargin() const;
+%Docstring
+Returns the margin from the map edges in which no labels may be placed.
+
+If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+of the map.
+
+.. seealso:: :py:func:`setLabelMargin`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelMargin( const QgsLayoutMeasurement &margin );
+%Docstring
+Sets the ``margin`` from the map edges in which no labels may be placed.
+
+If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+of the map.
+
+.. seealso:: :py:func:`labelMargin`
+
+.. versionadded:: 3.6
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 
