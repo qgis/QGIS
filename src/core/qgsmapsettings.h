@@ -32,12 +32,37 @@
 #include "qgsscalecalculator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaplayer.h"
+#include "qgsgeometry.h"
 
 class QPainter;
 
 class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
+
+/**
+ * \class QgsLabelBlockingRegion
+ * \ingroup core
+ *
+ * Label blocking region (in map coordinates and CRS).
+ *
+ * \since QGIS 3.6
+*/
+class CORE_EXPORT QgsLabelBlockingRegion
+{
+  public:
+
+    /**
+     * Constructor for a label blocking region
+     */
+    explicit QgsLabelBlockingRegion( const QgsGeometry &geometry )
+      : geometry( geometry )
+    {}
+
+    //! Geometry of region to avoid placing labels within (in destination map coordinates and CRS)
+    QgsGeometry geometry;
+
+};
 
 
 /**
@@ -471,6 +496,7 @@ class CORE_EXPORT QgsMapSettings
      * The geometry is specified using the map's destinationCrs().
      *
      * \see setLabelBoundaryGeometry()
+     * \see labelBlockingRegions()
      * \since QGIS 3.6
      */
     QgsGeometry labelBoundaryGeometry() const;
@@ -485,9 +511,26 @@ class CORE_EXPORT QgsMapSettings
      * The geometry is specified using the map's destinationCrs().
      *
      * \see labelBoundaryGeometry()
+     * \see setLabelBlockingRegions()
      * \since QGIS 3.6
      */
     void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+
+    /**
+     * Sets a list of \a regions to avoid placing labels within.
+     * \since QGIS 3.6
+     * \see labelBlockingRegions()
+     * \see setLabelBoundaryGeometry()
+     */
+    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions ) { mLabelBlockingRegions = regions; }
+
+    /**
+     * Returns the list of regions to avoid placing labels within.
+     * \since QGIS 3.6
+     * \see setLabelBlockingRegions()
+     * \see labelBoundaryGeometry()
+     */
+    QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 
   protected:
 
@@ -546,6 +589,10 @@ class CORE_EXPORT QgsMapSettings
 #endif
 
     void updateDerived();
+
+  private:
+
+    QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )
