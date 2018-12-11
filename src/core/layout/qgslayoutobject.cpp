@@ -63,6 +63,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MapYMin, QgsPropertyDefinition( "dataDefinedMapYMin", QObject::tr( "Extent minimum Y" ), QgsPropertyDefinition::Double ) },
     { QgsLayoutObject::MapXMax, QgsPropertyDefinition( "dataDefinedMapXMax", QObject::tr( "Extent maximum X" ), QgsPropertyDefinition::Double ) },
     { QgsLayoutObject::MapYMax, QgsPropertyDefinition( "dataDefinedMapYMax", QObject::tr( "Extent maximum Y" ), QgsPropertyDefinition::Double ) },
+    { QgsLayoutObject::MapLabelMargin, QgsPropertyDefinition( "dataDefinedMapLabelMargin", QObject::tr( "Label margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapAtlasMargin, QgsPropertyDefinition( "dataDefinedMapAtlasMargin", QObject::tr( "Atlas margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapLayers, QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map Layers" ), tr( "list of map layer names separated by | characters" ) ) },
     { QgsLayoutObject::MapStylePreset, QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map theme" ), tr( "name of an existing map theme (case-sensitive)" ) ) },

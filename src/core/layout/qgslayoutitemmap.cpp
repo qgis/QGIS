@@ -742,7 +742,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
     mAtlasMargin = atlasElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.1" ) ).toDouble();
   }
 
-  mLabelMargin = QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) );
+  setLabelMargin( QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) ) );
 
   updateBoundingRect();
 
@@ -1125,11 +1125,11 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   // override the default text render format inherited from the labeling engine settings using the layout's render context setting
   jobMapSettings.setTextRenderFormat( mLayout->renderContext().textRenderFormat() );
 
-  if ( mLabelMargin.length() > 0 )
+  if ( mEvaluatedLabelMargin.length() > 0 )
   {
     QPolygonF visiblePoly = jobMapSettings.visiblePolygon();
     visiblePoly.append( visiblePoly.at( 0 ) ); //close polygon
-    const double layoutLabelMargin = mLayout->convertToLayoutUnits( mLabelMargin );
+    const double layoutLabelMargin = mLayout->convertToLayoutUnits( mEvaluatedLabelMargin );
     const double layoutLabelMarginInMapUnits = layoutLabelMargin / rect().width() * jobMapSettings.extent().width();
     QgsGeometry mapBoundaryGeom = QgsGeometry::fromQPolygonF( visiblePoly );
     mapBoundaryGeom = mapBoundaryGeom.buffer( -layoutLabelMarginInMapUnits, 0 );
@@ -1329,6 +1329,10 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
       emit extentChanged();
     }
   }
+  if ( property == QgsLayoutObject::MapLabelMargin || property == QgsLayoutObject::AllProperties )
+  {
+    refreshLabelMargin( false );
+  }
 
   //force redraw
   mCacheInvalidated = true;
@@ -1430,6 +1434,7 @@ QgsLayoutMeasurement QgsLayoutItemMap::labelMargin() const
 void QgsLayoutItemMap::setLabelMargin( const QgsLayoutMeasurement &margin )
 {
   mLabelMargin = margin;
+  refreshLabelMargin( false );
 }
 
 void QgsLayoutItemMap::updateToolTip()
@@ -1891,6 +1896,19 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   {
     mEvaluatedMapRotation = mapRotation;
     emit mapRotationChanged( mapRotation );
+  }
+}
+
+void QgsLayoutItemMap::refreshLabelMargin( bool updateItem )
+{
+  //data defined label margin set?
+  double labelMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapLabelMargin, createExpressionContext(), mLabelMargin.length() );
+  mEvaluatedLabelMargin.setLength( labelMargin );
+  mEvaluatedLabelMargin.setUnits( mLabelMargin.units() );
+
+  if ( updateItem )
+  {
+    update();
   }
 }
 

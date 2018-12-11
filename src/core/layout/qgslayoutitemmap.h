@@ -646,6 +646,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     bool mPainterCancelWait = false;
 
     QgsLayoutMeasurement mLabelMargin{ 0 };
+    QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
 
     void init();
 
@@ -693,6 +694,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * \param context expression context for evaluating data defined map parameters
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
+
+    void refreshLabelMargin( bool updateItem );
 
     void updateAtlasFeature();
 

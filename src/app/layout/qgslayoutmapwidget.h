@@ -19,6 +19,7 @@
 #define QGSLAYOUTMAPWIDGET_H
 
 #include "ui_qgslayoutmapwidgetbase.h"
+#include "ui_qgslayoutmaplabelingwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmapgrid.h"
 
@@ -116,6 +117,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void mapCrsChanged( const QgsCoordinateReferenceSystem &crs );
     void overviewSymbolChanged();
+    void showLabelSettings();
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
@@ -162,6 +164,26 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void storeCurrentLayerSet();
 
+};
+
+
+/**
+ * \ingroup app
+ * Allows configuration of layout map labeling settings.
+ * */
+class QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map );
+
+  private slots:
+    void labelMarginChanged( double val );
+    void labelMarginUnitsChanged();
+
+  private:
+    QPointer< QgsLayoutItemMap > mMapItem;
 };
 
 #endif
