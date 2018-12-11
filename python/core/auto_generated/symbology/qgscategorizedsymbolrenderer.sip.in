@@ -279,6 +279,19 @@ Returns the count of symbols matched.
 .. versionadded:: 3.4
 %End
 
+
+    static QgsCategoryList createCategories( const QVariantList &values, const QgsSymbol *symbol, QgsVectorLayer *layer = 0, const QString &fieldName = QString() );
+%Docstring
+Create categories for a list of ``values``.
+The returned symbols in the category list will be a modification of ``symbol``.
+
+If ``layer`` and ``fieldName`` are specified it will try to find nicer values
+to represent the description for the categories based on the respective field
+configuration.
+
+.. versionadded:: 3.6
+%End
+
   protected:
 
 

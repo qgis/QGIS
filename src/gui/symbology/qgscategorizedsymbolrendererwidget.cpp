@@ -635,34 +635,12 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   }
 }
 
-static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, QgsSymbol *symbol )
-{
-  // sort the categories first
-  QgsSymbolLayerUtils::sortVariantList( values, Qt::AscendingOrder );
-
-  int num = values.count();
-
-  for ( int i = 0; i < num; i++ )
-  {
-    QVariant value = values[i];
-    QgsSymbol *newSymbol = symbol->clone();
-    if ( ! value.isNull() )
-    {
-      cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
-    }
-  }
-
-  // add null (default) value
-  QgsSymbol *newSymbol = symbol->clone();
-  cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
-}
-
 
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
   QString attrName = mExpressionWidget->currentField();
   int idx = mLayer->fields().lookupField( attrName );
-  QList<QVariant> unique_vals;
+  QList<QVariant> uniqueValues;
   if ( idx == -1 )
   {
     // Lets assume it's an expression
@@ -680,21 +658,21 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
     {
       context.setFeature( feature );
       QVariant value = expression->evaluate( &context );
-      if ( unique_vals.contains( value ) )
+      if ( uniqueValues.contains( value ) )
         continue;
-      unique_vals << value;
+      uniqueValues << value;
     }
   }
   else
   {
-    unique_vals = mLayer->uniqueValues( idx ).toList();
+    uniqueValues = mLayer->uniqueValues( idx ).toList();
   }
 
   // ask to abort if too many classes
-  if ( unique_vals.size() >= 1000 )
+  if ( uniqueValues.size() >= 1000 )
   {
     int res = QMessageBox::warning( nullptr, tr( "Classify Categories" ),
-                                    tr( "High number of classes. Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
+                                    tr( "High number of classes. Classification would yield %1 entries which might not be expected. Continue?" ).arg( uniqueValues.size() ),
                                     QMessageBox::Ok | QMessageBox::Cancel,
                                     QMessageBox::Cancel );
     if ( res == QMessageBox::Cancel )
@@ -709,8 +687,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
     return;
 #endif
 
-  QgsCategoryList cats;
-  _createCategories( cats, unique_vals, mCategorizedSymbol.get() );
+  QgsCategoryList cats = QgsCategorizedSymbolRenderer::createCategories( uniqueValues, mCategorizedSymbol.get(), mLayer, attrName );
   bool deleteExisting = false;
 
   if ( !mOldClassificationAttribute.isEmpty() &&
