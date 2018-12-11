@@ -1230,6 +1230,29 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
         del vl2_external
 
+    def testJson(self):
+        tmpfile = os.path.join(self.basetestpath, 'test_json.gpkg')
+        testdata_path = unitTestDataPath('provider')
+        shutil.copy(os.path.join(unitTestDataPath('provider'), 'test_json.gpkg'), tmpfile)
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile, 'foo', 'ogr'))
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('json_content')).type(), QVariant.Map)
+
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+
+        #test dict value
+        while fi.nextFeature(f):
+            fid = vl.fields().lookupField('fid')
+            if fid == 1:
+                value = vl.fields().lookupField('json_content')
+                self.assertIsInstance(f.attributes()[value], dict)
+                self.assertEqual(f.attributes()[value_idx], {'foo': 'bar'})
+                break
+
 
 if __name__ == '__main__':
     unittest.main()
