@@ -61,6 +61,7 @@ class QgsArcGisRestUtils
     static QgsFeatureRenderer *parseEsriRenderer( const QVariantMap &rendererData );
     static QgsAbstractVectorLayerLabeling *parseEsriLabeling( const QVariantList &labelingData );
 
+    static QString parseEsriLabelingExpression( const QString &string );
     static QColor parseEsriColorJson( const QVariant &colorData );
     static Qt::PenStyle parseEsriLineStyle( const QString &style );
     static Qt::BrushStyle parseEsriFillStyle( const QString &style );

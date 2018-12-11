@@ -893,8 +893,7 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::parseEsriLabeling( const QVa
     if ( !exp.isValid() )
       where.clear();
 
-    QString expression = labeling.value( QStringLiteral( "labelExpression" ) ).toString();
-    settings->fieldName = expression.replace( '[', '"' ).replace( ']', '"' );
+    settings->fieldName = parseEsriLabelingExpression( labeling.value( QStringLiteral( "labelExpression" ) ).toString() );
     settings->isExpression = true;
 
     QgsRuleBasedLabeling::Rule *child = new QgsRuleBasedLabeling::Rule( settings, maxScale, minScale, where, QObject::tr( "ASF label %1" ).arg( i++ ), false );
@@ -981,6 +980,24 @@ QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &re
     return nullptr;
   }
   return nullptr;
+}
+
+QString QgsArcGisRestUtils::parseEsriLabelingExpression( const QString &string )
+{
+  QString expression = string;
+
+  // Replace a few ArcGIS token to QGIS equivalents
+  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)CONCAT(\\s|$)" ), QStringLiteral( "\\4||\\5" ) );
+  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)NEWLINE(\\s|$)" ), QStringLiteral( "\\4'\\n'\\5" ) );
+
+  // ArcGIS's double quotes are single quotes in QGIS
+  expression = expression.replace( QRegularExpression( "\"(.*?(?<!\\\\))\"" ), QStringLiteral( "'\\1'" ) );
+  expression = expression.replace( QRegularExpression( "\\\\\"" ), QStringLiteral( "\"" ) );
+
+  // ArcGIS's square brakets are double quotes in QGIS
+  expression = expression.replace( QRegularExpression( "\\[([^]]*)\\]" ), QStringLiteral( "\"\\1\"" ) );
+
+  return expression;
 }
 
 QColor QgsArcGisRestUtils::parseEsriColorJson( const QVariant &colorData )

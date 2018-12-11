@@ -497,7 +497,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
                                      "},{"
                                      "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
                                      "\"where\": \"1_testing broken where string\","
-                                     "\"labelExpression\": \"[Name]\","
+                                     "\"labelExpression\": \"\\\"Name: \\\" CONCAT [Name] CONCAT NEWLINE CONCAT [Size]\","
                                      "\"useCodedValues\": true,"
                                      "\"symbol\": {"
                                      "\"type\": \"esriTS\","
@@ -556,6 +556,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QVERIFY( settings );
   QCOMPARE( settings->placement, QgsPalLayerSettings::OverPoint );
   QCOMPARE( settings->quadOffset, QgsPalLayerSettings::QuadrantAboveRight );
+  QCOMPARE( settings->fieldName, QStringLiteral( "\"Name\"" ) );
 
   QgsTextFormat textFormat = settings->format();
   QCOMPARE( textFormat.color(), QColor( 255, 0, 0 ) );
@@ -564,6 +565,8 @@ void TestQgsArcGisRestUtils::testParseLabeling()
 
   settings = children.at( 1 )->settings();
   QVERIFY( settings );
+  QCOMPARE( settings->fieldName, QStringLiteral( "'Name: ' || \"Name\" || '\\n' || \"Size\"" ) );
+
   textFormat = settings->format();
   QCOMPARE( textFormat.buffer().enabled(), true );
   QCOMPARE( textFormat.buffer().color(), QColor( 255, 255, 255 ) );
