@@ -608,6 +608,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   mapElem.appendChild( atlasElem );
 
   mapElem.setAttribute( QStringLiteral( "labelMargin" ), mLabelMargin.encodeMeasurement() );
+  mapElem.setAttribute( QStringLiteral( "mapFlags" ), static_cast< int>( mMapFlags ) );
 
   return true;
 }
@@ -743,6 +744,8 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   }
 
   setLabelMargin( QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) ) );
+
+  mMapFlags = static_cast< MapItemFlags>( itemElem.attribute( QStringLiteral( "mapFlags" ), nullptr ).toInt() );
 
   updateBoundingRect();
 
@@ -1070,6 +1073,16 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mDrawingPreview = false;
 }
 
+QgsLayoutItemMap::MapItemFlags QgsLayoutItemMap::mapFlags() const
+{
+  return mMapFlags;
+}
+
+void QgsLayoutItemMap::setMapFlags( QgsLayoutItemMap::MapItemFlags mapFlags )
+{
+  mMapFlags = mapFlags;
+}
+
 QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const
 {
   QgsExpressionContext expressionContext = createExpressionContext();
@@ -1127,7 +1140,12 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
 
-  jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
+  QgsLabelingEngineSettings labelSettings = mLayout->project()->labelingEngineSettings();
+
+  // override project "show partial labels" setting with this map's setting
+  labelSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, mMapFlags & ShowPartialLabels );
+  jobMapSettings.setLabelingEngineSettings( labelSettings );
+
   // override the default text render format inherited from the labeling engine settings using the layout's render context setting
   jobMapSettings.setTextRenderFormat( mLayout->renderContext().textRenderFormat() );
 

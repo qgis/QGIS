@@ -35,7 +35,8 @@ from qgis.core import (QgsLayout,
                        QgsLayoutExporter,
                        QgsMapSettings,
                        QgsProject,
-                       QgsVectorLayerSimpleLabeling)
+                       QgsVectorLayerSimpleLabeling,
+                       QgsLabelingEngineSettings)
 
 
 from utilities import (
@@ -132,6 +133,8 @@ class TestLayoutBase(TestQgsPalLabeling):
         """:type: QgsLayoutItemMap"""
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
+        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.UsePartialCandidates:
+            self._cmap.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
         self._c.addLayoutItem(self._cmap)
         # now expand map to fill page and set its extent
         self._cmap.attemptSetSceneRect(QRectF(0, 0, paperw, paperw))

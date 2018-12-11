@@ -186,6 +186,8 @@ bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
 
   mMapItem = qobject_cast< QgsLayoutItemMap * >( item );
   mItemPropertiesWidget->setItem( mMapItem );
+  if ( mLabelWidget )
+    mLabelWidget->setItem( mMapItem );
 
   if ( mMapItem )
   {
@@ -359,8 +361,8 @@ void QgsLayoutMapWidget::overviewSymbolChanged()
 
 void QgsLayoutMapWidget::showLabelSettings()
 {
-  QgsLayoutMapLabelingWidget *w = new QgsLayoutMapLabelingWidget( mMapItem );
-  openPanel( w );
+  mLabelWidget = new QgsLayoutMapLabelingWidget( mMapItem );
+  openPanel( mLabelWidget );
 }
 
 void QgsLayoutMapWidget::switchToMoveContentTool()
@@ -1703,13 +1705,42 @@ QgsLayoutMapLabelingWidget::QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map )
   mLabelBoundaryUnitsCombo->linkToWidget( mLabelBoundarySpinBox );
   mLabelBoundaryUnitsCombo->setConverter( &mMapItem->layout()->renderContext().measurementConverter() );
 
-  mLabelBoundarySpinBox->setValue( mMapItem->labelMargin().length() );
-  mLabelBoundaryUnitsCombo->setUnit( mMapItem->labelMargin().units() );
-
   connect( mLabelBoundaryUnitsCombo, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutMapLabelingWidget::labelMarginUnitsChanged );
   connect( mLabelBoundarySpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapLabelingWidget::labelMarginChanged );
+  connect( mShowPartialLabelsCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showPartialsToggled );
 
   registerDataDefinedButton( mLabelMarginDDBtn, QgsLayoutObject::MapLabelMargin );
+
+  setNewItem( map );
+}
+
+bool QgsLayoutMapLabelingWidget::setNewItem( QgsLayoutItem *item )
+{
+  if ( item->type() != QgsLayoutItemRegistry::LayoutMap )
+    return false;
+
+  if ( mMapItem )
+  {
+    disconnect( mMapItem, &QgsLayoutObject::changed, this, &QgsLayoutMapLabelingWidget::updateGuiElements );
+  }
+
+  mMapItem = qobject_cast< QgsLayoutItemMap * >( item );
+
+  if ( mMapItem )
+  {
+    connect( mMapItem, &QgsLayoutObject::changed, this, &QgsLayoutMapLabelingWidget::updateGuiElements );
+  }
+
+  updateGuiElements();
+
+  return true;
+}
+
+void QgsLayoutMapLabelingWidget::updateGuiElements()
+{
+  whileBlocking( mLabelBoundarySpinBox )->setValue( mMapItem->labelMargin().length() );
+  whileBlocking( mLabelBoundaryUnitsCombo )->setUnit( mMapItem->labelMargin().units() );
+  whileBlocking( mShowPartialLabelsCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowPartialLabels );
 
   updateDataDefinedButton( mLabelMarginDDBtn );
 }
@@ -1732,6 +1763,22 @@ void QgsLayoutMapLabelingWidget::labelMarginUnitsChanged()
 
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Label Margin" ), QgsLayoutItem::UndoMapLabelMargin );
   mMapItem->setLabelMargin( QgsLayoutMeasurement( mLabelBoundarySpinBox->value(), mLabelBoundaryUnitsCombo->unit() ) );
+  mMapItem->layout()->undoStack()->endCommand();
+  mMapItem->invalidateCache();
+}
+
+void QgsLayoutMapLabelingWidget::showPartialsToggled( bool checked )
+{
+  if ( !mMapItem )
+    return;
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Label Visibility" ) );
+  QgsLayoutItemMap::MapItemFlags flags = mMapItem->mapFlags();
+  if ( checked )
+    flags |= QgsLayoutItemMap::ShowPartialLabels;
+  else
+    flags &= ~QgsLayoutItemMap::ShowPartialLabels;
+  mMapItem->setMapFlags( flags );
   mMapItem->layout()->undoStack()->endCommand();
   mMapItem->invalidateCache();
 }
