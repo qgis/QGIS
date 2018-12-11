@@ -264,8 +264,10 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
         auto vectorLayer = static_cast<QgsVectorLayer *>( layer );
         if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
         {
-          QgsRectangle r = mCanvas->mapSettings().mapToLayerCoordinates( layer, QgsRectangle( x - sr, y - sr, x + sr, y + sr ) );
-          QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+          QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
+                                   .setDestinationCrs( mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
+                                   .setFilterRect( QgsRectangle( x - sr, y - sr, x + sr, y + sr ) )
+                                   .setFlags( QgsFeatureRequest::ExactIntersect ) );
           QgsFeature f;
           while ( fit.nextFeature( f ) )
           {
