@@ -166,8 +166,14 @@ class CORE_EXPORT QgsRenderContext
     QPainter *painter() {return mPainter;}
 
     /**
-     * Returns the current coordinate transform for the context, or an invalid
-     * transform is no coordinate transformation is required.
+     * Returns the current coordinate transform for the context.
+     *
+     * This represents the coordinate transform required to transform a layer
+     * which is being rendered back to the CRS of the rendered map. If no coordinate
+     * transformation is required, or the render context is not associated with
+     * a map layer render, then an invalid coordinate transformation is returned.
+     *
+     * \see setCoordinateTransform()
      */
     QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
 
@@ -215,7 +221,21 @@ class CORE_EXPORT QgsRenderContext
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
-    const QgsRectangle &extent() const {return mExtent;}
+    /**
+     * When rendering a map layer, calling this method returns the "clipping"
+     * extent for the layer (in the layer's CRS).
+     *
+     * This extent is a "worst-case" scenario, which is guaranteed to cover the complete
+     * visible portion of the layer when it is rendered to a map. It is often larger
+     * than the actual visible portion of that layer.
+     *
+     * \warning For some layers, depending on the visible extent and the coordinate
+     * transforms involved, this extent will represent the entire globe. This method
+     * should never be used to determine the actual visible extent of a map render.
+     *
+     * \see setExtent()
+     */
+    const QgsRectangle &extent() const { return mExtent; }
 
     const QgsMapToPixel &mapToPixel() const {return mMapToPixel;}
 
@@ -269,9 +289,31 @@ class CORE_EXPORT QgsRenderContext
 
     //setters
 
-    //! Sets coordinate transformation.
+    /**
+     * Sets the current coordinate transform for the context.
+     *
+     * This represents the coordinate transform required to transform the layer
+     * which is being rendered back to the CRS of the rendered map.
+     *
+     * Set to an invalid QgsCoordinateTransform to indicate that no transformation is required.
+     *
+     * \see coordinateTransform()
+     */
     void setCoordinateTransform( const QgsCoordinateTransform &t );
+
     void setMapToPixel( const QgsMapToPixel &mtp ) {mMapToPixel = mtp;}
+
+    /**
+     * When rendering a map layer, calling this method sets the "clipping"
+     * extent for the layer (in the layer's CRS).
+     *
+     * This extent should be a "worst-case" scenario, which is guaranteed to
+     * completely cover the entire visible portion of the layer when it is rendered
+     * to the map. It may be larger than the actual visible area, but MUST contain at least the
+     * entire visible area.
+     *
+     * \see setExtent()
+     */
     void setExtent( const QgsRectangle &extent ) {mExtent = extent;}
 
     void setDrawEditingInformation( bool b );
