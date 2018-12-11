@@ -339,6 +339,69 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.report += checker.report()
         self.assertTrue(result, message)
 
+    def testPartialLabels(self):
+        """
+        Test rendering map item with a show partial labels flag
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'X'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
+        vl.setRenderer(QgsNullSymbolRenderer())
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(15):
+            for y in range(15):
+                f.setGeometry(QgsPoint(x, y))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        p.setLabelingEngineSettings(engine_settings)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        # default should always be to hide partial labels
+        self.assertFalse(map.mapFlags() & QgsLayoutItemMap.ShowPartialLabels)
+
+        # hiding partial labels (the default)
+        map.setMapFlags(QgsLayoutItemMap.MapItemFlags())
+        checker = QgsLayoutChecker('composermap_label_nomargin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        # showing partial labels
+        map.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
+        checker = QgsLayoutChecker('composermap_show_partial_labels', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,6 +26,7 @@
 class QgsMapLayer;
 class QgsLayoutItemMap;
 class QgsLayoutItemMapOverview;
+class QgsLayoutMapLabelingWidget;
 
 /**
  * \ingroup app
@@ -127,6 +128,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     QPointer< QgsLayoutItemMap > mMapItem;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QgsLayoutDesignerInterface *mInterface = nullptr;
+    QPointer< QgsLayoutMapLabelingWidget > mLabelWidget;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();
@@ -184,9 +186,14 @@ class QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::Qg
   public:
     explicit QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map );
 
+  protected:
+    bool setNewItem( QgsLayoutItem *item ) override;
+
   private slots:
+    void updateGuiElements();
     void labelMarginChanged( double val );
     void labelMarginUnitsChanged();
+    void showPartialsToggled( bool checked );
 
   private:
     QPointer< QgsLayoutItemMap > mMapItem;

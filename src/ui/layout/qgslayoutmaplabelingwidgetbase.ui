@@ -90,6 +90,13 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0" colspan="4">
+       <widget class="QCheckBox" name="mShowPartialLabelsCheckBox">
+        <property name="text">
+         <string>Allow truncated labels on edges of map</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

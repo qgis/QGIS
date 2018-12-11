@@ -64,6 +64,16 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     };
 
     /**
+     * Various flags that affect drawing of map items.
+     * \since QGIS 3.6
+     */
+    enum MapItemFlag
+    {
+      ShowPartialLabels  = 1 << 0,  //!< Whether to draw labels which are partially outside of the map view
+    };
+    Q_DECLARE_FLAGS( MapItemFlags, MapItemFlag )
+
+    /**
      * Constructor for QgsLayoutItemMap, with the specified parent \a layout.
      */
     explicit QgsLayoutItemMap( QgsLayout *layout );
@@ -72,6 +82,20 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     int type() const override;
     QIcon icon() const override;
     QgsLayoutItem::Flags itemFlags() const override;
+
+    /**
+     * Returns the map item's flags, which control how the map content is drawn.
+     * \see setMapFlags()
+     * \since QGIS 3.6
+     */
+    QgsLayoutItemMap::MapItemFlags mapFlags() const;
+
+    /**
+     * Sets the map item's \a flags, which control how the map content is drawn.
+     * \see mapFlags()
+     * \since QGIS 3.6
+     */
+    void setMapFlags( QgsLayoutItemMap::MapItemFlags flags );
 
     /**
      * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
@@ -521,6 +545,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
   private:
 
+    QgsLayoutItemMap::MapItemFlags mMapFlags = nullptr;
 
     //! Unique identifier
     int mMapId = 1;
@@ -708,5 +733,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     friend class QgsCompositionConverter;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMap::MapItemFlags )
 
 #endif //QGSLAYOUTITEMMAP_H

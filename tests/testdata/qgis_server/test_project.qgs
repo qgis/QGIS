@@ -1130,7 +1130,7 @@
         </LayoutItem>
         <GuideCollection visible="1"/>
       </PageCollection>
-      <LayoutItem type="65639" followPreset="false" followPresetName="" positionLock="false" visibility="1" itemRotation="0" positionOnPage="126,143,mm" blendMode="0" zValue="2" frameJoinStyle="miter" frame="false" background="true" excludeFromExports="0" size="61,26,mm" outlineWidthM="0.3,mm" uuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" groupUuid="" drawCanvasItems="true" referencePoint="0" id="" keepLayerSet="false" templateUuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" position="126,143,mm" mapRotation="0" opacity="1">
+      <LayoutItem type="65639" followPreset="false" followPresetName="" positionLock="false" visibility="1" itemRotation="0" positionOnPage="126,143,mm" blendMode="0" zValue="2" frameJoinStyle="miter" frame="false" background="true" excludeFromExports="0" size="61,26,mm" outlineWidthM="0.3,mm" uuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" groupUuid="" drawCanvasItems="true" referencePoint="0" id="" keepLayerSet="false" templateUuid="{5ed7a90f-8af2-4535-a15e-e18a7f6c5d1f}" position="126,143,mm" mapRotation="0" mapFlags="1" opacity="1">
         <FrameColor blue="0" green="0" red="0" alpha="255"/>
         <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
         <LayoutObject>
@@ -1209,7 +1209,7 @@
         </ComposerMapGrid>
         <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
       </LayoutItem>
-      <LayoutItem type="65639" followPreset="false" followPresetName="" positionLock="false" visibility="1" itemRotation="0" positionOnPage="98.7716,20.1872,mm" blendMode="0" zValue="1" frameJoinStyle="miter" frame="false" background="true" excludeFromExports="0" size="87,103,mm" outlineWidthM="0.3,mm" uuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" groupUuid="" drawCanvasItems="true" referencePoint="0" id="" keepLayerSet="false" templateUuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" position="98.7716,20.1872,mm" mapRotation="0" opacity="1">
+      <LayoutItem type="65639" followPreset="false" followPresetName="" positionLock="false" visibility="1" itemRotation="0" positionOnPage="98.7716,20.1872,mm" blendMode="0" zValue="1" frameJoinStyle="miter" frame="false" background="true" excludeFromExports="0" size="87,103,mm" outlineWidthM="0.3,mm" uuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" groupUuid="" drawCanvasItems="true" referencePoint="0" id="" keepLayerSet="false" templateUuid="{8fec18d6-8ba0-47d6-914e-3daffe8a8633}" position="98.7716,20.1872,mm" mapRotation="0" mapFlags="1"  opacity="1">
         <FrameColor blue="0" green="0" red="0" alpha="255"/>
         <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
         <LayoutObject>

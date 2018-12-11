@@ -31,6 +31,13 @@ Layout graphical items for displaying a map.
       Auto
     };
 
+    enum MapItemFlag
+    {
+      ShowPartialLabels,
+    };
+    typedef QFlags<QgsLayoutItemMap::MapItemFlag> MapItemFlags;
+
+
     explicit QgsLayoutItemMap( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
@@ -43,6 +50,24 @@ Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
 
     virtual QgsLayoutItem::Flags itemFlags() const;
 
+
+    QgsLayoutItemMap::MapItemFlags mapFlags() const;
+%Docstring
+Returns the map item's flags, which control how the map content is drawn.
+
+.. seealso:: :py:func:`setMapFlags`
+
+.. versionadded:: 3.6
+%End
+
+    void setMapFlags( QgsLayoutItemMap::MapItemFlags flags );
+%Docstring
+Sets the map item's ``flags``, which control how the map content is drawn.
+
+.. seealso:: :py:func:`mapFlags`
+
+.. versionadded:: 3.6
+%End
 
     void assignFreeId();
 %Docstring
@@ -582,6 +607,9 @@ Updates the bounding rect of this item. Call this function before doing any chan
 
 
 };
+
+QFlags<QgsLayoutItemMap::MapItemFlag> operator|(QgsLayoutItemMap::MapItemFlag f1, QFlags<QgsLayoutItemMap::MapItemFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
