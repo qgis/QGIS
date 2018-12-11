@@ -46,6 +46,7 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -4030,6 +4031,35 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   return QVariant();
 }
 
+static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  if ( !layer )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot find layer %1" ).arg( values.at( 0 ).toString() ) );
+    return QVariant();
+  }
+
+  if ( !layer->dataProvider() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Layer %1 has invalid data provider" ).arg( layer->name() ) );
+    return QVariant();
+  }
+
+  const QString uriPart = values.at( 1 ).toString();
+
+  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+
+  if ( !uriPart.isNull() )
+  {
+    return decodedUri.value( values.at( 1 ).toString() );
+  }
+  else
+  {
+    return decodedUri;
+  }
+}
+
 static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString layerIdOrName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -4906,6 +4936,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     // **General** functions
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "decode_uri" ),
+                                            QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "part" ), true ),
+                                            fcnDecodeUri, QStringLiteral( "Map Layers" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_statistic" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "Rasters" ) );
