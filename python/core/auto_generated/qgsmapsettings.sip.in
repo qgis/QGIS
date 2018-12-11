@@ -590,22 +590,22 @@ The geometry is specified using the map's destinationCrs().
 %Docstring
 Sets a list of ``regions`` to avoid placing labels within.
 
-.. versionadded:: 3.6
-
 .. seealso:: :py:func:`labelBlockingRegions`
 
 .. seealso:: :py:func:`setLabelBoundaryGeometry`
+
+.. versionadded:: 3.6
 %End
 
     QList< QgsLabelBlockingRegion > labelBlockingRegions() const;
 %Docstring
 Returns the list of regions to avoid placing labels within.
 
-.. versionadded:: 3.6
-
 .. seealso:: :py:func:`setLabelBlockingRegions`
 
 .. seealso:: :py:func:`labelBoundaryGeometry`
+
+.. versionadded:: 3.6
 %End
 
   protected:
