@@ -11,6 +11,29 @@
 
 
 
+class QgsLabelBlockingRegion
+{
+%Docstring
+
+Label blocking region (in map coordinates and CRS).
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmapsettings.h"
+%End
+  public:
+
+    explicit QgsLabelBlockingRegion( const QgsGeometry &geometry );
+%Docstring
+Constructor for a label blocking region
+%End
+
+    QgsGeometry geometry;
+
+};
+
 
 class QgsMapSettings
 {
@@ -541,6 +564,8 @@ The geometry is specified using the map's destinationCrs().
 
 .. seealso:: :py:func:`setLabelBoundaryGeometry`
 
+.. seealso:: :py:func:`labelBlockingRegions`
+
 .. versionadded:: 3.6
 %End
 
@@ -556,7 +581,31 @@ The geometry is specified using the map's destinationCrs().
 
 .. seealso:: :py:func:`labelBoundaryGeometry`
 
+.. seealso:: :py:func:`setLabelBlockingRegions`
+
 .. versionadded:: 3.6
+%End
+
+    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions );
+%Docstring
+Sets a list of ``regions`` to avoid placing labels within.
+
+.. versionadded:: 3.6
+
+.. seealso:: :py:func:`labelBlockingRegions`
+
+.. seealso:: :py:func:`setLabelBoundaryGeometry`
+%End
+
+    QList< QgsLabelBlockingRegion > labelBlockingRegions() const;
+%Docstring
+Returns the list of regions to avoid placing labels within.
+
+.. versionadded:: 3.6
+
+.. seealso:: :py:func:`setLabelBlockingRegions`
+
+.. seealso:: :py:func:`labelBoundaryGeometry`
 %End
 
   protected:
@@ -578,7 +627,9 @@ The geometry is specified using the map's destinationCrs().
 
 
 
+
     void updateDerived();
+
 };
 
 QFlags<QgsMapSettings::Flag> operator|(QgsMapSettings::Flag f1, QFlags<QgsMapSettings::Flag> f2);
