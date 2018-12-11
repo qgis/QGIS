@@ -25,7 +25,9 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsFeature,
                        QgsRenderContext,
                        QgsSymbol,
-                       QgsStyle
+                       QgsStyle,
+                       QgsVectorLayer,
+                       QgsEditorWidgetSetup
                        )
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
@@ -483,6 +485,15 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         renderer.setClassAttribute("value - $area")
         self.assertTrue(renderer.filterNeedsGeometry())
 
+    def testCategories(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory")
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup("ValueMap", {'map': [{'One': '1'}, {'Two': '2'}]}))
+
+        result = QgsCategorizedSymbolRenderer.createCategories([1, 2, 3], QgsMarkerSymbol(), layer, 'fldint')
+
+        self.assertEqual(result[0].label(), 'One')
+        self.assertEqual(result[1].label(), 'Two')
+        self.assertEqual(result[2].label(), '(3)')
 
 if __name__ == "__main__":
     unittest.main()
