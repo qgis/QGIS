@@ -463,6 +463,32 @@ class CORE_EXPORT QgsMapSettings
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
 
+    /**
+     * Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
+     * placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+     * the map's visiblePolygon().
+     *
+     * The geometry is specified using the map's destinationCrs().
+     *
+     * \see setLabelBoundaryGeometry()
+     * \since QGIS 3.6
+     */
+    QgsGeometry labelBoundaryGeometry() const;
+
+    /**
+     * Sets the label \a boundary geometry, which restricts where in the rendered map labels are permitted to be
+     * placed.
+     *
+     * A null \a boundary geometry (the default) indicates that labels can be placed anywhere within
+     * the map's visiblePolygon().
+     *
+     * The geometry is specified using the map's destinationCrs().
+     *
+     * \see labelBoundaryGeometry()
+     * \since QGIS 3.6
+     */
+    void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+
   protected:
 
     double mDpi;
@@ -512,6 +538,8 @@ class CORE_EXPORT QgsMapSettings
     QgsPathResolver mPathResolver;
 
     QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+    QgsGeometry mLabelBoundaryGeometry;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

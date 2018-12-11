@@ -45,6 +45,7 @@ class TestQgsMapSettings: public QObject
     void testMapLayerListUtils();
     void testXmlReadWrite();
     void testSetLayers();
+    void testLabelBoundary();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -365,6 +366,14 @@ void TestQgsMapSettings::testSetLayers()
   // non spatial and null layers should be stripped
   ms.setLayers( QList< QgsMapLayer * >() << vlA.get() << nonSpatial.get() << nullptr << vlB.get() );
   QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlA.get() << vlB.get() );
+}
+
+void TestQgsMapSettings::testLabelBoundary()
+{
+  QgsMapSettings ms;
+  QVERIFY( ms.labelBoundaryGeometry().isNull() );
+  ms.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1, 0 1, 0 0 ))" ) ) );
+  QCOMPARE( ms.labelBoundaryGeometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
