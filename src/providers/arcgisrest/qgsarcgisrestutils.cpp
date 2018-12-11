@@ -696,8 +696,27 @@ QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &re
   }
   else if ( type == QLatin1String( "uniqueValue" ) )
   {
-    const QString attribute = rendererData.value( QStringLiteral( "field1" ) ).toString();
-    // TODO - handle field2, field3
+    const QString field1 = rendererData.value( QStringLiteral( "field1" ) ).toString();
+    const QString field2 = rendererData.value( QStringLiteral( "field2" ) ).toString();
+    const QString field3 = rendererData.value( QStringLiteral( "field3" ) ).toString();
+    QString attribute;
+    if ( !field2.isEmpty() || !field3.isEmpty() )
+    {
+      const QString delimiter = rendererData.value( QStringLiteral( "fieldDelimiter" ) ).toString();
+      if ( !field3.isEmpty() )
+      {
+        attribute = QStringLiteral( "concat(\"%1\",'%2',\"%3\",'%4',\"%5\")" ).arg( field1, delimiter, field2, delimiter, field3 );
+      }
+      else
+      {
+        attribute = QStringLiteral( "concat(\"%1\",'%2',\"%3\")" ).arg( field1, delimiter, field2 );
+      }
+    }
+    else
+    {
+      attribute = field1;
+    }
+
     const QVariantList categories = rendererData.value( QStringLiteral( "uniqueValueInfos" ) ).toList();
     QgsCategoryList categoryList;
     for ( const QVariant &category : categories )
