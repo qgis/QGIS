@@ -135,6 +135,7 @@ A base class for objects which belong to a layout.
       MapAtlasMargin,
       MapLayers,
       MapStylePreset,
+      MapLabelMargin,
       //composer picture
       PictureSource,
       PictureSvgBackgroundColor,

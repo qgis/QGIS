@@ -38,7 +38,9 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsVectorLayerSimpleLabeling,
                        QgsLabelingEngineSettings,
                        QgsLayoutMeasurement,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsLayoutObject,
+                       QgsProperty)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -321,6 +323,17 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         map.zoomToExtent(vl.extent())
         map.setScale(map.scale() * 1.2)
         checker = QgsLayoutChecker('composermap_rotated_label_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        # data defined
+        map.setMapRotation(0)
+        map.zoomToExtent(vl.extent())
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapLabelMargin, QgsProperty.fromExpression('1+3'))
+        map.refresh()
+        checker = QgsLayoutChecker('composermap_dd_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
         self.report += checker.report()

@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1556</y>
-        <width>627</width>
-        <height>2265</height>
+        <y>0</y>
+        <width>368</width>
+        <height>1373</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -396,18 +396,25 @@
           <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
             <property name="text">
-             <string>Set to map canvas extent</string>
+             <string>Set to Map Canvas Extent</string>
             </property>
            </widget>
           </item>
           <item row="5" column="0" colspan="2">
            <widget class="QPushButton" name="mViewExtentInCanvasButton">
             <property name="text">
-             <string>View extent in map canvas</string>
+             <string>View Extent in Map Canvas</string>
             </property>
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mLabelSettingsButton">
+         <property name="text">
+          <string>Label Settings…</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -600,7 +607,7 @@
             <item>
              <widget class="QPushButton" name="mGridPropertiesButton">
               <property name="text">
-               <string>Modify grid…</string>
+               <string>Modify Grid…</string>
               </property>
              </widget>
             </item>
@@ -793,9 +800,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -808,15 +816,19 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -828,11 +840,6 @@
    <class>QgsLayoutItemComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -863,6 +870,7 @@
   <tabstop>mYMaxDDBtn</tabstop>
   <tabstop>mSetToMapCanvasExtentButton</tabstop>
   <tabstop>mViewExtentInCanvasButton</tabstop>
+  <tabstop>mLabelSettingsButton</tabstop>
   <tabstop>mAtlasCheckBox</tabstop>
   <tabstop>mAtlasMarginRadio</tabstop>
   <tabstop>mAtlasMarginSpinBox</tabstop>
@@ -893,6 +901,11 @@
   <tabstop>mGridPropertiesButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

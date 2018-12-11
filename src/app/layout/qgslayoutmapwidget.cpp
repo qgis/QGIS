@@ -75,6 +75,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mOverviewCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mOverviewCheckBox_toggled );
   connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged );
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
+  connect( mLabelSettingsButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::showLabelSettings );
+
   setPanelTitle( tr( "Map Properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
 
@@ -342,6 +344,12 @@ void QgsLayoutMapWidget::overviewSymbolChanged()
   overview->setFrameSymbol( mOverviewFrameStyleButton->clonedSymbol<QgsFillSymbol>() );
   mMapItem->endCommand();
   mMapItem->update();
+}
+
+void QgsLayoutMapWidget::showLabelSettings()
+{
+  QgsLayoutMapLabelingWidget *w = new QgsLayoutMapLabelingWidget( mMapItem );
+  openPanel( w );
 }
 
 void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
@@ -1634,4 +1642,54 @@ void QgsLayoutMapWidget::mOverviewCenterCheckbox_toggled( bool state )
   overview->setCentered( state );
   mMapItem->update();
   mMapItem->endCommand();
+}
+
+//
+// QgsLayoutMapLabelingWidget
+//
+
+QgsLayoutMapLabelingWidget::QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map )
+  : QgsLayoutItemBaseWidget( nullptr, map )
+  , mMapItem( map )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Label Settings" ) );
+
+  mLabelBoundarySpinBox->setClearValue( 0 );
+  mLabelBoundarySpinBox->setShowClearButton( true );
+
+  mLabelBoundaryUnitsCombo->linkToWidget( mLabelBoundarySpinBox );
+  mLabelBoundaryUnitsCombo->setConverter( &mMapItem->layout()->renderContext().measurementConverter() );
+
+  mLabelBoundarySpinBox->setValue( mMapItem->labelMargin().length() );
+  mLabelBoundaryUnitsCombo->setUnit( mMapItem->labelMargin().units() );
+
+  connect( mLabelBoundaryUnitsCombo, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutMapLabelingWidget::labelMarginUnitsChanged );
+  connect( mLabelBoundarySpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapLabelingWidget::labelMarginChanged );
+
+  registerDataDefinedButton( mLabelMarginDDBtn, QgsLayoutObject::MapLabelMargin );
+
+  updateDataDefinedButton( mLabelMarginDDBtn );
+}
+
+void QgsLayoutMapLabelingWidget::labelMarginChanged( double val )
+{
+  if ( !mMapItem )
+    return;
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Label Margin" ), QgsLayoutItem::UndoMapLabelMargin );
+  mMapItem->setLabelMargin( QgsLayoutMeasurement( val, mLabelBoundaryUnitsCombo->unit() ) );
+  mMapItem->layout()->undoStack()->endCommand();
+  mMapItem->invalidateCache();
+}
+
+void QgsLayoutMapLabelingWidget::labelMarginUnitsChanged()
+{
+  if ( !mMapItem )
+    return;
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Label Margin" ), QgsLayoutItem::UndoMapLabelMargin );
+  mMapItem->setLabelMargin( QgsLayoutMeasurement( mLabelBoundarySpinBox->value(), mLabelBoundaryUnitsCombo->unit() ) );
+  mMapItem->layout()->undoStack()->endCommand();
+  mMapItem->invalidateCache();
 }
