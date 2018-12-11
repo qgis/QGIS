@@ -1086,32 +1086,48 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 #ifdef HAVE_OPENCL
 
-  // Setup OpenCL (GPU) widget
-  mGPUEnableCheckBox->setChecked( QgsOpenClUtils::enabled( ) );
-  if ( QgsOpenClUtils::available( ) )
-  {
-    mGPUEnableCheckBox->setEnabled( true );
+  // Setup OpenCL Acceleration widget
 
-    for ( const auto &dev : QgsOpenClUtils::devices( ) )
-    {
-      mOpenClDevicesCombo->addItem( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, dev ), QgsOpenClUtils::deviceId( dev ) );
-    }
-    // Info updater
-    std::function<void( int )> infoUpdater = [ = ]( int )
-    {
-      mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
-    };
-    connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
-    mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
-    infoUpdater( -1 );
-  }
-  else
+  connect( mGPUEnableCheckBox, &QCheckBox::toggled, [ = ]( bool checked )
   {
-    mGPUEnableCheckBox->setEnabled( false );
-    mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
-                                      "You may need to install additional libraries in order to enable OpenCL.<br>"
-                                      "Please check your logs for further details." ) );
-  }
+    if ( checked )
+    {
+      if ( QgsOpenClUtils::available( ) )
+      {
+        mOpenClContainerWidget->setEnabled( true );
+        mOpenClDevicesCombo->clear();
+
+        for ( const auto &dev : QgsOpenClUtils::devices( ) )
+        {
+          mOpenClDevicesCombo->addItem( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, dev ), QgsOpenClUtils::deviceId( dev ) );
+        }
+        // Info updater
+        std::function<void( int )> infoUpdater = [ = ]( int )
+        {
+          mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+        };
+        connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
+        mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
+        infoUpdater( -1 );
+        mOpenClContainerWidget->show();
+      }
+      else
+      {
+        mGPUInfoTextBrowser->setText( tr( "No OpenCL compatible devices were found on your system.<br>"
+                                          "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                          "Please check your logs for further details." ) );
+        mOpenClContainerWidget->setEnabled( false );
+        mGPUEnableCheckBox->setChecked( false );
+      }
+    }
+    else
+    {
+      mOpenClContainerWidget->setEnabled( false );
+    }
+  } );
+
+  mOpenClContainerWidget->setEnabled( false );
+  mGPUEnableCheckBox->setChecked( QgsOpenClUtils::enabled( ) );
 
 
 #else
