@@ -155,6 +155,12 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDateTime;
       break;
 
+    //not sure if needed, but for consistency
+    case QVariant::Map:
+      ogrType = OFTString;
+      ogrSubType = OFSTJSON;
+      break;
+
     default:
       return false;
   }
@@ -1523,6 +1529,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTString:
+          if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Does it need to be decoded or something DAVE? JSON Stuff" ), 3 );
+          }
           QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
                             .arg( qgisAttId )
                             .arg( attrVal.toString(),
@@ -1647,7 +1657,9 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::ByteArray:
       type = OFTBinary;
       break;
-
+    case QVariant::Map:
+      type = OFTString;
+      break;
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
       ignoreErrorOut = true;
@@ -1666,7 +1678,9 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Bool:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
       break;
-
+    case QVariant::Map:
+      OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
+      break;
     default:
       break;
   }
@@ -2094,8 +2108,19 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTString:
-            OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( it2->toString() ).constData() );
+          {
+            QString stringValue;
+            if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
+            {
+              stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toMap() ).toJson().data() );
+            }
+            else
+            {
+              stringValue = it2->toString();
+            }
+            OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;
+          }
 
           case OFTBinary:
           {
