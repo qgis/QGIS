@@ -28,8 +28,17 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsMapSettings,
                        QgsProject,
                        QgsMultiBandColorRenderer,
-                       QgsCoordinateReferenceSystem
-                       )
+                       QgsCoordinateReferenceSystem,
+                       QgsTextFormat,
+                       QgsFontUtils,
+                       QgsPalLayerSettings,
+                       QgsNullSymbolRenderer,
+                       QgsPoint,
+                       QgsFeature,
+                       QgsVectorLayerSimpleLabeling,
+                       QgsLabelingEngineSettings,
+                       QgsLayoutMeasurement,
+                       QgsUnitTypes)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -243,6 +252,79 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(map.requiresRasterization())
 
         self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+
+    def testLabelMargin(self):
+        """
+        Test rendering map item with a label margin set
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'X'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
+        vl.setRenderer(QgsNullSymbolRenderer())
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(15):
+            for y in range(15):
+                f.setGeometry(QgsPoint(x, y))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        p.setLabelingEngineSettings(engine_settings)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        checker = QgsLayoutChecker('composermap_label_nomargin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
+        checker = QgsLayoutChecker('composermap_label_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
+        checker = QgsLayoutChecker('composermap_label_cm_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        map.setMapRotation(45)
+        map.zoomToExtent(vl.extent())
+        map.setScale(map.scale() * 1.2)
+        checker = QgsLayoutChecker('composermap_rotated_label_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
 
 
 if __name__ == '__main__':

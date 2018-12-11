@@ -236,6 +236,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMapGridAnnotationFontColor, //!< Map frame annotation color
       UndoMapGridLineSymbol, //!< Grid line symbol
       UndoMapGridMarkerSymbol, //!< Grid marker symbol
+      UndoMapLabelMargin, //!< Margin for labels from edge of map
       UndoPictureRotation, //!< Picture rotation
       UndoPictureFillColor, //!< Picture fill color
       UndoPictureStrokeColor, //!< Picture stroke color
