@@ -518,17 +518,17 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * Sets a list of \a regions to avoid placing labels within.
-     * \since QGIS 3.6
      * \see labelBlockingRegions()
      * \see setLabelBoundaryGeometry()
+     * \since QGIS 3.6
      */
     void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions ) { mLabelBlockingRegions = regions; }
 
     /**
      * Returns the list of regions to avoid placing labels within.
-     * \since QGIS 3.6
      * \see setLabelBlockingRegions()
      * \see labelBoundaryGeometry()
+     * \since QGIS 3.6
      */
     QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 

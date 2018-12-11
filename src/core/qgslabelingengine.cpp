@@ -248,7 +248,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   // get map label boundary geometry - if one hasn't been explicitly set, we use the whole of the map's visible polygon
   QgsGeometry mapBoundaryGeom = !mMapSettings.labelBoundaryGeometry().isNull() ? mMapSettings.labelBoundaryGeometry() : QgsGeometry::fromQPolygonF( visiblePoly );
 
-  // label blocking regions work by "chopping away" those regions from the permissible labelling area
+  // label blocking regions work by "chopping away" those regions from the permissible labeling area
   const QList< QgsLabelBlockingRegion > blockingRegions = mMapSettings.labelBlockingRegions();
   for ( const QgsLabelBlockingRegion &region : blockingRegions )
   {
