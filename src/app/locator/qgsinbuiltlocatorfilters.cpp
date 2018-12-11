@@ -28,6 +28,8 @@
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -364,13 +366,14 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
                                    string ) );
     req.setLimit( 30 );
 
-    PreparedLayer preparedLayer;
-    preparedLayer.expression = expression;
-    preparedLayer.context = context;
-    preparedLayer.layerId = layer->id();
-    preparedLayer.layerName = layer->name();
-    preparedLayer.iterator =  layer->getFeatures( req );
-    preparedLayer.layerIcon = QgsMapLayerModel::iconForLayer( layer );
+    PreparedLayer *preparedLayer = new PreparedLayer();
+    preparedLayer->expression = expression;
+    preparedLayer->context = context;
+    preparedLayer->layerId = layer->id();
+    preparedLayer->layerName = layer->name();
+    preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+    preparedLayer->request = req;
+    preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
   }
@@ -383,23 +386,24 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   QgsFeature f;
 
   // we cannot used const loop since iterator::nextFeature is not const
-  for ( PreparedLayer preparedLayer : mPreparedLayers )
+  for ( auto preparedLayer : mPreparedLayers )
   {
     foundInCurrentLayer = 0;
-    while ( preparedLayer.iterator.nextFeature( f ) )
+    QgsFeatureIterator it = preparedLayer->featureSource->getFeatures( preparedLayer->request );
+    while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return;
 
       QgsLocatorResult result;
-      result.group = preparedLayer.layerName;
+      result.group = preparedLayer->layerName;
 
-      preparedLayer.context.setFeature( f );
+      preparedLayer->context.setFeature( f );
 
-      result.displayString = preparedLayer.expression.evaluate( &( preparedLayer.context ) ).toString();
+      result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = QVariantList() << f.id() << preparedLayer.layerId;
-      result.icon = preparedLayer.layerIcon;
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
 
       result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
