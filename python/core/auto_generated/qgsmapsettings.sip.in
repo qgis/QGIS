@@ -531,6 +531,34 @@ Returns the global configuration of the labeling engine.
 .. versionadded:: 3.0
 %End
 
+    QgsGeometry labelBoundaryGeometry() const;
+%Docstring
+Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
+placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+the map's visiblePolygon().
+
+The geometry is specified using the map's destinationCrs().
+
+.. seealso:: :py:func:`setLabelBoundaryGeometry`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+%Docstring
+Sets the label ``boundary`` geometry, which restricts where in the rendered map labels are permitted to be
+placed.
+
+A null ``boundary`` geometry (the default) indicates that labels can be placed anywhere within
+the map's visiblePolygon().
+
+The geometry is specified using the map's destinationCrs().
+
+.. seealso:: :py:func:`labelBoundaryGeometry`
+
+.. versionadded:: 3.6
+%End
+
   protected:
 
 
