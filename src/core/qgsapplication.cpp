@@ -728,22 +728,22 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   QString path = themes.value( themeName );
   QString stylesheetname = path + "/style.qss";
-  QString autostylesheet = stylesheetname + ".auto";
 
   QFile file( stylesheetname );
   QFile variablesfile( path + "/variables.qss" );
-  QFile fileout( autostylesheet );
 
   QFileInfo variableInfo( variablesfile );
 
-  if ( variableInfo.exists() && variablesfile.open( QIODevice::ReadOnly ) )
+  if ( !file.open( QIODevice::ReadOnly ) || ( variableInfo.exists() && !variablesfile.open( QIODevice::ReadOnly ) ) )
   {
-    if ( !file.open( QIODevice::ReadOnly ) || !fileout.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
-    {
-      return;
-    }
+    return;
+  }
 
-    QString styledata = file.readAll();
+  QString styledata = file.readAll();
+  styledata.replace( QStringLiteral( "@theme_path" ), path );
+
+  if ( variableInfo.exists() )
+  {
     QTextStream in( &variablesfile );
     while ( !in.atEnd() )
     {
@@ -758,16 +758,10 @@ void QgsApplication::setUITheme( const QString &themeName )
       }
     }
     variablesfile.close();
-    QTextStream out( &fileout );
-    out << styledata;
-    fileout.close();
-    file.close();
-    stylesheetname = autostylesheet;
   }
+  file.close();
 
-  QString styleSheet = QStringLiteral( "file:///" );
-  styleSheet.append( stylesheetname );
-  qApp->setStyleSheet( styleSheet );
+  qApp->setStyleSheet( styledata );
   setThemeName( themeName );
 }
 
