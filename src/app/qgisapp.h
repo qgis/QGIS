@@ -105,6 +105,7 @@ class QgsGeometryValidationDock;
 class QgsGeometryValidationModel;
 class QgsUserProfileManagerWidgetFactory;
 class Qgs3DMapCanvasDockWidget;
+class QgsHandleBadLayersHandler;
 
 class QDomDocument;
 class QNetworkReply;
@@ -2310,6 +2311,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
+    QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
 
     friend class TestQgisAppPython;
     friend class QgisAppInterface;

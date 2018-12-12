@@ -57,7 +57,12 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
       Qgis::Warning, QgisApp::instance()->messageTimeout() );
 
   if ( dialog->layerCount() > 0 )
-    dialog->exec();
+  {
+    if ( dialog->exec() == dialog->Accepted )
+    {
+      emit layersChanged();
+    }
+  }
 
   delete dialog;
   QApplication::restoreOverrideCursor();
