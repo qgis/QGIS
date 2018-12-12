@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QToolButton>
+#include <QClipboard>
 
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
@@ -25,8 +27,8 @@
 #include "qgsmaplayermodel.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
-#include <QToolButton>
-#include <QClipboard>
+#include "qgsvectorlayerfeatureiterator.h"
+
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -342,6 +344,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   if ( string.length() < 3 && !context.usingPrefix )
     return;
 
+  mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
@@ -359,17 +362,17 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
-                             .arg( layer->displayExpression(),
-                                   string ) );
+                             .arg( layer->displayExpression(), string ) );
     req.setLimit( 30 );
 
-    PreparedLayer preparedLayer;
-    preparedLayer.expression = expression;
-    preparedLayer.context = context;
-    preparedLayer.layerId = layer->id();
-    preparedLayer.layerName = layer->name();
-    preparedLayer.iterator =  layer->getFeatures( req );
-    preparedLayer.layerIcon = QgsMapLayerModel::iconForLayer( layer );
+    std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
+    preparedLayer->expression = expression;
+    preparedLayer->context = context;
+    preparedLayer->layerId = layer->id();
+    preparedLayer->layerName = layer->name();
+    preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+    preparedLayer->request = req;
+    preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
   }
@@ -382,23 +385,24 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   QgsFeature f;
 
   // we cannot used const loop since iterator::nextFeature is not const
-  for ( PreparedLayer preparedLayer : mPreparedLayers )
+  for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
-    while ( preparedLayer.iterator.nextFeature( f ) )
+    QgsFeatureIterator it = preparedLayer->featureSource->getFeatures( preparedLayer->request );
+    while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return;
 
       QgsLocatorResult result;
-      result.group = preparedLayer.layerName;
+      result.group = preparedLayer->layerName;
 
-      preparedLayer.context.setFeature( f );
+      preparedLayer->context.setFeature( f );
 
-      result.displayString = preparedLayer.expression.evaluate( &( preparedLayer.context ) ).toString();
+      result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = QVariantList() << f.id() << preparedLayer.layerId;
-      result.icon = preparedLayer.layerIcon;
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
       emit resultFetched( result );
 
