@@ -30,6 +30,7 @@
 
 class QgsProcessingContext;
 class QgsRasterLayer;
+class QgsMeshLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsProcessingFeatureSource;
@@ -228,6 +229,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
       sipType = sipType_QgsProcessingParameterRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshLayer;
     else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
       sipType = sipType_QgsProcessingParameterEnum;
     else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
@@ -804,6 +807,29 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a mesh layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.6
+     */
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a mesh layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.6
+     */
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
 
     /**
      * Evaluates the parameter with matching \a definition to a coordinate reference system.
@@ -1887,6 +1913,39 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
      */
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+};
+
+/**
+ * \class QgsProcessingParameterMeshLayer
+ * \ingroup core
+ * A mesh layer parameter for processing algorithms.
+  * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterMeshLayer.
+     */
+    QgsProcessingParameterMeshLayer( const QString &name,
+                                     const QString &description = QString(),
+                                     const QVariant &defaultValue = QVariant(),
+                                     bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "mesh" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMeshLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 };
 
 /**

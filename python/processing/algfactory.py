@@ -54,6 +54,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterMeshLayer,
                        QgsProcessingOutputString,
                        QgsProcessingOutputFile,
                        QgsProcessingOutputFolder,
@@ -299,6 +300,7 @@ class ProcessingAlgFactory():
     MULTILAYER = "MULTILAYER",
     RASTER_LAYER = "RASTER_LAYER",
     VECTOR_LAYER = "VECTOR_LAYER",
+    MESH_LAYER = "MESH_LAYER",
     FILE_DEST = "FILE_DEST",
     FOLDER_DEST = "FOLDER_DEST",
     RASTER_LAYER_DEST = "RASTER_LAYER_DEST",
@@ -439,6 +441,7 @@ class ProcessingAlgFactory():
             alg.RANGE: QgsProcessingParameterRange
             alg.VECTOR_LAYER: QgsProcessingParameterVectorLayer
             alg.AUTH_CFG: QgsProcessingParameterAuthConfig
+            alg.MESH_LAYER: QgsProcessingParameterMeshLayer
 
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
@@ -485,6 +488,7 @@ input_type_mapping = {
     ProcessingAlgFactory.RANGE: QgsProcessingParameterRange,
     ProcessingAlgFactory.VECTOR_LAYER: QgsProcessingParameterVectorLayer,
     ProcessingAlgFactory.AUTH_CFG: QgsProcessingParameterAuthConfig,
+    ProcessingAlgFactory.MESH_LAYER: QgsProcessingParameterMeshLayer,
 }
 
 output_type_mapping = {

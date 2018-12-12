@@ -27,6 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsmeshlayer.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -609,6 +610,11 @@ QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parame
 QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, context );
+}
+
+QgsMeshLayer *QgsProcessingAlgorithm::parameterAsMeshLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsMeshLayer( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

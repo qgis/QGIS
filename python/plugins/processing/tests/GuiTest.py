@@ -237,6 +237,9 @@ class WrappersTest(unittest.TestCase):
     def testMapLayer(self):
         self.checkConstructWrapper(QgsProcessingParameterMapLayer('test'), MapLayerWidgetWrapper)
 
+    def testMeshLayer(self):
+        self.checkConstructWrapper(QgsProcessingParameterMeshLayer('test'), MeshWidgetWrapper)
+
     def testDistance(self):
         self.checkConstructWrapper(QgsProcessingParameterDistance('test'), DistanceWidgetWrapper)
 
