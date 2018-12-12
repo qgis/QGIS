@@ -363,11 +363,10 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
-                             .arg( layer->displayExpression(),
-                                   string ) );
+                             .arg( layer->displayExpression(), string ) );
     req.setLimit( 30 );
 
-    PreparedLayer *preparedLayer = new PreparedLayer();
+    std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
     preparedLayer->expression = expression;
     preparedLayer->context = context;
     preparedLayer->layerId = layer->id();
@@ -376,7 +375,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     preparedLayer->request = req;
     preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
-    mPreparedLayers.append( std::shared_ptr<PreparedLayer>( preparedLayer ) );
+    mPreparedLayers.append( preparedLayer );
   }
 }
 
