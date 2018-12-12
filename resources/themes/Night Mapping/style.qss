@@ -60,7 +60,7 @@ QAbstractSpinBox {
      subcontrol-position: top right;
 
      width: 16px;
-    image: url(icons/up_arrow.png) 1;
+    image: url(@theme_path/icons/up_arrow.png) 1;
  }
 
  QAbstractSpinBox::down-button {
@@ -68,7 +68,7 @@ QAbstractSpinBox {
      subcontrol-position: bottom right;
 
      width: 16px;
-    image: url(icons/down_arrow.png);
+    image: url(@theme_path/icons/down_arrow.png);
  }
 
 
@@ -159,7 +159,7 @@ QToolButton::hover, QToolButton::menu-button::hover
 }
 QToolButton::menu-arrow 
 {
-    image: url(icons/down_arrow.png);
+    image: url(@theme_path/icons/down_arrow.png);
 }
 QToolBar QToolButton, QToolButton::menu-button
 {
@@ -219,7 +219,7 @@ QComboBox::drop-down {
 
 QComboBox::down-arrow
 {
-    image: url(icons/down_arrow.png);
+    image: url(@theme_path/icons/down_arrow.png);
 }
 
 
@@ -298,7 +298,7 @@ QHeaderView::section
 }
 QDockWidget
 {
-  	titlebar-close-icon: url(icons/cross.svg);
+  	titlebar-close-icon: url(@theme_path/icons/cross.svg);
 }
 
 QDockWidget::separator
@@ -566,13 +566,13 @@ QTreeView::item:selected, QTreeView::branch:selected {
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
     border-image: none;
-    image: url(icons/caret-right_ffffff_14.png);
+    image: url(@theme_path/icons/caret-right_ffffff_14.png);
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings {
      border-image: none;
-     image: url(icons/caret-down_ffffff_14.png);
+     image: url(@theme_path/icons/caret-down_ffffff_14.png);
 }
 
 QgsLayerTreeView
@@ -594,7 +594,7 @@ QTreeView#viewGraduated::indicator:unchecked,
 QTreeView#viewCategories::indicator:unchecked,
 QTreeView#viewRules::indicator:unchecked 
 {
-    image: url(icons/eye-blocked.svg);
+    image: url(@theme_path/icons/eye-blocked.svg);
 }
 
 QgsLayerTreeView::indicator:checked,
@@ -602,7 +602,7 @@ QTreeView#viewGraduated::indicator:checked,
 QTreeView#viewCategories::indicator:checked, 
 QTreeView#viewRules::indicator:checked 
 {
-    image: url(icons/eye.svg);
+    image: url(@theme_path/icons/eye.svg);
 }
 
 /* ==================================================================================== */
