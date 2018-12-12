@@ -65,6 +65,7 @@
 #include <QPixmap>
 #include <QThreadPool>
 #include <QLocale>
+#include <QStyle>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
