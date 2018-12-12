@@ -34,6 +34,8 @@ void QgsReadWriteLocker::changeMode( QgsReadWriteLocker::Mode mode )
 
   unlock();
 
+  mMode = mode;
+
   if ( mMode == Read )
     mLock.lockForRead();
   else if ( mMode == Write )
