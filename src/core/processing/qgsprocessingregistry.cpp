@@ -24,6 +24,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
+  addParameterType( new QgsProcessingParameterTypeMeshLayer() );
   addParameterType( new QgsProcessingParameterTypeMapLayer() );
   addParameterType( new QgsProcessingParameterTypeBoolean() );
   addParameterType( new QgsProcessingParameterTypeExpression() );

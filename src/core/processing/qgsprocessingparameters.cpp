@@ -29,6 +29,7 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
 #include <functional>
 
@@ -569,6 +570,16 @@ QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProces
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
   return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, value, context ) );
+}
+
+QgsMeshLayer *QgsProcessingParameters::parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, parameters, context ) );
+}
+
+QgsMeshLayer *QgsProcessingParameters::parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, value, context ) );
 }
 
 QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -1485,6 +1496,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterFolderDestination( name ) );
   else if ( type == QgsProcessingParameterBand::typeName() )
     def.reset( new QgsProcessingParameterBand( name ) );
+  else if ( type == QgsProcessingParameterMeshLayer::typeName() )
+    def.reset( new QgsProcessingParameterMeshLayer( name ) );
   else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
@@ -1567,6 +1580,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterFolderDestination::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "band" ) )
     return QgsProcessingParameterBand::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "mesh" ) )
+    return QgsProcessingParameterMeshLayer::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -3234,6 +3249,79 @@ QgsProcessingParameterVectorLayer *QgsProcessingParameterVectorLayer::fromScript
   return new QgsProcessingParameterVectorLayer( name, description, QList< int>(),  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
+QgsProcessingParameterMeshLayer::QgsProcessingParameterMeshLayer( const QString &name,
+    const QString &description,
+    const QVariant &defaultValue,
+    bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterMeshLayer::clone() const
+{
+  return new QgsProcessingParameterMeshLayer( *this );
+}
+
+bool QgsProcessingParameterMeshLayer::checkValueIsAcceptable( const QVariant &v, QgsProcessingContext *context ) const
+{
+  if ( !v.isValid() )
+    return mFlags & FlagOptional;
+
+  QVariant var = v;
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    QgsProperty p = var.value< QgsProperty >();
+    if ( p.propertyType() == QgsProperty::StaticProperty )
+    {
+      var = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  if ( qobject_cast< QgsMeshLayer * >( qvariant_cast<QObject *>( var ) ) )
+    return true;
+
+  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context, true, QgsProcessingUtils::Mesh ) )
+    return true;
+
+  return false;
+}
+
+QString QgsProcessingParameterMeshLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
+{
+  if ( !val.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( val.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), val );
+  QgsMeshLayer *layer = QgsProcessingParameters::parameterAsMeshLayer( this, p, context );
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+         : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QgsProcessingParameterMeshLayer *QgsProcessingParameterMeshLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterMeshLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
+}
+
 QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, DataType type, bool allowMultiple, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentLayerParameterName( parentLayerParameterName )
@@ -3242,6 +3330,7 @@ QgsProcessingParameterField::QgsProcessingParameterField( const QString &name, c
 {
 
 }
+
 
 QgsProcessingParameterDefinition *QgsProcessingParameterField::clone() const
 {
@@ -3825,6 +3914,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case QgsProcessing::TypeRaster:
     case QgsProcessing::TypeFile:
     case QgsProcessing::TypeVector:
+    case QgsProcessing::TypeMesh:
       return false;
   }
   return true;
@@ -4391,6 +4481,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case QgsProcessing::TypeRaster:
     case QgsProcessing::TypeFile:
     case QgsProcessing::TypeVector:
+    case QgsProcessing::TypeMesh:
       return false;
   }
   return true;

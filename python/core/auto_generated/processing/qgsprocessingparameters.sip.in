@@ -155,6 +155,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
       sipType = sipType_QgsProcessingParameterRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshLayer;
     else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
       sipType = sipType_QgsProcessingParameterEnum;
     else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
@@ -744,6 +746,29 @@ need to handle deletion of the returned layer.
 
 .. versionadded:: 3.4
 %End
+
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a mesh layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.6
+%End
+
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a mesh layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.6
+%End
+
 
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
@@ -1953,6 +1978,45 @@ Returns the type name for the parameter class.
 Creates a new parameter using the definition from a script code.
 %End
 
+};
+
+class QgsProcessingParameterMeshLayer : QgsProcessingParameterDefinition
+{
+%Docstring
+A mesh layer parameter for processing algorithms.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterMeshLayer( const QString &name,
+                                     const QString &description = QString(),
+                                     const QVariant &defaultValue = QVariant(),
+                                     bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterMeshLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    static QgsProcessingParameterMeshLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
 };
 
 class QgsProcessingParameterField : QgsProcessingParameterDefinition

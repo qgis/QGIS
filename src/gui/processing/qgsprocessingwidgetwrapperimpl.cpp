@@ -138,6 +138,7 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterMapLayer::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterExpression::typeName();
 }
 
@@ -265,6 +266,7 @@ QStringList QgsProcessingCrsWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterFeatureSource::typeName();
 }
 

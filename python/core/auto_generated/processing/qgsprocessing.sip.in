@@ -36,9 +36,8 @@ and parameters.
       TypeRaster,
       TypeFile,
       TypeVector,
+      TypeMesh
     };
-
-
 
 };
 

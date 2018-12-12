@@ -50,7 +50,8 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       VectorLayer = NoGeometry | HasGeometry,
       PluginLayer = 32,
       WritableLayer = 64,
-      All = RasterLayer | VectorLayer | PluginLayer
+      MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )

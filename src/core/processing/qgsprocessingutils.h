@@ -27,6 +27,7 @@
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 
+class QgsMeshLayer;
 class QgsProject;
 class QgsProcessingContext;
 class QgsMapLayerStore;
@@ -53,6 +54,7 @@ class CORE_EXPORT QgsProcessingUtils
      * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
      * value.
      * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -69,11 +71,27 @@ class CORE_EXPORT QgsProcessingUtils
      * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
      * value.
      * \see compatibleRasterLayers()
+     * \see compatibleMeshLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
         const QList< int > &sourceTypes = QList< int >(),
         bool sort = true );
+
+    /**
+     * Returns a list of mesh layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.6
+     */
+    static QList<QgsMeshLayer *> compatibleMeshLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
@@ -95,6 +113,7 @@ class CORE_EXPORT QgsProcessingUtils
       UnknownType, //!< Unknown layer type
       Vector, //!< Vector layer type
       Raster, //!< Raster layer type
+      Mesh, //!< Mesh layer type  \since QGIS 3.6
     };
 
     /**
@@ -263,8 +282,8 @@ class CORE_EXPORT QgsProcessingUtils
     static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
 
   private:
-
     static bool canUseLayer( const QgsRasterLayer *layer );
+    static bool canUseLayer( const QgsMeshLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 

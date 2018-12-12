@@ -61,6 +61,7 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProcessingParameterExpression,
     QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterMeshLayer,
     QgsProcessingParameterField,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterMapLayer,
@@ -331,6 +332,7 @@ class CrsWidgetWrapper(WidgetWrapper):
                 self.combo.addItem(self.dialog.resolveValueDescription(crs), crs)
             layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer,
                                                            QgsProcessingParameterVectorLayer,
+                                                           QgsProcessingParameterMeshLayer,
                                                            QgsProcessingParameterFeatureSource],
                                                           [QgsProcessingOutputVectorLayer,
                                                            QgsProcessingOutputRasterLayer,
@@ -402,7 +404,8 @@ class ExtentWidgetWrapper(WidgetWrapper):
                 widget.addItem(self.USE_MIN_COVERING_EXTENT, None)
             layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterFeatureSource,
                                                            QgsProcessingParameterRasterLayer,
-                                                           QgsProcessingParameterVectorLayer],
+                                                           QgsProcessingParameterVectorLayer,
+                                                           QgsProcessingParameterMeshLayer],
                                                           [QgsProcessingOutputRasterLayer,
                                                            QgsProcessingOutputVectorLayer,
                                                            QgsProcessingOutputMapLayer])
@@ -638,10 +641,15 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 [QgsProcessingOutputRasterLayer,
                  QgsProcessingOutputMapLayer,
                  QgsProcessingOutputMultipleLayers])
+        elif self.parameterDefinition().layerType() == QgsProcessing.TypeMesh:
+            options = self.dialog.getAvailableValuesOfType(
+                (QgsProcessingParameterMeshLayer, QgsProcessingParameterMultipleLayers),
+                [])
         elif self.parameterDefinition().layerType() == QgsProcessing.TypeMapLayer:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer,
                                                             QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
+                                                            QgsProcessingParameterMeshLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            [QgsProcessingOutputRasterLayer,
                                                             QgsProcessingOutputVectorLayer,
@@ -659,11 +667,14 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
             else:
                 if self.parameterDefinition().layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                elif self.parameterDefinition().layerType() == QgsProcessing.TypeMesh:
+                    options = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance(), False)
                 elif self.parameterDefinition().layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 elif self.parameterDefinition().layerType() == QgsProcessing.TypeMapLayer:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                     options.extend(QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False))
+                    options.extend(QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance(), False))
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.parameterDefinition().layerType()],
                                                                         False)
@@ -681,11 +692,14 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
         if self.parameterDefinition().layerType() != QgsProcessing.TypeFile:
             if self.parameterDefinition().layerType() == QgsProcessing.TypeRaster:
                 options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+            elif self.parameterDefinition().layerType() == QgsProcessing.TypeMesh:
+                options = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance(), False)
             elif self.parameterDefinition().layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
             elif self.parameterDefinition().layerType() == QgsProcessing.TypeMapLayer:
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 options.extend(QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False))
+                options.extend(QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance(), False))
             else:
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.parameterDefinition().layerType()],
                                                                     False)
@@ -724,11 +738,14 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
             else:
                 if self.parameterDefinition().layerType() == QgsProcessing.TypeRaster:
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                elif self.parameterDefinition().layerType() == QgsProcessing.TypeMesh:
+                    options = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance(), False)
                 elif self.parameterDefinition().layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 elif self.parameterDefinition().layerType() == QgsProcessing.TypeMapLayer:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                     options.extend(QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False))
+                    options.extend(QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance(), False))
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.parameterDefinition().layerType()],
                                                                         False)
@@ -896,7 +913,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
     def getAvailableLayers(self):
         return self.dialog.getAvailableValuesOfType(
-            [QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer, QgsProcessingParameterMapLayer, QgsProcessingParameterString],
+            [QgsProcessingParameterRasterLayer, QgsProcessingParameterMeshLayer, QgsProcessingParameterVectorLayer, QgsProcessingParameterMapLayer, QgsProcessingParameterString],
             [QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer, QgsProcessingOutputMapLayer, QgsProcessingOutputString, QgsProcessingOutputFile])
 
     def selectFile(self):
@@ -983,6 +1000,22 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
                 self.combo.setCurrentIndex(self.combo.findText(filename))
             else:
                 self.combo.setEditText(filename)
+            self.widgetValueHasChanged.emit(self)
+
+
+class MeshWidgetWrapper(MapLayerWidgetWrapper):
+
+    def getAvailableLayers(self):
+        return self.dialog.getAvailableValuesOfType((QgsProcessingParameterMeshLayer, QgsProcessingParameterString),
+                                                    ())
+
+    def setComboBoxFilters(self, combo):
+        combo.setFilters(QgsMapLayerProxyModel.MeshLayer)
+
+    def selectFile(self):
+        filename, selected_filter = self.getFileName(self.combo.currentText())
+        if filename:
+            self.combo.setEditText(filename)
             self.widgetValueHasChanged.emit(self)
 
 
@@ -1856,6 +1889,8 @@ class WidgetWrapperFactory:
             wrapper = RangeWidgetWrapper
         elif param.type() == 'matrix':
             wrapper = FixedTableWidgetWrapper
+        elif param.type() == 'mesh':
+            wrapper = MeshWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)
