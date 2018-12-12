@@ -57,7 +57,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
 
   mValueGroupBox->hide();
-  mLoadGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel();
@@ -93,6 +92,19 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEditValues->setPlaceholderText( tr( "Search…" ) );
 
   editorSplit->setSizes( QList<int>( {175, 300} ) );
+
+  functionsplit->setCollapsible( 0, false );
+  connect( mShowHelpButton, &QPushButton::clicked, this, [ = ]()
+  {
+    functionsplit->setSizes( QList<int>( {mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(),
+                                          mHelpAndValuesWidget->minimumWidth()} ) );
+    mShowHelpButton->setEnabled( false );
+  } );
+  connect( functionsplit, &QSplitter::splitterMoved, this, [ = ]( int, int )
+  {
+    mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
+  } );
+
 
   QgsSettings settings;
   splitter->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
@@ -228,8 +240,9 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     mValuesModel->setStringList( values );
   }
 
-  mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  bool isField = mLayer && item->getItemType() == QgsExpressionItem::Field;
+  mValueGroupBox->setVisible( isField );
+  mShowHelpButton->setText( isField ? tr( "Show Values" ) : tr( "Show Help" ) );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -1094,7 +1107,7 @@ void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::Keyb
   if ( state & Qt::ControlModifier )
   {
     int position = txtExpressionString->positionFromLineIndex( line, index );
-    long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, ( long int )position );
+    long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, static_cast<long int>( position ) );
     QgsExpressionFunction *func = QgsExpression::Functions()[fncIndex];
     QString help = getFunctionHelp( func );
     txtHelpText->setText( help );
