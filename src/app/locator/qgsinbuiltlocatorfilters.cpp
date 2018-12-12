@@ -345,6 +345,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   if ( string.length() < 3 && !context.usingPrefix )
     return;
 
+  mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
@@ -375,7 +376,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     preparedLayer->request = req;
     preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
-    mPreparedLayers.append( preparedLayer );
+    mPreparedLayers.append( std::shared_ptr<PreparedLayer>( preparedLayer ) );
   }
 }
 

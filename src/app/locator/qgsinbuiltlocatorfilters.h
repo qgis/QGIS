@@ -154,7 +154,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
   private:
     int mMaxResultsPerLayer = 6;
     int mMaxTotalResults = 12;
-    QList<PreparedLayer *> mPreparedLayers;
+    QList<std::shared_ptr<PreparedLayer>> mPreparedLayers;
 
 
 };
