@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>16</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -695,33 +695,12 @@
                      <number>0</number>
                     </property>
                     <item row="2" column="0">
-                     <widget class="QCheckBox" name="cbxCheckVersion">
-                      <property name="text">
-                       <string>Check QGIS version at startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
-                      <property name="text">
-                       <string>Use native color chooser dialogs</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
                      <widget class="QCheckBox" name="mDataSourceManagerNonModal">
                       <property name="toolTip">
                        <string>A modeless dialog allows you to interact with QGIS main window and dialogs.</string>
                       </property>
                       <property name="text">
                        <string>Modeless data source manager dialog</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
-                      <property name="text">
-                       <string>QGIS-styled group boxes</string>
                       </property>
                      </widget>
                     </item>
@@ -737,6 +716,33 @@
                        <string>Hide splash screen at startup</string>
                       </property>
                      </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QCheckBox" name="cbxCheckVersion">
+                      <property name="text">
+                       <string>Check QGIS version at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
+                      <property name="text">
+                       <string>Use native color chooser dialogs</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <spacer name="horizontalSpacer_2">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -5575,7 +5581,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cbxHideSplash</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mDataSourceManagerNonModal</tabstop>
-  <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>cbxCheckVersion</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
@@ -5761,6 +5766,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
+  <tabstop>mGPUEnableCheckBox</tabstop>
+  <tabstop>mOpenClDevicesCombo</tabstop>
+  <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

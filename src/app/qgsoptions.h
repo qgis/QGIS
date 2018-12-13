@@ -115,9 +115,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Slot to select custom font family choice for app
     void mFontFamilyComboBox_currentFontChanged( const QFont &font );
 
-    //! Slot to set whether to use custom group boxes
-    void useCustomGroupBox( bool chkd );
-
     void mProxyTypeComboBox_currentIndexChanged( int idx );
 
     //! Add a new URL to exclude from Proxy

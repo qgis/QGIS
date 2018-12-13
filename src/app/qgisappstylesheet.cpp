@@ -78,9 +78,6 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
-  bool gbxCustom = ( mMacStyle );
-  opts.insert( QStringLiteral( "groupBoxCustom" ), settings.value( QStringLiteral( "groupBoxCustom" ), QVariant( gbxCustom ) ) );
-
   opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "toolbarSpacing" ), QString() ) );
 
   settings.endGroup(); // "qgis/stylesheet"
@@ -123,42 +120,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   }
 #endif
 
-  // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
-  bool gbxCustom = opts.value( QStringLiteral( "groupBoxCustom" ) ).toBool();
-  QgsDebugMsg( QStringLiteral( "groupBoxCustom: %1" ).arg( gbxCustom ) );
-
-  ss += QLatin1String( "QGroupBox{" );
-  // doesn't work for QGroupBox::title
-  ss += QStringLiteral( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
-  ss += QLatin1String( "font-weight: bold;" );
-
-  if ( gbxCustom )
-  {
-    ss += QStringLiteral( "background-color: rgba(0,0,0,%1%);" )
-          .arg( mWinOS && mStyle.startsWith( QLatin1String( "windows" ) ) ? 0 : 3 );
-    ss += QLatin1String( "border: 1px solid rgba(0,0,0,20%);" );
-    ss += QLatin1String( "border-radius: 5px;" );
-    ss += QLatin1String( "margin-top: 2.5ex;" );
-    ss += QStringLiteral( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
-  }
-  ss += QLatin1String( "} " );
-  if ( gbxCustom )
-  {
-    ss += QLatin1String( "QGroupBox:flat{" );
-    ss += QLatin1String( "background-color: rgba(0,0,0,0);" );
-    ss += QLatin1String( "border: rgba(0,0,0,0);" );
-    ss += QLatin1String( "} " );
-
-    ss += QLatin1String( "QGroupBox::title{" );
-    ss += QLatin1String( "subcontrol-origin: margin;" );
-    ss += QLatin1String( "subcontrol-position: top left;" );
-    ss += QLatin1String( "margin-left: 6px;" );
-    if ( !( mWinOS && mStyle.startsWith( QLatin1String( "windows" ) ) ) && !mOxyStyle )
-    {
-      ss += QLatin1String( "background-color: rgba(0,0,0,0);" );
-    }
-    ss += QLatin1String( "} " );
-  }
+  ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
 
   //sidebar style
   QString style = "QListWidget#mOptionsListWidget {"
