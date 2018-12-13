@@ -95,15 +95,22 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, forceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  QWaitCondition waitCondition;
+  // QWaitCondition based producer/consumer problem
+  // taken from http://doc.qt.io/qt-5/qtcore-threads-waitconditions-example.html
+  // in this case the buffer has size 1 and potentially contains authentication requests
+  // from the producer (downloader thread), which the consumer (main thread) needs to
+  // handle
+  QWaitCondition authRequestBufferNotEmpty;
+  QWaitCondition authRequestBufferNotFull;
   QMutex waitConditionMutex;
+
   bool threadFinished = false;
   bool success = false;
 
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
+  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &authRequestBufferNotFull, &threadFinished, &success ]()
   {
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -130,7 +137,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       mErrorCode = NetworkError;
       mErrorMessage = errorMessageFailedAuth();
       QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
-      waitCondition.wakeAll();
+      authRequestBufferNotEmpty.wakeAll();
       success = false;
     }
     else
@@ -141,14 +148,16 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       connect( mReply, &QNetworkReply::finished, this, &QgsBlockingNetworkRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
 
-      auto resumeMainThread = [&waitConditionMutex, &waitCondition]()
+      auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty, &authRequestBufferNotFull ]()
       {
+        // when this method is called we have "produced" a single authentication request -- so the buffer is now full
+        // and it's time for the "consumer" (main thread) to do its part
         waitConditionMutex.lock();
-        waitCondition.wakeAll();
+        authRequestBufferNotFull.wait( &waitConditionMutex );
         waitConditionMutex.unlock();
 
         waitConditionMutex.lock();
-        waitCondition.wait( &waitConditionMutex );
+        authRequestBufferNotEmpty.wakeAll();
         waitConditionMutex.unlock();
       };
 
@@ -164,7 +173,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
     }
     waitConditionMutex.lock();
     threadFinished = true;
-    waitCondition.wakeAll();
+    authRequestBufferNotEmpty.wakeAll();
     waitConditionMutex.unlock();
   };
 
@@ -181,10 +190,10 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
         waitConditionMutex.unlock();
         break;
       }
-      waitCondition.wait( &waitConditionMutex );
+      authRequestBufferNotEmpty.wait( &waitConditionMutex );
 
       // If the downloader thread wakes us (the main thread) up and is not yet finished
-      // he needs the authentication to run.
+      // then it has "produced" an authentication request which we need to now "consume".
       // The processEvents() call gives the auth manager the chance to show a dialog and
       // once done with that, we can wake the downloaderThread again and continue the download.
       if ( !threadFinished )
@@ -193,7 +202,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
 
         QgsApplication::instance()->processEvents();
         waitConditionMutex.lock();
-        waitCondition.wakeAll();
+        authRequestBufferNotFull.wakeAll();
         waitConditionMutex.unlock();
       }
       else
