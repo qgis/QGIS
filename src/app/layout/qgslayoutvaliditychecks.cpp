@@ -19,12 +19,23 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
 
-QList<QgsValidityCheckResult> QgsLayoutMapCrsValidityCheck::runCheck( const QgsValidityCheckContext *context, QgsFeedback * ) const
+QgsLayoutMapCrsValidityCheck *QgsLayoutMapCrsValidityCheck::create() const
 {
-  QList<QgsValidityCheckResult> results;
-  const QgsLayoutValidityCheckContext *layoutContext = dynamic_cast< const QgsLayoutValidityCheckContext * >( context );
+  return new QgsLayoutMapCrsValidityCheck();
+}
+
+QString QgsLayoutMapCrsValidityCheck::id() const { return QStringLiteral( "map_crs_check" ); }
+
+int QgsLayoutMapCrsValidityCheck::checkType() const { return QgsAbstractValidityCheck::TypeLayoutCheck; }
+
+bool QgsLayoutMapCrsValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+{
+  if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
+    return false;
+
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
   if ( !layoutContext )
-    return results;
+    return false;
 
   QList< QgsLayoutItemMap * > mapItems;
   layoutContext->layout->layoutItems( mapItems );
@@ -36,9 +47,14 @@ QList<QgsValidityCheckResult> QgsLayoutMapCrsValidityCheck::runCheck( const QgsV
       res.type = QgsValidityCheckResult::Warning;
       res.title = tr( "Map projection is misleading" );
       res.detailedDescription = tr( "The projection for the map item %1 is set to <i>Web Mercator (EPSG:3857)</i> which misrepresents areas and shapes. Consider using an appropriate local projection instead." ).arg( map->displayName() );
-      results.append( res );
+      mResults.append( res );
     }
   }
 
-  return results;
+  return true;
+}
+
+QList<QgsValidityCheckResult> QgsLayoutMapCrsValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+{
+  return mResults;
 }

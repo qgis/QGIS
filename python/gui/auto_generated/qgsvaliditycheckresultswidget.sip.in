@@ -93,6 +93,8 @@ on the dialog and proceed with the operation. The function will return false.
 
 Returns true if no warnings were encountered (and no dialog was shown to users), or if only
 warnings were shown and the user clicked OK after being shown these warnings.
+
+This method is a blocking method, and runs all checks in the main thread.
 %End
 
 };

@@ -81,7 +81,7 @@ class CORE_EXPORT QgsValidityCheckResult
  * an export to occur, or validating the contents of a Processing model (and warning if required plugin based
  * providers are not available or if compulsory algorithm parameters have not been populated).
  *
- * Subclasses must indicate the type of check the represent via the checkType() method. When checks are performed,
+ * Subclasses must indicate the type of check they represent via the checkType() method. When checks are performed,
  * all the registered checks with a matching check type are performed sequentially. The check type also
  * dictates the subclass of the QgsValidityCheckContext which is given to the subclass' runCheck method.
  *
@@ -94,7 +94,6 @@ class CORE_EXPORT QgsValidityCheckResult
  */
 class CORE_EXPORT QgsAbstractValidityCheck : public QObject
 {
-    Q_OBJECT
 
   public:
 
@@ -106,7 +105,14 @@ class CORE_EXPORT QgsAbstractValidityCheck : public QObject
     };
 
     /**
+     * Creates a new instance of the check and returns it.
+     */
+    virtual QgsAbstractValidityCheck *create() const = 0 SIP_FACTORY;
+
+    /**
      * Returns the unique ID of the check.
+     *
+     * This is a non-translated, non-user visible string identifying the check.
      */
     virtual QString id() const = 0;
 
@@ -116,17 +122,39 @@ class CORE_EXPORT QgsAbstractValidityCheck : public QObject
     virtual int checkType() const = 0;
 
     /**
-     * Returns the name of the check.
+     * Prepares the check for execution, and returns true if the check can be run.
+     *
+     * This method is always called from the main thread, and subclasses can implement
+     * it to do preparatory steps which are not thread safe (e.g. obtaining feature
+     * sources from vector layers). It is followed by a call to runCheck(), which
+     * may be performed in a background thread.
+     *
+     * Individual calls to prepareCheck()/runCheck() are run on a new instance of the
+     * check (see create()), so subclasses can safely store state from the prepareCheck() method
+     * ready for the subsequent runCheck() method.
+     *
+     * The \a context argument gives the wider in which the check is being run.
      */
-    virtual QString name() const = 0;
+    virtual bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback )
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( feedback );
+      return true;
+    }
 
     /**
      * Runs the check and returns a list of results. If the check is "passed" and no warnings or errors are generated,
      * then an empty list should be returned.
      *
+     * This method may be called in a background thread, so subclasses should take care to ensure that
+     * only thread-safe methods are used. It is always preceeded by a call to prepareCheck().
+     *
+     * If a check needs to perform non-thread-safe tests, these should be implemented within prepareCheck()
+     * and stored in the subclass instance to be returned by this method.
+     *
      * The \a context argument gives the wider in which the check is being run.
      */
-    virtual QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) const = 0;
+    virtual QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) = 0;
 
 };
 
