@@ -83,7 +83,11 @@ void QgsAuthConfigSelect::setConfigId( const QString &authcfg )
     {
       mAuthCfg = authcfg;
     }
+    // avoid duplicate call to loadConfig(), which may potentially be triggered by combo box index changes in the
+    // call to populateConfigSelector(). We *always* call loadConfig() after this, so we don't want to do it twice.
+    mTemporarilyBlockLoad = true;
     populateConfigSelector();
+    mTemporarilyBlockLoad = false;
     loadConfig();
   }
 }
@@ -197,7 +201,8 @@ void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
 {
   QString authcfg = cmbConfigSelect->itemData( index ).toString();
   mAuthCfg = ( !authcfg.isEmpty() && authcfg != QLatin1String( "0" ) ) ? authcfg : QString();
-  loadConfig();
+  if ( !mTemporarilyBlockLoad )
+    loadConfig();
 }
 
 void QgsAuthConfigSelect::btnConfigAdd_clicked()
