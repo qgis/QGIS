@@ -1463,6 +1463,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterEnum( name ) );
   else if ( type == QgsProcessingParameterString::typeName() )
     def.reset( new QgsProcessingParameterString( name ) );
+  else if ( type == QgsProcessingParameterAuthConfig::typeName() )
+    def.reset( new QgsProcessingParameterAuthConfig( name ) );
   else if ( type == QgsProcessingParameterExpression::typeName() )
     def.reset( new QgsProcessingParameterExpression( name ) );
   else if ( type == QgsProcessingParameterVectorLayer::typeName() )
@@ -1543,6 +1545,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterEnum::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "string" ) )
     return QgsProcessingParameterString::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "authcfg" ) )
+    return QgsProcessingParameterAuthConfig::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "expression" ) )
     return QgsProcessingParameterExpression::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "field" ) )
@@ -3007,6 +3011,62 @@ QgsProcessingParameterString *QgsProcessingParameterString::fromScriptCode( cons
 
   return new QgsProcessingParameterString( name, description, defaultValue, multiLine, isOptional );
 }
+
+//
+// QgsProcessingParameterAuthConfig
+//
+
+QgsProcessingParameterAuthConfig::QgsProcessingParameterAuthConfig( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterAuthConfig::clone() const
+{
+  return new QgsProcessingParameterAuthConfig( *this );
+}
+
+QString QgsProcessingParameterAuthConfig::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  QString s = value.toString();
+  return QgsProcessingUtils::stringToPythonLiteral( s );
+}
+
+QString QgsProcessingParameterAuthConfig::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "authcfg " );
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QgsProcessingParameterAuthConfig *QgsProcessingParameterAuthConfig::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString def = definition;
+
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+  if ( def == QStringLiteral( "None" ) )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterAuthConfig( name, description, defaultValue, isOptional );
+}
+
+
+//
+// QgsProcessingParameterExpression
+//
 
 QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )

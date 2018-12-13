@@ -745,6 +745,41 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
 };
 
 /**
+ * A authentication configuration parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('authcfg')
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterAuthConfig( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A authentication configuration parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Authentication Configuration" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "authcfg" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" );
+    }
+};
+
+/**
  * A parameter for processing algorithms which accepts multiple map layers.
  *
  * \ingroup core

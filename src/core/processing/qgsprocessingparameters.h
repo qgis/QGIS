@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsprocessingparameters.h
-                         -------------------------
-    begin                : April 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
+                      qgsprocessingparameters.h
+                      -------------------------
+ begin                : April 2017
+ copyright            : (C) 2017 by Nyall Dawson
+ email                : nyall dot dawson at gmail dot com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -234,6 +234,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterString;
     else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() )
       sipType = sipType_QgsProcessingParameterExpression;
+    else if ( sipCpp->type() == QgsProcessingParameterAuthConfig::typeName() )
+      sipType = sipType_QgsProcessingParameterAuthConfig;
     else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() )
       sipType = sipType_QgsProcessingParameterVectorLayer;
     else if ( sipCpp->type() == QgsProcessingParameterField::typeName() )
@@ -1720,6 +1722,45 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
   private:
 
     bool mMultiLine = false;
+
+};
+
+
+/**
+ * \class QgsProcessingParameterAuthConfig
+ * \ingroup core
+ * A string parameter for authentication configuration configuration ID values.
+ *
+ * This parameter allows for users to select from available authentication configurations,
+ * or create new authentication configurations as required.
+ *
+ * QgsProcessingParameterAuthConfig should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
+ *
+  * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsProcessingParameterAuthConfig : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterAuthConfig.
+     */
+    QgsProcessingParameterAuthConfig( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                      bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "authcfg" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterAuthConfig *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
 };
 

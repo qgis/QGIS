@@ -452,7 +452,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterBoolean::typeName()
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
-      << QgsProcessingParameterString::typeName(),
+      << QgsProcessingParameterString::typeName()
+      << QgsProcessingParameterAuthConfig::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
       << QgsProcessingOutputString::typeName() );
   Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )

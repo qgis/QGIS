@@ -41,6 +41,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsspinbox.h"
 #include "qgsmapcanvas.h"
+#include "qgsauthconfigselect.h"
 #include "models/qgsprocessingmodelalgorithm.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -146,6 +147,7 @@ class TestProcessingGui : public QObject
     void testModelerWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
+    void testAuthCfgWrapper();
     void testCrsWrapper();
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
@@ -757,6 +759,89 @@ void TestProcessingGui::testStringWrapper()
   l = wrapperMultiLineM.createWrappedLabel();
   QVERIFY( l );
   QCOMPARE( l->text(), QStringLiteral( "string" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+}
+
+void TestProcessingGui::testAuthCfgWrapper()
+{
+  QgsProcessingParameterAuthConfig param( QStringLiteral( "authcfg" ), QStringLiteral( "authcfg" ) );
+
+  // standard wrapper
+  QgsProcessingAuthConfigWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( QStringLiteral( "xxx" ), context );
+  QCOMPARE( spy.count(), 1 );
+
+  // hard to test these - we don't have a standard test authcfg to set to
+  // QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "xxx" ) );
+  // QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->configId(), QStringLiteral( "xxx" ) );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->configId().isEmpty() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "authcfg" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->setConfigId( QStringLiteral( "b" ) );
+  QCOMPARE( spy.count(), 3 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingAuthConfigWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( spy2.count(), 1 );
+  //QCOMPARE( wrapperB.widgetValue().toString(), QStringLiteral( "a" ) );
+  //QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapperB.wrappedWidget() )->configId(), QStringLiteral( "a" ) );
+  wrapperB.setWidgetValue( QString(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( wrapperB.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QgsAuthConfigSelect * >( wrapperB.wrappedWidget() )->configId().isEmpty() );
+
+  // check signal
+  static_cast< QgsAuthConfigSelect * >( w )->setConfigId( QStringLiteral( "x" ) );
+  QCOMPARE( spy2.count(), 3 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingAuthConfigWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( QStringLiteral( "a" ), context );
+  //QCOMPARE( wrapperM.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( spy3.count(), 1 );
+  //QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapperM.wrappedWidget() )->configId(), QStringLiteral( "a" ) );
+  wrapperM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( static_cast< QgsAuthConfigSelect * >( wrapperM.wrappedWidget() )->configId().isEmpty() );
+
+  // check signal
+  static_cast< QgsAuthConfigSelect * >( w )->setConfigId( QStringLiteral( "x" ) );
+  QCOMPARE( spy3.count(), 3 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "authcfg" ) );
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
