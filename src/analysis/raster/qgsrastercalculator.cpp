@@ -370,13 +370,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
         entry.typeName = QStringLiteral( "unsigned int" );
         break;
       case Qgis::DataType::Int16:
-        entry.typeName = QStringLiteral( "int" );
+        entry.typeName = QStringLiteral( "short" );
         break;
       case Qgis::DataType::UInt32:
-        entry.typeName = QStringLiteral( "unsigned long" );
+        entry.typeName = QStringLiteral( "unsigned int" );
         break;
       case Qgis::DataType::Int32:
-        entry.typeName = QStringLiteral( "long" );
+        entry.typeName = QStringLiteral( "int" );
         break;
       case Qgis::DataType::Float32:
         entry.typeName = QStringLiteral( "float" );
@@ -422,7 +422,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
   // Inputs:
   ##INPUT_DESC##
   // Expression: ##EXPRESSION_ORIGINAL##
-  __kernel void rasterCalculator( ##INPUT##,
+  __kernel void rasterCalculator( ##INPUT##
                             __global float *resultLine
                           )
   {
@@ -439,16 +439,18 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
   }
   programTemplate = programTemplate.replace( QStringLiteral( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
-  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), inputArgs.join( ',' ) );
+  programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), inputArgs.length() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
 
-  //qDebug() << programTemplate;
+  qDebug() << programTemplate;
 
   // Create a program from the kernel source
   cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the buffers, output is float32 (4 bytes)
+  // We assume size of float = 4 because that's the size used by OpenCL and IEEE 754
+  Q_ASSERT( sizeof( float ) == 4 );
   std::size_t resultBufferSize( 4 * static_cast<size_t>( mNumOutputColumns ) );
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY,
                                resultBufferSize, nullptr, nullptr );
@@ -461,7 +463,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
   }
   kernel.setArg( static_cast<unsigned int>( inputBuffers.size() ), resultLineBuffer );
 
-  QgsOpenClUtils::CPLAllocator<float> resultLine( resultBufferSize );
+  QgsOpenClUtils::CPLAllocator<float> resultLine( static_cast<size_t>( mNumOutputColumns ) );
 
   //open output dataset for writing
   GDALDriverH outputDriver = openOutputDriver();
@@ -528,6 +530,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       //  qDebug() << "Input: " << line << i << ref.varName << " = " << block->value( 0, i );
       //qDebug() << "Writing buffer " << ref.index;
 
+      Q_ASSERT( ref.bufferSize == static_cast<size_t>( block->data().size( ) ) );
       queue.enqueueWriteBuffer( inputBuffers[ref.index], CL_TRUE, 0,
                                 ref.bufferSize, block->bits() );
 
