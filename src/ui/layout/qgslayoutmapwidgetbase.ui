@@ -67,6 +67,9 @@
      <addaction name="mActionSetToCanvasExtent"/>
      <addaction name="mActionViewExtentInCanvas"/>
      <addaction name="separator"/>
+     <addaction name="mActionSetToCanvasScale"/>
+     <addaction name="mActionViewScaleInCanvas"/>
+     <addaction name="separator"/>
      <addaction name="mActionMoveContent"/>
     </widget>
    </item>
@@ -848,6 +851,30 @@
    </property>
    <property name="toolTip">
     <string>Interactively Edit Map Extent</string>
+   </property>
+  </action>
+  <action name="mActionViewScaleInCanvas">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</iconset>
+   </property>
+   <property name="text">
+    <string>View Scale in Map Canvas</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Main Canvas to Match Current Map Scale</string>
+   </property>
+  </action>
+  <action name="mActionSetToCanvasScale">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToBookmark.svg</normaloff>:/images/themes/default/mActionZoomToBookmark.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Set to Map Canvas Scale</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Map Scale to Match Main Canvas Scale</string>
    </property>
   </action>
  </widget>
