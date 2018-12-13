@@ -106,6 +106,8 @@ class GUI_EXPORT QgsValidityCheckResultsWidget : public QWidget, private Ui::Qgs
      *
      * Returns true if no warnings were encountered (and no dialog was shown to users), or if only
      * warnings were shown and the user clicked OK after being shown these warnings.
+     *
+     * This method is a blocking method, and runs all checks in the main thread.
      */
     static bool runChecks( int type, const QgsValidityCheckContext *context, const QString &title, const QString &description, QWidget *parent = nullptr );
 

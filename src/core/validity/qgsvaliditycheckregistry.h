@@ -20,6 +20,8 @@
 #include "qgsabstractvaliditycheck.h"
 #include <QList>
 #include <QPointer>
+#include <memory>
+#include <vector>
 
 /**
  * \class QgsValidityCheckRegistry
@@ -49,12 +51,12 @@ class CORE_EXPORT QgsValidityCheckRegistry
     /**
      * Returns the list of available checks.
      */
-    QList<QgsAbstractValidityCheck *> checks() const;
+    QList<const QgsAbstractValidityCheck *> checks() const;
 
     /**
      * Returns the list of all available checks of the matching \a type.
      */
-    QList<QgsAbstractValidityCheck *> checks( int type ) const;
+    QList<const QgsAbstractValidityCheck *> checks( int type ) const;
 
     /**
      * Adds a \a check to the registry. Ownership of the check
@@ -78,6 +80,9 @@ class CORE_EXPORT QgsValidityCheckRegistry
      *
      * The \a feedback argument is used to give progress reports and to support
      * cancelation of long-running checks.
+     *
+     * This is a blocking call, which will run all matching checks in the main
+     * thread and only return when they have all completed.
      */
     QList< QgsValidityCheckResult > runChecks( int type, const QgsValidityCheckContext *context, QgsFeedback *feedback ) const;
 
@@ -87,8 +92,13 @@ class CORE_EXPORT QgsValidityCheckRegistry
     QgsValidityCheckRegistry( const QgsValidityCheckRegistry &rh );
 #endif
 
+    /**
+     * Returns a list containing new copies of all available checks of the matching \a type.
+     */
+    std::vector<std::unique_ptr< QgsAbstractValidityCheck > > createChecks( int type ) const SIP_FACTORY;
+
     //! Available checks, owned by this class
-    QList< QPointer< QgsAbstractValidityCheck > > mChecks;
+    QList< QgsAbstractValidityCheck * > mChecks;
 
 };
 

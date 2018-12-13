@@ -22,12 +22,12 @@ class QgsLayoutMapCrsValidityCheck : public QgsAbstractValidityCheck
 
   public:
 
-    QString id() const override { return "map_crs_check"; }
-    int checkType() const override { return QgsAbstractValidityCheck::TypeLayoutCheck; }
-    QString name() const override { return "Map CRS Check"; }
-    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) const override;
+    QgsLayoutMapCrsValidityCheck *create() const override;
+    QString id() const override;
+    int checkType() const override;
+    bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
-
-
-
+  private:
+    QList<QgsValidityCheckResult> mResults;
 };

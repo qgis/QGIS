@@ -32,6 +32,17 @@ context, containing a reference to the QgsLayout to be checked.
 %End
   public:
 
+    enum ContextType
+    {
+      TypeLayoutContext,
+      TypeUserContext,
+    };
+
+    virtual int type() const = 0;
+%Docstring
+Returns the context type.
+%End
+
     virtual ~QgsValidityCheckContext();
 
 };
@@ -56,6 +67,8 @@ indicate they are of the QgsAbstractValidityCheck.TypeLayoutCheck type.
 %Docstring
 Constructor for QgsLayoutValidityCheckContext for the specified ``layout``.
 %End
+
+    virtual int type() const;
 
     QgsLayout *layout;
 

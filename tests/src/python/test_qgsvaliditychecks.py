@@ -34,8 +34,8 @@ class TestCheck(QgsAbstractValidityCheck):
         self._type = type
         self._results = results
 
-    def name(self):
-        return self._name
+    def create(self):
+        return TestCheck(self._id, self._name, self._type, self._results)
 
     def id(self):
         return self._id
@@ -45,6 +45,12 @@ class TestCheck(QgsAbstractValidityCheck):
 
     def runCheck(self, _, __):
         return self._results
+
+
+class TestContext(QgsValidityCheckContext):
+
+    def type(self):
+        return 0
 
 
 class TestQgsValidityChecks(unittest.TestCase):
@@ -118,7 +124,7 @@ class TestQgsValidityChecks(unittest.TestCase):
         c3 = TestCheck('c3', 'my check3', 1, [res3, res4])
         registry.addCheck(c3)
 
-        context = QgsValidityCheckContext()
+        context = TestContext()
         feedback = QgsFeedback()
         self.assertFalse(registry.runChecks(0, context, feedback))
 

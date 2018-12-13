@@ -434,7 +434,6 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutscalebarwidget.h
   layout/qgslayoutshapewidget.h
   layout/qgslayouttablebackgroundcolorsdialog.h
-  layout/qgslayoutvaliditychecks.h
   layout/qgsreportfieldgroupsectionwidget.h
   layout/qgsreportlayoutsectionwidget.h
   layout/qgsreportorganizerwidget.h

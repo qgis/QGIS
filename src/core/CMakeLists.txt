@@ -774,8 +774,6 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
 
-  validity/qgsabstractvaliditycheck.h
-
   qgsuserprofilemanager.h
 )
 
@@ -1193,6 +1191,7 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 
+  validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
 )

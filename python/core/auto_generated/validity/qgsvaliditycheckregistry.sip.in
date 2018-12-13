@@ -29,12 +29,12 @@ QgsValidityCheckRegistry is not usually directly created, but rather accessed th
     ~QgsValidityCheckRegistry();
 
 
-    QList<QgsAbstractValidityCheck *> checks() const;
+    QList<const QgsAbstractValidityCheck *> checks() const;
 %Docstring
 Returns the list of available checks.
 %End
 
-    QList<QgsAbstractValidityCheck *> checks( int type ) const;
+    QList<const QgsAbstractValidityCheck *> checks( int type ) const;
 %Docstring
 Returns the list of all available checks of the matching ``type``.
 %End
@@ -62,6 +62,9 @@ The ``context`` argument gives the wider in which the check is being run.
 
 The ``feedback`` argument is used to give progress reports and to support
 cancelation of long-running checks.
+
+This is a blocking call, which will run all matching checks in the main
+thread and only return when they have all completed.
 %End
 
   private:
