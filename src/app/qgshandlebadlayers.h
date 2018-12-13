@@ -32,6 +32,15 @@ class APP_EXPORT QgsHandleBadLayersHandler
 
     //! Implementation of the handler
     void handleBadLayers( const QList<QDomNode> &layers ) override;
+
+  signals:
+
+    /**
+     * Emitted when layers have changed
+     * \since QGIS 3.6
+     */
+    void layersChanged();
+
 };
 
 

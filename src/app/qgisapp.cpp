@@ -1240,7 +1240,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
   // set handler for missing layers (will be owned by QgsProject)
-  QgsProject::instance()->setBadLayerHandler( new QgsHandleBadLayersHandler() );
+  mAppBadLayersHandler = new QgsHandleBadLayersHandler();
+  QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
 
 #if 0
   // Set the background color for toolbox and overview as they default to
@@ -5806,7 +5807,12 @@ void QgisApp::enableProjectMacros()
 
 bool QgisApp::addProject( const QString &projectFile )
 {
-  MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+
+  bool returnCode = false;
+  std::unique_ptr< QgsProjectDirtyBlocker > dirtyBlocker = qgis::make_unique< QgsProjectDirtyBlocker >( QgsProject::instance() );
+  QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
+  bool badLayersHandled = false;
+  connect( mAppBadLayersHandler, &QgsHandleBadLayersHandler::layersChanged, &connectionScope, [&badLayersHandled] { badLayersHandled = true; } );
 
   // close the previous opened project if any
   closeProject();
@@ -5849,107 +5855,120 @@ bool QgisApp::addProject( const QString &projectFile )
       QgsProject::instance()->setFileName( projectFile );
       QgsProject::instance()->setDirty( true );
       mProjectLastModified = QgsProject::instance()->lastModified();
-      return true;
+      returnCode = true;
     }
+    else
+    {
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
+      returnCode = false;
+    }
+  }
+  else
+  {
+
+    mProjectLastModified = QgsProject::instance()->lastModified();
+
+    setTitleBarText_( *this );
+    int  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
+    int  myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
+    int  myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
+    QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+    mOverviewCanvas->setBackgroundColor( myColor );
+
+    applyProjectSettingsToCanvas( mMapCanvas );
+
+    //load project scales
+    bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+    if ( projectScales )
+    {
+      mScaleWidget->updateScales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+    }
+
+    mMapCanvas->updateScale();
+    QgsDebugMsg( QStringLiteral( "Scale restored..." ) );
+
+    mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
+
+    // Select the first layer
+    if ( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().count() > 0 )
+    {
+      mLayerTreeView->setCurrentLayer( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().at( 0 )->layer() );
+    }
+
+    QgsSettings settings;
+
+#ifdef WITH_BINDINGS
+    // does the project have any macros?
+    if ( mPythonUtils && mPythonUtils->isEnabled() )
+    {
+      if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
+      {
+        int enableMacros = settings.value( QStringLiteral( "qgis/enableMacros" ), 1 ).toInt();
+        // 0 = never, 1 = ask, 2 = just for this session, 3 = always
+
+        if ( enableMacros == 3 || enableMacros == 2 )
+        {
+          enableProjectMacros();
+        }
+        else if ( enableMacros == 1 ) // ask
+        {
+          // create the notification widget for macros
+
+
+          QToolButton *btnEnableMacros = new QToolButton();
+          btnEnableMacros->setText( tr( "Enable Macros" ) );
+          btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+          btnEnableMacros->setCursor( Qt::PointingHandCursor );
+          btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+          QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
+            tr( "Security warning" ),
+            tr( "project macros have been disabled." ),
+            btnEnableMacros,
+            Qgis::Warning,
+            0,
+            mInfoBar );
+
+          connect( btnEnableMacros, &QToolButton::clicked, this, [this, macroMsg]
+          {
+            enableProjectMacros();
+            mInfoBar->popWidget( macroMsg );
+          } );
+
+          // display the macros notification widget
+          mInfoBar->pushItem( macroMsg );
+        }
+      }
+    }
+#endif
+
+    emit projectRead(); // let plug-ins know that we've read in a new
+    // project so that they can check any project
+    // specific plug-in state
+
+    // add this to the list of recently used project files
+    saveRecentProjectPath( false );
+
+    QApplication::restoreOverrideCursor();
+
+    if ( autoSetupOnFirstLayer )
+      mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
 
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
-    return false;
+
+    mStatusBar->showMessage( tr( "Project loaded" ), 3000 );
+    returnCode = true;
   }
 
-  mProjectLastModified = QgsProject::instance()->lastModified();
-
-  setTitleBarText_( *this );
-  int  myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-  int  myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-  int  myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mOverviewCanvas->setBackgroundColor( myColor );
-
-  applyProjectSettingsToCanvas( mMapCanvas );
-
-  //load project scales
-  bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
-  if ( projectScales )
+  if ( badLayersHandled )
   {
-    mScaleWidget->updateScales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+    dirtyBlocker.reset(); // allow project dirtying again
+    QgsProject::instance()->setDirty( true );
   }
 
-  mMapCanvas->updateScale();
-  QgsDebugMsg( QStringLiteral( "Scale restored..." ) );
-
-  mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
-
-  // Select the first layer
-  if ( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().count() > 0 )
-  {
-    mLayerTreeView->setCurrentLayer( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().at( 0 )->layer() );
-  }
-
-  QgsSettings settings;
-
-#ifdef WITH_BINDINGS
-  // does the project have any macros?
-  if ( mPythonUtils && mPythonUtils->isEnabled() )
-  {
-    if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
-    {
-      int enableMacros = settings.value( QStringLiteral( "qgis/enableMacros" ), 1 ).toInt();
-      // 0 = never, 1 = ask, 2 = just for this session, 3 = always
-
-      if ( enableMacros == 3 || enableMacros == 2 )
-      {
-        enableProjectMacros();
-      }
-      else if ( enableMacros == 1 ) // ask
-      {
-        // create the notification widget for macros
-
-
-        QToolButton *btnEnableMacros = new QToolButton();
-        btnEnableMacros->setText( tr( "Enable Macros" ) );
-        btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-        btnEnableMacros->setCursor( Qt::PointingHandCursor );
-        btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
-        QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
-          tr( "Security warning" ),
-          tr( "project macros have been disabled." ),
-          btnEnableMacros,
-          Qgis::Warning,
-          0,
-          mInfoBar );
-
-        connect( btnEnableMacros, &QToolButton::clicked, this, [this, macroMsg]
-        {
-          enableProjectMacros();
-          mInfoBar->popWidget( macroMsg );
-        } );
-
-        // display the macros notification widget
-        mInfoBar->pushItem( macroMsg );
-      }
-    }
-  }
-#endif
-
-  emit projectRead(); // let plug-ins know that we've read in a new
-  // project so that they can check any project
-  // specific plug-in state
-
-  // add this to the list of recently used project files
-  saveRecentProjectPath( false );
-
-  QApplication::restoreOverrideCursor();
-
-  if ( autoSetupOnFirstLayer )
-    mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
-
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
-
-  mStatusBar->showMessage( tr( "Project loaded" ), 3000 );
-  return true;
+  return returnCode;
 } // QgisApp::addProject(QString projectFile)
 
 
