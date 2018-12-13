@@ -283,7 +283,7 @@ namespace QgsWms
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
       //! configure the print layout for the GetPrint request
-      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings );
+      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
 
       //! Creates external WMS layer. Caller takes ownership
       QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;

@@ -168,7 +168,8 @@ namespace QgsWms
         GRID_INTERVAL_Y,
         WITH_GEOMETRY,
         WITH_MAPTIP,
-        WMTVER
+        WMTVER,
+        ATLAS_PK
       };
       Q_ENUM( Name )
 
@@ -1147,6 +1148,11 @@ namespace QgsWms
        * \since QGIS 3.4
        */
       QString layoutParameter( const QString &id, bool &ok ) const;
+
+      //! True if ATLAS_ID parameter is set
+      bool atlasPrint() const;
+      //! Return ATLAS_ID parameter
+      QStringList atlasPk() const;
 
     private:
       bool loadParameter( const QString &name, const QString &value ) override;
