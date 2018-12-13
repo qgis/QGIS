@@ -44,7 +44,9 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
   public slots:
     void mScaleLineEdit_editingFinished();
     void setToMapCanvasExtent();
+    void setToMapCanvasScale();
     void viewExtentInCanvas();
+    void viewScaleInCanvas();
     void updatePreview();
     void mFollowVisibilityPresetCheckBox_stateChanged( int state );
     void mKeepLayerListCheckBox_stateChanged( int state );

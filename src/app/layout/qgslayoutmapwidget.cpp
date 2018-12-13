@@ -44,6 +44,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mScaleLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutMapWidget::mScaleLineEdit_editingFinished );
   connect( mActionSetToCanvasExtent, &QAction::triggered, this, &QgsLayoutMapWidget::setToMapCanvasExtent );
   connect( mActionViewExtentInCanvas, &QAction::triggered, this, &QgsLayoutMapWidget::viewExtentInCanvas );
+  connect( mActionSetToCanvasScale, &QAction::triggered, this, &QgsLayoutMapWidget::setToMapCanvasScale );
+  connect( mActionViewScaleInCanvas, &QAction::triggered, this, &QgsLayoutMapWidget::viewScaleInCanvas );
   connect( mActionUpdatePreview, &QAction::triggered, this, &QgsLayoutMapWidget::updatePreview );
   connect( mFollowVisibilityPresetCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged );
   connect( mKeepLayerListCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mKeepLayerListCheckBox_stateChanged );
@@ -558,6 +560,20 @@ void QgsLayoutMapWidget::setToMapCanvasExtent()
   mMapItem->layout()->undoStack()->endCommand();
 }
 
+void QgsLayoutMapWidget::setToMapCanvasScale()
+{
+  if ( !mMapItem )
+  {
+    return;
+  }
+
+  const double newScale = QgisApp::instance()->mapCanvas()->scale();
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Scale" ) );
+  mMapItem->setScale( newScale );
+  mMapItem->layout()->undoStack()->endCommand();
+}
+
 void QgsLayoutMapWidget::viewExtentInCanvas()
 {
   if ( !mMapItem )
@@ -589,6 +605,17 @@ void QgsLayoutMapWidget::viewExtentInCanvas()
     QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
     QgisApp::instance()->mapCanvas()->refresh();
   }
+}
+
+void QgsLayoutMapWidget::viewScaleInCanvas()
+{
+  if ( !mMapItem )
+  {
+    return;
+  }
+
+  const double currentScale = mMapItem->scale();
+  QgisApp::instance()->mapCanvas()->zoomScale( currentScale );
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()
