@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>326</width>
+    <width>174</width>
     <height>424</height>
    </rect>
   </property>
@@ -35,18 +35,24 @@
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="qgsCollapsibleGroupBoxBasic">
      <property name="title">
-      <string>Label Settings</string>
+      <string>Placement</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,0,0">
-      <item row="3" column="0" colspan="2">
+      <item row="1" column="0" colspan="4">
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>of map edges</string>
+         <string>Map labels will be placed at least this far away from the edges of the map item.</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QgsLayoutUnitsComboBox" name="mLabelBoundaryUnitsCombo"/>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QgsDoubleSpinBox" name="mLabelBoundarySpinBox">
@@ -67,18 +73,15 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="0" column="0" colspan="4">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Avoid placing labels within</string>
+         <string>&lt;b&gt;Margin from map edges&lt;/b&gt;</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QgsLayoutUnitsComboBox" name="mLabelBoundaryUnitsCombo"/>
       </item>
       <item row="2" column="3">
        <widget class="QgsPropertyOverrideButton" name="mLabelMarginDDBtn">
@@ -108,12 +111,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -122,6 +119,12 @@
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayoutUnitsComboBox</class>
