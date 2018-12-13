@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>452</width>
-    <height>96</height>
+    <height>79</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,16 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>6</number>
+    <number>0</number>
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
@@ -129,7 +129,7 @@
        </layout>
       </widget>
      </item>
-     <item row="1" column="3">
+     <item row="1" column="3" colspan="2">
       <widget class="QToolButton" name="btnConfigAdd">
        <property name="toolTip">
         <string>Create a new authentication configuration</string>
@@ -145,6 +145,12 @@
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </spacer>
    </item>

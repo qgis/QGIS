@@ -22,6 +22,7 @@
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsprocessingcontext.h"
+#include "qgsauthconfigselect.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -376,6 +377,7 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
          << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterAuthConfig::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
          << QgsProcessingParameterFile::typeName()
@@ -406,6 +408,80 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingStringWidgetWrapper::c
 }
 
 
+
+//
+// QgsProcessingAuthConfigWidgetWrapper
+//
+
+QgsProcessingAuthConfigWidgetWrapper::QgsProcessingAuthConfigWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingAuthConfigWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mAuthConfigSelect = new QgsAuthConfigSelect();
+      mAuthConfigSelect->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mAuthConfigSelect, &QgsAuthConfigSelect::selectedConfigIdChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mAuthConfigSelect;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingAuthConfigWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mAuthConfigSelect )
+    mAuthConfigSelect->setConfigId( v );
+}
+
+QVariant QgsProcessingAuthConfigWidgetWrapper::widgetValue() const
+{
+  if ( mAuthConfigSelect )
+    return mAuthConfigSelect->configId();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingAuthConfigWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterAuthConfig::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingAuthConfigWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingAuthConfigWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingAuthConfigWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterAuthConfig::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAuthConfigWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingAuthConfigWidgetWrapper( parameter, type );
+}
 
 //
 // QgsProcessingNumericWidgetWrapper
