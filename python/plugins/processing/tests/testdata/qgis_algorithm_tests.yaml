@@ -6269,4 +6269,15 @@ tests:
           fields:
             path: skip
 
+  - algorithm: qgis:deleteduplicategeometries
+    name: Delete Duplicates with null geometries
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/delete_duplicates_with_nulls.gml
+        type: vector
+
 # See ../README.md for a description of the file format
