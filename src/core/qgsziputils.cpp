@@ -87,7 +87,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         {
           QString fileName( stat.name );
           QFileInfo newFile( QDir( dir ), fileName );
-          bool isDirectory = fileName.lastIndexOf( '/' ) == fileName.length() - 1;
+          bool isDirectory = fileName.endsWith( '/' );
 
           if ( isDirectory )
           {
