@@ -20,7 +20,8 @@ import hashlib
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray
-from qgis.core import (QgsApplication,
+from qgis.core import (NULL,
+                       QgsApplication,
                        QgsRectangle,
                        QgsProviderRegistry,
                        QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
@@ -543,6 +544,15 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         f2 = [f for f in dp.getFeatures()][1]
         self.assertEqual(f2.attributes(), [2, 'str2', 200, QByteArray(bin_1)])
+
+    def testBoolFieldEvaluation(self):
+        datasource = os.path.join(unitTestDataPath(), 'bool_geojson.json')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().at(0).name(), 'bool')
+        self.assertEqual(vl.fields().at(0).type(), QVariant.Bool)
+        self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
+        self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
 
 
 if __name__ == '__main__':
