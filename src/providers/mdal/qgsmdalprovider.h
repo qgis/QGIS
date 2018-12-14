@@ -69,6 +69,13 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
 
+    /**
+     * Returns filters for meshes and datasets to be used in Open File Dialogs
+     * \param fileMeshFiltersString file mesh filters
+     * \param fileMeshDatasetFiltersString file mesh datasets filters
+     */
+    static void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString );
+
   private:
     QVector<QgsMeshVertex> vertices( ) const;
     QVector<QgsMeshFace> faces( ) const;

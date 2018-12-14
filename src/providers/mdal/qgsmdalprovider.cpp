@@ -19,6 +19,7 @@
 
 #include "qgsmdalprovider.h"
 #include "qgstriangularmesh.h"
+#include "qgslogger.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -168,6 +169,76 @@ QgsRectangle QgsMdalProvider::extent() const
   MDAL_M_extent( mMeshH, &xMin, &xMax, &yMin, &yMax );
   QgsRectangle ret( xMin, yMin, xMax, yMax );
   return ret;
+}
+
+void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString )
+{
+  DriverH mdalDriver;
+
+  // Grind through all the drivers and their respective metadata.
+  // We'll add a file filter for those drivers that have a file
+  // extension defined for them; the others, well, even though
+  // theoreticaly we can open those files because there exists a
+  // driver for them, the user will have to use the "All Files" to
+  // open datasets with no explicitly defined file name extension.
+
+  fileMeshFiltersString.clear();
+  fileMeshDatasetFiltersString.clear();
+
+  int driverCount = MDAL_driverCount();
+
+  QgsDebugMsg( QStringLiteral( "MDAL driver count: %1" ).arg( driverCount ) );
+
+  for ( int i = 0; i < driverCount; ++i )
+  {
+    mdalDriver = MDAL_driverFromIndex( i );
+    if ( !mdalDriver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+
+    QString longName = MDAL_DR_longName( mdalDriver );
+    QString driverFilters = MDAL_DR_filters( mdalDriver );
+    driverFilters = driverFilters.replace( QStringLiteral( ";;" ), QStringLiteral( " " ) );
+
+    bool isMeshDriver = MDAL_DR_meshLoadCapability( mdalDriver );
+
+    if ( longName.isEmpty() )
+    {
+      QgsLogger::warning( "invalid driver long name " + QString::number( i ) );
+      continue;
+    }
+
+    if ( !driverFilters.isEmpty() )
+    {
+      QString driverFilter = longName + " (" + driverFilters + ");;";
+      if ( isMeshDriver )
+        fileMeshFiltersString += driverFilter;
+      else
+        fileMeshDatasetFiltersString += driverFilter;
+    }
+  }
+
+  // sort file filters alphabetically
+  QStringList filters = fileMeshFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+  filters.sort();
+  fileMeshFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
+
+  filters = fileMeshDatasetFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+  filters.sort();
+  fileMeshDatasetFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
+
+  // can't forget the default case - first
+  fileMeshFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
+  fileMeshDatasetFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
+
+  // cleanup
+  if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshFiltersString.chop( 2 );
+  if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshDatasetFiltersString.chop( 2 );
+
+  QgsDebugMsg( "Mesh filter list built: " + fileMeshFiltersString );
+  QgsDebugMsg( "Mesh dataset filter list built: " + fileMeshDatasetFiltersString );
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -392,6 +463,22 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
       << new QgsMdalMeshSourceSelectProvider;
 
   return providers;
+}
+
+/**
+  Builds the list of mesh file filter strings
+
+  We query MDAL for a list of supported mesh formats; we then build
+  a list of file filter strings from that list to be used for meshes and
+  also one for datasets. We return a strings
+  that contains this list that is suitable for use in a
+  QFileDialog::getOpenFileNames() call.
+
+  \since QGIS 3.6
+*/
+QGISEXTERN void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString )
+{
+  QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
 }
 
 #endif
