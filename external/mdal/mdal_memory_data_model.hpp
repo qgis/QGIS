@@ -21,6 +21,7 @@ namespace MDAL
     double x;
     double y;
     double z; // Bed elevation
+
   } Vertex;
 
   typedef std::vector<size_t> Face;

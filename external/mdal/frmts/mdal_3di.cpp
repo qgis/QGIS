@@ -5,35 +5,43 @@
 
 #include "mdal_3di.hpp"
 
-MDAL::Loader3Di::Loader3Di( const std::string &fileName )
-  : LoaderCF( fileName )
+MDAL::Driver3Di::Driver3Di()
+  : DriverCF(
+      "3Di",
+      "3Di Results",
+      "results_3di.nc" )
 {
 }
 
-MDAL::CFDimensions MDAL::Loader3Di::populateDimensions()
+MDAL::Driver3Di *MDAL::Driver3Di::create()
+{
+  return new Driver3Di();
+}
+
+MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( const NetCDFFile &ncFile )
 {
   CFDimensions dims;
   size_t count;
   int ncid;
 
   // 2D Mesh
-  mNcFile.getDimension( "nMesh2D_nodes", &count, &ncid );
+  ncFile.getDimension( "nMesh2D_nodes", &count, &ncid );
   dims.setDimension( CFDimensions::Face2D, count, ncid );
 
-  mNcFile.getDimension( "nCorner_Nodes", &count, &ncid );
+  ncFile.getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
   // Vertices count is populated later in populateFacesAndVertices
   // it is not known from the array dimensions
 
   // Time
-  mNcFile.getDimension( "time", &count, &ncid );
+  ncFile.getDimension( "time", &count, &ncid );
   dims.setDimension( CFDimensions::Time, count, ncid );
 
   return dims;
 }
 
-void MDAL::Loader3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
+void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
 {
   assert( vertices.empty() );
   size_t faceCount = mDimensions.size( CFDimensions::Face2D );
@@ -101,7 +109,7 @@ void MDAL::Loader3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
   mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
 }
 
-void MDAL::Loader3Di::addBedElevation( MDAL::Mesh *mesh )
+void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
 {
   assert( mesh );
   if ( 0 == mesh->facesCount() )
@@ -139,12 +147,12 @@ void MDAL::Loader3Di::addBedElevation( MDAL::Mesh *mesh )
   mesh->datasetGroups.push_back( group );
 }
 
-std::string MDAL::Loader3Di::getCoordinateSystemVariableName()
+std::string MDAL::Driver3Di::getCoordinateSystemVariableName()
 {
   return "projected_coordinate_system";
 }
 
-std::set<std::string> MDAL::Loader3Di::ignoreNetCDFVariables()
+std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
 {
   std::set<std::string> ignore_variables;
 
@@ -178,13 +186,13 @@ std::set<std::string> MDAL::Loader3Di::ignoreNetCDFVariables()
   return ignore_variables;
 }
 
-std::string MDAL::Loader3Di::nameSuffix( MDAL::CFDimensions::Type type )
+std::string MDAL::Driver3Di::nameSuffix( MDAL::CFDimensions::Type type )
 {
   MDAL_UNUSED( type );
   return "";
 }
 
-void MDAL::Loader3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
+void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
 {
   *is_vector = false;
   *is_x = true;

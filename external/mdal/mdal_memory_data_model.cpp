@@ -57,7 +57,7 @@ size_t MDAL::MemoryDataset::activeData( size_t indexStart, size_t count, int *bu
   }
   else
   {
-    memset( buffer, true, count * sizeof( int ) );
+    memset( buffer, 1, count * sizeof( int ) );
   }
 
   return count;

@@ -16,6 +16,7 @@
 #include "mdal.h"
 #include "mdal_utils.hpp"
 #include "mdal_netcdf.hpp"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
@@ -66,16 +67,18 @@ namespace MDAL
 
   //! NetCDF Climate and Forecast (CF) Metadata Conventions
   //! http://cfconventions.org
-  class LoaderCF
+  class DriverCF: public Driver
   {
     public:
-      LoaderCF( const std::string &fileName );
-      virtual ~LoaderCF() = default;
-
-      std::unique_ptr< Mesh > load( MDAL_Status *status );
+      DriverCF( const std::string &name,
+                const std::string &longName,
+                const std::string &filters );
+      virtual ~DriverCF() override = default;
+      bool canRead( const std::string &uri ) override;
+      std::unique_ptr< Mesh > load( const std::string &fileName, MDAL_Status *status ) override;
 
     protected:
-      virtual CFDimensions populateDimensions() = 0;
+      virtual CFDimensions populateDimensions( const NetCDFFile &ncFile ) = 0;
       virtual void populateFacesAndVertices( Vertices &vertices, Faces &faces ) = 0;
       virtual void addBedElevation( MDAL::Mesh *mesh ) = 0;
       virtual std::string getCoordinateSystemVariableName() = 0;
@@ -100,7 +103,7 @@ namespace MDAL
                              const cfdataset_info_map &dsinfo_map );
 
 
-      const std::string mFileName;
+      std::string mFileName;
       NetCDFFile mNcFile;
       CFDimensions mDimensions;
   };

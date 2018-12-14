@@ -23,10 +23,41 @@
 
 #define EXIT_WITH_ERROR(error)       {  if (status) *status = (error); return; }
 
-MDAL::LoaderAsciiDat::LoaderAsciiDat( const std::string &datFile ):
-  mDatFile( datFile )
+MDAL::DriverAsciiDat::DriverAsciiDat( ):
+  Driver( "ASCII_DAT",
+          "DAT",
+          "*.dat",
+          DriverType::CanReadOnlyDatasets
+        )
 {
 }
+
+MDAL::DriverAsciiDat *MDAL::DriverAsciiDat::create()
+{
+  return new DriverAsciiDat();
+}
+
+MDAL::DriverAsciiDat::~DriverAsciiDat( ) = default;
+
+bool MDAL::DriverAsciiDat::canRead( const std::string &uri )
+{
+  std::ifstream in( uri, std::ifstream::in );
+  std::string line;
+  if ( !std::getline( in, line ) )
+  {
+    return false;
+  }
+  line = trim( line );
+
+  if ( line != "DATASET" &&
+       line != "SCALAR" &&
+       line != "VECTOR" )
+  {
+    return false;
+  }
+  return true;
+}
+
 
 /**
  * The DAT format contains "datasets" and each dataset has N-outputs. One output
@@ -35,8 +66,9 @@ MDAL::LoaderAsciiDat::LoaderAsciiDat( const std::string &datFile ):
  * In MDAL we convert one output to one MDAL dataset;
  *
  */
-void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
+void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, MDAL_Status *status )
 {
+  mDatFile = datFile;
   if ( status ) *status = MDAL_Status::None;
 
   if ( !MDAL::fileExists( mDatFile ) )
@@ -195,7 +227,7 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   }
 }
 
-void MDAL::LoaderAsciiDat::readVertexTimestep(
+void MDAL::DriverAsciiDat::readVertexTimestep(
   const MDAL::Mesh *mesh,
   std::shared_ptr<DatasetGroup> group,
   double t,
@@ -262,7 +294,7 @@ void MDAL::LoaderAsciiDat::readVertexTimestep(
   group->datasets.push_back( dataset );
 }
 
-void MDAL::LoaderAsciiDat::readFaceTimestep(
+void MDAL::DriverAsciiDat::readFaceTimestep(
   const MDAL::Mesh *mesh,
   std::shared_ptr<DatasetGroup> group,
   double t,

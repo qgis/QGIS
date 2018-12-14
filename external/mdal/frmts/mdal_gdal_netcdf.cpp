@@ -6,13 +6,22 @@
 #include "mdal_gdal_netcdf.hpp"
 #include "mdal_utils.hpp"
 
-MDAL::LoaderGdalNetCDF::LoaderGdalNetCDF( const std::string &netCDFFile )
-  : MDAL::LoaderGdal( netCDFFile, "GRIB" )
+MDAL::DriverGdalNetCDF::DriverGdalNetCDF()
+  : MDAL::DriverGdal(
+      "NETCDF",
+      "GDAL NetCDF",
+      "*.nc"
+      , "GRIB" )
   , mTimeDiv( 1.0 )
 {
 }
 
-std::string MDAL::LoaderGdalNetCDF::GDALFileName( const std::string &fileName )
+MDAL::DriverGdalNetCDF *MDAL::DriverGdalNetCDF::create()
+{
+  return new DriverGdalNetCDF();
+}
+
+std::string MDAL::DriverGdalNetCDF::GDALFileName( const std::string &fileName )
 {
 #ifdef WIN32
   // Force usage of the predefined GDAL driver
@@ -24,7 +33,7 @@ std::string MDAL::LoaderGdalNetCDF::GDALFileName( const std::string &fileName )
 #endif
 }
 
-bool MDAL::LoaderGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset, const MDAL::LoaderGdal::metadata_hash &metadata, std::string &band_name, double *time, bool *is_vector, bool *is_x )
+bool MDAL::DriverGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset, const MDAL::DriverGdal::metadata_hash &metadata, std::string &band_name, double *time, bool *is_vector, bool *is_x )
 {
   MDAL_UNUSED( cfGDALDataset );
 
@@ -67,7 +76,7 @@ bool MDAL::LoaderGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDatas
   return false; // SUCCESS
 }
 
-void MDAL::LoaderGdalNetCDF::parseGlobals( const MDAL::LoaderGdal::metadata_hash &metadata )
+void MDAL::DriverGdalNetCDF::parseGlobals( const MDAL::DriverGdal::metadata_hash &metadata )
 {
   metadata_hash::const_iterator iter = metadata.find( "time#units" );
   if ( iter != metadata.end() )
