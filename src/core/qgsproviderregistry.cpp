@@ -38,6 +38,7 @@ typedef QString providerkey_t();
 typedef QString description_t();
 typedef bool    isprovider_t();
 typedef QString fileVectorFilters_t();
+typedef void fileMeshFilters_t( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString );
 typedef void buildsupportedrasterfilefilter_t( QString &fileFiltersString );
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
@@ -231,6 +232,23 @@ void QgsProviderRegistry::init()
         mRasterFileFilters += fileRasterFilters;
 
       QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
+    }
+
+    // now get mesh file filters, if any
+    fileMeshFilters_t *pFileMeshFilters = reinterpret_cast< fileMeshFilters_t * >( cast_to_fptr( myLib.resolve( "fileMeshFilters" ) ) );
+    if ( pFileMeshFilters )
+    {
+      QString fileMeshFilters;
+      QString fileMeshDatasetFilters;
+
+      pFileMeshFilters( fileMeshFilters, fileMeshDatasetFilters );
+
+      if ( !fileMeshFilters.isEmpty() )
+        mMeshFileFilters += fileMeshFilters;
+      if ( !fileMeshDatasetFilters.isEmpty() )
+        mMeshDatasetFileFilters += fileMeshDatasetFilters;
+
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file mesh filters, %3 file dataset filters)" ).arg( myLib.fileName() ).arg( mMeshFileFilters.split( ";;" ).count() ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ) );
     }
 
     // call initProvider() if such function is available - allows provider to register its services to QGIS
@@ -572,6 +590,16 @@ QString QgsProviderRegistry::fileVectorFilters() const
 QString QgsProviderRegistry::fileRasterFilters() const
 {
   return mRasterFileFilters;
+}
+
+QString QgsProviderRegistry::fileMeshFilters() const
+{
+  return mMeshFileFilters;
+}
+
+QString QgsProviderRegistry::fileMeshDatasetFilters() const
+{
+  return mMeshDatasetFileFilters;
 }
 
 QString QgsProviderRegistry::databaseDrivers() const

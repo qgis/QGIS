@@ -31,6 +31,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
+#include "qgsproviderregistry.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -137,7 +138,7 @@ void QgsMeshLayerProperties::addDataset()
   QString openFileString = QFileDialog::getOpenFileName( nullptr,
                            tr( "Load mesh datasets" ),
                            openFileDir,
-                           QStringLiteral( "All files(*.*);;Results Files XMDF(*.xmdf);;Results Files DAT(*.dat)" ) );
+                           QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
 
   if ( openFileString.isEmpty() )
   {
