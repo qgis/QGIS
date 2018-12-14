@@ -97,8 +97,8 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
           else
           {
             std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
-            zip_fclose( file );
           }
+          zip_fclose( file );
           files.append( newFile.absoluteFilePath() );
         }
         else
