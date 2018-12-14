@@ -115,7 +115,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 //
 
 // operator tokens
-%token <b_op> OR AND EQ NE LE GE LT GT REGEXP LIKE IS PLUS MINUS MUL DIV INTDIV MOD CONCAT POW
+%token <b_op> OR AND EQ NE LE GE LT GT REGEXP LIKE IS PLUS MINUS MUL DIV INTDIV MOD CONCAT POW SQUARE_BRAKET_OPENING SQUARE_BRAKET_CLOSING
 %token <u_op> NOT
 %token IN
 
@@ -284,6 +284,15 @@ expression:
     | expression IN '(' exp_list ')'     { $$ = new QgsExpressionNodeInOperator($1, $4, false);  }
     | expression NOT IN '(' exp_list ')' { $$ = new QgsExpressionNodeInOperator($1, $5, true); }
 
+    | expression '[' expression ']'
+        { 
+          QgsExpressionNode::NodeList* args = new QgsExpressionNode::NodeList(); 
+          args->append( $1 );          
+          args->append( $3 );
+          QgsExpressionNodeFunction *f = new QgsExpressionNodeFunction( QgsExpression::functionIndex( "map_get" ), args );
+          $$ = f;
+        }
+    
     | PLUS expression %prec UMINUS { $$ = $2; }
     | MINUS expression %prec UMINUS { $$ = new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoMinus, $2); }
 
