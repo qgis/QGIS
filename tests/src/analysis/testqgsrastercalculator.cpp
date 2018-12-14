@@ -679,9 +679,9 @@ void TestQgsRasterCalculator::toString()
   QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), false ), QString( "\"raster@1\" + 2" ) );
   QCOMPARE( _test( QStringLiteral( "\"raster@1\"  +  2" ), true ), QString( "\"raster@1\" + 2" ) );
   QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), false ), QString( "\"raster@1\"^3 + 2" ) );
-  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "pow( \"raster@1\", 3 ) + 2" ) );
+  QCOMPARE( _test( QStringLiteral( "\"raster@1\" ^ 3  +  2" ), true ), QString( "pow( (float) ( \"raster@1\" ), (float) ( 3 ) ) + 2" ) );
   QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), false ), QString( "atan( \"raster@1\" ) * cos( 3 + 2 )" ) );
-  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( \"raster@1\" ) * cos( 3 + 2 )" ) );
+  QCOMPARE( _test( QStringLiteral( "atan(\"raster@1\") * cos( 3  +  2 )" ), true ), QString( "atan( (float) ( \"raster@1\" ) ) * cos( (float) ( 3 + 2 ) )" ) );
 }
 
 

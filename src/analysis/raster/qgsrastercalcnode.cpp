@@ -207,6 +207,12 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
     left = mLeft->toString( cStyle );
   if ( mRight )
     right = mRight->toString( cStyle );
+
+  auto floatCast = [ ]( const QString s ) -> QString
+  {
+    return QStringLiteral( "(float) ( %1 )" ).arg( s );
+  };
+
   switch ( mType )
   {
     case tOperator:
@@ -227,7 +233,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
           break;
         case opPOW:
           if ( cStyle )
-            result = QStringLiteral( "pow( %1, %2 )" ).arg( left ).arg( right );
+            result = QStringLiteral( "pow( %1, %2 )" ).arg( floatCast( left ) ).arg( floatCast( right ) );
           else
             result = QStringLiteral( "%1^%2" ).arg( left ).arg( right );
           break;
@@ -265,31 +271,58 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
             result = QStringLiteral( "%1 OR %2" ).arg( left ).arg( right );
           break;
         case opSQRT:
-          result = QStringLiteral( "sqrt( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "sqrt( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "sqrt( %1 )" ).arg( left );
           break;
         case opSIN:
-          result = QStringLiteral( "sin( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "sin( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "sin( %1 )" ).arg( left );
           break;
         case opCOS:
-          result = QStringLiteral( "cos( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "cos( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "cos( %1 )" ).arg( left );
           break;
         case opTAN:
-          result = QStringLiteral( "tan( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "tan( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "tan( %1 )" ).arg( left );
           break;
         case opASIN:
-          result = QStringLiteral( "asin( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "asin( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "asin( %1 )" ).arg( left );
           break;
         case opACOS:
-          result = QStringLiteral( "acos( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "acos( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "acos( %1 )" ).arg( left );
           break;
         case opATAN:
-          result = QStringLiteral( "atan( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "atan( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "atan( %1 )" ).arg( left );
           break;
         case opLOG:
-          result = QStringLiteral( "log( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "log( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "log( %1 )" ).arg( left );
           break;
         case opLOG10:
-          result = QStringLiteral( "log10( %1 )" ).arg( left );
+          if ( cStyle )
+            result = QStringLiteral( "log10( %1 )" ).arg( floatCast( left ) );
+          else
+            result = QStringLiteral( "log10( %1 )" ).arg( left );
           break;
         case opNONE:
           break;
