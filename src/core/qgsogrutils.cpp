@@ -197,8 +197,10 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
       case QVariant::Int:
-      case QVariant::Bool:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
+        break;
+      case QVariant::Bool:
+        value = QVariant( bool( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) ) );
         break;
       case QVariant::LongLong:
         value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
