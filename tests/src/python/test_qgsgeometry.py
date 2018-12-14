@@ -255,6 +255,23 @@ class TestQgsGeometry(unittest.TestCase):
         ])
         self.assertEqual(myMultiPolygon.wkbType(), QgsWkbTypes.MultiPolygon)
 
+    def testPointXY(self):
+        """
+        Test the QgsPointXY conversion methods
+        """
+        self.assertEqual(QgsGeometry.fromWkt('Point(11 13)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('PointZ(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('PointM(11 13 14)').asPoint(), QgsPointXY(11, 13))
+        self.assertEqual(QgsGeometry.fromWkt('PointZM(11 13 14 15)').asPoint(), QgsPointXY(11, 13))
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asPoint()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('LineString(11 13,14 15)').asPoint()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Polygon((11 13,14 15, 14 13, 11 13))').asPoint()
+        with self.assertRaises(ValueError):
+            QgsGeometry().asPoint()
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
