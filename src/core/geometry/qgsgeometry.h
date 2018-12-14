@@ -1454,11 +1454,49 @@ class CORE_EXPORT QgsGeometry
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
-     * Returns contents of the geometry as a polyline
-     * if wkbType is WKBLineString, otherwise an empty list
+     * Returns the contents of the geometry as a polyline.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
+     * (such as a CircularString), it will be automatically segmentized.
+     *
+     * \warning If the geometry is not a single-line (or single-curve) type, an empty list will be returned.
      */
     QgsPolylineXY asPolyline() const;
+#else
+
+    /**
+     * Returns the contents of the geometry as a polyline.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
+     * (such as a CircularString), it will be automatically segmentized.
+     *
+     * This method works only with single-line (or single-curve) geometry types. If the geometry
+     * is not a single-line type, a TypeError will be raised. If the geometry is null, a ValueError
+     * will be raised.
+     */
+    SIP_PYOBJECT asPolyline() const SIP_TYPEHINT( QgsPolylineXY );
+    % MethodCode
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polyline." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::LineGeometry || QgsWkbTypes::isMultiType( type ) )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector< QgsPointXY >" );
+      sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asPolyline() ), qvector_type, Py_None );
+    }
+    % End
+#endif
 
     /**
      * Returns contents of the geometry as a polygon
