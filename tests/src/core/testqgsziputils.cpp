@@ -60,7 +60,7 @@ void TestQgsZipUtils::cleanup()
 void TestQgsZipUtils::unzipWithSubdirs()
 {
 
-  QFile zipFile( QString( TEST_DATA_DIR ) + "/zip/" + "testzip.zip" );
+  QFile zipFile( QString( TEST_DATA_DIR ) + "/zip/testzip.zip" );
   QVERIFY( zipFile.exists() );
 
   QFileInfo fileInfo( zipFile );
