@@ -207,7 +207,7 @@ class CORE_EXPORT QgsGeometry
      * \see isEmpty()
      * \since QGIS 2.10
      */
-    bool isNull() const;
+    Q_INVOKABLE bool isNull() const;
 
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString &wkt );
