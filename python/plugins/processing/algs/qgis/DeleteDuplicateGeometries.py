@@ -30,7 +30,8 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsSpatialIndex,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputNumber)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -38,6 +39,8 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
+    RETAINED_COUNT = 'RETAINED_COUNT'
+    DUPLICATE_COUNT = 'DUPLICATE_COUNT'
 
     def group(self):
         return self.tr('Vector general')
@@ -55,6 +58,9 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned')))
+
+        self.addOutput(QgsProcessingOutputNumber(self.RETAINED_COUNT, self.tr('Count of retained records')))
+        self.addOutput(QgsProcessingOutputNumber(self.DUPLICATE_COUNT, self.tr('Count of discarded duplicate records')))
 
     def name(self):
         return 'deleteduplicategeometries'
@@ -95,6 +101,7 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
         unique_features = dict(geoms)
 
         current = 0
+        removed = 0
         for feature_id, geometry in geoms.items():
             if feedback.isCanceled():
                 break
@@ -116,6 +123,7 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
                 if geometry.isGeosEqual(geoms[candidate_id]):
                     # candidate is a duplicate of feature
                     del unique_features[candidate_id]
+                    removed += 1
 
             current += 1
             feedback.setProgress(int(0.80 * current * total) + 10)  # takes about 80% of time
@@ -138,4 +146,7 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
             feedback.setProgress(int(0.10 * current * total) + 90) # takes about 10% of time
 
-        return {self.OUTPUT: dest_id}
+        feedback.pushInfo(self.tr('{} duplicate features removed'.format(removed)))
+        return {self.OUTPUT: dest_id,
+                self.DUPLICATE_COUNT: removed,
+                self.RETAINED_COUNT: len(output_feature_ids)}
