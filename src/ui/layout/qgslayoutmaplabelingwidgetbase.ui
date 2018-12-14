@@ -41,7 +41,7 @@
       <item row="1" column="0" colspan="4">
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Map labels will be placed at least this far away from the edges of the map item.</string>
+         <string>No labels will be placed within this distance from the map’s edges.</string>
         </property>
         <property name="scaledContents">
          <bool>false</bool>
