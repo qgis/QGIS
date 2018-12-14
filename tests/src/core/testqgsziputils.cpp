@@ -32,8 +32,6 @@ class TestQgsZipUtils: public QObject
     void cleanup();// will be called after every testfunction.
 
     void unzipWithSubdirs();
-
-  private:
 };
 
 void TestQgsZipUtils::initTestCase()
@@ -76,7 +74,7 @@ void TestQgsZipUtils::unzipWithSubdirs()
 
   QgsZipUtils::unzip( fileInfo.absoluteFilePath(), unzipDirPath, files );
   // Test number of unzipped files included folders
-  QVERIFY( files.count() == 11 );
+  QCOMPARE( files.count(), 11 );
 
   // Get list of files from the root folder
   dir.setFilter( QDir::Dirs | QDir::Files |  QDir::NoDotAndDotDot );
@@ -86,7 +84,7 @@ void TestQgsZipUtils::unzipWithSubdirs()
     filesFromResultDir << it.next();
 
   // Test if ziplib matches number of files in the root folder
-  QVERIFY( files.count() == filesFromResultDir.count() );
+  QCOMPARE( files.count(), filesFromResultDir.count() );
 
   // Test if random files have been unzipped into the root folder
   QVERIFY( filesFromResultDir.contains( unzipDirPath + "/folder/folder2/landsat_b2.tif" ) );
