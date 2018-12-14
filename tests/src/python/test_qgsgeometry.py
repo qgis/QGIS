@@ -272,6 +272,22 @@ class TestQgsGeometry(unittest.TestCase):
         with self.assertRaises(ValueError):
             QgsGeometry().asPoint()
 
+        # as polyline
+        self.assertEqual(QgsGeometry.fromWkt('LineString(11 13,14 15)').asPolyline(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        self.assertEqual(QgsGeometry.fromWkt('LineStringZ(11 13 1,14 15 2)').asPolyline(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        self.assertEqual(QgsGeometry.fromWkt('LineStringM(11 13 1,14 15 2)').asPolyline(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        self.assertEqual(QgsGeometry.fromWkt('LineStringZM(11 13 1 2,14 15 3 4)').asPolyline(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Point(11 13)').asPolyline()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asPolyline()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiLineString((11 13, 14 15),(1 2, 3 4))').asPolyline()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Polygon((11 13,14 15, 14 13, 11 13))').asPolyline()
+        with self.assertRaises(ValueError):
+            QgsGeometry().asPolyline()
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
