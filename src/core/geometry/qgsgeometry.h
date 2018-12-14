@@ -1413,11 +1413,46 @@ class CORE_EXPORT QgsGeometry
 
     /* Accessor functions for getting geometry data */
 
+#ifndef SIP_RUN
+
     /**
-     * Returns contents of the geometry as a point
-     * if wkbType is WKBPoint, otherwise returns [0,0]
+     * Returns the contents of the geometry as a 2-dimensional point.
+     *
+     * Any z or m values present in the geometry will be discarded.
+     *
+     * \warning If the geometry is not a single-point type, a QgsPoint( 0, 0 ) will be returned.
      */
     QgsPointXY asPoint() const;
+#else
+
+    /**
+     * Returns the contents of the geometry as a 2-dimensional point.
+     *
+     * Any z or m values present in the geometry will be discarded.
+     *
+     * This method works only with single-point geometry types. If the geometry
+     * is not a single-point type, a TypeError will be raised. If the geometry
+     * is null, a ValueError will be raised.
+     */
+    SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
+    % MethodCode
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromNewType( new QgsPointXY( sipCpp->asPoint() ), sipType_QgsPointXY, Py_None );
+    }
+    % End
+#endif
 
     /**
      * Returns contents of the geometry as a polyline
