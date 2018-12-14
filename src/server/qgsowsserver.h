@@ -21,6 +21,8 @@
 #include "qgsrequesthandler.h"
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
+#else
+class QgsFeature;
 #endif
 
 #include "qgsfield.h"
