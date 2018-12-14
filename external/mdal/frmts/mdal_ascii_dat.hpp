@@ -15,15 +15,21 @@
 
 #include "mdal_data_model.hpp"
 #include "mdal.h"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
 
-  class LoaderAsciiDat
+  class DriverAsciiDat: public Driver
   {
     public:
-      LoaderAsciiDat( const std::string &datFile );
-      void load( Mesh *mesh, MDAL_Status *status );
+      DriverAsciiDat();
+      ~DriverAsciiDat( ) override;
+      DriverAsciiDat *create() override;
+
+      bool canRead( const std::string &uri ) override;
+      void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
+
 
     private:
       void readVertexTimestep(

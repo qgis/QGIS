@@ -68,6 +68,7 @@ typedef void *MeshVertexIteratorH;
 typedef void *MeshFaceIteratorH;
 typedef void *DatasetGroupH;
 typedef void *DatasetH;
+typedef void *DriverH;
 
 //! Returns MDAL version
 MDAL_EXPORT const char *MDAL_Version();
@@ -76,12 +77,57 @@ MDAL_EXPORT const char *MDAL_Version();
 MDAL_EXPORT MDAL_Status MDAL_LastStatus();
 
 ///////////////////////////////////////////////////////////////////////////////////////
+/// DRIVERS
+///////////////////////////////////////////////////////////////////////////////////////
+
+//! Returns count of registed MDAL drivers
+MDAL_EXPORT int MDAL_driverCount();
+
+/**
+ * Returns driver handle by index
+ * Do not free the returned pointer
+ */
+MDAL_EXPORT DriverH MDAL_driverFromIndex( int index );
+
+/**
+ * Returns driver handle by name
+ * Do not free the returned pointer
+ */
+MDAL_EXPORT DriverH MDAL_driverFromName( const char *name );
+
+/**
+ * Returns whether driver can be used to mesh
+ * if false, driver can be only used to load datasets to existing mesh
+ */
+MDAL_EXPORT bool MDAL_DR_meshLoadCapability( DriverH driver );
+
+/**
+ * Returns name of MDAL driver
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_DR_name( DriverH driver );
+
+/**
+ * Returns long name of MDAL driver
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_DR_longName( DriverH driver );
+
+/**
+ * Returns file filters that MDAL driver recognizes
+ * Filters are separated by ;;, e.g. *.abc;;*.def
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_DR_filters( DriverH driver );
+
+///////////////////////////////////////////////////////////////////////////////////////
 /// MESH
 ///////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Loads mesh file. On error see MDAL_LastStatus for error type
  * This may effectively load whole mesh in-memory for some providers
+ * Caller must free memory with MDAL_CloseMesh() afterwards
  */
 MDAL_EXPORT MeshH MDAL_LoadMesh( const char *meshFile );
 //! Closes mesh, frees the memory

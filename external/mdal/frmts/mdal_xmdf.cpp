@@ -85,12 +85,39 @@ size_t MDAL::XmdfDataset::activeData( size_t indexStart, size_t count, int *buff
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-MDAL::LoaderXmdf::LoaderXmdf( const std::string &datFile )
-  : mDatFile( datFile )
-{}
-
-void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
+MDAL::DriverXmdf::DriverXmdf()
+  : Driver( "XMDF",
+            "TUFLOW XMDF",
+            "*.xmdf",
+            DriverType::CanReadOnlyDatasets )
 {
+}
+
+MDAL::DriverXmdf *MDAL::DriverXmdf::create()
+{
+  return new DriverXmdf();
+}
+
+bool MDAL::DriverXmdf::canRead( const std::string &uri )
+{
+  HdfFile file( uri );
+  if ( !file.isValid() )
+  {
+    return false;
+  }
+
+  HdfDataset dsFileType = file.dataset( "/File Type" );
+  if ( dsFileType.readString() != "Xmdf" )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh, MDAL_Status *status )
+{
+  mDatFile = datFile;
   mMesh = mesh;
   if ( status ) *status = MDAL_Status::None;
 
@@ -168,7 +195,7 @@ void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
   );
 }
 
-void MDAL::LoaderXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, const HdfGroup &rootGroup, size_t vertexCount, size_t faceCount )
+void MDAL::DriverXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, const HdfGroup &rootGroup, size_t vertexCount, size_t faceCount )
 {
   for ( const std::string &name : rootGroup.groups() )
   {
@@ -179,7 +206,8 @@ void MDAL::LoaderXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, con
   }
 }
 
-std::shared_ptr<MDAL::DatasetGroup> MDAL::LoaderXmdf::readXmdfGroupAsDatasetGroup(
+
+std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGroup(
   const HdfGroup &rootGroup, const std::string &name, size_t vertexCount, size_t faceCount )
 {
   std::shared_ptr<DatasetGroup> group;

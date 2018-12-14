@@ -71,9 +71,34 @@ static bool readIStat( std::ifstream &in, int sflg, char *flag )
   return false;
 }
 
-MDAL::LoaderBinaryDat::LoaderBinaryDat( const std::string &datFile ):
-  mDatFile( datFile )
+MDAL::DriverBinaryDat::DriverBinaryDat():
+  Driver( "BINARY_DAT",
+          "Binary DAT",
+          "*.dat",
+          DriverType::CanReadOnlyDatasets
+        )
 {
+}
+
+MDAL::DriverBinaryDat *MDAL::DriverBinaryDat::create()
+{
+  return new DriverBinaryDat();
+}
+
+MDAL::DriverBinaryDat::~DriverBinaryDat() = default;
+
+bool MDAL::DriverBinaryDat::canRead( const std::string &uri )
+{
+  std::ifstream in( uri, std::ifstream::in | std::ifstream::binary );
+  int version;
+
+  if ( read( in, reinterpret_cast< char * >( &version ), 4 ) )
+    return false;
+
+  if ( version != CT_VERSION ) // Version should be 3000
+    return false;
+
+  return true;
 }
 
 /**
@@ -86,8 +111,9 @@ MDAL::LoaderBinaryDat::LoaderBinaryDat( const std::string &datFile ):
  * In MDAL we convert one output to one MDAL dataset;
  *
  */
-void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
+void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, MDAL_Status *status )
 {
+  mDatFile = datFile;
   if ( status ) *status = MDAL_Status::None;
 
   if ( !MDAL::fileExists( mDatFile ) )
@@ -245,7 +271,7 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   }
 }
 
-bool MDAL::LoaderBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
+bool MDAL::DriverBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
     std::shared_ptr<DatasetGroup> group,
     std::shared_ptr<DatasetGroup> groupMax,
     double time,

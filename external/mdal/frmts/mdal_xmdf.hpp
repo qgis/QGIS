@@ -16,6 +16,7 @@
 #include "mdal_data_model.hpp"
 #include "mdal.h"
 #include "mdal_hdf5.hpp"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
@@ -54,11 +55,15 @@ namespace MDAL
       hsize_t mTimeIndex;
   };
 
-  class LoaderXmdf
+  class DriverXmdf: public Driver
   {
     public:
-      LoaderXmdf( const std::string &datFile );
-      void load( Mesh *mesh, MDAL_Status *status );
+      DriverXmdf();
+      ~DriverXmdf( ) override = default;
+      DriverXmdf *create() override;
+
+      bool canRead( const std::string &uri ) override;
+      void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
 
     private:
       MDAL::Mesh *mMesh = nullptr;

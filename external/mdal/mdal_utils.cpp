@@ -12,6 +12,8 @@
 #include <math.h>
 #include <assert.h>
 #include <cmath>
+#include <string.h>
+#include <stdio.h>
 
 bool MDAL::fileExists( const std::string &filename )
 {
@@ -73,6 +75,17 @@ double MDAL::toDouble( const std::string &str )
   return atof( str.c_str() );
 }
 
+bool MDAL::isNumber( const std::string &str )
+{
+  // https://stackoverflow.com/a/16465826/2838364
+  return ( strspn( str.c_str(), "-.0123456789" ) == str.size() );
+}
+
+int MDAL::toInt( const std::string &str )
+{
+  return atoi( str.c_str() );
+}
+
 std::string MDAL::baseName( const std::string &filename )
 {
   // https://stackoverflow.com/a/8520815/2838364
@@ -93,6 +106,27 @@ std::string MDAL::baseName( const std::string &filename )
     fname.erase( period_idx );
   }
   return fname;
+}
+
+std::string MDAL::pathJoin( const std::string &path1, const std::string &path2 )
+{
+//https://stackoverflow.com/questions/6297738/how-to-build-a-full-path-string-safely-from-separate-strings#6297807
+#ifdef _MSC_VER
+  return path1 + "\\" + path2;
+#else
+  return path1 + "/" + path2;
+#endif
+}
+
+std::string MDAL::dirName( const std::string &filename )
+{
+  std::string dname( filename );
+  const size_t last_slash_idx = dname.find_last_of( "\\/" );
+  if ( std::string::npos != last_slash_idx )
+  {
+    dname.erase( last_slash_idx, dname.size() - last_slash_idx );
+  }
+  return dname;
 }
 
 bool MDAL::contains( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )

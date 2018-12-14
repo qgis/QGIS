@@ -57,13 +57,37 @@ size_t MDAL::Mesh2dm::vertexIndex( size_t vertexID ) const
 }
 
 
-MDAL::Loader2dm::Loader2dm( const std::string &meshFile ):
-  mMeshFile( meshFile )
+MDAL::Driver2dm::Driver2dm():
+  Driver( "2DM",
+          "2DM Mesh File",
+          "*.2dm",
+          DriverType::CanReadMeshAndDatasets
+        )
 {
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
+MDAL::Driver2dm *MDAL::Driver2dm::create()
 {
+  return new Driver2dm();
+}
+
+MDAL::Driver2dm::~Driver2dm() = default;
+
+bool MDAL::Driver2dm::canRead( const std::string &uri )
+{
+  std::ifstream in( uri, std::ifstream::in );
+  std::string line;
+  if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
+  {
+    return false;
+  }
+  return true;
+}
+
+std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, MDAL_Status *status )
+{
+  mMeshFile = meshFile;
+
   if ( status ) *status = MDAL_Status::None;
 
   std::ifstream in( mMeshFile, std::ifstream::in );

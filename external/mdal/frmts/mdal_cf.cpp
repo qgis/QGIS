@@ -15,7 +15,7 @@
 
 #define CF_THROW_ERR throw MDAL_Status::Err_UnknownFormat
 
-MDAL::cfdataset_info_map MDAL::LoaderCF::parseDatasetGroupInfo()
+MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
 {
   /*
    * list of datasets:
@@ -147,7 +147,7 @@ static void populate_vals( bool is_vector, double *vals, size_t i,
   }
 }
 
-std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( std::shared_ptr<DatasetGroup> group, size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
+std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::createFace2DDataset( std::shared_ptr<DatasetGroup> group, size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
     const std::vector<double> &vals_x, const std::vector<double> &vals_y,
     double fill_val_x, double fill_val_y )
 {
@@ -174,7 +174,7 @@ std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( std::shared_
   return dataset;
 }
 
-void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<double> &times, const MDAL::cfdataset_info_map &dsinfo_map )
+void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<double> &times, const MDAL::cfdataset_info_map &dsinfo_map )
 {
   /* PHASE 2 - add dataset groups */
   for ( const auto &it : dsinfo_map )
@@ -228,7 +228,7 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
   }
 }
 
-void MDAL::LoaderCF::parseTime( std::vector<double> &times )
+void MDAL::DriverCF::parseTime( std::vector<double> &times )
 {
 
   size_t nTimesteps = mDimensions.size( CFDimensions::Time );
@@ -242,12 +242,29 @@ void MDAL::LoaderCF::parseTime( std::vector<double> &times )
 }
 
 
-MDAL::LoaderCF::LoaderCF( const std::string &fileName ):
-  mFileName( fileName )
+MDAL::DriverCF::DriverCF( const std::string &name,
+                          const std::string &longName,
+                          const std::string &filters ):
+  Driver( name, longName, filters, DriverType::CanReadMeshAndDatasets )
 {
 }
 
-void MDAL::LoaderCF::setProjection( MDAL::Mesh *mesh )
+bool MDAL::DriverCF::canRead( const std::string &uri )
+{
+  try
+  {
+    NetCDFFile ncFile;
+    ncFile.openFile( uri );
+    populateDimensions( ncFile );
+  }
+  catch ( MDAL_Status )
+  {
+    return false;
+  }
+  return true;
+}
+
+void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
 {
   std::string coordinate_system_variable = getCoordinateSystemVariableName();
 
@@ -287,8 +304,10 @@ void MDAL::LoaderCF::setProjection( MDAL::Mesh *mesh )
   }
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
+std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName, MDAL_Status *status )
 {
+  mFileName = fileName;
+
   if ( status ) *status = MDAL_Status::None;
 
   //Dimensions dims;
@@ -300,7 +319,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
     mNcFile.openFile( mFileName );
 
     // Parse dimensions
-    mDimensions = populateDimensions();
+    mDimensions = populateDimensions( mNcFile );
 
     // Create mMesh
     Faces faces;

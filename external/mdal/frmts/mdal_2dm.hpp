@@ -12,6 +12,7 @@
 #include "mdal_data_model.hpp"
 #include "mdal_memory_data_model.hpp"
 #include "mdal.h"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
@@ -41,11 +42,15 @@ namespace MDAL
       std::map<size_t, size_t> mVertexIDtoIndex;
   };
 
-  class Loader2dm
+  class Driver2dm: public Driver
   {
     public:
-      Loader2dm( const std::string &meshFile );
-      std::unique_ptr< Mesh > load( MDAL_Status *status );
+      Driver2dm();
+      ~Driver2dm() override;
+      Driver2dm *create() override;
+
+      bool canRead( const std::string &uri ) override;
+      std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) override;
 
     private:
       std::string mMeshFile;

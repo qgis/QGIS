@@ -32,6 +32,8 @@ namespace MDAL
   /** Return whether file exists */
   bool fileExists( const std::string &filename );
   std::string baseName( const std::string &filename );
+  std::string dirName( const std::string &filename );
+  std::string pathJoin( const std::string &path1, const std::string &path2 );
 
   // strings
   enum ContainsBehaviour
@@ -51,8 +53,10 @@ namespace MDAL
 
   /** Return 0 if not possible to convert */
   size_t toSizeT( const std::string &str );
+  int toInt( const std::string &str );
   double toDouble( const std::string &str );
   bool toBool( const std::string &str );
+  bool isNumber( const std::string &str );
 
   enum SplitBehaviour
   {
