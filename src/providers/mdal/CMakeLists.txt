@@ -34,7 +34,6 @@ IF (WITH_INTERNAL_MDAL)
   SET(MDAL_LIB_SRCS
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.cpp
-    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_loader.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.cpp
@@ -47,7 +46,6 @@ IF (WITH_INTERNAL_MDAL)
   SET(MDAL_LIB_HDRS
     ${CMAKE_SOURCE_DIR}/external/mdal/api/mdal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.hpp
-    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_loader.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.hpp

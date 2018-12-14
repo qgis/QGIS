@@ -77,10 +77,10 @@ void TestQgsMdalProvider::cleanupTestCase()
 void TestQgsMdalProvider::filters()
 {
   QString meshFilters = QgsProviderRegistry::instance()->fileMeshFilters();
-  QVERIFY(meshFilters.contains("*.2dm"));
+  QVERIFY( meshFilters.contains( "*.2dm" ) );
 
   QString datasetFilters = QgsProviderRegistry::instance()->fileMeshDatasetFilters();
-  QVERIFY(datasetFilters.contains("*.dat"));
+  QVERIFY( datasetFilters.contains( "*.dat" ) );
 }
 
 QGSTEST_MAIN( TestQgsMdalProvider )
