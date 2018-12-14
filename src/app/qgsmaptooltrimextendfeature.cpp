@@ -158,7 +158,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
           // TRIM PART
           else if ( QgsGeometryUtils::leftOfLine( QgsPoint( mMapPoint ), pLimit1, pLimit2 ) != QgsGeometryUtils::leftOfLine( pExtend1, pLimit1, pLimit2 ) )
           {
-            // Part where the mouse is (+) will be trimed
+            // Part where the mouse is (+) will be trimmed
             /*     |
              *     +
              *     |
@@ -234,7 +234,7 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
           match.layer()->endEditCommand();
           match.layer()->triggerRepaint();
 
-          emit messageEmitted( tr( "Feature trimed/extended." ) );
+          emit messageEmitted( tr( "Feature trimmed/extended." ) );
         }
         else
         {
