@@ -76,10 +76,15 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         geoms = dict()
+        null_geom_features = set()
         index = QgsSpatialIndex()
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
+
+            if not f.hasGeometry():
+                null_geom_features.add(f.id())
+                continue
 
             geoms[f.id()] = f.geometry()
             index.addFeature(f)
@@ -115,17 +120,20 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
             current += 1
             feedback.setProgress(int(0.80 * current * total) + 10)  # takes about 80% of time
 
-        total = 100.0 / len(unique_features) if unique_features else 1
-
         # now, fetch all the feature attributes for the unique features only
         # be super-smart and don't re-fetch geometries
-        request = QgsFeatureRequest().setFilterFids(list(unique_features.keys())).setFlags(QgsFeatureRequest.NoGeometry)
+        distinct_geoms = set(unique_features.keys())
+        output_feature_ids = distinct_geoms.union(null_geom_features)
+        total = 100.0 / len(output_feature_ids) if output_feature_ids else 1
+
+        request = QgsFeatureRequest().setFilterFids(list(output_feature_ids)).setFlags(QgsFeatureRequest.NoGeometry)
         for current, f in enumerate(source.getFeatures(request)):
             if feedback.isCanceled():
                 break
 
             # use already fetched geometry
-            f.setGeometry(unique_features[f.id()])
+            if f.id() not in null_geom_features:
+                f.setGeometry(unique_features[f.id()])
             sink.addFeature(f, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(0.10 * current * total) + 90) # takes about 10% of time
