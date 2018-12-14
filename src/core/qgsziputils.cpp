@@ -85,6 +85,14 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         if ( zip_fread( file, buf, len ) != -1 )
         {
           QFileInfo newFile( QDir( dir ), QString( stat.name ) );
+          QString fileName( stat.name );
+          bool isDirectory = fileName.lastIndexOf( "/" ) == fileName.length() - 1;
+
+          if ( isDirectory )
+          {
+            QDir( dir ).mkdir( fileName );
+          }
+
           std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
           zip_fclose( file );
           files.append( newFile.absoluteFilePath() );

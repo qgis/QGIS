@@ -204,6 +204,7 @@ SET(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testqgsvectorlayerutils.cpp
+ testqgsziputils.cpp
  testziplayer.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerrenderer.cpp
