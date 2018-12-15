@@ -799,8 +799,17 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             '(SELECT * FROM \\"somedata\\" as my_alias4\n)',
             '(SELECT * FROM (SELECT * FROM \\"somedata\\"))',
             '(SELECT my_alias5.* FROM (SELECT * FROM \\"somedata\\") AS my_alias5)',
-            '(SELECT my_alias5.* FROM (SELECT * FROM \\"somedata\\" as my_alias\n) AS my_alias5)',
-            '(SELECT my_alias6.* FROM (SELECT * FROM \\"somedata\\" as my_alias\n) AS my_alias6\n)',
+            '(SELECT my_alias6.* FROM (SELECT * FROM \\"somedata\\" as my_alias\n) AS my_alias6)',
+            '(SELECT my_alias7.* FROM (SELECT * FROM \\"somedata\\" as my_alias\n) AS my_alias7\n)',
+            '(SELECT my_alias8.* FROM (SELECT * FROM \\"some data\\") AS my_alias8)',
+            '(SELECT my_alias9.* FROM (SELECT * FROM \\"some data\\" as my_alias\n) AS my_alias9)',
+            '(SELECT my_alias10.* FROM (SELECT * FROM \\"some data\\" as my_alias\n) AS my_alias10\n)',
+            '(select sd.* from \\"some data\\" as sd left join \\"some data\\" as sd2 on ( sd2.name = sd.name ))',
+            '(SELECT * FROM \\"some data\\" as my_alias11\n)',
+            '(SELECT * FROM \\"some data\\" as my_alias12)',
+            '(SELECT * FROM \\"some data\\" AS my_alias13)',
+            '(SELECT * from \\"some data\\" AS my_alias14\n)',
+            '(SELECT * FROM (SELECT * from \\"some data\\"))',
         )
         for sql in queries:
             vl = QgsVectorLayer('dbname=\'{}\' table="{}" (geom) sql='.format(dbname, sql), 'test', 'spatialite')
@@ -819,28 +828,32 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
 
         # simple table with primary key
-        sql = "CREATE TABLE test_pk (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        sql = "CREATE TABLE \"test pk\" (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
         cur.execute(sql)
 
-        sql = "SELECT AddGeometryColumn('test_pk', 'geometry', 4326, 'POINT', 'XY')"
+        sql = "SELECT AddGeometryColumn('test pk', 'geometry', 4326, 'POINT', 'XY')"
         cur.execute(sql)
 
         for i in range(11, 21):
-            sql = "INSERT INTO test_pk (id, name, geometry) "
+            sql = "INSERT INTO \"test pk\" (id, name, geometry) "
             sql += "VALUES ({id}, 'name {id}', GeomFromText('POINT({id} {id})', 4326))".format(id=i)
             cur.execute(sql)
 
-        # simple table without primary key
-        sql = "CREATE TABLE somedata (name TEXT NOT NULL)"
-        cur.execute(sql)
-
-        sql = "SELECT AddGeometryColumn('somedata', 'geom', 4326, 'POINT', 'XY')"
-        cur.execute(sql)
-
-        for i in range(11, 21):
-            sql = "INSERT INTO somedata (name, geom) "
-            sql += "VALUES ('name {id}', GeomFromText('POINT({id} {id})', 4326))".format(id=i)
+        def _make_table(table_name):
+            # simple table without primary key
+            sql = "CREATE TABLE \"%s\" (name TEXT NOT NULL)" % table_name
             cur.execute(sql)
+
+            sql = "SELECT AddGeometryColumn('%s', 'geom', 4326, 'POINT', 'XY')" % table_name
+            cur.execute(sql)
+
+            for i in range(11, 21):
+                sql = "INSERT INTO \"%s\" (name, geom) " % table_name
+                sql += "VALUES ('name {id}', GeomFromText('POINT({id} {id})', 4326))".format(id=i)
+                cur.execute(sql)
+
+        _make_table("somedata")
+        _make_table("some data")
 
         cur.execute("COMMIT")
         con.close()
@@ -857,11 +870,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                 self.assertEqual(f.geometry().asWkt(), 'Point ({id} {id})'.format(id=i))
                 i += 1
 
-        vl_pk = QgsVectorLayer('dbname=\'%s\' table="(select * from test_pk)" (geometry) sql=' % dbname, 'pk', 'spatialite')
+        vl_pk = QgsVectorLayer('dbname=\'%s\' table="(select * from \\"test pk\\")" (geometry) sql=' % dbname, 'pk', 'spatialite')
         self.assertTrue(vl_pk.isValid())
         _check_features(vl_pk, 0)
 
         vl_no_pk = QgsVectorLayer('dbname=\'%s\' table="(select * from somedata)" (geom) sql=' % dbname, 'pk', 'spatialite')
+        self.assertTrue(vl_no_pk.isValid())
+        _check_features(vl_no_pk, 10)
+
+        vl_no_pk = QgsVectorLayer('dbname=\'%s\' table="(select * from \\"some data\\")" (geom) sql=' % dbname, 'pk', 'spatialite')
         self.assertTrue(vl_no_pk.isValid())
         _check_features(vl_no_pk, 10)
 
