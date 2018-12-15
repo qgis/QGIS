@@ -429,6 +429,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if layer.isValid():
             return layer
         else:
+            e = BaseError(self.tr("There was an error creating the SQL layer, please check the logs for further information."))
+            DlgDbError.showError(e, self)
             return None
 
     def loadSqlLayer(self):
