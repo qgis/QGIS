@@ -107,6 +107,10 @@ class PointsFromLines(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
+
+            if not f.hasGeometry():
+                continue
+
             geom = f.geometry()
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()
