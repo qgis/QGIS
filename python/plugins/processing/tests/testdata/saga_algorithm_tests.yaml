@@ -552,3 +552,15 @@ tests:
         - db2c282835706e4320e7c59d86c28d930b35433ec57af70e35a325d5
         - 9caba3703fd59f99466c0bf37054826d328d1349cfe03f171655adf6
         type: rasterhash
+
+  - algorithm: saga:zonalrasterstatistics
+    name: Zonal grid statistics
+    params:
+      ZONES:
+        name: custom/dem_boolean.tif
+        type: raster
+    results:
+      OUTTAB:
+        name: expected/saga/zonal_grid_stats.dbf
+        type: vector
+  
