@@ -737,6 +737,7 @@
         <file>themes/default/mActionTerminal.svg</file>
         <file>themes/default/mIconFolder24.svg</file>
         <file>themes/default/mActionNewFolder.svg</file>
+        <file>themes/default/mIconFieldBool.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

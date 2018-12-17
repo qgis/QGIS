@@ -258,6 +258,9 @@ QIcon QgsFields::iconForField( int fieldIdx ) const
 {
   switch ( d->fields.at( fieldIdx ).field.type() )
   {
+    case QVariant::Bool:
+      return QgsApplication::getThemeIcon( "/mIconFieldBool.svg" );
+
     case QVariant::Int:
     case QVariant::UInt:
     case QVariant::LongLong:
