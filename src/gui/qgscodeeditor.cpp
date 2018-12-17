@@ -38,6 +38,9 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   }
   setSciWidget();
   setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+
+  SendScintilla( SCI_SETADDITIONALSELECTIONTYPING, 1 );
+  SendScintilla( SCI_SETMULTIPASTE, 1 );
 }
 
 // Workaround a bug in QScintilla 2.8.X
