@@ -18,6 +18,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QStringList>
 
 #include <mdal.h>
 
@@ -70,11 +71,26 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsRectangle extent() const override;
 
     /**
-     * Returns filters for meshes and datasets to be used in Open File Dialogs
+     * Returns file filters for meshes and datasets to be used in Open File Dialogs
      * \param fileMeshFiltersString file mesh filters
      * \param fileMeshDatasetFiltersString file mesh datasets filters
+     *
+     * \see fileMeshExtensions()
+     *
+     * \since QGIS 3.6
      */
     static void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString );
+
+    /**
+     * Returns file extensions for meshes and datasets
+     * \param fileMeshExtensions file mesh extensions
+     * \param fileMeshDatasetExtensions file mesh datasets extensions
+     *
+     * \see fileMeshFilters()
+     *
+     * \since QGIS 3.6
+     */
+    static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
   private:
     QVector<QgsMeshVertex> vertices( ) const;

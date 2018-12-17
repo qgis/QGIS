@@ -241,6 +241,58 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   QgsDebugMsg( "Mesh dataset filter list built: " + fileMeshDatasetFiltersString );
 }
 
+void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
+    QStringList &fileMeshDatasetExtensions )
+{
+  DriverH mdalDriver;
+
+  // Grind through all the drivers and their respective metadata.
+  // We'll add a file extension for those drivers that have a file
+  // extension defined for them
+
+  fileMeshExtensions.clear();
+  fileMeshDatasetExtensions.clear();
+
+  int driverCount = MDAL_driverCount();
+
+  for ( int i = 0; i < driverCount; ++i )
+  {
+    mdalDriver = MDAL_driverFromIndex( i );
+    if ( !mdalDriver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+
+    const QString driverFilters = MDAL_DR_filters( mdalDriver );
+    QStringList extensions = driverFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+    bool isMeshDriver = MDAL_DR_meshLoadCapability( mdalDriver );
+
+    if ( !extensions.isEmpty() )
+    {
+      for ( auto ext : extensions )
+      {
+        ext.remove( QStringLiteral( "*." ) );
+        if ( isMeshDriver )
+          fileMeshExtensions += ext;
+        else
+          fileMeshDatasetExtensions += ext;
+      }
+    }
+  }
+
+  // sort file extensions alphabetically
+  fileMeshExtensions.sort();
+  fileMeshDatasetExtensions.sort();
+
+  // remove duplicates
+  fileMeshExtensions.erase( std::unique( fileMeshExtensions.begin(), fileMeshExtensions.end() ), fileMeshExtensions.end() );
+  fileMeshDatasetExtensions.erase( std::unique( fileMeshDatasetExtensions.begin(), fileMeshDatasetExtensions.end() ), fileMeshDatasetExtensions.end() );
+
+  QgsDebugMsg( "Mesh extensions list built: " + fileMeshExtensions.join( QStringLiteral( ";;" ) ) );
+  QgsDebugMsg( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QStringLiteral( ";;" ) ) );
+}
+
 /*----------------------------------------------------------------------------------------------*/
 
 bool QgsMdalProvider::addDataset( const QString &uri )
