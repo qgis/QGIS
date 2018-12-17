@@ -86,8 +86,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
   mGeometryColumnEdit->setEnabled( false );
-  mGeometryColumnEdit->setText( "geometry" );
-  mFeatureIdColumnEdit->setPlaceholderText( DEFAULT_OGR_FID_COLUMN_TITLE );
+  mGeometryColumnEdit->setText( QStringLiteral( "geometry" ) );
+  mFeatureIdColumnEdit->setPlaceholderText( QStringLiteral( DEFAULT_OGR_FID_COLUMN_TITLE ) );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
 
@@ -97,6 +97,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number (real)" ), "real" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date & time" ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
@@ -195,7 +196,7 @@ void QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked()
   if ( !mFieldNameEdit->text().isEmpty() )
   {
     QString myName = mFieldNameEdit->text();
-    const QString featureId = mFeatureIdColumnEdit->text().isEmpty() ? DEFAULT_OGR_FID_COLUMN_TITLE : mFeatureIdColumnEdit->text();
+    const QString featureId = mFeatureIdColumnEdit->text().isEmpty() ? QStringLiteral( DEFAULT_OGR_FID_COLUMN_TITLE ) : mFeatureIdColumnEdit->text();
     if ( myName.compare( featureId, Qt::CaseInsensitive ) == 0 )
     {
       QMessageBox::critical( this, tr( "Add Field" ), tr( "The field cannot have the same name as the feature identifier." ) );
@@ -432,6 +433,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     QString fieldType( ( *it )->text( 1 ) );
     QString fieldWidth( ( *it )->text( 2 ) );
 
+    bool isBool = false;
     OGRFieldType ogrType( OFTString );
     if ( fieldType == QLatin1String( "text" ) )
       ogrType = OFTString;
@@ -445,6 +447,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTDate;
     else if ( fieldType == QLatin1String( "datetime" ) )
       ogrType = OFTDateTime;
+    else if ( fieldType == QLatin1String( "bool" ) )
+    {
+      ogrType = OFTInteger;
+      isBool = true;
+    }
     else if ( fieldType == QLatin1String( "binary" ) )
       ogrType = OFTBinary;
 
@@ -453,6 +460,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
     gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
     if ( ogrType != OFTBinary )
       OGR_Fld_SetWidth( fld.get(), ogrWidth );
+    if ( isBool )
+      OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
 
     if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
     {
