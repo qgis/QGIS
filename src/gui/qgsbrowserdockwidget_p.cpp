@@ -38,7 +38,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsmeshlayer.h"
-#include "qgsgui.h"
+#include "qgsapplication.h"
 #include "qgsnative.h"
 #include "qgsmaptoolpan.h"
 #include "qgsvectorlayercache.h"
@@ -263,7 +263,7 @@ void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 {
   QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    QgsApplication::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
 }

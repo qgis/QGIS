@@ -251,7 +251,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( QgsProject::instance()->fileName() );
+    QgsApplication::instance->nativePlatformInterface()->openFileExplorerAndSelectFile( QgsProject::instance()->fileName() );
   } );
 
   // get the manner in which the number of decimal places in the mouse

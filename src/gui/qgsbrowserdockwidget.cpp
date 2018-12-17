@@ -35,7 +35,6 @@
 #include "qgsbrowserproxymodel.h"
 #include "qgsgui.h"
 #include "qgswindowmanagerinterface.h"
-#include "qgsnative.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"
 

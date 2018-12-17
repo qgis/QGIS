@@ -1358,28 +1358,28 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
-  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle(),
+  QgsApplication::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle(),
       QgsApplication::applicationName(),
       QgsApplication::organizationName(),
       Qgis::QGIS_VERSION );
-  connect( QgsGui::instance()->nativePlatformInterface(), &QgsNative::usbStorageNotification, mBrowserModel, &QgsBrowserModel::refreshDrives );
+  connect( QgsApplication::instance()->nativePlatformInterface(), &QgsNative::usbStorageNotification, mBrowserModel, &QgsBrowserModel::refreshDrives );
 
   // setup application progress reports from task manager
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, this, []
   {
-    QgsGui::instance()->nativePlatformInterface()->showUndefinedApplicationProgress();
+    QgsApplication::instance()->nativePlatformInterface()->showUndefinedApplicationProgress();
   } );
   connect( QgsApplication::taskManager(), &QgsTaskManager::finalTaskProgressChanged, this, []( double val )
   {
-    QgsGui::instance()->nativePlatformInterface()->setApplicationProgress( val );
+    QgsApplication::instance()->nativePlatformInterface()->setApplicationProgress( val );
   } );
   connect( QgsApplication::taskManager(), &QgsTaskManager::allTasksFinished, this, []
   {
-    QgsGui::instance()->nativePlatformInterface()->hideApplicationProgress();
+    QgsApplication::instance()->nativePlatformInterface()->hideApplicationProgress();
   } );
   connect( QgsApplication::taskManager(), &QgsTaskManager::countActiveTasksChanged, this, []( int count )
   {
-    QgsGui::instance()->nativePlatformInterface()->setApplicationBadgeCount( count );
+    QgsApplication::instance()->nativePlatformInterface()->setApplicationBadgeCount( count );
   } );
 
   // supposedly all actions have been added, now register them to the shortcut manager
@@ -6717,7 +6717,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-  QgsGui::nativePlatformInterface()->currentAppActivateIgnoringOtherApps();
+  QgsApplication::instance()->nativePlatformInterface()->currentAppActivateIgnoringOtherApps();
 }
 
 void QgisApp::addWindow( QAction *action )
