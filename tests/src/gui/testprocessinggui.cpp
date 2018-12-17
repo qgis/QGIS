@@ -1396,6 +1396,8 @@ void TestProcessingGui::testDistanceWrapper()
   // test unit handling
   w->show();
 
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+
   // crs values
   wrapper.setUnitParameterValue( QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
@@ -1473,6 +1475,15 @@ void TestProcessingGui::testDistanceWrapper()
   wrapper.setParameterValue( 5, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
 
+  delete w;
+
+  // with default unit
+  QgsProcessingParameterDistance paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+  paramDefaultUnit.setDefaultUnit( QgsUnitTypes::DistanceFeet );
+  QgsProcessingDistanceWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  w = wrapperDefaultUnit.createWrappedWidget( context );
+  w->show();
+  QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "feet" ) );
   delete w;
 
   // with decimals
