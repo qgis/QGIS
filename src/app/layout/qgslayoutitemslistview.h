@@ -18,10 +18,31 @@
 
 #include "qgis.h"
 #include <QTreeView>
+#include <QSortFilterProxyModel>
 
 class QgsLayout;
 class QgsLayoutDesignerDialog;
 class QgsLayoutModel;
+class QgsLayoutItem;
+
+class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent );
+
+    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const; \
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+
+  public slots:
+    void setSelected( const QModelIndex &index );
+
+  private:
+
+    QgsLayoutModel *mModel = nullptr;
+};
 
 /**
  * A list view for showing items in a layout
@@ -46,7 +67,7 @@ class QgsLayoutItemsListView : public QTreeView
   private:
 
     QgsLayout *mLayout = nullptr;
-    QgsLayoutModel *mModel = nullptr;
+    QgsLayoutItemsListViewModel *mModel = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
 };
 

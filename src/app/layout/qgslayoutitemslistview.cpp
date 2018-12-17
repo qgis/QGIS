@@ -21,6 +21,54 @@
 #include <QHeaderView>
 #include <QMouseEvent>
 
+
+QgsLayoutItemsListViewModel::QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( model )
+{
+  setSourceModel( mModel );
+}
+
+QgsLayoutItem *QgsLayoutItemsListViewModel::itemFromIndex( const QModelIndex &index ) const
+{
+  return mModel->itemFromIndex( mapToSource( index ) );
+}
+
+void QgsLayoutItemsListViewModel::setSelected( const QModelIndex &index )
+{
+  mModel->setSelected( mapToSource( index ) );
+}
+
+QVariant QgsLayoutItemsListViewModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() )
+    return QVariant();
+
+  QgsLayoutItem *item = itemFromIndex( index );
+  if ( !item )
+  {
+    return QVariant();
+  }
+
+  if ( role == Qt::FontRole )
+  {
+    if ( index.column() == QgsLayoutModel::ItemId && item->isSelected() )
+    {
+      //draw name of selected items in bold
+      QFont boldFont;
+      boldFont.setBold( true );
+      return boldFont;
+    }
+  }
+
+  return QSortFilterProxyModel::data( index, role );
+}
+
+
+//
+// QgsLayoutItemsListView
+//
+
 QgsLayoutItemsListView::QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerDialog *designer )
   : QTreeView( parent )
   , mDesigner( designer )
@@ -39,7 +87,7 @@ QgsLayoutItemsListView::QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesign
 void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
-  mModel = layout->itemsModel();
+  mModel = new QgsLayoutItemsListViewModel( layout->itemsModel(), this );
   setModel( mModel );
 
   header()->setSectionResizeMode( 0, QHeaderView::Fixed );
@@ -48,7 +96,7 @@ void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
   setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
   header()->setSectionsMovable( false );
 
-  connect( selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
+  connect( selectionModel(), &QItemSelectionModel::currentChanged, mModel, &QgsLayoutItemsListViewModel::setSelected );
 }
 
 void QgsLayoutItemsListView::showContextMenu( QPoint point )
