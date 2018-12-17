@@ -230,7 +230,7 @@ Returns the geometry at the specified ``index``. An IndexError will be raised if
 Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
 corresponds to the last geometry in the collection.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 %MethodCode
     const int count = sipCpp->numGeometries();
@@ -256,7 +256,7 @@ Deletes the geometry at the specified ``index``. A geometry at the ``index`` mus
 Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
 corresponds to the last geometry in the collection.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 %MethodCode
     const int count = sipCpp->numGeometries();
@@ -275,7 +275,7 @@ corresponds to the last geometry in the collection.
 %Docstring
 Iterates through all geometries in the collection.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 %MethodCode
     sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );

@@ -515,7 +515,7 @@ Returns the point at the specified ``index``. An IndexError will be raised if no
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -542,7 +542,7 @@ Sets the point at the specified ``index``. A point at the ``index`` must already
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -572,7 +572,7 @@ Deletes the vertex at the specified ``index``. A point at the ``index`` must alr
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 %MethodCode
     const int count = sipCpp->numPoints();

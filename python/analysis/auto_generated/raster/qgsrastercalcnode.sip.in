@@ -80,14 +80,14 @@ Returns a string representation of the expression
 
 :param cStyle: if true operators will follow C syntax
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 
     QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
 %Docstring
 Returns a list of nodes of a specific ``type``
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.4
 %End
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;

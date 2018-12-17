@@ -648,7 +648,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
     * corresponds to the last point in the line.
     *
-    * \since QGIS 3.6
+    * \since QGIS 3.4.4
     */
     SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsPoint );
     % MethodCode
@@ -675,7 +675,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
     * corresponds to the last point in the line.
     *
-    * \since QGIS 3.6
+    * \since QGIS 3.4.4
     */
     void __setitem__( int index, const QgsPoint &point );
     % MethodCode
@@ -705,7 +705,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.4
      */
     void __delitem__( int index );
     % MethodCode

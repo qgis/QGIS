@@ -109,13 +109,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     /**
      * Returns a string representation of the expression
      * \param cStyle if true operators will follow C syntax
-     * \since QGIS 3.6
+     * \since QGIS 3.4.4
      */
     QString toString( bool cStyle = false ) const;
 
     /**
      * Returns a list of nodes of a specific \a type
-     * \since QGIS 3.6
+     * \since QGIS 3.4.4
      */
     QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
 

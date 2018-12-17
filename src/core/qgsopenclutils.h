@@ -143,7 +143,7 @@ class CORE_EXPORT QgsOpenClUtils
     /**
      * Returns the active platform OpenCL version string (e.g. 1.1, 2.0 etc.)
      * or a blank string if there is no active platform.
-     * \since QGIS 3.6
+     * \since QGIS 3.4.4
      */
     static QString activePlatformVersion( );
 
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsOpenClUtils
      * Build the program from \a source in the given \a context and depending on \a exceptionBehavior
      * can throw or catch the exceptions
      * \return the built program
-     * \deprecated since QGIS 3.6
+     * \deprecated since QGIS 3.4.4
      */
     Q_DECL_DEPRECATED static cl::Program buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior = Catch );
 
