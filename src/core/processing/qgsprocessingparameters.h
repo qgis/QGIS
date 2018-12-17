@@ -1511,12 +1511,29 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      */
     void setParentParameterName( const QString &parentParameterName );
 
+    /**
+     * Returns the default distance unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     * \since QGIS 3.4.3
+     */
+    QgsUnitTypes::DistanceUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default distance \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     * \since QGIS 3.4.3
+     */
+    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit ) { mDefaultUnit = unit; }
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
     QString mParentParameterName;
+    QgsUnitTypes::DistanceUnit mDefaultUnit = QgsUnitTypes::DistanceUnknownUnit;
 
 };
 

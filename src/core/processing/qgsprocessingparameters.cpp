@@ -4584,6 +4584,7 @@ QVariantMap QgsProcessingParameterDistance::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterNumber::toVariantMap();
   map.insert( QStringLiteral( "parent" ), mParentParameterName );
+  map.insert( QStringLiteral( "default_unit" ), static_cast< int >( mDefaultUnit ) );
   return map;
 }
 
@@ -4591,5 +4592,6 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterNumber::fromVariantMap( map );
   mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
+  mDefaultUnit = static_cast< QgsUnitTypes::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), QgsUnitTypes::DistanceUnknownUnit ).toInt() );
   return true;
 }
