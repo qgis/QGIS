@@ -2700,7 +2700,9 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       {
         QVariantList k = mShared->removeFid( fid );
 
-        for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
+        int keyCount = std::min( mPrimaryKeyAttrs.size(), k.size() );
+
+        for ( int i = 0; i < keyCount; i++ )
         {
           int idx = mPrimaryKeyAttrs.at( i );
           if ( !attrs.contains( idx ) )
