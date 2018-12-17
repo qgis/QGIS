@@ -820,7 +820,7 @@
   <action name="mActionSetToCanvasExtent">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+     <normaloff>:/images/themes/default/mActionSetToCanvasExtent.svg</normaloff>:/images/themes/default/mActionSetToCanvasExtent.svg</iconset>
    </property>
    <property name="text">
     <string>Set to Map Canvas Extent</string>
@@ -832,7 +832,7 @@
   <action name="mActionViewExtentInCanvas">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionViewExtentInCanvas.svg</normaloff>:/images/themes/default/mActionViewExtentInCanvas.svg</iconset>
    </property>
    <property name="text">
     <string>View Extent in Map Canvas</string>
@@ -856,7 +856,7 @@
   <action name="mActionViewScaleInCanvas">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</iconset>
+     <normaloff>:/images/themes/default/mActionViewScaleInCanvas.svg</normaloff>:/images/themes/default/mActionViewScaleInCanvas.svg</iconset>
    </property>
    <property name="text">
     <string>View Scale in Map Canvas</string>
@@ -868,7 +868,7 @@
   <action name="mActionSetToCanvasScale">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomToBookmark.svg</normaloff>:/images/themes/default/mActionZoomToBookmark.svg</iconset>
+     <normaloff>:/images/themes/default/mActionSetToCanvasScale.svg</normaloff>:/images/themes/default/mActionSetToCanvasScale.svg</iconset>
    </property>
    <property name="text">
     <string>Set to Map Canvas Scale</string>

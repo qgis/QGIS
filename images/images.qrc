@@ -316,6 +316,8 @@
         <file>themes/default/mActionNewVectorLayer.svg</file>
         <file>themes/default/mActionVertexTool.svg</file>
         <file>themes/default/mActionVertexToolActiveLayer.svg</file>
+        <file>themes/default/mActionViewExtentInCanvas.svg</file>
+        <file>themes/default/mActionViewScaleInCanvas.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
@@ -365,6 +367,8 @@
         <file>themes/default/mActionSelectRectangle.svg</file>
         <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
+        <file>themes/default/mActionSetToCanvasExtent.svg</file>
+        <file>themes/default/mActionSetToCanvasScale.svg</file>
         <file>themes/default/mActionSharing.svg</file>
         <file>themes/default/mActionSharingExport.svg</file>
         <file>themes/default/mActionSharingImport.svg</file>
