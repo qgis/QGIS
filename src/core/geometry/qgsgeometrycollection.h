@@ -242,7 +242,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     * Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
     * corresponds to the last geometry in the collection.
     *
-    * \since QGIS 3.6
+    * \since QGIS 3.4.4
     */
     SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
      * corresponds to the last geometry in the collection.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.4
      */
     void __delitem__( int index );
     % MethodCode
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Iterates through all geometries in the collection.
      *
-     * \since QGIS 3.6
+     * \since QGIS 3.4.4
      */
     SIP_PYOBJECT __iter__() SIP_TYPEHINT( QgsGeometryPartIterator );
     % MethodCode
