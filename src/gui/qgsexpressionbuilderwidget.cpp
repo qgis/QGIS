@@ -97,7 +97,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mShowHelpButton, &QPushButton::clicked, this, [ = ]()
   {
     functionsplit->setSizes( QList<int>( {mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(),
-                                          mHelpAndValuesWidget->minimumWidth()} ) );
+                                          mHelpAndValuesWidget->minimumWidth()
+                                         } ) );
     mShowHelpButton->setEnabled( false );
   } );
   connect( functionsplit, &QSplitter::splitterMoved, this, [ = ]( int, int )
@@ -608,6 +609,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<>" ), QStringLiteral( " <> " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<=" ), QStringLiteral( " <= " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">=" ), QStringLiteral( " >= " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "[]" ), QStringLiteral( "[ ]" ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "||" ), QStringLiteral( " || " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IN" ), QStringLiteral( " IN " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
@@ -955,6 +957,10 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
       {
         createMarkers( node->elseExp() );
       }
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntIndexOperator:
+    {
       break;
     }
   }

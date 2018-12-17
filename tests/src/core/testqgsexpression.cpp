@@ -3181,6 +3181,69 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( v.toDateTime().toMSecsSinceEpoch(), v2.toDateTime().toMSecsSinceEpoch() );
     }
+
+    void test_IndexOperator()
+    {
+      QgsExpressionContext context;
+      QgsExpression e( QStringLiteral( "'['" ) );
+      QVariant result = e.evaluate( &context );
+      QCOMPARE( result.toString(), QStringLiteral( "[" ) );
+      e = QgsExpression( QStringLiteral( "']'" ) );
+      QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "]" ) );
+      e = QgsExpression( QStringLiteral( "'[3]'" ) );
+      QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "[3]" ) );
+      e = QgsExpression( QStringLiteral( "'a[3]'" ) );
+      QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "a[3]" ) );
+      e = QgsExpression( QStringLiteral( "\"a[3]\"" ) );
+      QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "[a[3]]" ) );
+      e = QgsExpression( QStringLiteral( "(1+2)[0]" ) );
+      QVERIFY( !e.evaluate( &context ).isValid() );
+      QVERIFY( e.hasEvalError() );
+      e = QgsExpression( QStringLiteral( "(1+2)['a']" ) );
+      QVERIFY( !e.evaluate( &context ).isValid() );
+      QVERIFY( e.hasEvalError() );
+      // arrays
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[0]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 1 );
+      e = QgsExpression( QStringLiteral( "((array(1,2,3)))[0]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 1 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[1]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 2 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[2]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 3 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[-1]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 3 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[-2]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 2 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[-3]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 1 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[1+1]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 3 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[(3-2)]" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 2 );
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[3]" ) );
+      QVERIFY( !e.evaluate( &context ).isValid() );
+      QVERIFY( !e.hasEvalError() ); // no eval error - we are tolerant to this
+      e = QgsExpression( QStringLiteral( "array(1,2,3)[-4]" ) );
+      QVERIFY( !e.evaluate( &context ).isValid() );
+      QVERIFY( !e.hasEvalError() ); // no eval error - we are tolerant to this
+
+      // maps
+      e = QgsExpression( QStringLiteral( "map('a',1,'b',2,'c',3)[0]" ) );
+      QVERIFY( !e.evaluate( &context ).isValid() );
+      QVERIFY( !e.hasEvalError() ); // no eval error - we are tolerant to this
+      e = QgsExpression( QStringLiteral( "map('a',1,'b',2,'c',3)['d']" ) );
+      QVERIFY( !e.evaluate( &context ).isValid() );
+      QVERIFY( !e.hasEvalError() ); // no eval error - we are tolerant to this
+      e = QgsExpression( QStringLiteral( "map('a',1,'b',2,'c',3)['a']" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 1 );
+      e = QgsExpression( QStringLiteral( "map('a',1,'b',2,'c',3)['b']" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 2 );
+      e = QgsExpression( QStringLiteral( "map('a',1,'b',2,'c',3)['c']" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 3 );
+      e = QgsExpression( QStringLiteral( "map('a',1,'bbb',2,'c',3)['b'||'b'||'b']" ) );
+      QCOMPARE( e.evaluate( &context ).toInt(), 2 );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )

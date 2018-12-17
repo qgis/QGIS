@@ -181,6 +181,63 @@ I.e. "AND", "OR", ...
 
 };
 
+class QgsExpressionNodeIndexOperator : QgsExpressionNode
+{
+%Docstring
+A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeIndexOperator( QgsExpressionNode *container /Transfer/, QgsExpressionNode *index /Transfer/ );
+%Docstring
+Constructor for QgsExpressionNodeIndexOperator.
+%End
+    ~QgsExpressionNodeIndexOperator();
+
+    QgsExpressionNode *container() const;
+%Docstring
+Returns the container node, representing an array or map value.
+
+.. seealso:: :py:func:`index`
+%End
+
+    QgsExpressionNode *index() const;
+%Docstring
+Returns the index node, representing an array element index or map key.
+
+.. seealso:: :py:func:`container`
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
 class QgsExpressionNodeInOperator : QgsExpressionNode
 {
 %Docstring
