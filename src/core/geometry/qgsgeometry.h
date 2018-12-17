@@ -1392,7 +1392,16 @@ class CORE_EXPORT QgsGeometry
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsGeometry: %1>" ).arg( sipCpp->asWkt() );
+    QString str;
+    if ( sipCpp->isNull() )
+      str = QStringLiteral( "<QgsGeometry: null>" );
+    else
+    {
+      QString wkt = sipCpp->asWkt();
+      if ( wkt.length() > 1000 )
+        wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+      str = QStringLiteral( "<QgsGeometry: %1>" ).arg( wkt );
+    }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
