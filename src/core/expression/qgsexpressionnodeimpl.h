@@ -207,6 +207,57 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 };
 
 /**
+ * A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+ * \ingroup core
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
+{
+  public:
+
+    /**
+     * Constructor for QgsExpressionNodeIndexOperator.
+     */
+    QgsExpressionNodeIndexOperator( QgsExpressionNode *container SIP_TRANSFER, QgsExpressionNode *index SIP_TRANSFER )
+      : mContainer( container )
+      , mIndex( index )
+    {}
+    ~QgsExpressionNodeIndexOperator() override { delete mContainer; delete mIndex; }
+
+    /**
+     * Returns the container node, representing an array or map value.
+     * \see index()
+     */
+    QgsExpressionNode *container() const { return mContainer; }
+
+    /**
+     * Returns the index node, representing an array element index or map key.
+     * \see container()
+     */
+    QgsExpressionNode *index() const { return mIndex; }
+
+    QgsExpressionNode::NodeType nodeType() const override;
+    bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+    QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
+    QString dump() const override;
+
+    QSet<QString> referencedColumns() const override;
+    QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+    QList<const QgsExpressionNode *> nodes( ) const override; SIP_SKIP
+
+    bool needsGeometry() const override;
+    QgsExpressionNode *clone() const override SIP_FACTORY;
+    bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+  private:
+
+    QgsExpressionNode *mContainer = nullptr;
+    QgsExpressionNode *mIndex = nullptr;
+
+};
+
+/**
  * An expression node for value IN or NOT IN clauses.
  * \ingroup core
  */

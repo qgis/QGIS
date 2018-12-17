@@ -60,7 +60,8 @@ Abstract base class for all nodes that can appear in an expression.
       ntFunction,
       ntLiteral,
       ntColumnRef,
-      ntCondition
+      ntCondition,
+      ntIndexOperator,
     };
 
 
