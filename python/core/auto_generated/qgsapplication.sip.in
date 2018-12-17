@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsApplication : QApplication
 {
 %Docstring
@@ -158,6 +160,7 @@ The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
 but plugin writers etc can use this method as a basis for searching
 for resources in their own datastores e.g. a Qt4 resource bundle.
 %End
+
 
     static void setUITheme( const QString &themeName );
 %Docstring

@@ -23,19 +23,6 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutviewrubberband.h"
-#ifdef Q_OS_MACX
-#include "qgsmacnative.h"
-#elif defined (Q_OS_WIN)
-#ifndef __MINGW32__
-#include "qgswinnative.h"
-#else
-#include "qgsnative.h"
-#endif
-#elif defined (Q_OS_LINUX)
-#include "qgslinuxnative.h"
-#else
-#include "qgsnative.h"
-#endif
 #include "qgsprocessingguiregistry.h"
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
@@ -49,11 +36,6 @@ QgsGui *QgsGui::instance()
 {
   static QgsGui *sInstance( new QgsGui() );
   return sInstance;
-}
-
-QgsNative *QgsGui::nativePlatformInterface()
-{
-  return instance()->mNative;
 }
 
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
@@ -144,28 +126,11 @@ QgsGui::~QgsGui()
   delete mMapLayerActionRegistry;
   delete mSourceSelectProviderRegistry;
   delete mShortcutsManager;
-  delete mNative;
   delete mWidgetStateHelper;
 }
 
 QgsGui::QgsGui()
 {
-#ifdef Q_OS_MAC
-  QgsMacNative *macNative = new QgsMacNative();
-  macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
-  mNative = macNative;
-#elif defined (Q_OS_WIN)
-#ifndef __MINGW32__
-  mNative = new QgsWinNative();
-#else
-  mNative = new QgsNative();
-#endif
-#elif defined(Q_OS_LINUX)
-  mNative = new QgsLinuxNative();
-#else
-  mNative = new QgsNative();
-#endif
-
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();

@@ -49,6 +49,13 @@ class NATIVE_EXPORT QgsNative : public QObject
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
+    /**
+     * Returns a platfrom specific QgsNative interface
+     * \param iconPath the path to the application icon
+     * \since QGIS 3.4.4
+     */
+    static QgsNative *platformInterface( const QString &iconPath );
+
     virtual ~QgsNative() = default;
 
     /**

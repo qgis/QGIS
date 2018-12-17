@@ -28,7 +28,6 @@ class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
 class QgsMapLayerActionRegistry;
 class QgsSourceSelectProviderRegistry;
-class QgsNative;
 class QgsLayoutItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
@@ -56,13 +55,6 @@ class GUI_EXPORT QgsGui
      * Returns a pointer to the singleton instance.
      */
     static QgsGui *instance();
-
-    /**
-     * Returns the global native interface, which offers abstraction to the host OS's underlying public
-     * interfaces.
-     * \note Not available in Python bindings
-     */
-    SIP_SKIP static QgsNative *nativePlatformInterface();
 
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
@@ -157,7 +149,6 @@ class GUI_EXPORT QgsGui
     QgsGui();
 
     QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
-    QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
     QgsSourceSelectProviderRegistry *mSourceSelectProviderRegistry = nullptr;
     QgsShortcutsManager *mShortcutsManager = nullptr;

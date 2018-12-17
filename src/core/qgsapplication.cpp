@@ -13,6 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QFileOpenEvent>
+#include <QMessageBox>
+#include <QPalette>
+#include <QProcess>
+#include <QProcessEnvironment>
+#include <QIcon>
+#include <QPixmap>
+#include <QThreadPool>
+#include <QLocale>
+#include <QStyle>
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsdataitemproviderregistry.h"
@@ -49,25 +63,12 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsnative.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
 
 #include "layout/qgspagesizeregistry.h"
-
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QFileOpenEvent>
-#include <QMessageBox>
-#include <QPalette>
-#include <QProcess>
-#include <QProcessEnvironment>
-#include <QIcon>
-#include <QPixmap>
-#include <QThreadPool>
-#include <QLocale>
-#include <QStyle>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -1716,6 +1717,11 @@ void QgsApplication::setMaxThreads( int maxThreads )
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
   QgsDebugMsg( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+}
+
+QgsNative *QgsApplication::nativePlatformInterface()
+{
+  return members()->mNative;
 }
 
 QgsTaskManager *QgsApplication::taskManager()

@@ -29,6 +29,8 @@ class NATIVE_EXPORT QgsMacNative : public QgsNative
     explicit QgsMacNative();
     ~QgsMacNative() override;
 
+    static QgsNative *platformInterface( const QString &iconPath ) {return nullptr;}
+
     //! reset the application icon used in the notification
     void setIconPath( const QString &iconPath = QString() );
 

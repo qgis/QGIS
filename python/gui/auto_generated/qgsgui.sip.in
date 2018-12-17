@@ -31,7 +31,6 @@ related to GUI classes.
 Returns a pointer to the singleton instance.
 %End
 
-
     static QgsEditorWidgetRegistry *editorWidgetRegistry();
 %Docstring
 Returns the global editor widget registry, used for managing all known edit widget factories.

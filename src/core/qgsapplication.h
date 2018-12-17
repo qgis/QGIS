@@ -21,8 +21,11 @@
 #include <QStringList>
 
 #include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsconfig.h"
 #include "qgstranslationcontext.h"
+
+class QTranslator;
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
@@ -49,7 +52,8 @@ class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
-class QTranslator;
+class QgsNative;
+
 
 /**
  * \ingroup core
@@ -203,6 +207,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      */
     static QString themeName();
+
+    /**
+     * Returns the global native interface, which offers abstraction to the host OS's underlying public
+     * interfaces.
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP static QgsNative *nativePlatformInterface();
 
     /**
      * \brief Set the current UI theme used to style the interface.  Use uiThemes() to
@@ -861,6 +872,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     struct ApplicationMembers
     {
+      QgsNative *mNative = nullptr;
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
