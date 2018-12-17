@@ -661,6 +661,8 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDistanceWidgetWrapper:
 
 QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
 {
+  const QgsProcessingParameterDistance *distanceDef = static_cast< const QgsProcessingParameterDistance * >( parameterDefinition() );
+
   QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
   switch ( type() )
   {
@@ -699,7 +701,7 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       mWarningLabel->setLayout( warningLayout );
       layout->insertWidget( 4, mWarningLabel );
 
-      setUnits( QgsUnitTypes::DistanceUnknownUnit );
+      setUnits( distanceDef->defaultUnit() );
 
       QWidget *w = new QWidget();
       layout->setMargin( 0 );
