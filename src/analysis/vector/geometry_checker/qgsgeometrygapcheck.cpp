@@ -36,18 +36,17 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
 
-  QVector<QgsAbstractGeometry *> geomList;
+  QVector<QgsGeometry> geomList;
 
 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    geomList.append( layerFeature.geometry().constGet()->clone() );
+    geomList.append( layerFeature.geometry() );
 
     if ( feedback->isCanceled() )
     {
-      qDeleteAll( geomList );
       geomList.clear();
       break;
     }
@@ -63,7 +62,6 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   // Create union of geometry
   QString errMsg;
   std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg ) );
-  qDeleteAll( geomList );
   if ( !unionGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
