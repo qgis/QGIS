@@ -191,6 +191,8 @@ supported by all data providers.
 This walks through all data providers appending calls to their
 fileMeshFilters to a string, which is then returned.
 
+.. seealso:: :py:func:`fileMeshDatasetFilters`
+
 .. versionadded:: 3.6
 %End
 
@@ -203,6 +205,8 @@ supported by all data providers.
 
 This walks through all data providers appending calls to their
 fileMeshFilters to a string, which is then returned.
+
+.. seealso:: :py:func:`fileMeshFilters`
 
 .. versionadded:: 3.6
 %End

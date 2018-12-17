@@ -189,6 +189,8 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       fileMeshFilters to a string, which is then returned.
 
+      \see fileMeshDatasetFilters()
+
       \since QGIS 3.6
      */
     virtual QString fileMeshFilters() const;
@@ -201,6 +203,8 @@ class CORE_EXPORT QgsProviderRegistry
 
       This walks through all data providers appending calls to their
       fileMeshFilters to a string, which is then returned.
+
+      \see fileMeshFilters()
 
       \since QGIS 3.6
      */
