@@ -16,7 +16,7 @@ QGIS aims to be an easy to use GIS, providing common functions and
 features. The initial goal was to provide a GIS data viewer. QGIS has
 reached that point in its evolution and is being used by many for their
 daily GIS data viewing and editing needs. QGIS supports a number of raster
-and vector data formats, with new support easily added using the plugin
+, vector and mesh data formats, with new support easily added using the plugin
 architecture.
 
 QGIS is released under the GNU Public License (GPL) Version 2 or above.
@@ -48,6 +48,13 @@ modified.
  * MSSQL
  * Oracle
  * WFS
+
+## Supported mesh formats include:
+
+ * NetCDF
+ * GRIB
+ * 2DM 
+ * [Other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats)
 
 ## Note
 
