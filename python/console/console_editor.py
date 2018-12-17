@@ -146,6 +146,9 @@ class Editor(QsciScintilla):
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
 
+        self.SendScintilla(self.SCI_SETADDITIONALSELECTIONTYPING, 1)
+        self.SendScintilla(self.SCI_SETMULTIPASTE, 1)
+
         # self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
         # self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
