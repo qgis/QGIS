@@ -1532,6 +1532,24 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
 .. seealso:: :py:func:`parentParameterName`
 %End
 
+    QgsUnitTypes::DistanceUnit defaultUnit() const;
+%Docstring
+Returns the default distance unit for the parameter.
+
+.. seealso:: :py:func:`setDefaultUnit`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Sets the default distance ``unit`` for the parameter.
+
+.. seealso:: :py:func:`defaultUnit`
+
+.. versionadded:: 3.4.3
+%End
+
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
