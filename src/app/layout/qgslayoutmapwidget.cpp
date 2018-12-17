@@ -78,7 +78,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mOverviewCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mOverviewCheckBox_toggled );
   connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged );
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
-  connect( mLabelSettingsButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::showLabelSettings );
+  connect( mActionLabelSettings, &QAction::triggered, this, &QgsLayoutMapWidget::showLabelSettings );
 
   connect( mActionMoveContent, &QAction::triggered, this, &QgsLayoutMapWidget::switchToMoveContentTool );
   setPanelTitle( tr( "Map Properties" ) );
