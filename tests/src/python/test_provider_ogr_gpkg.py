@@ -1244,14 +1244,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         fi = vl.getFeatures(QgsFeatureRequest())
         f = QgsFeature()
 
-        #test dict value
+        #test reading dict value from attribute
         while fi.nextFeature(f):
-            fid = vl.fields().lookupField('fid')
-            if fid == 1:
-                value = vl.fields().lookupField('json_content')
-                self.assertIsInstance(f.attributes()[value], dict)
-                self.assertEqual(f.attributes()[value_idx], {'foo': 'bar'})
-                break
+            if f['fid'] == 1:
+                self.assertIsInstance(f['json_content'], dict)
+                self.assertEqual(f['json_content'], {'foo': 'bar'})
+                #test changing dict value in attribute
+                f['json_content'] = {'foo': 'baz'}
+                self.assertEqual(f['json_content'], {'foo': 'baz'})
+                #test changint dict to list
+                f['json_content'] = ['eins', 'zwei', 'drei']
+                self.assertEqual(f['json_content'], ['eins', 'zwei', 'drei'])
+                #test changing list value in attribute
+                f['json_content'] = ['eins', 'zwei', 'drei', 4]
+                self.assertEqual(f['json_content'], ['eins', 'zwei', 'drei', 4])
+
+        #test adding attribute with list value
+        #test changing to invalid value in attribute
+        #test changing list ot string
+        #test reading string
 
 
 if __name__ == '__main__':
