@@ -1261,7 +1261,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
                 #test changing list value in attribute
                 f['json_content'] = ['eins', 'zwei', 'drei', 4]
                 self.assertEqual(f['json_content'], ['eins', 'zwei', 'drei', 4])
-                #test chaning to complex json structure
+                #test changing to complex json structure
                 f['json_content'] = {'name': 'Lily', 'age': '0', 'cars': {'car1': ['fiat tipo', 'fiat punto', 'davoser schlitten'], 'car2': 'bobbycar', 'car3': 'tesla'}}
                 self.assertEqual(f['json_content'], {'name': 'Lily', 'age': '0', 'cars': {'car1': ['fiat tipo', 'fiat punto', 'davoser schlitten'], 'car2': 'bobbycar', 'car3': 'tesla'}})
 
