@@ -610,6 +610,18 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   mapElem.setAttribute( QStringLiteral( "labelMargin" ), mLabelMargin.encodeMeasurement() );
   mapElem.setAttribute( QStringLiteral( "mapFlags" ), static_cast< int>( mMapFlags ) );
 
+  QDomElement labelBlockingItemsElem = doc.createElement( QStringLiteral( "labelBlockingItems" ) );
+  for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
+  {
+    if ( !item )
+      continue;
+
+    QDomElement blockingItemElem = doc.createElement( QStringLiteral( "item" ) );
+    blockingItemElem.setAttribute( QStringLiteral( "uuid" ), item->uuid() );
+    labelBlockingItemsElem.appendChild( blockingItemElem );
+  }
+  mapElem.appendChild( labelBlockingItemsElem );
+
   return true;
 }
 
@@ -746,6 +758,22 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   setLabelMargin( QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) ) );
 
   mMapFlags = static_cast< MapItemFlags>( itemElem.attribute( QStringLiteral( "mapFlags" ), nullptr ).toInt() );
+
+  // label blocking items
+  mBlockingLabelItems.clear();
+  mBlockingLabelItemUuids.clear();
+  QDomNodeList labelBlockingNodeList = itemElem.elementsByTagName( QStringLiteral( "labelBlockingItems" ) );
+  if ( !labelBlockingNodeList.isEmpty() )
+  {
+    QDomElement blockingItems = labelBlockingNodeList.at( 0 ).toElement();
+    QDomNodeList labelBlockingNodeList = blockingItems.childNodes();
+    for ( int i = 0; i < labelBlockingNodeList.size(); ++i )
+    {
+      const QDomElement &itemBlockingElement = labelBlockingNodeList.at( i ).toElement();
+      const QString itemUuid = itemBlockingElement.attribute( QStringLiteral( "uuid" ) );
+      mBlockingLabelItemUuids << itemUuid;
+    }
+  }
 
   updateBoundingRect();
 
@@ -1160,12 +1188,27 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.setLabelBoundaryGeometry( mapBoundaryGeom );
   }
 
+  if ( !mBlockingLabelItems.isEmpty() )
+  {
+    jobMapSettings.setLabelBlockingRegions( createLabelBlockingRegions( jobMapSettings ) );
+  }
+
   return jobMapSettings;
 }
 
 void QgsLayoutItemMap::finalizeRestoreFromXml()
 {
   assignFreeId();
+
+  mBlockingLabelItems.clear();
+  for ( const QString &uuid : qgis::as_const( mBlockingLabelItemUuids ) )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
+    if ( item )
+    {
+      addLabelBlockingItem( item );
+    }
+  }
 
   mOverviewStack->finalizeRestoreFromXml();
   mGridStack->finalizeRestoreFromXml();
@@ -1252,6 +1295,26 @@ QPolygonF QgsLayoutItemMap::transformedMapPolygon() const
   QPolygonF poly = visibleExtentPolygon();
   poly.translate( -dx, -dy );
   return poly;
+}
+
+void QgsLayoutItemMap::addLabelBlockingItem( QgsLayoutItem *item )
+{
+  if ( !mBlockingLabelItems.contains( item ) )
+    mBlockingLabelItems.append( item );
+
+  connect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemMap::invalidateCache, Qt::UniqueConnection );
+}
+
+void QgsLayoutItemMap::removeLabelBlockingItem( QgsLayoutItem *item )
+{
+  mBlockingLabelItems.removeAll( item );
+  if ( item )
+    disconnect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemMap::invalidateCache );
+}
+
+bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
+{
+  return mBlockingLabelItems.contains( item );
 }
 
 QPointF QgsLayoutItemMap::mapToItemCoords( QPointF mapCoords ) const
@@ -1448,6 +1511,43 @@ void QgsLayoutItemMap::connectUpdateSlot()
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+}
+
+QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
+{
+  QPolygonF thisExtent = visibleExtentPolygon();
+  QTransform mapTransform;
+  QPolygonF thisRectPoly = QPolygonF( QRectF( 0, 0, rect().width(), rect().height() ) );
+  //workaround QT Bug #21329
+  thisRectPoly.pop_back();
+  thisExtent.pop_back();
+
+  QPolygonF thisItemPolyInLayout = mapToScene( thisRectPoly );
+
+  //create transform from layout coordinates to map coordinates
+  QTransform::quadToQuad( thisItemPolyInLayout, thisExtent, mapTransform );
+  return mapTransform;
+}
+
+QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings &mapSettings ) const
+{
+  const QTransform mapTransform = layoutToMapCoordsTransform();
+  QList< QgsLabelBlockingRegion > blockers;
+  blockers.reserve( mBlockingLabelItems.count() );
+  for ( const auto &item : qgis::as_const( mBlockingLabelItems ) )
+  {
+    if ( !item || !item->isVisible() ) // invisible items don't block labels!
+      continue;
+
+    QPolygonF itemRectInMapCoordinates = mapTransform.map( item->mapToScene( item->rect() ) );
+    itemRectInMapCoordinates.append( itemRectInMapCoordinates.at( 0 ) ); //close polygon
+    QgsGeometry blockingRegion = QgsGeometry::fromQPolygonF( itemRectInMapCoordinates );
+    const double labelMargin = mLayout->convertToLayoutUnits( mEvaluatedLabelMargin );
+    const double labelMarginInMapUnits = labelMargin / rect().width() * mapSettings.extent().width();
+    blockingRegion = blockingRegion.buffer( labelMarginInMapUnits, 0, QgsGeometry::CapSquare, QgsGeometry::JoinStyleMiter, 2 );
+    blockers << QgsLabelBlockingRegion( blockingRegion );
+  }
+  return blockers;
 }
 
 QgsLayoutMeasurement QgsLayoutItemMap::labelMargin() const

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>174</width>
-    <height>424</height>
+    <width>211</width>
+    <height>408</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,7 +41,7 @@
       <item row="1" column="0" colspan="4">
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>No labels will be placed within this distance from the map’s edges.</string>
+         <string>No labels will be placed within this distance of the map’s edges, or from any label-blocking items which are checked below.</string>
         </property>
         <property name="scaledContents">
          <bool>false</bool>
@@ -101,6 +101,28 @@
     </widget>
    </item>
    <item>
+    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+     <property name="title">
+      <string>Label Blocking Items</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Avoid placing labels under these items</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListView" name="mBlockingItemsListView"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -118,6 +140,12 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -126,12 +154,6 @@
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayoutUnitsComboBox</class>

@@ -527,6 +527,48 @@ Returns a list of the layers which will be rendered within this map item, consid
 any locked layers, linked map theme, and data defined settings.
 %End
 
+    void addLabelBlockingItem( QgsLayoutItem *item );
+%Docstring
+Sets the specified layout ``item`` as a "label blocking item" for this map.
+
+Items which are marked as label blocking items prevent any map labels from being placed
+in the area of the map item covered by the ``item``.
+
+.. seealso:: :py:func:`removeLabelBlockingItem`
+
+.. seealso:: :py:func:`isLabelBlockingItem`
+
+.. versionadded:: 3.6
+%End
+
+    void removeLabelBlockingItem( QgsLayoutItem *item );
+%Docstring
+Removes the specified layout ``item`` from the map's "label blocking items".
+
+Items which are marked as label blocking items prevent any map labels from being placed
+in the area of the map item covered by the item.
+
+.. seealso:: :py:func:`addLabelBlockingItem`
+
+.. seealso:: :py:func:`isLabelBlockingItem`
+
+.. versionadded:: 3.6
+%End
+
+    bool isLabelBlockingItem( QgsLayoutItem *item ) const;
+%Docstring
+Returns true if the specified ``item`` is a "label blocking item".
+
+Items which are marked as label blocking items prevent any map labels from being placed
+in the area of the map item covered by the item.
+
+.. seealso:: :py:func:`addLabelBlockingItem`
+
+.. seealso:: :py:func:`removeLabelBlockingItem`
+
+.. versionadded:: 3.6
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
