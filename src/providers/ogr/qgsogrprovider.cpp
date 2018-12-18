@@ -477,7 +477,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
       << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
-      << QgsVectorDataProvider::NativeType( tr( "Map (JSON)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 65535, 0, 0, QVariant::String );
+      << QgsVectorDataProvider::NativeType( tr( "Map (JSON)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
 
   bool supportsDate = true;
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
@@ -1540,8 +1540,8 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
             stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toMap() ).toJson().data() );
             if ( stringValue == QStringLiteral( "{\n}\n" ) )
               stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toList() ).toJson().data() );
-            if ( stringValue == QStringLiteral( "[\n]\n" ) )
-              stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toString() ).toJson().data() );
+            if ( stringValue == QStringLiteral( "[\n]\n" ) && !attrVal.toString().isEmpty() )
+              stringValue = attrVal.toString();
           }
           else
           {
@@ -2135,8 +2135,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
               stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toMap() ).toJson().data() );
               if ( stringValue == QStringLiteral( "{\n}\n" ) )
                 stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toList() ).toJson().data() );
-              if ( stringValue == QStringLiteral( "[\n]\n" ) )
-                stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toString() ).toJson().data() );
+              if ( stringValue == QStringLiteral( "[\n]\n" ) && !it2->toString().isEmpty() )
+                stringValue = it2->toString();
             }
             else
             {
