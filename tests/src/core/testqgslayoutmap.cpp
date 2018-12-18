@@ -93,6 +93,9 @@ void TestQgsLayoutMap::initTestCase()
 
   // some layers need to be in project for data-defined layers functionality
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mRasterLayer << mPointsLayer << mPolysLayer << mLinesLayer );
+
+  mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
+
 }
 
 void TestQgsLayoutMap::cleanupTestCase()
@@ -120,7 +123,6 @@ void TestQgsLayoutMap::init()
   mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 #endif
-  mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
 }
 
 void TestQgsLayoutMap::cleanup()
