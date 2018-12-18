@@ -477,7 +477,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
       << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
-      << QgsVectorDataProvider::NativeType( tr( "Map (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
+      << QgsVectorDataProvider::NativeType( tr( "Map (JSON)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 65535, 0, 0, QVariant::String );
 
   bool supportsDate = true;
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
@@ -1531,19 +1531,18 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
         case OFTString:
         {
           QString stringValue;
-          /*
-           * if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+          if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
           {
             stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toMap() ).toJson().data() );
-            if( stringValue == QStringLiteral( "{\n}\n" ) )
+            if ( stringValue == QStringLiteral( "{\n}\n" ) )
               stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toList() ).toJson().data() );
-              if( stringValue == QStringLiteral( "[\n]\n" ) )
-                stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toString() ).toJson().data() );
+            if ( stringValue == QStringLiteral( "[\n]\n" ) )
+              stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toString() ).toJson().data() );
           }
           else
           {
-          */  stringValue = attrVal.toString();
-          //}
+            stringValue = attrVal.toString();
+          }
 
           QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
                             .arg( qgisAttId )
@@ -2122,19 +2121,18 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTString:
           {
             QString stringValue;
-            /*
-             * if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
+            if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
             {
               stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toMap() ).toJson().data() );
-              if( stringValue == QStringLiteral( "{\n}\n" ) )
+              if ( stringValue == QStringLiteral( "{\n}\n" ) )
                 stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toList() ).toJson().data() );
-                if( stringValue == QStringLiteral( "[\n]\n" ) )
-                  stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toString() ).toJson().data() );
+              if ( stringValue == QStringLiteral( "[\n]\n" ) )
+                stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toString() ).toJson().data() );
             }
             else
-            {*/
-            stringValue = it2->toString();
-            //}
+            {
+              stringValue = it2->toString();
+            }
 
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;

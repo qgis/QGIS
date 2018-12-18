@@ -1258,11 +1258,37 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
                 #test changing list value in attribute
                 f['json_content'] = ['eins', 'zwei', 'drei', 4]
                 self.assertEqual(f['json_content'], ['eins', 'zwei', 'drei', 4])
+                #test chaning to complex json structure
+                f['json_content'] = {'name': 'Lily', 'age': '0', 'cars': {'car1': ['fiat tipo', 'fiat punto', 'davoser schlitten'], 'car2': 'bobbycar', 'car3': 'tesla'}}
+                self.assertEqual(f['json_content'], {'name': 'Lily', 'age': '0', 'cars': {'car1': ['fiat tipo', 'fiat punto', 'davoser schlitten'], 'car2': 'bobbycar', 'car3': 'tesla'}})
 
-        #test adding attribute with list value
-        #test changing to invalid value in attribute
-        #test changing list ot string
-        #test reading string
+        #test adding attribute
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField('json_content2', QVariant.Map, "JSON", 60, 0, 'no comment', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField('json_content3', QVariant.Map, "JSON", 60, 0, 'no comment', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+
+        #test setting values to new attributes
+        while fi.nextFeature(f):
+            if f['fid'] == 2:
+                f['json_content'] = {'uno': 'foo'}
+                f['json_content2'] = ['uno', 'due', 'tre']
+                f['json_content3'] = {'uno': ['uno', 'due', 'tre']}
+                self.assertEqual(f['json_content'], {'foo': 'baz'})
+                self.assertEqual(f['json_content2'], ['uno', 'due', 'tre'])
+                self.assertEqual(f['json_content3'], {'uno': ['uno', 'due', 'tre']})
+
+        #test deleting attribute
+        vl.startEditing()
+        self.assertTrue(vl.deleteAttribute(vl.fields().indexFromName('json_content3')))
+        self.assertTrue(vl.commitChanges())
+
+        #test if index of existent field is not -1 and the one of the deleted is -1
+        self.assertNotEqual(vl.fields().indexFromName('json_content2'), -1)
+        self.assertEqual(vl.fields().indexFromName('json_content3'), -1)
 
 
 if __name__ == '__main__':
