@@ -295,7 +295,6 @@ of a sub-expression reflecting the parent property's state.
 Attempts to parse an expression into a corresponding property transformer.
 
 :param expression: expression to parse
-:param baseExpression: will be set to the component of the source expression which
                        is used to calculate the input to the property transformer. This will be set to an
                        empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
@@ -303,6 +302,7 @@ Attempts to parse an expression into a corresponding property transformer.
                   empty string if an expression is the transformer input.
 
 :return: corresponding property transformer, or None if expression could not
+         baseExpression:  will be set to the component of the source expression which
          be parsed to a transformer.
 %End
 
@@ -364,7 +364,6 @@ Constructor for QgsGenericNumericTransformer.
 Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTransformer`.
 
 :param expression: expression to parse
-:param baseExpression: will be set to the component of the source expression which
                        is used to calculate the input to the property transformer. This will be set to an
                        empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
@@ -372,6 +371,7 @@ Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTran
                   empty string if an expression is the transformer input.
 
 :return: corresponding :py:class:`QgsSizeScaleTransformer`, or None if expression could not
+         baseExpression:  will be set to the component of the source expression which
          be parsed to a size scale transformer.
 %End
 
@@ -513,7 +513,6 @@ Constructor for QgsSizeScaleTransformer.
 Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
 
 :param expression: expression to parse
-:param baseExpression: will be set to the component of the source expression which
                        is used to calculate the input to the property transformer. This will be set to an
                        empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
@@ -521,6 +520,7 @@ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
                   empty string if an expression is the transformer input.
 
 :return: corresponding QgsSizeScaleTransformer, or None if expression could not
+         baseExpression:  will be set to the component of the source expression which
          be parsed to a size scale transformer.
 %End
 

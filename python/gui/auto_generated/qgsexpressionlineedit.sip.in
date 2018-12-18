@@ -112,7 +112,6 @@ Returns the current expression shown in the widget.
 %Docstring
 Returns true if the current expression is valid.
 
-:param expressionError: will be set to any generated error message if specified
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );

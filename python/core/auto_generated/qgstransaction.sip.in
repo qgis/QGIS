@@ -89,11 +89,11 @@ Roll back transaction.
 Execute the ``sql`` string.
 
 :param sql: The sql query to execute
-:param error: The error message
 :param isDirty: Flag to indicate if the underlying data will be modified
 :param name: Name of the transaction ( only used if `isDirty` is true)
 
 :return: true if everything is OK, false otherwise
+         error:  The error message
 %End
 
     static bool supportsTransaction( const QgsVectorLayer *layer );

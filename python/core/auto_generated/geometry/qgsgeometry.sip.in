@@ -632,9 +632,9 @@ Returns the shortest line joining this geometry to another geometry.
 Searches for the closest vertex in this geometry to the given point.
 
 :param point: Specifiest the point for search
-:param atVertex: Receives index of the closest vertex
 
 :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
+         atVertex:  Receives index of the closest vertex
 %End
 
     double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/, int *leftOf /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
@@ -642,7 +642,6 @@ Searches for the closest vertex in this geometry to the given point.
 Searches for the closest segment of geometry to the given point
 
 :param point: Specifies the point for search
-:param minDistPoint: Receives the nearest point on the segment
 :param afterVertex: Receives index of the vertex after the closest segment. The vertex
                     before the closest segment is always afterVertex - 1
 :param leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
@@ -650,6 +649,7 @@ Searches for the closest segment of geometry to the given point
 :param epsilon: epsilon for segment snapping
 
 :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
+         minDistPoint:  Receives the nearest point on the segment
 %End
 
     OperationResult addRing( const QVector<QgsPointXY> &ring );
@@ -818,7 +818,6 @@ width and height of the rotated bounding box will also be returned.
 %Docstring
 Returns the minimal enclosing circle for the geometry.
 
-:param center: Center of the minimal enclosing circle returneds
 :param radius: Radius of the minimal enclosing circle returned
 :param segments: Number of segments used to segment geometry. :py:func:`QgsEllipse.toPolygon`
 
@@ -1593,7 +1592,6 @@ Modifies geometry to avoid intersections with the layers specified in project pr
          3 other error during intersection removal
 
 :param avoidIntersectionsLayers: list of layers to check for intersections
-:param ignoreFeatures: possibility to give a list of features where intersections should be ignored (not available in Python bindings)
 
 .. versionadded:: 1.5
 %End

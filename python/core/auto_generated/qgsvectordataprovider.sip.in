@@ -228,7 +228,6 @@ Returns the possible enum values of an attribute. Returns an empty stringlist if
 or if the given attribute is not an enum type.
 
 :param index: the index of the attribute
-:param enumList: reference to the list to fill
 %End
 
     virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );

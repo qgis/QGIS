@@ -33,7 +33,6 @@ not writable.
 
 :param zip: The zip filename
 :param dir: The output directory
-:param files: The absolute path of unzipped files
 
 .. versionadded:: 3.0
 %End
