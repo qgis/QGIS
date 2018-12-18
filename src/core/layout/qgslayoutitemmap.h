@@ -472,6 +472,45 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
 
+    /**
+     * Sets the specified layout \a item as a "label blocking item" for this map.
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the \a item.
+     *
+     * \see removeLabelBlockingItem()
+     * \see isLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    void addLabelBlockingItem( QgsLayoutItem *item );
+
+    /**
+     * Removes the specified layout \a item from the map's "label blocking items".
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the item.
+     *
+     * \see addLabelBlockingItem()
+     * \see isLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    void removeLabelBlockingItem( QgsLayoutItem *item );
+
+    /**
+     * Returns true if the specified \a item is a "label blocking item".
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the item.
+     *
+     * \see addLabelBlockingItem()
+     * \see removeLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    bool isLabelBlockingItem( QgsLayoutItem *item ) const;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -654,6 +693,17 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Returns first map overview or creates an empty one if none
     const QgsLayoutItemMapOverview *constFirstMapOverview() const;
 
+    /**
+     * Creates a transform from layout coordinates to map coordinates.
+     */
+    QTransform layoutToMapCoordsTransform() const;
+
+    /**
+     * Creates a list of label blocking regions for the map, which correspond to the
+     * map areas covered by other layout items marked as label blockers for this map.
+     */
+    QList< QgsLabelBlockingRegion > createLabelBlockingRegions( const QgsMapSettings &mapSettings ) const;
+
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
@@ -672,6 +722,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     QgsLayoutMeasurement mLabelMargin{ 0 };
     QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
+
+    QStringList mBlockingLabelItemUuids;
+    QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
 
     void init();
 

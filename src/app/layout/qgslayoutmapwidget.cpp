@@ -1742,6 +1742,16 @@ void QgsLayoutMapLabelingWidget::updateGuiElements()
   whileBlocking( mLabelBoundaryUnitsCombo )->setUnit( mMapItem->labelMargin().units() );
   whileBlocking( mShowPartialLabelsCheckBox )->setChecked( mMapItem->mapFlags() & QgsLayoutItemMap::ShowPartialLabels );
 
+  if ( mBlockingItemsListView->model() )
+  {
+    QAbstractItemModel *oldModel = mBlockingItemsListView->model();
+    mBlockingItemsListView->setModel( nullptr );
+    oldModel->deleteLater();
+  }
+
+  QgsLayoutMapItemBlocksLabelsModel *model = new QgsLayoutMapItemBlocksLabelsModel( mMapItem, mMapItem->layout()->itemsModel(), mBlockingItemsListView );
+  mBlockingItemsListView->setModel( model );
+
   updateDataDefinedButton( mLabelMarginDDBtn );
 }
 
@@ -1781,4 +1791,109 @@ void QgsLayoutMapLabelingWidget::showPartialsToggled( bool checked )
   mMapItem->setMapFlags( flags );
   mMapItem->layout()->undoStack()->endCommand();
   mMapItem->invalidateCache();
+}
+
+QgsLayoutMapItemBlocksLabelsModel::QgsLayoutMapItemBlocksLabelsModel( QgsLayoutItemMap *map, QgsLayoutModel *layoutModel, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mLayoutModel( layoutModel )
+  , mMapItem( map )
+{
+  setSourceModel( layoutModel );
+}
+
+int QgsLayoutMapItemBlocksLabelsModel::columnCount( const QModelIndex & ) const
+{
+  return 1;
+}
+
+QVariant QgsLayoutMapItemBlocksLabelsModel::data( const QModelIndex &i, int role ) const
+{
+  if ( !i.isValid() )
+    return QVariant();
+
+  if ( i.column() != 0 )
+    return QVariant();
+
+  QModelIndex sourceIndex = mapToSource( index( i.row(), QgsLayoutModel::ItemId, i.parent() ) );
+
+  QgsLayoutItem *item = mLayoutModel->itemFromIndex( mapToSource( i ) );
+  if ( !item )
+  {
+    return QVariant();
+  }
+
+  switch ( role )
+  {
+    case Qt::CheckStateRole:
+      switch ( i.column() )
+      {
+        case 0:
+          return mMapItem ? ( mMapItem->isLabelBlockingItem( item ) ? Qt::Checked : Qt::Unchecked ) : Qt::Unchecked;
+        default:
+          return QVariant();
+      }
+
+    default:
+      return mLayoutModel->data( sourceIndex, role );
+  }
+}
+
+bool QgsLayoutMapItemBlocksLabelsModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  Q_UNUSED( role );
+
+  if ( !index.isValid() )
+    return false;
+
+  QgsLayoutItem *item = mLayoutModel->itemFromIndex( mapToSource( index ) );
+  if ( !item || !mMapItem )
+  {
+    return false;
+  }
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Label Blocking Items" ) );
+
+  if ( value.toBool() )
+  {
+    mMapItem->addLabelBlockingItem( item );
+  }
+  else
+  {
+    mMapItem->removeLabelBlockingItem( item );
+  }
+  emit dataChanged( index, index, QVector<int>() << role );
+
+  mMapItem->layout()->undoStack()->endCommand();
+  mMapItem->invalidateCache();
+
+  return true;
+}
+
+Qt::ItemFlags QgsLayoutMapItemBlocksLabelsModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+
+  if ( ! index.isValid() )
+  {
+    return flags ;
+  }
+
+  switch ( index.column() )
+  {
+    case 0:
+      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+    default:
+      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  }
+}
+
+bool QgsLayoutMapItemBlocksLabelsModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  QgsLayoutItem *item = mLayoutModel->itemFromIndex( mLayoutModel->index( source_row, 0, source_parent ) );
+  if ( !item || item == mMapItem )
+  {
+    return false;
+  }
+
+  return true;
 }
