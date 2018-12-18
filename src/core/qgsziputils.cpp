@@ -87,17 +87,15 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         {
           QString fileName( stat.name );
           QFileInfo newFile( QDir( dir ), fileName );
-          bool isDirectory = fileName.endsWith( '/' );
 
-          if ( isDirectory )
+          // Creates path/parent folders for a newFile if dont exist.
+          if ( !newFile.absoluteDir().exists() )
           {
-            if ( !QDir( dir ).mkdir( fileName ) )
-              QgsDebugMsg( QString( "Failed to create a subdirectory %1/%2" ).arg( dir ).arg( fileName ) );
+            if ( !QDir( dir ).mkpath( newFile.absolutePath() ) )
+              QgsMessageLog::logMessage( QString( "Failed to create a subdirectory %1/%2" ).arg( dir ).arg( fileName ) );
           }
-          else
-          {
-            std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
-          }
+          std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
+
           zip_fclose( file );
           files.append( newFile.absoluteFilePath() );
         }

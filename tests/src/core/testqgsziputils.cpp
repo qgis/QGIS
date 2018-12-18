@@ -32,6 +32,10 @@ class TestQgsZipUtils: public QObject
     void cleanup();// will be called after every testfunction.
 
     void unzipWithSubdirs();
+    void unzipWithSubdirs2();
+
+  private:
+    void genericTest( QString zipName, int expectedEntries, bool includeFolders, QStringList testFileNames );
 };
 
 void TestQgsZipUtils::initTestCase()
@@ -57,12 +61,42 @@ void TestQgsZipUtils::cleanup()
 
 void TestQgsZipUtils::unzipWithSubdirs()
 {
+  QStringList testFileNames;
+  testFileNames << "/folder/folder2/landsat_b2.tif" << "/folder/points.geojson" << "/points.qml";
+  genericTest( QString( "testzip" ), 11, true, testFileNames );
+}
 
-  QFile zipFile( QString( TEST_DATA_DIR ) + "/zip/testzip.zip" );
+/**
+ * Test unzips zip file with a following structure. Note that subfolder is not included in the structure as
+ * usually expected. Zip file has been made with the python zipstream lib (https://github.com/allanlei/python-zipstream).
+ *
+ * output of zipinfo diff_structured.zip:
+ * Archive:  diff_structured.zip
+ * Zip file size: 452 bytes, number of entries: 3
+ * ?rw-------  2.0 unx       16 bl defN 18-Dec-18 13:27 subfolder/second_level.txt
+ * ?rw-------  2.0 unx        5 bl defN 18-Dec-18 13:27 subfolder/3.txt
+ * ?rw-------  2.0 unx       15 bl defN 18-Dec-18 13:27 first_level.txt
+ *
+*/
+void TestQgsZipUtils::unzipWithSubdirs2()
+{
+  genericTest( QString( "diff_structured" ), 3, false, QStringList() << "/subfolder/3.txt" );
+}
+
+/**
+ * @brief TestQgsZipUtils::genericTest
+ * @param zipName File to unzip
+ * @param expectedEntries number of expected entries in given file
+ * @param includeFolders Tag if a folder should be count as an entry
+ * @param testFileNames List of file names to check if files were unzipped succesfully
+ */
+void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, QStringList testFileNames )
+{
+  QFile zipFile( QString( TEST_DATA_DIR ) + QString( "/zip/%1.zip" ).arg( zipName ) );
   QVERIFY( zipFile.exists() );
 
   QFileInfo fileInfo( zipFile );
-  QString unzipDirPath = QDir::tempPath() + "testzip";
+  QString unzipDirPath = QDir::tempPath() + zipName;
   QStringList files;
 
   // Create a root folder otherwise nothing is unzipped
@@ -73,11 +107,18 @@ void TestQgsZipUtils::unzipWithSubdirs()
   }
 
   QgsZipUtils::unzip( fileInfo.absoluteFilePath(), unzipDirPath, files );
-  // Test number of unzipped files included folders
-  QCOMPARE( files.count(), 11 );
+  // Test number of unzipped files
+  QCOMPARE( files.count(), expectedEntries );
 
-  // Get list of files from the root folder
-  dir.setFilter( QDir::Dirs | QDir::Files |  QDir::NoDotAndDotDot );
+  if ( includeFolders )
+  {
+    dir.setFilter( QDir::Files |  QDir::NoDotAndDotDot | QDir::Dirs );
+  }
+  else
+  {
+    dir.setFilter( QDir::Files |  QDir::NoDotAndDotDot );
+  }
+  // Get list of entries from the root folder
   QDirIterator it( dir, QDirIterator::Subdirectories );
   QStringList filesFromResultDir;
   while ( it.hasNext() )
@@ -86,10 +127,11 @@ void TestQgsZipUtils::unzipWithSubdirs()
   // Test if ziplib matches number of files in the root folder
   QCOMPARE( files.count(), filesFromResultDir.count() );
 
-  // Test if random files have been unzipped into the root folder
-  QVERIFY( filesFromResultDir.contains( unzipDirPath + "/folder/folder2/landsat_b2.tif" ) );
-  QVERIFY( filesFromResultDir.contains( unzipDirPath + "/folder/points.geojson" ) );
-  QVERIFY( filesFromResultDir.contains( unzipDirPath + "/points.qml" ) );
+  // Test if specific files are included in the root folder
+  for ( QString fileName : testFileNames )
+  {
+    QVERIFY( filesFromResultDir.contains( unzipDirPath + fileName ) );
+  }
 
   // Delete unzipped data
   bool testDataRemoved = dir.removeRecursively();
