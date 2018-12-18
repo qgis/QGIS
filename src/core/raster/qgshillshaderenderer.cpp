@@ -575,6 +575,84 @@ double QgsHillshadeRenderer::calcFirstDerY( double x11, double x21, double x31, 
   return ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellsize );
 }
 
+void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  QgsStringMap newProps = props;
 
+  // create base structure
+  QgsRasterRenderer::toSld( doc, element, props );
 
+  // look for RasterSymbolizer tag
+  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  if ( elements.size() == 0)
+    return;
 
+  // there SHOULD be only one
+  QDomElement rasterSymbolizerElem = elements.at(0).toElement();
+
+  // add Channel Selection tags (if band is not default 1)
+  // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
+  // after opacity or geometry or as first element after sld:RasterSymbolizer
+  if ( band() != 1)
+  {
+    QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+    if ( elements.size() != 0 )
+    {
+      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at(0) );
+    }
+    else
+    {
+      elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
+      if ( elements.size() != 0 )
+      {
+        rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at(0) );
+      }
+      else
+      {
+        rasterSymbolizerElem.insertBefore( channelSelectionElem, rasterSymbolizerElem.firstChild() );
+      }
+    }
+
+    // for gray band
+    QDomElement channelElem = doc.createElement( QStringLiteral( "sld:GrayChannel" ) );
+    channelSelectionElem.appendChild( channelElem );
+
+    // set band
+    QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+    sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+    channelElem.appendChild( sourceChannelNameElem );
+  }
+
+  // add ShadedRelief tag
+  QDomElement shadedReliefElem = doc.createElement( QStringLiteral( "sld:ShadedRelief" ) );
+  rasterSymbolizerElem.appendChild( shadedReliefElem );
+
+  // brightnessOnly tag
+  QDomElement brightnessOnlyElem = doc.createElement( QStringLiteral( "sld:BrightnessOnly" ) );
+  brightnessOnlyElem.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
+  shadedReliefElem.appendChild( brightnessOnlyElem );
+
+  // ReliefFactor tag
+  QDomElement reliefFactorElem = doc.createElement( QStringLiteral( "sld:ReliefFactor" ) );
+  reliefFactorElem.appendChild( doc.createTextNode( QString::number( zFactor() ) ) );
+  shadedReliefElem.appendChild( reliefFactorElem );
+
+  // altitude VendorOption tag
+  QDomElement altitudeVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+  altitudeVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "altitude" ) );
+  altitudeVendorOptionElem.appendChild( doc.createTextNode( QString::number( altitude() ) ) );
+  shadedReliefElem.appendChild( altitudeVendorOptionElem );
+
+  // azimut VendorOption tag
+  QDomElement azimutVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+  azimutVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "azimut" ) );
+  azimutVendorOptionElem.appendChild( doc.createTextNode( QString::number( azimuth() ) ) );
+  shadedReliefElem.appendChild( azimutVendorOptionElem );
+
+  // multidirectional VendorOption tag
+  QDomElement multidirectionalVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+  multidirectionalVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "multidirectional" ) );
+  multidirectionalVendorOptionElem.appendChild( doc.createTextNode( QString::number( multiDirectional() ) ) );
+  shadedReliefElem.appendChild( multidirectionalVendorOptionElem );
+}

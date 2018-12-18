@@ -60,6 +60,9 @@ Takes ownership
     virtual QList<int> usesBands() const;
 
 
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+
   private:
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
