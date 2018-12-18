@@ -1015,7 +1015,13 @@ class MeshWidgetWrapper(MapLayerWidgetWrapper):
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
         if filename:
-            self.combo.setEditText(filename)
+            if isinstance(self.combo, QgsMapLayerComboBox):
+                items = self.combo.additionalItems()
+                items.append(filename)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(filename))
+            else:
+                self.combo.setEditText(filename)
             self.widgetValueHasChanged.emit(self)
 
 
