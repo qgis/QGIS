@@ -143,13 +143,13 @@ class CORE_EXPORT QgsTriangularMesh
 namespace QgsMeshUtils
 {
   //! Returns face as polygon geometry
-  QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
+  CORE_EXPORT QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
   /**
    * Returns unique native faces indexes from list of triangle indexes
    * \since QGIS 3.4
    */
-  QList<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
+  CORE_EXPORT QList<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
 };
 
 #endif // QGSTRIANGULARMESH_H

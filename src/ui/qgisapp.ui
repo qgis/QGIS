@@ -367,6 +367,12 @@
     <addaction name="mActionReverseLine"/>
     <addaction name="mActionTrimExtendFeature"/>
    </widget>
+   <widget class="QMenu" name="mMeshMenu">
+    <property name="title">
+     <string>&amp;Mesh</string>
+    </property>
+    <addaction name="mActionShowMeshCalculator"/>
+   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
@@ -375,6 +381,7 @@
    <addaction name="mPluginMenu"/>
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
+   <addaction name="mMeshMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -2984,7 +2991,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</iconset>
    </property>
    <property name="text">
@@ -3135,7 +3142,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</iconset>
    </property>
    <property name="text">
@@ -3145,8 +3152,48 @@ Acts on currently active editable layer</string>
     <string>Add rectangle from 3 points (Distance from projected point on segment p1 and p2)</string>
    </property>
   </action>
+  <action name="mActionShowMeshCalculator">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowMeshCalculator.png</normaloff>:/images/themes/default/mActionShowMeshCalculator.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mesh Calculator…</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

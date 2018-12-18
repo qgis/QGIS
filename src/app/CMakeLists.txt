@@ -239,6 +239,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrenderervectorsettingswidget.cpp
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
+  mesh/qgsmeshcalculatordialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -464,7 +465,8 @@ SET (QGIS_APP_MOC_HDRS
   mesh/qgsmeshrenderervectorsettingswidget.h
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
-  )
+  mesh/qgsmeshcalculatordialog.h
+)
 
 
 IF (WITH_3D)
@@ -656,6 +658,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth

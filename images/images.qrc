@@ -379,6 +379,7 @@
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
+        <file>themes/default/mActionShowMeshCalculator.png</file>
         <file>themes/default/mActionShowSelectedLayers.svg</file>
         <file>themes/default/mActionSimplify.svg</file>
         <file>themes/default/mActionSplitFeatures.svg</file>

@@ -274,6 +274,7 @@ INCLUDE_DIRECTORIES(BEFORE
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/network
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
@@ -281,6 +282,7 @@ INCLUDE_DIRECTORIES(BEFORE
 
   ${CMAKE_BINARY_DIR}/src/analysis/processing
   ${CMAKE_BINARY_DIR}/src/analysis/vector
+  ${CMAKE_BINARY_DIR}/src/analysis/mesh
   ${CMAKE_BINARY_DIR}/src/analysis/raster
   ${CMAKE_BINARY_DIR}/src/analysis/network
   ${CMAKE_BINARY_DIR}/src/analysis/interpolation

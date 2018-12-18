@@ -509,6 +509,29 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * \since QGIS 3.6
      */
     virtual QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+
+    /**
+     * Creates a new dataset group from a data and
+     * persists it into a destination path
+     *
+     * On success, the mesh's dataset group count is changed
+     *
+     * \param path destination path of the stored file
+     * \param meta new group's metadata
+     * \param datasetValues scalar/vector values for all datasets and all faces/vertices in the group
+     * \param datasetActive active flag values for all datasets in the group. Empty array represents can be used
+     *                      when all faces are active
+     * \param times times in hours for all datasets in the group
+     * \returns true on failure, false on success
+     *
+     * \since QGIS 3.6
+     */
+    virtual bool persistDatasetGroup( const QString &path,
+                                      const QgsMeshDatasetGroupMetadata &meta,
+                                      const QVector<QgsMeshDataBlock> &datasetValues,
+                                      const QVector<QgsMeshDataBlock> &datasetActive,
+                                      const QVector<double> &times
+                                    ) = 0;
 };
 
 

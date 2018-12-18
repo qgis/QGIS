@@ -39,8 +39,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const LayerOptions & )
   : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
-  , mProviderKey( providerKey )
 {
+  setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
@@ -98,13 +98,22 @@ QString QgsMeshLayer::providerType() const
   return mProviderKey;
 }
 
-QgsMesh *QgsMeshLayer::nativeMesh() SIP_SKIP
+QgsMesh *QgsMeshLayer::nativeMesh()
 {
   return mNativeMesh.get();
 }
 
+const QgsMesh *QgsMeshLayer::nativeMesh() const
+{
+  return mNativeMesh.get();
+}
 
-QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
+QgsTriangularMesh *QgsMeshLayer::triangularMesh()
+{
+  return mTriangularMesh.get();
+}
+
+const QgsTriangularMesh *QgsMeshLayer::triangularMesh() const
 {
   return mTriangularMesh.get();
 }

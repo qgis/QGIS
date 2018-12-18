@@ -1318,6 +1318,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
+    //! Calculate new meshes from existing ones
+    void showMeshCalculator();
     //! Open dialog to align raster layers
     void showAlignRasterTool();
     void embedLayers();

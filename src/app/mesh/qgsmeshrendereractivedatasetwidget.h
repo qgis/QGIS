@@ -61,6 +61,13 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
+    /**
+     * Formats time to human readable string
+     * \param hours time in double in hours
+     * \returns formatted time string
+     */
+    static QString formatTime( double hours );
+
   signals:
 
     //! Emitted when the current scalar group gets changed
@@ -87,7 +94,6 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Loop through all dataset groups and find the maximum number of datasets
     void setTimeRange();
     void updateMetadata();
-    QString timeToString( double val );
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveScalarDatasetGroup = -1;
