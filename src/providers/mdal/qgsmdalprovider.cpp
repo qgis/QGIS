@@ -20,6 +20,7 @@
 #include "qgsmdalprovider.h"
 #include "qgstriangularmesh.h"
 #include "qgslogger.h"
+#include "qgsmeshmemorydataprovider.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -170,6 +171,75 @@ QgsRectangle QgsMdalProvider::extent() const
   QgsRectangle ret( xMin, yMin, xMax, yMax );
   return ret;
 }
+
+bool QgsMdalProvider::persistDatasetGroup( const QString &path,
+    const QgsMeshDatasetGroupMetadata &meta,
+    const QVector<QgsMeshDataBlock> &datasetValues,
+    const QVector<QgsMeshDataBlock> &datasetActive,
+    const QVector<double> &times
+                                         )
+{
+  if ( !mMeshH )
+    return true;
+
+  // Check that the input vectors have consistent size
+  if ( times.size() != datasetValues.size() )
+    return true;
+
+  if ( !datasetActive.isEmpty() && ( times.size() != datasetActive.size() ) )
+    return true;
+
+  // Check that input data are for all values
+  int valuesCount = meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? vertexCount() : faceCount();
+  for ( int i = 0; i < datasetValues.size(); ++i )
+  {
+    if ( datasetValues.at( i ).count() != valuesCount )
+      return true;
+
+    if ( !datasetActive.isEmpty() && ( datasetActive.at( i ).count() != faceCount() ) )
+      return true;
+  }
+
+  const QString driverName( "BINARY_DAT" ); //nothing else is implemented in MDAL
+  DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
+  if ( !driver )
+    return true;
+
+  DatasetGroupH g = MDAL_M_addDatasetGroup(
+                      mMeshH,
+                      meta.name().toStdString().c_str(),
+                      meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices,
+                      meta.isScalar(),
+                      driver,
+                      path.toStdString().c_str()
+                    );
+  if ( !g )
+    return true;
+
+  auto end = meta.extraOptions().cend();
+  for ( auto it = meta.extraOptions().cbegin(); it != end; ++it )
+  {
+    MDAL_G_setMetadata( g, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
+  }
+
+
+  for ( int i = 0; i < datasetValues.size(); ++i )
+  {
+    MDAL_G_addDataset( g,
+                       times.at( i ),
+                       static_cast<const double *>( datasetValues.at( i ).constBuffer() ),
+                       datasetActive.isEmpty() ? nullptr : static_cast<const int *>( datasetActive.at( i ).constBuffer() )
+                     );
+  }
+
+  MDAL_G_closeEditMode( g );
+
+  emit datasetGroupsAdded( 1 );
+  emit dataChanged();
+
+  return false;
+}
+
 
 void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString )
 {

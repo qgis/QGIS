@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>756</width>
-    <height>637</height>
+    <height>644</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,7 +84,7 @@
           <item row="1" column="3">
            <widget class="QLabel" name="mXMaxLabel">
             <property name="text">
-             <string>X Max</string>
+             <string>X max</string>
             </property>
            </widget>
           </item>
@@ -164,7 +164,7 @@
          </layout>
         </item>
         <item row="0" column="1" colspan="3">
-         <widget class="QgsFileWidget" name="mOutputLayer"/>
+         <widget class="QgsFileWidget" name="mOutputLayer" native="true"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="mOutputFormatLabel">

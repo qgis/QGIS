@@ -23,28 +23,42 @@
 ///@cond PRIVATE
 
 #include <QString>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
 
-struct QgsMeshMemoryDataset
+struct CORE_EXPORT QgsMeshMemoryDataset
 {
+  QgsMeshMemoryDataset();
+  QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const;
+  QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const;
+
   QVector<QgsMeshDatasetValue> values;
+  QVector<int> active;
   double time = -1;
   bool valid = false;
   double minimum = std::numeric_limits<double>::quiet_NaN();
   double maximum = std::numeric_limits<double>::quiet_NaN();
 };
 
-struct QgsMeshMemoryDatasetGroup
+struct CORE_EXPORT QgsMeshMemoryDatasetGroup
 {
+  QgsMeshMemoryDatasetGroup( const QString &nm );
+  QgsMeshMemoryDatasetGroup();
+  QgsMeshDatasetGroupMetadata groupMetadata() const;
+  int datasetCount() const;
+  void addDataset( std::shared_ptr<QgsMeshMemoryDataset> dataset );
+  void clearDatasets();
+  std::shared_ptr<const QgsMeshMemoryDataset> constDataset( int index ) const;
+
   QMap<QString, QString> metadata;
-  QVector<QgsMeshMemoryDataset> datasets;
+  QVector<std::shared_ptr<QgsMeshMemoryDataset>> datasets;
   QString name;
   bool isScalar = true;
-  bool isOnVertices = true;
+  QgsMeshDatasetGroupMetadata::DataType type = QgsMeshDatasetGroupMetadata::DataOnVertices;
   double minimum = std::numeric_limits<double>::quiet_NaN();
   double maximum = std::numeric_limits<double>::quiet_NaN();
 };
@@ -54,7 +68,7 @@ struct QgsMeshMemoryDatasetGroup
  * Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
  * \since QGIS 3.2
  */
-class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
+class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
 {
     Q_OBJECT
 
@@ -134,6 +148,12 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+    bool persistDatasetGroup( const QString &path,
+                              const QgsMeshDatasetGroupMetadata &meta,
+                              const QVector<QgsMeshDataBlock> &datasetValues,
+                              const QVector<QgsMeshDataBlock> &datasetActive,
+                              const QVector<double> &times
+                            ) override;
 
     //! Returns the memory provider key
     static QString providerKey();
@@ -144,7 +164,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
 
   private:
     void calculateMinMaxForDatasetGroup( QgsMeshMemoryDatasetGroup &grp ) const;
-    void calculateMinMaxForDataset( QgsMeshMemoryDataset &dataset ) const;
+    void calculateMinMaxForDataset( std::shared_ptr<QgsMeshMemoryDataset> &dataset ) const;
     QgsRectangle calculateExtent( ) const;
 
     bool splitMeshSections( const QString &uri );
@@ -154,8 +174,8 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     bool splitDatasetSections( const QString &uri, QgsMeshMemoryDatasetGroup &datasetGroup );
     bool setDatasetGroupType( const QString &uri, QgsMeshMemoryDatasetGroup &datasetGroup );
     bool addDatasetGroupMetadata( const QString &def, QgsMeshMemoryDatasetGroup &datasetGroup );
-    bool addDatasetValues( const QString &def, QgsMeshMemoryDataset &dataset, bool isScalar );
-    bool checkDatasetValidity( QgsMeshMemoryDataset &dataset, bool isOnVertices );
+    bool addDatasetValues( const QString &def, std::shared_ptr<QgsMeshMemoryDataset> &dataset, bool isScalar );
+    bool checkDatasetValidity( std::shared_ptr<QgsMeshMemoryDataset> &dataset, bool isOnVertices );
 
     QVector<QgsMeshVertex> mVertices;
     QVector<QgsMeshFace> mFaces;

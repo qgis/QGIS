@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QObject>
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
@@ -270,6 +271,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
+#include "qgsmeshcalculatordialog.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterfilewritertask.h"
 #include "qgsrasteriterator.h"
@@ -2181,6 +2183,7 @@ void QgisApp::createActions()
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
   connect( mActionNewMemoryLayer, &QAction::triggered, this, &QgisApp::newMemoryLayer );
   connect( mActionShowRasterCalculator, &QAction::triggered, this, &QgisApp::showRasterCalculator );
+  connect( mActionShowMeshCalculator, &QAction::triggered, this, &QgisApp::showMeshCalculator );
   connect( mActionShowAlignRasterTool, &QAction::triggered, this, &QgisApp::showAlignRasterTool );
   connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
   connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
@@ -3357,6 +3360,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomFullExtent.svg" ) ) );
   mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
   mActionShowRasterCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowRasterCalculator.png" ) ) );
+  mActionShowMeshCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowMeshCalculator.png" ) ) );
   mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
@@ -5743,6 +5747,73 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::BandError:
         messageBar()->pushMessage( tr( "Raster calculator" ),
                                    tr( "Invalid band number for input layer." ),
+                                   Qgis::Critical );
+        break;
+    }
+    p.hide();
+  }
+}
+
+void QgisApp::showMeshCalculator()
+{
+  QgsMeshCalculatorDialog d( qobject_cast<QgsMeshLayer *>( activeLayer() ), this );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //invoke analysis library
+    std::unique_ptr<QgsMeshCalculator> calculator = d.calculator();
+
+    QProgressDialog p( tr( "Calculating mesh expression…" ), tr( "Abort" ), 0, 0 );
+    p.setWindowModality( Qt::WindowModal );
+    p.setMaximum( 100.0 );
+    QgsFeedback feedback;
+    connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
+    connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
+    p.show();
+    QgsMeshCalculator::Result res = calculator->processCalculation( &feedback );
+    switch ( res )
+    {
+      case QgsMeshCalculator::Success:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Calculation complete." ),
+                                   Qgis::Info, messageTimeout() );
+        break;
+
+      case QgsMeshCalculator::EvaluateError:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Could not evaluate the formula." ),
+                                   Qgis::Critical, messageTimeout() );
+        break;
+
+      case QgsMeshCalculator::InvalidDatasets:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Invalid or incompatible datasets used." ),
+                                   Qgis::Critical, messageTimeout() );
+        break;
+
+      case QgsMeshCalculator::CreateOutputError:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Could not create destination file." ),
+                                   Qgis::Critical );
+        break;
+
+      case QgsMeshCalculator::InputLayerError:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Could not read input layer." ),
+                                   Qgis::Critical );
+        break;
+
+      case QgsMeshCalculator::Canceled:
+        break;
+
+      case QgsMeshCalculator::ParserError:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Could not parse mesh formula." ),
+                                   Qgis::Critical );
+        break;
+
+      case QgsMeshCalculator::MemoryError:
+        messageBar()->pushMessage( tr( "Mesh calculator" ),
+                                   tr( "Insufficient memory available for operation." ),
                                    Qgis::Critical );
         break;
     }
