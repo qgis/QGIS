@@ -1507,11 +1507,49 @@ class CORE_EXPORT QgsGeometry
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
-     * Returns contents of the geometry as a polygon
-     * if wkbType is WKBPolygon, otherwise an empty list
+     * Returns the contents of the geometry as a polygon.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
+     * (such as a CurvePolygon), it will be automatically segmentized.
+     *
+     * \warning If the geometry is not a single-polygon (or single-curve polygon) type, an empty list will be returned.
      */
     QgsPolygonXY asPolygon() const;
+#else
+
+    /**
+     * Returns the contents of the geometry as a polygon.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
+     * (such as a CurvePolygon), it will be automatically segmentized.
+     *
+     * This method works only with single-polygon (or single-curve polygon) geometry types. If the geometry
+     * is not a single-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
+     * will be raised.
+     */
+    SIP_PYOBJECT asPolygon() const SIP_TYPEHINT( QgsPolygonXY );
+    % MethodCode
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polygon." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::PolygonGeometry || QgsWkbTypes::isMultiType( type ) )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QgsPointXY>>" );
+      sipRes = sipConvertFromNewType( new QgsPolygonXY( sipCpp->asPolygon() ), qvector_type, Py_None );
+    }
+    % End
+#endif
 
     /**
      * Returns contents of the geometry as a multi point
