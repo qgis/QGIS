@@ -791,6 +791,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
     def _aliased_sql_helper(self, dbname):
         queries = (
+            '(SELECT * FROM (SELECT * from \\"some view\\"))',
+            '(SELECT * FROM \\"some view\\")',
             '(select sd.* from somedata as sd left join somedata as sd2 on ( sd2.name = sd.name ))',
             '(select sd.* from \\"somedata\\" as sd left join \\"somedata\\" as sd2 on ( sd2.name = sd.name ))',
             "(SELECT * FROM somedata as my_alias1\n)",
@@ -814,6 +816,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         for sql in queries:
             vl = QgsVectorLayer('dbname=\'{}\' table="{}" (geom) sql='.format(dbname, sql), 'test', 'spatialite')
             self.assertTrue(vl.isValid(), 'dbname: {} - sql: {}'.format(dbname, sql))
+            self.assertTrue(vl.featureCount() > 1)
+            self.assertTrue(vl.isSpatial())
 
     def testPkLessQuery(self):
         """Test if features in queries with/without pk can be retrieved by id"""
@@ -854,6 +858,9 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         _make_table("somedata")
         _make_table("some data")
+
+        sql = "CREATE VIEW \"some view\" AS SELECT * FROM \"somedata\""
+        cur.execute(sql)
 
         cur.execute("COMMIT")
         con.close()
