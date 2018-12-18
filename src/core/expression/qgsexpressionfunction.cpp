@@ -4025,6 +4025,14 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QgsWkbTypes::geometryDisplayString( vLayer->geometryType() );
       else if ( QString::compare( layerProperty, QStringLiteral( "feature_count" ), Qt::CaseInsensitive ) == 0 )
         return QVariant::fromValue( vLayer->featureCount() );
+      else if ( QString::compare( layerProperty, QStringLiteral( "path" ), Qt::CaseInsensitive ) == 0 )
+      {
+        if ( vLayer->dataProvider() )
+        {
+          const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+          return decodedUri.value( QStringLiteral( "path" ) );
+        }
+      }
     }
   }
 
