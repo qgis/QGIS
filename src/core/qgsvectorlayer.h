@@ -702,6 +702,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see selectedFeatures()
      * \see selectedFeatureCount()
+     * \see selectByIds()
      */
     const QgsFeatureIds &selectedFeatureIds() const;
 
