@@ -1385,51 +1385,84 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, Style
   return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag, categories );
 }
 
-void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
+void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
 {
   QDomDocument myDocument = QDomDocument();
 
   QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
   myDocument.appendChild( header );
 
-  // Create the root element
-  QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
-  root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
-  root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
-  root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
-  root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-  root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-  myDocument.appendChild( root );
-
-  // Create the NamedLayer element
-  QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
-  root.appendChild( namedLayerNode );
-
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  if ( !vlayer )
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( this );
+  if (!vlayer && !rlayer)
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
-               .arg( QStringLiteral( "Non-vector layers not supported yet" ) );
+               .arg( QStringLiteral( "Non vector or raster layers are supported yet" ) );
     return;
+  }
+
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
+  QDomElement layerNode;
+  if ( vlayer )
+  {
+    root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
+    root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    layerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
+    root.appendChild( layerNode );
+  }
+
+  // note rster layer generate only 1.0 SLD version mostly becase seems none is using SE1.1.0 at leasst for rasters
+  if ( rlayer )
+  {
+    // Create the root element
+    root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+    root.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    root.setAttribute( QStringLiteral( "xmlns:sld" ), QStringLiteral( "http://www.opengis.net/sld" ) );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    layerNode = myDocument.createElement( QStringLiteral( "UserLayer" ) );
+    root.appendChild( layerNode );
   }
 
   QgsStringMap props;
   if ( hasScaleBasedVisibility() )
   {
-    props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mMinScale );
-    props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mMaxScale );
+    props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
+    props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( mMaxScale );
   }
-  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg, props ) )
+
+  if (vlayer)
   {
-    errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-    return;
+    if ( !vlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
+  }
+
+  if (rlayer)
+  {
+    if ( !rlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
   }
 
   doc = myDocument;
 }
 
-QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
+QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag )
 {
   QString errorMsg;
   QDomDocument myDocument;
@@ -1439,22 +1472,20 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
     resultFlag = false;
     return errorMsg;
   }
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
   QString filename;
-  if ( vlayer->providerType() == QLatin1String( "ogr" ) )
+  if ( providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = uri.split( '|' );
     filename = theURIParts[0];
   }
-  else if ( vlayer->providerType() == QLatin1String( "gpx" ) )
+  else if ( providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = uri.split( '?' );
     filename = theURIParts[0];
   }
-  else if ( vlayer->providerType() == QLatin1String( "delimitedtext" ) )
+  else if ( providerType() == QLatin1String( "delimitedtext" ) )
   {
     filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
     // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"

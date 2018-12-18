@@ -780,7 +780,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMsg this QString will be initialized on error
      * during the execution of writeSymbology
      */
-    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
+    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg );
 
     /**
      * Save the properties of this layer as the default style
@@ -818,7 +818,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a string with any status or error messages
      * \see loadSldStyle()
      */
-    virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
+    virtual QString saveSldStyle( const QString &uri, bool &resultFlag );
 
     /**
      * Attempts to style the layer using the formatting from an SLD type file.

@@ -815,7 +815,7 @@ Export the properties of this layer as named style in a QDomDocument
 %End
 
 
-    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
+    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg );
 %Docstring
 Export the properties of this layer as SLD style in a QDomDocument
 
@@ -856,7 +856,7 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`saveDefaultStyle`
 %End
 
-    virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
+    virtual QString saveSldStyle( const QString &uri, bool &resultFlag );
 %Docstring
 Saves the properties of this layer to an SLD format file.
 
