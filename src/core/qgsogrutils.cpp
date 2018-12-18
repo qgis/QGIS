@@ -152,11 +152,13 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
           varType = QVariant::Map;
         else
           varType = QVariant::String;
         break;
+#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }

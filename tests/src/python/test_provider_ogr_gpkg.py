@@ -1231,6 +1231,9 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         del vl2_external
 
     def testJson(self):
+        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0):
+            return
+
         tmpfile = os.path.join(self.basetestpath, 'test_json.gpkg')
         testdata_path = unitTestDataPath('provider')
         shutil.copy(os.path.join(unitTestDataPath('provider'), 'test_json.gpkg'), tmpfile)

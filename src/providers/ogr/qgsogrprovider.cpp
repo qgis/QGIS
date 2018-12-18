@@ -155,12 +155,12 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDateTime;
       break;
 
-    //not sure if needed, but for consistency
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::Map:
       ogrType = OFTString;
       ogrSubType = OFSTJSON;
       break;
-
+#endif
     default:
       return false;
   }
@@ -1049,6 +1049,7 @@ void QgsOgrProvider::loadFields()
         break;
 
       case OFTString:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
         {
           ogrSubType = OFSTJSON;
@@ -1061,6 +1062,7 @@ void QgsOgrProvider::loadFields()
           varType = QVariant::String;
         }
         break;
+#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -1531,6 +1533,8 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
         case OFTString:
         {
           QString stringValue;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
           {
             stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toMap() ).toJson().data() );
@@ -1543,7 +1547,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           {
             stringValue = attrVal.toString();
           }
-
+#else
+          stringValue = attrVal.toString();
+#endif
           QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
                             .arg( qgisAttId )
                             .arg( attrVal.toString(),
@@ -1689,9 +1695,11 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Bool:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
       break;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
     case QVariant::Map:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
       break;
+#endif
     default:
       break;
   }
@@ -2121,6 +2129,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTString:
           {
             QString stringValue;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
             {
               stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toMap() ).toJson().data() );
@@ -2133,7 +2142,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             {
               stringValue = it2->toString();
             }
-
+#else
+            stringValue = it2->toString();
+#endif
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;
           }
