@@ -1212,17 +1212,23 @@ while ($LINE_IDX < $LINE_COUNT){
                       if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
                         $comment_line =~ s/^:param\s+(\w+):(.*)$/$1: $2/;
                         push @out_params, $comment_line ;
+                        $skipping_param = 2;
                       }
-                      $skipping_param = 1;
+                      else {
+                        $skipping_param = 1;
+                      }
                       next;
                     }
                   }
-                  if ( $skipping_param == 1 ) {
+                  if ( $skipping_param > 0 ) {
                     if ( $comment_line =~ m/^(:.*|\.\..*|\s*)$/ ){
                       $skipping_param = 0;
                     }
-                    else {
+                    elsif ( $skipping_param == 2 ) {
+                      $comment_line =~ s/^\s+/ /;
+                      $out_params[$#out_params] .= $comment_line;
                       # exit_with_error('Skipped param (SIP_OUT) should have their doc on a single line');
+                      next;
                     }
                   }
                   write_output("CM2", "$doc_prepend$comment_line\n");
