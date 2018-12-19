@@ -35,7 +35,7 @@ class TestQgsZipUtils: public QObject
     void unzipWithSubdirs2();
 
   private:
-    void genericTest( QString zipName, int expectedEntries, bool includeFolders, QStringList testFileNames );
+    void genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames );
 };
 
 void TestQgsZipUtils::initTestCase()
@@ -84,13 +84,13 @@ void TestQgsZipUtils::unzipWithSubdirs2()
 }
 
 /**
- * @brief TestQgsZipUtils::genericTest
- * @param zipName File to unzip
- * @param expectedEntries number of expected entries in given file
- * @param includeFolders Tag if a folder should be count as an entry
- * @param testFileNames List of file names to check if files were unzipped successfully
+ * \brief TestQgsZipUtils::genericTest
+ * \param zipName File to unzip
+ * \param expectedEntries number of expected entries in given file
+ * \param includeFolders Tag if a folder should be count as an entry
+ * \param testFileNames List of file names to check if files were unzipped successfully
  */
-void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, QStringList testFileNames )
+void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames )
 {
   QFile zipFile( QString( TEST_DATA_DIR ) + QString( "/zip/%1.zip" ).arg( zipName ) );
   QVERIFY( zipFile.exists() );
