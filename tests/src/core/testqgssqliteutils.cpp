@@ -48,6 +48,10 @@ class TestQgsSqliteUtils : public QObject
     void testPrintfUtf8();
     void testQuotedString_data();
     void testQuotedString();
+    void testQuotedIdentifier_data();
+    void testQuotedIdentifier();
+    void testQuotedValue_data();
+    void testQuotedValue();
 };
 
 
@@ -108,6 +112,44 @@ void TestQgsSqliteUtils::testQuotedString()
   QFETCH( QString, expected );
 
   QCOMPARE( QgsSqliteUtils::quotedString( input ), expected );
+}
+
+void TestQgsSqliteUtils::testQuotedIdentifier_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "myColumn" ) << "myColumn" << "\"myColumn\"";
+  QTest::newRow( "my column" ) << "my column" << "\"my column\"";
+}
+
+void TestQgsSqliteUtils::testQuotedIdentifier()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsSqliteUtils::quotedIdentifier( input ), expected );
+}
+
+void TestQgsSqliteUtils::testQuotedValue_data()
+{
+  QTest::addColumn<QVariant>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "String" ) << QVariant( "Test string" ) << "'Test string'";
+  QTest::newRow( "Integer" ) << QVariant( 5 ) << "5";
+  QTest::newRow( "Double" ) << QVariant( 3.2 ) << "3.2";
+  QTest::newRow( "Boolean" ) << QVariant( true ) << "1";
+  QTest::newRow( "Escaped string" ) << QVariant( "It's a test string" ) << "'It''s a test string'";
+  QTest::newRow( "NULL" ) << QVariant() << "NULL";
+}
+
+void TestQgsSqliteUtils::testQuotedValue()
+{
+  QFETCH( QVariant, input );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsSqliteUtils::quotedValue( input ), expected );
 }
 
 
