@@ -1145,7 +1145,7 @@ QList<QString> QgsSpatiaLiteProvider::tablePrimaryKeys( const QString tableName 
   }
   else
   {
-    QgsLogger::warning( QStringLiteral( "SQLite error discovering relations: %1" ).arg( errMsg ) );
+    QgsLogger::warning( QStringLiteral( "SQLite error discovering primary keys: %1" ).arg( errMsg ) );
     sqlite3_free( errMsg );
   }
   return result;
