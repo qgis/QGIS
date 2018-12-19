@@ -76,6 +76,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
+  processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
   processing/qgsalgorithmremoveduplicatesbyattribute.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
