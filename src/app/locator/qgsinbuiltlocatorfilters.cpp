@@ -365,7 +365,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     QString enhancedSearch = string;
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
-                             .arg( layer->displayExpression() )
+                             .arg( layer->displayExpression(), enhancedSearch ) );
                              .arg( enhancedSearch ) );
     req.setLimit( 30 );
 
