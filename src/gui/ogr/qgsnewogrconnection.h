@@ -49,7 +49,7 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
      * Show the help
      * \deprecated will be made private with QGIS 4
      */
-    void showHelp();
+    Q_DECL_DEPRECATED void showHelp();
 
   public slots:
     void accept() override;
