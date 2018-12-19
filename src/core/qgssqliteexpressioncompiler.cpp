@@ -18,6 +18,7 @@
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgssqliteutils.h"
 
 QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields )
   : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
@@ -51,38 +52,12 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
 
 QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
-  QString id( identifier );
-  id.replace( '\"', QLatin1String( "\"\"" ) );
-  return id.prepend( '\"' ).append( '\"' );
+  return QgsSqliteUtils::quotedIdentifier( identifier );
 }
 
 QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
-  ok = true;
-
-  if ( value.isNull() )
-    return QStringLiteral( "NULL" );
-
-  switch ( value.type() )
-  {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
-      return value.toString();
-
-    case QVariant::Bool:
-      //SQLite has no boolean literals
-      return value.toBool() ? "1" : "0";
-
-    default:
-    case QVariant::String:
-      QString v = value.toString();
-      // https://www.sqlite.org/lang_expr.html :
-      // """A string constant is formed by enclosing the string in single quotes (').
-      // A single quote within the string can be encoded by putting two single quotes
-      // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
-      return v.replace( '\'', QLatin1String( "''" ) ).prepend( '\'' ).append( '\'' );
-  }
+  return QgsSqliteUtils::quotedValue( value, ok );
 }
 
 QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
