@@ -398,11 +398,6 @@ Register a feature for labeling.
                 must have already had the feature and fields sets prior to calling this method.
 :param labelFeature: if using :py:class:`QgsLabelingEngine`, this will receive the label feature. Not available
                      in Python bindings.
-:param obstacleGeometry: optional obstacle geometry, if a different geometry to the feature's geometry
-                         should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
-                         symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
-                         the feature's original geometry will be used as an obstacle for labels. Not available
-                         in Python bindings.
 %End
 
     void readXml( QDomElement &elem, const QgsReadWriteContext &context );

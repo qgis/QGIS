@@ -1639,12 +1639,12 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Modifies geometry to avoid intersections with the layers specified in project properties
-     * \returns 0 in case of success,
-     *         1 if geometry is not of polygon type,
-     *         2 if avoid intersection would change the geometry type,
-     *         3 other error during intersection removal
      * \param avoidIntersectionsLayers list of layers to check for intersections
      * \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+     * \returns 0 in case of success,
+     *          1 if geometry is not of polygon type,
+     *          2 if avoid intersection would change the geometry type,
+     *          3 other error during intersection removal
      * \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,

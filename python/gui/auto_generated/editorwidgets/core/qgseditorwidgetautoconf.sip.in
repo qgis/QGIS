@@ -32,9 +32,9 @@ Typical scores are:
 
 :param vl: The vector layer for which this widget will be created
 :param fieldName: The field name on the specified layer for which this widget will be created
-:param score: Where the score is returned (default to 0)
 
 :return: and integer value rating how good is the setup provided by this plugin.
+         score:  Where the score is returned (default to 0)
 %End
 
 };

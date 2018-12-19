@@ -42,7 +42,6 @@ A new form widget for the wrapper ``widget`` on ``form``.
 Creates the search widget wrappers for the widget used when the form is in
 search mode.
 
-:param context: editor context (not available in Python bindings)
 %End
 
     virtual QString currentFilterExpression() const;
