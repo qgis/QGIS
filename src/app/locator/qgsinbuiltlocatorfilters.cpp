@@ -363,7 +363,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
     QString enhancedSearch = string;
-    enhancedSearch.replace( " ", "%" );
+    enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
                              .arg( layer->displayExpression() )
                              .arg( enhancedSearch ) );
