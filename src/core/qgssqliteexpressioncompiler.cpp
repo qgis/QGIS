@@ -57,7 +57,8 @@ QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString &identifier
 
 QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
-  return QgsSqliteUtils::quotedValue( value, ok );
+  ok = true;
+  return QgsSqliteUtils::quotedValue( value );
 }
 
 QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
