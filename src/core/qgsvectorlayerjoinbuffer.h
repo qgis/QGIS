@@ -81,9 +81,11 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Finds the vector join for a layer field index.
-      \param index this layers attribute index
-      \param fields fields of the vector layer (including joined fields)
-      \param sourceFieldIndex Output: field's index in source layer */
+     * \param index this layers attribute index
+     * \param fields fields of the vector layer (including joined fields)
+     * \param sourceFieldIndex Output: field's index in source layer
+     * \returns the vector layer join info
+     */
     const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex SIP_OUT ) const;
 
     /**

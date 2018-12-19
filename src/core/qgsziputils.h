@@ -38,12 +38,12 @@ namespace QgsZipUtils
   CORE_EXPORT bool isZipFile( const QString &filename );
 
   /**
-   * Unzip a zip file in an output directory. An error is returned if the zip
-   *  filename does not exist, the output directory does not exist or is
-   *  not writable.
+   * Unzip a zip file in an output directory.
    * \param zip The zip filename
    * \param dir The output directory
    * \param files The absolute path of unzipped files
+   * \returns false if the zip filename does not exist, the output directory
+   * does not exist or is not writable.
    * \since QGIS 3.0
    */
   CORE_EXPORT bool unzip( const QString &zip, const QString &dir, QStringList &files SIP_OUT );

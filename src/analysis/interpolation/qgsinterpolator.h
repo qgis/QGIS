@@ -110,9 +110,10 @@ class ANALYSIS_EXPORT QgsInterpolator
      * Calculates interpolation value for map coordinates x, y
      * \param x x-coordinate (in map units)
      * \param y y-coordinate (in map units)
-     * \param result out: interpolation result
+     * \param result interpolation result
      * \param feedback optional feedback object for progress and cancelation support
-     * \returns 0 in case of success*/
+     * \returns 0 in case of success
+     */
     virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
     //! \note not available in Python bindings
