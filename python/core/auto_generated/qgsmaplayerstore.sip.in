@@ -119,8 +119,6 @@ to the store.
 The layersAdded() and layerWasAdded() signals will always be emitted.
 
 :param layers: A list of layer which should be added to the store.
-                      If you specify false here you have take care of deleting
-                      the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
          successfully. If a layer already exists in the store,
@@ -141,8 +139,6 @@ If you are adding multiple layers at once, you should use
 addMapLayers() instead.
 
 :param layer: A layer to add to the store
-                      If you specify false here you have take care of deleting
-                      the layers yourself. Not available in Python.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
 

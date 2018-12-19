@@ -1230,6 +1230,10 @@ while ($LINE_IDX < $LINE_COUNT){
                       # exit_with_error('Skipped param (SIP_OUT) should have their doc on a single line');
                       next;
                     }
+                    else
+                    {
+                      next;
+                    }
                   }
                   write_output("CM2", "$doc_prepend$comment_line\n");
                   if ( $comment_line =~ m/:return:/ && $#out_params >= 0 ){
