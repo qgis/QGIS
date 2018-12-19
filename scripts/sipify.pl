@@ -1235,12 +1235,17 @@ while ($LINE_IDX < $LINE_COUNT){
                       next;
                     }
                   }
-                  write_output("CM2", "$doc_prepend$comment_line\n");
                   if ( $comment_line =~ m/:return:/ && $#out_params >= 0 ){
                     $waiting_for_return_to_end = 1;
+                    $comment_line =~ s/:return:/:return: -/;
+                    write_output("CM2", "$doc_prepend$comment_line\n");
                     foreach my $out_param (@out_params) {
-                      write_output("CM7", "$doc_prepend         $out_param\n");
+                      write_output("CM7", "$doc_prepend         - $out_param\n");
                     }
+                    @out_params = ();
+                  }
+                  else {
+                    write_output("CM2", "$doc_prepend$comment_line\n");
                   }
                   if ( $waiting_for_return_to_end == 1 ) {
                     if ($comment_line =~ m/^(:.*|\.\..*|\s*)$/) {
@@ -1256,7 +1261,8 @@ while ($LINE_IDX < $LINE_COUNT){
                   #     $RETURN_TYPE = '';
                   # }
                 }
-            write_output("CM4", "$doc_prepend%End\n");
+                exit_with_error("A method with output parameters must contain a return directive (method returns ${RETURN_TYPE})") if $#out_params >= 0 and $RETURN_TYPE ne '';
+                write_output("CM4", "$doc_prepend%End\n");
             }
             # if ( $RETURN_TYPE ne '' ){
             #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
