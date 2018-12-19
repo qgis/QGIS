@@ -88,7 +88,7 @@ void TestQgsZipUtils::unzipWithSubdirs2()
  * @param zipName File to unzip
  * @param expectedEntries number of expected entries in given file
  * @param includeFolders Tag if a folder should be count as an entry
- * @param testFileNames List of file names to check if files were unzipped succesfully
+ * @param testFileNames List of file names to check if files were unzipped successfully
  */
 void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, QStringList testFileNames )
 {
