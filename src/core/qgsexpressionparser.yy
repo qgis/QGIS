@@ -239,21 +239,19 @@ expression:
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
             parser_ctx->currentErrorType = errorType;
             QString expectedMessage;
-            if (func->params() == func->minParams())
+            if ( func->params() == func->minParams() )
             {
-               expectedMessage = QString("Expected %2" ).arg( func->params());
+               expectedMessage = QStringLiteral( "Expected %1 but got %2." ).arg( QString::number( func->params() ), QString::number( $3->count() ) );
             }
             else
             {
-               expectedMessage = QString("Expected between %2 and %4 max but got %3" ).arg( func->minParams(), func->params() );
+               expectedMessage = QStringLiteral( "Expected between %1 and %2 parameters but %3 were provided." ).arg( QString::number( func->minParams() ), QString::number( func->params() ), QString::number( $3->count() ) );
             }
-            exp_error(&yyloc, parser_ctx, QString( "%1 function is called with wrong number of arguments."
-                                                   "%2 but got %3" ).arg( QgsExpression::Functions()[fnIndex]->name() )
-                                                                             .arg( expectedMessage )
-                                                                             .arg( $3->count() ).toLocal8Bit().constData() );
+            exp_error(&yyloc, parser_ctx, QStringLiteral( "%1 function is called with wrong number of arguments. %2" ).arg( QgsExpression::Functions()[fnIndex]->name(), expectedMessage ).toUtf8().constData() );
             delete $3;
             YYERROR;
           }
+
           $$ = new QgsExpressionNodeFunction(fnIndex, $3);
           addParserLocation(&@1, $$);
         }
