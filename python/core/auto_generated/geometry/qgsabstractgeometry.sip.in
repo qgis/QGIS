@@ -307,8 +307,8 @@ Returns next vertex id and coordinates
 :param id: initial value should be the starting vertex id. The next vertex id will be stored
            in this variable if found.
 
-:return: false if at end
-         vertex:  container for found node
+:return: - false if at end
+         - vertex:  container for found node
 %End
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
@@ -346,8 +346,8 @@ Searches for the closest segment of the geometry to a given point.
 :param vertexAfter: storage for the ID of the vertex at the end of the closest segment
 :param epsilon: epsilon for segment snapping
 
-:return: squared distance to closest segment or negative value on error
-         leftOf:  indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) false if point is to right of segment)
+:return: - squared distance to closest segment or negative value on error
+         - leftOf:  indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) false if point is to right of segment)
 %End
 
 

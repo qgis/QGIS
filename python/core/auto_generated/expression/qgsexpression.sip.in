@@ -250,8 +250,8 @@ Tests whether a string is a valid expression.
 :param text: string to test
 :param context: optional expression context
 
-:return: true if string is a valid expression
-         errorMessage:  will be filled with any error message from the validation
+:return: - true if string is a valid expression
+         - errorMessage:  will be filled with any error message from the validation
 
 .. versionadded:: 2.12
 %End

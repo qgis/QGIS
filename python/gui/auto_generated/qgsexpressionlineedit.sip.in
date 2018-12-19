@@ -110,8 +110,11 @@ Returns the current expression shown in the widget.
 
     bool isValidExpression( QString *expressionError /Out/ = 0 ) const;
 %Docstring
-Returns true if the current expression is valid.
+Determines if the current expression is valid.
 
+
+:return: - true if the current expression is valid.
+         - expressionError:  will be set to any generated error message if specified
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
