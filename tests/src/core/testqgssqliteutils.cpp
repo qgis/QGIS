@@ -121,6 +121,7 @@ void TestQgsSqliteUtils::testQuotedIdentifier_data()
 
   QTest::newRow( "myColumn" ) << "myColumn" << "\"myColumn\"";
   QTest::newRow( "my column" ) << "my column" << "\"my column\"";
+  QTest::newRow( "The \"Column\"" ) << "The \"Column\"" << "\"The \"\"Column\"\"\"";
 }
 
 void TestQgsSqliteUtils::testQuotedIdentifier()
