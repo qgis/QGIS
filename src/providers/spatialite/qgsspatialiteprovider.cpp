@@ -4666,17 +4666,27 @@ bool QgsSpatiaLiteProvider::checkLayerType()
                                      .arg( sql ), tr( "SpatiaLite" ), Qgis::MessageLevel::Warning );
         }
 
-        QString pk { QStringLiteral( "%1.%2" ).arg( quotedIdentifier( alias ) ).arg( pks.first() ) };
-        QString newSql( mQuery.replace( injectionRe,
-                                        QStringLiteral( R"re(SELECT %1.%2, \1)re" )
-                                        .arg( quotedIdentifier( tableIdentifier ) )
-                                        .arg( pks.first() ) ) );
-        sql = QStringLiteral( "SELECT %1 FROM %2 LIMIT 1" ).arg( pk ).arg( newSql );
+        // Try first without any injection or manipulation
+        sql = QStringLiteral( "SELECT %1, %2 FROM %3 LIMIT 1" ).arg( quotedIdentifier( pks.first( ) ), quotedIdentifier( mGeometryColumn ), mQuery );
         ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
         if ( ret == SQLITE_OK && rows == 1 )
         {
-          mQuery = newSql;
           mPrimaryKey = pks.first( );
+        }
+        else // if that does not work, try injection with table name/alias
+        {
+          QString pk { QStringLiteral( "%1.%2" ).arg( quotedIdentifier( alias ) ).arg( pks.first() ) };
+          QString newSql( mQuery.replace( injectionRe,
+                                          QStringLiteral( R"re(SELECT %1.%2, \1)re" )
+                                          .arg( quotedIdentifier( tableIdentifier ) )
+                                          .arg( pks.first() ) ) );
+          sql = QStringLiteral( "SELECT %1 FROM %2 LIMIT 1" ).arg( pk ).arg( newSql );
+          ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+          if ( ret == SQLITE_OK && rows == 1 )
+          {
+            mQuery = newSql;
+            mPrimaryKey = pks.first( );
+          }
         }
       }
 
