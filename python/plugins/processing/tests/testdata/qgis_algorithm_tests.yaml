@@ -6407,5 +6407,70 @@ tests:
         name: expected/delete_duplicates_with_nulls.gml
         type: vector
 
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats, same CRS
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      ZONES:
+        name: custom/dem_zones.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats.csv
+        type: vector
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats, reprojected
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      ZONES:
+        name: custom/dem_zones_crs.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats_reproj.csv
+        type: vector
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats, zones ref
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      REF_LAYER: 1
+      ZONES:
+        name: custom/dem_zones.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats_zone_ref.csv
+        type: vector
+
+  - algorithm: native:rasterlayerzonalstats
+    name: Raster layer zonal stats reprojected, zones ref
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      REF_LAYER: 1
+      ZONES:
+        name: custom/dem_zones_crs.tif
+        type: raster
+      ZONES_BAND: 1
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_zonal_stats_zone_crs_ref.csv
+        type: vector
 
 # See ../README.md for a description of the file format
