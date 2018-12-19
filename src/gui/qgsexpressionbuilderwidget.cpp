@@ -235,13 +235,19 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( !item )
     return;
 
-  if ( item->getItemType() == QgsExpressionItem::Field && mFieldValues.contains( item->text() ) )
-  {
-    const QStringList &values = mFieldValues[item->text()];
-    mValuesModel->setStringList( values );
-  }
-
   bool isField = mLayer && item->getItemType() == QgsExpressionItem::Field;
+  if ( isField )
+  {
+    if ( mFieldValues.contains( item->text() ) )
+    {
+      const QStringList &values = mFieldValues[item->text()];
+      mValuesModel->setStringList( values );
+    }
+    else
+    {
+      mValuesModel->setStringList( QStringList() );
+    }
+  }
   mValueGroupBox->setVisible( isField );
   mShowHelpButton->setText( isField ? tr( "Show Values" ) : tr( "Show Help" ) );
 
