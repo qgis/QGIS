@@ -366,7 +366,6 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
                              .arg( layer->displayExpression(), enhancedSearch ) );
-                             .arg( enhancedSearch ) );
     req.setLimit( 30 );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
