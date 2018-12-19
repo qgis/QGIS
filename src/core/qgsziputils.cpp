@@ -88,7 +88,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
           QString fileName( stat.name );
           QFileInfo newFile( QDir( dir ), fileName );
 
-          // Create path for a new file if does not exist.
+          // Create path for a new file if it does not exist.
           if ( !newFile.absoluteDir().exists() )
           {
             if ( !QDir( dir ).mkpath( newFile.absolutePath() ) )
