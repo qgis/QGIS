@@ -1123,7 +1123,7 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
   }
 }
 
-QList<QString> QgsSpatiaLiteProvider::tablePrimaryKeys( const QString tableName ) const
+QStringList QgsSpatiaLiteProvider::tablePrimaryKeys( const QString &tableName ) const
 {
   QList<QString> result;
   const QString sql = QStringLiteral( "PRAGMA table_info(%1)" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( tableName ) );
