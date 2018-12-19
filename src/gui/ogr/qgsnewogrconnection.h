@@ -27,9 +27,11 @@
 
 /**
  * \class QgsNewOgrConnection
+ * \ingroup gui
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
  * \note not available in python bindings
+ * \since the early days
  */
 class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
 {
@@ -42,9 +44,17 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
     ~QgsNewOgrConnection() override;
     //! Tests the connection using the parameters supplied
     void testConnection();
+
+    /**
+     * Show the help
+     * \deprecated will be made private with QGIS 4
+     */
     void showHelp();
+
   public slots:
     void accept() override;
+
+  private slots:
     void btnConnect_clicked();
 
   private:
