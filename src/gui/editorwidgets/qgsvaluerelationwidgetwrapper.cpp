@@ -83,7 +83,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     else
     {
       //store as hstore string
-      v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
+      v = selection.join( QStringLiteral( ',' ) ).prepend( '{' ).append( '}' );
     }
   }
 
