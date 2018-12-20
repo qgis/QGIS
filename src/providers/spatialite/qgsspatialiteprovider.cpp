@@ -1123,6 +1123,34 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
   }
 }
 
+QStringList QgsSpatiaLiteProvider::tablePrimaryKeys( const QString &tableName ) const
+{
+  QList<QString> result;
+  const QString sql = QStringLiteral( "PRAGMA table_info(%1)" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( tableName ) );
+  char **results = nullptr;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret == SQLITE_OK )
+  {
+    for ( int row = 1; row <= rows; ++row )
+    {
+      if ( QString::fromUtf8( results[row * columns + 5] ) == QChar( '1' ) )
+      {
+        result << QString::fromUtf8( results[row * columns + 1] );
+      }
+    }
+    sqlite3_free_table( results );
+  }
+  else
+  {
+    QgsLogger::warning( QStringLiteral( "SQLite error discovering primary keys: %1" ).arg( errMsg ) );
+    sqlite3_free( errMsg );
+  }
+  return result;
+}
+
 
 bool QgsSpatiaLiteProvider::hasTriggers()
 {
@@ -4557,8 +4585,6 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   }
   else if ( mQuery.startsWith( '(' ) && mQuery.endsWith( ')' ) )
   {
-    // checking if this one is a select query
-
     // get a new alias for the subquery
     int index = 0;
     QString alias;
@@ -4579,61 +4605,127 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
     sql = QStringLiteral( "SELECT 0, %1 FROM %2 LIMIT 1" ).arg( quotedIdentifier( mGeometryColumn ), mQuery );
     ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+
+    // Try to find a PK or try to use ROWID
     if ( ret == SQLITE_OK && rows == 1 )
     {
-      // Check if we can get use the ROWID from the table that provides the geometry
       sqlite3_stmt *stmt = nullptr;
-      //! String containing the name of the table that provides the geometry if the layer data source is based on a query
-      QString queryGeomTableName;
+
       // 1. find the table that provides geometry
+      // String containing the name of the table that provides the geometry if the layer data source is based on a query
+      QString queryGeomTableName;
       if ( sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) == SQLITE_OK )
       {
         queryGeomTableName = sqlite3_column_table_name( stmt, 1 );
       }
-      // 2. check if the table has a usable ROWID
+
+      // 3. Find pks
+      QList<QString> pks;
       if ( ! queryGeomTableName.isEmpty() )
       {
-        sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( quotedIdentifier( queryGeomTableName ) );
-        ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
-        if ( ret != SQLITE_OK || rows != 1 )
-        {
-          queryGeomTableName = QString();
-        }
+        pks = tablePrimaryKeys( queryGeomTableName );
       }
-      // 3. check if ROWID injection works
+
+      // find table alias if any
+      QString tableAlias;
       if ( ! queryGeomTableName.isEmpty() )
       {
-        // Check if the whole sql is aliased (I couldn't find a sqlite API call to get this information)
-        QRegularExpression re { R"re(\s+AS\s+(\w+)\n?\)?$)re" };
+        // Try first with single table alias
+        // (I couldn't find a sqlite API call to get this information)
+        QRegularExpression re { QStringLiteral( R"re("?%1"?\s+AS\s+(\w+))re" ).arg( queryGeomTableName ) };
         re.setPatternOptions( QRegularExpression::PatternOption::MultilineOption |
                               QRegularExpression::PatternOption::CaseInsensitiveOption );
         QRegularExpressionMatch match { re.match( mTableName ) };
-        regex.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
-        QString tableAlias;
         if ( match.hasMatch() )
         {
           tableAlias = match.captured( 1 );
         }
-        QString newSql( mQuery.replace( QStringLiteral( "SELECT " ),
-                                        QStringLiteral( "SELECT %1.%2, " )
-                                        .arg( quotedIdentifier( tableAlias.isEmpty() ? queryGeomTableName : tableAlias ),
-                                              QStringLiteral( "ROWID" ) ),
-                                        Qt::CaseInsensitive ) );
-        sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( newSql );
+        // Check if the whole sql is aliased i.e. '(SELECT * FROM \\"somedata\\" as my_alias\n)'
+        if ( tableAlias.isEmpty() )
+        {
+          regex.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
+          match = re.match( mTableName );
+          if ( match.hasMatch() )
+          {
+            tableAlias = match.captured( 1 );
+          }
+        }
+      }
+
+      const QString tableIdentifier { tableAlias.isEmpty() ? queryGeomTableName : tableAlias };
+      QRegularExpression injectionRe { QStringLiteral( R"re(SELECT\s([^\(]+?FROM\s+"?%1"?))re" ).arg( tableIdentifier ) };
+      injectionRe.setPatternOptions( QRegularExpression::PatternOption::MultilineOption |
+                                     QRegularExpression::PatternOption::CaseInsensitiveOption );
+
+
+      if ( ! pks.isEmpty() )
+      {
+        if ( pks.length() > 1 )
+        {
+          QgsMessageLog::logMessage( tr( "SQLite composite keys are not supported in query layer, using the first component only. %1" )
+                                     .arg( sql ), tr( "SpatiaLite" ), Qgis::MessageLevel::Warning );
+        }
+
+        // Try first without any injection or manipulation
+        sql = QStringLiteral( "SELECT %1, %2 FROM %3 LIMIT 1" ).arg( quotedIdentifier( pks.first( ) ), quotedIdentifier( mGeometryColumn ), mQuery );
         ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
         if ( ret == SQLITE_OK && rows == 1 )
         {
-          mQuery = newSql;
-          mPrimaryKey = QStringLiteral( "ROWID" );
-          mRowidInjectedInQuery = true;
+          mPrimaryKey = pks.first( );
+        }
+        else // if that does not work, try injection with table name/alias
+        {
+          QString pk { QStringLiteral( "%1.%2" ).arg( quotedIdentifier( alias ) ).arg( pks.first() ) };
+          QString newSql( mQuery.replace( injectionRe,
+                                          QStringLiteral( R"re(SELECT %1.%2, \1)re" )
+                                          .arg( quotedIdentifier( tableIdentifier ) )
+                                          .arg( pks.first() ) ) );
+          sql = QStringLiteral( "SELECT %1 FROM %2 LIMIT 1" ).arg( pk ).arg( newSql );
+          ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+          if ( ret == SQLITE_OK && rows == 1 )
+          {
+            mQuery = newSql;
+            mPrimaryKey = pks.first( );
+          }
         }
       }
-      // 4. if it does not work, simply clear the message and fallback to the original behavior
-      if ( errMsg )
+
+      // If there is still no primary key, check if we can get use the ROWID from the table that provides the geometry
+      if ( mPrimaryKey.isEmpty() )
       {
-        QgsMessageLog::logMessage( tr( "SQLite error while trying to inject ROWID: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
-        sqlite3_free( errMsg );
-        errMsg = nullptr;
+        // 4. check if the table has a usable ROWID
+        if ( ! queryGeomTableName.isEmpty() )
+        {
+          sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( quotedIdentifier( queryGeomTableName ) );
+          ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+          if ( ret != SQLITE_OK || rows != 1 )
+          {
+            queryGeomTableName = QString();
+          }
+        }
+        // 5. check if ROWID injection works
+        if ( ! queryGeomTableName.isEmpty() )
+        {
+          const QString newSql( mQuery.replace( injectionRe,
+                                                QStringLiteral( R"re(SELECT %1.%2, \1)re" )
+                                                .arg( quotedIdentifier( tableIdentifier ),
+                                                    QStringLiteral( "ROWID" ) ) ) );
+          sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( newSql );
+          ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+          if ( ret == SQLITE_OK && rows == 1 )
+          {
+            mQuery = newSql;
+            mPrimaryKey = QStringLiteral( "ROWID" );
+            mRowidInjectedInQuery = true;
+          }
+        }
+        // 6. if it does not work, simply clear the message and fallback to the original behavior
+        if ( errMsg )
+        {
+          QgsMessageLog::logMessage( tr( "SQLite error while trying to inject ROWID: %2\nSQL: %1" ).arg( sql, errMsg ), tr( "SpatiaLite" ) );
+          sqlite3_free( errMsg );
+          errMsg = nullptr;
+        }
       }
       sqlite3_finalize( stmt );
       mIsQuery = true;
