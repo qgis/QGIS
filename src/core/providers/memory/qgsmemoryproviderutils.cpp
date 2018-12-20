@@ -47,6 +47,9 @@ QString memoryLayerFieldType( QVariant::Type type )
     case QVariant::ByteArray:
       return QStringLiteral( "binary" );
 
+    case QVariant::Bool:
+      return QStringLiteral( "boolean" );
+
     default:
       break;
   }

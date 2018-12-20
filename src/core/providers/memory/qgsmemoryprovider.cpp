@@ -94,6 +94,9 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   // string types
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
+                  // boolean
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
+
                   // blob
                   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
 
@@ -103,7 +106,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary)" // type
+                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
                         "(?:\\((\\-?\\d+)"                // length
                         "(?:\\,(\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
@@ -158,6 +161,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         {
           type = QVariant::DateTime;
           typeName = QStringLiteral( "datetime" );
+          length = -1;
+        }
+        else if ( typeName == QLatin1String( "bool" ) || typeName == QLatin1String( "boolean" ) )
+        {
+          type = QVariant::Bool;
+          typeName = QStringLiteral( "boolean" );
           length = -1;
         }
         else if ( typeName == QLatin1String( "binary" ) )
@@ -453,6 +462,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::LongLong:
       case QVariant::StringList:
       case QVariant::List:
+      case QVariant::Bool:
       case QVariant::ByteArray:
         break;
       default:
