@@ -4142,6 +4142,14 @@ static QVariant fcnArray( const QVariantList &values, const QgsExpressionContext
   return values;
 }
 
+static QVariant fcnArraySort( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  bool ascending = values.value( 1 ).toBool();
+  std::sort( list.begin(), list.end(), [ascending]( QVariant a, QVariant b ) -> bool { return ( !ascending ? qgsVariantLessThan( b, a ) : qgsVariantLessThan( a, b ) ); } );
+  return list;
+}
+
 static QVariant fcnArrayLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return QgsExpressionUtils::getListValue( values.at( 0 ), parent ).length();
@@ -5015,6 +5023,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsArrayForeachExpressionFunction()
         << new QgsArrayFilterExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_sort" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "ascending" ), true, true ), fcnArraySort, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_length" ), 1, fcnArrayLength, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_find" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )
