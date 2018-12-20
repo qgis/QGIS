@@ -202,7 +202,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void determineViewPrimaryKey();
 
     //! Returns primary key(s) from a table name
-    QList<QString> tablePrimaryKeys( const QString tableName ) const;
+    QStringList tablePrimaryKeys( const QString &tableName ) const;
 
     //! Check if a table/view has any triggers.  Triggers can be used on views to make them editable.
     bool hasTriggers();
