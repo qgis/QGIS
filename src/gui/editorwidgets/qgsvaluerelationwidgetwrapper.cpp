@@ -74,7 +74,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       QVariantList vl;
       //store as QVariantList because it's json
-      foreach ( QString s, selection )
+      for ( const QString &s, qgis::as_const( selection ) )
       {
         vl << s;
       }
