@@ -476,8 +476,10 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
-      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
-      << QgsVectorDataProvider::NativeType( tr( "Map (JSON)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
+      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+    nativeTypes << QgsVectorDataProvider::NativeType( tr( "Map (JSON)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
 
   bool supportsDate = true;
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
@@ -1053,7 +1055,6 @@ void QgsOgrProvider::loadFields()
         if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
         {
           ogrSubType = OFSTJSON;
-          QgsDebugMsg( QStringLiteral( "JSON Field found" ) );
           varType = QVariant::Map;
           varSubType = QVariant::String;
         }
@@ -1407,6 +1408,16 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
+QString QgsOgrProvider::jsonStringValue( const QVariant &value )
+{
+  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value.toMap() ).toJson().data() );
+  if ( stringValue == QStringLiteral( "{\n}\n" ) )
+    stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value.toList() ).toJson().data() );
+  if ( stringValue == QStringLiteral( "[\n]\n" ) && !value.toString().isEmpty() )
+    stringValue = value.toString();
+  return stringValue;
+}
+
 bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 {
   bool returnValue = true;
@@ -1536,13 +1547,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-          {
-            stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toMap() ).toJson().data() );
-            if ( stringValue == QStringLiteral( "{\n}\n" ) )
-              stringValue = QString::fromUtf8( QJsonDocument::fromVariant( attrVal.toList() ).toJson().data() );
-            if ( stringValue == QStringLiteral( "[\n]\n" ) && !attrVal.toString().isEmpty() )
-              stringValue = attrVal.toString();
-          }
+            stringValue = jsonStringValue( attrVal );
           else
           {
             stringValue = attrVal.toString();
@@ -2131,17 +2136,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             QString stringValue;
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
-            {
-              stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toMap() ).toJson().data() );
-              if ( stringValue == QStringLiteral( "{\n}\n" ) )
-                stringValue = QString::fromUtf8( QJsonDocument::fromVariant( it2->toList() ).toJson().data() );
-              if ( stringValue == QStringLiteral( "[\n]\n" ) && !it2->toString().isEmpty() )
-                stringValue = it2->toString();
-            }
+              stringValue = jsonStringValue( it2.value() );
             else
-            {
               stringValue = it2->toString();
-            }
 #else
             stringValue = it2->toString();
 #endif
