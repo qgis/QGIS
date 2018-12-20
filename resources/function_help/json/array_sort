@@ -3,6 +3,6 @@
   "type": "function",
   "description": "Returns the provided array with its elements sorted.",
   "arguments": [ {"arg":"array","description":"an array"},
-                 {"arg":"reversed","optional":true,"default":"false","description":"set this parameter to true to sort the array in descending order"}],
+                 {"arg":"ascending","optional":true,"default":"true","description":"set this parameter to false to sort the array in descending order"}],
   "examples": [ { "expression":"array_sort(array(3,2,1))", "returns":"[ 1, 2, 3 ]"}]
 }
