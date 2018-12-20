@@ -26,6 +26,7 @@
 
 struct sqlite3;
 struct sqlite3_stmt;
+class QVariant;
 
 /**
  * \ingroup core
@@ -153,6 +154,21 @@ class CORE_EXPORT QgsSqliteUtils
      * characters correctly escaped.
      */
     static QString quotedString( const QString &value );
+
+    /**
+     * Returns a properly quoted version of \a identifier.
+     *
+     * \since QGIS 3.6
+     */
+    static QString quotedIdentifier( const QString &identifier );
+
+    /**
+     * Returns a properly quoted and escaped version of \a value
+     * for use in SQL strings.
+     *
+     * \since QGIS 3.6
+     */
+    static QString quotedValue( const QVariant &value );
 };
 
 /**
