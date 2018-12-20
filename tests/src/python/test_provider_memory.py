@@ -411,6 +411,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("#complex_name", QVariant.String))
         fields.append(QgsField("complex/name", QVariant.String))
         fields.append(QgsField("binaryfield", QVariant.ByteArray))
+        fields.append(QgsField("boolfield", QVariant.Bool))
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
@@ -549,6 +550,42 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f1.attributes(), [1, bin_val1, NULL])
         f2 = [f for f in dp.getFeatures()][1]
         self.assertEqual(f2.attributes(), [2, NULL, bin_val2])
+
+    def testBool(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:bool',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        self.assertEqual([f.name() for f in fields], ['f1', 'f2'])
+        self.assertEqual([f.type() for f in fields], [QVariant.Int, QVariant.Bool])
+        self.assertEqual([f.typeName() for f in fields], ['integer', 'boolean'])
+
+        f = QgsFeature(dp.fields())
+        f.setAttributes([1, True])
+        f2 = QgsFeature(dp.fields())
+        f2.setAttributes([2, False])
+        f3 = QgsFeature(dp.fields())
+        f3.setAttributes([3, NULL])
+        self.assertTrue(dp.addFeatures([f, f2, f3]))
+
+        self.assertEqual([f.attributes() for f in dp.getFeatures()], [[1, True], [2, False], [3, NULL]])
+
+        # add boolean field
+        self.assertTrue(dp.addAttributes([QgsField('boolfield2', QVariant.Bool, 'Boolean')]))
+
+        fields = dp.fields()
+        bool2_field = fields[fields.lookupField('boolfield2')]
+        self.assertEqual(bool2_field.type(), QVariant.Bool)
+        self.assertEqual(bool2_field.typeName(), 'Boolean')
+
+        f = QgsFeature(fields)
+        f.setAttributes([2, NULL, True])
+        self.assertTrue(dp.addFeature(f))
+
+        self.assertEqual([f.attributes() for f in dp.getFeatures()], [[1, True, NULL], [2, False, NULL], [3, NULL, NULL], [2, NULL, True]])
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
