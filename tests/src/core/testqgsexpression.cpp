@@ -1556,6 +1556,39 @@ class TestQgsExpression: public QObject
       }
     }
 
+    void test_sqliteFetchAndIncrement()
+    {
+      QTemporaryDir dir;
+      QString testGpkgName = QStringLiteral( "humanbeings.gpkg" );
+      QFile::copy( QStringLiteral( TEST_DATA_DIR ) + '/' + testGpkgName, dir.filePath( testGpkgName ) );
+
+      QgsExpressionContext context;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+      scope->setVariable( QStringLiteral( "test_database" ), dir.filePath( testGpkgName ) );
+      context << scope;
+
+      // Test failing
+      QgsExpression exp1( QStringLiteral( "sqlite_fetch_and_increment('/path/does/not/exist', 'T_KEY_OBJECT', 'T_LastUniqueId')" ) );
+
+      exp1.evaluate( &context );
+      QCOMPARE( exp1.hasEvalError(), true );
+      const QString evalErrorString = exp1.evalErrorString();
+      QVERIFY2( evalErrorString.contains( "/path/does/not/exist" ), QStringLiteral( "Path not found in %1" ).arg( evalErrorString ).toUtf8().constData() );
+      QVERIFY2( evalErrorString.contains( "Error" ), QStringLiteral( "\"Error\" not found in %1" ).arg( evalErrorString ).toUtf8().constData() );
+
+      // Test incrementation logic
+      QgsExpression exp( QStringLiteral( "sqlite_fetch_and_increment(@test_database, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''me'''))" ) );
+      QVariant res = exp.evaluate( &context );
+      QCOMPARE( res.toInt(), 0 );
+
+      res = exp.evaluate( &context );
+      if ( exp.hasEvalError() )
+        qDebug() << exp.evalErrorString();
+      QCOMPARE( exp.hasEvalError(), false );
+
+      QCOMPARE( res.toInt(), 1 );
+    }
+
     void aggregate_data()
     {
       QTest::addColumn<QString>( "string" );
