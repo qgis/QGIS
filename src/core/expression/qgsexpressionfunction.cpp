@@ -1421,24 +1421,15 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     upsertSql += QLatin1String( " VALUES " );
     upsertSql += '(' + vals.join( ',' ) + ')';
 
-    sqliteStatement = sqliteDb.prepare( upsertSql, result );
-
+    QString errorMessage;
+    result = sqliteDb.exec( upsertSql, errorMessage );
     if ( result == SQLITE_OK )
     {
-      result = sqliteStatement.step();
-      if ( result == SQLITE_DONE )
-      {
-        return nextId;
-      }
-      else
-      {
-        parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( sqliteDb.errorMessage(), QString::number( result ) ) );
-        return QVariant();
-      }
+      return nextId;
     }
     else
     {
-      parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( sqliteDb.errorMessage(), QString::number( result ) ) );
+      parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
       return QVariant();
     }
   }
