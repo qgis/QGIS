@@ -386,9 +386,7 @@ bool QgsPostgresFeatureIterator::rewind()
 
   // move cursor to first record
 
-  lock();
   mConn->PQexecNR( QStringLiteral( "move absolute 0 in %1" ).arg( mCursorName ) );
-  unlock();
   mFeatureQueue.clear();
   mFetched = 0;
   mLastFetch = false;
@@ -401,9 +399,7 @@ bool QgsPostgresFeatureIterator::close()
   if ( !mConn )
     return false;
 
-  lock();
   mConn->closeCursor( mCursorName );
-  unlock();
 
   if ( !mIsTransactionConnection )
   {
@@ -651,17 +647,14 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
   if ( !orderBy.isEmpty() )
     query += QStringLiteral( " ORDER BY %1 " ).arg( orderBy );
 
-  lock();
   if ( !mConn->openCursor( mCursorName, query ) )
   {
-    unlock();
     // reloading the fields might help next time around
     // TODO how to cleanly force reload of fields?  P->loadFields();
     if ( closeOnFail )
       close();
     return false;
   }
-  unlock();
 
   mLastFetch = false;
   return true;
