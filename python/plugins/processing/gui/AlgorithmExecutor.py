@@ -34,6 +34,7 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameters,
                        QgsProject,
                        QgsFeatureRequest,
@@ -94,9 +95,12 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
     if context is None:
         context = dataobjects.createContext(feedback)
 
-    # Ugly hack: the only invalid policy option that makes sense for fixgeometries is to not check
-    if alg.name() in ('fixgeometries', ):
-        context.setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck)
+    # Only feature based algs have sourceFlags
+    try:
+        if alg.sourceFlags() & QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck)
+    except AttributeError:
+        pass
 
     active_layer = parameters['INPUT']
 
