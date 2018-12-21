@@ -429,6 +429,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       geometryCheckLayout->addWidget( cb );
     }
     mGeometryValidationGroupBox->setLayout( geometryCheckLayout );
+    mGeometryValidationGroupBox->setVisible( !geometryCheckFactories.isEmpty() );
 
     QLayout *topologyCheckLayout = new QVBoxLayout();
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -441,6 +442,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       topologyCheckLayout->addWidget( cb );
     }
     mTopologyChecksGroupBox->setLayout( topologyCheckLayout );
+    mTopologyChecksGroupBox->setVisible( !topologyCheckFactories.isEmpty() );
   }
   else
   {
