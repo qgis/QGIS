@@ -8,9 +8,9 @@
     {"arg":"id_field", "description":"Name of the field that contains the current value"},
     {"arg":"filter_attribute", "description":"Name the field that contains a unique identifier for this sequence. Must have a UNIQUE index."},
     {"arg":"filter_value", "description":"Name of the sequence to use."},
-    {"arg":"default_values", "description":"Map with default values for additional columns on the table. The values need to be fully quoted. Functions are allowed."}
+    {"arg":"default_values", "description":"Map with default values for additional columns on the table. The values need to be fully quoted. Functions are allowed.", "optional": true}
   ],
   "examples": [
-    { "expression":"sqlite_fetch_and_increment(layer_property(@layer, 'path'), 'sequence_table', 'last_unique_id', 'sequence_id', 'global', map('last_change','date(''now'')','user',@user_account_name))", "returns":"0"}
+    { "expression":"sqlite_fetch_and_increment(layer_property(@layer, 'path'), 'sequence_table', 'last_unique_id', 'sequence_id', 'global', map('last_change','date(''now'')','user','''' || @user_account_name || ''''))", "returns":"0"}
   ]
 }
