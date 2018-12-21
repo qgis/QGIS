@@ -984,7 +984,8 @@ QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatu
   {
     connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVertexTool::onCachedGeometryChanged );
     connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::onCachedGeometryDeleted );
-    // TODO: also clear cache when layer is deleted
+    connect( layer, &QgsVectorLayer::willBeDeleted, this, &QgsVertexTool::clearGeometryCache );
+    connect( layer, &QgsVectorLayer::dataChanged, this, &QgsVertexTool::clearGeometryCache );
   }
 
   QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
@@ -1001,6 +1002,12 @@ QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatu
 QgsGeometry QgsVertexTool::cachedGeometryForVertex( const Vertex &vertex )
 {
   return cachedGeometry( vertex.layer, vertex.fid );
+}
+
+void QgsVertexTool::clearGeometryCache()
+{
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( sender() );
+  mCache.remove( layer );
 }
 
 void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
