@@ -269,7 +269,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QMap<QString, QString> layerStyleOverrides() const;
 
     /**
-     * Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * Sets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
      * \since QGIS 2.10
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
