@@ -872,13 +872,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     QString statement;
     QString values;
-    statement = '';
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
       statement += QStringLiteral( "DECLARE @px TABLE (id INT); " );
+      statement += QStringLiteral( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
     }
+    else
+    {
     statement += QStringLiteral( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
-
+    }
+    
     bool first = true;
     QSqlQuery query = createQuery();
     query.setForwardOnly( true );
