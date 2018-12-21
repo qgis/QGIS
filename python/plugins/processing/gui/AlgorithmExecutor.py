@@ -94,6 +94,10 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
     if context is None:
         context = dataobjects.createContext(feedback)
 
+    # Ugly hack: the only invalid policy option that makes sense for fixgeometries is to not check
+    if alg.name() in ('fixgeometries', ):
+        context.setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck)
+
     active_layer = parameters['INPUT']
 
     # Run some checks and prepare the layer for in-place execution by:
