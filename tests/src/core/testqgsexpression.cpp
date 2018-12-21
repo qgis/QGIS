@@ -1565,16 +1565,24 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context;
       QgsExpressionContextScope *scope = new QgsExpressionContextScope();
       scope->setVariable( QStringLiteral( "test_database" ), dir.filePath( testGpkgName ) );
+      scope->setVariable( QStringLiteral( "username" ), "some_username" );
       context << scope;
 
-      // Test failing
-      QgsExpression exp1( QStringLiteral( "sqlite_fetch_and_increment('/path/does/not/exist', 'T_KEY_OBJECT', 'T_LastUniqueId')" ) );
+      // Test database file does not exist
+      QgsExpression exp1( QStringLiteral( "sqlite_fetch_and_increment('/path/does/not/exist', 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id')" ) );
 
       exp1.evaluate( &context );
       QCOMPARE( exp1.hasEvalError(), true );
-      const QString evalErrorString = exp1.evalErrorString();
-      QVERIFY2( evalErrorString.contains( "/path/does/not/exist" ), QStringLiteral( "Path not found in %1" ).arg( evalErrorString ).toUtf8().constData() );
-      QVERIFY2( evalErrorString.contains( "Error" ), QStringLiteral( "\"Error\" not found in %1" ).arg( evalErrorString ).toUtf8().constData() );
+      const QString evalErrorString1 = exp1.evalErrorString();
+      QVERIFY2( evalErrorString1.contains( "/path/does/not/exist" ), QStringLiteral( "Path not found in %1" ).arg( evalErrorString1 ).toUtf8().constData() );
+      QVERIFY2( evalErrorString1.contains( "Error" ), QStringLiteral( "\"Error\" not found in %1" ).arg( evalErrorString1 ).toUtf8().constData() );
+
+      // Test default values are not properly quoted
+      QgsExpression exp2( QStringLiteral( "sqlite_fetch_and_increment(@test_database, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User', @username))" ) );
+      exp2.evaluate( &context );
+      QCOMPARE( exp2.hasEvalError(), true );
+      const QString evalErrorString2 = exp2.evalErrorString();
+      QVERIFY2( evalErrorString2.contains( "some_username" ), QStringLiteral( "'some_username' not found in '%1'" ).arg( evalErrorString2 ).toUtf8().constData() );
 
       // Test incrementation logic
       QgsExpression exp( QStringLiteral( "sqlite_fetch_and_increment(@test_database, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''me'''))" ) );
