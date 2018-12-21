@@ -323,7 +323,7 @@ void QgsFieldExpressionWidget::currentFieldChanged()
 
 void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 {
-  QPalette palette;
+  QPalette palette = mCombo->lineEdit()->palette();
   if ( !isEnabled() )
   {
     palette.setColor( QPalette::Text, Qt::gray );
