@@ -34,10 +34,10 @@ QgsStatusBar::QgsStatusBar( QWidget *parent )
   mLineEdit->setDisabled( true );
   mLineEdit->setFrame( false );
   mLineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-  QPalette palette;
+  QPalette palette = mLineEdit->palette();
   palette.setColor( QPalette::Disabled, QPalette::Text, QPalette::WindowText );
   mLineEdit->setPalette( palette );
-  mLineEdit->setStyleSheet( QStringLiteral( "* { background-color: rgba(0, 0, 0, 0); }" ) );
+  mLineEdit->setStyleSheet( QStringLiteral( "* { border: 0; background-color: rgba(0, 0, 0, 0); }" ) );
   mLayout->addWidget( mLineEdit, 10 );
   setLayout( mLayout );
 }
