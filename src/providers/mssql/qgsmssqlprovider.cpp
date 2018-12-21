@@ -958,7 +958,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {    
-        statement += '; SELECT id FROM @px;';
+        statement += QStringLiteral( "; SELECT id FROM @px;" );
     }
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
