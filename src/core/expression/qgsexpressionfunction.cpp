@@ -1361,28 +1361,6 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
   return layer->selectedFeatureCount();
 }
 
-template <class T>
-T getParameterValue( const QString &name, const QVariantList &values, const QgsExpressionNodeFunction *nodeFunction )
-{
-  T result;
-  QgsExpressionFunction *fd = QgsExpression::Functions().value( nodeFunction->fnIndex() );
-  if ( fd )
-  {
-    const auto &params = fd->parameters();
-    int idx = 0;
-    for ( const auto &param : params )
-    {
-      if ( param.name() == name )
-      {
-        return values.at( idx ).value<T>();
-      }
-      ++idx;
-    }
-  }
-
-  return QVariant().value<T>();
-};
-
 static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString database = values.at( 0 ).toString();
