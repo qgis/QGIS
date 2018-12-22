@@ -42,9 +42,6 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
              static_cast<QgsGeometryContainedCheckError *>( other )->containingFeature() == containingFeature();
     }
 
-    static QString factoryDescription() { return QApplication::translate( "QgsGeometryContainedCheckError", "Within feature" ); }
-    QString description() const override { return factoryDescription(); }
-
   private:
     QPair<QString, QgsFeatureId> mContainingFeature;
 };
