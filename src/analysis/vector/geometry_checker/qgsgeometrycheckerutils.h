@@ -36,10 +36,17 @@ class QgsFeedback;
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
-
 class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 {
   public:
+    /**
+     * \ingroup analysis
+     *
+     * A layer feature combination to uniquely identify and access a feature in
+     * a set of layers.
+     *
+     * \since QGIS 3.4
+     */
     class ANALYSIS_EXPORT LayerFeature
     {
       public:
@@ -94,6 +101,13 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         bool mMapCrs;
     };
 
+    /**
+     * \ingroup analysis
+     *
+     * Contains a set of layers and feature ids in those layers to pass to a geometry check.
+     *
+     * \since QGIS 3.4
+     */
     class ANALYSIS_EXPORT LayerFeatures
     {
       public:
@@ -110,6 +124,13 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
                        const QgsGeometryCheckContext *context );
 
+        /**
+         * \ingroup analysis
+         *
+         * An iterator over all features in a QgsGeometryCheckerUtils::LayerFeatures.
+         * 
+         * \since QGIS 3.4
+         */
         class iterator
         {
           public:
@@ -131,7 +152,14 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             std::unique_ptr<QgsGeometryCheckerUtils::LayerFeature> mCurrentFeature;
         };
 
+        /**
+         * The first feature to start iterating.
+         */
         iterator begin() const;
+
+        /**
+         * One after the last feature to stop iterating.
+         */
         iterator end() const;
 
 #endif

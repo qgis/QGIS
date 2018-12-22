@@ -22,6 +22,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
 
+/**
+ * \ingroup analysis
+ */
 class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
   public:
@@ -46,6 +49,9 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
     QPair<QString, QgsFeatureId> mContainingFeature;
 };
 
+/**
+ * \ingroup analysis
+ */
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {
   public:
