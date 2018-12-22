@@ -227,6 +227,12 @@ QString QgsGeometryOverlapCheck::factoryDescription()
   return tr( "Overlap" );
 }
 
+///@cond private
+QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::LayerCheck;
+}
+
 QString QgsGeometryOverlapCheck::factoryId()
 {
   return QStringLiteral( "QgsGeometryOverlapCheck" );
@@ -247,6 +253,7 @@ bool QgsGeometryOverlapCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_S
   return factoryCompatibleGeometryTypes().contains( layer->geometryType() );
 }
 
+///@endcond private
 QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const QVariant &value, const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature )
   : QgsGeometryCheckError( check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, QgsVertexId(), value, ValueArea )
   , mOverlappedFeature( OverlappedFeature( overlappedFeature.layer(), overlappedFeature.feature().id() ) )
@@ -257,9 +264,4 @@ QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryChe
 QString QgsGeometryOverlapCheckError::description() const
 {
   return QCoreApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1 at feature %2" ).arg( mOverlappedFeature.layerName(), QString::number( mOverlappedFeature.featureId() ) );
-}
-
-QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
-{
-  return QgsGeometryCheck::LayerCheck;
 }

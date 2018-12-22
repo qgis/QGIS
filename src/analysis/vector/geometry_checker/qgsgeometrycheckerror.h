@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
 
     /**
      * Create a new geometry check error with the parent \a check and for the
-     * \a layerFeature pair at the \errorLocation. Optionally the vertex can be
+     * \a layerFeature pair at the \a errorLocation. Optionally the vertex can be
      * specified via \a vixd and a \a value with its \a value Type for
      * additional information.
      */
@@ -169,7 +169,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
 
     /**
-     * Update this error with the information from \other.
+     * Update this error with the information from \a other.
      * Will be used to update existing errors whenever they are re-checked.
      */
     virtual void update( const QgsGeometryCheckError *other );

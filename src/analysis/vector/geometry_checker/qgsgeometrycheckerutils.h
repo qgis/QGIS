@@ -221,7 +221,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 
     /**
      * Returns the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
-     * \param polyLine The polyline
      * \returns The number of distinct points of the polyline
      */
     static inline int polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing, bool *isClosed = nullptr )

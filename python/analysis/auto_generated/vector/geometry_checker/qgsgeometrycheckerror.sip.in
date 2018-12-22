@@ -51,7 +51,7 @@ This represents an error reported by a geometry check.
                            ValueType valueType = ValueOther );
 %Docstring
 Create a new geometry check error with the parent ``check`` and for the
-``layerFeature`` pair at the \errorLocation. Optionally the vertex can be
+``layerFeature`` pair at the ``errorLocation``. Optionally the vertex can be
 specified via ``vixd`` and a ``value`` with its ``value`` Type for
 additional information.
 %End
@@ -157,7 +157,7 @@ If this returns true, it can be used to update existing errors after re-checking
 
     virtual void update( const QgsGeometryCheckError *other );
 %Docstring
-Update this error with the information from \other.
+Update this error with the information from ``other``.
 Will be used to update existing errors whenever they are re-checked.
 %End
 

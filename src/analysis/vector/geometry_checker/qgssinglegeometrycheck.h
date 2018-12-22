@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
     virtual ~QgsSingleGeometryCheckError() = default;
 
     /**
-     * Update this error with the information from \other.
+     * Update this error with the information from \a other.
      * Will be used to update existing errors whenever they are re-checked.
      */
     virtual void update( const QgsSingleGeometryCheckError *other );
