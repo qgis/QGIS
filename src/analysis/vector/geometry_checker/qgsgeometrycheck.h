@@ -262,8 +262,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     /**
      * Returns all layers and feature ids.
      *
-     * \since QGIS 3.4
      * \note Not available in Python bindings
+     * \since QGIS 3.4
      */
     QMap<QString, QgsFeatureIds> allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const SIP_SKIP;
 

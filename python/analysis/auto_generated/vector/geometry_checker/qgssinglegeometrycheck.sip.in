@@ -127,8 +127,12 @@ Subclasses need to implement the processGeometry method.
 #include "qgssinglegeometrycheck.h"
 %End
   public:
+
     QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
                             const QVariantMap &configuration );
+%Docstring
+Creates a new single geometry check.
+%End
 
      virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,
                         QList<QgsGeometryCheckError *> &errors,

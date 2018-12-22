@@ -145,6 +145,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
 {
   public:
+
+    /**
+     * Creates a new single geometry check.
+     */
     QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
                             const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )

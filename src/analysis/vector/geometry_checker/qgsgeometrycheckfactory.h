@@ -83,6 +83,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 };
 
 /**
+ * \ingroup analysis
  * Template to create a factory for a geometry check.
  *
  * \note Not available in Python bindings.
