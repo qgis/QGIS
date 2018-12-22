@@ -20,6 +20,14 @@ email                : matthias@opengis.ch
 
 #include "qgssinglegeometrycheck.h"
 
+/**
+ * \ingroup analysis
+ *
+ * An error for a QgsGeometryIsValid check.
+ * The description is delivered by the underlying check engine, either GEOS or QGIS internal.
+ *
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryCheckError
 {
   public:
@@ -40,6 +48,10 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryChe
 class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
 {
   public:
+
+    /**
+     * Creates a new is valid check with the provided \a context. No options are supported in \a configuration.
+     */
     explicit QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override;

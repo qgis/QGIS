@@ -253,14 +253,48 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
+
+    /**
+     * Returns all layers and feature ids.
+     *
+     * \since QGIS 3.4
+     * \note Not available in Python bindings
+     */
     QMap<QString, QgsFeatureIds> allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const SIP_SKIP;
+
+    /**
+     * Replaces a part in a feature geometry.
+     *
+     * \since QGIS 3.4
+     * \note Not available in Python bindings
+     */
     void replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
+
+    /**
+     * Deletes a part of a feature geometry.
+     *
+     * \since QGIS 3.4
+     * \note Not available in Python bindings
+     */
     void deleteFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
+
+    /**
+     * Deletes a ring in a feature geometry.
+     *
+     * \since QGIS 3.4
+     * \note Not available in Python bindings
+     */
     void deleteFeatureGeometryRing( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
 
     const QgsGeometryCheckContext *mContext;
     QVariantMap mConfiguration;
 
+    /**
+     * Determin the scale factor of a layer to the map coordiante reference system.
+     *
+     * \since QGIS 3.4
+     * \note Not available in Python bindings
+     */
     double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
 };
 

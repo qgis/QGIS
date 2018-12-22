@@ -39,6 +39,7 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 {
   public:
+
     /**
      * \ingroup analysis
      *
@@ -128,7 +129,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * \ingroup analysis
          *
          * An iterator over all features in a QgsGeometryCheckerUtils::LayerFeatures.
-         * 
+         *
          * \since QGIS 3.4
          */
         class iterator
