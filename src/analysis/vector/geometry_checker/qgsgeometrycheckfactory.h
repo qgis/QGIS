@@ -52,7 +52,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
     virtual ~QgsGeometryCheckFactory() = default;
 
     /**
-     * Create a new geometry check with \a context and \a configuration.
+     * Creates a new geometry check with \a context and \a configuration.
      */
     virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 SIP_FACTORY;
 

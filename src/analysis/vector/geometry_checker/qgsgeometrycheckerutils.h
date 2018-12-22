@@ -74,6 +74,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * CRS specified in the context specified in the constructor.
          */
         const QgsGeometry &geometry() const;
+
+        /**
+         * Returns a combination of the layerId and the feature id.
+         */
         QString id() const;
         bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
         bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
