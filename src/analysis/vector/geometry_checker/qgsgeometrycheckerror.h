@@ -112,7 +112,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
 
     /**
      * An additional value for the error.
-     * Lenghts and areas are provided in map units.
+     * Lengths and areas are provided in map units.
      * \see valueType()
      */
     QVariant value() const { return mValue; }
@@ -185,7 +185,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      * Create a new geometry check error with the parent \a check and for the
      * layer with \a layerId and \a featureId.
      * The \a geometry of the error and the \a errorLocation need to be
-     * specified in map coordiantes.
+     * specified in map coordinates.
      * Optionally the vertex can be specified via \a vixd and a \a value with
      * its \a value Type for additional information.
      */
