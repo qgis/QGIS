@@ -31,6 +31,10 @@ email                : matthias@opengis.ch
 class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryCheckError
 {
   public:
+
+    /**
+     * Creates a new is valid check error.
+     */
     QgsGeometryIsValidCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QString &errorDescription );
 
     QString description() const override;
@@ -40,6 +44,8 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryChe
 };
 
 /**
+ * \ingroup analysis
+ *
  * Checks if geometries are valid using the backend configured in the QGIS settings.
  * This does not offer any fixes but makes sure that all geometries are valid.
  *

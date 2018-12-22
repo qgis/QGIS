@@ -82,6 +82,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
     virtual QgsGeometryCheck::CheckType checkType() const = 0;
 };
 
+/**
+ * Template to create a factory for a geometry check.
+ *
+ * \note Not available in Python bindings.
+ */
 template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {

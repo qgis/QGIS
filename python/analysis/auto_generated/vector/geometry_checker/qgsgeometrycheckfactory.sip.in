@@ -66,6 +66,13 @@ The type of this check.
 template<T>
 class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
 {
+%Docstring
+Template to create a factory for a geometry check.
+
+.. note::
+
+   Not available in Python bindings.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheckfactory.h"

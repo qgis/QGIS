@@ -173,6 +173,11 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     virtual ~QgsGeometryCheck() = default;
 
 #ifndef SIP_RUN
+
+    /**
+     * Returns the configuration value with the \a name, saved in the QGIS settings for
+     * this geometry check. If no configuration could be found, \a defaultValue is returned.
+     */
     template <class T>
     T configurationValue( const QString &name, const QVariant &defaultValue = QVariant() )
     {
@@ -265,24 +270,24 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     /**
      * Replaces a part in a feature geometry.
      *
-     * \since QGIS 3.4
      * \note Not available in Python bindings
+     * \since QGIS 3.4
      */
     void replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
 
     /**
      * Deletes a part of a feature geometry.
      *
-     * \since QGIS 3.4
      * \note Not available in Python bindings
+     * \since QGIS 3.4
      */
     void deleteFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
 
     /**
      * Deletes a ring in a feature geometry.
      *
-     * \since QGIS 3.4
      * \note Not available in Python bindings
+     * \since QGIS 3.4
      */
     void deleteFeatureGeometryRing( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
 
@@ -290,10 +295,10 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     QVariantMap mConfiguration;
 
     /**
-     * Determin the scale factor of a layer to the map coordiante reference system.
+     * Determines the scale factor of a layer to the map coordinate reference system.
      *
-     * \since QGIS 3.4
      * \note Not available in Python bindings
+     * \since QGIS 3.4
      */
     double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
 };

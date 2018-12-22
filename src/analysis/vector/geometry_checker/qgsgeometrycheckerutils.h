@@ -113,6 +113,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     {
       public:
 #ifndef SIP_RUN
+
+        /**
+         * Creates a new set of layer and features.
+         */
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QMap<QString, QgsFeatureIds> &featureIds,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
@@ -120,6 +124,9 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
                        const QgsGeometryCheckContext *context,
                        bool useMapCrs = false );
 
+        /**
+         * Creates a new set of layer and features.
+         */
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QList<QString> &layerIds, const QgsRectangle &extent,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
@@ -135,11 +142,33 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         class iterator
         {
           public:
+
+            /**
+             * Creates a new iterator.
+             */
             iterator( const QList<QString>::const_iterator &layerIt, const LayerFeatures *parent );
+
+            /**
+             * Copies the iterator \a rh.
+             */
             iterator( const iterator &rh );
             ~iterator();
+
+            /**
+             * Increments the item the iterator currently points to by one and
+             * returns the new iterator.
+             */
             const iterator &operator++();
-            iterator operator++( int );
+
+            /**
+             * Increments the item the iterator currently points to by \a n and
+             * returns the new iterator.
+             */
+            iterator operator++( int n );
+
+            /**
+             * Dereferences the item at the current iterator location.
+             */
             const QgsGeometryCheckerUtils::LayerFeature &operator*() const;
             bool operator!=( const iterator &other );
 
