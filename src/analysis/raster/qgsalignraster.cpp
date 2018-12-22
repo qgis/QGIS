@@ -19,8 +19,11 @@
 #include <cpl_conv.h>
 
 #if defined(_MSC_VER) && _MSC_VER >= 1600 && _MSC_VER < 1900
+#include <cpl_multiproc.h>
 // we need GDALWarpKernel
 #undef CPL_SUPRESS_CPLUSPLUS
+#undef CPL_DISALLOW_COPY_ASSIGN
+#define CPL_DISALLOW_COPY_ASSIGN(className)
 #endif
 
 #include <gdalwarper.h>
