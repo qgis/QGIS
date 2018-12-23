@@ -205,12 +205,12 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::checkType() const
   return factoryCheckType();
 }
 
+///@cond private
 QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
 {
   return {QgsWkbTypes::PolygonGeometry};
 }
 
-///@cond private
 bool QgsGeometryMissingVertexCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP
 {
   return factoryCompatibleGeometryTypes().contains( layer->geometryType() );

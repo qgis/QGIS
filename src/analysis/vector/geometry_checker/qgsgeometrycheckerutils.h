@@ -146,7 +146,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             /**
              * Creates a new iterator.
              */
-            iterator( const QList<QString>::const_iterator &layerIt, const LayerFeatures *parent );
+            iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent );
 
             /**
              * Copies the iterator \a rh.
