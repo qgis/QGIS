@@ -231,7 +231,7 @@
         <item>
          <widget class="QTextEdit" name="teProjection">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -240,12 +240,6 @@
            <size>
             <width>0</width>
             <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
            </size>
           </property>
           <property name="baseSize">
@@ -270,7 +264,7 @@
           <item>
            <widget class="QgsMapCanvas" name="mAreaCanvas" native="true">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
