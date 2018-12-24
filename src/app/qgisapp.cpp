@@ -580,8 +580,12 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       break;
     }
     case 1:
-      QgisApp::instance()->attributeTable();
+    {
+      QgsSettings settings;
+      QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
+      QgisApp::instance()->attributeTable( initialMode );
       break;
+    }
     case 2:
       mapStyleDock( true );
       break;
