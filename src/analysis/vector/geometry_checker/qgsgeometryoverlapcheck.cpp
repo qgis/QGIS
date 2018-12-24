@@ -222,12 +222,12 @@ QgsGeometryCheck::Flags QgsGeometryOverlapCheck::flags() const
   return factoryFlags();
 }
 
+///@cond private
 QString QgsGeometryOverlapCheck::factoryDescription()
 {
   return tr( "Overlap" );
 }
 
-///@cond private
 QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
 {
   return QgsGeometryCheck::LayerCheck;
