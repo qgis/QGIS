@@ -206,8 +206,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                         QgisApp::instance(), SLOT( attributeTable() ) );
+        QgsSettings settings;
+        QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
+        QAction *attrTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ) );
+        connect( attrTableAction, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
 
         // allow editing
         int cap = vlayer->dataProvider()->capabilities();
