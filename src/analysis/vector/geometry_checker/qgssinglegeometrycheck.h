@@ -39,6 +39,10 @@ class QgsSingleGeometryCheck;
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 {
   public:
+
+    /**
+     * Creates a new single geometry check error.
+     */
     QgsSingleGeometryCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QgsVertexId &vertexId = QgsVertexId() )
       : mCheck( check )
       , mGeometry( geometry )
@@ -49,7 +53,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
     virtual ~QgsSingleGeometryCheckError() = default;
 
     /**
-     * Update this error with the information from \other.
+     * Update this error with the information from \a other.
      * Will be used to update existing errors whenever they are re-checked.
      */
     virtual void update( const QgsSingleGeometryCheckError *other );
@@ -111,6 +115,10 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 {
   public:
+
+    /**
+     * Creates a new error for a QgsSingleGeometryCheck.
+     */
     QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *singleError, const QgsGeometryCheckerUtils::LayerFeature &layerFeature );
 
     /**
@@ -137,6 +145,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
 {
   public:
+
+    /**
+     * Creates a new single geometry check.
+     */
     QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
                             const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )

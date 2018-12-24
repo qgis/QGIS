@@ -65,14 +65,14 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
     QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) SIP_FACTORY;
 
     /**
-     * Get all geometry check factories that are compatible with \a layer and have all of the \a flags set.
+     * Returns all geometry check factories that are compatible with \a layer and have all of the \a flags set.
      *
      * \since QGIS 3.4
      */
     QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = nullptr ) const;
 
     /**
-     * Register a new geometry check factory.
+     * Registers a new geometry check factory.
      *
      * \since QGIS 3.4
      */

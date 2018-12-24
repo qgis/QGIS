@@ -30,6 +30,11 @@ email                : matthias@opengis.ch
 class ANALYSIS_EXPORT QgsVectorDataProviderFeaturePool : public QgsFeaturePool
 {
   public:
+
+    /**
+     * Creates a new feature pool for the data provider of \a layer.
+     * If \a selectedOnly is set to true, only selected features will be managed by the pool.
+     */
     QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly = false );
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
