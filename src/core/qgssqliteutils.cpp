@@ -92,6 +92,21 @@ sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString
   return s;
 }
 
+int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage ) const
+{
+  char *errMsg;
+
+  int ret = sqlite3_exec( get(), sql.toUtf8(), nullptr, nullptr, &errMsg );
+
+  if ( errMsg )
+  {
+    errorMessage = QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+  }
+
+  return ret;
+}
+
 QString QgsSqliteUtils::quotedString( const QString &value )
 {
   if ( value.isNull() )

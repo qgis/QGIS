@@ -47,6 +47,7 @@
 #include "qgsfieldformatter.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsproviderregistry.h"
+#include "sqlite3.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -1358,6 +1359,82 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
   }
 
   return layer->selectedFeatureCount();
+}
+
+static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString database = values.at( 0 ).toString();
+  const QString table = values.at( 1 ).toString();
+  const QString idColumn = values.at( 2 ).toString();
+  const QString filterAttribute = values.at( 3 ).toString();
+  const QVariant filterValue = values.at( 4 ).toString();
+  const QVariantMap defaultValues = values.at( 5 ).toMap();
+
+
+  // read from database
+  sqlite3_database_unique_ptr sqliteDb;
+  sqlite3_statement_unique_ptr sqliteStatement;
+
+  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+  {
+    parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
+    return QVariant();
+  }
+
+  QString currentValSql;
+  currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
+  if ( !filterAttribute.isNull() )
+  {
+    currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
+  }
+
+  int result;
+  sqliteStatement = sqliteDb.prepare( currentValSql, result );
+  if ( result == SQLITE_OK )
+  {
+    qlonglong nextId = 0;
+    if ( sqliteStatement.step() == SQLITE_ROW )
+    {
+      nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
+    }
+
+    QString upsertSql;
+    upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
+    QStringList cols;
+    QStringList vals;
+    cols << QgsSqliteUtils::quotedIdentifier( idColumn );
+    vals << QgsSqliteUtils::quotedValue( nextId );
+
+    if ( !filterAttribute.isNull() )
+    {
+      cols << QgsSqliteUtils::quotedIdentifier( filterAttribute );
+      vals << QgsSqliteUtils::quotedValue( filterValue );
+    }
+
+    for ( QVariantMap::const_iterator iter = defaultValues.constBegin(); iter != defaultValues.constEnd(); ++iter )
+    {
+      cols << QgsSqliteUtils::quotedIdentifier( iter.key() );
+      vals << iter.value().toString();
+    }
+
+    upsertSql += QLatin1String( " (" ) + cols.join( ',' ) + ')';
+    upsertSql += QLatin1String( " VALUES " );
+    upsertSql += '(' + vals.join( ',' ) + ')';
+
+    QString errorMessage;
+    result = sqliteDb.exec( upsertSql, errorMessage );
+    if ( result == SQLITE_OK )
+    {
+      return nextId;
+    }
+    else
+    {
+      parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
+      return QVariant();
+    }
+  }
+
+  return QVariant(); // really?
 }
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -4914,6 +4991,20 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           QString(),
           false,
           QSet<QString>()
+        );
+
+    sFunctions
+        << new QgsStaticExpressionFunction(
+          QStringLiteral( "sqlite_fetch_and_increment" ),
+          QgsExpressionFunction::ParameterList()
+          << QgsExpressionFunction::Parameter( QStringLiteral( "database" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "table" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "id_field" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "filter_attribute" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "filter_value" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "default_values" ), true ),
+          fcnSqliteFetchAndIncrement,
+          QStringLiteral( "Record and Attributes" )
         );
 
     // **Fields and Values** functions
