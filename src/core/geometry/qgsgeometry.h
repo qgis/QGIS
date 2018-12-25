@@ -1443,7 +1443,7 @@ class CORE_EXPORT QgsGeometry
      * is not a single-point type, a TypeError will be raised. If the geometry
      * is null, a ValueError will be raised.
      */
-    SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
+    SIP_PYOBJECT asPoint() const;
     % MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
@@ -1486,7 +1486,7 @@ class CORE_EXPORT QgsGeometry
      * is not a single-line type, a TypeError will be raised. If the geometry is null, a ValueError
      * will be raised.
      */
-    SIP_PYOBJECT asPolyline() const SIP_TYPEHINT( QgsPolylineXY );
+    SIP_PYOBJECT asPolyline() const;
     % MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
@@ -1530,7 +1530,7 @@ class CORE_EXPORT QgsGeometry
      * is not a single-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
      * will be raised.
      */
-    SIP_PYOBJECT asPolygon() const SIP_TYPEHINT( QgsPolygonXY );
+    SIP_PYOBJECT asPolygon() const;
     % MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
     if ( sipCpp->isNull() )

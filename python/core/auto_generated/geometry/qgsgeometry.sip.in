@@ -1423,7 +1423,7 @@ Try to convert the geometry to the requested type
 
 
 
-    SIP_PYOBJECT asPoint() const /TypeHint="QgsPointXY"/;
+    SIP_PYOBJECT asPoint() const;
 %Docstring
 Returns the contents of the geometry as a 2-dimensional point.
 
@@ -1452,7 +1452,7 @@ is null, a ValueError will be raised.
 %End
 
 
-    SIP_PYOBJECT asPolyline() const /TypeHint="QgsPolylineXY"/;
+    SIP_PYOBJECT asPolyline() const;
 %Docstring
 Returns the contents of the geometry as a polyline.
 
@@ -1483,7 +1483,7 @@ will be raised.
 %End
 
 
-    SIP_PYOBJECT asPolygon() const /TypeHint="QgsPolygonXY"/;
+    SIP_PYOBJECT asPolygon() const;
 %Docstring
 Returns the contents of the geometry as a polygon.
 
