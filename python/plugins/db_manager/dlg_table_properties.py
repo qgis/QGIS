@@ -336,7 +336,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         #Function that add a comment to the selected table
         try:
             #Using the db connector, executing de SQL query Comment on table
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\' '.format(self.table.schema().name, self.table.name ,self.viewComment.text()))
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(self.table.schema().name, self.table.name ,self.viewComment.text()))
         except DbError as e:
             DlgDbError.showError(e, self)
             return
@@ -348,8 +348,8 @@ class DlgTableProperties(QDialog, Ui_Dialog):
     def deleteComment(self):
         #Function that drop the comment to the selected table
         try:
-            #Using the db connector, executing de SQL query Comment on table. Comment is void ''
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'\' '.format(self.table.schema().name, self.table.name))
+            #Using the db connector, executing de SQL query Comment on table using the NULL definition
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(self.table.schema().name, self.table.name))
         except DbError as e:
             DlgDbError.showError(e, self)
             return

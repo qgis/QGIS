@@ -262,7 +262,7 @@
        </widget>
       </item>
       <item row="10" column="1">
-       <widget class="QLineEdit" name="editCom">
+       <widget class="QLineEdit" name="editComment">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -324,8 +324,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>334</x>
-     <y>486</y>
+     <x>343</x>
+     <y>617</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -340,12 +340,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>129</x>
-     <y>239</y>
+     <x>155</x>
+     <y>268</y>
     </hint>
     <hint type="destinationlabel">
-     <x>460</x>
-     <y>239</y>
+     <x>463</x>
+     <y>272</y>
     </hint>
    </hints>
   </connection>
@@ -356,12 +356,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>141</x>
-     <y>265</y>
+     <x>167</x>
+     <y>306</y>
     </hint>
     <hint type="destinationlabel">
-     <x>442</x>
-     <y>265</y>
+     <x>463</x>
+     <y>310</y>
     </hint>
    </hints>
   </connection>
@@ -372,12 +372,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>343</y>
+     <x>145</x>
+     <y>404</y>
     </hint>
     <hint type="destinationlabel">
-     <x>455</x>
-     <y>343</y>
+     <x>463</x>
+     <y>406</y>
     </hint>
    </hints>
   </connection>
@@ -388,8 +388,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>461</x>
-     <y>486</y>
+     <x>470</x>
+     <y>617</y>
     </hint>
     <hint type="destinationlabel">
      <x>508</x>
@@ -404,12 +404,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>134</x>
-     <y>281</y>
+     <x>160</x>
+     <y>341</y>
     </hint>
     <hint type="destinationlabel">
-     <x>357</x>
-     <y>281</y>
+     <x>463</x>
+     <y>341</y>
     </hint>
    </hints>
   </connection>
@@ -420,12 +420,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>134</x>
-     <y>307</y>
+     <x>160</x>
+     <y>372</y>
     </hint>
     <hint type="destinationlabel">
-     <x>357</x>
-     <y>307</y>
+     <x>463</x>
+     <y>372</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkCom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editComment</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>549</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>552</y>
     </hint>
    </hints>
   </connection>

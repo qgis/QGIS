@@ -39,7 +39,6 @@ from qgis.core import (QgsDataSourceUri,
 from qgis.gui import QgsMessageViewer
 from qgis.utils import OverrideCursor
 
-import psycopg2
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
 
@@ -52,7 +51,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.db = outDb
         self.outUri = outUri
         self.setupUi(self)
-        print(self.db)
 
         self.default_pk = "id"
         self.default_geom = "geom"
@@ -82,9 +80,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         if mode == self.ASK_FOR_INPUT_MODE:
             self.btnChooseInputFile.clicked.connect(self.chooseInputFile)
-            # self.cboInputLayer.lineEdit().editingFinished.connect(self.updateInputLayer)
-            self.cboInputLayer.editTextChanged.connect(self.inputPathChanged)
-            # self.cboInputLayer.currentIndexChanged.connect(self.updateInputLayer)
+            self.cboInputLayer.currentTextChanged.connect(self.updateInputLayer)
             self.btnUpdateInputLayer.clicked.connect(self.updateInputLayer)
 
             self.editPrimaryKey.setText(self.default_pk)
@@ -162,13 +158,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         self.cboInputLayer.setEditText(filename)
 
-    def inputPathChanged(self, path):
-        if self.cboInputLayer.currentIndex() < 0:
-            return
-        self.cboInputLayer.blockSignals(True)
-        self.cboInputLayer.setCurrentIndex(-1)
-        self.cboInputLayer.setEditText(path)
-        self.cboInputLayer.blockSignals(False)
 
     def reloadInputLayer(self):
         """ create the input layer and update available options """
@@ -383,7 +372,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         #Add comment on table
         if self.chkCom.isEnabled() and self.chkCom.isChecked():
             #Using connector executing COMMENT ON TABLE query (with editCome.text() value)
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}E\' '.format(schema, table ,self.editCom.text()))
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}E\''.format(schema, table ,self.editCom.text()))
 
         self.db.connection().reconnect()
         self.db.refresh()
