@@ -616,9 +616,16 @@ QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
-         SelectAtId | CircularGeometries;
+         SelectAtId | CircularGeometries | FastTruncate;
 }
 
+bool QgsMemoryProvider::truncate()
+{
+  mFeatures.clear();
+  clearMinMaxCache();
+  mExtent.setMinimal();
+  return true;
+}
 
 void QgsMemoryProvider::updateExtents()
 {
