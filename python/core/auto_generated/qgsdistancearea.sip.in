@@ -189,23 +189,25 @@ Measures the perimeter of a polygon geometry.
 .. versionadded:: 2.12
 %End
 
-    double measureLine( const QVector<QgsPointXY> &points ) const;
+    double measureLine( const QVector<QgsPointXY> &points, bool forceCartesian = false ) const;
 %Docstring
 Measures the length of a line with multiple segments.
 
 :param points: list of points in line
+:param forceCartesian: calculate distances in cartesian coordinates
 
 :return: length of line. The units for the returned length can be retrieved by calling lengthUnits().
 
 .. seealso:: :py:func:`lengthUnits`
 %End
 
-    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
+    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2, bool forceCartesian = false ) const;
 %Docstring
 Measures the distance between two points.
 
 :param p1: start of line
 :param p2: end of line
+:param forceCartesian: calculate distances in cartesian coordinates
 
 :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
 

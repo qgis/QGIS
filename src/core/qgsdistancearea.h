@@ -165,19 +165,21 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Measures the length of a line with multiple segments.
      * \param points list of points in line
+     * \param forceCartesian calculate distances in cartesian coordinates
      * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
-    double measureLine( const QVector<QgsPointXY> &points ) const;
+    double measureLine( const QVector<QgsPointXY> &points, bool forceCartesian = false ) const;
 
     /**
      * Measures the distance between two points.
      * \param p1 start of line
      * \param p2 end of line
+     * \param forceCartesian calculate distances in cartesian coordinates
      * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
-    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
+    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2, bool forceCartesian = false ) const;
 
     /**
      * Calculates the distance from one point with distance in meters and azimuth (direction)
@@ -341,7 +343,7 @@ class CORE_EXPORT QgsDistanceArea
     double getQbar( double x ) const;
 
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
-    double measureLine( const QgsCurve *curve ) const;
+    double measureLine( const QgsCurve *curve, bool forceCartesian = false ) const;
     double measurePolygon( const QgsCurve *curve ) const;
 
     // temporary area measurement stuff
