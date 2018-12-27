@@ -51,23 +51,21 @@ QAbstractSpinBox {
     border-radius:4px;
     background-color: @darkgradient;
     color:@itembackground;
- }
+}
 
- QAbstractSpinBox::up-button {
+QAbstractSpinBox::up-button {
     subcontrol-origin: border;
-     subcontrol-position: top right;
-
-     width: 16px;
+    subcontrol-position: top right;
+    width: 16px;
     image: url(@theme_path/icons/arrow-up.svg);
- }
+}
 
- QAbstractSpinBox::down-button {
-     subcontrol-origin: border;
-     subcontrol-position: bottom right;
-
-     width: 16px;
+QAbstractSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    width: 16px;
     image: url(@theme_path/icons/arrow-down.svg);
- }
+}
 
 
 /* ==================================================================================== */
@@ -149,7 +147,7 @@ QToolButton::menu-button {
     border-width: 1px;
     border-color: none;
     border-radius: 4px;
-    background: none;
+    background:@itemdarkbackground;
 }
 QToolButton::hover, QToolButton::menu-button::hover
 {
@@ -157,7 +155,7 @@ QToolButton::hover, QToolButton::menu-button::hover
     border-color: #1e1e1e;
     border-style: solid;
     border-radius: 4px;
-    background-color:@itembackground;
+    background-color: none;
 }
 QToolButton:checked
 {
@@ -184,7 +182,7 @@ QComboBox {
     border-style: solid;
     border: 1px solid #1e1e1e; 
     border-radius:4px;
-    padding: 3px 3px 3px 3px;
+    padding: 3px;
 }
 
 
@@ -634,4 +632,13 @@ QgsMessageBar QLabel, QgsMessageBar QTextEdit, QMessageBar QToolButton {
 
 QgsPropertyOverrideButton {
     padding: 0px;
+}
+
+QListWidget#mOptionsListWidget {
+    background-color: @itemdarkbackground;
+    color: @itembackground;
+}
+
+QListWidget#mOptionsListWidget::item {
+    padding: 3px;
 }
