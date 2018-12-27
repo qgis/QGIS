@@ -477,6 +477,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDistanceUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
   mDistanceUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
   mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mDistanceUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
+  mDistanceUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
   mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
   mDistanceUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
 
@@ -494,6 +496,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAreaUnitsComboBox->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
   mAreaUnitsComboBox->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
   mAreaUnitsComboBox->addItem( tr( "Square nautical miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
+  mAreaUnitsComboBox->addItem( tr( "Square centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
+  mAreaUnitsComboBox->addItem( tr( "Square millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
   mAreaUnitsComboBox->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
   mAreaUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
 

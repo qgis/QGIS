@@ -51,9 +51,19 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   repopulateComboBoxUnits( mMeasureArea );
   if ( mMeasureArea )
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
+  {
+    if ( useMapUnits )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
+  }
   else
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+  {
+    if ( useMapUnits )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+  }
 
   if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
@@ -103,6 +113,7 @@ void QgsMeasureDialog::updateSettings()
   mCanvasUnits = mCanvas->mapUnits();
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
+  mapDistanceUnits = QgsProject::instance()->crs().mapUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
@@ -110,14 +121,43 @@ void QgsMeasureDialog::updateSettings()
   mTable->clear();
   mTotal = 0;
   updateUi();
+
+  if ( !mCanvas->mapSettings().destinationCrs().isValid() ||
+       ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+         && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
+    forceCartesian = true;
+  else
+    forceCartesian = false;
 }
 
 void QgsMeasureDialog::unitsChanged( int index )
 {
   if ( mMeasureArea )
+  {
     mAreaUnits = static_cast< QgsUnitTypes::AreaUnit >( mUnitsCombo->itemData( index ).toInt() );
+    if ( mAreaUnits == QgsUnitTypes::AreaUnknownUnit )
+    {
+      useMapUnits = true;
+      mAreaUnits = QgsUnitTypes::distanceToAreaUnit( mapDistanceUnits );
+    }
+    else
+    {
+      useMapUnits = false;
+    }
+  }
   else
+  {
     mDistanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
+    if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit )
+    {
+      useMapUnits = true;
+      mDistanceUnits = mapDistanceUnits;
+    }
+    else
+    {
+      useMapUnits = false;
+    }
+  }
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -142,6 +182,13 @@ void QgsMeasureDialog::restart()
 
 void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
 {
+  if ( !mCanvas->mapSettings().destinationCrs().isValid() ||
+       ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+         && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
+    forceCartesian = true;
+  else
+    forceCartesian = false;
+
   mLastMousePoint = point;
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
@@ -157,11 +204,10 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   {
     QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
-    double d = mDa.measureLine( p1, p2 );
-
-    editTotal->setText( formatDistance( mTotal + d ) );
-
-    d = convertLength( d, mDistanceUnits );
+    double d = mDa.measureLine( p1, p2, forceCartesian );
+    editTotal->setText( formatDistance( mTotal + d, !forceCartesian ) );
+    if ( !forceCartesian )
+      d = convertLength( d, mDistanceUnits );
 
     // Set moving
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
@@ -191,8 +237,8 @@ void QgsMeasureDialog::addPoint()
     }
     if ( numPoints > 1 )
     {
-      mTotal = mDa.measureLine( mTool->points() );
-      editTotal->setText( formatDistance( mTotal ) );
+      mTotal = mDa.measureLine( mTool->points(), forceCartesian );
+      editTotal->setText( formatDistance( mTotal, !forceCartesian ) );
     }
   }
 }
@@ -219,14 +265,14 @@ void QgsMeasureDialog::removeLastPoint()
     //remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
 
-    mTotal = mDa.measureLine( mTool->points() );
+    mTotal = mDa.measureLine( mTool->points(), forceCartesian );
 
     if ( !mTool->done() )
     {
       // need to add the distance for the temporary mouse cursor point
       QVector< QgsPointXY > tmpPoints = mTool->points();
       QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) );
-      double d = mDa.measureLine( p1, mLastMousePoint );
+      double d = mDa.measureLine( p1, mLastMousePoint, forceCartesian );
 
       d = convertLength( d, mDistanceUnits );
 
@@ -236,7 +282,7 @@ void QgsMeasureDialog::removeLastPoint()
     }
     else
     {
-      editTotal->setText( formatDistance( mTotal ) );
+      editTotal->setText( formatDistance( mTotal, !forceCartesian ) );
     }
   }
 }
@@ -297,7 +343,7 @@ QString QgsMeasureDialog::formatArea( double area, bool convertUnits ) const
 
 void QgsMeasureDialog::updateUi()
 {
-  // Set tooltip to indicate how we calculate measurments
+  // Set tooltip to indicate how we calculate measurements
   QString toolTip = tr( "The calculations are based on:" );
 
   bool forceCartesian = false;
@@ -450,18 +496,25 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mAreaUnits ) );
+    if ( useMapUnits )
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit ) );
+    else
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mAreaUnits ) );
   }
   else
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDistanceUnits ) );
-    if ( mDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+    if ( useMapUnits )
     {
-      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit ) );
+      mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mapDistanceUnits ) ) ) );
     }
     else
     {
-      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mDistanceUnits ) );
+      if ( mDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+        mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QgsUnitTypes::toString( mDistanceUnits ) ) ) );
+      else
+        mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
     }
   }
 
@@ -489,16 +542,13 @@ void QgsMeasureDialog::updateUi()
       if ( !b )
       {
         double d = -1;
-        if ( forceCartesian )
+        d = mDa.measureLine( p1, p2, forceCartesian );
+        if ( !forceCartesian )
         {
-          //Cartesian calculation forced
-          d = std::sqrt( p2.sqrDist( p1 ) );
-          mTotal += d;
-        }
-        else
-        {
-          d = mDa.measureLine( p1, p2 );
-          d = convertLength( d, mDistanceUnits );
+          if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit && mapDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
+            d = convertLength( d, mapDistanceUnits );
+          else
+            d = convertLength( d, mDistanceUnits );
         }
 
         QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( d, 'f', mDecimalPlaces ) ) );
@@ -510,8 +560,7 @@ void QgsMeasureDialog::updateUi()
       b = false;
     }
 
-    if ( !forceCartesian )
-      mTotal = mDa.measureLine( mTool->points() );
+    mTotal = mDa.measureLine( mTool->points(), forceCartesian );
     mTable->show(); // Show the table with items
     editTotal->setText( formatDistance( mTotal, convertToDisplayUnits ) );
   }

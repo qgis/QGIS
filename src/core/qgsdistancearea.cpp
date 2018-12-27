@@ -253,7 +253,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
   return length;
 }
 
-double QgsDistanceArea::measureLine( const QgsCurve *curve ) const
+double QgsDistanceArea::measureLine( const QgsCurve *curve, bool forceCartesian ) const
 {
   if ( !curve )
   {
@@ -264,10 +264,10 @@ double QgsDistanceArea::measureLine( const QgsCurve *curve ) const
   QVector<QgsPointXY> linePoints;
   curve->points( linePointsV2 );
   QgsGeometry::convertPointList( linePointsV2, linePoints );
-  return measureLine( linePoints );
+  return measureLine( linePoints, forceCartesian );
 }
 
-double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
+double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points, bool forceCartesian ) const
 {
   if ( points.size() < 2 )
     return 0;
@@ -277,14 +277,14 @@ double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
 
   try
   {
-    if ( willUseEllipsoid() )
+    if ( willUseEllipsoid() && !forceCartesian )
       p1 = mCoordTransform.transform( points[0] );
     else
       p1 = points[0];
 
     for ( QVector<QgsPointXY>::const_iterator i = points.constBegin(); i != points.constEnd(); ++i )
     {
-      if ( willUseEllipsoid() )
+      if ( willUseEllipsoid() && !forceCartesian )
       {
         p2 = mCoordTransform.transform( *i );
         total += computeDistanceBearing( p1, p2 );
@@ -292,7 +292,7 @@ double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
       else
       {
         p2 = *i;
-        total += measureLine( p1, p2 );
+        total += measureLine( p1, p2, forceCartesian );
       }
 
       p1 = p2;
@@ -309,7 +309,7 @@ double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
 
 }
 
-double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const
+double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2, bool forceCartesian ) const
 {
   double result;
 
@@ -318,7 +318,7 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
     QgsPointXY pp1 = p1, pp2 = p2;
 
     QgsDebugMsgLevel( QStringLiteral( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
-    if ( willUseEllipsoid() )
+    if ( willUseEllipsoid() && !forceCartesian )
     {
       QgsDebugMsgLevel( QStringLiteral( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
