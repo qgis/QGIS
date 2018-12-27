@@ -205,6 +205,7 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::checkType() const
   return factoryCheckType();
 }
 
+///@cond private
 QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
 {
   return {QgsWkbTypes::PolygonGeometry};
@@ -234,3 +235,4 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::factoryCheckType()
 {
   return QgsGeometryCheck::LayerCheck;
 }
+///@endcond private

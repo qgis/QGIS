@@ -304,7 +304,7 @@ Gets map of map layer style overrides (key: layer ID, value: style name) where a
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 %Docstring
-Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Sets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 
 .. versionadded:: 2.10
 %End

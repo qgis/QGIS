@@ -167,7 +167,7 @@ IF (UNIX)
         ENDFOREACH(VERSION_MINOR)
     ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
         FOREACH (PATH /usr/lib64 /usr/lib)
-            FOREACH (VERSION grass70, grass72, grass74)
+            FOREACH (VERSION grass76, grass74, grass72, grass70)
                 LIST(APPEND GRASS_PATHS "${PATH}/${VERSION}")
             ENDFOREACH (VERSION)
         ENDFOREACH (PATH)
@@ -178,10 +178,10 @@ ENDIF (UNIX)
 IF (APPLE)
   IF (GRASS_FIND_VERSION EQUAL 7)
     LIST(APPEND GRASS_PATHS
-      /Applications/GRASS-7.0.app/Contents/MacOS
-      /Applications/GRASS-7.1.app/Contents/MacOS
-      /Applications/GRASS-7.2.app/Contents/MacOS
+      /Applications/GRASS-7.6.app/Contents/MacOS
       /Applications/GRASS-7.4.app/Contents/MacOS
+      /Applications/GRASS-7.2.app/Contents/MacOS
+      /Applications/GRASS-7.0.app/Contents/MacOS
     )
   ENDIF ()
   LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)
