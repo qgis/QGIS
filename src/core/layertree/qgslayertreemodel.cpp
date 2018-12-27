@@ -279,7 +279,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
         QColor fadedTextColor = brush.color();
-        fadedTextColor.setAlpha( 66 );
+        fadedTextColor.setAlpha( 128 );
         brush.setColor( fadedTextColor );
       }
     }
