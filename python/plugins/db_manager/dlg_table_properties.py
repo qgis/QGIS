@@ -336,14 +336,13 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         #Function that add a comment to the selected table
         try:
             #Using the db connector, executing de SQL query Comment on table
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(self.table.schema().name, self.table.name ,self.viewComment.text()))
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(self.table.schema().name, self.table.name, self.viewComment.text()))
         except DbError as e:
             DlgDbError.showError(e, self)
             return
         self.refresh()
         #Display successful message
         QMessageBox.information(self, self.tr("Add comment"), self.tr("Table successfully commented"))
-
 
     def deleteComment(self):
         #Function that drop the comment to the selected table
@@ -358,4 +357,3 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.viewComment.setText('')
         #Display successful message
         QMessageBox.information(self, self.tr("Delete comment"), self.tr("Comment deleted"))
-
