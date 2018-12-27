@@ -89,6 +89,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
 void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
+  QgsSettings settings;
   QString ss;
 
   // QgisApp-wide font
@@ -120,24 +121,28 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
 
-  //sidebar style
-  QString style = "QListWidget#mOptionsListWidget {"
-                  "    background-color: rgb(69, 69, 69, 0);"
-                  "    outline: 0;"
-                  "}"
-                  "QFrame#mOptionsListFrame {"
-                  "    background-color: rgb(69, 69, 69, 220);"
-                  "}"
-                  "QListWidget#mOptionsListWidget::item {"
-                  "    color: white;"
-                  "    padding: 3px;"
-                  "}"
-                  "QListWidget#mOptionsListWidget::item::selected {"
-                  "    color: black;"
-                  "    background-color:palette(Window);"
-                  "    padding-right: 0px;"
-                  "}";
-  ss += style;
+  QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  if ( themeName == QStringLiteral( "default" ) )
+  {
+    //sidebar style
+    QString style = "QListWidget#mOptionsListWidget {"
+                    "    background-color: rgb(69, 69, 69, 0);"
+                    "    outline: 0;"
+                    "}"
+                    "QFrame#mOptionsListFrame {"
+                    "    background-color: rgb(69, 69, 69, 220);"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item {"
+                    "    color: white;"
+                    "    padding: 3px;"
+                    "}"
+                    "QListWidget#mOptionsListWidget::item::selected {"
+                    "    color: black;"
+                    "    background-color:palette(Window);"
+                    "    padding-right: 0px;"
+                    "}";
+    ss += style;
+  }
 
   // Fix selection color on losing focus (Windows)
   const QPalette palette = qApp->palette();
