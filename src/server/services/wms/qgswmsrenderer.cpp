@@ -395,14 +395,8 @@ namespace QgsWms
         throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
                                       QStringLiteral( "The atlas has no coverage layer" ) );
       }
-      QgsVectorDataProvider *cProvider = cLayer->dataProvider();
-      if ( !cProvider )
-      {
-        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                      QStringLiteral( "An error occured during the Atlas print" ) );
-      }
 
-      QgsAttributeList pkIndexes = cProvider->pkAttributeIndexes();
+      QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
       if ( pkIndexes.size() < 1 )
       {
         throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
@@ -411,7 +405,7 @@ namespace QgsWms
       QStringList pkAttributeNames;
       for ( int i = 0; i < pkIndexes.size(); ++i )
       {
-        pkAttributeNames.append( cProvider->fields()[pkIndexes.at( i )].name() );
+        pkAttributeNames.append( cLayer->fields()[pkIndexes.at( i )].name() );
       }
 
       int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
