@@ -377,82 +377,82 @@ namespace QgsWms
     std::unique_ptr<QgsPrintLayout> layout( sourceLayout->clone() );
 
     //atlas print?
-    QgsLayoutAtlas* atlas = 0;
+    QgsLayoutAtlas *atlas = 0;
     QStringList atlasPk = mWmsParameters.atlasPk();
     if ( mWmsParameters.atlasPrint() )
     {
-        atlas = layout->atlas();
-        if ( !atlas || !atlas->enabled() )
+      atlas = layout->atlas();
+      if ( !atlas || !atlas->enabled() )
+      {
+        //error
+        throw QgsBadRequestException( QStringLiteral( "NoAtlas" ),
+                                      QStringLiteral( "The template has no atlas enabled" ) );
+      }
+
+      QgsVectorLayer *cLayer = atlas->coverageLayer();
+      if ( !cLayer )
+      {
+        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                      QStringLiteral( "The atlas has no coverage layer" ) );
+      }
+      QgsVectorDataProvider *cProvider = cLayer->dataProvider();
+      if ( !cProvider )
+      {
+        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                      QStringLiteral( "An error occured during the Atlas print" ) );
+      }
+
+      QgsAttributeList pkIndexes = cProvider->pkAttributeIndexes();
+      if ( pkIndexes.size() < 1 )
+      {
+        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                      QStringLiteral( "An error occured during the Atlas print" ) );
+      }
+      QStringList pkAttributeNames;
+      for ( int i = 0; i < pkIndexes.size(); ++i )
+      {
+        pkAttributeNames.append( cProvider->fields()[pkIndexes.at( i )].name() );
+      }
+
+      int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
+      if ( nAtlasFeatures * pkIndexes.size() != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
+      {
+        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                      QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
+      }
+
+      QString filterString;
+      int currentAtlasPk = 0;
+      for ( int i = 0; i < nAtlasFeatures; ++i )
+      {
+        if ( i > 0 )
         {
-            //error
-            throw QgsBadRequestException( QStringLiteral( "NoAtlas" ),
-                                          QStringLiteral( "The template has no atlas enabled" ) );
+          filterString.append( " OR " );
         }
 
-        QgsVectorLayer* cLayer = atlas->coverageLayer();
-        if( !cLayer )
+        filterString.append( "( " );
+
+        for ( int j = 0; j < pkIndexes.size(); ++j )
         {
-            throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                          QStringLiteral( "The atlas has no covering layer" ) );
+          if ( j > 0 )
+          {
+            filterString.append( " AND " );
+          }
+          filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ) ).arg( atlasPk.at( currentAtlasPk ) ) );
+          ++currentAtlasPk;
         }
-         QgsVectorDataProvider* cProvider = cLayer->dataProvider();
-         if( !cProvider )
-         {
-             throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                           QStringLiteral( "An error occured during the Atlas print" ) );
-         }
 
-         QgsAttributeList pkIndexes = cProvider->pkAttributeIndexes();
-         if( pkIndexes.size() < 1 )
-         {
-             throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                           QStringLiteral( "An error occured during the Atlas print" ) );
-         }
-         QStringList pkAttributeNames;
-         for( int i = 0; i < pkIndexes.size(); ++i )
-         {
-            pkAttributeNames.append( cProvider->fields()[pkIndexes.at( i )].name() );
-         }
+        filterString.append( " )" );
+      }
 
-         int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
-         if( nAtlasFeatures * pkIndexes.size() != atlasPk.size() )//Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
-         {
-             throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                           QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
-         }
-
-         QString filterString;
-         int currentAtlasPk = 0;
-         for( int i = 0; i < nAtlasFeatures; ++i )
-         {
-            if( i > 0 )
-            {
-                filterString.append( " OR " );
-            }
-
-            filterString.append( "( " );
-
-            for( int j = 0; j < pkIndexes.size(); ++j )
-            {
-                if( j > 0 )
-                {
-                    filterString.append( " AND " );
-                }
-                filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ) ).arg( atlasPk.at( currentAtlasPk ) ) );
-                ++currentAtlasPk;
-            }
-
-            filterString.append( " )" );
-         }
-
-         atlas->setFilterFeatures( true );
-         QString errorString;
-         atlas->setFilterExpression( filterString, errorString );
-         if( !errorString.isEmpty() )
-         {
-             throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                           QStringLiteral( "An error occured during the Atlas print" ) );
-         }
+      atlas->setFilterFeatures( true );
+      QString errorString;
+      atlas->setFilterExpression( filterString, errorString );
+      if ( !errorString.isEmpty() )
+      {
+        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                      QStringLiteral( "An error occured during the Atlas print" ) );
+      }
     }
 
     configurePrintLayout( layout.get(), mapSettings, atlas );
