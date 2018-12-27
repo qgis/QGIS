@@ -167,7 +167,7 @@ QToolButton::menu-arrow
 }
 QToolBar QToolButton, QToolButton::menu-button
 {
-    border:0;
+    border-color: rgba(0,0,0,0);
     background-color: none;
 }
 
@@ -532,6 +532,8 @@ QAbstractItemView, QListView
   border: none;
   border-radius: 3px;
   padding: 1px;
+  selection-color: @text;
+  selection-background-color: @selection;
 }
 
 QAbstractItemView::selected, QListView::selected {
