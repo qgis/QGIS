@@ -33,7 +33,7 @@ class QgsVectorLayer;
  * \ingroup gui
  * Class to select destination file, type and CRS for ogr layers
  * \note not available in Python bindings
- * \since the early days
+ * \since QGIS 1.0
  */
 class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
 {

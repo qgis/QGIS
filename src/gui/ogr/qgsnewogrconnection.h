@@ -31,7 +31,7 @@
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
  * \note not available in python bindings
- * \since the early days
+ * \since QGIS 1.0
  */
 class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
 {
