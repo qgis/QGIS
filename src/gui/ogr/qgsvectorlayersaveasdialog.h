@@ -99,7 +99,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Returns the internal CRS ID.
-     * \see QgsCoordinateReferenceSystem::srsId()
+     * \see QgsCoordinateReferenceSystem::srsid()
      */
     long crs() const;
 
