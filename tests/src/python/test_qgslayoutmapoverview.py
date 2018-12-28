@@ -289,6 +289,47 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [overviewMap.overviews().overview(1).asMapLayer(), self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
 
+    def testOverviewStacking(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setLayers([self.raster_layer])
+        l.addLayoutItem(map)
+
+        overviewMap = QgsLayoutItemMap(l)
+        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
+        l.addLayoutItem(overviewMap)
+        overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([self.raster_layer])
+        # zoom in
+        myRectangle = QgsRectangle(96, -152, 160, -120)
+        map.setExtent(myRectangle)
+        myRectangle2 = QgsRectangle(-20, -276, 276, 20)
+        overviewMap.setExtent(myRectangle2)
+        overviewMap.overview().setLinkedMap(map)
+        overviewMap.overview().setInverted(True)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLayer)
+        overviewMap.overview().setStackingLayer(self.raster_layer)
+
+        checker = QgsLayoutChecker('composermap_overview_belowmap', l)
+        checker.setColorTolerance(6)
+        checker.setControlPathPrefix("composer_mapoverview")
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingLayer(self.raster_layer)
+
+        checker = QgsLayoutChecker('composermap_overview_abovemap', l)
+        checker.setColorTolerance(6)
+        checker.setControlPathPrefix("composer_mapoverview")
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -854,7 +854,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
     if ( shouldDrawPart( OverviewMapExtent ) )
     {
-      mOverviewStack->drawItems( painter );
+      mOverviewStack->drawItems( painter, false );
     }
     if ( shouldDrawPart( Grid ) )
     {
@@ -922,7 +922,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       if ( shouldDrawPart( OverviewMapExtent ) )
       {
-        mOverviewStack->drawItems( &p );
+        mOverviewStack->drawItems( &p, false );
       }
       if ( shouldDrawPart( Grid ) )
       {
@@ -960,7 +960,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       if ( shouldDrawPart( OverviewMapExtent ) )
       {
-        mOverviewStack->drawItems( painter );
+        mOverviewStack->drawItems( painter, false );
       }
       if ( shouldDrawPart( Grid ) )
       {
@@ -1006,7 +1006,13 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   }
 
   // render
-  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi, true ), painter );
+  QgsMapSettings ms( mapSettings( extent, size, dpi, true ) );
+  if ( shouldDrawPart( OverviewMapExtent ) )
+  {
+    ms.setLayers( mOverviewStack->modifyMapLayerList( ms.layers() ) );
+  }
+
+  QgsMapRendererCustomPainterJob job( ms, painter );
   // Render the map in this thread. This is done because of problems
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
@@ -1084,6 +1090,12 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
   QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX(), true ) );
+
+  if ( shouldDrawPart( OverviewMapExtent ) )
+  {
+    settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
+  }
+
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();

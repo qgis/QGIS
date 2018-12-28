@@ -230,7 +230,7 @@ void QgsLayoutItemMapOverview::setLinkedMap( QgsLayoutItemMap *map )
   mFrameMap = map;
   //connect to new map signals
   connectSignals();
-  mMap->update();
+  mMap->invalidateCache();
 }
 
 QgsLayoutItemMap *QgsLayoutItemMapOverview::linkedMap()
@@ -358,13 +358,10 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
                               center.x() - extent.width() / 2 + extent.width(),
                               center.y() - extent.height() / 2 + extent.height() );
     mMap->setExtent( movedExtent );
-
-    //must invalidate cache so that map gets redrawn
-    mMap->invalidateCache();
   }
 
   //repaint map so that overview gets updated
-  mMap->update();
+  mMap->invalidateCache();
 }
 
 

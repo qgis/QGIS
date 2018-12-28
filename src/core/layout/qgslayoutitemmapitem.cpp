@@ -239,7 +239,7 @@ void QgsLayoutItemMapItemStack::finalizeRestoreFromXml()
   }
 }
 
-void QgsLayoutItemMapItemStack::drawItems( QPainter *painter )
+void QgsLayoutItemMapItemStack::drawItems( QPainter *painter, bool ignoreStacking )
 {
   if ( !painter )
   {
@@ -248,7 +248,21 @@ void QgsLayoutItemMapItemStack::drawItems( QPainter *painter )
 
   for ( QgsLayoutItemMapItem *item : qgis::as_const( mItems ) )
   {
-    item->draw( painter );
+    switch ( item->stackingPosition() )
+    {
+      case QgsLayoutItemMapItem::StackBelowMap:
+      case QgsLayoutItemMapItem::StackAboveMapLayer:
+      case QgsLayoutItemMapItem::StackBelowMapLayer:
+      case QgsLayoutItemMapItem::StackBelowMapLabels:
+        if ( !ignoreStacking )
+          break;
+
+        FALLTHROUGH
+      case QgsLayoutItemMapItem::StackAboveMapLabels:
+        item->draw( painter );
+        break;
+
+    }
   }
 }
 
