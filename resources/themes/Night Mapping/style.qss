@@ -536,7 +536,7 @@ QSlider::handle:vertical {
 QAbstractItemView, QListView
 {
   background-color: @itembackground;
-  alternate-background-color: @itemalternativebackground;
+  alternate-background-color: @background;
   color: @text;
   border: none;
   border-radius: 0px;
@@ -557,7 +557,7 @@ QAbstractItemView::selected, QListView::selected {
 
 QTreeView {
     border: 1px solid @itemdarkbackground;
-    alternate-background-color: @itemalternativebackground;
+    alternate-background-color: @background;
 }
 
 QTreeView::item, QTreeView::branch {
