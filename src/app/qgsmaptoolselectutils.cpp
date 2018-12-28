@@ -40,7 +40,7 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
   {
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
-      QObject::tr( "To select features, choose a vector layer in the legend" ),
+      QObject::tr( "To select features, choose a vector layer in the layers panel" ),
       Qgis::Info,
       QgisApp::instance()->messageTimeout() );
   }
