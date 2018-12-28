@@ -401,19 +401,19 @@ void QgsLayoutItemMapOverviewStack::moveOverviewDown( const QString &overviewId 
 QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const QString &overviewId ) const
 {
   QgsLayoutItemMapItem *item = QgsLayoutItemMapItemStack::item( overviewId );
-  return dynamic_cast<QgsLayoutItemMapOverview *>( item );
+  return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
 QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const int index ) const
 {
   QgsLayoutItemMapItem *item = QgsLayoutItemMapItemStack::item( index );
-  return dynamic_cast<QgsLayoutItemMapOverview *>( item );
+  return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
 QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx )
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
-  QgsLayoutItemMapOverview *overview = dynamic_cast<QgsLayoutItemMapOverview *>( item );
+  QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( item );
   return *overview;
 }
 
@@ -423,7 +423,7 @@ QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const
   QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();
   for ( ; it != mItems.end(); ++it )
   {
-    QgsLayoutItemMapOverview *overview = dynamic_cast<QgsLayoutItemMapOverview *>( *it );
+    QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( *it );
     if ( overview )
     {
       list.append( overview );
