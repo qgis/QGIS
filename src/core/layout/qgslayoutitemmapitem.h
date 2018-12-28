@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutobject.h"
+#include "qgsmaplayerref.h"
 
 class QgsLayoutItemMap;
 
@@ -34,6 +35,16 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     Q_OBJECT
 
   public:
+
+    //! Item stacking position, specifies where the in the map's stack the item should be rendered
+    enum StackingPosition
+    {
+      StackBelowMap, //!< Render below all map layers
+      StackBelowMapLayer, //!< Render below a specific map layer (see stackingLayer())
+      StackAboveMapLayer, //!< Render above a specific map layer (see stackingLayer())
+      StackBelowMapLabels, //!< Render above all map layers, but below map labels
+      StackAboveMapLabels, //!< Render above all map layers and labels
+    };
 
     /**
      * Constructor for QgsLayoutItemMapItem, attached to the specified \a map.
@@ -117,6 +128,56 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      */
     virtual bool usesAdvancedEffects() const;
 
+    /**
+     * Returns the item's stacking position, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * \see setStackingPosition()
+     * \see stackingLayer()
+     *
+     * \since QGIS 3.6
+     */
+    StackingPosition stackingPosition() const { return mStackingPosition; }
+
+    /**
+     * Sets the item's stacking \a position, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * \see stackingPosition()
+     * \see setStackingLayer()
+     *
+     * \since QGIS 3.6
+     */
+    void setStackingPosition( StackingPosition position ) { mStackingPosition = position; }
+
+    /**
+     * Returns the item's stacking layer, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * This setting is only used when stackingPosition() is StackBelowMapLayer or
+     * StackAboveMapLayer.
+     *
+     * \see setStackingLayer()
+     * \see stackingPosition()
+     *
+     * \since QGIS 3.6
+     */
+    QgsMapLayer *stackingLayer() const;
+
+    /**
+     * Sets the item's stacking \a layer, which specifies where the in the map's
+     * stack the item should be rendered.
+     *
+     * This setting is only used when stackingPosition() is StackBelowMapLayer or
+     * StackAboveMapLayer.
+     *
+     * \see stackingLayer()
+     * \see setStackingPosition
+     *
+     * \since QGIS 3.6
+     */
+    void setStackingLayer( QgsMapLayer *layer );
+
   protected:
 
     //! Friendly display name
@@ -131,9 +192,11 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     //! True if item is to be displayed on map
     bool mEnabled;
 
+    StackingPosition mStackingPosition = StackBelowMapLabels;
+
+    QgsMapLayerRef mStackingLayer;
+
 };
-
-
 
 /**
  * \ingroup core

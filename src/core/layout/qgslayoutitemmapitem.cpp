@@ -17,6 +17,7 @@
 
 #include "qgslayoutitemmapitem.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayout.h"
 #include <QUuid>
 
 QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMap *map )
@@ -35,6 +36,16 @@ bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &documen
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "show" ), mEnabled );
+  element.setAttribute( QStringLiteral( "position" ), static_cast< int >( mStackingPosition ) );
+
+  if ( mStackingLayer )
+  {
+    element.setAttribute( QStringLiteral( "stackingLayer" ), mStackingLayer.layerId );
+    element.setAttribute( QStringLiteral( "stackingLayerName" ), mStackingLayer.name );
+    element.setAttribute( QStringLiteral( "stackingLayerSource" ), mStackingLayer.source );
+    element.setAttribute( QStringLiteral( "stackingLayerProvider" ), mStackingLayer.provider );
+  }
+
   return true;
 }
 
@@ -44,6 +55,16 @@ bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocum
   mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
   mName = itemElem.attribute( QStringLiteral( "name" ) );
   mEnabled = ( itemElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mStackingPosition = static_cast< StackingPosition >( itemElem.attribute( QStringLiteral( "position" ), QString::number( QgsLayoutItemMapItem::StackBelowMapLabels ) ).toInt() );
+
+  const QString layerId = itemElem.attribute( QStringLiteral( "stackingLayer" ) );
+  const QString layerName = itemElem.attribute( QStringLiteral( "stackingLayerName" ) );
+  const QString layerSource = itemElem.attribute( QStringLiteral( "stackingLayerSource" ) );
+  const QString layerProvider = itemElem.attribute( QStringLiteral( "stackingLayerProvider" ) );
+  mStackingLayer = QgsMapLayerRef( layerId, layerName, layerSource, layerProvider );
+  if ( mMap && mMap->layout() )
+    mStackingLayer.resolveWeakly( mMap->layout()->project() );
+
   return true;
 }
 
@@ -84,6 +105,16 @@ bool QgsLayoutItemMapItem::enabled() const
 bool QgsLayoutItemMapItem::usesAdvancedEffects() const
 {
   return false;
+}
+
+QgsMapLayer *QgsLayoutItemMapItem::stackingLayer() const
+{
+  return mStackingLayer.get();
+}
+
+void QgsLayoutItemMapItem::setStackingLayer( QgsMapLayer *layer )
+{
+  mStackingLayer.setLayer( layer );
 }
 
 //

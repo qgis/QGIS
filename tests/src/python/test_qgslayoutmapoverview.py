@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtGui import QPainter
 
 from qgis.core import (QgsLayoutItemMap,
+                       QgsLayoutItemMapItem,
                        QgsRectangle,
                        QgsRasterLayer,
                        QgsVectorLayer,
@@ -216,6 +217,25 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         overviewMap.overview().setInverted(True)
         layer = overviewMap.overview().asMapLayer()
         self.assertEqual([f.geometry().asWkt(0) for f in layer.getFeatures()], ['Polygon ((-53 -128, 128 53, 309 -128, 128 -309, -53 -128),(93 -129, 101 -160, 163 -143, 155 -112, 93 -129))'])
+
+    def test_StackingPosition(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        overviewMap = QgsLayoutItemMap(l)
+        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
+        l.addLayoutItem(overviewMap)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMap)
+        self.assertEqual(overviewMap.overview().stackingPosition(), QgsLayoutItemMapItem.StackBelowMap)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLayer)
+        self.assertEqual(overviewMap.overview().stackingPosition(), QgsLayoutItemMapItem.StackBelowMapLayer)
+
+        overviewMap.overview().setStackingLayer(self.raster_layer)
+        self.assertEqual(overviewMap.overview().stackingLayer(), self.raster_layer)
+        overviewMap.overview().setStackingLayer(self.vector_layer)
+        self.assertEqual(overviewMap.overview().stackingLayer(), self.vector_layer)
+        overviewMap.overview().setStackingLayer(None)
+        self.assertIsNone(overviewMap.overview().stackingLayer())
 
 
 if __name__ == '__main__':
