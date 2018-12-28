@@ -1137,11 +1137,6 @@ namespace QgsWms
     return label;
   }
 
-  bool QgsWmsParameters::atlasPrint() const
-  {
-    return mWmsParameters.contains( QgsWmsParameter::ATLAS_PK );
-  }
-
   QStringList QgsWmsParameters::atlasPk() const
   {
     return mWmsParameters[ QgsWmsParameter::ATLAS_PK ].toStringList();

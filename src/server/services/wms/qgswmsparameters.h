@@ -1149,8 +1149,6 @@ namespace QgsWms
        */
       QString layoutParameter( const QString &id, bool &ok ) const;
 
-      //! True if ATLAS_ID parameter is set
-      bool atlasPrint() const;
       //! Return ATLAS_ID parameter
       QStringList atlasPk() const;
 
