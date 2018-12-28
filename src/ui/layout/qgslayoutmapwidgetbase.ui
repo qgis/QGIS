@@ -87,9 +87,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>368</width>
-        <height>1253</height>
+        <y>-257</y>
+        <width>373</width>
+        <height>960</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -720,45 +720,14 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_8" columnstretch="0,1">
-             <item row="0" column="0">
-              <widget class="QLabel" name="mOverviewFrameMapLabel">
+            <layout class="QGridLayout" name="gridLayout_8" columnstretch="0,0">
+             <item row="5" column="1">
+              <widget class="QComboBox" name="mOverviewPositionComboBox"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="mOverviewPositionLabel">
                <property name="text">
-                <string>Map frame</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QgsLayoutItemComboBox" name="mOverviewFrameMapComboBox"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="mOverviewFrameStyleLabel">
-               <property name="text">
-                <string>Frame style</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="mOverviewBlendModeLabel">
-               <property name="text">
-                <string>Blending mode</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QgsBlendModeComboBox" name="mOverviewBlendModeComboBox"/>
-             </item>
-             <item row="3" column="0" colspan="2">
-              <widget class="QCheckBox" name="mOverviewInvertCheckbox">
-               <property name="text">
-                <string>Invert overview</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" colspan="2">
-              <widget class="QCheckBox" name="mOverviewCenterCheckbox">
-               <property name="text">
-                <string>Center on overview</string>
+                <string>Position</string>
                </property>
               </widget>
              </item>
@@ -772,6 +741,64 @@
                </property>
                <property name="text">
                 <string>Change…</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QgsBlendModeComboBox" name="mOverviewBlendModeComboBox"/>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QCheckBox" name="mOverviewInvertCheckbox">
+               <property name="text">
+                <string>Invert overview</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mOverviewBlendModeLabel">
+               <property name="text">
+                <string>Blending mode</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mOverviewFrameStyleLabel">
+               <property name="text">
+                <string>Frame style</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mOverviewFrameMapLabel">
+               <property name="text">
+                <string>Map frame</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <widget class="QCheckBox" name="mOverviewCenterCheckbox">
+               <property name="text">
+                <string>Center on overview</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsLayoutItemComboBox" name="mOverviewFrameMapComboBox"/>
+             </item>
+             <item row="6" column="1">
+              <widget class="QgsMapLayerComboBox" name="mOverviewStackingLayerComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Stacking layer</string>
                </property>
               </widget>
              </item>
@@ -921,6 +948,11 @@
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -960,6 +992,8 @@
   <tabstop>mGridDownButton</tabstop>
   <tabstop>mGridListWidget</tabstop>
   <tabstop>mDrawGridCheckBox</tabstop>
+  <tabstop>mDrawGridCheckBox</tabstop>
+  <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mOverviewsGroupBox</tabstop>
   <tabstop>mAddOverviewPushButton</tabstop>
@@ -973,8 +1007,8 @@
   <tabstop>mOverviewBlendModeComboBox</tabstop>
   <tabstop>mOverviewInvertCheckbox</tabstop>
   <tabstop>mOverviewCenterCheckbox</tabstop>
-  <tabstop>mDrawGridCheckBox</tabstop>
-  <tabstop>mGridPropertiesButton</tabstop>
+  <tabstop>mOverviewPositionComboBox</tabstop>
+  <tabstop>mOverviewStackingLayerComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
