@@ -135,7 +135,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   if ( filteredStyles.isEmpty() )
   {
-    //oops - none left!.. have to let user use a broken style
+    // oops - none left!.. have to let user use a broken style
     filteredStyles = styles;
   }
 
@@ -144,11 +144,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QStringList themes = QgsApplication::uiThemes().keys();
   cmbUITheme->addItems( themes );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+  // non-default themes are best rendered using the Fusion style, therefore changing themes must require a restart to
   lblUITheme->setText( QStringLiteral( "%1 <i>(%2)</i>" ).arg( lblUITheme->text(), tr( "QGIS restart required" ) ) );
-#else
-  connect( cmbUITheme, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::uiThemeChanged );
-#endif
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -566,7 +563,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString name = mSettings->value( QStringLiteral( "/qgis/style" ) ).toString();
   whileBlocking( cmbStyle )->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
 
-  QString theme = mSettings->value( QStringLiteral( "UI/UITheme" ), QStringLiteral( "auto" ) ).toString();
+  QString theme = mSettings->value( QStringLiteral( "UI/UITheme" ), QStringLiteral( "default" ) ).toString();
   whileBlocking( cmbUITheme )->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
   mNativeColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool() );
