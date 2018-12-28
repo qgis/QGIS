@@ -26,14 +26,19 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayoututils.h"
 #include "qgsexception.h"
+#include "qgsvectorlayer.h"
+#include "qgssinglesymbolrenderer.h"
 
 #include <QPainter>
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
+  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "overview" ), QStringLiteral( "memory" ) ) )
 {
   createDefaultFrameSymbol();
 }
+
+QgsLayoutItemMapOverview::~QgsLayoutItemMapOverview() = default;
 
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
@@ -42,6 +47,8 @@ void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   mFrameSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+
+  mExtentLayer->setRenderer( new QgsSingleSymbolRenderer( mFrameSymbol->clone() ) );
 }
 
 void QgsLayoutItemMapOverview::draw( QPainter *painter )
@@ -243,6 +250,62 @@ void QgsLayoutItemMapOverview::connectSignals()
     connect( mFrameMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
     connect( mFrameMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
+}
+
+QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
+{
+  if ( !mEnabled || !mFrameMap || !mMap || !mMap->layout() )
+  {
+    return nullptr;
+  }
+
+  const QgsLayoutItemMap *overviewFrameMap = linkedMap();
+  if ( !overviewFrameMap )
+  {
+    return nullptr;
+  }
+
+  //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
+  QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
+  QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
+
+  if ( overviewFrameMap->crs() != mMap->crs() )
+  {
+    // reproject extent
+    QgsCoordinateTransform ct( overviewFrameMap->crs(),
+                               mMap->crs(), mLayout->project() );
+    g = g.densifyByCount( 20 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+  }
+
+  //get current map's extent as a QPolygonF
+  QPolygonF thisExtent = mMap->visibleExtentPolygon();
+  QgsGeometry thisGeom = QgsGeometry::fromQPolygonF( thisExtent );
+  //intersect the two
+  QgsGeometry intersectExtent = thisGeom.intersection( g );
+
+  mExtentLayer->setBlendMode( mBlendMode );
+
+  static_cast< QgsSingleSymbolRenderer * >( mExtentLayer->renderer() )->setSymbol( mFrameSymbol->clone() );
+  mExtentLayer->dataProvider()->truncate();
+  mExtentLayer->setCrs( mMap->crs() );
+
+  if ( mInverted )
+  {
+    intersectExtent = thisGeom.difference( intersectExtent );
+  }
+
+  QgsFeature f;
+  f.setGeometry( intersectExtent );
+  mExtentLayer->dataProvider()->addFeature( f );
+
+  return mExtentLayer.get();
 }
 
 void QgsLayoutItemMapOverview::setFrameSymbol( QgsFillSymbol *symbol )
