@@ -448,3 +448,58 @@ bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDom
 
   return true;
 }
+
+QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QList<QgsMapLayer *> &layers )
+{
+  QList<QgsMapLayer *> res = layers;
+  res.reserve( layers.count() + mItems.count() );
+  for ( QgsLayoutItemMapItem  *item : qgis::as_const( mItems ) )
+  {
+    if ( !item )
+      continue;
+
+    QgsVectorLayer *l = static_cast< QgsLayoutItemMapOverview * >( item )->asMapLayer();
+    if ( !l )
+      continue;
+
+    switch ( item->stackingPosition() )
+    {
+      case QgsLayoutItemMapItem::StackAboveMapLabels:
+        continue;
+
+      case QgsLayoutItemMapItem::StackAboveMapLayer:
+      case QgsLayoutItemMapItem::StackBelowMapLayer:
+      {
+        QgsMapLayer *stackLayer = item->stackingLayer();
+        if ( !stackLayer )
+          continue;
+
+        auto pos = std::find( res.begin(), res.end(), stackLayer );
+        if ( pos == res.end() )
+          continue;
+
+        if ( item->stackingPosition() == QgsLayoutItemMapItem::StackBelowMapLayer )
+        {
+          pos++;
+          if ( pos == res.end() )
+          {
+            res.push_back( l );
+            break;
+          }
+        }
+        res.insert( pos, l );
+        break;
+      }
+
+      case QgsLayoutItemMapItem::StackBelowMap:
+        res.push_back( l );
+        break;
+
+      case QgsLayoutItemMapItem::StackBelowMapLabels:
+        res.push_front( l );
+        break;
+    }
+  }
+
+  return res;
+}

@@ -106,6 +106,14 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
     QList< QgsLayoutItemMapOverview * > asList() const;
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Alters the list of map \a layers which will be rendered for the link map item, inserting
+     * temporary layers which represent overview extents as required.
+     *
+     * \since QGIS 3.6
+     */
+    QList< QgsMapLayer * > modifyMapLayerList( const QList< QgsMapLayer * > &layers );
+
 };
 
 /**

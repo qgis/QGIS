@@ -29,7 +29,8 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsMultiBandColorRenderer,
                        QgsFillSymbol,
                        QgsSingleSymbolRenderer,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsLayoutItemMapOverview)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -236,6 +237,57 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(overviewMap.overview().stackingLayer(), self.vector_layer)
         overviewMap.overview().setStackingLayer(None)
         self.assertIsNone(overviewMap.overview().stackingLayer())
+
+    def test_ModifyMapLayerList(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        overviewMap = QgsLayoutItemMap(l)
+        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
+        l.addLayoutItem(overviewMap)
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        l.addLayoutItem(map)
+
+        self.assertFalse(overviewMap.overviews().modifyMapLayerList([]))
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]), [self.raster_layer, self.vector_layer])
+        overviewMap.overview().setLinkedMap(map)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMap)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLayer)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, self.vector_layer])
+        overviewMap.overview().setStackingLayer(self.raster_layer)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, overviewMap.overview().asMapLayer(), self.vector_layer])
+        overviewMap.overview().setStackingLayer(self.vector_layer)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingLayer(None)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, self.vector_layer])
+        overviewMap.overview().setStackingLayer(self.raster_layer)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [overviewMap.overview().asMapLayer(), self.raster_layer, self.vector_layer])
+        overviewMap.overview().setStackingLayer(self.vector_layer)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, overviewMap.overview().asMapLayer(), self.vector_layer])
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLabels)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [overviewMap.overview().asMapLayer(), self.raster_layer, self.vector_layer])
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLabels)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [self.raster_layer, self.vector_layer])
+
+        # two overviews
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMap)
+        overviewMap.overviews().addOverview(QgsLayoutItemMapOverview('x', overviewMap))
+        overviewMap.overviews().overview(1).setLinkedMap(map)
+        overviewMap.overviews().overview(1).setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLabels)
+        self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
+                         [overviewMap.overviews().overview(1).asMapLayer(), self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
 
 
 if __name__ == '__main__':

@@ -102,6 +102,14 @@ Returns a list of QgsLayoutItemMapOverviews contained by the stack.
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
 
+    QList< QgsMapLayer * > modifyMapLayerList( const QList< QgsMapLayer * > &layers );
+%Docstring
+Alters the list of map ``layers`` which will be rendered for the link map item, inserting
+temporary layers which represent overview extents as required.
+
+.. versionadded:: 3.6
+%End
+
 };
 
 class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
