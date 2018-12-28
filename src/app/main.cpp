@@ -1222,6 +1222,16 @@ int main( int argc, char *argv[] )
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
   QString presetStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
+#ifndef Q_OS_MACX
+  QString theme = settings.value( QStringLiteral( "UI/UITheme" ) ).toString();
+  if ( theme != QStringLiteral( "default" ) )
+  {
+    if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
+    {
+      presetStyle = QStringLiteral( "fusion" );
+    }
+  }
+#endif
   QString activeStyleName = presetStyle;
   if ( activeStyleName.isEmpty() ) // not set, using default style
   {
@@ -1238,13 +1248,16 @@ int main( int argc, char *argv[] )
     //style choices can cause Qt apps to crash...
     if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
     {
-      presetStyle = QStringLiteral( "fusion" );
+      activeStyleName = QStringLiteral( "fusion" );
     }
+  }
+  if ( activeStyleName != presetStyle )
+  {
+    settings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
   }
   if ( !presetStyle.isEmpty() )
   {
     QApplication::setStyle( presetStyle );
-    settings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
   }
 
   // set authentication database directory
