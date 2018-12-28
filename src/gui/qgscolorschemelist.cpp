@@ -687,11 +687,11 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
     painter->setPen( QPen( Qt::NoPen ) );
     if ( option.state & QStyle::State_Active )
     {
-      painter->setBrush( QBrush( QPalette().highlight() ) );
+      painter->setBrush( QBrush( option.widget->palette().highlight() ) );
     }
     else
     {
-      painter->setBrush( QBrush( QPalette().color( QPalette::Inactive,
+      painter->setBrush( QBrush( option.widget->palette().color( QPalette::Inactive,
                                  QPalette::Highlight ) ) );
     }
     painter->drawRect( option.rect );
