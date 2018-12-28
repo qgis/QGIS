@@ -3438,6 +3438,7 @@ def my_form_open(dialog, layer, feature):
   <Annotations/>
   <Layouts>
     <Layout worldFileMap="" name="layoutA4" units="mm" printResolution="300">
+      <Atlas enabled="1" coverageLayer="country20131022151106556" pageNameExpression="" sortFeatures="0" filterFeatures="0" coverageLayerProvider="spatialite" filenamePattern="'output_'||@atlas_featurenumber" coverageLayerSource="dbname='./helloworld.db' table=&quot;country&quot; (geom) sql=" coverageLayerName="Country" hideCoverage="0"/>
       <Snapper tolerance="5" snapToGuides="1" snapToGrid="0" snapToItems="1"/>
       <Grid offsetX="0" offsetUnits="mm" resolution="10" resUnits="mm" offsetY="0"/>
       <PageCollection>
@@ -3582,7 +3583,7 @@ def my_form_open(dialog, layer, feature):
           </markerStyle>
           <annotationFontProperties description=",11,-1,5,50,0,0,0,0,0" style=""/>
         </ComposerMapGrid>
-        <AtlasMap atlasDriven="0" margin="0.10000000000000001" scalingMode="2"/>
+        <AtlasMap atlasDriven="1" margin="0.10000000000000001" scalingMode="2"/>
       </LayoutItem>
       <LayoutItem size="64.3016,11.0626,mm" frame="false" frameJoinStyle="miter" position="213.302,161.791,mm" itemRotation="0" referencePoint="0" opacity="1" positionLock="false" outlineWidthM="0.3,mm" marginX="1" halign="1" marginY="1" id="" uuid="{b3f8da1e-352d-4ea6-b8c1-c2464bfdd050}" blendMode="0" visibility="1" labelText="Welcome to our world...." positionOnPage="213.302,161.791,mm" groupUuid="" zValue="2" excludeFromExports="0" type="65641" valign="32" background="false" templateUuid="{b3f8da1e-352d-4ea6-b8c1-c2464bfdd050}" htmlState="0">
         <FrameColor alpha="255" red="0" blue="0" green="0"/>
