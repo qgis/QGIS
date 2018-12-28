@@ -250,8 +250,12 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 
     /**
      * Draws the items from the stack on a specified \a painter.
+     *
+     * If \a ignoreStacking is true, then all items will be drawn, regardless
+     * of their actual stacking position settings. If it is false, only items
+     * which are set to stack above the map item will be drawn.
      */
-    void drawItems( QPainter *painter );
+    void drawItems( QPainter *painter, bool ignoreStacking = true );
 
     /**
      * Returns whether any items within the stack contain advanced effects,

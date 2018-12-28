@@ -243,9 +243,13 @@ map item after restoration from XML.
 .. seealso:: :py:func:`readXml`
 %End
 
-    void drawItems( QPainter *painter );
+    void drawItems( QPainter *painter, bool ignoreStacking = true );
 %Docstring
 Draws the items from the stack on a specified ``painter``.
+
+If ``ignoreStacking`` is true, then all items will be drawn, regardless
+of their actual stacking position settings. If it is false, only items
+which are set to stack above the map item will be drawn.
 %End
 
     bool containsAdvancedEffects() const;
