@@ -54,6 +54,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mOverviewBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapWidget::mOverviewBlendModeComboBox_currentIndexChanged );
   connect( mOverviewInvertCheckbox, &QCheckBox::toggled, this, &QgsLayoutMapWidget::mOverviewInvertCheckbox_toggled );
   connect( mOverviewCenterCheckbox, &QCheckBox::toggled, this, &QgsLayoutMapWidget::mOverviewCenterCheckbox_toggled );
+  connect( mOverviewPositionComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapWidget::overviewStackingChanged );
+  connect( mOverviewStackingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutMapWidget::overviewStackingLayerChanged );
   connect( mXMinLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutMapWidget::mXMinLineEdit_editingFinished );
   connect( mXMaxLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutMapWidget::mXMaxLineEdit_editingFinished );
   connect( mYMinLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutMapWidget::mYMinLineEdit_editingFinished );
@@ -96,6 +98,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mXMaxLineEdit->setValidator( new QDoubleValidator( mXMaxLineEdit ) );
   mYMinLineEdit->setValidator( new QDoubleValidator( mYMinLineEdit ) );
   mYMaxLineEdit->setValidator( new QDoubleValidator( mYMaxLineEdit ) );
+
+  mOverviewPositionComboBox->addItem( tr( "Below Map" ), QgsLayoutItemMapItem::StackBelowMap );
+  mOverviewPositionComboBox->addItem( tr( "Below Map Layer" ), QgsLayoutItemMapItem::StackBelowMapLayer );
+  mOverviewPositionComboBox->addItem( tr( "Above Map Layer" ), QgsLayoutItemMapItem::StackAboveMapLayer );
+  mOverviewPositionComboBox->addItem( tr( "Below Map Labels" ), QgsLayoutItemMapItem::StackBelowMapLabels );
+  mOverviewPositionComboBox->addItem( tr( "Above Map Labels" ), QgsLayoutItemMapItem::StackAboveMapLabels );
 
   blockAllSignals( true );
 
@@ -356,7 +364,7 @@ void QgsLayoutMapWidget::overviewSymbolChanged()
   mMapItem->beginCommand( tr( "Change Overview Style" ), QgsLayoutItem::UndoOverviewStyle );
   overview->setFrameSymbol( mOverviewFrameStyleButton->clonedSymbol<QgsFillSymbol>() );
   mMapItem->endCommand();
-  mMapItem->update();
+  mMapItem->invalidateCache();
 }
 
 void QgsLayoutMapWidget::showLabelSettings()
@@ -1201,7 +1209,7 @@ void QgsLayoutMapWidget::mAddOverviewPushButton_clicked()
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Add Map Overview" ) );
   mMapItem->overviews()->addOverview( overview );
   mMapItem->layout()->undoStack()->endCommand();
-  mMapItem->update();
+  mMapItem->invalidateCache();
 
   addOverviewListItem( overview->id(), overview->name() );
 
@@ -1220,7 +1228,7 @@ void QgsLayoutMapWidget::mRemoveOverviewPushButton_clicked()
   mMapItem->endCommand();
   QListWidgetItem *delItem = mOverviewListWidget->takeItem( mOverviewListWidget->row( item ) );
   delete delItem;
-  mMapItem->update();
+  mMapItem->invalidateCache();
 }
 
 void QgsLayoutMapWidget::mOverviewUpButton_clicked()
@@ -1242,7 +1250,7 @@ void QgsLayoutMapWidget::mOverviewUpButton_clicked()
   mMapItem->beginCommand( tr( "Move Overview Up" ) );
   mMapItem->overviews()->moveOverviewUp( item->data( Qt::UserRole ).toString() );
   mMapItem->endCommand();
-  mMapItem->update();
+  mMapItem->invalidateCache();
 }
 
 void QgsLayoutMapWidget::mOverviewDownButton_clicked()
@@ -1264,7 +1272,7 @@ void QgsLayoutMapWidget::mOverviewDownButton_clicked()
   mMapItem->beginCommand( tr( "Move Overview Down" ) );
   mMapItem->overviews()->moveOverviewDown( item->data( Qt::UserRole ).toString() );
   mMapItem->endCommand();
-  mMapItem->update();
+  mMapItem->invalidateCache();
 }
 
 QgsLayoutItemMapOverview *QgsLayoutMapWidget::currentOverview()
@@ -1329,16 +1337,21 @@ void QgsLayoutMapWidget::setOverviewItemsEnabled( bool enabled )
   mOverviewBlendModeComboBox->setEnabled( enabled );
   mOverviewInvertCheckbox->setEnabled( enabled );
   mOverviewCenterCheckbox->setEnabled( enabled );
+  mOverviewPositionComboBox->setEnabled( enabled );
+
+  QgsLayoutItemMapItem::StackingPosition currentStackingPos = static_cast< QgsLayoutItemMapItem::StackingPosition >( mOverviewPositionComboBox->currentData().toInt() );
+  mOverviewStackingLayerComboBox->setEnabled( enabled && ( currentStackingPos == QgsLayoutItemMapItem::StackAboveMapLayer || currentStackingPos == QgsLayoutItemMapItem::StackBelowMapLayer ) );
 }
 
-void QgsLayoutMapWidget::blockOverviewItemsSignals( bool block )
+void QgsLayoutMapWidget::blockOverviewItemsSignals( const bool block )
 {
-  //grid
   mOverviewFrameMapComboBox->blockSignals( block );
   mOverviewFrameStyleButton->blockSignals( block );
   mOverviewBlendModeComboBox->blockSignals( block );
   mOverviewInvertCheckbox->blockSignals( block );
   mOverviewCenterCheckbox->blockSignals( block );
+  mOverviewPositionComboBox->blockSignals( block );
+  mOverviewStackingLayerComboBox->blockSignals( block );
 }
 
 void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
@@ -1362,6 +1375,11 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
   mOverviewInvertCheckbox->setChecked( overview->inverted() );
   //center overview
   mOverviewCenterCheckbox->setChecked( overview->centered() );
+
+  mOverviewPositionComboBox->setCurrentIndex( mOverviewPositionComboBox->findData( overview->stackingPosition() ) );
+  mOverviewStackingLayerComboBox->setLayer( overview->stackingLayer() );
+  mOverviewStackingLayerComboBox->setEnabled( mOverviewPositionComboBox->isEnabled() && ( overview->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLayer
+      || overview->stackingPosition() == QgsLayoutItemMapItem::StackBelowMapLayer ) );
 
   mOverviewFrameStyleButton->setSymbol( overview->frameSymbol()->clone() );
 
@@ -1451,7 +1469,7 @@ void QgsLayoutMapWidget::mOverviewCheckBox_toggled( bool state )
   {
     overview->setEnabled( false );
   }
-  mMapItem->update();
+  mMapItem->invalidateCache();
   mMapItem->layout()->undoStack()->endCommand();
 }
 
@@ -1469,7 +1487,7 @@ void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
 
   mMapItem->beginCommand( tr( "Change Overview Map" ) );
   overview->setLinkedMap( map );
-  mMapItem->update();
+  mMapItem->invalidateCache();
   mMapItem->endCommand();
 }
 
@@ -1484,7 +1502,7 @@ void QgsLayoutMapWidget::mOverviewBlendModeComboBox_currentIndexChanged( int ind
 
   mMapItem->beginCommand( tr( "Change Overview Blend Mode" ) );
   overview->setBlendMode( mOverviewBlendModeComboBox->blendMode() );
-  mMapItem->update();
+  mMapItem->invalidateCache();
   mMapItem->endCommand();
 }
 
@@ -1498,7 +1516,7 @@ void QgsLayoutMapWidget::mOverviewInvertCheckbox_toggled( bool state )
 
   mMapItem->beginCommand( tr( "Toggle Overview Inverted" ) );
   overview->setInverted( state );
-  mMapItem->update();
+  mMapItem->invalidateCache();
   mMapItem->endCommand();
 }
 
@@ -1512,7 +1530,49 @@ void QgsLayoutMapWidget::mOverviewCenterCheckbox_toggled( bool state )
 
   mMapItem->beginCommand( tr( "Toggle Overview Centered" ) );
   overview->setCentered( state );
-  mMapItem->update();
+  mMapItem->invalidateCache();
+  mMapItem->endCommand();
+}
+
+void QgsLayoutMapWidget::overviewStackingChanged( int )
+{
+  QgsLayoutItemMapOverview *overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  mMapItem->beginCommand( tr( "Change Overview Position" ) );
+  overview->setStackingPosition( static_cast< QgsLayoutItemMapItem::StackingPosition >( mOverviewPositionComboBox->currentData().toInt() ) );
+  mMapItem->invalidateCache();
+  mMapItem->endCommand();
+
+  switch ( overview->stackingPosition() )
+  {
+    case QgsLayoutItemMapItem::StackAboveMapLabels:
+    case QgsLayoutItemMapItem::StackBelowMap:
+    case QgsLayoutItemMapItem::StackBelowMapLabels:
+      mOverviewStackingLayerComboBox->setEnabled( false );
+      break;
+
+    case QgsLayoutItemMapItem::StackAboveMapLayer:
+    case QgsLayoutItemMapItem::StackBelowMapLayer:
+      mOverviewStackingLayerComboBox->setEnabled( true );
+      break;
+  }
+}
+
+void QgsLayoutMapWidget::overviewStackingLayerChanged( QgsMapLayer *layer )
+{
+  QgsLayoutItemMapOverview *overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  mMapItem->beginCommand( tr( "Change Overview Position" ) );
+  overview->setStackingLayer( layer );
+  mMapItem->invalidateCache();
   mMapItem->endCommand();
 }
 

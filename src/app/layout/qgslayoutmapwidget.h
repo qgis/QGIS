@@ -57,6 +57,8 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void mOverviewInvertCheckbox_toggled( bool state );
     void mOverviewCenterCheckbox_toggled( bool state );
+    void overviewStackingChanged( int value );
+    void overviewStackingLayerChanged( QgsMapLayer *layer );
 
     void mXMinLineEdit_editingFinished();
     void mXMaxLineEdit_editingFinished();
