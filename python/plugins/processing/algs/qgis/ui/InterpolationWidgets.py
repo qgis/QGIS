@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSlot
+from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QComboBox
                                  )
@@ -36,13 +36,17 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
+                       QgsRectangle,
+                       QgsReferencedRectangle,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingUtils,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterDefinition
                        )
 from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
 
-from processing.gui.wrappers import WidgetWrapper
+from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
@@ -53,7 +57,7 @@ class ParameterInterpolationData(QgsProcessingParameterDefinition):
     def __init__(self, name='', description=''):
         super().__init__(name, description)
         self.setMetadata({
-            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
+            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationWidgets.InterpolationDataWidgetWrapper'
         })
 
     def type(self):
@@ -91,7 +95,7 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'interpolationdatawidgetb
 
 class InterpolationDataWidget(BASE, WIDGET):
 
-    hasChanged = pyqtSlot()
+    hasChanged = pyqtSignal()
 
     def __init__(self):
         super(InterpolationDataWidget, self).__init__(None)
@@ -215,6 +219,184 @@ class InterpolationDataWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         self.widget.setValue(value)
+
+    def value(self):
+        return self.widget.value()
+
+
+class ParameterPixelSize(QgsProcessingParameterNumber):
+
+    def __init__(self, name='', description='', layersData=None, extent=None, minValue=None, default=None, optional=False):
+        QgsProcessingParameterNumber.__init__(self, name, description, QgsProcessingParameterNumber.Double, default, optional, minValue)
+        self.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationWidgets.PixelSizeWidgetWrapper'
+        })
+
+        self.layersData = layersData
+        self.extent = extent
+        self.layers = []
+
+    def clone(self):
+        copy = ParameterPixelSize(self.name(), self.description(), self.layersData, self.extent, self.minimum(), self.defaultValue(), self.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        return copy
+
+
+WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'RasterResolutionWidget.ui'))
+
+
+class PixelSizeWidget(BASE, WIDGET):
+
+    def __init__(self):
+        super(PixelSizeWidget, self).__init__(None)
+        self.setupUi(self)
+        self.context = dataobjects.createContext()
+
+        self.extent = QgsRectangle()
+        self.layers = []
+
+        self.mCellXSpinBox.setShowClearButton(False)
+        self.mCellYSpinBox.setShowClearButton(False)
+        self.mRowsSpinBox.setShowClearButton(False)
+        self.mColumnsSpinBox.setShowClearButton(False)
+
+        self.mCellYSpinBox.valueChanged.connect(self.mCellXSpinBox.setValue)
+        self.mCellXSpinBox.valueChanged.connect(self.pixelSizeChanged)
+        self.mRowsSpinBox.valueChanged.connect(self.rowsChanged)
+        self.mColumnsSpinBox.valueChanged.connect(self.columnsChanged)
+
+    def setLayers(self, layersData):
+        self.extent = QgsRectangle()
+        self.layers = []
+        for row in layersData.split(';'):
+            v = row.split('::~::')
+            # need to keep a reference until interpolation is complete
+            layer = QgsProcessingUtils.variantToSource(v[0], self.context)
+            if layer:
+                self.layers.append(layer)
+                bbox = layer.sourceExtent()
+                if self.extent.isEmpty():
+                    self.extent = bbox
+                else:
+                    self.extent.combineExtentWith(bbox)
+
+        self.pixelSizeChanged()
+
+    def setExtent(self, extent):
+        if extent is not None:
+            tokens = extent.split(' ')[0].split(',')
+            ext = QgsRectangle(float(tokens[0]), float(tokens[2]), float(tokens[1]), float(tokens[3]))
+            if len(tokens) > 1:
+                self.extent = QgsReferencedRectangle(ext, QgsCoordinateReferenceSystem(tokens[1][1:-1]))
+            else:
+                self.extent = ext
+        self.pixelSizeChanged()
+
+    def pixelSizeChanged(self):
+        cell_size = self.mCellXSpinBox.value()
+        if cell_size <= 0:
+            return
+
+        self.mCellYSpinBox.blockSignals(True)
+        self.mCellYSpinBox.setValue(cell_size)
+        self.mCellYSpinBox.blockSignals(False)
+        rows = max(round(self.extent.height() / cell_size) + 1, 1)
+        cols = max(round(self.extent.width() / cell_size) + 1, 1)
+        self.mRowsSpinBox.blockSignals(True)
+        self.mRowsSpinBox.setValue(rows)
+        self.mRowsSpinBox.blockSignals(False)
+        self.mColumnsSpinBox.blockSignals(True)
+        self.mColumnsSpinBox.setValue(cols)
+        self.mColumnsSpinBox.blockSignals(False)
+
+    def rowsChanged(self):
+        rows = self.mRowsSpinBox.value()
+        if rows <= 0:
+            return
+        cell_size = self.extent.height() / rows
+        cols = max(round(self.extent.width() / cell_size) + 1, 1)
+        self.mColumnsSpinBox.blockSignals(True)
+        self.mColumnsSpinBox.setValue(cols)
+        self.mColumnsSpinBox.blockSignals(False)
+        for w in [self.mCellXSpinBox, self.mCellYSpinBox]:
+            w.blockSignals(True)
+            w.setValue(cell_size)
+            w.blockSignals(False)
+
+    def columnsChanged(self):
+        cols = self.mColumnsSpinBox.value()
+        if cols < 2:
+            return
+        cell_size = self.extent.width() / (cols - 1)
+        rows = max(round(self.extent.height() / cell_size), 1)
+        self.mRowsSpinBox.blockSignals(True)
+        self.mRowsSpinBox.setValue(rows)
+        self.mRowsSpinBox.blockSignals(False)
+        for w in [self.mCellXSpinBox, self.mCellYSpinBox]:
+            w.blockSignals(True)
+            w.setValue(cell_size)
+            w.blockSignals(False)
+
+    def setValue(self, value):
+        try:
+            numeric_value = float(value)
+        except:
+            return False
+
+        self.mCellXSpinBox.setValue(numeric_value)
+        self.mCellYSpinBox.setValue(numeric_value)
+        return True
+
+    def value(self):
+        return self.mCellXSpinBox.value()
+
+
+class PixelSizeWidgetWrapper(WidgetWrapper):
+
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        super().__init__(param, dialog, row, col, **kwargs)
+        self.context = dataobjects.createContext()
+
+    def _panel(self):
+        return PixelSizeWidget()
+
+    def createWidget(self):
+        if self.dialogType == DIALOG_STANDARD:
+            return self._panel()
+        else:
+            w = QgsDoubleSpinBox()
+            w.setShowClearButton(False)
+            w.setMinimum(0)
+            w.setMaximum(99999999999)
+            w.setDecimals(6)
+            w.setToolTip(self.tr('Resolution of each pixel in output raster, in layer units'))
+            return w
+
+    def postInitialize(self, wrappers):
+        if self.dialogType != DIALOG_STANDARD:
+            return
+
+        for wrapper in wrappers:
+            if wrapper.parameterDefinition().name() == self.param.layersData:
+                self.setLayers(wrapper.parameterValue())
+                wrapper.widgetValueHasChanged.connect(self.layersChanged)
+            elif wrapper.parameterDefinition().name() == self.param.extent:
+                self.setExtent(wrapper.parameterValue())
+                wrapper.widgetValueHasChanged.connect(self.extentChanged)
+
+    def layersChanged(self, wrapper):
+        self.setLayers(wrapper.parameterValue())
+
+    def setLayers(self, layersData):
+        self.widget.setLayers(layersData)
+
+    def extentChanged(self, wrapper):
+        self.setExtent(wrapper.parameterValue())
+
+    def setExtent(self, extent):
+        self.widget.setExtent(extent)
+
+    def setValue(self, value):
+        return self.widget.setValue(value)
 
     def value(self):
         return self.widget.value()

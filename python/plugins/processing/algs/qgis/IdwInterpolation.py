@@ -40,7 +40,7 @@ from qgis.analysis import (QgsInterpolator,
                            QgsGridFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.algs.qgis.ui.InterpolationWidgets import ParameterInterpolationData
+from processing.algs.qgis.ui.InterpolationWidgets import ParameterInterpolationData, ParameterPixelSize
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -49,8 +49,7 @@ class IdwInterpolation(QgisAlgorithm):
 
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
-    COLUMNS = 'COLUMNS'
-    ROWS = 'ROWS'
+    PIXEL_SIZE = 'PIXEL_SIZE'
     EXTENT = 'EXTENT'
     OUTPUT = 'OUTPUT'
 
@@ -73,15 +72,17 @@ class IdwInterpolation(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE_COEFFICIENT,
                                                        self.tr('Distance coefficient P'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0, maxValue=99.99, defaultValue=2.0))
-        self.addParameter(QgsProcessingParameterNumber(self.COLUMNS,
-                                                       self.tr('Number of columns'),
-                                                       minValue=0, maxValue=10000000, defaultValue=300))
-        self.addParameter(QgsProcessingParameterNumber(self.ROWS,
-                                                       self.tr('Number of rows'),
-                                                       minValue=0, maxValue=10000000, defaultValue=300))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Extent'),
                                                        optional=False))
+        pixel_size_param = ParameterPixelSize(self.PIXEL_SIZE,
+                                              self.tr('Output raster size'),
+                                              layersData=self.INTERPOLATION_DATA,
+                                              extent=self.EXTENT,
+                                              minValue=0.0,
+                                              default=0.1)
+        self.addParameter(pixel_size_param)
+
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Interpolated')))
 
@@ -94,9 +95,8 @@ class IdwInterpolation(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         interpolationData = ParameterInterpolationData.parseValue(parameters[self.INTERPOLATION_DATA])
         coefficient = self.parameterAsDouble(parameters, self.DISTANCE_COEFFICIENT, context)
-        columns = self.parameterAsInt(parameters, self.COLUMNS, context)
-        rows = self.parameterAsInt(parameters, self.ROWS, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        pixel_size = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         if interpolationData is None:
@@ -126,6 +126,9 @@ class IdwInterpolation(QgisAlgorithm):
 
         interpolator = QgsIDWInterpolator(layerData)
         interpolator.setDistanceCoefficient(coefficient)
+
+        rows = max(round(bbox.height() / pixel_size) + 1, 1)
+        columns = max(round(bbox.width() / pixel_size) + 1, 1)
 
         writer = QgsGridFileWriter(interpolator,
                                    output,

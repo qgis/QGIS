@@ -44,7 +44,7 @@ from qgis.analysis import (QgsInterpolator,
                            QgsGridFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.algs.qgis.ui.InterpolationWidgets import ParameterInterpolationData
+from processing.algs.qgis.ui.InterpolationWidgets import ParameterInterpolationData, ParameterPixelSize
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -52,8 +52,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class TinInterpolation(QgisAlgorithm):
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     METHOD = 'METHOD'
-    COLUMNS = 'COLUMNS'
-    ROWS = 'ROWS'
+    PIXEL_SIZE = 'PIXEL_SIZE'
     EXTENT = 'EXTENT'
     OUTPUT = 'OUTPUT'
     TRIANGULATION = 'TRIANGULATION'
@@ -81,15 +80,17 @@ class TinInterpolation(QgisAlgorithm):
                                                      self.tr('Interpolation method'),
                                                      options=self.METHODS,
                                                      defaultValue=0))
-        self.addParameter(QgsProcessingParameterNumber(self.COLUMNS,
-                                                       self.tr('Number of columns'),
-                                                       minValue=0, maxValue=10000000, defaultValue=300))
-        self.addParameter(QgsProcessingParameterNumber(self.ROWS,
-                                                       self.tr('Number of rows'),
-                                                       minValue=0, maxValue=10000000, defaultValue=300))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Extent'),
                                                        optional=False))
+        pixel_size_param = ParameterPixelSize(self.PIXEL_SIZE,
+                                              self.tr('Output raster size'),
+                                              layersData=self.INTERPOLATION_DATA,
+                                              extent=self.EXTENT,
+                                              minValue=0.0,
+                                              default=0.1)
+        self.addParameter(pixel_size_param)
+
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Interpolated')))
 
@@ -109,9 +110,8 @@ class TinInterpolation(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         interpolationData = ParameterInterpolationData.parseValue(parameters[self.INTERPOLATION_DATA])
         method = self.parameterAsEnum(parameters, self.METHOD, context)
-        columns = self.parameterAsInt(parameters, self.COLUMNS, context)
-        rows = self.parameterAsInt(parameters, self.ROWS, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        pixel_size = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         if interpolationData is None:
@@ -153,6 +153,9 @@ class TinInterpolation(QgisAlgorithm):
         interpolator = QgsTinInterpolator(layerData, interpolationMethod, feedback)
         if triangulation_sink is not None:
             interpolator.setTriangulationSink(triangulation_sink)
+
+        rows = max(round(bbox.height() / pixel_size) + 1, 1)
+        columns = max(round(bbox.width() / pixel_size) + 1, 1)
 
         writer = QgsGridFileWriter(interpolator,
                                    output,
