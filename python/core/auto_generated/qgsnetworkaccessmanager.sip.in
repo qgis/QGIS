@@ -109,6 +109,30 @@ for the constructor of this class.
 Returns whether the system proxy should be used
 %End
 
+    static void pauseReplyTimeout( QNetworkReply *reply );
+%Docstring
+Pauses the timeout on a network ``reply``.
+
+This must be called from the same thread as ``reply`` was created from. Calling from a different
+thread will have no effect on the timeout.
+
+.. seealso:: :py:func:`restartReplyTimeout`
+
+.. versionadded:: 3.6
+%End
+
+    static void restartReplyTimeout( QNetworkReply *reply );
+%Docstring
+Restarts the timeout on a network ``reply``.
+
+This must be called from the same thread as ``reply`` was created from. Calling from a different
+thread will have no effect on the timeout.
+
+.. seealso:: :py:func:`pauseReplyTimeout`
+
+.. versionadded:: 3.6
+%End
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
@@ -119,6 +143,44 @@ Returns whether the system proxy should be used
 
 
 };
+
+
+class QgsNetworkReplyTimeoutBlocker
+{
+%Docstring
+Temporarily blocks QNetworkReply timeouts for the lifetime of the object.
+
+On object destruction the reply timeout will be restarted.
+
+This must be created from the same thread as ``reply`` was created from. Creating from a different
+thread will have no effect on the timeout.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkaccessmanager.h"
+%End
+  public:
+
+    QgsNetworkReplyTimeoutBlocker( QNetworkReply *reply );
+%Docstring
+Constructor for QgsNetworkReplyTimeoutBlocker.
+
+This will block network reply timeouts for the specified ``reply`` for the lifetime of this object.
+
+This must be created from the same thread as ``reply`` was created from. Creating from a different
+thread will have no effect on the timeout.
+%End
+
+
+
+    ~QgsNetworkReplyTimeoutBlocker();
+
+  private:
+    QgsNetworkReplyTimeoutBlocker( const QgsNetworkReplyTimeoutBlocker &other );
+};
+
 
 
 /************************************************************************

@@ -24,6 +24,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QPointer>
 
 #include "qgis_core.h"
 
@@ -108,6 +110,28 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Returns whether the system proxy should be used
     bool useSystemProxy() const { return mUseSystemProxy; }
 
+    /**
+     * Pauses the timeout on a network \a reply.
+     *
+     * This must be called from the same thread as \a reply was created from. Calling from a different
+     * thread will have no effect on the timeout.
+     *
+     * \see restartReplyTimeout()
+     * \since QGIS 3.6
+     */
+    static void pauseReplyTimeout( QNetworkReply *reply );
+
+    /**
+     * Restarts the timeout on a network \a reply.
+     *
+     * This must be called from the same thread as \a reply was created from. Calling from a different
+     * thread will have no effect on the timeout.
+     *
+     * \see pauseReplyTimeout()
+     * \since QGIS 3.6
+     */
+    static void restartReplyTimeout( QNetworkReply *reply );
+
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
@@ -127,6 +151,58 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     bool mInitialized = false;
     static QgsNetworkAccessManager *sMainNAM;
 };
+
+
+/**
+ * Temporarily blocks QNetworkReply timeouts for the lifetime of the object.
+ *
+ * On object destruction the reply timeout will be restarted.
+ *
+ * This must be created from the same thread as \a reply was created from. Creating from a different
+ * thread will have no effect on the timeout.
+ *
+ * \ingroup core
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsNetworkReplyTimeoutBlocker
+{
+  public:
+
+    /**
+     * Constructor for QgsNetworkReplyTimeoutBlocker.
+     *
+     * This will block network reply timeouts for the specified \a reply for the lifetime of this object.
+     *
+     * This must be created from the same thread as \a reply was created from. Creating from a different
+     * thread will have no effect on the timeout.
+     */
+    QgsNetworkReplyTimeoutBlocker( QNetworkReply *reply )
+      : mReply( reply )
+    {
+      if ( mReply )
+        QgsNetworkAccessManager::pauseReplyTimeout( mReply );
+    }
+
+    //! QgsNetworkReplyTimeoutBlocker cannot be copied
+    QgsNetworkReplyTimeoutBlocker( const QgsNetworkReplyTimeoutBlocker &other ) = delete;
+
+    //! QgsNetworkReplyTimeoutBlocker cannot be copied
+    QgsNetworkReplyTimeoutBlocker &operator=( const QgsNetworkReplyTimeoutBlocker &other ) = delete;
+
+    ~QgsNetworkReplyTimeoutBlocker()
+    {
+      if ( mReply )
+        QgsNetworkAccessManager::restartReplyTimeout( mReply );
+    }
+
+  private:
+    QPointer< QNetworkReply > mReply;
+
+#ifdef SIP_RUN
+    QgsNetworkReplyTimeoutBlocker( const QgsNetworkReplyTimeoutBlocker &other );
+#endif
+};
+
 
 #endif // QGSNETWORKACCESSMANAGER_H
 

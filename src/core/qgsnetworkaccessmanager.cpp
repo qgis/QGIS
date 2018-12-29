@@ -394,3 +394,31 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     setCache( newcache );
 }
 
+void QgsNetworkAccessManager::pauseReplyTimeout( QNetworkReply *reply )
+{
+  if ( reply->thread() != QThread::currentThread() )
+    return;
+
+  QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
+  if ( timer && timer->isActive() )
+  {
+    QgsDebugMsg( QStringLiteral( "Stopping network reply timeout" ) );
+    timer->stop();
+  }
+}
+
+void QgsNetworkAccessManager::restartReplyTimeout( QNetworkReply *reply )
+{
+  if ( reply->thread() != QThread::currentThread() )
+    return;
+
+  QgsSettings s;
+  QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
+  if ( timer )
+  {
+    QgsDebugMsg( QStringLiteral( "Restarting network reply timeout" ) );
+    timer->setSingleShot( true );
+    timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
+  }
+}
+

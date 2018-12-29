@@ -13863,14 +13863,9 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 #ifndef QT_NO_SSL
 void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
-  // stop the timeout timer, or app crashes if the user (or slot) takes longer than
+  // pause the timeout timer, or app crashes if the user (or slot) takes longer than
   // singleshot timeout and tries to update the closed QNetworkReply
-  QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
-  if ( timer )
-  {
-    QgsDebugMsg( QStringLiteral( "Stopping network reply timeout" ) );
-    timer->stop();
-  }
+  QgsNetworkReplyTimeoutBlocker timeoutBlocker( reply );
 
   QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
@@ -13885,7 +13880,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
   if ( errscache.contains( dgsthostport ) )
   {
-    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cahced item found, ignoring errors if they match for %1" ).arg( hostport ) );
+    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cached item found, ignoring errors if they match for %1" ).arg( hostport ) );
     const QSet<QSslError::SslError> &errenums( errscache.value( dgsthostport ) );
     bool ignore = !errenums.isEmpty();
     int errmatched = 0;
@@ -13927,19 +13922,6 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     }
   }
   dlg->deleteLater();
-
-  // restart network request timeout timer
-  if ( reply )
-  {
-    QgsSettings s;
-    QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
-    if ( timer )
-    {
-      QgsDebugMsg( QStringLiteral( "Restarting network reply timeout" ) );
-      timer->setSingleShot( true );
-      timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
-    }
-  }
 }
 #endif
 
