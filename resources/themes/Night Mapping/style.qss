@@ -364,22 +364,22 @@ QToolBar {
 
 QToolBar::handle:horizontal
 {
-	image: url(:/qss_icons/rc/Hmovetoolbar.png);
+    image: url(@theme_path/icons/handle-horizontal.svg);
 }
 
 QToolBar::handle:vertical
 {
-	image: url(:/qss_icons/rc/Vmovetoolbar.png);
+    image: url(@theme_path/icons/handle-vertical.svg);
 }
 
 QToolBar::separator:horizontal
 {
-	image: url(:/qss_icons/rc/Hsepartoolbar.png);
+    image: url(@theme_path/icons/separator-horizontal.svg);
 }
 
 QToolBar::separator:vertical
 {
-	image: url(:/qss_icons/rc/Vsepartoolbars.png);
+    image: url(@theme_path/icons/separator-vertical.svg);
 }
 
 QMenu::separator
