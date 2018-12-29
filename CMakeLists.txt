@@ -480,6 +480,7 @@ IF (PEDANTIC)
     ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
 
     # disable warnings
+    SET(_warnings "${_warnings} /wd4091 ")  # 'typedef': ignored on left of '' when no variable is declared (occurs in MS DbgHelp.h header)
     SET(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
     SET(_warnings "${_warnings} /wd4127 ")  # constant conditional expressions (used in Qt template classes)
     SET(_warnings "${_warnings} /wd4190 ")  # 'identifier' has C-linkage specified, but returns UDT 'identifier2' which is incompatible with C
@@ -487,6 +488,7 @@ IF (PEDANTIC)
     SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
     SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
     SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    SET(_warnings "${_warnings} /wd4290 ")  # c++ exception specification ignored except to indicate a function is not __declspec(nothrow) (occurs in sip generated bindings)
     SET(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
     SET(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
     SET(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member
