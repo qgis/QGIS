@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
-                       QgsProcessingUtils
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition
                        )
 from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
@@ -45,10 +46,52 @@ from processing.gui.wrappers import WidgetWrapper
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
+
+
+class ParameterInterpolationData(QgsProcessingParameterDefinition):
+
+    def __init__(self, name='', description=''):
+        super().__init__(name, description)
+        self.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
+        })
+
+    def type(self):
+        return 'idw_interpolation_data'
+
+    def clone(self):
+        return ParameterInterpolationData(self.name(), self.description())
+
+    @staticmethod
+    def parseValue(value):
+        if value is None:
+            return None
+
+        if value == '':
+            return None
+
+        if isinstance(value, str):
+            return value if value != '' else None
+        else:
+            return ParameterInterpolationData.dataToString(value)
+
+    @staticmethod
+    def dataToString(data):
+        s = ''
+        for c in data:
+            s += '{}::~::{}::~::{:d}::~::{:d};'.format(c[0],
+                                                       c[1],
+                                                       c[2],
+                                                       c[3])
+        return s[:-1]
+
+
 WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'interpolationdatawidgetbase.ui'))
 
 
 class InterpolationDataWidget(BASE, WIDGET):
+
+    hasChanged = pyqtSlot()
 
     def __init__(self):
         super(InterpolationDataWidget, self).__init__(None)
@@ -57,13 +100,15 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
 
+        self.btnAdd.clicked.connect(self.addLayer)
+        self.btnRemove.clicked.connect(self.removeLayer)
+
         self.cmbLayers.layerChanged.connect(self.layerChanged)
         self.cmbLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
 
-    @pyqtSlot()
-    def on_btnAdd_clicked(self):
+    def addLayer(self):
         layer = self.cmbLayers.currentLayer()
 
         attribute = ''
@@ -72,14 +117,15 @@ class InterpolationDataWidget(BASE, WIDGET):
         else:
             attribute = self.cmbFields.currentField()
 
-        self.addLayerData(layer.name(), attribute)
+        self._addLayerData(layer.name(), attribute)
+        self.hasChanged.emit()
 
-    @pyqtSlot()
-    def on_btnRemove_clicked(self):
+    def removeLayer(self):
         item = self.layersTree.currentItem()
         if not item:
             return
         self.layersTree.invisibleRootItem().removeChild(item)
+        self.hasChanged.emit()
 
     def layerChanged(self, layer):
         self.chkUseZCoordinate.setEnabled(False)
@@ -97,7 +143,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
         self.cmbFields.setLayer(layer)
 
-    def addLayerData(self, layerName, attribute):
+    def _addLayerData(self, layerName, attribute):
         item = QTreeWidgetItem()
         item.setText(0, layerName)
         item.setText(1, attribute)
@@ -119,6 +165,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
             comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
             comboBox.setCurrentIndex(comboBox.findText(v[3]))
+        self.hasChanged.emit()
 
     def value(self):
         layers = ''
@@ -162,7 +209,9 @@ class InterpolationDataWidget(BASE, WIDGET):
 class InterpolationDataWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
-        return InterpolationDataWidget()
+        widget = InterpolationDataWidget()
+        widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+        return widget
 
     def setValue(self, value):
         self.widget.setValue(value)

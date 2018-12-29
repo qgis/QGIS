@@ -31,7 +31,6 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessing,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterExtent,
@@ -45,46 +44,9 @@ from qgis.analysis import (QgsInterpolator,
                            QgsGridFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.algs.qgis.ui.InterpolationWidgets import ParameterInterpolationData
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
-
-
-class ParameterInterpolationData(QgsProcessingParameterDefinition):
-
-    def __init__(self, name='', description=''):
-        super().__init__(name, description)
-        self.setMetadata({
-            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
-        })
-
-    def type(self):
-        return 'tin_interpolation_data'
-
-    def clone(self):
-        return ParameterInterpolationData(self.name(), self.description())
-
-    @staticmethod
-    def parseValue(value):
-        if value is None:
-            return None
-
-        if value == '':
-            return None
-
-        if isinstance(value, str):
-            return value if value != '' else None
-        else:
-            return ParameterInterpolationData.dataToString(value)
-
-    @staticmethod
-    def dataToString(data):
-        s = ''
-        for c in data:
-            s += '{}::~:: {}::~:: {:d}::~:: {:d};'.format(c[0],
-                                                          c[1],
-                                                          c[2],
-                                                          c[3])
-        return s[:-1]
 
 
 class TinInterpolation(QgisAlgorithm):
