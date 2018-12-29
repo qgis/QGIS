@@ -31,6 +31,7 @@ The base style for the QProxyStyle will be set to match the current QGIS applica
 %End
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

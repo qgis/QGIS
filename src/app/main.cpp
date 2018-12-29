@@ -99,6 +99,7 @@ typedef SInt32 SRefCon;
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
+#include "qgsproxystyle.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1249,10 +1250,16 @@ int main( int argc, char *argv[] )
   }
   if ( !desiredStyle.isEmpty() )
   {
-    QApplication::setStyle( desiredStyle );
+    QApplication::setStyle( new QgsAppStyle( desiredStyle ) );
 
     if ( activeStyleName != desiredStyle )
       settings.setValue( QStringLiteral( "qgis/style" ), desiredStyle );
+  }
+  else
+  {
+    // even if user has not set a style, we need to override the application style with the QgsAppStyle proxy
+    // based on the default style (or we miss custom style tweaks)
+    QApplication::setStyle( new QgsAppStyle( activeStyleName ) );
   }
 
   // set authentication database directory
