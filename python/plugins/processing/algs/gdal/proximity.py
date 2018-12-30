@@ -75,6 +75,7 @@ class proximity(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterString(self.VALUES,
                                                        self.tr('A list of pixel values in the source image to be considered target pixels'),
