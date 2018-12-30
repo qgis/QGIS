@@ -59,6 +59,7 @@ class aspect(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterBoolean(self.TRIG_ANGLE,
                                                         self.tr('Return trigonometric angle instead of azimuth'),

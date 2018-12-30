@@ -53,6 +53,7 @@ class gdal2xyz(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterBoolean(self.CSV,
                                                         self.tr('Output comma-separated values'),
