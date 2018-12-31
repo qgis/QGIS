@@ -46,6 +46,8 @@ specifying the statistic in the constructor or via setStatistics().
       FirstQuartile,
       ThirdQuartile,
       InterQuartileRange,
+      First,
+      Last,
       All
     };
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
@@ -214,6 +216,24 @@ be calculated.
 %Docstring
 Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
 be calculated.
+%End
+
+    double first() const;
+%Docstring
+Returns the first value obtained. A NaN value may be returned if no values were encountered.
+
+.. seealso:: :py:func:`last`
+
+.. versionadded:: 3.6
+%End
+
+    double last() const;
+%Docstring
+Returns the last value obtained. A NaN value may be returned if no values were encountered.
+
+.. seealso:: :py:func:`first`
+
+.. versionadded:: 3.6
 %End
 
     double stDev() const;
