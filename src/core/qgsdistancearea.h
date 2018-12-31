@@ -165,7 +165,7 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Measures the length of a line with multiple segments.
      * \param points list of points in line
-     * \param forceCartesian calculate distances in cartesian coordinates
+     * \param forceCartesian calculate distances in Cartesian coordinates
      * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsDistanceArea
      * Measures the distance between two points.
      * \param p1 start of line
      * \param p2 end of line
-     * \param forceCartesian calculate distances in cartesian coordinates
+     * \param forceCartesian calculate distances in Cartesian coordinates
      * \returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */

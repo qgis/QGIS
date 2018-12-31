@@ -194,7 +194,7 @@ Measures the perimeter of a polygon geometry.
 Measures the length of a line with multiple segments.
 
 :param points: list of points in line
-:param forceCartesian: calculate distances in cartesian coordinates
+:param forceCartesian: calculate distances in Cartesian coordinates
 
 :return: length of line. The units for the returned length can be retrieved by calling lengthUnits().
 
@@ -207,7 +207,7 @@ Measures the distance between two points.
 
 :param p1: start of line
 :param p2: end of line
-:param forceCartesian: calculate distances in cartesian coordinates
+:param forceCartesian: calculate distances in Cartesian coordinates
 
 :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
 

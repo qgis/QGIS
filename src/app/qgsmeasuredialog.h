@@ -102,7 +102,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     bool useMapUnits = false;
 
     /**
-     * Indicates whether we need to measure distances in cartesian instead of
+     * Indicates whether we need to measure distances in Cartesian instead of
      * spherical coordinates, such as when measuring in degrees in a geographic CRS
      */
     bool forceCartesian = true;
