@@ -24,8 +24,12 @@ QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style
 {
   // get application style
-  QString appStyle = QApplication::style()->objectName();
-  if ( !appStyle.isEmpty() )
+  const QString appStyle = QApplication::style()->objectName();
+  if ( appStyle == QLatin1String( "QgsAppStyle" ) )
+  {
+    setBaseStyle( static_cast< QgsAppStyle * >( QApplication::style() )->clone() );
+  }
+  else if ( !appStyle.isEmpty() )
   {
     if ( QStyle *style = QStyleFactory::create( appStyle ) )
       setBaseStyle( style );
@@ -43,12 +47,15 @@ QgsProxyStyle::QgsProxyStyle( QWidget *parent )
 
 QgsAppStyle::QgsAppStyle( const QString &base )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style
+  , mBaseStyle( base )
 {
-  if ( !base.isEmpty() )
+  if ( !mBaseStyle.isEmpty() )
   {
-    if ( QStyle *style = QStyleFactory::create( base ) )
+    if ( QStyle *style = QStyleFactory::create( mBaseStyle ) )
       setBaseStyle( style );
   }
+
+  setObjectName( QStringLiteral( "QgsAppStyle" ) );
 }
 
 QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *opt ) const
@@ -72,6 +79,11 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
 
   }
   return QProxyStyle::generatedIconPixmap( iconMode, pixmap, opt );
+}
+
+QProxyStyle *QgsAppStyle::clone()
+{
+  return new QgsAppStyle( mBaseStyle );
 }
 
 ///@endcond
