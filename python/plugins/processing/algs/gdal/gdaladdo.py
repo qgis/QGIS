@@ -83,12 +83,14 @@ class gdaladdo(GdalAlgorithm):
                                                  self.tr('Resampling method'),
                                                  options=[i[0] for i in self.methods],
                                                  allowMultiple=False,
-                                                 defaultValue=0))
+                                                 defaultValue=0,
+                                                 optional=True))
         params.append(QgsProcessingParameterEnum(self.FORMAT,
                                                  self.tr('Overviews format'),
                                                  options=self.formats,
                                                  allowMultiple=False,
-                                                 defaultValue=0))
+                                                 defaultValue=0,
+                                                 optional=True))
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
