@@ -85,6 +85,10 @@ void TestQgsStatisticSummary::stats()
   QCOMPARE( s2.sum(), 24.0 );
   QCOMPARE( s.mean(), 4.0 );
   QCOMPARE( s2.mean(), 4.0 );
+  QCOMPARE( s.first(), 4.0 );
+  QCOMPARE( s2.first(), 4.0 );
+  QCOMPARE( s.last(), 8.0 );
+  QCOMPARE( s2.last(), 8.0 );
   QGSCOMPARENEAR( s.stDev(), 2.0816, 0.0001 );
   QGSCOMPARENEAR( s2.stDev(), 2.0816, 0.0001 );
   QGSCOMPARENEAR( s.sampleStDev(), 2.2803, 0.0001 );
@@ -227,6 +231,8 @@ void TestQgsStatisticSummary::individualStatCalculations_data()
   QTest::newRow( "third_quartile" ) << ( int )QgsStatisticalSummary::ThirdQuartile << 5.0;
   QTest::newRow( "iqr" ) << ( int )QgsStatisticalSummary::InterQuartileRange << 2.0;
   QTest::newRow( "missing" ) << ( int )QgsStatisticalSummary::CountMissing << 0.0;
+  QTest::newRow( "first" ) << static_cast< int >( QgsStatisticalSummary::First ) << 4.0;
+  QTest::newRow( "last" ) << static_cast< int >( QgsStatisticalSummary::Last ) << 8.0;
 }
 
 void TestQgsStatisticSummary::individualStatCalculations()
@@ -311,6 +317,10 @@ void TestQgsStatisticSummary::noValues()
   QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ), 0.0 );
   QCOMPARE( s.sum(), 0.0 );
   QCOMPARE( s.statistic( QgsStatisticalSummary::Sum ), 0.0 );
+  QVERIFY( std::isnan( s.first() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::First ) ) );
+  QVERIFY( std::isnan( s.last() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Last ) ) );
   QVERIFY( std::isnan( s.mean() ) );
   QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Mean ) ) );
   QVERIFY( std::isnan( s.median() ) );

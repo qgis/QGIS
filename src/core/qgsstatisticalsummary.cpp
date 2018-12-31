@@ -32,6 +32,8 @@ QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
 
 void QgsStatisticalSummary::reset()
 {
+  mFirst = std::numeric_limits<double>::quiet_NaN();
+  mLast = std::numeric_limits<double>::quiet_NaN();
   mCount = 0;
   mMissing = 0;
   mSum = 0;
@@ -59,7 +61,7 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 {
   reset();
 
-  Q_FOREACH ( double value, values )
+  for ( double value : values )
   {
     addValue( value );
   }
@@ -69,10 +71,13 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 
 void QgsStatisticalSummary::addValue( double value )
 {
+  if ( mCount == 0 )
+    mFirst = value;
   mCount++;
   mSum += value;
   mMin = std::min( mMin, value );
   mMax = std::max( mMax, value );
+  mLast = value;
 
   if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
     mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );
@@ -102,6 +107,8 @@ void QgsStatisticalSummary::finalize()
 {
   if ( mCount == 0 )
   {
+    mFirst = std::numeric_limits<double>::quiet_NaN();
+    mLast = std::numeric_limits<double>::quiet_NaN();
     mMin = std::numeric_limits<double>::quiet_NaN();
     mMax = std::numeric_limits<double>::quiet_NaN();
     mMean = std::numeric_limits<double>::quiet_NaN();
@@ -266,6 +273,10 @@ double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat )
       return mThirdQuartile;
     case InterQuartileRange:
       return mThirdQuartile - mFirstQuartile;
+    case First:
+      return mFirst;
+    case Last:
+      return mLast;
     case All:
       return 0;
   }
@@ -308,6 +319,10 @@ QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic sta
       return QObject::tr( "Q3" );
     case InterQuartileRange:
       return QObject::tr( "IQR" );
+    case First:
+      return QObject::tr( "First" );
+    case Last:
+      return QObject::tr( "Last" );
     case All:
       return QString();
   }
