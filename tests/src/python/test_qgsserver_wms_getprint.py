@@ -412,6 +412,32 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_TwoMaps")
 
+    def test_wms_getprint_atlas( self ):
+       qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "CRS": "EPSG:3857",
+            "ATLAS_PK": "3",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
+
+    def test_wms_getprint_atlas_getProjectSettings( self ):
+       qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetProjectSettings",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self.assertTrue( 'atlasEnabled="1"' in r )
+        self.assertTrue( '<PrimaryKeyAttribute>' in r )
 
 if __name__ == '__main__':
     unittest.main()
