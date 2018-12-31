@@ -459,14 +459,8 @@ namespace QgsWms
 
     }
 
-    if ( atlas )
-    {
-      QgsLayoutExporter exporter( layout.get() );
-      QgsLayoutExporter::PdfExportSettings exportSettings;
-      QString error;
-      exporter.exportToPdf( atlas, tempOutputFile.fileName(), exportSettings, error );
-    }
-    else if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    QString exportError;
+    if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::SvgExportSettings exportSettings;
@@ -479,8 +473,21 @@ namespace QgsWms
       }
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
-      QgsLayoutExporter exporter( layout.get() );
-      exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
+      if ( atlas )
+      {
+        //export first page of atlas
+        atlas->beginRender();
+        if ( atlas->next() )
+        {
+          QgsLayoutExporter atlasSvgExport( atlas->layout() );
+          atlasSvgExport.exportToSvg( tempOutputFile.fileName(), exportSettings );
+        }
+      }
+      else
+      {
+        QgsLayoutExporter exporter( layout.get() );
+        exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
+      }
     }
     else if ( formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || formatString.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -505,8 +512,21 @@ namespace QgsWms
       exportSettings.imageSize = QSize( static_cast<int>( width.length() * dpi / 25.4 ), static_cast<int>( height.length() * dpi / 25.4 ) );
       // Export first page only (unless it's a pdf, see below)
       exportSettings.pages.append( 0 );
-      QgsLayoutExporter exporter( layout.get() );
-      exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
+      if ( atlas )
+      {
+        //only can give back one page in server rendering
+        atlas->beginRender();
+        if ( atlas->next() )
+        {
+          QgsLayoutExporter atlasPngExport( atlas->layout() );
+          atlasPngExport.exportToImage( tempOutputFile.fileName(), exportSettings );
+        }
+      }
+      else
+      {
+        QgsLayoutExporter exporter( layout.get() );
+        exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
+      }
     }
     else if ( formatString.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -524,7 +544,14 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Export all pages
       QgsLayoutExporter exporter( layout.get() );
-      exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
+      if ( atlas )
+      {
+        exporter.exportToPdf( atlas, tempOutputFile.fileName(), exportSettings, exportError );
+      }
+      else
+      {
+        exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
+      }
     }
     else //unknown format
     {
