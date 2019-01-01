@@ -59,6 +59,8 @@ from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
 from processing.algs.gdal.fillnodata import fillnodata
 from processing.algs.gdal.rearrange_bands import rearrange_bands
+from processing.algs.gdal.gdaladdo import gdaladdo
+
 from processing.tools.system import isWindows
 
 from qgis.core import (QgsProcessingContext,
@@ -2368,6 +2370,83 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM \'polys2\'" ' +
                  '-f "ESRI Shapefile"'])
+
+    def testGdalAddo(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            alg = gdaladdo()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest 2 4 8 16'])
+
+            # with "clean" option
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': True,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest -clean 2 4 8 16'])
+
+            # ovr format
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 1}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest -ro 2 4 8 16'])
+
+            # Erdas format
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 2}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest --config USE_RRD YES 2 4 8 16'])
+
+            # custom resampling method format
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 4,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r cubicspline 2 4 8 16'])
+
+            # more levels
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16 32 64',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest 2 4 8 16 32 64'])
+
+            # without advanced params
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest 2 4 8 16'])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
