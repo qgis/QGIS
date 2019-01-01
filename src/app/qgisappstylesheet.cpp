@@ -143,6 +143,18 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                     "    background-color:palette(Window);"
                     "    padding-right: 0px;"
                     "}";
+
+    QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
+    if ( !toolbarSpacing.isEmpty() )
+    {
+      bool ok = false;
+      int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
+      if ( ok )
+      {
+        style += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
+      }
+    }
+
     ss += style;
   }
 
@@ -155,17 +167,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                  "}" )
         .arg( palette.highlight().color().name(),
               palette.highlightedText().color().name() );
-
-  QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
-  if ( !toolbarSpacing.isEmpty() )
-  {
-    bool ok = false;
-    int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
-    if ( ok )
-    {
-      ss += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
-    }
-  }
 
   QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
 
