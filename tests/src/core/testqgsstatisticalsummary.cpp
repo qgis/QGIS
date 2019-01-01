@@ -36,6 +36,7 @@ class TestQgsStatisticSummary: public QObject
     void maxMin();
     void countMissing();
     void noValues();
+    void shortName();
 
   private:
 
@@ -347,6 +348,28 @@ void TestQgsStatisticSummary::noValues()
   QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::ThirdQuartile ) ) );
   QVERIFY( std::isnan( s.interQuartileRange() ) );
   QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::InterQuartileRange ) ) );
+}
+
+void TestQgsStatisticSummary::shortName()
+{
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Count ), QStringLiteral( "count" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::CountMissing ), QStringLiteral( "countmissing" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Sum ), QStringLiteral( "sum" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Mean ), QStringLiteral( "mean" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Median ), QStringLiteral( "median" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::StDev ), QStringLiteral( "stdev" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::StDevSample ), QStringLiteral( "stdevsample" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Min ), QStringLiteral( "min" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Max ), QStringLiteral( "max" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Range ), QStringLiteral( "range" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Minority ), QStringLiteral( "minority" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Majority ), QStringLiteral( "majority" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Variety ), QStringLiteral( "variety" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::FirstQuartile ), QStringLiteral( "q1" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::ThirdQuartile ), QStringLiteral( "q3" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::InterQuartileRange ), QStringLiteral( "iqr" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::First ), QStringLiteral( "first" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Last ), QStringLiteral( "last" ) );
 }
 
 QGSTEST_MAIN( TestQgsStatisticSummary )
