@@ -420,24 +420,6 @@ tests:
         hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
         type: rasterhash
 
-# Disabled as gdal_sieve is not available on Travis
-#  - algorithm: gdal:sieve
-#    name: Sieve
-#    params:
-#      EIGHT_CONNECTEDNESS: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      MASK_LAYER:
-#        name: dem.tif
-#        type: raster
-#      NO_MASK: false
-#      THRESHOLD: 10
-#    results:
-#      OUTPUT:
-#        hash: 1ea6a8c838add299dc3f6f9f529eb5945664f68bae97be9ca80b1754
-#        type: rasterhash
-
   - algorithm: gdal:slope
     name: Slope
     params:
