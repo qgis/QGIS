@@ -66,6 +66,7 @@ class contour(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
                                                        self.tr('Interval between contour lines'),
