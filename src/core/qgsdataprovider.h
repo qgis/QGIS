@@ -525,7 +525,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
   signals:
 
     /**
-     * Emitted whenever a deffered extent calculation is completed by the provider.
+     * Emitted whenever a deferred extent calculation is completed by the provider.
      *
      * Layers should connect to this signal and update their cached extents whenever
      * it is emitted.
