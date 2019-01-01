@@ -666,6 +666,7 @@ QHeaderView::section {
 
 QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
     background-color: @darkgradient;
+    color:@itembackground;
 }
 
 QgsMessageBar QLabel, QgsMessageBar QTextEdit, QMessageBar QToolButton {
