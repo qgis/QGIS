@@ -61,6 +61,7 @@ from processing.algs.gdal.fillnodata import fillnodata
 from processing.algs.gdal.rearrange_bands import rearrange_bands
 from processing.algs.gdal.gdaladdo import gdaladdo
 from processing.algs.gdal.sieve import sieve
+from processing.algs.gdal.gdal2xyz import gdal2xyz
 
 from processing.tools.system import isWindows
 
@@ -2511,6 +2512,38 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-st 10 -4 -mask ' +
                  mask +
                  ' -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+    def testGdal2Xyz(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.csv'
+            alg = gdal2xyz()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'CSV': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal2xyz.py',
+                 '-band 1 ' +
+                 source + ' ' +
+                 outsource])
+
+            # csv output
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'CSV': True,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal2xyz.py',
+                 '-band 1 -csv ' +
                  source + ' ' +
                  outsource])
 
