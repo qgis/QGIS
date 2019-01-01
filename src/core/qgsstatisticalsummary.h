@@ -286,10 +286,17 @@ class CORE_EXPORT QgsStatisticalSummary
     double interQuartileRange() const { return std::isnan( mThirdQuartile ) || std::isnan( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /**
-     * Returns the friendly display name for a statistic
-     * \param statistic statistic to return name for
+     * Returns the friendly display name for a \a statistic.
+     * \see shortName()
      */
     static QString displayName( QgsStatisticalSummary::Statistic statistic );
+
+    /**
+     * Returns a short, friendly display name for a \a statistic, suitable for use in a field name.
+     * \see displayName()
+     * \since QGIS 3.6
+     */
+    static QString shortName( QgsStatisticalSummary::Statistic statistic );
 
   private:
 

@@ -316,9 +316,18 @@ be calculated.
 
     static QString displayName( QgsStatisticalSummary::Statistic statistic );
 %Docstring
-Returns the friendly display name for a statistic
+Returns the friendly display name for a ``statistic``.
 
-:param statistic: statistic to return name for
+.. seealso:: :py:func:`shortName`
+%End
+
+    static QString shortName( QgsStatisticalSummary::Statistic statistic );
+%Docstring
+Returns a short, friendly display name for a ``statistic``, suitable for use in a field name.
+
+.. seealso:: :py:func:`displayName`
+
+.. versionadded:: 3.6
 %End
 
 };

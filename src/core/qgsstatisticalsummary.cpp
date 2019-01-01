@@ -329,3 +329,49 @@ QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic sta
   return QString();
 }
 
+QString QgsStatisticalSummary::shortName( QgsStatisticalSummary::Statistic statistic )
+{
+  switch ( statistic )
+  {
+    case Count:
+      return QStringLiteral( "count" );
+    case CountMissing:
+      return QStringLiteral( "countmissing" );
+    case Sum:
+      return QStringLiteral( "sum" );
+    case Mean:
+      return QStringLiteral( "mean" );
+    case Median:
+      return QStringLiteral( "median" );
+    case StDev:
+      return QStringLiteral( "stdev" );
+    case StDevSample:
+      return QStringLiteral( "stdevsample" );
+    case Min:
+      return QStringLiteral( "min" );
+    case Max:
+      return QStringLiteral( "max" );
+    case Range:
+      return QStringLiteral( "range" );
+    case Minority:
+      return QStringLiteral( "minority" );
+    case Majority:
+      return QStringLiteral( "majority" );
+    case Variety:
+      return QStringLiteral( "variety" );
+    case FirstQuartile:
+      return QStringLiteral( "q1" );
+    case ThirdQuartile:
+      return QStringLiteral( "q3" );
+    case InterQuartileRange:
+      return QStringLiteral( "iqr" );
+    case First:
+      return QStringLiteral( "first" );
+    case Last:
+      return QStringLiteral( "last" );
+    case All:
+      return QString();
+  }
+  return QString();
+}
+
