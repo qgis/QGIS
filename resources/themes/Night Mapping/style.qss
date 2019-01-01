@@ -198,7 +198,7 @@ QComboBox {
     border-style: solid;
     border: 1px solid #1e1e1e; 
     border-radius: 0px;
-    padding: 0.1em;
+    padding: 0.1em 1em 0.1em 0.1em;
 }
 
 
@@ -250,6 +250,18 @@ QComboBox::down-arrow
     height: 1.2em;
 }
 
+QComboBox:item {
+    padding-left: 1.5em;
+    height:1.2em;
+}
+QComboBox:item:selected {
+    padding-left: 1.5em;
+    height:1.2em;
+}
+QComboBox:item:checked {
+    padding-left: 1.5em;
+    height:1.2em;
+}
 
 QLineEdit:focus
 {
