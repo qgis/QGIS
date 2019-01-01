@@ -60,6 +60,7 @@ from processing.algs.gdal.warp import warp
 from processing.algs.gdal.fillnodata import fillnodata
 from processing.algs.gdal.rearrange_bands import rearrange_bands
 from processing.algs.gdal.gdaladdo import gdaladdo
+from processing.algs.gdal.sieve import sieve
 
 from processing.tools.system import isWindows
 
@@ -2447,6 +2448,71 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'CLEAN': False}, context, feedback),
                 ['gdaladdo',
                  source + ' ' + '-r nearest 2 4 8 16'])
+
+    def testSieve(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'raster.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.tif'
+            alg = sieve()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 10,
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'NO_MASK': False,
+                                        'MASK_LAYER': None,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # Eight connectedness and custom threshold
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 16,
+                                        'EIGHT_CONNECTEDNESS': True,
+                                        'NO_MASK': False,
+                                        'MASK_LAYER': None,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 16 -8 -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # without default mask layer
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 10,
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'NO_MASK': True,
+                                        'MASK_LAYER': None,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -nomask -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # defaults with external validity mask
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 10,
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'NO_MASK': False,
+                                        'MASK_LAYER': mask,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -mask ' +
+                 mask +
+                 ' -of GTiff ' +
+                 source + ' ' +
+                 outsource])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
