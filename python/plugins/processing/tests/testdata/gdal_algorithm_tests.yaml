@@ -167,20 +167,6 @@ tests:
           - 'Band 1 Block=373x5 Type=Float32, ColorInterp=Gray'
           - '  NoData Value=-99999'
 
-# Disabled as gdal2xyz.py is not available on Travis
-#  - algorithm: gdal:gdal2xyz
-#    name: gdal2xyz
-#    params:
-#      BAND: 1
-#      CSV: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/xyz.csv
-#        type: file
-
   - algorithm: gdal:tileindex
     name: Tile index (gdaltindex)
     params:
