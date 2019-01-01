@@ -6430,6 +6430,178 @@ tests:
         name: expected/force_rhr_multipolys.gml
         type: vector
 
+  - algorithm: native:extractzvalues
+    name: Extract z, first value only
+    params:
+      COLUMN_PREFIX: z_
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_z_first.shp
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, all stats
+    params:
+      COLUMN_PREFIX: zs_
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_z_all.shp
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, points
+    params:
+      COLUMN_PREFIX: z_
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_z_points.shp
+        type: vector
+
+  - algorithm: native:extractzvalues
+    name: Extract z, no z values
+    params:
+      COLUMN_PREFIX: z_
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_z_none.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m first only
+    params:
+      COLUMN_PREFIX: m_
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_m_first.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m, all stats
+    params:
+      COLUMN_PREFIX: ms_
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_m_all.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m, points
+    params:
+      COLUMN_PREFIX: mp_
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      SUMMARIES:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+    results:
+      OUTPUT:
+        name: expected/extract_m_points.shp
+        type: vector
+
+  - algorithm: native:extractmvalues
+    name: Extract m, no m values present
+    params:
+      COLUMN_PREFIX: m_
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      SUMMARIES:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/extract_m_none.shp
+        type: vector
+
   - algorithm: native:splitlinesbylength
     name: Split multilines by length
     params:
