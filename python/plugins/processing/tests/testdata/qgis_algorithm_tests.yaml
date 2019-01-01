@@ -1752,6 +1752,76 @@ tests:
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute
     params:
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::0::~::1::~::0
+        type: interpolation
+      PIXEL_SIZE: 0.026667
+    results:
+      OUTPUT:
+        hash:
+        - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
+        - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+        type: rasterhash
+
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation using Z value
+    params:
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::1::~::0
+        type: interpolation
+      PIXEL_SIZE: 0.026667
+    results:
+      OUTPUT:
+        hash:
+        - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
+        - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using attribute
+    params:
+      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::0::~::1::~::0
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.026667
+    results:
+      OUTPUT:
+        hash:
+        - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
+        - 6e533a4c2c2e8ef5ca62814a7ad6dd29cb0f0f6eea85baf2a2802870
+        type: rasterhash
+      #TRIANGULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using Z value
+    params:
+      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.026667
+    results:
+      OUTPUT:
+        hash:
+          - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
+          - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+        type: rasterhash
+      #TRIANULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
+
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation using attribute (old parameters)
+    params:
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
@@ -1767,7 +1837,7 @@ tests:
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
-    name: IDW interpolation using Z value
+    name: IDW interpolation using Z value (old parameters)
     params:
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
@@ -1784,7 +1854,7 @@ tests:
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
-    name: TIN interpolation using attribute
+    name: TIN interpolation using attribute (old parameters)
     params:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
@@ -1804,7 +1874,7 @@ tests:
       #  type: vector
 
   - algorithm: qgis:tininterpolation
-    name: TIN interpolation using Z value
+    name: TIN interpolation using Z value (old parameters)
     params:
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
