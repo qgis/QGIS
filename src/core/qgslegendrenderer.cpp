@@ -21,6 +21,7 @@
 #include "qgslegendstyle.h"
 #include "qgsmaplayerlegend.h"
 #include "qgssymbol.h"
+#include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
@@ -757,7 +758,7 @@ QSizeF QgsLegendRenderer::drawAtom( const Atom &atom, QgsRenderContext *renderco
 QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext, QPointF point, double labelXOffset )
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
-  ctx.painter=rendercontext->painter();
+  ctx.painter = rendercontext->painter();
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
 
