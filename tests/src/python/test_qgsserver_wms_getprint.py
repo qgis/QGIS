@@ -422,6 +422,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "FORMAT": "png",
             "CRS": "EPSG:3857",
             "ATLAS_PK": "3",
+            "map0:LAYERS": "Country,Hello",
         }.items())])
        r, h = self._result(self._execute_request(qs))
        self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
