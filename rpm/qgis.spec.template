@@ -67,6 +67,7 @@ BuildRequires:  libspatialite-devel
 BuildRequires:  proj-devel
 BuildRequires:  spatialindex-devel
 BuildRequires:  grass-devel
+BuildRequires:  GeographicLib-devel
 
 # Other stuff
 BuildRequires:  exiv2-devel
