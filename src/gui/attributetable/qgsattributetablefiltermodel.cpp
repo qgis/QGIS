@@ -247,11 +247,14 @@ void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
     Qt::SortOrder order = sortOrder();
 
     // set default sort values if they are not correctly set
-    if ( column < 0 || ( order != Qt::AscendingOrder && order != Qt::DescendingOrder ) )
-    {
-      sort( 0, Qt::AscendingOrder );
-      invalidate();
-    }
+    if ( column < 0 )
+      column = 0;
+
+    if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
+      order = Qt::AscendingOrder;
+
+    sort( column, order );
+    invalidate();
   }
 }
 
@@ -379,6 +382,7 @@ void QgsAttributeTableFilterModel::selectionChanged()
   }
   else if ( mSelectedOnTop )
   {
+    sort( sortColumn(), sortOrder() );
     invalidate();
   }
 }
@@ -396,14 +400,6 @@ int QgsAttributeTableFilterModel::mapColumnToSource( int column ) const
     return -1;
   else
     return mColumnMapping.at( column );
-}
-
-int QgsAttributeTableFilterModel::mapColumnFromSource( int column ) const
-{
-  if ( mColumnMapping.isEmpty() )
-    return column;
-  else
-    return mColumnMapping.indexOf( column );
 }
 
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
@@ -532,8 +528,7 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex &sour
   if ( proxyIndex.column() < 0 )
     return QModelIndex();
 
-  int col = mapColumnFromSource( proxyIndex.column() );
-
+  int col = mapColumnToSource( proxyIndex.column() );
   if ( col == -1 )
     col = 0;
 
@@ -549,3 +544,4 @@ Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex &index ) co
   QModelIndex source_index = mapToSource( index );
   return masterModel()->flags( source_index );
 }
+

@@ -83,8 +83,8 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setMinimumWidth( 40 );
   mCloseBtn->setStyleSheet(
-    "QToolButton { border:none; background-color: rgba(0, 0, 0, 0); }"
-    "QToolButton::menu-button { border:none; background-color: rgba(0, 0, 0, 0); }" );
+    "QToolButton { background-color: rgba(0, 0, 0, 0); }"
+    "QToolButton::menu-button { background-color: rgba(0, 0, 0, 0); }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
 

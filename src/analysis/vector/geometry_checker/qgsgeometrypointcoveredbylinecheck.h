@@ -20,9 +20,6 @@
 
 #include "qgsgeometrycheck.h"
 
-/**
- * \ingroup analysis
- */
 class ANALYSIS_EXPORT QgsGeometryPointCoveredByLineCheck : public QgsGeometryCheck
 {
   public:

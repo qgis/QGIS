@@ -408,32 +408,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setEnabled( true );
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
+    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
     double precision( mLayer->geometryOptions()->geometryPrecision() );
     bool ok = true;
     QString precisionStr( QLocale().toString( precision, ok ) );
     if ( precision == 0.0 || ! ok )
       precisionStr = QString();
     mGeometryPrecisionLineEdit->setText( precisionStr );
-
-    mRemoveDuplicateNodesManuallyActivated = mLayer->geometryOptions()->removeDuplicateNodes();
-    mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
-    if ( !precisionStr.isNull() )
-      mRemoveDuplicateNodesCheckbox->setEnabled( false );
-    connect( mGeometryPrecisionLineEdit, &QLineEdit::textChanged, this, [this]
-    {
-      if ( !mGeometryPrecisionLineEdit->text().isEmpty() )
-      {
-        if ( mRemoveDuplicateNodesCheckbox->isEnabled() )
-          mRemoveDuplicateNodesManuallyActivated  = mRemoveDuplicateNodesCheckbox->isChecked();
-        mRemoveDuplicateNodesCheckbox->setEnabled( false );
-        mRemoveDuplicateNodesCheckbox->setChecked( true );
-      }
-      else
-      {
-        mRemoveDuplicateNodesCheckbox->setEnabled( true );
-        mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
-      }
-    } );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
@@ -448,7 +429,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       geometryCheckLayout->addWidget( cb );
     }
     mGeometryValidationGroupBox->setLayout( geometryCheckLayout );
-    mGeometryValidationGroupBox->setVisible( !geometryCheckFactories.isEmpty() );
 
     QLayout *topologyCheckLayout = new QVBoxLayout();
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -461,7 +441,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       topologyCheckLayout->addWidget( cb );
     }
     mTopologyChecksGroupBox->setLayout( topologyCheckLayout );
-    mTopologyChecksGroupBox->setVisible( !topologyCheckFactories.isEmpty() );
   }
   else
   {

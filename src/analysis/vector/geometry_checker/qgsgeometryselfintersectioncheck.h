@@ -21,9 +21,6 @@
 #include "qgsgeometryutils.h"
 #include "qgssinglegeometrycheck.h"
 
-/**
- * \ingroup analysis
- */
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGeometryCheckError
 {
   public:
@@ -45,9 +42,6 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGe
     QgsGeometryUtils::SelfIntersection mIntersection;
 };
 
-/**
- * \ingroup analysis
- */
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometryCheck
 {
   public:

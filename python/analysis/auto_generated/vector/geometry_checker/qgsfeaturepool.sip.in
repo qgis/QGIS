@@ -27,16 +27,12 @@ A feature pool is based on a vector layer and caches features.
 #include "qgsfeaturepool.h"
 %End
   public:
-
     QgsFeaturePool( QgsVectorLayer *layer );
-%Docstring
-Creates a new feature pool for ``layer``.
-%End
     virtual ~QgsFeaturePool();
 
     bool getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback = 0 );
 %Docstring
-Retrieves the feature with the specified ``id`` into ``feature``.
+Retrieve the feature with the specified ``id`` into ``feature``.
 It will be retrieved from the cache or from the underlying layer if unavailable.
 If the feature is neither available from the cache nor from the layer it will return false.
 If ``feedback`` is specified, the call may return if the feedback is canceled.
@@ -59,7 +55,7 @@ Implementations will remove the feature from the layer or from the data provider
 
     QgsVectorLayer *layer() const;
 %Docstring
-Gets a pointer to the underlying layer.
+Get a pointer to the underlying layer.
 May return a ``None`` if the layer has been deleted.
 This must only be called from the main thread.
 %End

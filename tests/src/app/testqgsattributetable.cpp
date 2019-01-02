@@ -51,7 +51,6 @@ class TestQgsAttributeTable : public QObject
     void testNoGeom();
     void testSelected();
     void testSortByDisplayExpression();
-    void testOrderColumn();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -307,49 +306,6 @@ void TestQgsAttributeTable::testRegression15974()
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
 }
 
-void TestQgsAttributeTable::testOrderColumn()
-{
-  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:int&field=col2:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QVERIFY( tempLayer->isValid() );
-
-  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( 0, 1 );
-  f1.setAttribute( 1, 13 );
-  f1.setAttribute( 2, 7 );
-  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 ) );
-
-  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
-
-  // Issue https://issues.qgis.org/issues/20673
-  // When we reorder column (last column becomes first column), and we select an entire row
-  // the currentIndex is no longer the first column, and consequently it breaks edition
-
-  QgsAttributeTableConfig config = QgsAttributeTableConfig();
-  config.update( tempLayer->dataProvider()->fields() );
-  QVector<QgsAttributeTableConfig::ColumnConfig> columns = config.columns();
-
-  // move last column in first position
-  columns.move( 2, 0 );
-  config.setColumns( columns );
-
-  dlg->mMainView->setAttributeTableConfig( config );
-
-  QgsAttributeTableFilterModel *filterModel = static_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mTableView->model() );
-  filterModel->sort( 0, Qt::AscendingOrder );
-
-  QModelIndex index = filterModel->mapToSource( filterModel->sourceModel()->index( 0, 0 ) );
-  QCOMPARE( index.row(), 0 );
-  QCOMPARE( index.column(), 2 );
-
-  index = filterModel->mapFromSource( filterModel->sourceModel()->index( 0, 0 ) );
-  QCOMPARE( index.row(), 0 );
-  QCOMPARE( index.column(), 1 );
-
-  qDebug() << filterModel->mapFromSource( filterModel->sourceModel()->index( 0, 0 ) );
-
-  // column 0 is indeed column 2 since we move it
-  QCOMPARE( filterModel->sortColumn(), 2 );
-}
 
 QGSTEST_MAIN( TestQgsAttributeTable )
 #include "testqgsattributetable.moc"

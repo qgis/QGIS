@@ -272,15 +272,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::ForegroundRole )
   {
-    QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
+    QBrush brush( Qt::black, Qt::SolidPattern );
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
       if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
-        QColor fadedTextColor = brush.color();
-        fadedTextColor.setAlpha( 128 );
-        brush.setColor( fadedTextColor );
+        brush.setColor( Qt::gray );
       }
     }
     return brush;

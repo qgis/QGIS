@@ -275,7 +275,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;
     int mapColumnToSource( int column ) const;
-    int mapColumnFromSource( int column ) const;
 
 };
 

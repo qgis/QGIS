@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import re
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (
     QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
@@ -24,7 +23,7 @@ from processing.gui.AlgorithmExecutor import execute_in_place_run
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
+from qgis.core import QgsVectorLayerUtils
 
 start_app()
 
@@ -350,7 +349,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 1)
         self.assertEqual(new_features[0].geometry().asWkt(), '')
 
-    def _alg_tester(self, alg_name, input_layer, parameters, invalid_geometry_policy=QgsFeatureRequest.GeometryNoCheck):
+    def _alg_tester(self, alg_name, input_layer, parameters):
 
         alg = self.registry.createAlgorithmById(alg_name)
 
@@ -364,7 +363,6 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(input_layer.selectedFeatureIds(), [old_features[0].id()], alg_name)
 
         context = QgsProcessingContext()
-        context.setInvalidGeometryCheck(invalid_geometry_policy)
         context.setProject(QgsProject.instance())
         feedback = ConsoleFeedBack()
 
@@ -613,16 +611,16 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         polygon_layer = self._make_layer('Polygon')
         self.assertTrue(polygon_layer.startEditing())
-        f1 = QgsFeature(polygon_layer.fields())
-        f1.setAttributes([1])
+        f = QgsFeature(polygon_layer.fields())
+        f.setAttributes([1])
         # Flake!
-        f1.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))'))
-        self.assertTrue(f1.isValid())
+        f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))'))
+        self.assertTrue(f.isValid())
         f2 = QgsFeature(polygon_layer.fields())
         f2.setAttributes([1])
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))'))
         self.assertTrue(f2.isValid())
-        self.assertTrue(polygon_layer.addFeatures([f1, f2]))
+        self.assertTrue(polygon_layer.addFeatures([f, f2]))
         polygon_layer.commitChanges()
         polygon_layer.rollBack()
         self.assertEqual(polygon_layer.featureCount(), 2)
@@ -633,14 +631,12 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             'native:fixgeometries',
             polygon_layer,
             {
-            },
-            QgsFeatureRequest.GeometrySkipInvalid
+            }
         )
         self.assertEqual(polygon_layer.featureCount(), 3)
-        wkt1, wkt2, wkt3 = [f.geometry().asWkt() for f in new_features]
+        wkt1, wkt2, _ = [f.geometry().asWkt() for f in new_features]
         self.assertEqual(wkt1, 'Polygon ((0 0, 1 1, 2 0, 0 0))')
         self.assertEqual(wkt2, 'Polygon ((1 1, 0 2, 2 2, 1 1))')
-        self.assertEqual(re.sub(r'0000\d+', '', wkt3), 'Polygon ((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))')
 
         # Test with Z (interpolated)
         polygonz_layer = self._make_layer('PolygonZ')

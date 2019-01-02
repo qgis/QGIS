@@ -256,7 +256,6 @@ QgsGeometryCheck::Flags QgsGeometryGapCheck::flags() const
   return factoryFlags();
 }
 
-///@cond private
 QString QgsGeometryGapCheck::factoryDescription()
 {
   return tr( "Gap" );
@@ -286,4 +285,3 @@ QgsGeometryCheck::CheckType QgsGeometryGapCheck::factoryCheckType()
 {
   return QgsGeometryCheck::LayerCheck;
 }
-///@endcond private

@@ -1556,47 +1556,6 @@ class TestQgsExpression: public QObject
       }
     }
 
-    void test_sqliteFetchAndIncrement()
-    {
-      QTemporaryDir dir;
-      QString testGpkgName = QStringLiteral( "humanbeings.gpkg" );
-      QFile::copy( QStringLiteral( TEST_DATA_DIR ) + '/' + testGpkgName, dir.filePath( testGpkgName ) );
-
-      QgsExpressionContext context;
-      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-      scope->setVariable( QStringLiteral( "test_database" ), dir.filePath( testGpkgName ) );
-      scope->setVariable( QStringLiteral( "username" ), "some_username" );
-      context << scope;
-
-      // Test database file does not exist
-      QgsExpression exp1( QStringLiteral( "sqlite_fetch_and_increment('/path/does/not/exist', 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id')" ) );
-
-      exp1.evaluate( &context );
-      QCOMPARE( exp1.hasEvalError(), true );
-      const QString evalErrorString1 = exp1.evalErrorString();
-      QVERIFY2( evalErrorString1.contains( "/path/does/not/exist" ), QStringLiteral( "Path not found in %1" ).arg( evalErrorString1 ).toUtf8().constData() );
-      QVERIFY2( evalErrorString1.contains( "Error" ), QStringLiteral( "\"Error\" not found in %1" ).arg( evalErrorString1 ).toUtf8().constData() );
-
-      // Test default values are not properly quoted
-      QgsExpression exp2( QStringLiteral( "sqlite_fetch_and_increment(@test_database, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User', @username))" ) );
-      exp2.evaluate( &context );
-      QCOMPARE( exp2.hasEvalError(), true );
-      const QString evalErrorString2 = exp2.evalErrorString();
-      QVERIFY2( evalErrorString2.contains( "some_username" ), QStringLiteral( "'some_username' not found in '%1'" ).arg( evalErrorString2 ).toUtf8().constData() );
-
-      // Test incrementation logic
-      QgsExpression exp( QStringLiteral( "sqlite_fetch_and_increment(@test_database, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''me'''))" ) );
-      QVariant res = exp.evaluate( &context );
-      QCOMPARE( res.toInt(), 0 );
-
-      res = exp.evaluate( &context );
-      if ( exp.hasEvalError() )
-        qDebug() << exp.evalErrorString();
-      QCOMPARE( exp.hasEvalError(), false );
-
-      QCOMPARE( res.toInt(), 1 );
-    }
-
     void aggregate_data()
     {
       QTest::addColumn<QString>( "string" );

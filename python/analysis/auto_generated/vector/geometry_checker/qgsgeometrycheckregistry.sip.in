@@ -50,14 +50,14 @@ Ownership is transferred to the caller.
 
     QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = 0 ) const;
 %Docstring
-Returns all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
+Get all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
 
 .. versionadded:: 3.4
 %End
 
     void registerGeometryCheck( QgsGeometryCheckFactory *checkFactory /Transfer/ );
 %Docstring
-Registers a new geometry check factory.
+Register a new geometry check factory.
 
 .. versionadded:: 3.4
 %End

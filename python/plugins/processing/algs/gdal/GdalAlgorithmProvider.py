@@ -103,12 +103,18 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
                                             self.tr('Activate'), True))
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            GdalUtils.GDAL_HELP_PATH,
+            self.tr('Location of GDAL docs'),
+            GdalUtils.gdalHelpPath()))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
 
     def unload(self):
         ProcessingConfig.removeSetting('ACTIVATE_GDAL')
+        ProcessingConfig.removeSetting(GdalUtils.GDAL_HELP_PATH)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_GDAL')

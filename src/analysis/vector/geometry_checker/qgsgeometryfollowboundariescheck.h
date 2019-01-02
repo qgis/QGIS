@@ -23,9 +23,6 @@
 class QgsSpatialIndex;
 
 
-/**
- * \ingroup analysis
- */
 class ANALYSIS_EXPORT QgsGeometryFollowBoundariesCheck : public QgsGeometryCheck
 {
   public:

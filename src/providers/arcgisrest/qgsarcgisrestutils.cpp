@@ -42,10 +42,8 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 
-#include <QEventLoop>
 #include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QThread>
+#include "qgsblockingnetworkrequest.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -471,57 +469,27 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
 
 QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
-  QEventLoop loop;
   QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( authcfg );
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
 
-  if ( !authcfg.isEmpty() )
+  if ( feedback && feedback->isCanceled() )
+    return QByteArray();
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
   {
-    QgsApplication::authManager()->updateNetworkRequest( request, authcfg );
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    errorTitle = QStringLiteral( "Network error" );
+    errorText = networkRequest.errorMessage();
+    return QByteArray();
   }
 
-  QNetworkReply *reply = nullptr;
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-
-  // Request data, handling redirects
-  while ( true )
-  {
-    reply = nam->get( request );
-    QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
-    if ( feedback )
-    {
-      QObject::connect( feedback, &QgsFeedback::canceled, reply, &QNetworkReply::abort );
-    }
-
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-    reply->deleteLater();
-
-    if ( feedback && feedback->isCanceled() )
-      return QByteArray();
-
-    // Handle network errors
-    if ( reply->error() != QNetworkReply::NoError )
-    {
-      QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( reply->errorString() ) );
-      errorTitle = QStringLiteral( "Network error" );
-      errorText = reply->errorString();
-      return QByteArray();
-    }
-
-    // Handle HTTP redirects
-    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( redirect.isNull() )
-    {
-      break;
-    }
-
-    QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
-    request.setUrl( redirect.toUrl() );
-  }
-  QByteArray result = reply->readAll();
-  return result;
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  return content.content();
 }
 
 QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, QgsFeedback *feedback )

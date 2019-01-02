@@ -36,18 +36,10 @@ class QgsFeedback;
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
+
 class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 {
   public:
-
-    /**
-     * \ingroup analysis
-     *
-     * A layer feature combination to uniquely identify and access a feature in
-     * a set of layers.
-     *
-     * \since QGIS 3.4
-     */
     class ANALYSIS_EXPORT LayerFeature
     {
       public:
@@ -82,10 +74,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * CRS specified in the context specified in the constructor.
          */
         const QgsGeometry &geometry() const;
-
-        /**
-         * Returns a combination of the layerId and the feature id.
-         */
         QString id() const;
         bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
         bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
@@ -102,21 +90,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         bool mMapCrs;
     };
 
-    /**
-     * \ingroup analysis
-     *
-     * Contains a set of layers and feature ids in those layers to pass to a geometry check.
-     *
-     * \since QGIS 3.4
-     */
     class ANALYSIS_EXPORT LayerFeatures
     {
       public:
 #ifndef SIP_RUN
-
-        /**
-         * Creates a new set of layer and features.
-         */
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QMap<QString, QgsFeatureIds> &featureIds,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
@@ -124,51 +101,19 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
                        const QgsGeometryCheckContext *context,
                        bool useMapCrs = false );
 
-        /**
-         * Creates a new set of layer and features.
-         */
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QList<QString> &layerIds, const QgsRectangle &extent,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
                        const QgsGeometryCheckContext *context );
 
-        /**
-         * \ingroup analysis
-         *
-         * An iterator over all features in a QgsGeometryCheckerUtils::LayerFeatures.
-         *
-         * \since QGIS 3.4
-         */
         class iterator
         {
           public:
-
-            /**
-             * Creates a new iterator.
-             */
-            iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent );
-
-            /**
-             * Copies the iterator \a rh.
-             */
+            iterator( const QList<QString>::const_iterator &layerIt, const LayerFeatures *parent );
             iterator( const iterator &rh );
             ~iterator();
-
-            /**
-             * Increments the item the iterator currently points to by one and
-             * returns the new iterator.
-             */
             const iterator &operator++();
-
-            /**
-             * Increments the item the iterator currently points to by \a n and
-             * returns the new iterator.
-             */
-            iterator operator++( int n );
-
-            /**
-             * Dereferences the item at the current iterator location.
-             */
+            iterator operator++( int );
             const QgsGeometryCheckerUtils::LayerFeature &operator*() const;
             bool operator!=( const iterator &other );
 
@@ -182,14 +127,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             std::unique_ptr<QgsGeometryCheckerUtils::LayerFeature> mCurrentFeature;
         };
 
-        /**
-         * The first feature to start iterating.
-         */
         iterator begin() const;
-
-        /**
-         * One after the last feature to stop iterating.
-         */
         iterator end() const;
 
 #endif
@@ -221,6 +159,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 
     /**
      * Returns the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
+     * \param polyLine The polyline
      * \returns The number of distinct points of the polyline
      */
     static inline int polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing, bool *isClosed = nullptr )

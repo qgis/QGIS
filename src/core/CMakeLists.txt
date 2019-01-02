@@ -152,6 +152,7 @@ SET(QGIS_CORE_SRCS
   qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
+  qgsblockingnetworkrequest.cpp
   qgsbrowsermodel.cpp
   qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
@@ -257,6 +258,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkcontentfetcher.cpp
   qgsnetworkcontentfetcherregistry.cpp
   qgsnetworkcontentfetchertask.cpp
+  qgsnetworkreply.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
@@ -594,6 +596,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsauxiliarystorage.h
+  qgsblockingnetworkrequest.h
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
@@ -908,6 +911,7 @@ SET(QGIS_CORE_HDRS
   qgsmargins.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
+  qgsnetworkreply.h
   qgsobjectcustomproperties.h
   qgsogcutils.h
   qgsoptional.h

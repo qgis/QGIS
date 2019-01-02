@@ -20,9 +20,6 @@
 
 #include "qgssinglegeometrycheck.h"
 
-/**
- * \ingroup analysis
- */
 class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
 {
   public:

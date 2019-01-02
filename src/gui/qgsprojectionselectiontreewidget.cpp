@@ -277,6 +277,7 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
     teProjection->clear();
+    teSelected->clear();
   }
 }
 
@@ -771,6 +772,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
     // Found a real CRS
     emit crsSelected();
 
+    teSelected->setText( selectedName() );
     updateBoundsPreview();
 
     QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
@@ -788,9 +790,10 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
   }
   else
   {
-    // Not a CRS - remove the highlight so the user doesn't get too confused
+    // Not an CRS - remove the highlight so the user doesn't get too confused
     current->setSelected( false );
     teProjection->clear();
+    teSelected->clear();
     lstRecent->clearSelection();
   }
 }
@@ -869,6 +872,7 @@ void QgsProjectionSelectionTreeWidget::updateFilter()
           {
             ( *itr )->setSelected( false );
             teProjection->clear();
+            teSelected->clear();
           }
         }
         else if ( ( *itr )->text( NameColumn ).contains( re )
@@ -992,7 +996,6 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     return;
 
   QgsRectangle rect = currentCrs.bounds();
-  QString extentString = tr( "Extent not known" );
   if ( !qgsDoubleNear( rect.area(), 0.0 ) )
   {
     QgsGeometry geom;
@@ -1014,22 +1017,22 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     mAreaCanvas->setExtent( extent );
     mAreaCanvas->refresh();
     mPreviewBand->show();
-    extentString = QStringLiteral( "%1, %2, %3, %4" )
-                   .arg( rect.xMinimum(), 0, 'f', 2 )
-                   .arg( rect.yMinimum(), 0, 'f', 2 )
-                   .arg( rect.xMaximum(), 0, 'f', 2 )
-                   .arg( rect.yMaximum(), 0, 'f', 2 );
-
+    QString extentString = tr( "Extent: %1, %2, %3, %4" )
+                           .arg( rect.xMinimum(), 0, 'f', 2 )
+                           .arg( rect.yMinimum(), 0, 'f', 2 )
+                           .arg( rect.xMaximum(), 0, 'f', 2 )
+                           .arg( rect.yMaximum(), 0, 'f', 2 );
+    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
+    teProjection->setText( extentString + "\n" + proj4String );
   }
   else
   {
     mPreviewBand->hide();
     mAreaCanvas->zoomToFullExtent();
+    QString extentString = tr( "Extent: Extent not known" );
+    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
+    teProjection->setText( extentString + "\n" + proj4String );
   }
-
-  QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  QString proj4String = tr( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
-  teProjection->setText( QStringLiteral( "<h3>%1</h3><dl>" ).arg( selectedName() ) + extentHtml + proj4String + QLatin1String( "</dl>" ) );
 }
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()

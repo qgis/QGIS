@@ -22,22 +22,9 @@
 #include "qgsgeometrycheckerror.h"
 #include "qgsfeatureid.h"
 
-/**
- * \ingroup analysis
- * An error produced by a QgsGeometryGapCheck.
- *
- * \since QGIS 3.4
- */
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
-
-    /**
-     * Create a new gap check error produced by \a check on the layer \a layerId.
-     * The \a geometry of the gap needs to be in map coordinates.
-     * The \a neighbors are a map of layer ids and feature ids.
-     * The \a area of the gap in map units and the bounding box of the gap in map units too.
-     */
     QgsGeometryGapCheckError( const QgsGeometryCheck *check,
                               const QString &layerId,
                               const QgsGeometry &geometry,
@@ -49,10 +36,6 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
       , mGapAreaBBox( gapAreaBBox )
     {
     }
-
-    /**
-     * A map of layers and feature ids of the neighbors of the gap.
-     */
     const QMap<QString, QgsFeatureIds> &neighbors() const { return mNeighbors; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
@@ -91,13 +74,6 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
     QgsRectangle mGapAreaBBox;
 };
 
-
-/**
- * \ingroup analysis
- * Checks for gaps between neighbouring polygons.
- *
- * \since QGIS 3.4
- */
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
     Q_GADGET
@@ -105,8 +81,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     //! Resolution methods for geometry gap checks
     enum ResolutionMethod
     {
-      MergeLongestEdge, //!< Merge the gap with the polygon with the longest shared edge.
-      NoChange //!< Do not handle the error.
+      MergeLongestEdge,
+      NoChange
     };
     Q_ENUM( ResolutionMethod )
 

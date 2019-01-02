@@ -245,8 +245,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QHash<QCheckBox *, QString> mGeometryCheckFactoriesGroupBoxes;
 
-    bool mRemoveDuplicateNodesManuallyActivated = false;
-
   private slots:
     void openPanel( QgsPanelWidget *panel );
 

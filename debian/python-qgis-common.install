@@ -1,4 +1,2 @@
 usr/share/qgis/python/*
-usr/lib/python*/*-packages/qgis/processing/*
-usr/lib/python*/*-packages/qgis/testing/*
 usr/lib/python*/*-packages/PyQt?/uic/widget-plugins/qgis_customwidgets.py

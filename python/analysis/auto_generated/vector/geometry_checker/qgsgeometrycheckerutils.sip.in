@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGeometryCheckerUtils
 {
 %Docstring
@@ -27,16 +28,8 @@ Contains utilities required for geometry checks.
 #include "qgsgeometrycheckerutils.h"
 %End
   public:
-
     class LayerFeature
 {
-%Docstring
-
-A layer feature combination to uniquely identify and access a feature in
-a set of layers.
-
-.. versionadded:: 3.4
-%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheckerutils.h"
@@ -69,11 +62,7 @@ Returns the geometry of this feature.
 If useMapCrs was specified, it will already be reprojected into the
 CRS specified in the context specified in the constructor.
 %End
-
         QString id() const;
-%Docstring
-Returns a combination of the layerId and the feature id.
-%End
         bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
         bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
 
@@ -86,12 +75,6 @@ Returns if the geometry is reprojected to the map CRS or not.
 
     class LayerFeatures
 {
-%Docstring
-
-Contains a set of layers and feature ids in those layers to pass to a geometry check.
-
-.. versionadded:: 3.4
-%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheckerutils.h"

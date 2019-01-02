@@ -20,9 +20,6 @@
 
 #include "qgsgeometryareacheck.h"
 
-/**
- * \ingroup analysis
- */
 class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
 {
   public:

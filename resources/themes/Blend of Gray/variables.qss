@@ -1,9 +1,0 @@
-@background: #727272
-@itembackground: #b2b2b2
-@itemalternativebackground: #9a9a9a;
-@itemdarkbackground: #373737
-@darkgradient: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #535353, stop: 1 #373737)
-@text: #0e0e0e;
-@toggleoff: #373737
-@toggleon: #ee7913
-@selection: #f0f0f0

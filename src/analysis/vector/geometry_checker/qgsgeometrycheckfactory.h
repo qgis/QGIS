@@ -52,7 +52,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
     virtual ~QgsGeometryCheckFactory() = default;
 
     /**
-     * Creates a new geometry check with \a context and \a configuration.
+     * Create a new geometry check with \a context and \a configuration.
      */
     virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 SIP_FACTORY;
 
@@ -82,12 +82,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
     virtual QgsGeometryCheck::CheckType checkType() const = 0;
 };
 
-/**
- * \ingroup analysis
- * Template to create a factory for a geometry check.
- *
- * \note Not available in Python bindings.
- */
 template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
