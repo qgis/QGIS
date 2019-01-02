@@ -116,7 +116,7 @@ Runs the check and returns a list of results. If the check is "passed" and no wa
 then an empty list should be returned.
 
 This method may be called in a background thread, so subclasses should take care to ensure that
-only thread-safe methods are used. It is always preceeded by a call to prepareCheck().
+only thread-safe methods are used. It is always preceded by a call to prepareCheck().
 
 If a check needs to perform non-thread-safe tests, these should be implemented within prepareCheck()
 and stored in the subclass instance to be returned by this method.
