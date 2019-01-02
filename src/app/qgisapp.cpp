@@ -1233,7 +1233,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     setIconSizes( size );
   }
 
-  QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutMapCrsValidityCheck() );
+  QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutScaleBarValidityCheck() );
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
