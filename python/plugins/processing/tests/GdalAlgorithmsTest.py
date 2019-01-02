@@ -61,6 +61,8 @@ from processing.algs.gdal.fillnodata import fillnodata
 from processing.algs.gdal.rearrange_bands import rearrange_bands
 from processing.algs.gdal.gdaladdo import gdaladdo
 from processing.algs.gdal.sieve import sieve
+from processing.algs.gdal.gdal2xyz import gdal2xyz
+from processing.algs.gdal.polygonize import polygonize
 
 from processing.tools.system import isWindows
 
@@ -2513,6 +2515,88 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  ' -of GTiff ' +
                  source + ' ' +
                  outsource])
+
+    def testGdal2Xyz(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.csv'
+            alg = gdal2xyz()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'CSV': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal2xyz.py',
+                 '-band 1 ' +
+                 source + ' ' +
+                 outsource])
+
+            # csv output
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'CSV': True,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal2xyz.py',
+                 '-band 1 -csv ' +
+                 source + ' ' +
+                 outsource])
+
+    def testGdalPolygonize(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.shp'
+            alg = polygonize()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "ESRI Shapefile" DN'
+                 ])
+
+            # 8 connectedness
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EIGHT_CONNECTEDNESS': True,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-8 -b 1 -f "ESRI Shapefile" DN'
+                 ])
+
+            # custom output format
+            outsource = outdir + '/check.gpkg'
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "GPKG" DN'
+                 ])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
