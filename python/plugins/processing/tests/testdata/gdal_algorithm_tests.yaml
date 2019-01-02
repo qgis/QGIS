@@ -167,20 +167,6 @@ tests:
           - 'Band 1 Block=373x5 Type=Float32, ColorInterp=Gray'
           - '  NoData Value=-99999'
 
-# Disabled as gdal2xyz.py is not available on Travis
-#  - algorithm: gdal:gdal2xyz
-#    name: gdal2xyz
-#    params:
-#      BAND: 1
-#      CSV: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/xyz.csv
-#        type: file
-
   - algorithm: gdal:tileindex
     name: Tile index (gdaltindex)
     params:
@@ -347,41 +333,6 @@ tests:
       OUTPUT:
         hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
         type: rasterhash
-
-# Disabled as gdal_poligonize.py is not available on Travis
-#  - algorithm: gdal:polygonize
-#    name: Polygonize
-#    params:
-#      BAND: 1
-#      EIGHT_CONNECTEDNESS: false
-#      FIELD: DN
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/polygonize.gml
-#        type: vector
-
-# Disabled as gdal_proximity.py is not available on Travis
-#  - algorithm: gdal:proximity
-#    name: Proximity
-#    params:
-#      BAND: 1
-#      DATA_TYPE: 5
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      MAX_DISTANCE: 0.0
-#      NODATA: 0.0
-#      OPTIONS: ''
-#      REPLACE: 0.0
-#      UNITS: 1
-#      VALUES: '90'
-#    results:
-#      OUTPUT:
-#        hash: 32802271d1ce083ca14078bfefaef6300ae8809af11f6a4270583d0c
-#        type: rasterhash
 
   - algorithm: gdal:rasterize
     name: Test (gdal:rasterize)
