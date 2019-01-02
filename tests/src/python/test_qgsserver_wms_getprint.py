@@ -423,9 +423,8 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "CRS": "EPSG:3857",
             "ATLAS_PK": "3",
         }.items())])
-
-        r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
+       r, h = self._result(self._execute_request(qs))
+       self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
 
     def test_wms_getprint_atlas_getProjectSettings( self ):
        qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -434,10 +433,9 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "VERSION": "1.3.0",
             "REQUEST": "GetProjectSettings",
         }.items())])
-
-        r, h = self._result(self._execute_request(qs))
-        self.assertTrue( 'atlasEnabled="1"' in r )
-        self.assertTrue( '<PrimaryKeyAttribute>' in r )
+       r, h = self._result(self._execute_request(qs))
+       self.assertTrue( 'atlasEnabled="1"' in str( r ) )
+       self.assertTrue( '<PrimaryKeyAttribute>' in str( r ) )
 
 if __name__ == '__main__':
     unittest.main()
