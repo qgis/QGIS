@@ -285,7 +285,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     mutable QStringList mSubLayerList;
 
     //! converts \a value from json QVariant to QString regarding to \a type
-    QString jsonStringValue( const QVariant &value, const QVariant::Type &type );
+    QString jsonStringValue( const QVariant &value, const QVariant::Type &type ) const;
 
     bool addFeaturePrivate( QgsFeature &f, QgsFeatureSink::Flags flags );
     //! Deletes one feature

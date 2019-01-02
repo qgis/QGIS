@@ -1408,7 +1408,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-QString QgsOgrProvider::jsonStringValue( const QVariant &value, const QVariant::Type &type )
+QString QgsOgrProvider::jsonStringValue( const QVariant &value, const QVariant::Type &type ) const
 {
   switch ( type )
   {
