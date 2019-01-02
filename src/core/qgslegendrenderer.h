@@ -61,7 +61,7 @@ class CORE_EXPORT QgsLegendRenderer
      *  Painter should be scaled beforehand so that units correspond to millimeters.
      */
     void drawLegend( QPainter *painter );
-    
+
     void drawLegend( QgsRenderContext *rendercontext );
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
@@ -146,23 +146,23 @@ class CORE_EXPORT QgsLegendRenderer
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-    
+
     QSizeF paintAndDetermineSize( QgsRenderContext *rendercontext );
 
-    QSizeF drawTitle( QgsRenderContext *rendercontext , QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+    QSizeF drawTitle( QgsRenderContext *rendercontext, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
-    QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext , QPointF point = QPointF() );
+    QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
-    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext , QPointF point = QPointF(), double labelXOffset = 0 );
+    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext, QPointF point = QPointF(), double labelXOffset = 0 );
 
     //! Draws a layer item
-    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *rendercontext , QPointF point = QPointF() );
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
     /**
      * Draws a group item.
      * Returns list of sizes of layers and groups including this group.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *rendercontext , QPointF point = QPointF() );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
