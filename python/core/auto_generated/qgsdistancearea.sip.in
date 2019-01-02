@@ -355,6 +355,27 @@ Datum of Australia Technical Manual", Chapter 4.
 .. versionadded:: 3.0
 %End
 
+    QList< QList< QgsPointXY > > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
+%Docstring
+Calculates the geodesic line between ``p1`` and ``p2``, which represents the shortest path on the
+ellipsoid between these two points.
+
+The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+
+``p1`` and ``p2`` must be in the sourceCrs() of this QgsDistanceArea object. The returned line
+will also be in this same CRS.
+
+The ``interval`` parameter gives the maximum distance between points on the computed line.
+This argument is always specified in meters. A shorter distance results in a denser line,
+at the cost of extra computing time.
+
+If the geodesic line crosses the international date line and ``breakLine`` is true, then
+the line will be split into two parts, broken at the date line. In this case the function
+will return two lines, corresponding to the portions at either side of the date line.
+
+.. versionadded:: 3.6
+%End
+
 };
 
 
