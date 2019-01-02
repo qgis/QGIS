@@ -34,6 +34,9 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 
+#include <GeographicLib/Geodesic.hpp>
+#include <GeographicLib/GeodesicLine.hpp>
+
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
 #define POW2(x) ((x)*(x))
@@ -452,6 +455,66 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
           ( std::cos( two_sigma_m ) + C * std::cos( sigma ) * ( -1.0 + 2.0 * POW2( std::cos( two_sigma_m ) ) ) ) );
   lambda2 = radians_long + omega;
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
+}
+
+QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
+{
+  if ( !willUseEllipsoid() )
+  {
+    return QList< QList< QgsPointXY > >() << ( QList< QgsPointXY >() << p1 << p2 );
+  }
+
+  GeographicLib::Geodesic geod( mSemiMajor, 1 / mInvFlattening );
+
+  QgsPointXY pp1, pp2;
+  try
+  {
+    pp1 = mCoordTransform.transform( p1 );
+    pp2 = mCoordTransform.transform( p2 );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate geodesic line." ) );
+    return QList< QList< QgsPointXY > >();
+  }
+
+  GeographicLib::GeodesicLine line = geod.InverseLine( pp1.y(), pp1.x(), pp2.y(), pp2.x() );
+  const double totalDist = line.Distance();
+
+  QList< QList< QgsPointXY > > res;
+  QList< QgsPointXY > currentPart;
+  currentPart << p1;
+  double d = interval;
+  double prevLon = p1.x();
+  while ( d < totalDist )
+  {
+    double lat, lon;
+    ( void )line.Position( d, lat, lon );
+
+    if ( breakLine && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon < -120 ) ) )
+    {
+      // TODO -- when breaking the geodesic at the date line, we need to calculate the latitude
+      // at which the geodesic intersects the date line, and add points to both line segments at this latitude
+      // on the date line. See Baselga & Martinez-Llario 2017 for an algorithm to calculate geodesic-geodesic intersections on ellipsoids.
+
+      res << currentPart;
+      currentPart.clear();
+    }
+
+    prevLon = lon;
+
+    try
+    {
+      currentPart << mCoordTransform.transform( QgsPointXY( lon, lat ), QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point." ) );
+    }
+    d += interval;
+  }
+  res << currentPart;
+  return res;
 }
 
 QgsUnitTypes::DistanceUnit QgsDistanceArea::lengthUnits() const

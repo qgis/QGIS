@@ -288,6 +288,27 @@ class CORE_EXPORT QgsDistanceArea
      */
     QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2 ) const;
 
+    /**
+     * Calculates the geodesic line between \a p1 and \a p2, which represents the shortest path on the
+     * ellipsoid between these two points.
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a p1 and \a p2 must be in the sourceCrs() of this QgsDistanceArea object. The returned line
+     * will also be in this same CRS.
+     *
+     * The \a interval parameter gives the maximum distance between points on the computed line.
+     * This argument is always specified in meters. A shorter distance results in a denser line,
+     * at the cost of extra computing time.
+     *
+     * If the geodesic line crosses the international date line and \a breakLine is true, then
+     * the line will be split into two parts, broken at the date line. In this case the function
+     * will return two lines, corresponding to the portions at either side of the date line.
+     *
+     * \since QGIS 3.6
+     */
+    QList< QList< QgsPointXY > > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
+
   private:
 
     /**
