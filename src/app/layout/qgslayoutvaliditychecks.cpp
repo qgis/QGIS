@@ -16,19 +16,25 @@
 
 #include "qgslayoutvaliditychecks.h"
 #include "qgsvaliditycheckcontext.h"
-#include "qgslayoutitemmap.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayout.h"
 
-QgsLayoutMapCrsValidityCheck *QgsLayoutMapCrsValidityCheck::create() const
+QgsLayoutScaleBarValidityCheck *QgsLayoutScaleBarValidityCheck::create() const
 {
-  return new QgsLayoutMapCrsValidityCheck();
+  return new QgsLayoutScaleBarValidityCheck();
 }
 
-QString QgsLayoutMapCrsValidityCheck::id() const { return QStringLiteral( "map_crs_check" ); }
+QString QgsLayoutScaleBarValidityCheck::id() const
+{
+  return QStringLiteral( "layout_scalebar_check" );
+}
 
-int QgsLayoutMapCrsValidityCheck::checkType() const { return QgsAbstractValidityCheck::TypeLayoutCheck; }
+int QgsLayoutScaleBarValidityCheck::checkType() const
+{
+  return QgsAbstractValidityCheck::TypeLayoutCheck;
+}
 
-bool QgsLayoutMapCrsValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
 {
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
@@ -37,16 +43,17 @@ bool QgsLayoutMapCrsValidityCheck::prepareCheck( const QgsValidityCheckContext *
   if ( !layoutContext )
     return false;
 
-  QList< QgsLayoutItemMap * > mapItems;
-  layoutContext->layout->layoutItems( mapItems );
-  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  QList< QgsLayoutItemScaleBar * > barItems;
+  layoutContext->layout->layoutItems( barItems );
+  for ( QgsLayoutItemScaleBar *bar : qgis::as_const( barItems ) )
   {
-    if ( map->crs().authid() == QStringLiteral( "EPSG:3857" ) )
+    if ( !bar->linkedMap() )
     {
       QgsValidityCheckResult res;
       res.type = QgsValidityCheckResult::Warning;
-      res.title = tr( "Map projection is misleading" );
-      res.detailedDescription = tr( "The projection for the map item %1 is set to <i>Web Mercator (EPSG:3857)</i> which misrepresents areas and shapes. Consider using an appropriate local projection instead." ).arg( map->displayName() );
+      res.title = tr( "Scalebar is not linked to a map" );
+      const QString name = bar->displayName().toHtmlEscaped();
+      res.detailedDescription = tr( "The scalebar “%1” is not linked to a map item. This scale will be misleading." ).arg( name );
       mResults.append( res );
     }
   }
@@ -54,7 +61,7 @@ bool QgsLayoutMapCrsValidityCheck::prepareCheck( const QgsValidityCheckContext *
   return true;
 }
 
-QList<QgsValidityCheckResult> QgsLayoutMapCrsValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+QList<QgsValidityCheckResult> QgsLayoutScaleBarValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
 {
   return mResults;
 }

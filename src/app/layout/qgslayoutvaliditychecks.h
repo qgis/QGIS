@@ -15,14 +15,13 @@
  ***************************************************************************/
 
 #include "qgsabstractvaliditycheck.h"
+#include "qgis_app.h"
 
-class QgsLayoutMapCrsValidityCheck : public QgsAbstractValidityCheck
+class APP_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityCheck
 {
-    Q_OBJECT
-
   public:
 
-    QgsLayoutMapCrsValidityCheck *create() const override;
+    QgsLayoutScaleBarValidityCheck *create() const override;
     QString id() const override;
     int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
