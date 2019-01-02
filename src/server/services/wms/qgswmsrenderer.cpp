@@ -400,7 +400,7 @@ namespace QgsWms
       if ( pkIndexes.size() < 1 )
       {
         throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                      QStringLiteral( "An error occured during the Atlas print" ) );
+                                      QStringLiteral( "An error occurred during the Atlas print" ) );
       }
       QStringList pkAttributeNames;
       for ( int i = 0; i < pkIndexes.size(); ++i )
@@ -445,7 +445,7 @@ namespace QgsWms
       if ( !errorString.isEmpty() )
       {
         throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                      QStringLiteral( "An error occured during the Atlas print" ) );
+                                      QStringLiteral( "An error occurred during the Atlas print" ) );
       }
     }
 

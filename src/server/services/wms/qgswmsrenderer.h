@@ -282,7 +282,13 @@ namespace QgsWms
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
-      //! configure the print layout for the GetPrint request
+      /*
+       * Configure the print layout for the GetPrint request
+       * @param c the print layout
+       * @param mapSettings the map settings
+       * @param atlasPrint true if atlas is used for printing
+       * @return true in case of success
+       * */
       bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
 
       //! Creates external WMS layer. Caller takes ownership
