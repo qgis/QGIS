@@ -61,7 +61,8 @@ class CORE_EXPORT QgsLegendRenderer
      *  Painter should be scaled beforehand so that units correspond to millimeters.
      */
     void drawLegend( QPainter *painter );
-
+    
+    void drawLegend( QgsRenderContext *rendercontext );
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
     static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
@@ -112,7 +113,7 @@ class CORE_EXPORT QgsLegendRenderer
         int column = 0;
     };
 
-    QSizeF paintAndDetermineSize( QPainter *painter );
+    QSizeF paintAndDetermineSize( QPainter *painter = nullptr );
 
     //! Create list of atoms according to current layer splitting mode
     QList<Atom> createAtomList( QgsLayerTreeGroup *parentGroup, bool splitLayer );
@@ -144,6 +145,24 @@ class CORE_EXPORT QgsLegendRenderer
      * Returns list of sizes of layers and groups including this group.
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
+
+    
+    QSizeF paintAndDetermineSize( QgsRenderContext *rendercontext );
+
+    QSizeF drawTitle( QgsRenderContext *rendercontext , QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+
+    QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext , QPointF point = QPointF() );
+
+    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext , QPointF point = QPointF(), double labelXOffset = 0 );
+
+    //! Draws a layer item
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *rendercontext , QPointF point = QPointF() );
+
+    /**
+     * Draws a group item.
+     * Returns list of sizes of layers and groups including this group.
+     */
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *rendercontext , QPointF point = QPointF() );
 
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
