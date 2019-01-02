@@ -30,6 +30,7 @@ RUN  apt-get update \
     libexpat1-dev \
     libfcgi-dev \
     libgdal-dev \
+    libgeographic-dev \
     libgeos-dev \
     libgsl-dev \
     libpq-dev \
