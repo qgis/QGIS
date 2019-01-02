@@ -364,18 +364,18 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     p2 = p1.project( distance, azimuth );
   }
   QgsDebugMsgLevel( QStringLiteral( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
-                    .arg( QString::number( distance, 'f', 7 ) )
-                    .arg( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ) )
-                    .arg( QString::number( result, 'f', 7 ) )
-                    .arg( ( ( mCoordTransform.sourceCrs().isGeographic() ) == 1 ? QString( "Geographic" ) : QString( "Cartesian" ) ) )
-                    .arg( QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
+                    .arg( QString::number( distance, 'f', 7 ),
+                          QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ),
+                          QString::number( result, 'f', 7 ),
+                          mCoordTransform.sourceCrs().isGeographic() ? QStringLiteral( "Geographic" ) : QStringLiteral( "Cartesian" ),
+                          QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
                     .arg( azimuth )
-                    .arg( p1.asWkt() )
-                    .arg( p2.asWkt() )
-                    .arg( sourceCrs().description() )
-                    .arg( mEllipsoid )
+                    .arg( p1.asWkt(),
+                          p2.asWkt(),
+                          sourceCrs().description(),
+                          mEllipsoid )
                     .arg( sourceCrs().isGeographic() )
-                    .arg( QString( "SemiMajor[%1] SemiMinor[%2] InvFlattening[%3] " ).arg( QString::number( mSemiMajor, 'f', 7 ) ).arg( QString::number( mSemiMinor, 'f', 7 ) ).arg( QString::number( mInvFlattening, 'f', 7 ) ) ), 4 );
+                    .arg( QStringLiteral( "SemiMajor[%1] SemiMinor[%2] InvFlattening[%3] " ).arg( QString::number( mSemiMajor, 'f', 7 ), QString::number( mSemiMinor, 'f', 7 ), QString::number( mInvFlattening, 'f', 7 ) ) ), 4 );
   if ( projectedPoint )
   {
     *projectedPoint = QgsPointXY( p2 );
