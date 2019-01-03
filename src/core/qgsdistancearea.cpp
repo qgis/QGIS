@@ -457,6 +457,71 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
 
+double calculateLatitudeGeodesicIntersectionAtDateLine( QgsPointXY p1, QgsPointXY p2, GeographicLib::Geodesic &geod )
+{
+  if ( p1.x() < -120 )
+    p1.setX( p1.x() + 360 );
+  if ( p2.x() < -120 )
+    p2.setX( p2.x() + 360 );
+
+  // we need p2.x() > 180 and p1.x() < 180
+  double p1x = p1.x() < 180 ? p1.x() : p2.x();
+  double p1y = p1.x() < 180 ? p1.y() : p2.y();
+  double p2x = p1.x() < 180 ? p2.x() : p1.x();
+  double p2y = p1.x() < 180 ? p2.y() : p1.y();
+  // lat/lon are our candidate intersection position - we want this to get as close to 180 as possible
+  // the first candidate is p2
+  double lat = p2y;
+  double lon = p2x;
+
+  GeographicLib::GeodesicLine line = geod.InverseLine( p1y, p1x, p2y, p2x );
+  double intersectionDist = line.Distance();
+
+  int iterations = 0;
+  double t = 0;
+  // iterate until our intersection candidate is within ~1 mm of the date line (or too many iterations happened)
+  while ( std::fabs( lon - 180.0 ) > 0.00000001 && iterations < 100 )
+  {
+    if ( iterations > 0 && std::fabs( p2x - p1x ) > 5 )
+    {
+      // if we have too large a range of longitudes, we use a binary search to narrow the window -- this ensures we will converge
+      if ( lon < 180 )
+      {
+        p1x = lon;
+        p1y = lat;
+      }
+      else
+      {
+        p2x = lon;
+        p2y = lat;
+      }
+      QgsDebugMsgLevel( QStringLiteral( "Narrowed window to %1, %2 - %3, %4" ).arg( p1x ).arg( p1y ).arg( p2x ).arg( p2y ), 4 );
+
+      line = geod.InverseLine( p1y, p1x, p2y, p2x );
+      intersectionDist = line.Distance() * 0.5;
+    }
+    else
+    {
+      // we have a sufficiently narrow window -- use Newton's method
+      // adjust intersection distance by fraction of how close the previous candidate was to 180 degrees longitude -
+      // this helps us close in to the correct longitude quickly
+      intersectionDist *= ( 180.0 - p1x ) / ( lon - p1x );
+    }
+
+    // now work out the point on the geodesic this far from p1 - this becomes our new candidate for crossing the date line
+
+    // (use LONG_UNROLL - we don't want to wrap longitudes > 180 around)
+    ( void )line.GenPosition( false, intersectionDist, GeographicLib::GeodesicLine::LATITUDE | GeographicLib::GeodesicLine::LONGITUDE | GeographicLib::GeodesicLine::LONG_UNROLL,
+                              lat, lon, t, t, t, t, t, t );
+
+    iterations++;
+    QgsDebugMsgLevel( QStringLiteral( "After %1 iterations lon is %2, lat is %3, dist from p1: %4" ).arg( iterations ).arg( lon ).arg( lat ).arg( intersectionDist ), 4 );
+  }
+
+  // either converged on 180 longitude or hit too many iterations
+  return lat;
+}
+
 QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
 {
   if ( !willUseEllipsoid() )
@@ -486,19 +551,55 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
   currentPart << p1;
   double d = interval;
   double prevLon = p1.x();
-  while ( d < totalDist )
+  bool lastRun = false;
+  while ( true )
   {
     double lat, lon;
-    ( void )line.Position( d, lat, lon );
+    if ( lastRun )
+    {
+      lat = pp2.y();
+      lon = pp2.x();
+      if ( lon > 180 )
+        lon -= 360;
+    }
+    else
+    {
+      ( void )line.Position( d, lat, lon );
+    }
 
     if ( breakLine && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon < -120 ) ) )
     {
-      // TODO -- when breaking the geodesic at the date line, we need to calculate the latitude
+      // when breaking the geodesic at the date line, we need to calculate the latitude
       // at which the geodesic intersects the date line, and add points to both line segments at this latitude
-      // on the date line. See Baselga & Martinez-Llario 2017 for an algorithm to calculate geodesic-geodesic intersections on ellipsoids.
+      // on the date line.
+      double lat180 = calculateLatitudeGeodesicIntersectionAtDateLine( currentPart.constLast(), QgsPointXY( lon, lat ), geod );
+
+      try
+      {
+        if ( prevLon < -120 )
+          currentPart << mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+        else
+          currentPart << mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point." ) );
+      }
 
       res << currentPart;
       currentPart.clear();
+      try
+      {
+        if ( lon < -120 )
+          currentPart << mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+        else
+          currentPart << mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point." ) );
+      }
+
     }
 
     prevLon = lon;
@@ -511,7 +612,13 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
     {
       QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point." ) );
     }
+
+    if ( lastRun )
+      break;
+
     d += interval;
+    if ( d >= totalDist )
+      lastRun = true;
   }
   res << currentPart;
   return res;
