@@ -166,6 +166,11 @@ class RasterCalculator(QgisAlgorithm):
                     entry.bandNumber = n + 1
                     entries.append(entry)
 
+        # Append any missing entry from the current project
+        for entry in QgsRasterCalculatorEntry.rasterEntries():
+            if not [e for e in entries if e.ref == entry.ref]:
+                entries.append(entry)
+
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         width = round((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
@@ -230,8 +235,8 @@ class RasterCalculator(QgisAlgorithm):
             expContextAlgInputsScope = context.expressionContext().scope(indexOfScope)
 
             # check for the layers that are mapped as input in a model
-            #  to do this check in the latest scope all passed variables
-            # to look for a variable that is a layer or a string filename ç
+            # to do this check in the latest scope all passed variables
+            # to look for a variable that is a layer or a string filename
             # to a layer
             varDescription = None
             for varName in expContextAlgInputsScope.variableNames():
@@ -257,7 +262,7 @@ class RasterCalculator(QgisAlgorithm):
                 # but var in expression is called simply
                 #    'Output' from algorithm 'calc1'
 
-                # get the translatin string to use to parse the description
+                # get the translation string to use to parse the description
                 # HAVE to use the same translated string as in
                 # https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
                 translatedDesc = self.tr("Output '%1' from algorithm '%2'")
