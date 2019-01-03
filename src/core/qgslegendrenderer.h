@@ -28,6 +28,7 @@ class QgsLayerTreeModel;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeNode;
 class QgsSymbol;
+class QgsRenderContext;
 
 #include "qgslegendsettings.h"
 
