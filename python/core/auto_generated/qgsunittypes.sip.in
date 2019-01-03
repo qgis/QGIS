@@ -152,9 +152,9 @@ Encodes a distance unit to a string.
 Decodes a distance unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -184,7 +184,9 @@ Returns a translated abbreviation representing a distance unit.
 Converts a translated string to a distance unit.
 
 :param string: string representing a distance unit
-:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: - the distance unit
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -221,9 +223,9 @@ Encodes an areal unit to a string.
 Decodes an areal unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -253,7 +255,9 @@ Returns a translated abbreviation representing an areal unit.
 Converts a translated string to an areal unit.
 
 :param string: string representing an areal unit
-:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: - the area unit
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -294,9 +298,9 @@ Encodes an angular unit to a string.
 Decodes an angular unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -403,9 +407,9 @@ Encodes a render unit to a string.
 Decodes a render unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -437,9 +441,9 @@ Encodes a layout unit to a string.
 Decodes a layout unit from a string.
 
 :param string: string to decode
-:param ok: optional boolean, will be set to true if string was converted successfully
 
-:return: decoded units
+:return: - decoded units
+         - ok:  optional boolean, will be set to true if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 

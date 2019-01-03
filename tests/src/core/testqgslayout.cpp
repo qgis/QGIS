@@ -69,6 +69,7 @@ class TestQgsLayout: public QObject
     void mapLayersRestoredFromTemplate();
     void mapLayersStyleOverrideRestoredFromTemplate();
     void atlasLayerRestoredFromTemplate();
+    void overviewStackingLayerRestoredFromTemplate();
 
   private:
     QString mReport;
@@ -1262,6 +1263,45 @@ void TestQgsLayout::atlasLayerRestoredFromTemplate()
   c2.loadFromTemplate( doc, QgsReadWriteContext() );
   // check atlas layer
   QCOMPARE( c2.atlas()->coverageLayer(), layer2 );
+}
+
+void TestQgsLayout::overviewStackingLayerRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  QgsPrintLayout c( &p );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &c );
+  map->attemptSetSceneRect( QRectF( 1, 1, 10, 10 ) );
+  c.addLayoutItem( map );
+  map->overview()->setStackingLayer( layer );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p2.addMapLayer( layer2 );
+
+  // make a new layout from template
+  QgsPrintLayout c2( &p2 );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get legend from new composition
+  QList< QgsLayoutItemMap * > maps2;
+  c2.layoutItems( maps2 );
+  QgsLayoutItemMap *map2 = maps2.at( 0 );
+  QVERIFY( map2 );
+
+  QCOMPARE( map2->overview()->stackingLayer(), layer2 );
 }
 
 

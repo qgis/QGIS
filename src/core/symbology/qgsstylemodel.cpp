@@ -18,6 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
 #include <QIcon>
 
 const double ICON_PADDING_FACTOR = 0.16;
@@ -41,12 +42,13 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
 
   connect( mStyle, &QgsStyle::entityTagsChanged, this, &QgsStyleModel::onTagsChanged );
 
-  // when a remote svg has been fetched, update the model's decorations.
+  // when a remote svg or image has been fetched, update the model's decorations.
   // this is required if a symbol utilizes remote svgs, and the current icons
   // have been generated using the temporary "downloading" svg. In this case
   // we require the preview to be regenerated to use the correct fetched
   // svg
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsStyleModel::rebuildSymbolIcons );
+  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsStyleModel::rebuildSymbolIcons );
 }
 
 QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const

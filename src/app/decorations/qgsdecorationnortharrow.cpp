@@ -218,6 +218,10 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
         context.painter()->translate( deviceWidth - xOffset - maxLength + ( maxLength - size.width() ) / 2,
                                       deviceHeight - yOffset - maxLength + ( maxLength - size.height() ) / 2 );
         break;
+      case TopCenter:
+      case BottomCenter:
+      default:
+        QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
     }
 
     //rotate the canvas by the north arrow rotation amount

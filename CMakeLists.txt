@@ -16,6 +16,7 @@ SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
 PROJECT(qgis VERSION ${COMPLETE_VERSION})
+
 IF (APPLE)
   SET(QGIS_APP_NAME "QGIS")
 ELSE (APPLE)
@@ -68,6 +69,20 @@ IF(NOT MSVC)
   endif(USE_CCACHE)
 endif(NOT MSVC)
 
+IF (IOS)
+    SET (DEFAULT_FORCE_STATIC_LIBS TRUE)
+ELSE (IOS)
+    SET (DEFAULT_FORCE_STATIC_LIBS FALSE)
+ENDIF (IOS)
+SET (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
+MARK_AS_ADVANCED(FORCE_STATIC_LIBS)
+
+IF(FORCE_STATIC_LIBS)
+  SET(LIBRARY_TYPE STATIC)
+ELSE (FORCE_STATIC_LIBS)
+  SET(LIBRARY_TYPE SHARED)
+ENDIF (FORCE_STATIC_LIBS)
+
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
 #
@@ -96,6 +111,8 @@ IF(WITH_CORE)
   ENDFOREACH (GRASS_SEARCH_VERSION)
 
   SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
+
+  SET (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
@@ -128,6 +145,10 @@ IF(WITH_CORE)
     ENDIF(WITH_CUSTOM_WIDGETS)
   ELSE ()
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
+  ENDIF()
+
+  IF ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
   # try to configure and build MDAL support
@@ -316,6 +337,15 @@ IF(WITH_CORE)
   #############################################################
   # search for Qt5
   SET(QT_MIN_VERSION 5.9.0)
+
+  # Use Qt5SerialPort optionally for GPS
+  SET (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
+  IF (WITH_QT5SERIALPORT)
+      FIND_PACKAGE(Qt5SerialPort REQUIRED)
+      # following variable is used in qgsconfig.h
+      SET (HAVE_QT5SERIALPORT TRUE)
+  ENDIF(WITH_QT5SERIALPORT)
+
   FIND_PACKAGE(Qt5Core QUIET)
   FIND_PACKAGE(Qt5Gui REQUIRED)
   FIND_PACKAGE(Qt5Widgets REQUIRED)
@@ -324,7 +354,6 @@ IF(WITH_CORE)
   FIND_PACKAGE(Qt5Svg REQUIRED)
   FIND_PACKAGE(Qt5Concurrent REQUIRED)
   FIND_PACKAGE(Qt5PrintSupport REQUIRED)
-  FIND_PACKAGE(Qt5SerialPort REQUIRED)
   FIND_PACKAGE(Qt5Positioning)
   IF (WITH_QTWEBKIT)
     FIND_PACKAGE(Qt5WebKit REQUIRED)
@@ -352,7 +381,7 @@ IF(WITH_CORE)
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
         FIND_PACKAGE(Qt5AndroidExtras)
     ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        FIND_PACKAGE(QtQmlTools REQUIRED)
+        FIND_PACKAGE(QtQmlTools)
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 
     # following variable is used in qgsconfig.h
@@ -412,7 +441,6 @@ SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML director
 SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 IF (ENABLE_TESTS)
 SET( QT_USE_QTTEST  TRUE )
-ADD_DEFINITIONS(-DENABLE_TESTS)
 ENABLE_TESTING()
 # Adds some testing specific build targets e.g. make Experimental
 INCLUDE(Dart)
@@ -452,6 +480,7 @@ IF (PEDANTIC)
     ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
 
     # disable warnings
+    SET(_warnings "${_warnings} /wd4091 ")  # 'typedef': ignored on left of '' when no variable is declared (occurs in MS DbgHelp.h header)
     SET(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
     SET(_warnings "${_warnings} /wd4127 ")  # constant conditional expressions (used in Qt template classes)
     SET(_warnings "${_warnings} /wd4190 ")  # 'identifier' has C-linkage specified, but returns UDT 'identifier2' which is incompatible with C
@@ -459,6 +488,7 @@ IF (PEDANTIC)
     SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
     SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
     SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    SET(_warnings "${_warnings} /wd4290 ")  # c++ exception specification ignored except to indicate a function is not __declspec(nothrow) (occurs in sip generated bindings)
     SET(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
     SET(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
     SET(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member
@@ -925,6 +955,6 @@ IF (WITH_CORE)
   INCLUDE(CPack)
 ENDIF (WITH_CORE)
 
-IF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+IF (UNIX AND NOT APPLE)
   ADD_SUBDIRECTORY(linux)
-ENDIF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+ENDIF (UNIX AND NOT APPLE)

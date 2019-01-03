@@ -199,7 +199,7 @@ void QgsExpressionLineEdit::updateLineEditStyle( const QString &expression )
   if ( !mLineEdit )
     return;
 
-  QPalette palette;
+  QPalette palette = mLineEdit->palette();
   if ( !isEnabled() )
   {
     palette.setColor( QPalette::Text, Qt::gray );

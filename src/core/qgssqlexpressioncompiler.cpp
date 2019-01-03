@@ -401,6 +401,9 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
     case QgsExpressionNode::ntCondition:
       break;
+
+    case QgsExpressionNode::ntIndexOperator:
+      break;
   }
 
   return Fail;

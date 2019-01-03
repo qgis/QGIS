@@ -665,6 +665,8 @@ Returns a list of the selected features IDs in this layer.
 .. seealso:: :py:func:`selectedFeatures`
 
 .. seealso:: :py:func:`selectedFeatureCount`
+
+.. seealso:: :py:func:`selectByIds`
 %End
 
     QgsRectangle boundingBoxOfSelected() const;
@@ -786,7 +788,6 @@ Save named and sld style of the layer to the style table in the db.
 :param description:
 :param useAsDefault:
 :param uiFileContent:
-:param msgError:
 %End
 
     virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
@@ -796,10 +797,10 @@ Lists all the style in db split into related to the layer and not related to
 
 :param ids: the list in which will be stored the style db ids
 :param names: the list in which will be stored the style names
-:param descriptions: the list in which will be stored the style descriptions
 :param msgError:
 
-:return: the number of styles related to current layer
+:return: - the number of styles related to current layer
+         - descriptions:  the list in which will be stored the style descriptions
 
 .. note::
 
@@ -816,9 +817,9 @@ Will return the named style corresponding to style id provided
 Delete a style from the database
 
 :param styleId: the provider's layer_styles table id of the style to delete
-:param msgError: reference to string that will be updated with any error messages
 
-:return: true in case of success
+:return: - true in case of success
+         - msgError:  reference to string that will be updated with any error messages
 
 .. versionadded:: 3.0
 %End

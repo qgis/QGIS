@@ -21,6 +21,7 @@
 #include "qgsgloweffect.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
+#include "qgsdatadefinedsizelegend.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \

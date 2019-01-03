@@ -486,3 +486,81 @@ tests:
         hash: 6f81c858fc7575eaff6258b6e75bf4427d0568d5134837523b730929
         type: rasterhash
 
+  - algorithm: saga:pointdistances
+    name: Point distances
+    params:
+      FORMAT: 1
+      ID_POINTS: fid
+      MAX_DIST: 0.0
+      POINTS:
+        name: custom/points.shp
+        type: vector
+    results:
+      DISTANCES:
+        name: expected/saga/point_distances.dbf
+        type: vector
+
+  - algorithm: saga:patching
+    name: Patching
+    params:
+      ADDITIONAL:
+        name: dem.tif
+        type: raster
+      ORIGINAL:
+        name: custom/dem_gaps.tif
+        type: raster
+      RESAMPLING: 0
+    results:
+      COMPLETED:
+        hash: e016ba480e7c9a7cfe7bbbec50f4f3df0e796be7641fe68744f541b5
+        type: rasterhash
+
+
+  - algorithm: saga:rgbcomposite
+    name: RGB Composite
+    params:
+      B_GRID:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      B_METHOD: 1
+      B_PERCTL_MAX: 6
+      B_PERCTL_MIN: 1
+      B_RANGE_MAX: 255
+      B_RANGE_MIN: 0
+      B_STDDEV: 2.0
+      G_GRID:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+      G_METHOD: 1
+      G_PERCTL_MAX: 99
+      G_PERCTL_MIN: 1
+      G_RANGE_MAX: 4
+      G_RANGE_MIN: 0
+      G_STDDEV: 2.0
+      R_GRID:
+        name: custom/grass7/raster_1class.tif
+        type: raster
+      R_METHOD: 1
+      R_PERCTL_MAX: 99
+      R_PERCTL_MIN: 1
+      R_RANGE_MAX: 1
+      R_RANGE_MIN: 0
+      R_STDDEV: 2.0
+    results:
+      RGB:
+        hash:
+        - db2c282835706e4320e7c59d86c28d930b35433ec57af70e35a325d5
+        - 9caba3703fd59f99466c0bf37054826d328d1349cfe03f171655adf6
+        type: rasterhash
+
+  - algorithm: saga:zonalrasterstatistics
+    name: Zonal grid statistics
+    params:
+      ZONES:
+        name: custom/dem_boolean.tif
+        type: raster
+    results:
+      OUTTAB:
+        name: expected/saga/zonal_grid_stats.dbf
+        type: vector
+  

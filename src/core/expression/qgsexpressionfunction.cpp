@@ -46,6 +46,8 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
+#include "sqlite3.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -1357,6 +1359,82 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
   }
 
   return layer->selectedFeatureCount();
+}
+
+static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString database = values.at( 0 ).toString();
+  const QString table = values.at( 1 ).toString();
+  const QString idColumn = values.at( 2 ).toString();
+  const QString filterAttribute = values.at( 3 ).toString();
+  const QVariant filterValue = values.at( 4 ).toString();
+  const QVariantMap defaultValues = values.at( 5 ).toMap();
+
+
+  // read from database
+  sqlite3_database_unique_ptr sqliteDb;
+  sqlite3_statement_unique_ptr sqliteStatement;
+
+  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+  {
+    parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
+    return QVariant();
+  }
+
+  QString currentValSql;
+  currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
+  if ( !filterAttribute.isNull() )
+  {
+    currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
+  }
+
+  int result;
+  sqliteStatement = sqliteDb.prepare( currentValSql, result );
+  if ( result == SQLITE_OK )
+  {
+    qlonglong nextId = 0;
+    if ( sqliteStatement.step() == SQLITE_ROW )
+    {
+      nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
+    }
+
+    QString upsertSql;
+    upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
+    QStringList cols;
+    QStringList vals;
+    cols << QgsSqliteUtils::quotedIdentifier( idColumn );
+    vals << QgsSqliteUtils::quotedValue( nextId );
+
+    if ( !filterAttribute.isNull() )
+    {
+      cols << QgsSqliteUtils::quotedIdentifier( filterAttribute );
+      vals << QgsSqliteUtils::quotedValue( filterValue );
+    }
+
+    for ( QVariantMap::const_iterator iter = defaultValues.constBegin(); iter != defaultValues.constEnd(); ++iter )
+    {
+      cols << QgsSqliteUtils::quotedIdentifier( iter.key() );
+      vals << iter.value().toString();
+    }
+
+    upsertSql += QLatin1String( " (" ) + cols.join( ',' ) + ')';
+    upsertSql += QLatin1String( " VALUES " );
+    upsertSql += '(' + vals.join( ',' ) + ')';
+
+    QString errorMessage;
+    result = sqliteDb.exec( upsertSql, errorMessage );
+    if ( result == SQLITE_OK )
+    {
+      return nextId;
+    }
+    else
+    {
+      parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
+      return QVariant();
+    }
+  }
+
+  return QVariant(); // really?
 }
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -2692,6 +2770,13 @@ static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContex
   return result;
 }
 
+static QVariant fcnForceRHR( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry reoriented = fGeom.forceRHR();
+  return !reoriented.isNull() ? QVariant::fromValue( reoriented ) : QVariant();
+}
+
 static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -4017,10 +4102,47 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QgsWkbTypes::geometryDisplayString( vLayer->geometryType() );
       else if ( QString::compare( layerProperty, QStringLiteral( "feature_count" ), Qt::CaseInsensitive ) == 0 )
         return QVariant::fromValue( vLayer->featureCount() );
+      else if ( QString::compare( layerProperty, QStringLiteral( "path" ), Qt::CaseInsensitive ) == 0 )
+      {
+        if ( vLayer->dataProvider() )
+        {
+          const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+          return decodedUri.value( QStringLiteral( "path" ) );
+        }
+      }
     }
   }
 
   return QVariant();
+}
+
+static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  if ( !layer )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot find layer %1" ).arg( values.at( 0 ).toString() ) );
+    return QVariant();
+  }
+
+  if ( !layer->dataProvider() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Layer %1 has invalid data provider" ).arg( layer->name() ) );
+    return QVariant();
+  }
+
+  const QString uriPart = values.at( 1 ).toString();
+
+  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+
+  if ( !uriPart.isNull() )
+  {
+    return decodedUri.value( values.at( 1 ).toString() );
+  }
+  else
+  {
+    return decodedUri;
+  }
 }
 
 static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -4095,6 +4217,14 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
 static QVariant fcnArray( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   return values;
+}
+
+static QVariant fcnArraySort( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  bool ascending = values.value( 1 ).toBool();
+  std::sort( list.begin(), list.end(), [ascending]( QVariant a, QVariant b ) -> bool { return ( !ascending ? qgsVariantLessThan( b, a ) : qgsVariantLessThan( a, b ) ); } );
+  return list;
 }
 
 static QVariant fcnArrayLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -4687,6 +4817,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "within" ), 2, fcnWithin, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "translate" ), 3, fcnTranslate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), -1, fcnBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "force_rhr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnForceRHR, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "wedge_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "center" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) )
@@ -4861,6 +4993,20 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           QSet<QString>()
         );
 
+    sFunctions
+        << new QgsStaticExpressionFunction(
+          QStringLiteral( "sqlite_fetch_and_increment" ),
+          QgsExpressionFunction::ParameterList()
+          << QgsExpressionFunction::Parameter( QStringLiteral( "database" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "table" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "id_field" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "filter_attribute" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "filter_value" ) )
+          << QgsExpressionFunction::Parameter( QStringLiteral( "default_values" ), true ),
+          fcnSqliteFetchAndIncrement,
+          QStringLiteral( "Record and Attributes" )
+        );
+
     // **Fields and Values** functions
     QgsStaticExpressionFunction *representValueFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "attribute" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "field_name" ), true ), fcnRepresentValue, QStringLiteral( "Record and Attributes" ) );
 
@@ -4897,6 +5043,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     // **General** functions
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "decode_uri" ),
+                                            QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "part" ), true ),
+                                            fcnDecodeUri, QStringLiteral( "Map Layers" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_statistic" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "Rasters" ) );
@@ -4963,6 +5114,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsArrayForeachExpressionFunction()
         << new QgsArrayFilterExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_sort" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "ascending" ), true, true ), fcnArraySort, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_length" ), 1, fcnArrayLength, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_find" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )

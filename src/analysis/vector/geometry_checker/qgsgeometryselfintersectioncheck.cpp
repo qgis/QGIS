@@ -333,6 +333,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfIntersectionCheck::processGe
   return errors;
 }
 
+///@cond private
 QList<QgsWkbTypes::GeometryType> QgsGeometrySelfIntersectionCheck::factoryCompatibleGeometryTypes()
 {
   return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
@@ -362,3 +363,4 @@ QgsGeometryCheck::CheckType QgsGeometrySelfIntersectionCheck::factoryCheckType()
 {
   return QgsGeometryCheck::FeatureNodeCheck;
 }
+///@endcond private

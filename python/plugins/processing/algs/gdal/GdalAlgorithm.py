@@ -142,16 +142,6 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
         return results
 
-    def helpUrl(self):
-        helpPath = GdalUtils.gdalHelpPath()
-        if helpPath == '':
-            return None
-
-        if os.path.exists(helpPath):
-            return QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.commandName()))).toString()
-        else:
-            return helpPath + '{}.html'.format(self.commandName())
-
     def commandName(self):
         parameters = {}
         for param in self.parameterDefinitions():

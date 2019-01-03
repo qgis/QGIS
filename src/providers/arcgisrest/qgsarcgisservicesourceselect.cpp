@@ -78,8 +78,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mModel->setHorizontalHeaderItem( 2, new QStandardItem( QStringLiteral( "Abstract" ) ) );
   if ( serviceType == FeatureService )
   {
-    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Cache Feature" ) ) );
-    mModel->setHorizontalHeaderItem( 4, new QStandardItem( QStringLiteral( "Filter" ) ) );
+    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Filter" ) ) );
     gbImageEncoding->hide();
   }
   else
@@ -92,6 +91,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mModelProxy->setSourceModel( mModel );
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
+  treeView->setSortingEnabled( true );
 
   connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked );
   connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged );
@@ -266,16 +266,10 @@ void QgsArcGisServiceSourceSelect::connectToServer()
 
     if ( haveLayers )
     {
-      for ( int i = 0; i < treeView->header()->count(); ++i )
-      {
-        treeView->resizeColumnToContents( i );
-        if ( i < 2 && treeView->columnWidth( i ) > 300 )
-        {
-          treeView->setColumnWidth( i, 300 );
-        }
-      }
       treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
       treeView->setFocus();
+
+      treeView->sortByColumn( 0, Qt::AscendingOrder );
     }
     else
     {
@@ -338,21 +332,25 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       continue;
     }
+
     int row = idx.row();
-    QString layerTitle = mModel->item( row, 0 )->text(); //layer title/id
-    QString layerName = mModel->item( row, 1 )->text(); //layer name
-    bool cacheFeatures = mServiceType == FeatureService ? mModel->item( row, 3 )->checkState() == Qt::Checked : false;
-    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : QString(); //optional filter specified by user
+    if ( !mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IsLayerRole ).toBool() )
+      continue;
+
+    QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
+    QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
+    const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
+    QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
       layerName = layerTitle;
     }
     QgsRectangle layerExtent;
-    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() || !cacheFeatures ) )
+    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() ) )
     {
       layerExtent = extent;
     }
-    QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
+    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );

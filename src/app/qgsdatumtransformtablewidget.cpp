@@ -181,6 +181,8 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 {
   setupUi( this );
 
+  mModel = new QgsDatumTransformTableModel( this );
+
   mTableView->setModel( mModel );
   mTableView->resizeColumnToContents( 0 );
   mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );

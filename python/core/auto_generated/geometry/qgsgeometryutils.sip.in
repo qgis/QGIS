@@ -66,9 +66,9 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 :param geometry: line or polygon geometry
 :param distance: distance to traverse along geometry
 :param previousVertex: will be set to previous vertex ID
-:param nextVertex: will be set to next vertex ID
 
-:return: true if vertices were successfully retrieved
+:return: - true if vertices were successfully retrieved
+         - nextVertex:  will be set to next vertex ID
 
 .. note::
 
@@ -97,9 +97,9 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :param v1: Direction vector of the first line
 :param p2: Point on the second line
 :param v2: Direction vector of the second line
-:param intersection: Output parameter, the intersection point
 
-:return: Whether the lines intersect
+:return: - Whether the lines intersect
+         - intersection:  Output parameter, the intersection point
 %End
 
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
@@ -110,12 +110,12 @@ Compute the intersection between two segments
 :param p2: First segment end point
 :param q1: Second segment start point
 :param q2: Second segment end point
-:param intersectionPoint: Output parameter, the intersection point
 :param isIntersection: Output parameter, return true if an intersection is found
 :param tolerance: The tolerance to use
 :param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
-:return: Whether the segments intersect
+:return: - Whether the segments intersect
+         - intersectionPoint:  Output parameter, the intersection point
          * Example:
 .. code-block:: python
 
@@ -217,13 +217,24 @@ Project the point on a segment
 
 
 
-    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
 %Docstring
 Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> ( ``x2``, ``y2``).
 A positive return value indicates the point is to the right of the line.
 
 If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
 on the line, or exactly in line with the segment) and the result is undefined.
+%End
+
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
+%Docstring
+Returns a value < 0 if the point ``point`` is left of the line from ``p1`` -> ``p2``.
+A positive return value indicates the point is to the right of the line.
+
+If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+on the line, or exactly in line with the segment) and the result is undefined.
+
+.. versionadded:: 3.6
 %End
 
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
@@ -504,7 +515,6 @@ Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defi
 
 :param pt1: first point.
 :param pt2: second point.
-:param a: Output parameter, a coefficient of the equation.
 :param b: Output parameter, b coefficient of the equation.
 :param c: Output parameter, c coefficient of the equation.
 
@@ -563,9 +573,9 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 :param La2: is the second point on the first line,
 :param Lb1: is the first point on the second line,
 :param Lb2: is the second point on the second line,
-:param intersection: is the result intersection, of it can be found.
 
-:return: true if the intersection can be found, false - otherwise.
+:return: - true if the intersection can be found, false - otherwise.
+         - intersection:  is the result intersection, of it can be found.
          example:
 .. code-block:: python
 

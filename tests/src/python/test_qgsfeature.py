@@ -15,7 +15,14 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsFields, QgsField
+from qgis.core import (QgsFeature,
+                       QgsPoint,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsVectorLayer,
+                       NULL,
+                       QgsFields,
+                       QgsField)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -137,6 +144,10 @@ class TestQgsFeature(unittest.TestCase):
         myExpectedGeometry = "!None"
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)
         assert myGeometry is not None, myMessage
+
+        # set from QgsAbstractGeometry
+        feat.setGeometry(QgsPoint(12, 34))
+        self.assertEqual(feat.geometry().asWkt(), 'Point (12 34)')
 
 
 if __name__ == '__main__':

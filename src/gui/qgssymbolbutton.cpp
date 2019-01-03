@@ -100,6 +100,7 @@ void QgsSymbolButton::showSettingsDialog()
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
   symbolContext.setMapCanvas( mMapCanvas );
+  symbolContext.setMessageBar( mMessageBar );
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
@@ -152,6 +153,16 @@ QgsMapCanvas *QgsSymbolButton::mapCanvas() const
 void QgsSymbolButton::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   mMapCanvas = mapCanvas;
+}
+
+void QgsSymbolButton::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsSymbolButton::messageBar() const
+{
+  return mMessageBar;
 }
 
 QgsVectorLayer *QgsSymbolButton::layer() const

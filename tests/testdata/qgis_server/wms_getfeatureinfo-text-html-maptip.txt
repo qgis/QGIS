@@ -3,7 +3,7 @@ Content-Type: text/html; charset=utf-8
 
 <HEAD>
 <TITLE> GetFeatureInfo results </TITLE>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 </HEAD>
 <BODY>
 <TABLE border=1 width=100%>

@@ -1676,6 +1676,53 @@ QgsVertexIterator QgsGeometry::vertices() const
   return QgsVertexIterator( d->geometry.get() );
 }
 
+QgsAbstractGeometry::part_iterator QgsGeometry::parts_begin()
+{
+  if ( !d->geometry )
+    return QgsAbstractGeometry::part_iterator();
+
+  detach();
+  return d->geometry->parts_begin();
+}
+
+QgsAbstractGeometry::part_iterator QgsGeometry::parts_end()
+{
+  if ( !d->geometry )
+    return QgsAbstractGeometry::part_iterator();
+  return d->geometry->parts_end();
+}
+
+QgsAbstractGeometry::const_part_iterator QgsGeometry::const_parts_begin() const
+{
+  if ( !d->geometry )
+    return QgsAbstractGeometry::const_part_iterator();
+  return d->geometry->const_parts_begin();
+}
+
+QgsAbstractGeometry::const_part_iterator QgsGeometry::const_parts_end() const
+{
+  if ( !d->geometry )
+    return QgsAbstractGeometry::const_part_iterator();
+  return d->geometry->const_parts_end();
+}
+
+QgsGeometryPartIterator QgsGeometry::parts()
+{
+  if ( !d->geometry )
+    return QgsGeometryPartIterator();
+
+  detach();
+  return QgsGeometryPartIterator( d->geometry.get() );
+}
+
+QgsGeometryConstPartIterator QgsGeometry::constParts() const
+{
+  if ( !d->geometry )
+    return QgsGeometryConstPartIterator();
+
+  return QgsGeometryConstPartIterator( d->geometry.get() );
+}
+
 QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
 {
   if ( !d->geometry )
@@ -1746,14 +1793,29 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   {
     QgsGeos geos( d->geometry.get() );
     mLastError.clear();
-    QgsAbstractGeometry *offsetGeom = geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError );
+
+    // GEOS can flip the curve orientation in some circumstances. So record previous orientation and correct if required
+    const QgsCurve::Orientation prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
+
+    std::unique_ptr< QgsAbstractGeometry > offsetGeom( geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError ) );
     if ( !offsetGeom )
     {
       QgsGeometry result;
       result.mLastError = mLastError;
       return result;
     }
-    return QgsGeometry( offsetGeom );
+
+    if ( const QgsCurve *offsetCurve = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() ) )
+    {
+      const QgsCurve::Orientation newOrientation = offsetCurve->orientation();
+      if ( newOrientation != prevOrientation )
+      {
+        // GEOS has flipped line orientation, flip it back
+        std::unique_ptr< QgsAbstractGeometry > flipped( offsetCurve->reversed() );
+        offsetGeom = std::move( flipped );
+      }
+    }
+    return QgsGeometry( std::move( offsetGeom ) );
   }
 }
 
@@ -2351,6 +2413,47 @@ QgsGeometry QgsGeometry::makeValid() const
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;
   return result;
+}
+
+QgsGeometry QgsGeometry::forceRHR() const
+{
+  if ( !d->geometry )
+    return QgsGeometry();
+
+  if ( isMultipart() )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
+    std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      const QgsAbstractGeometry *g = collection->geometryN( i );
+      if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+      {
+        std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+        corrected->forceRHR();
+        newCollection->addGeometry( corrected.release() );
+      }
+      else
+      {
+        newCollection->addGeometry( g->clone() );
+      }
+    }
+    return QgsGeometry( std::move( newCollection ) );
+  }
+  else
+  {
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    {
+      std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+      corrected->forceRHR();
+      return QgsGeometry( std::move( corrected ) );
+    }
+    else
+    {
+      // not a curve polygon, so return unchanged
+      return *this;
+    }
+  }
 }
 
 

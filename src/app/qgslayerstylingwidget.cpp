@@ -47,17 +47,19 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgisapp.h"
+#include "qgssymbolwidgetcontext.h"
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
 #endif
 
 
-QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
+QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
   , mNotSupportedPage( 0 )
   , mLayerPage( 1 )
   , mMapCanvas( canvas )
+  , mMessageBar( messageBar )
   , mBlockAutoApply( false )
   , mPageFactories( pages )
 {
@@ -382,7 +384,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case 0: // Style
       {
         QgsRendererPropertiesDialog *styleWidget = new QgsRendererPropertiesDialog( vlayer, QgsStyle::defaultStyle(), true, mStackedWidget );
-        styleWidget->setMapCanvas( mMapCanvas );
+        QgsSymbolWidgetContext context;
+        context.setMapCanvas( mMapCanvas );
+        context.setMessageBar( mMessageBar );
+        styleWidget->setContext( context );
         styleWidget->setDockMode( true );
         connect( styleWidget, &QgsRendererPropertiesDialog::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
         QgsPanelWidgetWrapper *wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );

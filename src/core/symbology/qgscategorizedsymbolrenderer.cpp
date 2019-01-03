@@ -30,6 +30,8 @@
 #include "qgslogger.h"
 #include "qgsproperty.h"
 #include "qgsstyle.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -1032,3 +1034,40 @@ int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, const QgsSymb
 
   return matched;
 }
+
+QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVariant> &values, const QgsSymbol *symbol, QgsVectorLayer *layer, const QString &attributeName )
+{
+  QgsCategoryList cats;
+  QVariantList vals = values;
+  // sort the categories first
+  QgsSymbolLayerUtils::sortVariantList( vals, Qt::AscendingOrder );
+
+  if ( layer && !attributeName.isNull() )
+  {
+    const QgsFields fields = layer->fields();
+    for ( const QVariant &value : vals )
+    {
+      QgsSymbol *newSymbol = symbol->clone();
+      if ( !value.isNull() )
+      {
+        int fieldIdx = fields.lookupField( attributeName );
+        QString categoryName = value.toString();
+        if ( fieldIdx != -1 )
+        {
+          const QgsField field = fields.at( fieldIdx );
+          const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+          const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+          categoryName = formatter->representValue( layer, fieldIdx, setup.config(), QVariant(), value );
+        }
+        cats.append( QgsRendererCategory( value, newSymbol,  categoryName, true ) );
+      }
+    }
+  }
+
+  // add null (default) value
+  QgsSymbol *newSymbol = symbol->clone();
+  cats.append( QgsRendererCategory( QVariant(), newSymbol, QString(), true ) );
+
+  return cats;
+}
+

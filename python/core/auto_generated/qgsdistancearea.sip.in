@@ -221,9 +221,9 @@ otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFac
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
 :param azimuth: - azimuth in radians, clockwise from North
-:param projectedPoint: calculated projected point
 
-:return: distance in mapUnits
+:return: - distance in mapUnits
+         - projectedPoint:  calculated projected point
 
 .. seealso:: :py:func:`sourceCrs`
 

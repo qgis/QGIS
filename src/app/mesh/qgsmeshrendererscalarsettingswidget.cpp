@@ -93,8 +93,9 @@ void QgsMeshRendererScalarSettingsWidget::minMaxEdited()
 
 void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
 {
-  double min, max;
-  QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( min, max, mMeshLayer->dataProvider(), mActiveDatasetGroup );
+  const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  double min = metadata.minimum();
+  double max = metadata.maximum();
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );

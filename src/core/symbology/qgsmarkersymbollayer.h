@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMARKERSYMBOLLAYERV2_H
-#define QGSMARKERSYMBOLLAYERV2_H
+#ifndef QGSMARKERSYMBOLLAYER_H
+#define QGSMARKERSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -632,6 +632,150 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, QPointF &offset, double &angle ) const;
+
+};
+
+
+//////////
+
+#define DEFAULT_RASTERMARKER_SIZE         2*DEFAULT_POINT_SIZE
+#define DEFAULT_RASTERMARKER_ANGLE        0
+
+/**
+ * \ingroup core
+ * \class QgsRasterMarkerSymbolLayer
+ * \brief Raster marker symbol layer class.
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
+{
+  public:
+    //! Constructs raster marker symbol layer with picture from given absolute path to a raster image file
+    QgsRasterMarkerSymbolLayer( const QString &path = QString(),
+                                double size = DEFAULT_SVGMARKER_SIZE,
+                                double angle = DEFAULT_SVGMARKER_ANGLE,
+                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    // static stuff
+
+    /**
+     * Creates a raster marker symbol layer from a string map of properties.
+     * \param properties QgsStringMap properties object
+     */
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Turns relative paths in properties map to absolute when reading and vice versa when writing.
+     * Used internally when reading/writing symbols.
+     * \since QGIS 3.0
+     */
+    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+
+    // implemented from base classes
+
+    QString layerType() const override;
+
+    void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
+
+    QgsStringMap properties() const override;
+
+    QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
+
+    /**
+     * Calculates the marker aspect ratio between width and height.
+     * \param context symbol render context
+     * \param scaledSize size of symbol to render
+     * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+     */
+    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
+
+    /**
+     * Returns the marker raster image path.
+     * \see setPath()
+     */
+    QString path() const { return mPath; }
+
+    /**
+     * Set the marker raster image path.
+     * \param path raster image path
+     * \see path()
+     */
+    void setPath( const QString &path );
+
+    /**
+     * Returns the marker opacity.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    double opacity() const { return mOpacity; }
+
+    /**
+     * Set the marker opacity.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
+     * \see updateDefaultAspectRatio()
+     */
+    double defaultAspectRatio() const { return mDefaultAspectRatio; }
+
+    /**
+     * Calculates the default marker aspect ratio between width and height.
+     * \returns the default aspect ratio value
+     * \see defaultAspectRatio()
+     */
+    double updateDefaultAspectRatio();
+
+    /**
+     * Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+     * \see setPreservedAspectRatio()
+     */
+    bool preservedAspectRatio() const { return mFixedAspectRatio <= 0.0; }
+
+    /**
+     * Set preserved the marker aspect ratio between width and height.
+     * \param par Preserved Aspect Ratio
+     * \returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+     * \see preservedAspectRatio()
+     */
+    bool setPreservedAspectRatio( bool par );
+
+    /**
+     * Returns the marker aspect ratio between width and height to be used in rendering,
+     * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+     * \see setFixedAspectRatio() QgsSvgCache
+     */
+    double fixedAspectRatio() const { return mFixedAspectRatio; }
+
+    /**
+     * Set the marker aspect ratio between width and height to be used in rendering,
+     * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+     * \param ratio Fixed Aspect Ratio
+     * \see fixedAspectRatio() QgsSvgCache
+     */
+    void setFixedAspectRatio( double ratio ) { mFixedAspectRatio = ratio; }
+
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+
+    QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
+
+  protected:
+
+    QString mPath;
+    //! The marker default opacity
+    double mOpacity = 1.0;
+    //! The marker default aspect ratio
+    double mDefaultAspectRatio = 0.0;
+    //! The marker fixed aspect ratio
+    double mFixedAspectRatio = 0.0;
+
+  private:
+    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
 
 };
 

@@ -98,6 +98,8 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
 void QgsMapCanvasTracer::configure()
 {
   setDestinationCrs( mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() );
+  QgsRenderContext ctx = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  setRenderContext( &ctx );
   setExtent( mCanvas->extent() );
 
   QList<QgsVectorLayer *> layers;

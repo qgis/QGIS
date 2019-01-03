@@ -30,6 +30,9 @@ class QgsPhongMaterialWidget : public QWidget, private Ui::PhongMaterialWidget
   public:
     explicit QgsPhongMaterialWidget( QWidget *parent = nullptr );
 
+    void setDiffuseVisible( bool visible );
+    bool isDiffuseVisible() const;
+
     void setMaterial( const QgsPhongMaterialSettings &material );
     QgsPhongMaterialSettings material() const;
 

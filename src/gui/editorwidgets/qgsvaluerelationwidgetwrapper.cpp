@@ -33,8 +33,8 @@
 #include <QStringListModel>
 #include <QCompleter>
 
-QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 {
 }
 
@@ -212,6 +212,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
   // Do nothing if the value has not changed
   if ( attributeChanged )
   {
+    QVariant oldValue( value( ) );
     setFormFeatureAttribute( attribute, newValue );
     // Update combos if the value used in the filter expression has changed
     if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression )
@@ -220,6 +221,15 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
       populate();
       // Restore value
       setValue( value( ) );
+      // If the value has changed as a result of another widget's value change,
+      // we need to emit the signal to make sure other dependent widgets are
+      // updated.
+      if ( oldValue != value() && fieldIdx() < formFeature().fields().count() )
+      {
+        QString attributeName( formFeature().fields().names().at( fieldIdx() ) );
+        setFormFeatureAttribute( attributeName, value( ) );
+        emitValueChanged( );
+      }
     }
   }
 }

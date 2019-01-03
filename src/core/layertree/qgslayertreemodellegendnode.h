@@ -214,13 +214,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     const QgsSymbol *symbol() const;
 
     /**
-     * Sets the symbol to be used by the legend node. The symbol change is also propagated
+     * Sets the \a symbol to be used by the legend node. The symbol change is also propagated
      * to the associated vector layer's renderer.
      * \param symbol new symbol for node. Ownership is transferred.
      * \see symbol()
      * \since QGIS 2.14
      */
-    void setSymbol( QgsSymbol *symbol );
+    void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns label of text to be shown on top of the symbol.
@@ -251,6 +251,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
      * Checks all items belonging to the same layer as this node.
      * \see uncheckAllItems()
+     * \see toggleAllItems()
      * \since QGIS 2.14
      */
     void checkAllItems();
@@ -258,9 +259,18 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
      * Unchecks all items belonging to the same layer as this node.
      * \see checkAllItems()
+     * \see toggleAllItems()
      * \since QGIS 2.14
      */
     void uncheckAllItems();
+
+    /**
+     * Toggle all items belonging to the same layer as this node.
+     * \see checkAllItems()
+     * \see uncheckAllItems()
+     * \since QGIS 3.6
+     */
+    void toggleAllItems();
 
   private:
     void updateLabel();

@@ -36,6 +36,8 @@ class QgsVertexIterator;
 class QPainter;
 class QDomDocument;
 class QDomElement;
+class QgsGeometryPartIterator;
+class QgsGeometryConstPartIterator;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -606,6 +608,136 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
+     * The part_iterator class provides STL-style iterator for geometry parts.
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT part_iterator
+    {
+      private:
+
+        int mIndex = 0; //!< Current part in the geometry
+        QgsAbstractGeometry *mGeometry = nullptr;
+
+      public:
+        //! Create invalid iterator
+        part_iterator() = default;
+
+        //! Create part iterator for a geometry
+        part_iterator( QgsAbstractGeometry *g, int index );
+
+        /**
+         * The prefix ++ operator (++it) advances the iterator to the next part and returns an iterator to the new current part.
+         * Calling this function on iterator that is already past the last item leads to undefined results.
+         */
+        part_iterator &operator++();
+
+        //! The postfix ++ operator (it++) advances the iterator to the next part and returns an iterator to the previously current part.
+        part_iterator operator++( int );
+
+        //! Returns the current item.
+        QgsAbstractGeometry *operator*() const;
+
+        //! Returns the part number of the current item.
+        int partNumber() const;
+
+        bool operator==( part_iterator other ) const;
+        bool operator!=( part_iterator other ) const { return !( *this == other ); }
+    };
+
+    /**
+     * Returns STL-style iterator pointing to the first part of the geometry.
+     *
+     * \see parts_end()
+     * \see parts()
+     *
+     * \since QGIS 3.6
+     */
+    part_iterator parts_begin()
+    {
+      return part_iterator( this, 0 );
+    }
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary part after the last part of the geometry.
+     *
+     * \see parts_begin()
+     * \see parts()
+     *
+     * \since QGIS 3.6
+     */
+    part_iterator parts_end();
+
+    /**
+     * Returns Java-style iterator for traversal of parts of the geometry. This iterator
+     * returns read-only references to parts and cannot be used to modify the parts.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.6
+     */
+    QgsGeometryConstPartIterator parts() const;
+
+    /**
+     * \ingroup core
+     * The part_iterator class provides STL-style iterator for const references to geometry parts.
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT const_part_iterator
+    {
+      private:
+
+        int mIndex = 0; //!< Current part in the geometry
+        const QgsAbstractGeometry *mGeometry = nullptr;
+
+      public:
+        //! Create invalid iterator
+        const_part_iterator() = default;
+
+        //! Create part iterator for a geometry
+        const_part_iterator( const QgsAbstractGeometry *g, int index );
+
+        /**
+         * The prefix ++ operator (++it) advances the iterator to the next part and returns an iterator to the new current part.
+         * Calling this function on iterator that is already past the last item leads to undefined results.
+         */
+        const_part_iterator &operator++();
+
+        //! The postfix ++ operator (it++) advances the iterator to the next part and returns an iterator to the previously current part.
+        const_part_iterator operator++( int );
+
+        //! Returns the current item.
+        const QgsAbstractGeometry *operator*() const;
+
+        //! Returns the part number of the current item.
+        int partNumber() const;
+
+        bool operator==( const_part_iterator other ) const;
+        bool operator!=( const_part_iterator other ) const { return !( *this == other ); }
+    };
+
+    /**
+     * Returns STL-style iterator pointing to the const first part of the geometry.
+     *
+     * \see const_parts_end()
+     *
+     * \since QGIS 3.6
+     */
+    const_part_iterator const_parts_begin() const
+    {
+      return const_part_iterator( this, 0 );
+    }
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary const part after the last part of the geometry.
+     *
+     * \see const_parts_begin()
+     *
+     * \since QGIS 3.6
+     */
+    const_part_iterator const_parts_end() const;
+
+
+    /**
+     * \ingroup core
      * The vertex_iterator class provides STL-style iterator for vertices.
      * \since QGIS 3.0
      */
@@ -656,7 +788,11 @@ class CORE_EXPORT QgsAbstractGeometry
     };
 
     /**
-     * Returns STL-style iterator pointing to the first vertex of the geometry
+     * Returns STL-style iterator pointing to the first vertex of the geometry.
+     *
+     * \see vertices_end()
+     * \see vertices()
+     *
      * \since QGIS 3.0
      */
     vertex_iterator vertices_begin() const
@@ -665,7 +801,11 @@ class CORE_EXPORT QgsAbstractGeometry
     }
 
     /**
-     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry
+     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry.
+     *
+     * \see vertices_begin()
+     * \see vertices()
+     *
      * \since QGIS 3.0
      */
     vertex_iterator vertices_end() const
@@ -675,7 +815,60 @@ class CORE_EXPORT QgsAbstractGeometry
 #endif
 
     /**
-     * Returns Java-style iterator for traversal of vertices of the geometry
+     * Returns Java-style iterator for traversal of parts of the geometry. This iterator
+     * can safely be used to modify parts of the geometry.
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the WKT representation of each part in a multi-point geometry
+     *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # single part geometries only have one part - this loop will iterate once only
+     *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 10 10 )' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # parts can be modified during the iteration
+     *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       part.transform(ct)
+     *
+     *   # part iteration can also be combined with vertex iteration
+     *   geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for part in geometry.parts():
+     *       for v in part.vertices():
+     *           print(v.x(), v.y())
+     *
+     * \endcode
+     *
+     * \see vertices()
+     * \since QGIS 3.6
+     */
+    QgsGeometryPartIterator parts();
+
+
+    /**
+     * Returns a read-only, Java-style iterator for traversal of vertices of all the geometry, including all geometry parts and rings.
+     *
+     * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
+     * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the x and y coordinate for each vertex in a LineString
+     *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+     *   for v in geometry.vertices():
+     *       print(v.x(), v.y())
+     *
+     *   # vertex iteration includes all parts and rings
+     *   geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for v in geometry.vertices():
+     *       print(v.x(), v.y())
+     * \endcode
+     *
+     * \see parts()
      * \since QGIS 3.0
      */
     QgsVertexIterator vertices() const;
@@ -846,7 +1039,7 @@ class CORE_EXPORT QgsVertexIterator
     sipRes = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsPoint );
     % MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
@@ -858,6 +1051,105 @@ class CORE_EXPORT QgsVertexIterator
   private:
     const QgsAbstractGeometry *g = nullptr;
     QgsAbstractGeometry::vertex_iterator i, n;
+
+};
+
+/**
+ * \ingroup core
+ * \brief Java-style iterator for traversal of parts of a geometry
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsGeometryPartIterator
+{
+  public:
+    //! Constructor for QgsGeometryPartIterator
+    QgsGeometryPartIterator() = default;
+
+    //! Constructs iterator for the given geometry
+    QgsGeometryPartIterator( QgsAbstractGeometry *geometry )
+      : g( geometry )
+      , i( g->parts_begin() )
+      , n( g->parts_end() )
+    {
+    }
+
+    //! Find out whether there are more parts
+    bool hasNext() const
+    {
+      return g && g->parts_end() != i;
+    }
+
+    //! Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+    QgsAbstractGeometry *next();
+
+#ifdef SIP_RUN
+    QgsGeometryPartIterator *__iter__();
+    % MethodCode
+    sipRes = sipCpp;
+    % End
+
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
+    % MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+    % End
+#endif
+
+  private:
+    QgsAbstractGeometry *g = nullptr;
+    QgsAbstractGeometry::part_iterator i, n;
+
+};
+
+
+/**
+ * \ingroup core
+ * \brief Java-style iterator for const traversal of parts of a geometry
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsGeometryConstPartIterator
+{
+  public:
+    //! Constructor for QgsGeometryConstPartIterator
+    QgsGeometryConstPartIterator() = default;
+
+    //! Constructs iterator for the given geometry
+    QgsGeometryConstPartIterator( const QgsAbstractGeometry *geometry )
+      : g( geometry )
+      , i( g->const_parts_begin() )
+      , n( g->const_parts_end() )
+    {
+    }
+
+    //! Find out whether there are more parts
+    bool hasNext() const
+    {
+      return g && g->const_parts_end() != i;
+    }
+
+    //! Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+    const QgsAbstractGeometry *next();
+
+#ifdef SIP_RUN
+    QgsGeometryConstPartIterator *__iter__();
+    % MethodCode
+    sipRes = sipCpp;
+    % End
+
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
+    % MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+    % End
+#endif
+
+  private:
+    const QgsAbstractGeometry *g = nullptr;
+    QgsAbstractGeometry::const_part_iterator i, n;
 
 };
 

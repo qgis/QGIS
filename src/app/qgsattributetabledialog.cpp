@@ -760,6 +760,7 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
 
   QgsFeature f;
   QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QString(), -1, this );
+  action.setForceSuppressFormPopup( true ); // we're already showing the table, allowing users to enter the new feature's attributes directly
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
@@ -874,6 +875,12 @@ void QgsAttributeTableDialog::mActionToggleEditing_toggled( bool )
 {
   if ( !mLayer )
     return;
+
+  //this has to be done, because in case only one cell has been changed and is still enabled, the change
+  //would not be added to the mEditBuffer. By disabling, it looses focus and the change will be stored.
+  if ( mLayer->isEditable() && mMainView->tableView()->indexWidget( mMainView->tableView()->currentIndex() ) )
+    mMainView->tableView()->indexWidget( mMainView->tableView()->currentIndex() )->setEnabled( false );
+
   if ( !QgisApp::instance()->toggleEditing( mLayer ) )
   {
     // restore gui state if toggling was canceled or layer commit/rollback failed

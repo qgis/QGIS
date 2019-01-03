@@ -18,6 +18,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QStringList>
 
 #include <mdal.h>
 
@@ -53,8 +54,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
 
     int vertexCount() const override;
     int faceCount() const override;
-    QgsMeshVertex vertex( int index ) const override;
-    QgsMeshFace face( int index ) const override;
+    void populateMesh( QgsMesh *mesh ) const override;
 
     bool addDataset( const QString &uri ) override;
     QStringList extraDatasets() const override;
@@ -65,9 +65,36 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
+    QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
+    QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+    QgsRectangle extent() const override;
+
+    /**
+     * Returns file filters for meshes and datasets to be used in Open File Dialogs
+     * \param fileMeshFiltersString file mesh filters
+     * \param fileMeshDatasetFiltersString file mesh datasets filters
+     *
+     * \see fileMeshExtensions()
+     *
+     * \since QGIS 3.6
+     */
+    static void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString );
+
+    /**
+     * Returns file extensions for meshes and datasets
+     * \param fileMeshExtensions file mesh extensions
+     * \param fileMeshDatasetExtensions file mesh datasets extensions
+     *
+     * \see fileMeshFilters()
+     *
+     * \since QGIS 3.6
+     */
+    static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
   private:
+    QVector<QgsMeshVertex> vertices( ) const;
+    QVector<QgsMeshFace> faces( ) const;
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;

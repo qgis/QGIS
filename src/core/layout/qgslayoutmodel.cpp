@@ -182,16 +182,6 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
           return QVariant();
       }
 
-    case Qt::FontRole:
-      if ( index.column() == ItemId && item->isSelected() )
-      {
-        //draw name of selected items in bold
-        QFont boldFont;
-        boldFont.setBold( true );
-        return boldFont;
-      }
-      return QVariant();
-
     default:
       return QVariant();
   }

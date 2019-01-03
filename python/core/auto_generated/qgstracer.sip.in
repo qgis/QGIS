@@ -55,6 +55,13 @@ Sets the ``crs`` and transform ``context`` used for tracing.
 .. seealso:: :py:func:`destinationCrs`
 %End
 
+    void setRenderContext( const QgsRenderContext *renderContext );
+%Docstring
+Sets the ``renderContext`` used for tracing only on visible features.
+
+.. versionadded:: 3.4
+%End
+
     QgsRectangle extent() const;
 %Docstring
 Gets extent to which graph's features will be limited (empty extent means no limit)

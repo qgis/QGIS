@@ -97,28 +97,25 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   {
     const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
     mScalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-    int count;
-    if ( mScalarDataOnVertices )
-      count = mNativeMesh.vertices.count();
-    else
-      count = mNativeMesh.faces.count();
 
-    mScalarDatasetValues.resize( count );
-    for ( int i = 0; i < count; ++i )
-    {
-      double v = layer->dataProvider()->datasetValue( datasetIndex, i ).scalar();
-      mScalarDatasetValues[i] = v;
-    }
+    // populate scalar values
+    QgsMeshDataBlock vals = layer->dataProvider()->datasetValues(
+                              datasetIndex,
+                              0,
+                              mScalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count() );
+
+    // vals could be scalar or vectors, for contour rendering we want always magnitude
+    mScalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
 
     // populate face active flag, always defined on faces
-    mScalarActiveFaceFlagValues.resize( mNativeMesh.faces.count() );
-    for ( int i = 0; i < mNativeMesh.faces.count(); ++i )
-    {
-      bool active = layer->dataProvider()->isFaceActive( datasetIndex, i );
-      mScalarActiveFaceFlagValues[i] = active;
-    }
+    mScalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive(
+                                    datasetIndex,
+                                    0,
+                                    mNativeMesh.faces.count() );
 
-    QgsMeshLayerUtils::calculateMinimumMaximum( mScalarDatasetMinimum, mScalarDatasetMaximum, mScalarDatasetValues );
+    const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+    mScalarDatasetMinimum = datasetMetadata.minimum();
+    mScalarDatasetMaximum = datasetMetadata.maximum();
   }
 
   // update cache
@@ -141,11 +138,12 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
        ( cache->mActiveVectorDatasetIndex == datasetIndex ) )
   {
-    mVectorDatasetValuesX = cache->mVectorDatasetValuesX;
-    mVectorDatasetValuesY = cache->mVectorDatasetValuesY;
+    mVectorDatasetValues = cache->mVectorDatasetValues;
     mVectorDatasetValuesMag = cache->mVectorDatasetValuesMag;
     mVectorDatasetMagMinimum = cache->mVectorDatasetMagMinimum;
     mVectorDatasetMagMaximum = cache->mVectorDatasetMagMaximum;
+    mVectorDatasetGroupMagMinimum = cache->mVectorDatasetMagMinimum;
+    mVectorDatasetGroupMagMaximum = cache->mVectorDatasetMagMaximum;
     mVectorDataOnVertices = cache->mVectorDataOnVertices;
     return;
   }
@@ -164,39 +162,38 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     else
     {
       mVectorDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+      mVectorDatasetGroupMagMinimum = metadata.minimum();
+      mVectorDatasetGroupMagMaximum = metadata.maximum();
+
       int count;
       if ( mVectorDataOnVertices )
         count = mNativeMesh.vertices.count();
       else
         count = mNativeMesh.faces.count();
 
-      mVectorDatasetValuesX.resize( count );
-      mVectorDatasetValuesY.resize( count );
-      mVectorDatasetValuesMag.resize( count );
-      for ( int i = 0; i < count; ++i )
-      {
-        double x = layer->dataProvider()->datasetValue( datasetIndex, i ).x();
-        mVectorDatasetValuesX[i] = x;
 
-        double y = layer->dataProvider()->datasetValue( datasetIndex, i ).y();
-        mVectorDatasetValuesY[i] = y;
+      mVectorDatasetValues = layer->dataProvider()->datasetValues(
+                               datasetIndex,
+                               0,
+                               count );
 
-        double mag = layer->dataProvider()->datasetValue( datasetIndex, i ).scalar();
-        mVectorDatasetValuesMag[i] = mag;
-      }
+      mVectorDatasetValuesMag = QgsMeshLayerUtils::calculateMagnitudes( mVectorDatasetValues );
+
+      const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+      mVectorDatasetMagMinimum = datasetMetadata.minimum();
+      mVectorDatasetMagMaximum = datasetMetadata.maximum();
     }
-
-    QgsMeshLayerUtils::calculateMinimumMaximum( mVectorDatasetMagMinimum, mVectorDatasetMagMaximum, mVectorDatasetValuesMag );
   }
 
   // update cache
   cache->mDatasetGroupsCount = datasetGroupCount;
   cache->mActiveVectorDatasetIndex = datasetIndex;
-  cache->mVectorDatasetValuesX = mVectorDatasetValuesX;
-  cache->mVectorDatasetValuesY = mVectorDatasetValuesY;
+  cache->mVectorDatasetValues = mVectorDatasetValues;
   cache->mVectorDatasetValuesMag = mVectorDatasetValuesMag;
   cache->mVectorDatasetMagMinimum = mVectorDatasetMagMinimum;
   cache->mVectorDatasetMagMaximum = mVectorDatasetMagMaximum;
+  cache->mVectorDatasetGroupMagMinimum = mVectorDatasetMagMinimum;
+  cache->mVectorDatasetGroupMagMaximum = mVectorDatasetMagMaximum;
   cache->mVectorDataOnVertices = mVectorDataOnVertices;
 }
 
@@ -304,8 +301,12 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   QgsColorRampShader *fcn = new QgsColorRampShader( scalarSettings.colorRampShader() );
   QgsRasterShader *sh = new QgsRasterShader();
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
-  QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarActiveFaceFlagValues,
-                                         mScalarDataOnVertices, mContext, mOutputSize );
+  QgsMeshLayerInterpolator interpolator( mTriangularMesh,
+                                         mScalarDatasetValues,
+                                         mScalarActiveFaceFlagValues,
+                                         mScalarDataOnVertices,
+                                         mContext,
+                                         mOutputSize );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );
@@ -323,19 +324,21 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( !index.isValid() )
     return;
 
-  if ( mVectorDatasetValuesX.isEmpty() )
-    return;
+  if ( !mVectorDatasetValues.isValid() )
+    return; // no data at all
 
   if ( std::isnan( mVectorDatasetMagMinimum ) || std::isnan( mVectorDatasetMagMaximum ) )
     return; // only NODATA values
 
-  if ( mVectorDatasetValuesX.size() != mVectorDatasetValuesY.size() )
-    return;
-
   QgsMeshVectorRenderer renderer( mTriangularMesh,
-                                  mVectorDatasetValuesX, mVectorDatasetValuesY, mVectorDatasetValuesMag,
-                                  mVectorDatasetMagMinimum, mVectorDatasetMagMaximum,
-                                  mVectorDataOnVertices, mRendererSettings.vectorSettings( index.group() ), mContext, mOutputSize );
+                                  mVectorDatasetValues,
+                                  mVectorDatasetValuesMag,
+                                  mVectorDatasetMagMinimum,
+                                  mVectorDatasetMagMaximum,
+                                  mVectorDataOnVertices,
+                                  mRendererSettings.vectorSettings( index.group() ),
+                                  mContext,
+                                  mOutputSize );
 
   renderer.draw();
 }

@@ -12,9 +12,11 @@
 #include <limits>
 
 #include "mdal_data_model.hpp"
+#include "mdal_memory_data_model.hpp"
 
 // avoid unused variable warnings
 #define MDAL_UNUSED(x) (void)x;
+#define MDAL_NAN std::numeric_limits<double>::quiet_NaN()
 
 namespace MDAL
 {
@@ -30,6 +32,8 @@ namespace MDAL
   /** Return whether file exists */
   bool fileExists( const std::string &filename );
   std::string baseName( const std::string &filename );
+  std::string dirName( const std::string &filename );
+  std::string pathJoin( const std::string &path1, const std::string &path2 );
 
   // strings
   enum ContainsBehaviour
@@ -49,8 +53,10 @@ namespace MDAL
 
   /** Return 0 if not possible to convert */
   size_t toSizeT( const std::string &str );
+  int toInt( const std::string &str );
   double toDouble( const std::string &str );
   bool toBool( const std::string &str );
+  bool isNumber( const std::string &str );
 
   enum SplitBehaviour
   {
@@ -88,9 +94,21 @@ namespace MDAL
   BBox computeExtent( const Vertices &vertices );
 
   // time
-
   //! Returns a delimiter to get time in hours
   double parseTimeUnits( const std::string &units );
+
+  // statistics
+  void combineStatistics( Statistics &main, const Statistics &other );
+
+  //! Calculates statistics for dataset group
+  Statistics calculateStatistics( std::shared_ptr<DatasetGroup> grp );
+
+  //! Calculates statistics for dataset
+  Statistics calculateStatistics( std::shared_ptr<Dataset> dataset );
+
+  // mesh & datasets
+  //! Add bed elevatiom dataset group to mesh
+  void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

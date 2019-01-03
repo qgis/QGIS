@@ -61,7 +61,6 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputHtml,
-                       QgsProcessingUtils,
                        QgsVectorLayer,
                        QgsProviderRegistry)
 from qgis.utils import iface
@@ -73,7 +72,6 @@ from processing.core.parameters import (getParameterFromString)
 
 from .Grass7Utils import Grass7Utils
 
-#from processing.tools import dataobjects, system
 from processing.tools.system import isWindows, getTempFilename
 
 pluginPath = os.path.normpath(os.path.join(
@@ -187,7 +185,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         for p in self.params:
             # We use createOutput argument for automatic output creation
-            res = self.addParameter(p, True)
+            self.addParameter(p, True)
 
     def defineCharacteristicsFromFile(self):
         """
@@ -441,7 +439,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                     QgsProcessingParameterMultipleLayers))]
         for param in inputs:
             paramName = param.name()
-            if not paramName in parameters:
+            if paramName not in parameters:
                 continue
             # Handle Null parameter
             if parameters[paramName] is None:
@@ -640,7 +638,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     if outName in parameters and parameters[outName] is not None:
                         # We add an output name to make sure it is unique if the session
                         # uses this algorithm several times.
-                        #value = self.parameterAsOutputLayer(parameters, outName, context)
                         uniqueOutputName = outName + self.uniqueSuffix
                         command += ' {}={}'.format(outName, uniqueOutputName)
 
@@ -669,7 +666,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         for out in self.destinationParameterDefinitions():
             outName = out.name()
-            if not outName in parameters:
+            if outName not in parameters:
                 # skipped output
                 continue
 
@@ -785,15 +782,22 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         # Add a loop export from the basename
         for cmd in [self.commands, self.outputCommands]:
-            # TODO Windows support
             # TODO Format/options support
-            cmd.append("for r in $(g.list type=rast pattern='{}*'); do".format(basename))
-            cmd.append("  r.out.gdal -m{0} input=${{r}} output={1}/${{r}}.tif {2}".format(
-                ' -t' if colorTable else '', outDir,
-                '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
-            )
-            )
-            cmd.append("done")
+            if isWindows():
+                cmd.append("if not exist {0} mkdir {0}".format(outDir))
+                cmd.append("for /F %%r IN ('g.list type^=rast pattern^=\"{0}*\"') do r.out.gdal -m{1} input=%%r output={2}/%%r.tif {3}".format(
+                    basename,
+                    ' -t' if colorTable else '',
+                    outDir,
+                    '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
+                ))
+            else:
+                cmd.append("for r in $(g.list type=rast pattern='{}*'); do".format(basename))
+                cmd.append("  r.out.gdal -m{0} input=${{r}} output={1}/${{r}}.tif {2}".format(
+                    ' -t' if colorTable else '', outDir,
+                    '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
+                ))
+                cmd.append("done")
 
     def loadVectorLayerFromParameter(self, name, parameters, context, feedback, external=False):
         """
@@ -999,7 +1003,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def convertToHtml(self, fileName):
         # Read HTML contents
         lines = []
-        html = False
         with open(fileName, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 

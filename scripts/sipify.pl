@@ -58,6 +58,8 @@ my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
 my $COMMENT_CODE_SNIPPET = 0;
 my $COMMENT_TEMPLATE_DOCSTRING = 0;
+my @SKIPPED_PARAMS_OUT = ();
+my @SKIPPED_PARAMS_REMOVE = ();
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -372,6 +374,17 @@ sub remove_following_body_or_initializerlist {
 
 sub fix_annotations {
     my $line = $_[0];
+
+    # get removed params to be able to drop them out of the API doc
+    if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/ ){
+      push @SKIPPED_PARAMS_REMOVE, $1;
+      dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
+    }
+    if ( $line =~ m/(\w+)\s+SIP_OUT/ ){
+      push @SKIPPED_PARAMS_OUT, $1;
+      dbg_info("caught removed param: $SKIPPED_PARAMS_OUT[$#SKIPPED_PARAMS_OUT]");
+    }
+
     # printed annotations
     $line =~ s/\/\/\s*SIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
@@ -393,6 +406,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+    $line =~ s/SIP_TYPEHINT\(\s*(\w+)\s*\)/\/TypeHint="$1"\//;
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
     $line =~ s/SIP_THROW\(\s*(\w+)\s*\)/throw\( $1 \)/;
 
@@ -452,6 +466,8 @@ sub detect_comment_block{
     $COMMENT_CODE_SNIPPET = 0;
     $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     $FOUND_SINCE = 0;
+    @SKIPPED_PARAMS_OUT = ();
+    @SKIPPED_PARAMS_REMOVE = ();
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
@@ -520,14 +536,14 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # do not process SIP code %XXXCode
-    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/ ){
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
         $LINE = "%$1$2";
         $COMMENT = '';
         dbg_info("do not process SIP code");
         while ( $LINE !~ m/^ *% *End/ ){
             write_output("COD", $LINE."\n");
             $LINE = read_line();
-            $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/%$1$2/;
+            $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/%$1$2/;
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
         $LINE =~ s/^\s*% End/%End/;
@@ -1006,7 +1022,8 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(\([^()]*\))?\s*;/ ){
+    # https://regex101.com/r/tWRGkY/2
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(<\w+( \*)?>)?(\([^()]*\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }
@@ -1181,20 +1198,71 @@ while ($LINE_IDX < $LINE_COUNT){
                 $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
                 write_output("CM1", "$doc_prepend%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
+                my $skipping_param = 0;
+                my @out_params = ();
+                my $waiting_for_return_to_end = 0;
                 foreach my $comment_line (@comment_lines) {
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
-                  write_output("CM2", "$doc_prepend$comment_line\n");
+                  if ( $comment_line =~ m/^:param\s+(\w+)/) {
+                    if ( $1 ~~ @SKIPPED_PARAMS_OUT || $1 ~~ @SKIPPED_PARAMS_REMOVE ) {
+                      if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
+                        $comment_line =~ s/^:param\s+(\w+):(.*)$/$1: $2/;
+                        push @out_params, $comment_line ;
+                        $skipping_param = 2;
+                      }
+                      else {
+                        $skipping_param = 1;
+                      }
+                      next;
+                    }
+                  }
+                  if ( $skipping_param > 0 ) {
+                    if ( $comment_line =~ m/^(:.*|\.\..*|\s*)$/ ){
+                      $skipping_param = 0;
+                    }
+                    elsif ( $skipping_param == 2 ) {
+                      $comment_line =~ s/^\s+/ /;
+                      $out_params[$#out_params] .= $comment_line;
+                      # exit_with_error('Skipped param (SIP_OUT) should have their doc on a single line');
+                      next;
+                    }
+                    else
+                    {
+                      next;
+                    }
+                  }
+                  if ( $comment_line =~ m/:return:/ && $#out_params >= 0 ){
+                    $waiting_for_return_to_end = 1;
+                    $comment_line =~ s/:return:/:return: -/;
+                    write_output("CM2", "$doc_prepend$comment_line\n");
+                    foreach my $out_param (@out_params) {
+                      write_output("CM7", "$doc_prepend         - $out_param\n");
+                    }
+                    @out_params = ();
+                  }
+                  else {
+                    write_output("CM2", "$doc_prepend$comment_line\n");
+                  }
+                  if ( $waiting_for_return_to_end == 1 ) {
+                    if ($comment_line =~ m/^(:.*|\.\..*|\s*)$/) {
+                      $waiting_for_return_to_end = 0;
+                    }
+                    else {
+                      # exit_with_error('Return docstring should be single line with SIP_OUT params');
+                    }
+                  }
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
                 }
-            write_output("CM4", "$doc_prepend%End\n");
+                exit_with_error("A method with output parameters must contain a return directive (method returns ${RETURN_TYPE})") if $#out_params >= 0 and $RETURN_TYPE ne '';
+                write_output("CM4", "$doc_prepend%End\n");
             }
             # if ( $RETURN_TYPE ne '' ){
             #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");

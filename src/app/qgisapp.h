@@ -1,10 +1,10 @@
 /***************************************************************************
-                          qgisapp.h  -  description
-                             -------------------
-    begin                : Sat Jun 22 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
- ***************************************************************************/
+                         qgisapp.h  -  description
+                            -------------------
+   begin                : Sat Jun 22 2002
+   copyright            : (C) 2002 by Gary E.Sherman
+   email                : sherman at mrcc.com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -105,6 +105,7 @@ class QgsGeometryValidationDock;
 class QgsGeometryValidationModel;
 class QgsUserProfileManagerWidgetFactory;
 class Qgs3DMapCanvasDockWidget;
+class QgsHandleBadLayersHandler;
 
 class QDomDocument;
 class QNetworkReply;
@@ -1381,8 +1382,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void customize();
     //! options dialog slot
     void options();
-    //! Whats-this help slot
-    void whatsThis();
     //! Open project properties dialog and show the projections tab
     void projectPropertiesProjections();
     /*  void urlData(); */
@@ -2046,7 +2045,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mEllipseFoci = nullptr;
         QgsMapTool *mRectangleCenterPoint = nullptr;
         QgsMapTool *mRectangleExtent = nullptr;
-        QgsMapTool *mRectangle3Points = nullptr;
+        QgsMapTool *mRectangle3PointsDistance = nullptr;
+        QgsMapTool *mRectangle3PointsProjected = nullptr;
         QgsMapTool *mRegularPolygon2Points = nullptr;
         QgsMapTool *mRegularPolygonCenterPoint = nullptr;
         QgsMapTool *mRegularPolygonCenterCorner = nullptr;
@@ -2085,6 +2085,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mRotateLabel = nullptr;
         QgsMapTool *mChangeLabelProperties = nullptr;
         QgsMapTool *mReverseLine = nullptr ;
+        QgsMapTool *mTrimExtendFeature = nullptr ;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool = nullptr;
@@ -2310,6 +2311,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
+    QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
 
     friend class TestQgisAppPython;
     friend class QgisAppInterface;

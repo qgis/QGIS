@@ -59,10 +59,6 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
   mCoordsEditValidator = new QRegExpValidator( coordValidator, this );
-  mLineEdit->setWhatsThis( tr( "Shows the map coordinates at the "
-                               "current cursor position. The display is continuously updated "
-                               "as the mouse is moved. It also allows editing to set the canvas "
-                               "center to a given position. The format is longitude,latitude or east,north" ) );
   mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
@@ -317,7 +313,7 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
 
   //ensure the label is big (and small) enough
-  int width = std::max( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10, mMinimumWidth );
+  int width = std::max( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 16, mMinimumWidth );
   if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
   {
     mLineEdit->setMinimumWidth( width );

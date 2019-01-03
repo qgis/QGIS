@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLEGENDSYMBOLITEMV2_H
-#define QGSLEGENDSYMBOLITEMV2_H
+#ifndef QGSLEGENDSYMBOLITEM_H
+#define QGSLEGENDSYMBOLITEM_H
 
 #include <memory>
 #include <QString>
@@ -88,8 +88,14 @@ class CORE_EXPORT QgsLegendSymbolItem
      */
     QString parentRuleKey() const { return mParentKey; }
 
-    //! Sets symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbol *s SIP_TRANSFER );
+    /**
+     * Sets the symbol of the item.
+     *
+     * Does not take ownership of symbol -- an internal clone is made of the symbol.
+     *
+     * \see symbol()
+     */
+    void setSymbol( QgsSymbol *s );
 
     /**
      * Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
@@ -107,7 +113,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 
   private:
-    //! symbol. owned by the struct. can be null.
+    //! Legend symbol -- may be null.
     QgsSymbol *mSymbol = nullptr;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
@@ -135,7 +141,6 @@ class CORE_EXPORT QgsLegendSymbolItem
     QString mParentKey;
 };
 
-
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
-#endif // QGSLEGENDSYMBOLITEMV2_H
+#endif // QGSLEGENDSYMBOLITEM_H

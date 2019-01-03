@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsprocessingparameters.h
-                         -------------------------
-    begin                : April 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
- ***************************************************************************/
+                      qgsprocessingparameters.h
+                      -------------------------
+ begin                : April 2017
+ copyright            : (C) 2017 by Nyall Dawson
+ email                : nyall dot dawson at gmail dot com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -30,6 +30,7 @@
 
 class QgsProcessingContext;
 class QgsRasterLayer;
+class QgsMeshLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsProcessingFeatureSource;
@@ -228,12 +229,16 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
       sipType = sipType_QgsProcessingParameterRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshLayer;
     else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
       sipType = sipType_QgsProcessingParameterEnum;
     else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
       sipType = sipType_QgsProcessingParameterString;
     else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() )
       sipType = sipType_QgsProcessingParameterExpression;
+    else if ( sipCpp->type() == QgsProcessingParameterAuthConfig::typeName() )
+      sipType = sipType_QgsProcessingParameterAuthConfig;
     else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() )
       sipType = sipType_QgsProcessingParameterVectorLayer;
     else if ( sipCpp->type() == QgsProcessingParameterField::typeName() )
@@ -804,6 +809,29 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a mesh layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.6
+     */
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a mesh layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.6
+     */
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+
+    /**
      * Evaluates the parameter with matching \a definition to a coordinate reference system.
      */
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -1359,7 +1387,19 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * \class QgsProcessingParameterNumber
  * \ingroup core
  * A numeric parameter for processing algorithms.
-  * \since QGIS 3.0
+ *
+ * For numeric parameters with a dataType() of Double, the number of decimals places
+ * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
+ *
+ * * \code{.py}
+ *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDefinition
 {
@@ -1449,7 +1489,19 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
  * \ingroup core
  * A double numeric parameter for distance values. Linked to a source layer or CRS parameter
  * to determine what units the distance values are in.
-  * \since QGIS 3.2
+ *
+ * The number of decimals places shown in a distance parameter's widget can be specified by
+ * setting the parameter's metadata. For example:
+ *
+ * * \code{.py}
+ *   param = QgsProcessingParameterDistance( 'VAL', 'Threshold')
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameterNumber
 {
@@ -1487,12 +1539,29 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      */
     void setParentParameterName( const QString &parentParameterName );
 
+    /**
+     * Returns the default distance unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     * \since QGIS 3.4.3
+     */
+    QgsUnitTypes::DistanceUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default distance \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     * \since QGIS 3.4.3
+     */
+    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit ) { mDefaultUnit = unit; }
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
     QString mParentParameterName;
+    QgsUnitTypes::DistanceUnit mDefaultUnit = QgsUnitTypes::DistanceUnknownUnit;
 
 };
 
@@ -1699,6 +1768,45 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
 
 };
 
+
+/**
+ * \class QgsProcessingParameterAuthConfig
+ * \ingroup core
+ * A string parameter for authentication configuration configuration ID values.
+ *
+ * This parameter allows for users to select from available authentication configurations,
+ * or create new authentication configurations as required.
+ *
+ * QgsProcessingParameterAuthConfig should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
+ *
+  * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsProcessingParameterAuthConfig : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterAuthConfig.
+     */
+    QgsProcessingParameterAuthConfig( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                      bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "authcfg" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterAuthConfig *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+};
+
 /**
  * \class QgsProcessingParameterExpression
  * \ingroup core
@@ -1822,6 +1930,39 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
      */
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+};
+
+/**
+ * \class QgsProcessingParameterMeshLayer
+ * \ingroup core
+ * A mesh layer parameter for processing algorithms.
+  * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterMeshLayer.
+     */
+    QgsProcessingParameterMeshLayer( const QString &name,
+                                     const QString &description = QString(),
+                                     const QVariant &defaultValue = QVariant(),
+                                     bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "mesh" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMeshLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 };
 
 /**

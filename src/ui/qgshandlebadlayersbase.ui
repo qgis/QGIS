@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Handle Bad Layers</string>
+   <string>Handle Unavailable Layers</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -27,7 +27,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Discard|QDialogButtonBox::Ignore</set>
+      <set>QDialogButtonBox::Discard|QDialogButtonBox::Ignore</set>
      </property>
     </widget>
    </item>

@@ -15,10 +15,10 @@
 #include "qgslogger.h"
 #include "qgshelp.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include "qgssvgselectorwidget.h"
+#include "qgsgui.h"
 
 #include <QPainter>
 #include <cmath>
@@ -31,11 +31,11 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   , mDeco( deco )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationNorthArrowDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationNorthArrowDialog::buttonBox_rejected );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationNorthArrowDialog::apply );
@@ -61,10 +61,10 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   connect( sliderRotation, &QSlider::valueChanged, this, &QgsDecorationNorthArrowDialog::sliderRotation_valueChanged );
 
   // placement
-  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
-  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
-  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
-  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->addItem( tr( "Top Left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top Right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
@@ -103,12 +103,6 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
 
   drawNorthArrow();
-}
-
-QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::showHelp()

@@ -139,7 +139,7 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 void QgsMapLayerStyleManagerWidget::addStyle()
 {
   bool ok;
-  QString text = QInputDialog::getText( nullptr, tr( "New style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
@@ -189,8 +189,8 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
       askToUser.setText( tr( "Save default style to: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
-      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+      askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
       switch ( askToUser.exec() )
       {
@@ -232,8 +232,8 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
       askToUser.setText( tr( "Load default style from: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
-      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+      askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
       switch ( askToUser.exec() )
       {

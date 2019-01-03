@@ -375,7 +375,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
-  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
+  connect( mSvgSourceLineEdit, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
 
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) ) );
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );

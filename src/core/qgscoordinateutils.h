@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include <QString>
+#include <QObject>
 
 #include "qgis_core.h"
 
@@ -39,27 +40,32 @@ class QgsProject;
  */
 class CORE_EXPORT QgsCoordinateUtils
 {
+    Q_GADGET
+
   public:
 
     /**
-     * Returns the precision to use for displaying coordinates to the user, respecting
-     * the user's project settings. If the user has set the project to use "automatic"
-     * precision, this function tries to calculate an optimal coordinate precision for a given
-     * map units per pixel by calculating the number of decimal places for the coordinates
-     * with the aim of always having enough decimal places to show the difference in position
-     * between adjacent pixels.
-     * \param mapUnitsPerPixel number of map units per pixel
-     * \param mapCrs CRS of map
-     * \returns optimal number of decimal places for coordinates
+     * Returns the precision to use for displaying coordinates in \a mapCrs to the user.
+     * It respects the user's \a project settings.
+     * If the user has set the project to use "automatic" precision, this function tries
+     * to calculate an optimal coordinate precision for a given \a mapUnitsPerPixel by
+     * calculating the number of decimal places for the coordinates with the aim of always
+     * having enough decimal places to show the difference in position between adjacent
+     * pixels.
+     *
+     * \note  Since QGIS 3.6 a new \a project parameter is available. Using the method without this
+     *        a \a project parameter is deprecated and will be removed with QGIS 4.
+     *        For backward compatibility, QgsProject.instance() will be used if the \a project
+     *        parameter is not specified.
      */
-    static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
+    Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project = nullptr );
 
     /**
      * Formats a \a point coordinate for use with the specified \a project, respecting the project's
      * coordinate display settings.
      * \since QGIS 3.2
      */
-    static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+    Q_INVOKABLE static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
 };
 

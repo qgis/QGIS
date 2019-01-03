@@ -13,8 +13,8 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTILINESTRINGV2_H
-#define QGSMULTILINESTRINGV2_H
+#ifndef QGSMULTILINESTRING_H
+#define QGSMULTILINESTRING_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -68,7 +68,10 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -80,4 +83,4 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSMULTILINESTRINGV2_H
+#endif // QGSMULTILINESTRING_H

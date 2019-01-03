@@ -39,6 +39,13 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     Q_OBJECT
 
   public:
+
+    enum Roles
+    {
+      UrlRole = Qt::UserRole + 1,
+      IsLayerRole,
+    };
+
     //! Whether the dialog is for a map service or a feature service
     enum ServiceType { MapService, FeatureService };
 

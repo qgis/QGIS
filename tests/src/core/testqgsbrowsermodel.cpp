@@ -37,6 +37,7 @@ class TestQgsBrowserModel : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void testModel();
+    void driveItems();
 
 };
 
@@ -159,6 +160,20 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.data( model.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
   QCOMPARE( model.rowCount( root2Index ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+}
+
+void TestQgsBrowserModel::driveItems()
+{
+  // an unapologetically linux-directed test ;)
+  QgsBrowserModel model;
+  QVERIFY( model.driveItems().empty() );
+
+  model.initialize();
+  QVERIFY( !model.driveItems().empty() );
+  QVERIFY( model.driveItems().contains( QStringLiteral( "/" ) ) );
+  QgsDirectoryItem *rootItem = model.driveItems().value( QStringLiteral( "/" ) );
+  QVERIFY( rootItem );
+  QCOMPARE( rootItem->path(), QStringLiteral( "/" ) );
 }
 
 QGSTEST_MAIN( TestQgsBrowserModel )

@@ -205,7 +205,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       // Note: output block is not 2px wider and it is an image
       // Prepare context and queue
       cl::Context ctx = QgsOpenClUtils::context();
-      cl::CommandQueue queue( ctx );
+      cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
       // Cast to float (because double just crashes on some GPUs)
       std::vector<float> rasterParams;
@@ -250,7 +250,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       std::call_once( programBuilt, [ = ]()
       {
         // Create a program from the kernel source
-        program = QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw );
+        program = QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw );
       } );
 
       // Disable program cache when developing and testing cl program

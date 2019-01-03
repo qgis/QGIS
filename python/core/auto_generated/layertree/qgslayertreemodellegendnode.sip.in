@@ -221,9 +221,9 @@ Returns the symbol used by the legend node.
 .. versionadded:: 2.14
 %End
 
-    void setSymbol( QgsSymbol *symbol );
+    void setSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
-Sets the symbol to be used by the legend node. The symbol change is also propagated
+Sets the ``symbol`` to be used by the legend node. The symbol change is also propagated
 to the associated vector layer's renderer.
 
 :param symbol: new symbol for node. Ownership is transferred.
@@ -269,6 +269,8 @@ Checks all items belonging to the same layer as this node.
 
 .. seealso:: :py:func:`uncheckAllItems`
 
+.. seealso:: :py:func:`toggleAllItems`
+
 .. versionadded:: 2.14
 %End
 
@@ -278,7 +280,20 @@ Unchecks all items belonging to the same layer as this node.
 
 .. seealso:: :py:func:`checkAllItems`
 
+.. seealso:: :py:func:`toggleAllItems`
+
 .. versionadded:: 2.14
+%End
+
+    void toggleAllItems();
+%Docstring
+Toggle all items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 3.6
 %End
 
 };

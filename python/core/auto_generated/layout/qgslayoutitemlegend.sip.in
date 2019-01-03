@@ -67,6 +67,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QIcon icon() const;
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
     virtual QString displayName() const;
 
 

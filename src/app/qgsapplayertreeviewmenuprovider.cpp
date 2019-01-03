@@ -199,18 +199,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      // change data source is only supported for vectors and rasters
-      if ( vlayer || rlayer )
-      {
-
-        QAction *a = new QAction( tr( "Change data source…" ), menu );
-        connect( a, &QAction::triggered, [ = ]
-        {
-          QgisApp::instance()->changeDataSource( layer );
-        } );
-        menu->addAction( a );
-      }
-
       if ( vlayer )
       {
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
@@ -218,8 +206,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
+        QgsSettings settings;
+        QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                         QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable(); } );
+                         QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
 
         // allow editing
         unsigned int cap = vlayer->dataProvider()->capabilities();
@@ -249,6 +239,26 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
           action->setEnabled( !vlayer->isEditable() );
         }
+      }
+
+      // change data source is only supported for vectors and rasters
+      if ( vlayer || rlayer )
+      {
+
+        QAction *a = new QAction( tr( "Change Data Source…" ), menu );
+        // Disable when layer is editable
+        if ( layer->isEditable() )
+        {
+          a->setEnabled( false );
+        }
+        else
+        {
+          connect( a, &QAction::triggered, this, [ = ]
+          {
+            QgisApp::instance()->changeDataSource( layer );
+          } );
+        }
+        menu->addAction( a );
       }
 
       menu->addSeparator();
@@ -468,6 +478,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
       {
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleAllLayers.svg" ) ), tr( "&Toggle Items" ),
+                         symbolNode, &QgsSymbolLegendNode::toggleAllItems );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
                          symbolNode, &QgsSymbolLegendNode::checkAllItems );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
@@ -683,6 +695,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
   dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
+  context.setMessageBar( QgisApp::instance()->messageBar() );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
@@ -760,6 +773,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   dlg.setWindowTitle( tr( "Symbol Selector" ) );
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mCanvas );
+  context.setMessageBar( QgisApp::instance()->messageBar() );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
@@ -788,9 +802,9 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   if ( !originalSymbol )
     return;
 
-  QgsSymbol *newSymbol = originalSymbol->clone();
+  std::unique_ptr< QgsSymbol > newSymbol( originalSymbol->clone() );
   newSymbol->setColor( color );
-  node->setSymbol( newSymbol );
+  node->setSymbol( newSymbol.release() );
   if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
   {
     layer->emitStyleChanged();

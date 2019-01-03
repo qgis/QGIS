@@ -26,6 +26,7 @@
 #include <QTextCodec>
 #include <QMessageBox>
 
+#if QT_CONFIG(process)
 QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
 {
@@ -162,3 +163,14 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
     QgsDebugMsg( "Got error: " + QString( "%d" ).arg( err ) );
   }
 }
+#else
+QgsRunProcess::QgsRunProcess( const QString &action, bool )
+{
+  Q_UNUSED( action )
+  QgsDebugMsg( "Skipping command: " + action );
+}
+
+QgsRunProcess::~QgsRunProcess()
+{
+}
+#endif

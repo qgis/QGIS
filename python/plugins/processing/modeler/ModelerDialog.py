@@ -487,7 +487,7 @@ class ModelerDialog(BASE, WIDGET):
             self.bar.pushMessage("", self.tr("Model doesn't contain any algorithm and/or parameter and can't be executed"), level=Qgis.Warning, duration=5)
             return
 
-        dlg = AlgorithmDialog(self.model)
+        dlg = AlgorithmDialog(self.model.create(), parent=iface.mainWindow())
         dlg.exec_()
 
     def save(self):

@@ -285,6 +285,14 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
+  // check text format is correctly set
+  l.renderContext().setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QCOMPARE( rc.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  l.renderContext().setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QCOMPARE( rc.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+
   p.end();
 }
 
@@ -340,22 +348,30 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
 
   // check render context flags are correctly set
   l.renderContext().setFlags( nullptr );
-  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
-  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
-  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
+
+  // check text format is correctly set
+  l.renderContext().setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
+  QCOMPARE( rc.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  l.renderContext().setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
+  QCOMPARE( rc.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
 
   p.end();
 }

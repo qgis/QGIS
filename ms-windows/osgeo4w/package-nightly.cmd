@@ -214,14 +214,15 @@ set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
 cmake --build %BUILDDIR% --target NightlyTest --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
-cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
-if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
+
+:skiptests
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%
 PATH %oldpath%
 
-:skiptests
+cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
 
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
@@ -250,9 +251,11 @@ if errorlevel 1 (echo creation of registry template & goto error)
 
 set batches=
 for %%g IN (%GRASS_VERSIONS%) do (
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g%%g.bat.tmpl
+	for /F "delims=." %%i in ("%%g") do set v=%%i
+
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
-	set batches=!batches! bin/%PACKAGENAME%-g%%g.bat.tmpl
+	set batches=!batches! bin/%PACKAGENAME%-g!v!.bat.tmpl
 )
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl

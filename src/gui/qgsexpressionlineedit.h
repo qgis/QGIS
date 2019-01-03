@@ -118,8 +118,9 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     QString expression() const;
 
     /**
-      * Returns true if the current expression is valid.
+      * Determines if the current expression is valid.
       * \param expressionError will be set to any generated error message if specified
+      * \returns true if the current expression is valid.
       */
     bool isValidExpression( QString *expressionError SIP_OUT = nullptr ) const;
 

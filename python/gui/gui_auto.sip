@@ -116,6 +116,7 @@
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfieldvalidator.sip
 %Include auto_generated/qgsfieldvalueslineedit.sip
+%Include auto_generated/qgsfilecontentsourcelineedit.sip
 %Include auto_generated/qgsfilewidget.sip
 %Include auto_generated/qgsfilterlineedit.sip
 %Include auto_generated/qgsfloatingwidget.sip
@@ -203,7 +204,6 @@
 %Include auto_generated/qgsstatusbar.sip
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
-%Include auto_generated/qgssvgsourcelineedit.sip
 %Include auto_generated/qgssymbolbutton.sip
 %Include auto_generated/qgstablewidgetbase.sip
 %Include auto_generated/qgstabwidget.sip
@@ -212,6 +212,7 @@
 %Include auto_generated/qgstextpreview.sip
 %Include auto_generated/qgstreewidgetitem.sip
 %Include auto_generated/qgsunitselectionwidget.sip
+%Include auto_generated/qgsvaliditycheckresultswidget.sip
 %Include auto_generated/qgsvariableeditorwidget.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip

@@ -25,6 +25,7 @@
 #include "gdal.h"
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsrastercalcnode.h"
 
 class QgsRasterLayer;
 class QgsFeedback;
@@ -39,6 +40,18 @@ class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
 
   public:
+
+    /**
+     * Creates a list of raster entries from the current project.
+     *
+     * If there is more than one layer with the same data source
+     * only one of them is added to the list, duplicate names are
+     * also handled by appending an _n integer to the base name.
+     *
+     * \return the list of raster entries form the current project
+     * \since QGIS 3.6
+     */
+    static QVector<QgsRasterCalculatorEntry> rasterEntries();
 
     /**
      * Name of entry.
@@ -138,6 +151,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
       \param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double *transform ) const;
+
+    //! Execute calculations on GPU
+    Result processCalculationGPU( std::unique_ptr< QgsRasterCalcNode > calcNode, QgsFeedback *feedback = nullptr );
 
     QString mFormulaString;
     QString mOutputFile;

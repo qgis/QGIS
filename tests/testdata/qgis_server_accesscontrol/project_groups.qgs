@@ -4468,7 +4468,7 @@ def my_form_open(dialog, layer, feature):
         <LabelFont style="" description="DejaVu Sans,10,-1,5,50,0,0,0,0,0"/>
         <FontColor green="0" red="0" blue="0"/>
       </LayoutItem>
-      <LayoutItem position="21.3911,46,mm" followPresetName="" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" followPreset="false" excludeFromExports="0" keepLayerSet="false" itemRotation="0" frame="false" visibility="1" mapRotation="0" outlineWidthM="0.3,mm" frameJoinStyle="miter" zValue="3" id="" blendMode="0" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" type="65639" background="true" size="242,104,mm" positionLock="false" groupUuid="" positionOnPage="21.3911,46,mm" drawCanvasItems="true" opacity="1" referencePoint="0">
+      <LayoutItem position="21.3911,46,mm" followPresetName="" templateUuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" followPreset="false" excludeFromExports="0" keepLayerSet="false" itemRotation="0" frame="false" visibility="1" mapRotation="0" outlineWidthM="0.3,mm" frameJoinStyle="miter" zValue="3" id="" blendMode="0" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" type="65639" mapFlags="1" background="true" size="242,104,mm" positionLock="false" groupUuid="" positionOnPage="21.3911,46,mm" drawCanvasItems="true" opacity="1" referencePoint="0">
         <FrameColor alpha="255" green="0" red="0" blue="0"/>
         <BackgroundColor alpha="255" green="255" red="255" blue="255"/>
         <LayoutObject>
@@ -4681,7 +4681,7 @@ def my_form_open(dialog, layer, feature):
         <LabelFont style="" description="DejaVu Sans,10,-1,5,50,0,0,0,0,0"/>
         <FontColor green="0" red="0" blue="0"/>
       </LayoutItem>
-      <LayoutItem position="21.3911,46,mm" followPresetName="" templateUuid="{98195e4d-0084-4747-b15b-507220be6d8a}" followPreset="false" excludeFromExports="0" keepLayerSet="false" itemRotation="0" frame="false" visibility="1" mapRotation="0" outlineWidthM="0.3,mm" frameJoinStyle="miter" zValue="3" id="" blendMode="0" uuid="{98195e4d-0084-4747-b15b-507220be6d8a}" type="65639" background="true" size="242,104,mm" positionLock="false" groupUuid="" positionOnPage="21.3911,46,mm" drawCanvasItems="true" opacity="1" referencePoint="0">
+      <LayoutItem position="21.3911,46,mm" followPresetName="" templateUuid="{98195e4d-0084-4747-b15b-507220be6d8a}" followPreset="false" excludeFromExports="0" keepLayerSet="false" itemRotation="0" frame="false" visibility="1" mapRotation="0" outlineWidthM="0.3,mm" frameJoinStyle="miter" zValue="3" id="" blendMode="0" uuid="{98195e4d-0084-4747-b15b-507220be6d8a}" type="65639" mapFlags="1" background="true" size="242,104,mm" positionLock="false" groupUuid="" positionOnPage="21.3911,46,mm" drawCanvasItems="true" opacity="1" referencePoint="0">
         <FrameColor alpha="255" green="0" red="0" blue="0"/>
         <BackgroundColor alpha="255" green="255" red="255" blue="255"/>
         <LayoutObject>

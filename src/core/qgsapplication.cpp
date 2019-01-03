@@ -30,12 +30,14 @@
 #include "qgstaskmanager.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
+#include "qgssymbollayerutils.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
@@ -48,6 +50,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsvaliditycheckregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -61,10 +64,12 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QIcon>
 #include <QPixmap>
 #include <QThreadPool>
 #include <QLocale>
+#include <QStyle>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -270,7 +275,9 @@ void QgsApplication::init( QString profileFolder )
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
   QString passfile( QStringLiteral( "QGIS_AUTH_PASSWORD_FILE" ) ); // QString, for comparison
-  Q_FOREACH ( const QString &varStr, QProcess::systemEnvironment() )
+
+  const auto systemEnvironment = QProcessEnvironment::systemEnvironment().toStringList();
+  for ( const QString &varStr : systemEnvironment )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -724,22 +731,22 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   QString path = themes.value( themeName );
   QString stylesheetname = path + "/style.qss";
-  QString autostylesheet = stylesheetname + ".auto";
 
   QFile file( stylesheetname );
   QFile variablesfile( path + "/variables.qss" );
-  QFile fileout( autostylesheet );
 
   QFileInfo variableInfo( variablesfile );
 
-  if ( variableInfo.exists() && variablesfile.open( QIODevice::ReadOnly ) )
+  if ( !file.open( QIODevice::ReadOnly ) || ( variableInfo.exists() && !variablesfile.open( QIODevice::ReadOnly ) ) )
   {
-    if ( !file.open( QIODevice::ReadOnly ) || !fileout.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
-    {
-      return;
-    }
+    return;
+  }
 
-    QString styledata = file.readAll();
+  QString styledata = file.readAll();
+  styledata.replace( QStringLiteral( "@theme_path" ), path );
+
+  if ( variableInfo.exists() )
+  {
     QTextStream in( &variablesfile );
     while ( !in.atEnd() )
     {
@@ -754,16 +761,49 @@ void QgsApplication::setUITheme( const QString &themeName )
       }
     }
     variablesfile.close();
-    QTextStream out( &fileout );
-    out << styledata;
-    fileout.close();
-    file.close();
-    stylesheetname = autostylesheet;
+  }
+  file.close();
+
+  if ( Qgis::UI_SCALE_FACTOR != 1.0 )
+  {
+    // apply OS-specific UI scale factor to stylesheet's em values
+    int index = 0;
+    QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    QRegularExpressionMatch match = regex.match( styledata, index );
+    while ( match.hasMatch() )
+    {
+      index = match.capturedStart();
+      styledata.remove( index, match.captured( 0 ).length() );
+      QString number = QString::number( match.captured( 0 ).toDouble() * Qgis::UI_SCALE_FACTOR );
+      styledata.insert( index, number );
+      index += number.length();
+      match = regex.match( styledata, index );
+    }
   }
 
-  QString styleSheet = QStringLiteral( "file:///" );
-  styleSheet.append( stylesheetname );
-  qApp->setStyleSheet( styleSheet );
+  qApp->setStyleSheet( styledata );
+
+  QFile palettefile( path + "/palette.txt" );
+  QFileInfo paletteInfo( palettefile );
+  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  {
+    QPalette pal = qApp->palette();
+    QTextStream in( &palettefile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      QStringList parts = line.split( ':' );
+      if ( parts.count() == 2 )
+      {
+        int role = parts.at( 0 ).trimmed().toInt();
+        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+    }
+    palettefile.close();
+    qApp->setPalette( pal );
+  }
+
   setThemeName( themeName );
 }
 
@@ -947,7 +987,7 @@ QString QgsApplication::userLoginName()
     sUserName = QString( name );
   }
 
-#else
+#elif QT_CONFIG(process)
   QProcess process;
 
   process.start( QStringLiteral( "whoami" ) );
@@ -1769,9 +1809,19 @@ QgsSvgCache *QgsApplication::svgCache()
   return members()->mSvgCache;
 }
 
+QgsImageCache *QgsApplication::imageCache()
+{
+  return members()->mImageCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
+}
+
+QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry()
+{
+  return members()->mValidityCheckRegistry;
 }
 
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
@@ -1839,6 +1889,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
+  mImageCache = new QgsImageCache();
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
@@ -1854,10 +1905,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   m3DRendererRegistry = new Qgs3DRendererRegistry();
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+  mValidityCheckRegistry = new QgsValidityCheckRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
+  delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
   delete mAnnotationRegistry;
@@ -1875,6 +1928,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;
+  delete mImageCache;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;

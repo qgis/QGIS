@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QPointer>
 
-
+class QgsLayoutDesignerInterface;
 class QgsPropertyOverrideButton;
 
 // NOTE - the inheritance here is tricky, as we need to avoid the multiple inheritance
@@ -150,6 +150,14 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      * and update their widget labels accordingly.
      */
     virtual void setReportTypeString( const QString &string );
+
+    /**
+     * Sets the the layout designer interface in which the widget is
+     * being shown.
+     *
+     * \since QGIS 3.6
+     */
+    virtual void setDesignerInterface( QgsLayoutDesignerInterface *iface );
 
   protected:
 

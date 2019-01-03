@@ -53,6 +53,28 @@ typedef QgsPoint QgsMeshVertex;
 
 typedef QVector<int> QgsMeshFace;
 
+struct QgsMesh
+{
+  int vertexCount() const;
+%Docstring
+Returns number of vertices
+%End
+  int faceCount() const;
+%Docstring
+Returns number of faces
+%End
+
+  QgsMeshVertex vertex( int index ) const;
+%Docstring
+Returns a vertex at the index
+%End
+  QgsMeshFace face( int index ) const;
+%Docstring
+Returns a face at the index
+%End
+
+};
+
 class QgsMeshDatasetValue
 {
 %Docstring
@@ -124,6 +146,77 @@ Returns y value
 
 };
 
+class QgsMeshDataBlock
+{
+%Docstring
+
+QgsMeshDataBlock is a block of integers/doubles that can be used
+to retrieve:
+active flags (e.g. face's active integer flag)
+scalars (e.g. scalar dataset double values)
+vectors (e.g. vector dataset doubles x,y values)
+
+data are implicitly shared, so the class can be quickly copied
+std.numeric_limits<double>.quiet_NaN() represents NODATA value
+
+Data can be accessed all at once with buffer() (faster) or
+value by value (slower) with active() or value()
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    enum DataType
+    {
+      ActiveFlagInteger,
+      ScalarDouble,
+      Vector2DDouble,
+    };
+
+    QgsMeshDataBlock();
+%Docstring
+Constructs an invalid block
+%End
+
+    QgsMeshDataBlock( DataType type, int count );
+%Docstring
+Constructs a new block
+%End
+
+    DataType type() const;
+%Docstring
+Type of data stored in the block
+%End
+
+    int count() const;
+%Docstring
+Number of items stored in the block
+%End
+
+    bool isValid() const;
+%Docstring
+Whether the block is valid
+%End
+
+    QgsMeshDatasetValue value( int index ) const;
+%Docstring
+Returns a value represented by the index
+For active flag the behavior is undefined
+%End
+
+    bool active( int index ) const;
+%Docstring
+Returns a value for active flag by the index
+For scalar and vector 2d the behavior is undefined
+%End
+
+
+
+};
+
 class QgsMeshDatasetGroupMetadata
 {
 %Docstring
@@ -157,6 +250,8 @@ Constructs an empty metadata object
     QgsMeshDatasetGroupMetadata( const QString &name,
                                  bool isScalar,
                                  bool isOnVertices,
+                                 double minimum,
+                                 double maximum,
                                  const QMap<QString, QString> &extraOptions );
 %Docstring
 Constructs a valid metadata object
@@ -164,6 +259,8 @@ Constructs a valid metadata object
 :param name: name of the dataset group
 :param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
 :param isOnVertices: dataset values are defined on mesh's vertices. If false, values are defined on faces.
+:param minimum: minimum value (magnitude for vectors) present among all group's dataset values
+:param maximum: maximum value (magnitude for vectors) present among all group's dataset values
 :param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
 %End
 
@@ -192,6 +289,16 @@ Returns whether dataset group has scalar data
 Returns whether dataset group data is defined on vertices or faces
 %End
 
+    double minimum() const;
+%Docstring
+Returns minimum scalar value/vector magnitude present for whole dataset group
+%End
+
+    double maximum() const;
+%Docstring
+Returns maximum scalar value/vector magnitude present for whole dataset group
+%End
+
 };
 
 class QgsMeshDatasetMetadata
@@ -218,12 +325,17 @@ Constructs an empty metadata object
 %End
 
     QgsMeshDatasetMetadata( double time,
-                            bool isValid );
+                            bool isValid,
+                            double minimum,
+                            double maximum
+                          );
 %Docstring
 Constructs a valid metadata object
 
 :param time: a time which this dataset represents in the dataset group
 :param isValid: dataset is loadad and valid for fetching the data
+:param minimum: minimum value (magnitude for vectors) present among dataset values
+:param maximum: maximum value (magnitude for vectors) present among dataset values
 %End
 
     double time() const;
@@ -234,6 +346,16 @@ Returns the time value for this dataset
     bool isValid() const;
 %Docstring
 Returns whether dataset is valid
+%End
+
+    double minimum() const;
+%Docstring
+Returns minimum scalar value/vector magnitude present for the dataset
+%End
+
+    double maximum() const;
+%Docstring
+Returns maximum scalar value/vector magnitude present for the dataset
 %End
 
 };
@@ -278,14 +400,11 @@ Returns number of faces in the native mesh
 :return: Number of faces in the mesh
 %End
 
-    virtual QgsMeshVertex vertex( int index ) const = 0;
+    virtual void populateMesh( QgsMesh *mesh ) const = 0;
 %Docstring
-Returns the mesh vertex at index
-%End
+Populates the mesh vertices and faces
 
-    virtual QgsMeshFace face( int index ) const = 0;
-%Docstring
-Returns the mesh face at index
+.. versionadded:: 3.6
 %End
 };
 
@@ -359,8 +478,19 @@ Returns dataset metadata
     virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
 %Docstring
 Returns vector/scalar value associated with the index from the dataset
+To read multiple continuous values, use :py:func:`QgsMeshDatasetSourceInterface.datasetValues()`
+
+See QgsMeshDatasetMetadata.isVector() or :py:func:`QgsMeshDataBlock.type()`
+to check if the returned value is vector or scalar
+%End
+
+    virtual QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const = 0;
+%Docstring
+Returns N vector/scalar values from the index from the dataset
 
 See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
+
+.. versionadded:: 3.6
 %End
 
     virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
@@ -373,6 +503,13 @@ set active flag for F2 to false.
 V1 ---- V2 ---- V5-----V7
 |   F1  |   F2   | F3  |
 V3 ---- V4 ---- V6-----V8
+%End
+
+    virtual QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+%Docstring
+Returns whether the faces are active for particular dataset
+
+.. versionadded:: 3.6
 %End
 };
 
@@ -398,14 +535,6 @@ Responsible for reading native mesh data
     QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 %Docstring
 Ctor
-%End
-
-    virtual QgsRectangle extent() const;
-
-%Docstring
-Returns the extent of the layer
-
-:return: QgsRectangle containing the extent of the layer
 %End
 
   signals:

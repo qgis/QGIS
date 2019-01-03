@@ -44,6 +44,12 @@ QString memoryLayerFieldType( QVariant::Type type )
     case QVariant::DateTime:
       return QStringLiteral( "datetime" );
 
+    case QVariant::ByteArray:
+      return QStringLiteral( "binary" );
+
+    case QVariant::Bool:
+      return QStringLiteral( "boolean" );
+
     default:
       break;
   }

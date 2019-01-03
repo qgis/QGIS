@@ -655,3 +655,13 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   renderMapTileElem.appendChild( renderMapTileText );
   node.appendChild( renderMapTileElem );
 }
+
+QgsGeometry QgsMapSettings::labelBoundaryGeometry() const
+{
+  return mLabelBoundaryGeometry;
+}
+
+void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
+{
+  mLabelBoundaryGeometry = boundary;
+}

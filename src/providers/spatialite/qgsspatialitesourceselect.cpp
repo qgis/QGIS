@@ -296,7 +296,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   while ( ! settings.value( baseKey + savedName + "/sqlitepath", "" ).toString().isEmpty() )
   {
     bool ok;
-    savedName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( myName ),
+    savedName = QInputDialog::getText( nullptr, tr( "Add Connection" ),
                                        tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
                                        QString(), &ok );
     if ( !ok || savedName.isEmpty() )

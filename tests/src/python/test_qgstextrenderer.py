@@ -30,8 +30,9 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRenderChecker,
                        QgsBlurEffect)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
+from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtXml import QDomDocument
+from PyQt5.QtSvg import QSvgGenerator
 from qgis.testing import unittest, start_app
 from utilities import getTestFont, svgSymbolsPath
 
@@ -1655,6 +1656,84 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRenderPoint(format, 'text_point_center_aligned', text=['test'],
                                      alignment=QgsTextRenderer.AlignCenter, point=QPointF(200, 200))
+
+    def testTextRenderFormat(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        filename = '{}/test_render_text.svg'.format(QDir.tempPath())
+        svg = QSvgGenerator()
+        svg.setFileName(filename)
+        svg.setSize(QSize(400, 400))
+        svg.setResolution(600)
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(QSize(400, 400))
+        context = QgsRenderContext.fromMapSettings(ms)
+
+        # test with ALWAYS TEXT mode
+        context.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
+        painter = QPainter()
+        context.setPainter(painter)
+
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(svg)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        QgsTextRenderer.drawText(QPointF(0, 30),
+                                 0,
+                                 QgsTextRenderer.AlignLeft,
+                                 ['my test text'],
+                                 context,
+                                 format)
+
+        painter.end()
+
+        # expect svg to contain a text object with the label
+        with open(filename, 'r') as f:
+            lines = ''.join(f.readlines())
+        self.assertIn('<text', lines)
+        self.assertIn('>my test text<', lines)
+
+        os.unlink(filename)
+
+        # test with ALWAYS CURVES mode
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
+        painter = QPainter()
+        context.setPainter(painter)
+
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        svg = QSvgGenerator()
+        svg.setFileName(filename)
+        svg.setSize(QSize(400, 400))
+        svg.setResolution(600)
+        painter.begin(svg)
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        QgsTextRenderer.drawText(QPointF(0, 30),
+                                 0,
+                                 QgsTextRenderer.AlignLeft,
+                                 ['my test text'],
+                                 context,
+                                 format)
+
+        painter.end()
+
+        # expect svg to contain a text object with the label
+        with open(filename, 'r') as f:
+            lines = ''.join(f.readlines())
+        self.assertNotIn('<text', lines)
+        self.assertNotIn('>my test text<', lines)
 
 
 if __name__ == '__main__':

@@ -36,16 +36,7 @@ class QgsCoordinateReferenceSystem;
 /**
  * \ingroup core
  * Abstract base class for spatial data provider implementations.
- *
- * This object needs to inherit from QObject to enable event
- * processing in the Postgres/PostGIS provider (QgsPostgresProvider).
- * It is called *here* so that this vtable and the vtable for
- * QgsPostgresProvider don't get misaligned -
- * the QgsVectorLayer class factory (which refers
- * to generic QgsVectorDataProvider's) depends on it.
  */
-
-
 class CORE_EXPORT QgsDataProvider : public QObject
 {
 
@@ -534,23 +525,29 @@ class CORE_EXPORT QgsDataProvider : public QObject
   signals:
 
     /**
-     *   This is emitted whenever the worker thread has fully calculated the
-     *   PostGIS extents for this layer, and its event has been received by this
-     *   provider.
+     * Emitted whenever a deferred extent calculation is completed by the provider.
+     *
+     * Layers should connect to this signal and update their cached extents whenever
+     * it is emitted.
      */
     void fullExtentCalculated();
 
     /**
-     *   This is emitted whenever an asynchronous operation has finished
-     *   and the data should be redrawn
+     * Emitted whenever a change is made to the data provider which may have
+     * caused changes in the provider's data OUTSIDE of QGIS.
      *
-     *   When emitted from a QgsVectorDataProvider, any cached information such as
-     *   feature ids should be invalidated.
+     * When emitted from a QgsVectorDataProvider, any cached information such as
+     * feature ids should be invalidated.
+     *
+     * \warning This signal is NOT emitted when changes are made to a provider
+     * from INSIDE QGIS -- e.g. when adding features to a vector layer, deleting features
+     * or modifying existing features. Instead, the specific QgsVectorLayer signals
+     * should be used to detect these operations.
      */
     void dataChanged();
 
     /**
-     * Emitted when datasource issues a notification
+     * Emitted when the datasource issues a notification.
      *
      * \see setListening
      *

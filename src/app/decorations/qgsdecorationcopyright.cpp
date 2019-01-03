@@ -118,9 +118,11 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   context.painter()->setRenderHint( QPainter::Antialiasing, true );
 
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
-  QStringList displayStringList = displayString.split( QStringLiteral( "\n" ) );
+  QStringList displayStringList = displayString.split( '\n' );
 
   QFontMetricsF fm( mTextFormat.scaledFont( context ) );
+  QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
+  double textDescent = textMetrics.descent();
   double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList, &fm );
   double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point, &fm );
 
@@ -166,23 +168,33 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   switch ( mPlacement )
   {
     case BottomLeft: // Bottom Left, xOffset is set above
-      yOffset = deviceHeight - yOffset;
+      yOffset = deviceHeight - yOffset - textDescent;
       break;
     case TopLeft: // Top left, xOffset is set above
-      yOffset = yOffset + textHeight;
+      yOffset = yOffset + textHeight - textDescent;
       break;
     case TopRight: // Top Right
-      yOffset = yOffset + textHeight;
+      yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = QgsTextRenderer::AlignRight;
       break;
     case BottomRight: // Bottom Right
-      yOffset = deviceHeight - yOffset;
+      yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth - xOffset;
       horizontalAlignment = QgsTextRenderer::AlignRight;
       break;
+    case TopCenter: // Top Center
+      yOffset = yOffset + textHeight - textDescent;
+      xOffset = deviceWidth / 2;
+      horizontalAlignment = QgsTextRenderer::AlignCenter;
+      break;
+    case BottomCenter: // Bottom Center
+      yOffset = deviceHeight - yOffset - textDescent;
+      xOffset = deviceWidth / 2;
+      horizontalAlignment = QgsTextRenderer::AlignCenter;
+      break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   //Paint label to canvas

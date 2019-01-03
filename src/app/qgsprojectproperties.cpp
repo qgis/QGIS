@@ -1010,7 +1010,8 @@ void QgsProjectProperties::apply()
     canvas->setSelectionColor( selectionColor );
     canvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
   }
-  QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( canvasColor );
+  if ( QgisApp::instance()->mapOverviewCanvas() )
+    QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( canvasColor );
 
   //save project scales
   QStringList myScales;
@@ -1395,7 +1396,8 @@ void QgsProjectProperties::apply()
   {
     canvas->refresh();
   }
-  QgisApp::instance()->mapOverviewCanvas()->refresh();
+  if ( QgisApp::instance()->mapOverviewCanvas() )
+    QgisApp::instance()->mapOverviewCanvas()->refresh();
 }
 
 void QgsProjectProperties::showProjectionsTab()

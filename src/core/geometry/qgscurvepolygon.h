@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCURVEPOLYGONV2_H
-#define QGSCURVEPOLYGONV2_H
+#ifndef QGSCURVEPOLYGON_H
+#define QGSCURVEPOLYGON_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -66,16 +66,35 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     //curve polygon interface
+
+    /**
+     * Returns the number of interior rings contained with the curve polygon.
+     *
+     * \see interiorRing()
+     */
     int numInteriorRings() const
     {
       return mInteriorRings.size();
     }
 
+    /**
+     * Returns the curve polygon's exterior ring.
+     *
+     * \see interiorRing()
+     */
     const QgsCurve *exteriorRing() const
     {
       return mExteriorRing.get();
     }
 
+#ifndef SIP_RUN
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     */
     const QgsCurve *interiorRing( int i ) const
     {
       if ( i < 0 || i >= mInteriorRings.size() )
@@ -84,6 +103,29 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       }
       return mInteriorRings.at( i );
     }
+#else
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * An IndexError will be raised if no interior ring with the specified index exists.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     */
+    SIP_PYOBJECT interiorRing( int i ) SIP_TYPEHINT( QgsCurve );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( const_cast< QgsCurve * >( sipCpp->interiorRing( a0 ) ), sipType_QgsCurve, NULL );
+    }
+    % End
+#endif
 
     /**
      * Returns a new polygon geometry corresponding to a segmentized approximation
@@ -107,6 +149,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     //! Adds an interior ring to the geometry (takes ownership)
     virtual void addInteriorRing( QgsCurve *ring SIP_TRANSFER );
 
+#ifndef SIP_RUN
+
     /**
      * Removes an interior ring from the polygon. The first interior ring has index 0.
      * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
@@ -114,6 +158,30 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see removeInteriorRings()
      */
     bool removeInteriorRing( int ringIndex );
+#else
+
+    /**
+     * Removes an interior ring from the polygon. The first interior ring has index 0.
+     * The corresponding ring is removed from the polygon and deleted.
+     * It is not possible to remove the exterior ring using this method.
+     *
+     * An IndexError will be raised if no interior ring with the specified index exists.
+     *
+     * \see removeInteriorRings()
+     */
+    bool removeInteriorRing( int i );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyBool_FromLong( sipCpp->removeInteriorRing( a0 ) );
+    }
+    % End
+#endif
 
     /**
      * Removes the interior rings from the polygon. If the minimumAllowedArea
@@ -132,6 +200,16 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \since QGIS 3.0
      */
     void removeInvalidRings();
+
+    /**
+     * Forces the geometry to respect the Right-Hand-Rule, in which the area that is
+     * bounded by the polygon is to the right of the boundary. In particular, the exterior
+     * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+     * direction.
+     *
+     * \since QGIS 3.6
+     */
+    void forceRHR();
 
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
@@ -208,7 +286,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -228,4 +309,4 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSCURVEPOLYGONV2_H
+#endif // QGSCURVEPOLYGON_H

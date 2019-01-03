@@ -25,11 +25,8 @@
 
 #include <Qt3DRender/QTexture>
 
-#if QT_VERSION >= 0x050900
 #include <Qt3DExtras/QTextureMaterial>
-#else
 #include <Qt3DExtras/QDiffuseMapMaterial>
-#endif
 
 #include "quantizedmeshterraingenerator.h"
 
@@ -67,23 +64,32 @@ void QgsTerrainTileLoader::loadTexture()
   mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mTileDebugText );
 }
 
-void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial )
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
   texture->addTextureImage( textureImage );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  Qt3DExtras::QTextureMaterial *material = nullptr;
-#if QT_VERSION >= 0x050900
-  material = new Qt3DExtras::QTextureMaterial;
-  material->setTexture( texture );
-#else
-  material = new Qt3DExtras::QDiffuseMapMaterial;
-  material->setDiffuse( texture );
-  material->setShininess( 1 );
-  material->setAmbient( Qt::white );
-#endif
+
+  Qt3DRender::QMaterial *material = nullptr;
+  if ( isShadingEnabled )
+  {
+    Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial;
+    diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial;
+    diffuseMapMaterial->setDiffuse( texture );
+    diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
+    diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
+    diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
+    material = diffuseMapMaterial;
+  }
+  else
+  {
+    Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+    textureMaterial->setTexture( texture );
+    material = textureMaterial;
+  }
+
   entity->setTextureImage( textureImage );
   entity->addComponent( material ); // takes ownership if the component has no parent
 }

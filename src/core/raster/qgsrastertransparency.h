@@ -102,7 +102,7 @@ class CORE_EXPORT QgsRasterTransparency
      * by the stored transparency value.
      *
      * \param value the needle to search for in the transparency hay stack
-     * \param globalTransparency the overal transparency level for the layer
+     * \param globalTransparency the overall transparency level for the layer
     */
     int alphaValue( double value, int globalTransparency = 255 ) const;
 

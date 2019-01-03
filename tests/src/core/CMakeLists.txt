@@ -117,6 +117,7 @@ SET(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgshstoreutils.cpp
+ testqgsimagecache.cpp
  testqgsimageoperation.cpp
  testqgsinternalgeometryengine.cpp
  testqgsinvertedpolygonrenderer.cpp
@@ -174,6 +175,7 @@ SET(TESTS
  testqgis.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
+ testqgsrastermarker.cpp
  testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
  testqgsrasterlayer.cpp
@@ -202,6 +204,7 @@ SET(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testqgsvectorlayerutils.cpp
+ testqgsziputils.cpp
  testziplayer.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerrenderer.cpp

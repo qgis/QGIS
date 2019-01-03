@@ -43,6 +43,7 @@ from qgis.gui import (QgsOptionsWidgetFactory,
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.utils import iface
 
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -86,7 +87,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
             return False
 
         alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
-        dlg = AlgorithmDialog(alg)
+        dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
         dlg.show()
         return True
 
@@ -241,6 +242,7 @@ class ProcessingPlugin:
         self.editInPlaceAction.setObjectName('editInPlaceFeatures')
         self.editInPlaceAction.setCheckable(True)
         self.editInPlaceAction.toggled.connect(self.editSelected)
+        self.menu.addAction(self.editInPlaceAction)
         self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
 
         self.toolbox.processingToolbar.addSeparator()

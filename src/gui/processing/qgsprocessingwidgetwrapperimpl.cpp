@@ -22,6 +22,7 @@
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsprocessingcontext.h"
+#include "qgsauthconfigselect.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -137,6 +138,7 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterMapLayer::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterExpression::typeName();
 }
 
@@ -264,6 +266,7 @@ QStringList QgsProcessingCrsWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
          << QgsProcessingParameterFeatureSource::typeName();
 }
 
@@ -376,6 +379,7 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
          << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterAuthConfig::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
          << QgsProcessingParameterFile::typeName()
@@ -408,6 +412,80 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingStringWidgetWrapper::c
 
 
 //
+// QgsProcessingAuthConfigWidgetWrapper
+//
+
+QgsProcessingAuthConfigWidgetWrapper::QgsProcessingAuthConfigWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingAuthConfigWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mAuthConfigSelect = new QgsAuthConfigSelect();
+      mAuthConfigSelect->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mAuthConfigSelect, &QgsAuthConfigSelect::selectedConfigIdChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mAuthConfigSelect;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingAuthConfigWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mAuthConfigSelect )
+    mAuthConfigSelect->setConfigId( v );
+}
+
+QVariant QgsProcessingAuthConfigWidgetWrapper::widgetValue() const
+{
+  if ( mAuthConfigSelect )
+    return mAuthConfigSelect->configId();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingAuthConfigWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterAuthConfig::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingAuthConfigWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingAuthConfigWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingAuthConfigWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterAuthConfig::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAuthConfigWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingAuthConfigWidgetWrapper( parameter, type );
+}
+
+//
 // QgsProcessingNumericWidgetWrapper
 //
 
@@ -420,6 +498,8 @@ QgsProcessingNumericWidgetWrapper::QgsProcessingNumericWidgetWrapper( const QgsP
 QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterNumber *numberDef = static_cast< const QgsProcessingParameterNumber * >( parameterDefinition() );
+  const QVariantMap metadata = numberDef->metadata();
+  const int decimals = metadata.value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "decimals" ), 6 ).toInt();
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -433,13 +513,14 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         case QgsProcessingParameterNumber::Double:
           mDoubleSpinBox = new QgsDoubleSpinBox();
           mDoubleSpinBox->setExpressionsEnabled( true );
-          mDoubleSpinBox->setDecimals( 6 );
+          mDoubleSpinBox->setDecimals( decimals );
 
           // guess reasonable step value for double spin boxes
           if ( !qgsDoubleNear( numberDef->maximum(), std::numeric_limits<double>::max() ) &&
                !qgsDoubleNear( numberDef->minimum(), std::numeric_limits<double>::lowest() + 1 ) )
           {
-            const double singleStep = calculateStep( numberDef->minimum(), numberDef->maximum() );
+            double singleStep = calculateStep( numberDef->minimum(), numberDef->maximum() );
+            singleStep = std::max( singleStep, std::pow( 10, -decimals ) );
             mDoubleSpinBox->setSingleStep( singleStep );
           }
 
@@ -658,6 +739,8 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDistanceWidgetWrapper:
 
 QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
 {
+  const QgsProcessingParameterDistance *distanceDef = static_cast< const QgsProcessingParameterDistance * >( parameterDefinition() );
+
   QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
   switch ( type() )
   {
@@ -696,7 +779,7 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       mWarningLabel->setLayout( warningLayout );
       layout->insertWidget( 4, mWarningLabel );
 
-      setUnits( QgsUnitTypes::DistanceUnknownUnit );
+      setUnits( distanceDef->defaultUnit() );
 
       QWidget *w = new QWidget();
       layout->setMargin( 0 );

@@ -306,9 +306,9 @@ Returns next vertex id and coordinates
 
 :param id: initial value should be the starting vertex id. The next vertex id will be stored
            in this variable if found.
-:param vertex: container for found node
 
-:return: false if at end
+:return: - false if at end
+         - vertex:  container for found node
 %End
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
@@ -344,13 +344,10 @@ Searches for the closest segment of the geometry to a given point.
 :param pt: specifies the point to find closest segment to
 :param segmentPt: storage for the closest point within the geometry
 :param vertexAfter: storage for the ID of the vertex at the end of the closest segment
-:param leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left
-               of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
-               be determined, e.g. point exactly on a line)
-               false if point is to right of segment)
 :param epsilon: epsilon for segment snapping
 
-:return: squared distance to closest segment or negative value on error
+:return: - squared distance to closest segment or negative value on error
+         - leftOf:  indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) false if point is to right of segment)
 %End
 
 
@@ -610,9 +607,64 @@ Converts the geometry to a specified type.
 %End
 
 
+    QgsGeometryPartIterator parts();
+%Docstring
+Returns Java-style iterator for traversal of parts of the geometry. This iterator
+can safely be used to modify parts of the geometry.
+
+* Example:
+.. code-block:: python
+
+       # print the WKT representation of each part in a multi-point geometry
+       geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+       for part in geometry.parts():
+           print(part.asWkt())
+
+       # single part geometries only have one part - this loop will iterate once only
+       geometry = QgsLineString.fromWkt( 'LineString( 0 0, 10 10 )' )
+       for part in geometry.parts():
+           print(part.asWkt())
+
+       # parts can be modified during the iteration
+       geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+       for part in geometry.parts():
+           part.transform(ct)
+
+       # part iteration can also be combined with vertex iteration
+       geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+       for part in geometry.parts():
+           for v in part.vertices():
+               print(v.x(), v.y())
+
+.. seealso:: :py:func:`vertices`
+
+.. versionadded:: 3.6
+%End
+
+
     QgsVertexIterator vertices() const;
 %Docstring
-Returns Java-style iterator for traversal of vertices of the geometry
+Returns a read-only, Java-style iterator for traversal of vertices of all the geometry, including all geometry parts and rings.
+
+.. warning::
+
+   The iterator returns a copy of individual vertices, and accordingly geometries cannot be
+   modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+
+* Example:
+.. code-block:: python
+
+       # print the x and y coordinate for each vertex in a LineString
+       geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+       for v in geometry.vertices():
+           print(v.x(), v.y())
+
+       # vertex iteration includes all parts and rings
+       geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+       for v in geometry.vertices():
+           print(v.x(), v.y())
+
+.. seealso:: :py:func:`parts`
 
 .. versionadded:: 3.0
 %End
@@ -761,10 +813,105 @@ Returns next vertex of the geometry (undefined behavior if hasNext() returns fal
     sipRes = sipCpp;
 %End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() /TypeHint="QgsPoint"/;
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
+
+class QgsGeometryPartIterator
+{
+%Docstring
+Java-style iterator for traversal of parts of a geometry
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsGeometryPartIterator();
+%Docstring
+Constructor for QgsGeometryPartIterator
+%End
+
+    QgsGeometryPartIterator( QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more parts
+%End
+
+    QgsAbstractGeometry *next();
+%Docstring
+Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+%End
+
+    QgsGeometryPartIterator *__iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__() /TypeHint="QgsAbstractGeometry"/;
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
+
+
+class QgsGeometryConstPartIterator
+{
+%Docstring
+Java-style iterator for const traversal of parts of a geometry
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsGeometryConstPartIterator();
+%Docstring
+Constructor for QgsGeometryConstPartIterator
+%End
+
+    QgsGeometryConstPartIterator( const QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more parts
+%End
+
+    const QgsAbstractGeometry *next();
+%Docstring
+Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+%End
+
+    QgsGeometryConstPartIterator *__iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__() /TypeHint="QgsAbstractGeometry"/;
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
     else
       PyErr_SetString( PyExc_StopIteration, "" );
 %End

@@ -157,10 +157,10 @@ class GdalUtils:
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
-                    if ((gdal.DCAP_CREATE in metadata
-                         and metadata[gdal.DCAP_CREATE] == 'YES')
-                        or (gdal.DCAP_CREATECOPY in metadata
-                            and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                    if ((gdal.DCAP_CREATE in metadata and
+                         metadata[gdal.DCAP_CREATE] == 'YES') or
+                        (gdal.DCAP_CREATECOPY in metadata and
+                            metadata[gdal.DCAP_CREATECOPY] == 'YES')):
                         GdalUtils.supportedOutputRasters[shortName] = extensions
 
         return GdalUtils.supportedRasters
@@ -239,24 +239,6 @@ class GdalUtils:
     @staticmethod
     def readableVersion():
         return gdal.VersionInfo('RELEASE_NAME')
-
-    @staticmethod
-    def gdalHelpPath():
-        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
-
-        if helpPath is None:
-            if isWindows():
-                pass
-            elif isMac():
-                pass
-            else:
-                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
-                for path in searchPaths:
-                    if os.path.exists(path):
-                        helpPath = os.path.abspath(path)
-                        break
-
-        return helpPath if helpPath is not None else 'http://www.gdal.org/'
 
     @staticmethod
     def ogrConnectionStringFromLayer(layer):

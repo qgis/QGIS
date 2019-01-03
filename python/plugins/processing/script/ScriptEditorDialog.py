@@ -44,6 +44,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm)
 from qgis.utils import iface, OverrideCursor
+from qgis.processing import alg as algfactory
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
@@ -222,9 +223,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.update_dialog_title()
 
     def runAlgorithm(self):
-        d = {}
+        _locals = {}
         try:
-            exec(self.editor.text(), d)
+            exec(self.editor.text(), _locals)
         except Exception as e:
             error = QgsError(traceback.format_exc(), "Processing")
             QgsErrorDialog.show(error,
@@ -233,10 +234,13 @@ class ScriptEditorDialog(BASE, WIDGET):
             return
 
         alg = None
-        for k, v in d.items():
-            if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
-                alg = v()
-                break
+        try:
+            alg = algfactory.instances.pop().createInstance()
+        except IndexError:
+            for name, attr in _locals.items():
+                if inspect.isclass(attr) and issubclass(attr, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and attr.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+                    alg = attr()
+                    break
 
         if alg is None:
             QMessageBox.warning(self,
@@ -248,9 +252,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
         alg.initAlgorithm()
 
-        dlg = alg.createCustomParametersWidget(self)
+        dlg = alg.createCustomParametersWidget(iface.mainWindow())
         if not dlg:
-            dlg = AlgorithmDialog(alg)
+            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
 
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()

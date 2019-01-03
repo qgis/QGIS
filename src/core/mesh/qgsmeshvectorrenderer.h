@@ -46,8 +46,7 @@ class QgsMeshVectorRenderer
   public:
     //! Ctor
     QgsMeshVectorRenderer( const QgsTriangularMesh &m,
-                           const QVector<double> &datasetValuesX,
-                           const QVector<double> &datasetValuesY,
+                           const QgsMeshDataBlock &datasetValues,
                            const QVector<double> &datasetValuesMag,
                            double datasetMagMaximumValue,
                            double datasetMagMinimumValue,
@@ -92,8 +91,7 @@ class QgsMeshVectorRenderer
     double calcExtentBufferSize() const;
 
     const QgsTriangularMesh &mTriangularMesh;
-    const QVector<double> &mDatasetValuesX;
-    const QVector<double> &mDatasetValuesY;
+    const QgsMeshDataBlock &mDatasetValues;
     const QVector<double> &mDatasetValuesMag; //magnitudes
     double mMinMag = 0.0;
     double mMaxMag = 0.0;

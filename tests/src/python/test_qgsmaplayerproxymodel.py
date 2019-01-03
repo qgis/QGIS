@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel, QgsMapLayerProxyModel
+from qgis.core import QgsVectorLayer, QgsMeshLayer, QgsProject, QgsMapLayerModel, QgsMapLayerProxyModel
 from qgis.PyQt.QtCore import Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
@@ -25,6 +25,11 @@ start_app()
 def create_layer(name):
     layer = QgsVectorLayer("Point?crs=EPSG:3111&field=fldtxt:string&field=fldint:integer",
                            name, "memory")
+    return layer
+
+
+def create_mesh_layer(name):
+    layer = QgsMeshLayer("1.0, 2.0\n2.0, 2.0\n3.0, 2.0\n---\n0, 1, 3", name, "mesh_memory")
     return layer
 
 
@@ -55,6 +60,19 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
 
         m.setFilterString('c')
         self.assertEqual(m.filterString(), 'c')
+
+    def testMeshLayer(self):
+        m = QgsMapLayerProxyModel()
+        l1 = create_mesh_layer("l1")
+        QgsProject.instance().addMapLayer(l1)
+        l2 = create_layer('l2')
+        QgsProject.instance().addMapLayer(l2)
+
+        m.setFilters(QgsMapLayerProxyModel.MeshLayer)
+        self.assertEqual(m.filters(), QgsMapLayerProxyModel.MeshLayer)
+
+        self.assertEqual(m.rowCount(), 1)
+        self.assertEqual(m.data(m.index(0, 0)), 'l1')
 
     def testFilterGeometryType(self):
         """ test filtering by geometry type """

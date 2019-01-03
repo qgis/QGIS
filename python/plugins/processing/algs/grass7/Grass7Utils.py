@@ -193,8 +193,11 @@ class Grass7Utils:
         if not isWindows() and not isMac():
             return ''
 
-        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
-        if not os.path.exists(folder):
+        if isMac():
+            folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
+            if not os.path.exists(folder):
+                folder = None
+        else:
             folder = None
 
         if folder is None:
@@ -206,10 +209,9 @@ class Grass7Utils:
                     testfolder = str(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
-                    for subfolder in os.listdir(testfolder):
-                        if subfolder.startswith('grass-7'):
-                            folder = os.path.join(testfolder, subfolder)
-                            break
+                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.')])
+                    if grassfolders:
+                        folder = os.path.join(testfolder, grassfolders[0])
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
@@ -351,7 +353,7 @@ class Grass7Utils:
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrassExecution(commands)
-        #QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
+        # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
 
         # For MS-Windows, we need to hide the console window.
         if isWindows():
@@ -367,6 +369,7 @@ class Grass7Utils:
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv,
+                encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
                 startupinfo=si if isWindows() else None
         ) as proc:
             for line in iter(proc.stdout.readline, ''):
@@ -397,6 +400,11 @@ class Grass7Utils:
         # commands again.
         if not grassOutDone and outputCommands:
             command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
+            # For MS-Windows, we need to hide the console window.
+            if isWindows():
+                si = subprocess.STARTUPINFO()
+                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                si.wShowWindow = subprocess.SW_HIDE
             with subprocess.Popen(
                     command,
                     shell=False,
@@ -405,6 +413,7 @@ class Grass7Utils:
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
                     env=grassenv,
+                    encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
                     startupinfo=si if isWindows() else None
             ) as proc:
                 for line in iter(proc.stdout.readline, ''):

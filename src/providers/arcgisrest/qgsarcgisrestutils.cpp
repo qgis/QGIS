@@ -28,6 +28,7 @@
 #include "geometry/qgspolygon.h"
 #include "geometry/qgspoint.h"
 #include "qgsfeedback.h"
+#include "qgspallabeling.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgsauthmanager.h"
@@ -36,8 +37,11 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsrenderer.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsvectorlayerlabeling.h"
+
 #include <QEventLoop>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -571,13 +575,12 @@ std::unique_ptr<QgsSymbol> QgsArcGisRestUtils::parseEsriSymbolJson( const QVaria
   }
   else if ( type == QLatin1String( "esriPFS" ) )
   {
-    // picture fill - not supported
-    return nullptr;
+    return parseEsriPictureFillSymbolJson( symbolData );
   }
   else if ( type == QLatin1String( "esriPMS" ) )
   {
-    // picture marker - not supported
-    return nullptr;
+    // picture marker
+    return parseEsriPictureMarkerSymbolJson( symbolData );
   }
   else if ( type == QLatin1String( "esriTS" ) )
   {
@@ -623,6 +626,51 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( cons
   std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
   fillLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
   layers.append( fillLayer.release() );
+
+  std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
+  return symbol;
+}
+
+std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJson( const QVariantMap &symbolData )
+{
+  bool ok = false;
+
+  double widthInPixels = symbolData.value( QStringLiteral( "width" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+
+  const double xScale = symbolData.value( QStringLiteral( "xscale" ) ).toDouble( &ok );
+  if ( !qgsDoubleNear( xScale, 0.0 ) )
+    widthInPixels *= xScale;
+
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  QString symbolPath( symbolData.value( QStringLiteral( "imageData" ) ).toString() );
+  symbolPath.prepend( QLatin1String( "base64:" ) );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = qgis::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
+  fillLayer->setWidth( widthInPixels );
+  fillLayer->setAngle( angleCW );
+  fillLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  fillLayer->setOffset( QPointF( xOffset, yOffset ) );
+  fillLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( fillLayer.release() );
+
+  const QVariantMap outlineData = symbolData.value( QStringLiteral( "outline" ) ).toMap();
+  QColor lineColor = parseEsriColorJson( outlineData.value( QStringLiteral( "color" ) ) );
+  Qt::PenStyle penStyle = parseEsriLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
+  double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
+
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
+  lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  layers.append( lineLayer.release() );
 
   std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
   return symbol;
@@ -682,6 +730,180 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   return symbol;
 }
 
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  bool ok = false;
+  const double widthInPixels = symbolData.value( QStringLiteral( "width" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+  const double heightInPixels = symbolData.value( QStringLiteral( "height" ) ).toInt( &ok );
+  if ( !ok )
+    return nullptr;
+
+  const double angleCCW = symbolData.value( QStringLiteral( "angle" ) ).toDouble( &ok );
+  double angleCW = 0;
+  if ( ok )
+    angleCW = -angleCCW;
+
+  const double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  const double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  //const QString contentType = symbolData.value( QStringLiteral( "contentType" ) ).toString();
+
+  QString symbolPath( symbolData.value( QStringLiteral( "imageData" ) ).toString() );
+  symbolPath.prepend( QLatin1String( "base64:" ) );
+
+  QgsSymbolLayerList layers;
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
+  markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
+
+  // only change the default aspect ratio if the server height setting requires this
+  if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
+    markerLayer->setFixedAspectRatio( static_cast< double >( heightInPixels ) / widthInPixels );
+
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
+QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::parseEsriLabeling( const QVariantList &labelingData )
+{
+  if ( labelingData.empty() )
+    return nullptr;
+
+  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings(), 0, 0, QString(), QString(), false );
+  root->setActive( true );
+
+  int i = 1;
+  for ( const QVariant &lbl : labelingData )
+  {
+    const QVariantMap labeling = lbl.toMap();
+
+    QgsPalLayerSettings *settings = new QgsPalLayerSettings();
+    QgsTextFormat format;
+
+    const QString placement = labeling.value( QStringLiteral( "labelPlacement" ) ).toString();
+    if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAbove;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelow;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterCenter" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantOver;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterLeft" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantLeft;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+    }
+    else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterRight" ) )
+    {
+      settings->placement = QgsPalLayerSettings::OverPoint;
+      settings->quadOffset = QgsPalLayerSettings::QuadrantRight;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::AboveLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementBelowStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::BelowLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) ||
+              placement == QLatin1String( "esriServerLinePlacementCenterStart" ) ||
+              placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Line;
+      settings->placementFlags = QgsPalLayerSettings::OnLine | QgsPalLayerSettings::MapOrientation;
+    }
+    else if ( placement == QLatin1String( "esriServerPolygonPlacementAlwaysHorizontal" ) )
+    {
+      settings->placement = QgsPalLayerSettings::Horizontal;
+    }
+
+    const double minScale = labeling.value( QStringLiteral( "minScale" ) ).toDouble();
+    const double maxScale = labeling.value( QStringLiteral( "maxScale" ) ).toDouble();
+
+    QVariantMap symbol = labeling.value( QStringLiteral( "symbol" ) ).toMap();
+    format.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "color" ) ) ) );
+    const double haloSize = symbol.value( QStringLiteral( "haloSize" ) ).toDouble();
+    if ( !qgsDoubleNear( haloSize, 0.0 ) )
+    {
+      QgsTextBufferSettings buffer;
+      buffer.setEnabled( true );
+      buffer.setSize( haloSize );
+      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      buffer.setColor( parseEsriColorJson( symbol.value( QStringLiteral( "haloColor" ) ) ) );
+      format.setBuffer( buffer );
+    }
+
+    const QString fontFamily = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+    const QString fontStyle = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
+    const QString fontWeight = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "weight" ) ).toString();
+    const int fontSize = symbol.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toInt();
+    QFont font( fontFamily, fontSize );
+    font.setStyleName( fontStyle );
+    font.setWeight( fontWeight == QLatin1String( "bold" ) ? QFont::Bold : QFont::Normal );
+
+    format.setFont( font );
+    format.setSize( fontSize );
+    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+
+    settings->setFormat( format );
+
+    QString where = labeling.value( QStringLiteral( "where" ) ).toString();
+    QgsExpression exp( where );
+    // If the where clause isn't parsed as valid, don't use its
+    if ( !exp.isValid() )
+      where.clear();
+
+    settings->fieldName = parseEsriLabelingExpression( labeling.value( QStringLiteral( "labelExpression" ) ).toString() );
+    settings->isExpression = true;
+
+    QgsRuleBasedLabeling::Rule *child = new QgsRuleBasedLabeling::Rule( settings, maxScale, minScale, where, QObject::tr( "ASF label %1" ).arg( i++ ), false );
+    child->setActive( true );
+    root->appendChild( child );
+  }
+
+  return new QgsRuleBasedLabeling( root );
+}
+
 QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &rendererData )
 {
   const QString type = rendererData.value( QStringLiteral( "type" ) ).toString();
@@ -696,8 +918,27 @@ QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &re
   }
   else if ( type == QLatin1String( "uniqueValue" ) )
   {
-    const QString attribute = rendererData.value( QStringLiteral( "field1" ) ).toString();
-    // TODO - handle field2, field3
+    const QString field1 = rendererData.value( QStringLiteral( "field1" ) ).toString();
+    const QString field2 = rendererData.value( QStringLiteral( "field2" ) ).toString();
+    const QString field3 = rendererData.value( QStringLiteral( "field3" ) ).toString();
+    QString attribute;
+    if ( !field2.isEmpty() || !field3.isEmpty() )
+    {
+      const QString delimiter = rendererData.value( QStringLiteral( "fieldDelimiter" ) ).toString();
+      if ( !field3.isEmpty() )
+      {
+        attribute = QStringLiteral( "concat(\"%1\",'%2',\"%3\",'%4',\"%5\")" ).arg( field1, delimiter, field2, delimiter, field3 );
+      }
+      else
+      {
+        attribute = QStringLiteral( "concat(\"%1\",'%2',\"%3\")" ).arg( field1, delimiter, field2 );
+      }
+    }
+    else
+    {
+      attribute = field1;
+    }
+
     const QVariantList categories = rendererData.value( QStringLiteral( "uniqueValueInfos" ) ).toList();
     QgsCategoryList categoryList;
     for ( const QVariant &category : categories )
@@ -739,6 +980,24 @@ QgsFeatureRenderer *QgsArcGisRestUtils::parseEsriRenderer( const QVariantMap &re
     return nullptr;
   }
   return nullptr;
+}
+
+QString QgsArcGisRestUtils::parseEsriLabelingExpression( const QString &string )
+{
+  QString expression = string;
+
+  // Replace a few ArcGIS token to QGIS equivalents
+  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)CONCAT(\\s|$)" ), QStringLiteral( "\\4||\\5" ) );
+  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)NEWLINE(\\s|$)" ), QStringLiteral( "\\4'\\n'\\5" ) );
+
+  // ArcGIS's double quotes are single quotes in QGIS
+  expression = expression.replace( QRegularExpression( "\"(.*?(?<!\\\\))\"" ), QStringLiteral( "'\\1'" ) );
+  expression = expression.replace( QRegularExpression( "\\\\\"" ), QStringLiteral( "\"" ) );
+
+  // ArcGIS's square brakets are double quotes in QGIS
+  expression = expression.replace( QRegularExpression( "\\[([^]]*)\\]" ), QStringLiteral( "\"\\1\"" ) );
+
+  return expression;
 }
 
 QColor QgsArcGisRestUtils::parseEsriColorJson( const QVariant &colorData )
@@ -970,5 +1229,93 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     emit finished( mErrors );
     mResults = nullptr;
     mErrors.clear();
+  }
+}
+
+void QgsArcGisRestUtils::adjustBaseUrl( QString &baseUrl, const QString name )
+{
+  QStringList parts = name.split( '/' );
+  QString checkString;
+  for ( const QString &part : parts )
+  {
+    if ( !checkString.isEmpty() )
+      checkString += QString( '/' );
+
+    checkString += part;
+    if ( baseUrl.indexOf( QRegularExpression( checkString.replace( '/', QStringLiteral( "\\/" ) ) + QStringLiteral( "\\/?$" ) ) ) > -1 )
+    {
+      baseUrl = baseUrl.left( baseUrl.length() - checkString.length() - 1 );
+      break;
+    }
+  }
+}
+
+void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+{
+  QString base( baseUrl );
+  bool baseChecked = false;
+  if ( !base.endsWith( '/' ) )
+    base += QStringLiteral( "/" );
+
+  const QStringList folderList = serviceData.value( QStringLiteral( "folders" ) ).toStringList();
+  for ( const QString &folder : folderList )
+  {
+    if ( !baseChecked )
+    {
+      adjustBaseUrl( base, folder );
+      baseChecked = true;
+    }
+    visitor( folder, base + folder );
+  }
+}
+
+void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+{
+  QString base( baseUrl );
+  bool baseChecked = false;
+  if ( !base.endsWith( '/' ) )
+    base += QStringLiteral( "/" );
+
+  const QVariantList serviceList = serviceData.value( QStringLiteral( "services" ) ).toList();
+  for ( const QVariant &service : serviceList )
+  {
+    const QVariantMap serviceMap = service.toMap();
+    const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
+    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+      continue;
+
+    const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
+    QString displayName = serviceName.split( '/' ).last();
+    if ( !baseChecked )
+    {
+      adjustBaseUrl( base, serviceName );
+      baseChecked = true;
+    }
+
+    visitor( displayName, base + serviceName + '/' + serviceType );
+  }
+}
+
+void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
+{
+  const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
+
+  const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
+  for ( const QVariant &layerInfo : layerInfoList )
+  {
+    const QVariantMap layerInfoMap = layerInfo.toMap();
+    const QString id = layerInfoMap.value( QStringLiteral( "id" ) ).toString();
+    const QString parentLayerId = layerInfoMap.value( QStringLiteral( "parentLayerId" ) ).toString();
+    const QString name = layerInfoMap.value( QStringLiteral( "name" ) ).toString();
+    const QString description = layerInfoMap.value( QStringLiteral( "description" ) ).toString();
+
+    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+    {
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString() );
+    }
+    else
+    {
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid );
+    }
   }
 }

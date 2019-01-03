@@ -160,6 +160,9 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return 1;
       else
         return 0;
+
+    case ResultActionsRole:
+      return QVariant::fromValue( mResults.at( index.row() ).result.actions );
   }
 
   return QVariant();
@@ -177,6 +180,20 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
     flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   }
   return flags;
+}
+
+QHash<int, QByteArray> QgsLocatorModel::roleNames() const
+{
+  QHash<int, QByteArray> roles;
+  roles[ResultDataRole] = "ResultData";
+  roles[ResultTypeRole] = "ResultType";
+  roles[ResultFilterPriorityRole] = "ResultFilterPriority";
+  roles[ResultScoreRole] = "ResultScore";
+  roles[ResultFilterNameRole] = "ResultFilterName";
+  roles[ResultFilterGroupSortingRole] = "ResultFilterGroupSorting";
+  roles[ResultActionsRole] = "ResultContextMenuActions";
+  roles[Qt::DisplayRole] = "Text";
+  return roles;
 }
 
 void QgsLocatorModel::addResult( const QgsLocatorResult &result )

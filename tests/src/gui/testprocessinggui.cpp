@@ -41,6 +41,8 @@
 #include "qgsdoublespinbox.h"
 #include "qgsspinbox.h"
 #include "qgsmapcanvas.h"
+#include "qgsauthconfigselect.h"
+#include "qgsauthmanager.h"
 #include "models/qgsprocessingmodelalgorithm.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -146,17 +148,75 @@ class TestProcessingGui : public QObject
     void testModelerWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
+    void testAuthCfgWrapper();
     void testCrsWrapper();
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
     void testRangeWrapper();
+
+  private:
+
+    QString mTempDir;
+    const char *mPass = "pass";
+
+    void cleanupTempDir();
 };
+
 
 void TestProcessingGui::initTestCase()
 {
+  mTempDir = QDir::tempPath() + "/auth_proc";
+  // setup a temporary auth db:
+  cleanupTempDir();
+
+  // make QGIS_AUTH_DB_DIR_PATH temp dir for qgis - auth.db and master password file
+  QDir tmpDir = QDir::temp();
+  QVERIFY2( tmpDir.mkpath( mTempDir ), "Couldn't make temp directory" );
+  qputenv( "QGIS_AUTH_DB_DIR_PATH", mTempDir.toAscii() );
+
+  // init app and auth manager
   QgsApplication::init();
   QgsApplication::initQgis();
+  QVERIFY2( !QgsApplication::authManager()->isDisabled(),
+            "Authentication system is DISABLED" );
+
+  // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
+  QString db1( QFileInfo( QgsApplication::authManager()->authenticationDatabasePath() ).canonicalFilePath() );
+  QString db2( QFileInfo( mTempDir + "/qgis-auth.db" ).canonicalFilePath() );
+  QVERIFY2( db1 == db2, "Auth db temp path does not match db path of manager" );
+
+  // verify master pass can be set manually
+  // (this also creates a fresh password hash in the new temp database)
+  QVERIFY2( QgsApplication::authManager()->setMasterPassword( mPass, true ),
+            "Master password could not be set" );
+  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(),
+            "Auth master password not set from passed string" );
+
+  // create QGIS_AUTH_PASSWORD_FILE file
+  QString passfilepath = mTempDir + "/passfile";
+  QFile passfile( passfilepath );
+  if ( passfile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QTextStream fout( &passfile );
+    fout << QString( mPass ) << "\r\n";
+    passfile.close();
+    qputenv( "QGIS_AUTH_PASSWORD_FILE", passfilepath.toAscii() );
+  }
+  // qDebug( "QGIS_AUTH_PASSWORD_FILE=%s", qgetenv( "QGIS_AUTH_PASSWORD_FILE" ).constData() );
+
+  // re-init app and auth manager
+  QgsApplication::quit();
+  // QTest::qSleep( 3000 );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+  QVERIFY2( !QgsApplication::authManager()->isDisabled(),
+            "Authentication system is DISABLED" );
+
+  // verify QGIS_AUTH_PASSWORD_FILE worked, when compared against hash in db
+  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(),
+            "Auth master password not set from QGIS_AUTH_PASSWORD_FILE" );
+
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
 
@@ -762,6 +822,128 @@ void TestProcessingGui::testStringWrapper()
   delete l;
 }
 
+void TestProcessingGui::testAuthCfgWrapper()
+{
+  QList<QgsAuthMethodConfig> configs;
+
+  // Basic
+  QgsAuthMethodConfig b_config;
+  b_config.setId( QStringLiteral( "aaaaaaa" ) );
+  b_config.setName( QStringLiteral( "Basic" ) );
+  b_config.setMethod( QStringLiteral( "Basic" ) );
+  b_config.setUri( QStringLiteral( "http://example.com" ) );
+  b_config.setConfig( QStringLiteral( "username" ), QStringLiteral( "username" ) );
+  b_config.setConfig( QStringLiteral( "password" ), QStringLiteral( "password" ) );
+  b_config.setConfig( QStringLiteral( "realm" ), QStringLiteral( "Realm" ) );
+  configs << b_config;
+
+  QgsAuthMethodConfig b_config2;
+  b_config2.setId( QStringLiteral( "bbbbbbb" ) );
+  b_config2.setName( QStringLiteral( "Basic2" ) );
+  b_config2.setMethod( QStringLiteral( "Basic" ) );
+  b_config2.setUri( QStringLiteral( "http://example.com" ) );
+  b_config2.setConfig( QStringLiteral( "username" ), QStringLiteral( "username" ) );
+  b_config2.setConfig( QStringLiteral( "password" ), QStringLiteral( "password" ) );
+  b_config2.setConfig( QStringLiteral( "realm" ), QStringLiteral( "Realm" ) );
+  configs << b_config2;
+
+  QgsAuthManager *authm = QgsApplication::authManager();
+  QStringList authIds;
+  for ( QgsAuthMethodConfig config : qgis::as_const( configs ) )
+  {
+    QVERIFY( config.isValid() );
+
+    QVERIFY( authm->storeAuthenticationConfig( config ) );
+
+    // config should now have a valid, unique ID
+    authIds << config.id();
+  }
+
+  QCOMPARE( authIds.count(), 2 );
+
+  QgsProcessingParameterAuthConfig param( QStringLiteral( "authcfg" ), QStringLiteral( "authcfg" ) );
+
+  // standard wrapper
+  QgsProcessingAuthConfigWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( authIds.at( 0 ), context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toString(), authIds.at( 0 ) );
+  QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->configId(), authIds.at( 0 ) );
+  wrapper.setWidgetValue( authIds.at( 1 ), context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toString(), authIds.at( 1 ) );
+  QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->configId(), authIds.at( 1 ) );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 3 );
+  QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->configId().isEmpty() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "authcfg" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast< QgsAuthConfigSelect * >( wrapper.wrappedWidget() )->setConfigId( authIds.at( 0 ) );
+  QCOMPARE( spy.count(), 4 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingAuthConfigWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( authIds.at( 0 ), context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toString(), authIds.at( 0 ) );
+  QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapperB.wrappedWidget() )->configId(), authIds.at( 0 ) );
+  wrapperB.setWidgetValue( QString(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( wrapperB.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QgsAuthConfigSelect * >( wrapperB.wrappedWidget() )->configId().isEmpty() );
+
+  // check signal
+  static_cast< QgsAuthConfigSelect * >( w )->setConfigId( authIds.at( 0 ) );
+  QCOMPARE( spy2.count(), 3 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingAuthConfigWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( authIds.at( 0 ), context );
+  QCOMPARE( wrapperM.widgetValue().toString(), authIds.at( 0 ) );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( static_cast< QgsAuthConfigSelect * >( wrapperM.wrappedWidget() )->configId(), authIds.at( 0 ) );
+  wrapperM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( static_cast< QgsAuthConfigSelect * >( wrapperM.wrappedWidget() )->configId().isEmpty() );
+
+  // check signal
+  static_cast< QgsAuthConfigSelect * >( w )->setConfigId( authIds.at( 0 ) );
+  QCOMPARE( spy3.count(), 3 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "authcfg" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+}
+
 void TestProcessingGui::testCrsWrapper()
 {
   QgsProcessingParameterCrs param( QStringLiteral( "crs" ), QStringLiteral( "crs" ) );
@@ -1005,6 +1187,19 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
 
     delete w;
+
+    // with decimals
+    QgsProcessingParameterNumber paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double, QVariant(), true, 1, 1.02 );
+    QVariantMap metadata;
+    QVariantMap wrapperMetadata;
+    wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+    metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+    paramDecimals.setMetadata( metadata );
+    QgsProcessingNumericWidgetWrapper wrapperDecimals( &paramDecimals, type );
+    w = wrapperDecimals.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperDecimals.wrappedWidget() )->decimals(), 2 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperDecimals.wrappedWidget() )->singleStep(), 0.01 ); // single step should never be less than set number of decimals
+    delete w;
   };
 
   // standard wrapper
@@ -1201,6 +1396,8 @@ void TestProcessingGui::testDistanceWrapper()
   // test unit handling
   w->show();
 
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+
   // crs values
   wrapper.setUnitParameterValue( QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
@@ -1278,6 +1475,28 @@ void TestProcessingGui::testDistanceWrapper()
   wrapper.setParameterValue( 5, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
 
+  delete w;
+
+  // with default unit
+  QgsProcessingParameterDistance paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+  paramDefaultUnit.setDefaultUnit( QgsUnitTypes::DistanceFeet );
+  QgsProcessingDistanceWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  w = wrapperDefaultUnit.createWrappedWidget( context );
+  w->show();
+  QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "feet" ) );
+  delete w;
+
+  // with decimals
+  QgsProcessingParameterDistance paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), QString(), true, 1, 1.02 );
+  QVariantMap metadata;
+  QVariantMap wrapperMetadata;
+  wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+  metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+  paramDecimals.setMetadata( metadata );
+  QgsProcessingDistanceWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  w = wrapperDecimals.createWrappedWidget( context );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
   delete w;
 
   // batch wrapper
@@ -1438,6 +1657,19 @@ void TestProcessingGui::testRangeWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::cleanupTempDir()
+{
+  QDir tmpDir = QDir( mTempDir );
+  if ( tmpDir.exists() )
+  {
+    Q_FOREACH ( const QString &tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
+    {
+      QVERIFY2( tmpDir.remove( mTempDir + '/' + tf ), qPrintable( "Could not remove " + mTempDir + '/' + tf ) );
+    }
+    QVERIFY2( tmpDir.rmdir( mTempDir ), qPrintable( "Could not remove directory " + mTempDir ) );
+  }
 }
 
 QGSTEST_MAIN( TestProcessingGui )

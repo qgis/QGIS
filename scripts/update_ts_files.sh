@@ -126,7 +126,7 @@ done
 echo Updating GRASS module translations
 perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
 echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp"
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp" "$builddir/src/core/qgsexpressionparser.cpp"
 if [ -n "$add" ]; then
 	for i in $add; do
 		echo "Adding translation for $i"

@@ -41,6 +41,7 @@ class QgsUndoWidget;
 class QgsRasterHistogramWidget;
 class QgsMapLayerStyleManagerWidget;
 class QgsVectorLayer3DRendererWidget;
+class QgsMessageBar;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -90,7 +91,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       Symbology3D,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
+    QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
     ~QgsLayerStylingWidget() override;
     QgsMapLayer *layer() { return mCurrentLayer; }
 
@@ -133,6 +134,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QTimer *mAutoApplyTimer = nullptr;
     QDomNode mLastStyleXml;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
     bool mBlockAutoApply;
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;

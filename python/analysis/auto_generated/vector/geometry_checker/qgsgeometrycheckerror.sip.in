@@ -27,8 +27,21 @@ This represents an error reported by a geometry check.
 #include "qgsgeometrycheckerror.h"
 %End
   public:
-    enum Status { StatusPending, StatusFixFailed, StatusFixed, StatusObsolete };
-    enum ValueType { ValueLength, ValueArea, ValueOther };
+
+    enum Status
+    {
+      StatusPending,
+      StatusFixFailed,
+      StatusFixed,
+      StatusObsolete
+    };
+
+    enum ValueType
+    {
+      ValueLength,
+      ValueArea,
+      ValueOther
+    };
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
@@ -36,25 +49,98 @@ This represents an error reported by a geometry check.
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
+%Docstring
+Create a new geometry check error with the parent ``check`` and for the
+``layerFeature`` pair at the ``errorLocation``. Optionally the vertex can be
+specified via ``vixd`` and a ``value`` with its ``value`` Type for
+additional information.
+%End
 
     virtual ~QgsGeometryCheckError();
 
 
     const QgsGeometryCheck *check() const;
+%Docstring
+The geometry check that created this error.
+%End
+
     const QString &layerId() const;
+%Docstring
+The id of the layer on which this error has been detected.
+%End
+
     QgsFeatureId featureId() const;
+%Docstring
+The id of the feature on which this error has been detected.
+%End
+
     QgsGeometry geometry() const;
+%Docstring
+The geometry of the error in map units.
+%End
+
     virtual QgsRectangle affectedAreaBBox() const;
+%Docstring
+The bounding box of the affected area of the error.
+%End
+
     virtual QString description() const;
+%Docstring
+The error description. By default the description of the parent check
+will be returned.
+%End
+
     const QgsPointXY &location() const;
+%Docstring
+The location of the error in map units.
+%End
+
     QVariant value() const;
+%Docstring
+An additional value for the error.
+Lengths and areas are provided in map units.
+
+.. seealso:: :py:func:`valueType`
+%End
+
     ValueType valueType() const;
+%Docstring
+The type of the value.
+
+.. seealso:: :py:func:`value`
+%End
+
     const QgsVertexId &vidx() const;
+%Docstring
+The id of the affected vertex. May be valid or not, depending on the
+check.
+%End
+
     Status status() const;
+%Docstring
+The status of the error.
+%End
+
     QString resolutionMessage() const;
+%Docstring
+A message with details, how the error has been resolved.
+%End
+
     void setFixed( int method );
+%Docstring
+Set the status to fixed and specify the ``method`` that has been used to
+fix the error.
+%End
+
     void setFixFailed( const QString &reason );
+%Docstring
+Set the error status to failed and specify the ``reason`` for failure.
+%End
+
     void setObsolete();
+%Docstring
+Set the error status to obsolete.
+%End
 
     virtual bool isEqual( QgsGeometryCheckError *other ) const;
 %Docstring
@@ -71,12 +157,13 @@ If this returns true, it can be used to update existing errors after re-checking
 
     virtual void update( const QgsGeometryCheckError *other );
 %Docstring
-Update this error with the information from \other.
+Update this error with the information from ``other``.
 Will be used to update existing errors whenever they are re-checked.
 %End
 
 
   protected:
+
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QString &layerId,
                            QgsFeatureId featureId,
@@ -85,6 +172,14 @@ Will be used to update existing errors whenever they are re-checked.
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
+%Docstring
+Create a new geometry check error with the parent ``check`` and for the
+layer with ``layerId`` and ``featureId``.
+The ``geometry`` of the error and the ``errorLocation`` need to be
+specified in map coordinates.
+Optionally the vertex can be specified via ``vixd`` and a ``value`` with
+its ``value`` Type for additional information.
+%End
 
 
 };

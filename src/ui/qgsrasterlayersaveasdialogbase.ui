@@ -147,16 +147,6 @@ datasets with maximum width and height specified below.</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0" colspan="2">
-      <widget class="QCheckBox" name="mAddToCanvas">
-       <property name="text">
-        <string>Add saved file to map</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
@@ -171,12 +161,6 @@ datasets with maximum width and height specified below.</string>
    </item>
    <item>
     <widget class="QgsScrollArea" name="mScrollArea">
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -190,21 +174,6 @@ datasets with maximum width and height specified below.</string>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
-       <property name="spacing">
-        <number>18</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>6</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
          <property name="sizePolicy">
@@ -665,14 +634,51 @@ datasets with maximum width and height specified below.</string>
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_10">
+     <item>
+      <widget class="QDialogButtonBox" name="mHelpButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Help</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mAddToCanvas">
+       <property name="text">
+        <string>Add saved file to map</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="mButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -728,7 +734,6 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mFilename</tabstop>
   <tabstop>mLayerName</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mScrollArea</tabstop>
   <tabstop>mResolutionRadioButton</tabstop>
   <tabstop>mXResolutionLineEdit</tabstop>
@@ -750,6 +755,7 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mRemoveSelectedNoDataToolButton</tabstop>
   <tabstop>mLoadTransparentNoDataToolButton</tabstop>
   <tabstop>mRemoveAllNoDataToolButton</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -35,9 +35,34 @@ class QgsPointXY;
 class ANALYSIS_EXPORT QgsGeometryCheckError
 {
   public:
-    enum Status { StatusPending, StatusFixFailed, StatusFixed, StatusObsolete };
-    enum ValueType { ValueLength, ValueArea, ValueOther };
 
+    /**
+     * The status of an error.
+     */
+    enum Status
+    {
+      StatusPending, //!< The error is detected and pending to be handled
+      StatusFixFailed, //!< A fix has been tried on the error but failed
+      StatusFixed, //!< The error is fixed
+      StatusObsolete //!< The error is obsolete because of other modifications
+    };
+
+    /**
+     * Describes the type of an error value.
+     */
+    enum ValueType
+    {
+      ValueLength, //!< The value is a length
+      ValueArea, //!< The value is an area
+      ValueOther //!< The value if of another type
+    };
+
+    /**
+     * Create a new geometry check error with the parent \a check and for the
+     * \a layerFeature pair at the \a errorLocation. Optionally the vertex can be
+     * specified via \a vixd and a \a value with its \a value Type for
+     * additional information.
+     */
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                            const QgsPointXY &errorLocation,
@@ -49,24 +74,85 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
 
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 
+    /**
+     * The geometry check that created this error.
+     */
     const QgsGeometryCheck *check() const { return mCheck; }
+
+    /**
+     * The id of the layer on which this error has been detected.
+     */
     const QString &layerId() const { return mLayerId; }
+
+    /**
+     * The id of the feature on which this error has been detected.
+     */
     QgsFeatureId featureId() const { return mFeatureId; }
-    // In map units
+
+    /**
+     * The geometry of the error in map units.
+     */
     QgsGeometry geometry() const;
-    // In map units
+
+    /**
+     * The bounding box of the affected area of the error.
+     */
     virtual QgsRectangle affectedAreaBBox() const;
+
+    /**
+     * The error description. By default the description of the parent check
+     * will be returned.
+     */
     virtual QString description() const { return mCheck->description(); }
-    // In map units
+
+    /**
+     * The location of the error in map units.
+     */
     const QgsPointXY &location() const { return mErrorLocation; }
-    // Lengths, areas in map units
+
+    /**
+     * An additional value for the error.
+     * Lengths and areas are provided in map units.
+     * \see valueType()
+     */
     QVariant value() const { return mValue; }
+
+    /**
+     * The type of the value.
+     * \see value()
+     */
     ValueType valueType() const { return mValueType; }
+
+    /**
+     * The id of the affected vertex. May be valid or not, depending on the
+     * check.
+     */
     const QgsVertexId &vidx() const { return mVidx; }
+
+    /**
+     * The status of the error.
+     */
     Status status() const { return mStatus; }
+
+    /**
+     * A message with details, how the error has been resolved.
+     */
     QString resolutionMessage() const { return mResolutionMessage; }
+
+    /**
+     * Set the status to fixed and specify the \a method that has been used to
+     * fix the error.
+     */
     void setFixed( int method );
+
+    /**
+     * Set the error status to failed and specify the \a reason for failure.
+     */
     void setFixFailed( const QString &reason );
+
+    /**
+     * Set the error status to obsolete.
+     */
     void setObsolete() { mStatus = StatusObsolete; }
 
     /**
@@ -83,7 +169,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
 
     /**
-     * Update this error with the information from \other.
+     * Update this error with the information from \a other.
      * Will be used to update existing errors whenever they are re-checked.
      */
     virtual void update( const QgsGeometryCheckError *other );
@@ -94,7 +180,15 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes ) SIP_SKIP;
 
   protected:
-    // Users of this constructor must ensure geometry and errorLocation are in map coordinates
+
+    /**
+     * Create a new geometry check error with the parent \a check and for the
+     * layer with \a layerId and \a featureId.
+     * The \a geometry of the error and the \a errorLocation need to be
+     * specified in map coordinates.
+     * Optionally the vertex can be specified via \a vixd and a \a value with
+     * its \a value Type for additional information.
+     */
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QString &layerId,
                            QgsFeatureId featureId,

@@ -28,7 +28,7 @@ Constructor for QgsSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
     virtual QgsSymbolLayer *symbolLayer() = 0;
 
-    void setContext( const QgsSymbolWidgetContext &context );
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
@@ -406,10 +406,56 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
     virtual QgsSymbolLayer *symbolLayer();
 
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
   protected:
 
     void populateList();
     void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+
+
+};
+
+
+
+
+class QgsRasterMarkerSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring
+Widget for configuring QgsRasterMarkerSymbolLayer symbol layers.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRasterMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsRasterMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+  protected:
 
 
 };
@@ -478,6 +524,8 @@ Creates a new QgsSVGFillSymbolLayerWidget.
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
 
     virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
   protected:

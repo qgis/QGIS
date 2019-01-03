@@ -187,6 +187,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoMapGridAnnotationFontColor,
       UndoMapGridLineSymbol,
       UndoMapGridMarkerSymbol,
+      UndoMapLabelMargin,
       UndoPictureRotation,
       UndoPictureFillColor,
       UndoPictureStrokeColor,
@@ -238,6 +239,13 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoCustomCommand,
     };
 
+    enum Flag
+    {
+      FlagOverridesPaint,
+    };
+    typedef QFlags<QgsLayoutItem::Flag> Flags;
+
+
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
 %Docstring
 Constructor for QgsLayoutItem, with the specified parent ``layout``.
@@ -279,6 +287,13 @@ upon creation.
 .. seealso:: :py:func:`id`
 
 .. seealso:: :py:func:`setId`
+%End
+
+    virtual Flags itemFlags() const;
+%Docstring
+Returns the item's flags, which indicate how the item behaves.
+
+.. versionadded:: 3.4.3
 %End
 
     QString id() const;
@@ -1165,6 +1180,9 @@ Applies any present data defined size overrides to the specified layout ``size``
 %End
 
 };
+
+QFlags<QgsLayoutItem::Flag> operator|(QgsLayoutItem::Flag f1, QFlags<QgsLayoutItem::Flag> f2);
+
 
 
 

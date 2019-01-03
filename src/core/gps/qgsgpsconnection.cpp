@@ -22,8 +22,6 @@
 #include <QIODevice>
 #include <QStringList>
 #include <QFileInfo>
-#include <QSerialPort>
-#include <QSerialPortInfo>
 
 #include "qgsnmeaconnection.h"
 #include "qgslogger.h"

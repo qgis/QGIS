@@ -145,7 +145,11 @@ void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsF
 
 void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer )
 {
-  if ( !mLayerChecks[layer].topologyChecks.empty() ) // TODO && topologyChecks not fulfilled
+  if ( mLayerChecks[layer].topologyChecks.empty() && !layer->allowCommit() )
+  {
+    showMessage( tr( "Geometry errors have been found. Please fix the errors before saving the layer." ) );
+  }
+  if ( !mBypassChecks && !mLayerChecks[layer].topologyChecks.empty() )
   {
     if ( !layer->allowCommit() )
     {
@@ -359,6 +363,8 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 
   if ( !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
     layer->setAllowCommit( false );
+  else if ( mLayerChecks[layer].topologyChecks.empty() )
+    layer->setAllowCommit( true );
 
   emit geometryCheckCompleted( layer, fid, allErrors );
 }
@@ -461,7 +467,9 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     }
     if ( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
     {
+      mBypassChecks = true;
       layer->commitChanges();
+      mBypassChecks = false;
       mMessageBar->popWidget( mMessageBarItem );
       mMessageBarItem = nullptr;
     }

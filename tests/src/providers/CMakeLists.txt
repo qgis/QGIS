@@ -15,12 +15,14 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
+  ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${MDAL_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
@@ -71,9 +73,9 @@ ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
 
-ADD_QGIS_TEST(wmscapabilititestest
+ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)
-TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
+TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a)
 
 ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
@@ -84,6 +86,8 @@ TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
 
 ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
 TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
+
+ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
 
 #############################################################
 # WCS public servers test:

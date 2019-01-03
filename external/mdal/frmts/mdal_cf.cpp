@@ -15,7 +15,7 @@
 
 #define CF_THROW_ERR throw MDAL_Status::Err_UnknownFormat
 
-MDAL::cfdataset_info_map MDAL::LoaderCF::parseDatasetGroupInfo()
+MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
 {
   /*
    * list of datasets:
@@ -132,30 +132,22 @@ MDAL::cfdataset_info_map MDAL::LoaderCF::parseDatasetGroupInfo()
   return dsinfo_map;
 }
 
-static void populate_vals( bool is_vector, std::vector<MDAL::Value> &vals, size_t i,
+static void populate_vals( bool is_vector, double *vals, size_t i,
                            const std::vector<double> &vals_x, const std::vector<double> &vals_y,
                            size_t idx, double fill_val_x, double fill_val_y )
 {
-
-  vals[i].x = MDAL::safeValue( vals_x[idx], fill_val_x );
   if ( is_vector )
   {
-    vals[i].y = MDAL::safeValue( vals_y[idx], fill_val_y );
+    vals[2 * i] =   MDAL::safeValue( vals_x[idx], fill_val_x );
+    vals[2 * i + 1] =   MDAL::safeValue( vals_y[idx], fill_val_y );
   }
-}
-
-static void populate_nodata( std::vector<MDAL::Value> &vals, size_t from_i, size_t to_i )
-{
-  for ( size_t i = from_i; i < to_i; ++i )
+  else
   {
-    vals[i].noData = true;
-    vals[i].x = std::numeric_limits<double>::quiet_NaN();
-    vals[i].y = std::numeric_limits<double>::quiet_NaN();
+    vals[i] =   MDAL::safeValue( vals_x[idx], fill_val_x );
   }
 }
 
-
-std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
+std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::createFace2DDataset( std::shared_ptr<DatasetGroup> group, size_t ts, const MDAL::CFDatasetGroupInfo &dsi,
     const std::vector<double> &vals_x, const std::vector<double> &vals_y,
     double fill_val_x, double fill_val_y )
 {
@@ -163,18 +155,13 @@ std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( size_t ts, c
   size_t nFaces2D = mDimensions.size( CFDimensions::Face2D );
   size_t nLine1D = mDimensions.size( CFDimensions::Line1D );
 
-  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared<MDAL::Dataset>();
-  dataset->values.resize( mDimensions.faceCount() );
-
-  populate_nodata( dataset->values,
-                   0,
-                   nLine1D );
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared<MDAL::MemoryDataset>( group.get() );
 
   for ( size_t i = 0; i < nFaces2D; ++i )
   {
     size_t idx = ts * nFaces2D + i;
     populate_vals( dsi.is_vector,
-                   dataset->values,
+                   dataset->values(),
                    nLine1D + i,
                    vals_x,
                    vals_y,
@@ -187,17 +174,20 @@ std::shared_ptr<MDAL::Dataset> MDAL::LoaderCF::createFace2DDataset( size_t ts, c
   return dataset;
 }
 
-void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<double> &times, const MDAL::cfdataset_info_map &dsinfo_map )
+void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<double> &times, const MDAL::cfdataset_info_map &dsinfo_map )
 {
   /* PHASE 2 - add dataset groups */
   for ( const auto &it : dsinfo_map )
   {
     const CFDatasetGroupInfo dsi = it.second;
     // Create a dataset group
-    std::shared_ptr<MDAL::DatasetGroup> group = std::make_shared<MDAL::DatasetGroup>();
-    group->uri = mFileName;
-    group->setName( dsi.name );
-    group->isScalar = !dsi.is_vector;
+    std::shared_ptr<MDAL::DatasetGroup> group = std::make_shared<MDAL::DatasetGroup>(
+          mesh,
+          mFileName,
+          dsi.name
+        );
+    group->setIsScalar( !dsi.is_vector );
+    group->setIsOnVertices( false );
 
     // read X data
     double fill_val_x = mNcFile.getFillValue( dsi.ncid_x );
@@ -205,10 +195,11 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
     if ( nc_get_var_double( mNcFile.handle(), dsi.ncid_x, vals_x.data() ) ) CF_THROW_ERR;
 
     // read Y data if vector
-    double fill_val_y = mNcFile.getFillValue( dsi.ncid_y );
+    double fill_val_y = std::numeric_limits<double>::quiet_NaN();
     std::vector<double> vals_y;
     if ( dsi.is_vector )
     {
+      fill_val_y = mNcFile.getFillValue( dsi.ncid_y );
       vals_y.resize( dsi.arr_size );
       if ( nc_get_var_double( mNcFile.handle(), dsi.ncid_y, vals_y.data() ) ) CF_THROW_ERR;
     }
@@ -221,22 +212,23 @@ void MDAL::LoaderCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
 
       if ( dsi.outputType == CFDimensions::Face2D )
       {
-        group->isOnVertices = false;
-        dataset = createFace2DDataset( ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
+        dataset = createFace2DDataset( group, ts, dsi, vals_x, vals_y, fill_val_x, fill_val_y );
+        dataset->setTime( time );
+        dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+        group->datasets.push_back( dataset );
       }
-
-      dataset->parent = group.get();
-      dataset->time = time;
-      group->datasets.push_back( dataset );
     }
 
     // Add to mesh
     if ( !group->datasets.empty() )
+    {
+      group->setStatistics( MDAL::calculateStatistics( group ) );
       mesh->datasetGroups.push_back( group );
+    }
   }
 }
 
-void MDAL::LoaderCF::parseTime( std::vector<double> &times )
+void MDAL::DriverCF::parseTime( std::vector<double> &times )
 {
 
   size_t nTimesteps = mDimensions.size( CFDimensions::Time );
@@ -250,12 +242,29 @@ void MDAL::LoaderCF::parseTime( std::vector<double> &times )
 }
 
 
-MDAL::LoaderCF::LoaderCF( const std::string &fileName ):
-  mFileName( fileName )
+MDAL::DriverCF::DriverCF( const std::string &name,
+                          const std::string &longName,
+                          const std::string &filters ):
+  Driver( name, longName, filters, DriverType::CanReadMeshAndDatasets )
 {
 }
 
-void MDAL::LoaderCF::setProjection( MDAL::Mesh *mesh )
+bool MDAL::DriverCF::canRead( const std::string &uri )
+{
+  try
+  {
+    NetCDFFile ncFile;
+    ncFile.openFile( uri );
+    populateDimensions( ncFile );
+  }
+  catch ( MDAL_Status )
+  {
+    return false;
+  }
+  return true;
+}
+
+void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
 {
   std::string coordinate_system_variable = getCoordinateSystemVariableName();
 
@@ -295,12 +304,11 @@ void MDAL::LoaderCF::setProjection( MDAL::Mesh *mesh )
   }
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
+std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName, MDAL_Status *status )
 {
-  if ( status ) *status = MDAL_Status::None;
+  mFileName = fileName;
 
-  std::unique_ptr< MDAL::Mesh > mesh( new MDAL::Mesh );
-  mesh->uri = mFileName;
+  if ( status ) *status = MDAL_Status::None;
 
   //Dimensions dims;
   std::vector<double> times;
@@ -311,10 +319,24 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
     mNcFile.openFile( mFileName );
 
     // Parse dimensions
-    mDimensions = populateDimensions();
+    mDimensions = populateDimensions( mNcFile );
 
     // Create mMesh
-    populateFacesAndVertices( mesh.get() );
+    Faces faces;
+    Vertices vertices;
+    populateFacesAndVertices( vertices, faces );
+    std::unique_ptr< MemoryMesh > mesh(
+      new MemoryMesh(
+        vertices.size(),
+        faces.size(),
+        mDimensions.MaxVerticesInFace,
+        computeExtent( vertices ),
+        mFileName
+      )
+    );
+    mesh->faces = faces;
+    mesh->vertices = vertices;
+
     addBedElevation( mesh.get() );
     setProjection( mesh.get() );
 
@@ -326,14 +348,14 @@ std::unique_ptr< MDAL::Mesh > MDAL::LoaderCF::load( MDAL_Status *status )
 
     // Create datasets
     addDatasetGroups( mesh.get(), times, dsinfo_map );
+
+    return std::unique_ptr<Mesh>( mesh.release() );
   }
   catch ( MDAL_Status error )
   {
     if ( status ) *status = ( error );
-    if ( mesh ) mesh.reset();
+    return std::unique_ptr<Mesh>();
   }
-
-  return mesh;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

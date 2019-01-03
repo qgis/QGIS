@@ -82,6 +82,7 @@ class TestQgsGeometry : public QObject
     void isEmpty();
     void equality();
     void vertexIterator();
+    void partIterator();
 
 
     // geometry types
@@ -475,6 +476,33 @@ void TestQgsGeometry::vertexIterator()
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 3, 4 ) );
   QVERIFY( !it2.hasNext() );
+}
+
+void TestQgsGeometry::partIterator()
+{
+  QgsGeometry geom;
+  QgsGeometryPartIterator it = geom.parts();
+  QVERIFY( !it.hasNext() );
+
+  geom = QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) );
+  QgsGeometryConstPartIterator it2 = geom.constParts();
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next()->asWkt(), QStringLiteral( "Point (1 2)" ) );
+  QVERIFY( !it2.hasNext() );
+
+  // test that non-const iterator detaches
+  QgsGeometry geom2 = geom;
+  it = geom2.parts();
+  QVERIFY( it.hasNext() );
+  QgsAbstractGeometry *part = it.next();
+  QCOMPARE( part->asWkt(), QStringLiteral( "Point (1 2)" ) );
+  static_cast< QgsPoint * >( part )->setX( 100 );
+  QCOMPARE( geom2.asWkt(), QStringLiteral( "Point (100 2)" ) );
+  QVERIFY( !it.hasNext() );
+  // geom2 should hve adetached, geom should be unaffected by change
+  QCOMPARE( geom.asWkt(), QStringLiteral( "Point (1 2)" ) );
+
+  // See test_qgsgeometry.py for geometry-type specific checks!
 }
 
 void TestQgsGeometry::point()
@@ -2760,6 +2788,13 @@ void TestQgsGeometry::circularString()
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (10.46 0.84)" ) );
 
+  // orientation
+  QgsCircularString orientation;
+  ( void )orientation.orientation(); // no crash
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
 
@@ -4767,6 +4802,14 @@ void TestQgsGeometry::lineString()
   interpolate.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (11 3)" ) );
+
+  // orientation
+  QgsLineString orientation;
+  ( void )orientation.orientation(); // no crash
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
 void TestQgsGeometry::polygon()
@@ -6581,6 +6624,25 @@ void TestQgsGeometry::polygon()
   invalidRingPolygon.addInteriorRing( removeInvalidPolygonRing.clone() );
   invalidRingPolygon.removeInvalidRings();
   QCOMPARE( invalidRingPolygon.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4),(1 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 1 2 5 6))" ) );
+
+  // force RHR
+  QgsPolygon rhr;
+  rhr.forceRHR(); // no crash
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  rhr.forceRHR();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  rhr.forceRHR();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.forceRHR();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.forceRHR();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  rhr.forceRHR();
+  QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
 }
 
 void TestQgsGeometry::triangle()
@@ -11449,6 +11511,13 @@ void TestQgsGeometry::compoundCurve()
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (6 0)" ) );
 
+  // orientation
+  QgsCompoundCurve orientation;
+  ( void )orientation.orientation(); // no crash
+  orientation.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 0 1), CircularString (0 1, 1 1, 1 0), (1 0, 0 0))" ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
+  orientation.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))" ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
 void TestQgsGeometry::multiPoint()

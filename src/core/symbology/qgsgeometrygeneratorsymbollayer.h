@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
-#define QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
+#ifndef QGSGEOMETRYGENERATORSYMBOLLAYER_H
+#define QGSGEOMETRYGENERATORSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgssymbollayer.h"
@@ -114,4 +114,4 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     QgsSymbol::SymbolType mSymbolType;
 };
 
-#endif // QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
+#endif // QGSGEOMETRYGENERATORSYMBOLLAYER_H

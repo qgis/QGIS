@@ -106,6 +106,7 @@
      <addaction name="mActionDecorationGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
      <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationTitle"/>
      <addaction name="mActionDecorationCopyright"/>
      <addaction name="mActionDecorationLayoutExtent"/>
     </widget>
@@ -315,7 +316,8 @@
      </property>
      <addaction name="mActionRectangleExtent"/>
      <addaction name="mActionRectangleCenterPoint"/>
-     <addaction name="mActionRectangle3Points"/>
+     <addaction name="mActionRectangle3PointsDistance"/>
+     <addaction name="mActionRectangle3PointsProjected"/>
     </widget>
     <widget class="QMenu" name="mMenuRegularPolygon">
      <property name="title">
@@ -363,6 +365,7 @@
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
     <addaction name="mActionReverseLine"/>
+    <addaction name="mActionTrimExtendFeature"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -395,7 +398,6 @@
    <addaction name="mActionNewProject"/>
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
-   <addaction name="mActionSaveProjectAs"/>
    <addaction name="mActionNewPrintLayout"/>
    <addaction name="mActionShowLayoutManager"/>
    <addaction name="mActionStyleManager"/>
@@ -471,6 +473,7 @@
    <addaction name="mActionReshapeFeatures"/>
    <addaction name="mActionOffsetCurve"/>
    <addaction name="mActionReverseLine"/>
+   <addaction name="mActionTrimExtendFeature"/>
    <addaction name="mActionSplitFeatures"/>
    <addaction name="mActionSplitParts"/>
    <addaction name="mActionMergeFeatures"/>
@@ -1062,6 +1065,18 @@
     <string>Reverse line</string>
    </property>
   </action>
+  <action name="mActionTrimExtendFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionTrimExtendFeature.svg</normaloff>:/images/themes/default/mActionTrimExtendFeature.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Trim/Extend Feature</string>
+   </property>
+  </action>
   <action name="mActionSnappingOptions">
    <property name="text">
     <string>&amp;Snapping Options…</string>
@@ -1621,7 +1636,7 @@
   </action>
   <action name="mActionLayerProperties">
    <property name="text">
-    <string>&amp;Properties…</string>
+    <string>Layer &amp;Properties…</string>
    </property>
    <property name="toolTip">
     <string>Layer Properties</string>
@@ -1962,6 +1977,21 @@ Ctrl (Cmd) increments by 15 deg.</string>
     <string>Embed layers and groups from other project files</string>
    </property>
   </action>
+  <action name="mActionDecorationTitle">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/copyright_label.svg</normaloff>:/images/themes/default/copyright_label.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Title Label…</string>
+   </property>
+   <property name="toolTip">
+    <string>Title Label</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a title label that is displayed on the map canvas.</string>
+   </property>
+  </action>
   <action name="mActionDecorationCopyright">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2094,7 +2124,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationGrid">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/transformed.svg</normaloff>:/images/themes/default/transformed.svg</iconset>
+     <normaloff>:/images/themes/default/grid.svg</normaloff>:/images/themes/default/grid.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Grid…</string>
@@ -2455,6 +2485,9 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Paste features in clipboard into a new temporary scratch layer.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+V</string>
    </property>
   </action>
   <action name="mActionDxfExport">
@@ -2946,19 +2979,19 @@ Acts on currently active editable layer</string>
     <string>Add circle from 3 tangents</string>
    </property>
   </action>
-  <action name="mActionRectangle3Points">
+  <action name="mActionRectangle3PointsDistance">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRectangle3Points.svg</normaloff>:/images/themes/default/mActionRectangle3Points.svg</iconset>
+    <iconset>
+     <normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</normaloff>:/images/themes/default/mActionRectangle3PointsDistance.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Rectangle &amp;from 3 Points</string>
+    <string>Add Rectangle &amp;from 3 Points (Distance from 2nd and 3rd point)</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from 3 points</string>
+    <string>Add rectangle from 3 points (Distance from 2nd and 3rd point)</string>
    </property>
   </action>
   <action name="mActionCircle2TangentsPoint">
@@ -3095,6 +3128,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Vertex Tool (Current Layer)</string>
+   </property>
+  </action>
+  <action name="mActionRectangle3PointsProjected">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</normaloff>:/images/themes/default/mActionRectangle3PointsProjected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Rectangle &amp;from 3 Points (Distance from projected point on segment p1 and p2)</string>
+   </property>
+   <property name="toolTip">
+    <string>Add rectangle from 3 points (Distance from projected point on segment p1 and p2)</string>
    </property>
   </action>
  </widget>

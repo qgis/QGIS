@@ -54,6 +54,13 @@ class APP_EXPORT QgsFeatureAction : public QAction
      */
     bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
 
+    /**
+     * Sets whether to force suppression of the attribute form popup after creating a new feature.
+     * If \a force is true, then regardless of any user settings, form settings, etc, the attribute
+     * form will ALWAYS be suppressed.
+     */
+    void setForceSuppressFormPopup( bool force );
+
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
 
@@ -66,6 +73,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
     int mIdx;
 
     bool mFeatureSaved;
+
+    bool mForceSuppressFormPopup = false;
 
     static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };

@@ -12,7 +12,7 @@
 
 
 
-class QgsSvgCache : QObject
+class QgsSvgCache : QgsAbstractContentCacheBase
 {
 %Docstring
 A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
@@ -32,8 +32,6 @@ QgsSvgCache is not usually directly created, but rather accessed through
 %Docstring
 Constructor for QgsSvgCache.
 %End
-
-    ~QgsSvgCache();
 
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
@@ -135,9 +133,12 @@ Gets SVG content
 %End
 
   signals:
-    void statusChanged( const QString  &statusQString );
+
+ void statusChanged( const QString  &statusQString ) /Deprecated/;
 %Docstring
-Emit a signal to be caught by qgisapp and display a msg on status bar
+Emit a signal to be caught by qgisapp and display a msg on status bar.
+
+.. deprecated:: Deprecated since QGIS 3.6 -- no longer emitted.
 %End
 
     void remoteSvgFetched( const QString &url );
@@ -146,6 +147,11 @@ Emitted when the cache has finished retrieving an SVG file from a remote ``url``
 
 .. versionadded:: 3.2
 %End
+
+  protected:
+
+    virtual bool checkReply( QNetworkReply *reply, const QString &path ) const;
+
 
 };
 

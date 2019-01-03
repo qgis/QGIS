@@ -765,9 +765,6 @@ The legendLayersAdded() signal is emitted only if addToLegend is true.
 :param addToLegend: If true (by default), the layers will be added to the
                     legend and to the main canvas. If you have a private
                     layer you can set this parameter to false to hide it.
-:param takeOwnership: Ownership will be transferred to the layer registry.
-                      If you specify false here you have take care of deleting
-                      the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
          successfully. If a layer or already exists in the registry,
@@ -803,9 +800,6 @@ addMapLayers() instead.
 :param addToLegend: If true (by default), the layer will be added to the
                     legend and to the main canvas. If you have a private
                     layer you can set this parameter to false to hide it.
-:param takeOwnership: Ownership will be transferred to the layer registry.
-                      If you specify false here you have take care of deleting
-                      the layer yourself. Not available in Python.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
 

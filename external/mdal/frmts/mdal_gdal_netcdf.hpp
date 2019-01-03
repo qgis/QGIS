@@ -6,18 +6,23 @@
 #ifndef MDAL_GDAL_NETCDF_HPP
 #define MDAL_GDAL_NETCDF_HPP
 
+#include <string>
+
 #include "mdal_gdal.hpp"
 #include "mdal_data_model.hpp"
 #include "mdal.h"
-#include <string>
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
 
-  class LoaderGdalNetCDF: public LoaderGdal
+  class DriverGdalNetCDF: public DriverGdal
   {
     public:
-      LoaderGdalNetCDF( const std::string &netCDFFile );
+      DriverGdalNetCDF();
+      ~DriverGdalNetCDF( ) override = default;
+      DriverGdalNetCDF *create() override;
+
     private:
       std::string GDALFileName( const std::string &fileName ) override;
       bool parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,

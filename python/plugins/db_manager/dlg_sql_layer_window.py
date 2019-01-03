@@ -147,13 +147,13 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
         # Update from layer
         # First the SQL from QgsDataSourceUri table
-        sql = uri.table()
+        sql = uri.table().replace('\n', ' ').strip()
         if uri.keyColumn() == '_uid_':
-            match = re.search(r'^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S | re.X)
+            match = re.search(r'^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S | re.X | re.IGNORECASE)
             if match:
                 sql = match.group(1)
         else:
-            match = re.search(r'^\((SELECT .+ FROM .+)\)$', sql, re.S | re.X)
+            match = re.search(r'^\((SELECT .+ FROM .+)\)$', sql, re.S | re.X | re.IGNORECASE)
             if match:
                 sql = match.group(1)
         # Need to check on table() since the parentheses were removed by the regexp

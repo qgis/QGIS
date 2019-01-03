@@ -33,6 +33,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutreportcontext.h"
 #include "qgsexpressionutils.h"
+#include "qgslayoutrendercontext.h"
 
 #include <QSettings>
 #include <QDir>

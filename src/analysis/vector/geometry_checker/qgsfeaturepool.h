@@ -39,11 +39,15 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 {
 
   public:
+
+    /**
+     * Creates a new feature pool for \a layer.
+     */
     QgsFeaturePool( QgsVectorLayer *layer );
     virtual ~QgsFeaturePool() = default;
 
     /**
-     * Retrieve the feature with the specified \a id into \a feature.
+     * Retrieves the feature with the specified \a id into \a feature.
      * It will be retrieved from the cache or from the underlying layer if unavailable.
      * If the feature is neither available from the cache nor from the layer it will return false.
      * If \a feedback is specified, the call may return if the feedback is canceled.
@@ -51,7 +55,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     bool getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback = nullptr );
 
     /**
-     * Get features for the provided \a request. No features will be fetched
+     * Gets features for the provided \a request. No features will be fetched
      * from the cache and the request is sent directly to the underlying feature source.
      * Results of the request are cached in the pool and the ids of all the features
      * are returned. This can be used to warm the cache for a particular area of interest
@@ -81,7 +85,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QgsFeatureIds allFeatureIds() const SIP_SKIP;
 
     /**
-     * Get all feature ids in the bounding box \a rect. It will use a spatial index to
+     * Gets all feature ids in the bounding box \a rect. It will use a spatial index to
      * determine the ids.
      *
      * \note not available in Python bindings
@@ -89,14 +93,14 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QgsFeatureIds getIntersects( const QgsRectangle &rect ) const SIP_SKIP;
 
     /**
-     * Get a pointer to the underlying layer.
+     * Gets a pointer to the underlying layer.
      * May return a ``nullptr`` if the layer has been deleted.
      * This must only be called from the main thread.
      */
     QgsVectorLayer *layer() const;
 
     /**
-     * Get a QPointer to the underlying layer.
+     * Gets a QPointer to the underlying layer.
      * Note that access to any methods of the object
      * will need to be done on the main thread and
      * the pointer will need to be checked for validity
@@ -142,7 +146,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     void removeFeature( const QgsFeatureId featureId );
 
     /**
-     * Set all the feature ids governed by this feature pool.
+     * Sets all the feature ids governed by this feature pool.
      * Should be called by subclasses constructor and whenever
      * they insert a new feature.
      *

@@ -245,7 +245,7 @@ void QgsSearchWidgetToolButton::updateState()
   }
   else
   {
-    setText( tr( "Exclude field" ) );
+    setText( tr( "Exclude Field" ) );
     setToolTip( QString() );
   }
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>351</height>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
      <property name="title">
-      <string>SVG Options</string>
+      <string>Export Options</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+      <item row="0" column="0" colspan="2">
        <widget class="QCheckBox" name="chkMapLayersAsGroup">
         <property name="text">
          <string>Export map layers as SVG groups (may affect label placement)</string>
@@ -30,23 +30,17 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="chkTextAsOutline">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string>Uncheck to render map labels as text objects. This will degrade the quality of the map labels but allow editing in vector illustration software.</string>
-        </property>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Render map labels as outlines</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Text export</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="mForceVectorCheckBox">
         <property name="toolTip">
          <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
@@ -56,7 +50,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
         <property name="text">
          <string>Export RDF metadata</string>
@@ -214,9 +208,9 @@
  </customwidgets>
  <tabstops>
   <tabstop>chkMapLayersAsGroup</tabstop>
-  <tabstop>chkTextAsOutline</tabstop>
   <tabstop>mForceVectorCheckBox</tabstop>
   <tabstop>mIncludeMetadataCheckbox</tabstop>
+  <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mClipToContentGroupBox</tabstop>
   <tabstop>mTopMarginSpinBox</tabstop>
   <tabstop>mLeftMarginSpinBox</tabstop>

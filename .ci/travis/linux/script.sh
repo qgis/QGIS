@@ -16,18 +16,16 @@
 
 set -e
 
-source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
-
-DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
-
 mkdir -p "$CCACHE_DIR"
 
-if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ true ]]; then
+if [[ ${DOCKER_BUILD_QGIS_IMAGE} =~ true ]]; then
+  # copy ccache dir within QGIS source so it can be accessed from docker
+  cp -r ${CCACHE_DIR} ${TRAVIS_BUILD_DIR}/.ccache
+  # building docker images
   DIR=$(git rev-parse --show-toplevel)/.docker
   pushd "${DIR}"
   echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
-  docker build --build-arg CACHE_DIR=/root/.ccache \
-               --build-arg DOCKER_TAG="${DOCKER_TAG}" \
+  docker build --build-arg DOCKER_TAG="${DOCKER_TAG}" \
                --cache-from "qgis/qgis:${DOCKER_TAG}" \
                -t "qgis/qgis:${DOCKER_TAG}" \
                -f qgis.dockerfile ..
@@ -36,5 +34,21 @@ if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ true ]]; then
   docker push "qgis/qgis:${DOCKER_TAG}"
   popd
 else
-  docker-compose -f "${DOCKER_COMPOSE}" run --rm qgis-deps
+  # running QGIS tests
+  docker-compose -f ${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml run --rm qgis-deps
+
+  # running tests for the python test runner
+  docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}/tests/src/python:/tests_directory -e DISPLAY=:99 "qgis/qgis:${DOCKER_TAG}"
+  sleep 10  # Wait for xvfb to finish starting
+  # Temporary workaround until docker images are built
+  docker cp ${TRAVIS_BUILD_DIR}/.docker/qgis_resources/test_runner/qgis_testrunner.sh qgis-testing-environment:/usr/bin/qgis_testrunner.sh
+  # Run tests in the docker
+  # Passing cases:
+  TEST_SCRIPT_PATH=${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker_test.sh
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_passing) -eq '0' ]]
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_skipped_and_passing) -eq '0' ]]
+  # Failing cases:
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner) -eq '1' ]]
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_all) -eq '1' ]]
+  [[ $(${TEST_SCRIPT_PATH} test_testrunner.run_failing) -eq '1' ]]
 fi

@@ -82,10 +82,10 @@ Calculates interpolation value for map coordinates x, y
 
 :param x: x-coordinate (in map units)
 :param y: y-coordinate (in map units)
-:param result: out: interpolation result
 :param feedback: optional feedback object for progress and cancelation support
 
-:return: 0 in case of success*
+:return: - 0 in case of success
+         - result:  interpolation result
 %End
 
 

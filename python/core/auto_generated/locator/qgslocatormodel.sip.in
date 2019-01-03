@@ -36,6 +36,7 @@ in order to ensure correct sorting of results by priority and match level.
       ResultScoreRole,
       ResultFilterNameRole,
       ResultFilterGroupSortingRole,
+      ResultActionsRole,
     };
 
     QgsLocatorModel( QObject *parent /TransferThis/ = 0 );
@@ -66,6 +67,8 @@ which may occur if the model is being updated quickly multiple times as a result
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual QHash<int, QByteArray> roleNames() const;
 
 
   public slots:

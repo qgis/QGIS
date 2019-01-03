@@ -68,6 +68,7 @@ email                : sherman at mrcc.com
 #include "qgsmapthemecollection.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
 #include <cmath>
 
 /**
@@ -151,8 +152,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     refresh();
   } );
 
-  // refresh canvas when a remote svg has finished downloading
+  // refresh canvas when a remote svg/image has finished downloading
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::refreshAllLayers );
+  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsMapCanvas::refreshAllLayers );
 
   //segmentation parameters
   QgsSettings settings;
@@ -172,9 +174,11 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   moveCanvasContents( true );
 
   // keep device pixel ratio up to date on screen or resolution change
-  connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
   if ( window()->windowHandle() )
+  {
+    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
     connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
+  }
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );

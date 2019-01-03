@@ -65,6 +65,44 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
 };
 
 /**
+ * A mesh layer parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('mesh')
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProcessingParameterTypeMeshLayer : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterMeshLayer( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A mesh layer parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Mesh Layer" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "mesh" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsMeshLayer" );
+    }
+};
+
+/**
  * A vector layer parameter for processing algorithms.
  *
  * \ingroup core
@@ -741,6 +779,41 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
     {
       return QStringList() << QStringLiteral( "str" )
              << QStringLiteral( "QgsProperty" );
+    }
+};
+
+/**
+ * A authentication configuration parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('authcfg')
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterAuthConfig( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A authentication configuration parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Authentication Configuration" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "authcfg" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" );
     }
 };
 

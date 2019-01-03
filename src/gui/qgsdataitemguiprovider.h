@@ -48,7 +48,7 @@ class GUI_EXPORT QgsDataItemGuiContext
      *
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar();
+    QgsMessageBar *messageBar() const;
 
     /**
      * Sets the associated message \a bar.

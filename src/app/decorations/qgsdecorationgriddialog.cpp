@@ -26,13 +26,16 @@
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
 #include "qgsguiutils.h"
-#include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
   , mDeco( deco )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationGridDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationGridDialog::buttonBox_rejected );
   connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDecorationGridDialog::mGridTypeComboBox_currentIndexChanged );
@@ -44,9 +47,6 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   mLineSymbolButton->setSymbolType( QgsSymbol::Line );
 
   mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
-
-  QgsSettings settings;
-  //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
 
   grpEnable->setChecked( mDeco.enabled() );
 
@@ -74,7 +74,9 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
 
   mMarkerSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mMarkerSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
   mLineSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mLineSymbolButton->setMessageBar( QgisApp::instance()->messageBar() );
 }
 
 void QgsDecorationGridDialog::updateGuiElements()
@@ -155,12 +157,6 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setGridAnnotationPrecision( mCoordinatePrecisionSpinBox->value() );
   mDeco.setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
   mDeco.setMarkerSymbol( mMarkerSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
-}
-
-QgsDecorationGridDialog::~QgsDecorationGridDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationGridDialog::showHelp()

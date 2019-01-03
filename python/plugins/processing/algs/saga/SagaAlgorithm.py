@@ -49,10 +49,10 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.parameters import getParameterFromString
 from processing.algs.help import shortHelp
 from processing.tools.system import getTempFilename
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
+from processing.algs.saga.SagaParameters import Parameters
 from . import SagaUtils
 from .SagaAlgorithmBase import SagaAlgorithmBase
 
@@ -143,8 +143,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
             while line != '':
                 if line.startswith('Hardcoded'):
                     self.hardcoded_strings.append(line[len('Hardcoded|'):])
-                elif line.startswith('QgsProcessingParameter') or line.startswith('Parameter'):
-                    self.params.append(getParameterFromString(line))
+                elif Parameters.is_parameter_line(line):
+                    self.params.append(Parameters.create_parameter_from_line(line))
                 elif line.startswith('AllowUnmatching'):
                     self.allow_nonmatching_grid_extents = True
                 else:
@@ -321,7 +321,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 filename = self.parameterAsOutputLayer(parameters, out.name(), context)
                 filename2 = os.path.splitext(filename)[0] + '.sgrd'
                 if self.cmdname == 'RGB Composite':
-                    commands.append('io_grid_image 0 -IS_RGB -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
+                    commands.append('io_grid_image 0 -COLOURING 4 -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
 
         # 3: Run SAGA
         commands = self.editCommands(commands)

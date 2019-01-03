@@ -5,39 +5,47 @@
 
 #include "mdal_3di.hpp"
 
-MDAL::Loader3Di::Loader3Di( const std::string &fileName )
-  : LoaderCF( fileName )
+MDAL::Driver3Di::Driver3Di()
+  : DriverCF(
+      "3Di",
+      "3Di Results",
+      "results_3di.nc" )
 {
 }
 
-MDAL::CFDimensions MDAL::Loader3Di::populateDimensions()
+MDAL::Driver3Di *MDAL::Driver3Di::create()
+{
+  return new Driver3Di();
+}
+
+MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( const NetCDFFile &ncFile )
 {
   CFDimensions dims;
   size_t count;
   int ncid;
 
   // 2D Mesh
-  mNcFile.getDimension( "nMesh2D_nodes", &count, &ncid );
+  ncFile.getDimension( "nMesh2D_nodes", &count, &ncid );
   dims.setDimension( CFDimensions::Face2D, count, ncid );
 
-  mNcFile.getDimension( "nCorner_Nodes", &count, &ncid );
+  ncFile.getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
   // Vertices count is populated later in populateFacesAndVertices
   // it is not known from the array dimensions
 
   // Time
-  mNcFile.getDimension( "time", &count, &ncid );
+  ncFile.getDimension( "time", &count, &ncid );
   dims.setDimension( CFDimensions::Time, count, ncid );
 
   return dims;
 }
 
-void MDAL::Loader3Di::populateFacesAndVertices( MDAL::Mesh *mesh )
+void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
 {
-  assert( mesh );
+  assert( vertices.empty() );
   size_t faceCount = mDimensions.size( CFDimensions::Face2D );
-  mesh->faces.resize( faceCount );
+  faces.resize( faceCount );
   size_t verticesInFace = mDimensions.size( CFDimensions::MaxVerticesInFace );
   size_t arrsize = faceCount * verticesInFace;
   std::map<std::string, size_t> xyToVertex2DId;
@@ -79,9 +87,9 @@ void MDAL::Loader3Di::populateFacesAndVertices( MDAL::Mesh *mesh )
       if ( it == xyToVertex2DId.end() )
       {
         // new vertex
-        vertexId = mesh->vertices.size();
+        vertexId = vertices.size();
         xyToVertex2DId[key] = vertexId;
-        mesh->vertices.push_back( vertex );
+        vertices.push_back( vertex );
       }
       else
       {
@@ -93,21 +101,21 @@ void MDAL::Loader3Di::populateFacesAndVertices( MDAL::Mesh *mesh )
 
     }
 
-    mesh->faces[faceId] = face;
+    faces[faceId] = face;
   }
 
   // Only now we have number of vertices, since we identified vertices that
   // are used in multiple faces
-  mDimensions.setDimension( CFDimensions::Vertex2D, mesh->vertices.size() );
+  mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
 }
 
-void MDAL::Loader3Di::addBedElevation( MDAL::Mesh *mesh )
+void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
 {
   assert( mesh );
-  if ( mesh->faces.empty() )
+  if ( 0 == mesh->facesCount() )
     return;
 
-  size_t faceCount = mesh->faces.size();
+  size_t faceCount = mesh->facesCount();
 
   // read Z coordinate of 3di computation nodes centers
   int ncidZ = mNcFile.getVarId( "Mesh2DFace_zcc" );
@@ -117,30 +125,34 @@ void MDAL::Loader3Di::addBedElevation( MDAL::Mesh *mesh )
     return; //error reading the array
 
 
-  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >();
-  group->isOnVertices = false;
-  group->isScalar = true;
-  group->setName( "Bed Elevation" );
-  group->uri = mesh->uri;
-  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< Dataset >();
-  dataset->time = 0.0;
-  dataset->values.resize( faceCount );
-  dataset->active.resize( faceCount );
-  dataset->parent = group.get();
+  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          mesh,
+                                          mesh->uri(),
+                                          "Bed Elevation"
+                                        );
+
+  group->setIsOnVertices( false );
+  group->setIsScalar( true );
+
+  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  dataset->setTime( 0.0 );
+  double *values = dataset->values();
   for ( size_t i = 0; i < faceCount; ++i )
   {
-    dataset->values[i].x = MDAL::safeValue( coordZ[i], fillZ );
+    values[i] = MDAL::safeValue( coordZ[i], fillZ );
   }
+  dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
+  group->setStatistics( MDAL::calculateStatistics( group ) );
   group->datasets.push_back( dataset );
   mesh->datasetGroups.push_back( group );
 }
 
-std::string MDAL::Loader3Di::getCoordinateSystemVariableName()
+std::string MDAL::Driver3Di::getCoordinateSystemVariableName()
 {
   return "projected_coordinate_system";
 }
 
-std::set<std::string> MDAL::Loader3Di::ignoreNetCDFVariables()
+std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
 {
   std::set<std::string> ignore_variables;
 
@@ -174,13 +186,13 @@ std::set<std::string> MDAL::Loader3Di::ignoreNetCDFVariables()
   return ignore_variables;
 }
 
-std::string MDAL::Loader3Di::nameSuffix( MDAL::CFDimensions::Type type )
+std::string MDAL::Driver3Di::nameSuffix( MDAL::CFDimensions::Type type )
 {
   MDAL_UNUSED( type );
   return "";
 }
 
-void MDAL::Loader3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
+void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
 {
   *is_vector = false;
   *is_x = true;

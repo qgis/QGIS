@@ -52,6 +52,30 @@
     </widget>
    </item>
    <item>
+    <widget class="QToolBar" name="mDockToolbar">
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionUpdatePreview"/>
+     <addaction name="separator"/>
+     <addaction name="mActionSetToCanvasExtent"/>
+     <addaction name="mActionViewExtentInCanvas"/>
+     <addaction name="separator"/>
+     <addaction name="mActionSetToCanvasScale"/>
+     <addaction name="mActionViewScaleInCanvas"/>
+     <addaction name="separator"/>
+     <addaction name="mActionMoveContent"/>
+     <addaction name="separator"/>
+     <addaction name="mActionLabelSettings"/>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -63,9 +87,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1556</y>
-        <width>627</width>
-        <height>2265</height>
+        <y>-257</y>
+        <width>373</width>
+        <height>960</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -97,7 +121,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
              <widget class="QgsDoubleSpinBox" name="mMapRotationSpinBox">
@@ -124,14 +148,14 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
             <property name="text">
              <string>Draw map canvas items</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QLineEdit" name="mScaleLineEdit">
@@ -149,7 +173,7 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
+          <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Scale</string>
@@ -159,24 +183,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="2" column="1">
            <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="mMapRotationLabel">
             <property name="text">
              <string>Map rotation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="mUpdatePreviewButton">
-            <property name="text">
-             <string>Update Preview</string>
             </property>
            </widget>
           </item>
@@ -282,29 +299,27 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mXMinLabel">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>X min</string>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mXMinLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QLineEdit" name="mXMinLineEdit"/>
+             <widget class="QLineEdit" name="mYMinLineEdit"/>
             </item>
             <item>
-             <widget class="QgsPropertyOverrideButton" name="mXMinDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mYMinDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLineEdit" name="mXMaxLineEdit"/>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mXMaxDDBtn">
               <property name="text">
                <string>…</string>
               </property>
@@ -325,13 +340,13 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
-             <widget class="QLineEdit" name="mYMinLineEdit"/>
+             <widget class="QLineEdit" name="mYMaxLineEdit"/>
             </item>
             <item>
-             <widget class="QgsPropertyOverrideButton" name="mYMinDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mYMaxDDBtn">
               <property name="text">
                <string>…</string>
               </property>
@@ -352,19 +367,35 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLineEdit" name="mXMaxLineEdit"/>
+             <widget class="QLineEdit" name="mXMinLineEdit"/>
             </item>
             <item>
-             <widget class="QgsPropertyOverrideButton" name="mXMaxDDBtn">
+             <widget class="QgsPropertyOverrideButton" name="mXMinDDBtn">
               <property name="text">
                <string>…</string>
               </property>
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mXMinLabel">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>X min</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mXMinLineEdit</cstring>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="mYMaxLabel">
@@ -376,34 +407,6 @@
             </property>
             <property name="buddy">
              <cstring>mYMaxLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QLineEdit" name="mYMaxLineEdit"/>
-            </item>
-            <item>
-             <widget class="QgsPropertyOverrideButton" name="mYMaxDDBtn">
-              <property name="text">
-               <string>…</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
-            <property name="text">
-             <string>Set to map canvas extent</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QPushButton" name="mViewExtentInCanvasButton">
-            <property name="text">
-             <string>View extent in map canvas</string>
             </property>
            </widget>
           </item>
@@ -600,7 +603,7 @@
             <item>
              <widget class="QPushButton" name="mGridPropertiesButton">
               <property name="text">
-               <string>Modify grid…</string>
+               <string>Modify Grid…</string>
               </property>
              </widget>
             </item>
@@ -717,45 +720,14 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_8" columnstretch="0,1">
-             <item row="0" column="0">
-              <widget class="QLabel" name="mOverviewFrameMapLabel">
+            <layout class="QGridLayout" name="gridLayout_8" columnstretch="0,0">
+             <item row="5" column="1">
+              <widget class="QComboBox" name="mOverviewPositionComboBox"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="mOverviewPositionLabel">
                <property name="text">
-                <string>Map frame</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QgsLayoutItemComboBox" name="mOverviewFrameMapComboBox"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="mOverviewFrameStyleLabel">
-               <property name="text">
-                <string>Frame style</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="mOverviewBlendModeLabel">
-               <property name="text">
-                <string>Blending mode</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QgsBlendModeComboBox" name="mOverviewBlendModeComboBox"/>
-             </item>
-             <item row="3" column="0" colspan="2">
-              <widget class="QCheckBox" name="mOverviewInvertCheckbox">
-               <property name="text">
-                <string>Invert overview</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" colspan="2">
-              <widget class="QCheckBox" name="mOverviewCenterCheckbox">
-               <property name="text">
-                <string>Center on overview</string>
+                <string>Position</string>
                </property>
               </widget>
              </item>
@@ -772,6 +744,64 @@
                </property>
               </widget>
              </item>
+             <item row="2" column="1">
+              <widget class="QgsBlendModeComboBox" name="mOverviewBlendModeComboBox"/>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QCheckBox" name="mOverviewInvertCheckbox">
+               <property name="text">
+                <string>Invert overview</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mOverviewBlendModeLabel">
+               <property name="text">
+                <string>Blending mode</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mOverviewFrameStyleLabel">
+               <property name="text">
+                <string>Frame style</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mOverviewFrameMapLabel">
+               <property name="text">
+                <string>Map frame</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <widget class="QCheckBox" name="mOverviewCenterCheckbox">
+               <property name="text">
+                <string>Center on overview</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsLayoutItemComboBox" name="mOverviewFrameMapComboBox"/>
+             </item>
+             <item row="6" column="1">
+              <widget class="QgsMapLayerComboBox" name="mOverviewStackingLayerComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Stacking layer</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -783,6 +813,90 @@
     </widget>
    </item>
   </layout>
+  <action name="mActionUpdatePreview">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Update Preview</string>
+   </property>
+   <property name="toolTip">
+    <string>Update Map Preview</string>
+   </property>
+  </action>
+  <action name="mActionSetToCanvasExtent">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSetToCanvasExtent.svg</normaloff>:/images/themes/default/mActionSetToCanvasExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Set to Map Canvas Extent</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Map Extent to Match Main Canvas Extent</string>
+   </property>
+  </action>
+  <action name="mActionViewExtentInCanvas">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionViewExtentInCanvas.svg</normaloff>:/images/themes/default/mActionViewExtentInCanvas.svg</iconset>
+   </property>
+   <property name="text">
+    <string>View Extent in Map Canvas</string>
+   </property>
+   <property name="toolTip">
+    <string>View Current Map Extent in Main Canvas</string>
+   </property>
+  </action>
+  <action name="mActionMoveContent">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemContent.svg</normaloff>:/images/themes/default/mActionMoveItemContent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Move Map Content</string>
+   </property>
+   <property name="toolTip">
+    <string>Interactively Edit Map Extent</string>
+   </property>
+  </action>
+  <action name="mActionViewScaleInCanvas">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionViewScaleInCanvas.svg</normaloff>:/images/themes/default/mActionViewScaleInCanvas.svg</iconset>
+   </property>
+   <property name="text">
+    <string>View Scale in Map Canvas</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Main Canvas to Match Current Map Scale</string>
+   </property>
+  </action>
+  <action name="mActionSetToCanvasScale">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSetToCanvasScale.svg</normaloff>:/images/themes/default/mActionSetToCanvasScale.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Set to Map Canvas Scale</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Map Scale to Match Main Canvas Scale</string>
+   </property>
+  </action>
+  <action name="mActionLabelSettings">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/labelingSingle.svg</normaloff>:/images/themes/default/labelingSingle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Label Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Labeling Settings</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -793,9 +907,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -808,15 +923,19 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -830,15 +949,14 @@
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
-  <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
   <tabstop>mScaleDDBtn</tabstop>
   <tabstop>mMapRotationSpinBox</tabstop>
@@ -861,8 +979,6 @@
   <tabstop>mXMaxDDBtn</tabstop>
   <tabstop>mYMaxLineEdit</tabstop>
   <tabstop>mYMaxDDBtn</tabstop>
-  <tabstop>mSetToMapCanvasExtentButton</tabstop>
-  <tabstop>mViewExtentInCanvasButton</tabstop>
   <tabstop>mAtlasCheckBox</tabstop>
   <tabstop>mAtlasMarginRadio</tabstop>
   <tabstop>mAtlasMarginSpinBox</tabstop>
@@ -876,6 +992,8 @@
   <tabstop>mGridDownButton</tabstop>
   <tabstop>mGridListWidget</tabstop>
   <tabstop>mDrawGridCheckBox</tabstop>
+  <tabstop>mDrawGridCheckBox</tabstop>
+  <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mGridPropertiesButton</tabstop>
   <tabstop>mOverviewsGroupBox</tabstop>
   <tabstop>mAddOverviewPushButton</tabstop>
@@ -889,10 +1007,15 @@
   <tabstop>mOverviewBlendModeComboBox</tabstop>
   <tabstop>mOverviewInvertCheckbox</tabstop>
   <tabstop>mOverviewCenterCheckbox</tabstop>
-  <tabstop>mDrawGridCheckBox</tabstop>
-  <tabstop>mGridPropertiesButton</tabstop>
+  <tabstop>mOverviewPositionComboBox</tabstop>
+  <tabstop>mOverviewStackingLayerComboBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

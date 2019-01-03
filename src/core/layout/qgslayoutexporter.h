@@ -16,6 +16,7 @@
 #ifndef QGSLAYOUTEXPORTER_H
 #define QGSLAYOUTEXPORTER_H
 
+#include <QPrinter>
 #include "qgis_core.h"
 #include "qgsmargins.h"
 #include "qgslayoutrendercontext.h"
@@ -23,7 +24,8 @@
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
-#include <QPrinter>
+
+#ifndef QT_NO_PRINTER
 
 class QgsLayout;
 class QPainter;
@@ -276,6 +278,14 @@ class CORE_EXPORT QgsLayoutExporter
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
 
+      /**
+       * Text rendering format, which controls how text should be rendered in the export (e.g.
+       * as paths or real text objects).
+       *
+       * \since QGIS 3.4.3
+       */
+      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
     };
 
     /**
@@ -414,6 +424,14 @@ class CORE_EXPORT QgsLayoutExporter
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutRenderContext::Flags flags = nullptr;
+
+      /**
+       * Text rendering format, which controls how text should be rendered in the export (e.g.
+       * as paths or real text objects).
+       *
+       * \since QGIS 3.4.3
+       */
+      QgsRenderContext::TextRenderFormat textRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
     };
 
@@ -561,6 +579,8 @@ class CORE_EXPORT QgsLayoutExporter
     friend class TestQgsLayout;
 
 };
+
+#endif // ! QT_NO_PRINTER
 
 #endif //QGSLAYOUTEXPORTER_H
 

@@ -1,17 +1,17 @@
 /***************************************************************************
-  qgstracer.h
-  --------------------------------------
-  Date                 : January 2016
-  Copyright            : (C) 2016 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ qgstracer.h
+ --------------------------------------
+ Date                 : January 2016
+ Copyright            : (C) 2016 by Martin Dobias
+ Email                : wonder dot sk at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #ifndef QGSTRACER_H
 #define QGSTRACER_H
@@ -29,6 +29,8 @@ class QgsVectorLayer;
 #include "qgsgeometry.h"
 
 struct QgsTracerGraph;
+class QgsFeatureRenderer;
+class QgsRenderContext;
 
 /**
  * \ingroup core
@@ -65,6 +67,12 @@ class CORE_EXPORT QgsTracer : public QObject
      * \see destinationCrs()
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+
+    /**
+     * Sets the \a renderContext used for tracing only on visible features.
+     * \since QGIS 3.4
+     */
+    void setRenderContext( const QgsRenderContext *renderContext );
 
     //! Gets extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
@@ -160,6 +168,9 @@ class CORE_EXPORT QgsTracer : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onDataChanged( );
+    void onStyleChanged( );
     void onLayerDestroyed( QObject *obj );
 
   private:
@@ -171,6 +182,8 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem mCRS;
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
+    //! Render context
+    std::unique_ptr<QgsRenderContext> mRenderContext;
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
 

@@ -232,7 +232,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
       InteriorTicks,  //!< Tick markers drawn inside map frame
       ExteriorTicks,  //!< Tick markers drawn outside map frame
       InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
-      LineBorder //!< Simple solid line frame
+      LineBorder, //!< Simple solid line frame
+      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
+      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
     };
 
     /**
@@ -725,6 +727,22 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double frameWidth() const { return mGridFrameWidth; }
 
     /**
+     * Sets the grid frame margin (in layout units).
+     * This property controls distance between the map frame and the grid frame.
+     * \see frameMargin()
+     * \since QGIS 3.6
+     */
+    void setFrameMargin( const double margin ) { mGridFrameMargin = margin; }
+
+    /**
+     * Sets the grid frame Margin (in layout units).
+     * This property controls distance between the map frame and the grid frame.
+     * \see setFrameMargin()
+     * \since QGIS 3.6
+     */
+    double frameMargin() const { return mGridFrameMargin; }
+
+    /**
      * Sets the \a width of the stroke drawn in the grid frame.
      * \see framePenSize()
      * \see setFramePenColor()
@@ -867,6 +885,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     QColor mGridFrameFillColor1 = Qt::white;
     QColor mGridFrameFillColor2 = Qt::black;
     double mCrossLength = 3.0;
+    double mGridFrameMargin = 0.0;
 
     //! Divisions for frame on left map side
     DisplayMode mLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;

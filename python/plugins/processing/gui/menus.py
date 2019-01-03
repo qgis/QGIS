@@ -98,6 +98,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
 rasterMenu = QApplication.translate('MainWindow', '&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
+                           'gdal:extractprojection': projectionsMenu,
                            'gdal:assignprojection': projectionsMenu})
 conversionMenu = rasterMenu + "/" + Processing.tr('Conversion')
 defaultMenuEntries.update({'gdal:rasterize': conversionMenu,
@@ -249,9 +250,9 @@ def _executeAlgorithm(alg_id):
         return
 
     if (alg.countVisibleParameters()) > 0:
-        dlg = alg.createCustomParametersWidget(None)
+        dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not dlg:
-            dlg = AlgorithmDialog(alg)
+            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()

@@ -64,6 +64,16 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     };
 
     /**
+     * Various flags that affect drawing of map items.
+     * \since QGIS 3.6
+     */
+    enum MapItemFlag
+    {
+      ShowPartialLabels  = 1 << 0,  //!< Whether to draw labels which are partially outside of the map view
+    };
+    Q_DECLARE_FLAGS( MapItemFlags, MapItemFlag )
+
+    /**
      * Constructor for QgsLayoutItemMap, with the specified parent \a layout.
      */
     explicit QgsLayoutItemMap( QgsLayout *layout );
@@ -71,6 +81,21 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
+    QgsLayoutItem::Flags itemFlags() const override;
+
+    /**
+     * Returns the map item's flags, which control how the map content is drawn.
+     * \see setMapFlags()
+     * \since QGIS 3.6
+     */
+    QgsLayoutItemMap::MapItemFlags mapFlags() const;
+
+    /**
+     * Sets the map item's \a flags, which control how the map content is drawn.
+     * \see mapFlags()
+     * \since QGIS 3.6
+     */
+    void setMapFlags( QgsLayoutItemMap::MapItemFlags flags );
 
     /**
      * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
@@ -397,6 +422,30 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     QgsLayoutItemMapOverview *overview();
 
+    /**
+     * Returns the margin from the map edges in which no labels may be placed.
+     *
+     * If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+     * of the map.
+     *
+     * \see setLabelMargin()
+     *
+     * \since QGIS 3.6
+     */
+    QgsLayoutMeasurement labelMargin() const;
+
+    /**
+     * Sets the \a margin from the map edges in which no labels may be placed.
+     *
+     * If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+     * of the map.
+     *
+     * \see labelMargin()
+     *
+     * \since QGIS 3.6
+     */
+    void setLabelMargin( const QgsLayoutMeasurement &margin );
+
     QgsExpressionContext createExpressionContext() const override;
 
     /**
@@ -422,6 +471,45 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * any locked layers, linked map theme, and data defined settings.
      */
     QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
+
+    /**
+     * Sets the specified layout \a item as a "label blocking item" for this map.
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the \a item.
+     *
+     * \see removeLabelBlockingItem()
+     * \see isLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    void addLabelBlockingItem( QgsLayoutItem *item );
+
+    /**
+     * Removes the specified layout \a item from the map's "label blocking items".
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the item.
+     *
+     * \see addLabelBlockingItem()
+     * \see isLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    void removeLabelBlockingItem( QgsLayoutItem *item );
+
+    /**
+     * Returns true if the specified \a item is a "label blocking item".
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the item.
+     *
+     * \see addLabelBlockingItem()
+     * \see removeLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    bool isLabelBlockingItem( QgsLayoutItem *item ) const;
 
   protected:
 
@@ -496,6 +584,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
   private:
 
+    QgsLayoutItemMap::MapItemFlags mMapFlags = nullptr;
 
     //! Unique identifier
     int mMapId = 1;
@@ -604,6 +693,17 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Returns first map overview or creates an empty one if none
     const QgsLayoutItemMapOverview *constFirstMapOverview() const;
 
+    /**
+     * Creates a transform from layout coordinates to map coordinates.
+     */
+    QTransform layoutToMapCoordsTransform() const;
+
+    /**
+     * Creates a list of label blocking regions for the map, which correspond to the
+     * map areas covered by other layout items marked as label blockers for this map.
+     */
+    QList< QgsLabelBlockingRegion > createLabelBlockingRegions( const QgsMapSettings &mapSettings ) const;
+
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
@@ -619,6 +719,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     std::unique_ptr< QPainter > mPainter;
     std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
+
+    QgsLayoutMeasurement mLabelMargin{ 0 };
+    QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
+
+    QStringList mBlockingLabelItemUuids;
+    QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
 
     void init();
 
@@ -667,6 +773,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
+    void refreshLabelMargin( bool updateItem );
+
     void updateAtlasFeature();
 
     QgsRectangle computeAtlasRectangle();
@@ -678,5 +786,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     friend class QgsCompositionConverter;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMap::MapItemFlags )
 
 #endif //QGSLAYOUTITEMMAP_H

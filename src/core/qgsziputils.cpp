@@ -22,6 +22,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsziputils.h"
+#include "qgslogger.h"
 
 #include <iostream>
 
@@ -84,8 +85,17 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         char *buf = new char[len];
         if ( zip_fread( file, buf, len ) != -1 )
         {
-          QFileInfo newFile( QDir( dir ), QString( stat.name ) );
+          QString fileName( stat.name );
+          QFileInfo newFile( QDir( dir ), fileName );
+
+          // Create path for a new file if it does not exist.
+          if ( !newFile.absoluteDir().exists() )
+          {
+            if ( !QDir( dir ).mkpath( newFile.absolutePath() ) )
+              QgsMessageLog::logMessage( QString( "Failed to create a subdirectory %1/%2" ).arg( dir ).arg( fileName ) );
+          }
           std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
+
           zip_fclose( file );
           files.append( newFile.absoluteFilePath() );
         }
@@ -110,7 +120,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
   }
   else
   {
-    QString err = QObject::tr( "Error opening zip archive: '%1'" ).arg( zip_strerror( z ) );
+    QString err = QObject::tr( "Error opening zip archive: '%1'" ).arg( z ? zip_strerror( z ) : zipFilename );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
     return false;
   }

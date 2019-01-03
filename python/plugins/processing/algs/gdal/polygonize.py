@@ -59,6 +59,7 @@ class polygonize(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBand(self.BAND,
                                                      self.tr('Band number'),
+                                                     1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterString(self.FIELD,
                                                        self.tr('Name of the field to create'),
@@ -110,7 +111,9 @@ class polygonize(GdalAlgorithm):
         if outFormat:
             arguments.append('-f {}'.format(outFormat))
 
-        arguments.append(GdalUtils.ogrLayerName(output))
+        layerName = GdalUtils.ogrLayerName(output)
+        if layerName:
+            arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
         commands = []

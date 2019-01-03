@@ -222,6 +222,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   // renderer
   mRendererDataMap = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "renderer" ) ).toMap();
+  mLabelingDataList = layerData.value( QStringLiteral( "drawingInfo" ) ).toMap().value( QStringLiteral( "labelingInfo" ) ).toList();
 
   mValid = true;
 }
@@ -262,6 +263,10 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
   if ( !mRendererDataMap.empty() )
   {
     c = c | QgsVectorDataProvider::CreateRenderer;
+  }
+  if ( !mLabelingDataList.empty() )
+  {
+    c = c | QgsVectorDataProvider::CreateLabeling;
   }
   return c;
 }
@@ -307,6 +312,10 @@ QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
   return QgsArcGisRestUtils::parseEsriRenderer( mRendererDataMap );
 }
 
+QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
+{
+  return QgsArcGisRestUtils::parseEsriLabeling( mLabelingDataList );
+}
 
 #ifdef HAVE_GUI
 
@@ -345,5 +354,17 @@ QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 
   return providers;
 }
+
+#ifdef HAVE_GUI
+QGISEXTERN QList<QgsDataItemGuiProvider *> *dataItemGuiProviders()
+{
+  QList<QgsDataItemGuiProvider *> *providers = new QList<QgsDataItemGuiProvider *>();
+
+  *providers
+      << new QgsAfsItemGuiProvider();
+
+  return providers;
+}
+#endif
 
 #endif

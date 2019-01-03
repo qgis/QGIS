@@ -155,12 +155,16 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
       sipType = sipType_QgsProcessingParameterRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshLayer;
     else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
       sipType = sipType_QgsProcessingParameterEnum;
     else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
       sipType = sipType_QgsProcessingParameterString;
     else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() )
       sipType = sipType_QgsProcessingParameterExpression;
+    else if ( sipCpp->type() == QgsProcessingParameterAuthConfig::typeName() )
+      sipType = sipType_QgsProcessingParameterAuthConfig;
     else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() )
       sipType = sipType_QgsProcessingParameterVectorLayer;
     else if ( sipCpp->type() == QgsProcessingParameterField::typeName() )
@@ -742,6 +746,29 @@ need to handle deletion of the returned layer.
 
 .. versionadded:: 3.4
 %End
+
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a mesh layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.6
+%End
+
+    static QgsMeshLayer *parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a mesh layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.6
+%End
+
 
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
@@ -1364,6 +1391,17 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 %Docstring
 A numeric parameter for processing algorithms.
 
+For numeric parameters with a dataType() of Double, the number of decimals places
+shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
+
+.. code-block:: python
+
+       param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+       # only show two decimal places in parameter's widgets, not 6:
+       param.setMetadata( {'widget_wrapper':
+         { 'decimals': 2 }
+       })
+
 .. versionadded:: 3.0
 %End
 
@@ -1463,6 +1501,17 @@ class QgsProcessingParameterDistance : QgsProcessingParameterNumber
 A double numeric parameter for distance values. Linked to a source layer or CRS parameter
 to determine what units the distance values are in.
 
+The number of decimals places shown in a distance parameter's widget can be specified by
+setting the parameter's metadata. For example:
+
+.. code-block:: python
+
+       param = QgsProcessingParameterDistance( 'VAL', 'Threshold')
+       # only show two decimal places in parameter's widgets, not 6:
+       param.setMetadata( {'widget_wrapper':
+         { 'decimals': 2 }
+       })
+
 .. versionadded:: 3.2
 %End
 
@@ -1506,6 +1555,24 @@ Returns the name of the parent parameter, or an empty string if this is not set.
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
 .. seealso:: :py:func:`parentParameterName`
+%End
+
+    QgsUnitTypes::DistanceUnit defaultUnit() const;
+%Docstring
+Returns the default distance unit for the parameter.
+
+.. seealso:: :py:func:`setDefaultUnit`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Sets the default distance ``unit`` for the parameter.
+
+.. seealso:: :py:func:`defaultUnit`
+
+.. versionadded:: 3.4.3
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1745,6 +1812,50 @@ Creates a new parameter using the definition from a script code.
 
 };
 
+
+class QgsProcessingParameterAuthConfig : QgsProcessingParameterDefinition
+{
+%Docstring
+A string parameter for authentication configuration configuration ID values.
+
+This parameter allows for users to select from available authentication configurations,
+or create new authentication configurations as required.
+
+QgsProcessingParameterAuthConfig should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterAuthConfig( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                      bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterAuthConfig.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+
+    static QgsProcessingParameterAuthConfig *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
 class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 {
 %Docstring
@@ -1885,6 +1996,45 @@ Returns the type name for the parameter class.
 Creates a new parameter using the definition from a script code.
 %End
 
+};
+
+class QgsProcessingParameterMeshLayer : QgsProcessingParameterDefinition
+{
+%Docstring
+A mesh layer parameter for processing algorithms.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterMeshLayer( const QString &name,
+                                     const QString &description = QString(),
+                                     const QVariant &defaultValue = QVariant(),
+                                     bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterMeshLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    static QgsProcessingParameterMeshLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
 };
 
 class QgsProcessingParameterField : QgsProcessingParameterDefinition

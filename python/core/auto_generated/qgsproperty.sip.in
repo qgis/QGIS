@@ -321,9 +321,9 @@ Calculates the current value of the property, including any transforms which are
                 in the expression context can be used to alter the calculated value for the property, so that a property
                 is able to respond to the current environment, layers and features within QGIS.
 :param defaultValue: default value to return if the property is not active or cannot be calculated
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: calculated value for property
+:return: - calculated value for property
+         - ok:  if specified, will be set to true if conversion was successful
 
 .. seealso:: :py:func:`valueAsString`
 
@@ -342,9 +342,9 @@ Calculates the current value of the property and interprets it as a string.
 
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultString: default string to return if the property cannot be calculated as a string
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to string
+:return: - value parsed to string
+         - ok:  if specified, will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -363,9 +363,9 @@ Calculates the current value of the property and interprets it as a color.
 
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultColor: default color to return if the property cannot be calculated as a color
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to color
+:return: - value parsed to color
+         - ok:  if specified, will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -384,9 +384,9 @@ Calculates the current value of the property and interprets it as a double.
 
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default double to return if the property cannot be calculated as a double
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to double
+:return: - value parsed to double
+         - ok:  if specified, will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -405,9 +405,9 @@ Calculates the current value of the property and interprets it as an integer.
 
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default integer to return if the property cannot be calculated as an integer
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to integer
+:return: - value parsed to integer
+         - ok:  if specified, will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -426,9 +426,9 @@ Calculates the current value of the property and interprets it as an boolean.
 
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default boolean to return if the property cannot be calculated as an boolean
-:param ok: if specified, will be set to true if conversion was successful
 
-:return: value parsed to boolean
+:return: - value parsed to boolean
+         - ok:  if specified, will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 

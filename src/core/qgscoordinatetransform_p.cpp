@@ -18,9 +18,13 @@
 #include "qgscoordinatetransform_p.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsreadwritelocker.h"
 
 extern "C"
 {
+#ifndef ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <proj_api.h>
 }
 #include <sqlite3.h>
@@ -222,7 +226,7 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
 
 QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
 {
-  mProjLock.lockForRead();
+  QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
 
 #ifdef USE_THREAD_LOCAL
   QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( mProjContext.get() ) );
@@ -243,13 +247,11 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
   if ( it != mProjProjections.constEnd() )
   {
     QPair<projPJ, projPJ> res = it.value();
-    mProjLock.unlock();
     return res;
   }
 
   // proj projections don't exist yet, so we need to create
-  mProjLock.unlock();
-  mProjLock.lockForWrite();
+  locker.changeMode( QgsReadWriteLocker::Write );
 
 #ifdef USE_THREAD_LOCAL
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
@@ -260,7 +262,6 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
                                          pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( pContext ), res );
 #endif
-  mProjLock.unlock();
   return res;
 }
 
@@ -329,7 +330,7 @@ void QgsCoordinateTransformPrivate::setFinder()
 
 void QgsCoordinateTransformPrivate::freeProj()
 {
-  mProjLock.lockForWrite();
+  QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
   QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constBegin();
   for ( ; it != mProjProjections.constEnd(); ++it )
   {
@@ -337,7 +338,6 @@ void QgsCoordinateTransformPrivate::freeProj()
     pj_free( it.value().second );
   }
   mProjProjections.clear();
-  mProjLock.unlock();
 }
 
 ///@endcond

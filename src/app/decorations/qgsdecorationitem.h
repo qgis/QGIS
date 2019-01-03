@@ -41,6 +41,8 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
       TopLeft,
       TopRight,
       BottomRight,
+      TopCenter,
+      BottomCenter
     };
 
     //! Constructor

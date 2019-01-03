@@ -197,8 +197,10 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
       case QVariant::Int:
-      case QVariant::Bool:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
+        break;
+      case QVariant::Bool:
+        value = QVariant( bool( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) ) );
         break;
       case QVariant::LongLong:
         value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
@@ -221,6 +223,21 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
       }
       break;
+
+      case QVariant::ByteArray:
+      {
+        int size = 0;
+        const GByte *b = OGR_F_GetFieldAsBinary( ogrFet, attIndex, &size );
+
+        // QByteArray::fromRawData is funny. It doesn't take ownership of the data, so we have to explicitly call
+        // detach on it to force a copy which owns the data
+        QByteArray ba = QByteArray::fromRawData( reinterpret_cast<const char *>( b ), size );
+        ba.detach();
+
+        value = ba;
+        break;
+      }
+
       default:
         Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
         if ( ok )

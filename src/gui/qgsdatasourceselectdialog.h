@@ -73,12 +73,26 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      */
     QgsMimeDataUtils::Uri uri() const;
 
+    //! Show/hide filter widget
+    void showFilterWidget( bool visible );
+    //! Sets filter syntax
+    void setFilterSyntax( QAction * );
+    //! Sets filter case sensitivity
+    void setCaseSensitive( bool caseSensitive );
+    //! Apply filter to the model
+    void setFilter();
+    //! Scroll to last selected index and expand it's children
+    void showEvent( QShowEvent *e ) override;
+
   private slots:
 
     //! Triggered when a layer is selected in the browser
     void onLayerSelected( const QModelIndex &index );
 
   private:
+
+    //! Refresh the model
+    void refreshModel( const QModelIndex &index );
 
     QgsBrowserProxyModel mBrowserProxyModel;
     std::unique_ptr<QgsBrowserModel> mBrowserModel;

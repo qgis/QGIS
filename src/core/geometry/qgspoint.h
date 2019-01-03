@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTV2_H
-#define QGSPOINTV2_H
+#ifndef QGSPOINT_H
+#define QGSPOINT_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -518,4 +518,4 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSPOINTV2_H
+#endif // QGSPOINT_H

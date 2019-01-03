@@ -762,12 +762,10 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       // NOTE: SpatiaLite provider ignores position of geometry column
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
-      QgsAttributes attrs = f.attributes();
       int column = 0;
+      QgsAttributes attrs = f.attributes();
       // on GPKG newAttrs has an addition FID attribute, so we have to add a dummy in the original set
-      if ( containerType == GPKG )
-        column++;
-      QgsAttributes newAttrs( attrs.count() + column );
+      QgsAttributes newAttrs( containerType == GPKG ? attrs.count() + 1 : attrs.count() );
       for ( int it = 0; it < attrs.count(); ++it )
       {
         newAttrs[column++] = attrs.at( it );
@@ -1139,13 +1137,14 @@ void QgsOfflineEditing::updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVector
 QMap<int, int> QgsOfflineEditing::attributeLookup( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer )
 {
   const QgsAttributeList &offlineAttrs = offlineLayer->attributeList();
-  const QgsAttributeList &remoteAttrs = remoteLayer->attributeList();
 
   QMap < int /*offline attr*/, int /*remote attr*/ > attrLookup;
-  // NOTE: use size of remoteAttrs, as offlineAttrs can have new attributes not yet synced
-  for ( int i = 0; i < remoteAttrs.size(); i++ )
+  // NOTE: though offlineAttrs can have new attributes not yet synced, we take the amount of offlineAttrs
+  // because we anyway only add mapping for the fields existing in remoteLayer (this because it could contain fid on 0)
+  for ( int i = 0; i < offlineAttrs.size(); i++ )
   {
-    attrLookup.insert( offlineAttrs.at( i ), remoteAttrs.at( i ) );
+    if ( remoteLayer->fields().lookupField( offlineLayer->fields().field( i ).name() ) >= 0 )
+      attrLookup.insert( offlineAttrs.at( i ), remoteLayer->fields().indexOf( offlineLayer->fields().field( i ).name() ) );
   }
 
   return attrLookup;

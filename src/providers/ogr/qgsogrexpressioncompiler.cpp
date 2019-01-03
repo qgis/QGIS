@@ -79,6 +79,7 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
     case QgsExpressionNode::ntColumnRef:
     case QgsExpressionNode::ntInOperator:
     case QgsExpressionNode::ntLiteral:
+    case QgsExpressionNode::ntIndexOperator:
       break;
   }
 

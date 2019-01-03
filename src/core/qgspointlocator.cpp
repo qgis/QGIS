@@ -23,7 +23,7 @@
 #include "qgslogger.h"
 #include "qgsrenderer.h"
 
-#include <SpatialIndex.h>
+#include <spatialindex/SpatialIndex.h>
 
 #include <QLinkedListIterator>
 

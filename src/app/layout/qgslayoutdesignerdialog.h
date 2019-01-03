@@ -77,6 +77,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QToolBar *atlasToolbar() override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
     void removeDockWidget( QDockWidget *dock ) override;
+    void activateTool( StandardTool tool ) override;
 
   public slots:
 
@@ -504,7 +505,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     bool showFileSizeWarning();
     bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
-    bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings, bool &exportAsText );
+    bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
+    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings );
 
     void toggleAtlasActions( bool enabled );
 
@@ -536,6 +538,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QString defaultExportPath() const;
     void setLastExportPath( const QString &path ) const;
 
+    bool checkBeforeExport();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

@@ -173,6 +173,11 @@ void QgsBrowserModel::removeRootItems()
   mDriveItems.clear();
 }
 
+QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
+{
+  return mDriveItems;
+}
+
 void QgsBrowserModel::initialize()
 {
   if ( ! mInitialized )
@@ -425,7 +430,7 @@ void QgsBrowserModel::refreshDrives()
       continue;
 
     // drive has been removed, remove corresponding item
-    if ( QgsDataItem *driveItem = mDriveItems.value( drivePath ) )
+    if ( QgsDirectoryItem *driveItem = mDriveItems.value( drivePath ) )
       removeRootItem( driveItem );
   }
 
@@ -552,7 +557,7 @@ void QgsBrowserModel::setupItemConnections( QgsDataItem *item )
            this, &QgsBrowserModel::itemStateChanged );
 
   // if it's a collection item, also forwards connectionsChanged
-  QgsDataCollectionItem *collectionItem = dynamic_cast<QgsDataCollectionItem *>( item );
+  QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item );
   if ( collectionItem )
     connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
 }
@@ -652,7 +657,7 @@ void QgsBrowserModel::addFavoriteDirectory( const QString &directory, const QStr
 
 void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 {
-  QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
+  QgsDirectoryItem *item = qobject_cast<QgsDirectoryItem *>( dataItem( index ) );
   if ( !item )
     return;
 
@@ -698,9 +703,10 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
   int i = mRootItems.indexOf( item );
   beginRemoveRows( QModelIndex(), i, i );
   mRootItems.remove( i );
-  if ( !mDriveItems.key( item ).isEmpty() )
+  QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item );
+  if ( !mDriveItems.key( dirItem ).isEmpty() )
   {
-    mDriveItems.remove( mDriveItems.key( item ) );
+    mDriveItems.remove( mDriveItems.key( dirItem ) );
   }
   item->deleteLater();
   endRemoveRows();

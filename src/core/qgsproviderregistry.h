@@ -180,6 +180,36 @@ class CORE_EXPORT QgsProviderRegistry
      */
     virtual QString fileRasterFilters() const;
 
+    /**
+     * Returns mesh file filter string
+
+      Returns a string suitable for a QFileDialog of mesh file formats
+      supported by all data providers.
+
+      This walks through all data providers appending calls to their
+      fileMeshFilters to a string, which is then returned.
+
+      \see fileMeshDatasetFilters()
+
+      \since QGIS 3.6
+     */
+    virtual QString fileMeshFilters() const;
+
+    /**
+     * Returns mesh's dataset file filter string
+
+      Returns a string suitable for a QFileDialog of mesh datasets file formats
+      supported by all data providers.
+
+      This walks through all data providers appending calls to their
+      fileMeshFilters to a string, which is then returned.
+
+      \see fileMeshFilters()
+
+      \since QGIS 3.6
+     */
+    virtual QString fileMeshDatasetFilters() const;
+
     //! Returns a string containing the available database drivers
     virtual QString databaseDrivers() const;
     //! Returns a string containing the available directory drivers
@@ -256,6 +286,16 @@ class CORE_EXPORT QgsProviderRegistry
      * File filter string for raster files
      */
     QString mRasterFileFilters;
+
+    /**
+     * File filter string for raster files
+     */
+    QString mMeshFileFilters;
+
+    /**
+     * File filter string for raster files
+     */
+    QString mMeshDatasetFileFilters;
 
     /**
      * Available database drivers string for vector databases

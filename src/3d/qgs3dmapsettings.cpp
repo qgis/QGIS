@@ -37,13 +37,21 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMapTileResolution( other.mMapTileResolution )
   , mMaxTerrainScreenError( other.mMaxTerrainScreenError )
   , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
+  , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
+  , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
+  , mTerrainMapTheme( other.mTerrainMapTheme )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mShowCameraViewCenter( other.mShowCameraViewCenter )
+  , mShowLabels( other.mShowLabels )
+  , mPointLights( other.mPointLights )
   , mLayers( other.mLayers )
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
   , mSkyboxFileExtension( other.mSkyboxFileExtension )
+  , mTransformContext( other.mTransformContext )
+  , mPathResolver( other.mPathResolver )
+  , mMapThemes( other.mMapThemes )
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {
@@ -79,7 +87,34 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mMapTileResolution = elemTerrain.attribute( QStringLiteral( "texture-size" ), QStringLiteral( "512" ) ).toInt();
   mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
   mMaxTerrainGroundError = elemTerrain.attribute( QStringLiteral( "max-ground-error" ), QStringLiteral( "1" ) ).toFloat();
+  mTerrainShadingEnabled = elemTerrain.attribute( QStringLiteral( "shading-enabled" ), QStringLiteral( "0" ) ).toInt();
+  QDomElement elemTerrainShadingMaterial = elemTerrain.firstChildElement( QStringLiteral( "shading-material" ) );
+  if ( !elemTerrainShadingMaterial.isNull() )
+    mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial );
+  mTerrainMapTheme = elemTerrain.attribute( QStringLiteral( "map-theme" ) );
   mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
+
+  mPointLights.clear();
+  QDomElement elemPointLights = elem.firstChildElement( QStringLiteral( "point-lights" ) );
+  if ( !elemPointLights.isNull() )
+  {
+    QDomElement elemPointLight = elemPointLights.firstChildElement( QStringLiteral( "point-light" ) );
+    while ( !elemPointLight.isNull() )
+    {
+      QgsPointLightSettings pointLight;
+      pointLight.readXml( elemPointLight );
+      mPointLights << pointLight;
+      elemPointLight = elemPointLight.nextSiblingElement( QStringLiteral( "point-light" ) );
+    }
+  }
+  else
+  {
+    // QGIS <= 3.4 did not have light configuration
+    QgsPointLightSettings defaultLight;
+    defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+    mPointLights << defaultLight;
+  }
+
   QDomElement elemMapLayers = elemTerrain.firstChildElement( QStringLiteral( "layers" ) );
   QDomElement elemMapLayer = elemMapLayers.firstChildElement( QStringLiteral( "layer" ) );
   QList<QgsMapLayerRef> mapLayers;
@@ -89,6 +124,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     elemMapLayer = elemMapLayer.nextSiblingElement( QStringLiteral( "layer" ) );
   }
   mLayers = mapLayers;  // needs to resolve refs afterwards
+
   QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( QStringLiteral( "generator" ) );
   QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
   if ( terrainGenType == QLatin1String( "dem" ) )
@@ -169,7 +205,21 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "texture-size" ), mMapTileResolution );
   elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
   elemTerrain.setAttribute( QStringLiteral( "max-ground-error" ), QString::number( mMaxTerrainGroundError ) );
+  elemTerrain.setAttribute( QStringLiteral( "shading-enabled" ), mTerrainShadingEnabled ? 1 : 0 );
+  QDomElement elemTerrainShadingMaterial = doc.createElement( QStringLiteral( "shading-material" ) );
+  mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial );
+  elemTerrain.appendChild( elemTerrainShadingMaterial );
+  elemTerrain.setAttribute( QStringLiteral( "map-theme" ), mTerrainMapTheme );
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
+
+  QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
+  for ( const QgsPointLightSettings &pointLight : qgis::as_const( mPointLights ) )
+  {
+    QDomElement elemPointLight = pointLight.writeXml( doc );
+    elemPointLights.appendChild( elemPointLight );
+  }
+  elem.appendChild( elemPointLights );
+
   QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
@@ -370,6 +420,33 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
   emit terrainGeneratorChanged();
 }
 
+void Qgs3DMapSettings::setTerrainShadingEnabled( bool enabled )
+{
+  if ( mTerrainShadingEnabled == enabled )
+    return;
+
+  mTerrainShadingEnabled = enabled;
+  emit terrainShadingChanged();
+}
+
+void Qgs3DMapSettings::setTerrainShadingMaterial( const QgsPhongMaterialSettings &material )
+{
+  if ( mTerrainShadingMaterial == material )
+    return;
+
+  mTerrainShadingMaterial = material;
+  emit terrainShadingChanged();
+}
+
+void Qgs3DMapSettings::setTerrainMapTheme( const QString &theme )
+{
+  if ( mTerrainMapTheme == theme )
+    return;
+
+  mTerrainMapTheme = theme;
+  emit terrainMapThemeChanged();
+}
+
 void Qgs3DMapSettings::setRenderers( const QList<QgsAbstract3DRenderer *> &renderers )
 {
   mRenderers = renderers;
@@ -409,4 +486,13 @@ void Qgs3DMapSettings::setShowLabels( bool enabled )
 
   mShowLabels = enabled;
   emit showLabelsChanged();
+}
+
+void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &pointLights )
+{
+  if ( mPointLights == pointLights )
+    return;
+
+  mPointLights = pointLights;
+  emit pointLightsChanged();
 }

@@ -13,8 +13,8 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTICURVEV2_H
-#define QGSMULTICURVEV2_H
+#ifndef QGSMULTICURVE_H
+#define QGSMULTICURVE_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -76,7 +76,10 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMultiCurve: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsMultiCurve: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -85,4 +88,4 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
 // clazy:excludeall=qstring-allocations
 
-#endif // QGSMULTICURVEV2_H
+#endif // QGSMULTICURVE_H

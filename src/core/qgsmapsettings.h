@@ -32,12 +32,37 @@
 #include "qgsscalecalculator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaplayer.h"
+#include "qgsgeometry.h"
 
 class QPainter;
 
 class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
+
+/**
+ * \class QgsLabelBlockingRegion
+ * \ingroup core
+ *
+ * Label blocking region (in map coordinates and CRS).
+ *
+ * \since QGIS 3.6
+*/
+class CORE_EXPORT QgsLabelBlockingRegion
+{
+  public:
+
+    /**
+     * Constructor for a label blocking region
+     */
+    explicit QgsLabelBlockingRegion( const QgsGeometry &geometry )
+      : geometry( geometry )
+    {}
+
+    //! Geometry of region to avoid placing labels within (in destination map coordinates and CRS)
+    QgsGeometry geometry;
+
+};
 
 
 /**
@@ -253,6 +278,34 @@ class CORE_EXPORT QgsMapSettings
     //! Check whether a particular flag is enabled
     bool testFlag( Flag flag ) const;
 
+    /**
+     * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see setTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    QgsRenderContext::TextRenderFormat textRenderFormat() const
+    {
+      return mTextRenderFormat;
+    }
+
+    /**
+     * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \warning Calling the setLabelingEngineSettings() method will reset the text render format to match the default
+     * text render format from the label engine settings.
+     *
+     * \see textRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    {
+      mTextRenderFormat = format;
+      // ensure labeling engine setting is also kept in sync, just in case anyone accesses QgsMapSettings::labelingEngineSettings().defaultTextRenderFormat()
+      // instead of correctly calling QgsMapSettings::textRenderFormat(). It can't hurt to be consistent!
+      mLabelingEngineSettings.setDefaultTextRenderFormat( format );
+    }
+
     //! sets format of internal QImage
     void setOutputImageFormat( QImage::Format format ) { mImageFormat = format; }
     //! format of internal QImage, default QImage::Format_ARGB32_Premultiplied
@@ -411,16 +464,73 @@ class CORE_EXPORT QgsMapSettings
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
     /**
-     * Sets global configuration of the labeling engine
+     * Sets the global configuration of the labeling engine.
+     *
+     * \note Calling this method will reset the textRenderFormat() to match the default
+     * text render format from the label engine \a settings.
+     *
+     * \see labelingEngineSettings()
+     *
      * \since QGIS 3.0
      */
-    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings ) { mLabelingEngineSettings = settings; }
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
+    {
+      mLabelingEngineSettings = settings;
+      mTextRenderFormat = settings.defaultTextRenderFormat();
+    }
 
     /**
-     * Returns global configuration of the labeling engine
+     * Returns the global configuration of the labeling engine.
+     *
+     * \see setLabelingEngineSettings()
+     *
      * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
+
+    /**
+     * Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
+     * placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+     * the map's visiblePolygon().
+     *
+     * The geometry is specified using the map's destinationCrs().
+     *
+     * \see setLabelBoundaryGeometry()
+     * \see labelBlockingRegions()
+     * \since QGIS 3.6
+     */
+    QgsGeometry labelBoundaryGeometry() const;
+
+    /**
+     * Sets the label \a boundary geometry, which restricts where in the rendered map labels are permitted to be
+     * placed.
+     *
+     * A null \a boundary geometry (the default) indicates that labels can be placed anywhere within
+     * the map's visiblePolygon().
+     *
+     * The geometry is specified using the map's destinationCrs().
+     *
+     * \see labelBoundaryGeometry()
+     * \see setLabelBlockingRegions()
+     * \since QGIS 3.6
+     */
+    void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+
+    /**
+     * Sets a list of \a regions to avoid placing labels within.
+     * \see labelBlockingRegions()
+     * \see setLabelBoundaryGeometry()
+     * \since QGIS 3.6
+     */
+    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions ) { mLabelBlockingRegions = regions; }
+
+    /**
+     * Returns the list of regions to avoid placing labels within.
+     * \see setLabelBlockingRegions()
+     * \see labelBoundaryGeometry()
+     * \since QGIS 3.6
+     */
+    QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
 
   protected:
 
@@ -470,11 +580,19 @@ class CORE_EXPORT QgsMapSettings
 
     QgsPathResolver mPathResolver;
 
+    QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
+
+    QgsGeometry mLabelBoundaryGeometry;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
 
     void updateDerived();
+
+  private:
+
+    QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettings::Flags )

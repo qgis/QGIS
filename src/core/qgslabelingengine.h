@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLABELINGENGINEV2_H
-#define QGSLABELINGENGINEV2_H
+#ifndef QGSLABELINGENGINE_H
+#define QGSLABELINGENGINE_H
 
 #define SIP_NO_FILE
 
@@ -257,4 +257,4 @@ class CORE_EXPORT QgsLabelingUtils
 
 };
 
-#endif // QGSLABELINGENGINEV2_H
+#endif // QGSLABELINGENGINE_H

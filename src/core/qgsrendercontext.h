@@ -76,6 +76,50 @@ class CORE_EXPORT QgsRenderContext
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
+     * Options for rendering text.
+     * \since QGIS 3.4.3
+     */
+    enum TextRenderFormat
+    {
+      // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
+      // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
+
+      /**
+       * Always render text using path objects (AKA outlines/curves).
+       *
+       * This setting guarantees the best quality rendering, even when using a raster paint surface
+       * (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering).
+       * The downside is that text is converted to paths only, so users cannot open created vector
+       * outputs for post-processing in other applications and retain text editability.
+       *
+       * This setting also guarantees complete compatibility with the full range of formatting options available
+       * through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using
+       * a vector-based paint surface and TextFormatAlwaysText mode.
+       *
+       * A final benefit to this setting is that vector exports created using text as outlines do
+       * not require all users to have the original fonts installed in order to display the
+       * text in its original style.
+       */
+      TextFormatAlwaysOutlines,
+
+      /**
+       * Always render text as text objects.
+       *
+       * While this mode preserves text objects as text for post-processing in external vector editing applications,
+       * it can result in rendering artifacts or poor quality rendering, depending on the text format settings.
+       *
+       * Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality
+       * to TextFormatAlwaysOutlines.
+       *
+       * When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be
+       * taken to ensure that the required fonts are available to users when opening the created files,
+       * or default fallback fonts will be used to display the output instead. (Although PDF exports MAY
+       * automatically embed some fonts when possible, depending on the user's platform).
+       */
+      TextFormatAlwaysText,
+    };
+
+    /**
      * Set combination of flags that will be used for rendering.
      * \since QGIS 2.14
      */
@@ -122,8 +166,14 @@ class CORE_EXPORT QgsRenderContext
     QPainter *painter() {return mPainter;}
 
     /**
-     * Returns the current coordinate transform for the context, or an invalid
-     * transform is no coordinate transformation is required.
+     * Returns the current coordinate transform for the context.
+     *
+     * This represents the coordinate transform required to transform a layer
+     * which is being rendered back to the CRS of the rendered map. If no coordinate
+     * transformation is required, or the render context is not associated with
+     * a map layer render, then an invalid coordinate transformation is returned.
+     *
+     * \see setCoordinateTransform()
      */
     QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
 
@@ -171,7 +221,21 @@ class CORE_EXPORT QgsRenderContext
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
-    const QgsRectangle &extent() const {return mExtent;}
+    /**
+     * When rendering a map layer, calling this method returns the "clipping"
+     * extent for the layer (in the layer's CRS).
+     *
+     * This extent is a "worst-case" scenario, which is guaranteed to cover the complete
+     * visible portion of the layer when it is rendered to a map. It is often larger
+     * than the actual visible portion of that layer.
+     *
+     * \warning For some layers, depending on the visible extent and the coordinate
+     * transforms involved, this extent will represent the entire globe. This method
+     * should never be used to determine the actual visible extent of a map render.
+     *
+     * \see setExtent()
+     */
+    const QgsRectangle &extent() const { return mExtent; }
 
     const QgsMapToPixel &mapToPixel() const {return mMapToPixel;}
 
@@ -225,9 +289,31 @@ class CORE_EXPORT QgsRenderContext
 
     //setters
 
-    //! Sets coordinate transformation.
+    /**
+     * Sets the current coordinate transform for the context.
+     *
+     * This represents the coordinate transform required to transform the layer
+     * which is being rendered back to the CRS of the rendered map.
+     *
+     * Set to an invalid QgsCoordinateTransform to indicate that no transformation is required.
+     *
+     * \see coordinateTransform()
+     */
     void setCoordinateTransform( const QgsCoordinateTransform &t );
+
     void setMapToPixel( const QgsMapToPixel &mtp ) {mMapToPixel = mtp;}
+
+    /**
+     * When rendering a map layer, calling this method sets the "clipping"
+     * extent for the layer (in the layer's CRS).
+     *
+     * This extent should be a "worst-case" scenario, which is guaranteed to
+     * completely cover the entire visible portion of the layer when it is rendered
+     * to the map. It may be larger than the actual visible area, but MUST contain at least the
+     * entire visible area.
+     *
+     * \see setExtent()
+     */
     void setExtent( const QgsRectangle &extent ) {mExtent = extent;}
 
     void setDrawEditingInformation( bool b );
@@ -386,6 +472,28 @@ class CORE_EXPORT QgsRenderContext
      */
     double convertMetersToMapUnits( double meters ) const;
 
+    /**
+     * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see setTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    TextRenderFormat textRenderFormat() const
+    {
+      return mTextRenderFormat;
+    }
+
+    /**
+     * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see textRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setTextRenderFormat( TextRenderFormat format )
+    {
+      mTextRenderFormat = format;
+    }
+
   private:
 
     Flags mFlags;
@@ -441,6 +549,8 @@ class CORE_EXPORT QgsRenderContext
     QgsCoordinateTransformContext mTransformContext;
 
     QgsPathResolver mPathResolver;
+
+    TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

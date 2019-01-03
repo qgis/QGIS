@@ -431,7 +431,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   {
     found = true;
     QString email = emailRegEx.cap( 1 );
-    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped(), email.toHtmlEscaped() );
+    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped() );
     converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
     offset = emailRegEx.pos( 1 ) + anchor.length();
   }

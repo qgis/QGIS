@@ -15,6 +15,7 @@
 #include "mdal_data_model.hpp"
 #include "mdal.h"
 #include "mdal_utils.hpp"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
@@ -47,12 +48,17 @@ namespace MDAL
       void parseProj();
   };
 
-  class LoaderGdal
+  class DriverGdal: public Driver
   {
     public:
-      LoaderGdal( const std::string &fileName, const std::string &driverName );
-      virtual ~LoaderGdal() = default;
-      std::unique_ptr< Mesh > load( MDAL_Status *status );
+      DriverGdal( const std::string &name,
+                  const std::string &description,
+                  const std::string &filter,
+                  const std::string &gdalDriverName );
+
+      virtual ~DriverGdal() override = default;
+      bool canRead( const std::string &uri ) override;
+      std::unique_ptr< Mesh > load( const std::string &fileName, MDAL_Status *status ) override;
 
     protected:
       typedef std::map<std::string, std::string> metadata_hash; // KEY, VALUE
@@ -70,7 +76,7 @@ namespace MDAL
     private:
       typedef std::map<double, std::vector<GDALRasterBandH> > timestep_map; //TIME (sorted), [X, Y]
       typedef std::map<std::string, timestep_map > data_hash; //Data Type, TIME (sorted), [X, Y]
-      typedef std::vector<GdalDataset *> gdal_datasets_vector; //GDAL (Sub)Datasets,
+      typedef std::vector<std::shared_ptr<GdalDataset>> gdal_datasets_vector; //GDAL (Sub)Datasets,
 
       void registerDriver();
 
@@ -82,17 +88,17 @@ namespace MDAL
       bool meshes_equals( const GdalDataset *ds1, const GdalDataset *ds2 ) const;
 
       metadata_hash parseMetadata( GDALMajorObjectH gdalBand, const char *pszDomain = nullptr );
-      void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<Dataset> tos, bool is_vector, bool is_x );
+      void addDataToOutput( GDALRasterBandH raster_band, std::shared_ptr<MemoryDataset> tos, bool is_vector, bool is_x );
       bool addSrcProj();
-      void activateFaces( std::shared_ptr<Dataset> tos );
+      void activateFaces( std::shared_ptr<MemoryDataset> tos );
       void addDatasetGroups();
       void createMesh();
       void parseRasterBands( const GdalDataset *cfGDALDataset );
 
-      const std::string mFileName;
-      const std::string mDriverName; /* GDAL driver name */
+      std::string mFileName;
+      const std::string mGdalDriverName; /* GDAL driver name */
       double *mPafScanline; /* temporary buffer for reading one raster line */
-      std::unique_ptr< Mesh > mMesh;
+      std::unique_ptr< MemoryMesh > mMesh;
       gdal_datasets_vector gdal_datasets;
       data_hash mBands; /* raster bands GDAL handle */
   };

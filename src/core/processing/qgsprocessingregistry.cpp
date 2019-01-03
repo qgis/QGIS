@@ -24,6 +24,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
+  addParameterType( new QgsProcessingParameterTypeMeshLayer() );
   addParameterType( new QgsProcessingParameterTypeMapLayer() );
   addParameterType( new QgsProcessingParameterTypeBoolean() );
   addParameterType( new QgsProcessingParameterTypeExpression() );
@@ -40,6 +41,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeFileDestination() );
   addParameterType( new QgsProcessingParameterTypeFolderDestination() );
   addParameterType( new QgsProcessingParameterTypeString() );
+  addParameterType( new QgsProcessingParameterTypeAuthConfig() );
   addParameterType( new QgsProcessingParameterTypeMultipleLayers() );
   addParameterType( new QgsProcessingParameterTypeFeatureSource() );
   addParameterType( new QgsProcessingParameterTypeNumber() );

@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutExporter
 {
 %Docstring
@@ -187,6 +188,8 @@ Constructor for PdfExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QgsRenderContext::TextRenderFormat textRenderFormat;
+
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
@@ -285,6 +288,8 @@ Constructor for SvgExportSettings
 
       QgsLayoutRenderContext::Flags flags;
 
+      QgsRenderContext::TextRenderFormat textRenderFormat;
+
     };
 
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
@@ -359,6 +364,7 @@ Subclasses can override this method to customize page file naming.
 %End
 
 };
+
 
 
 

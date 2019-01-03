@@ -233,7 +233,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
 
-      if ( !mShowCrs )
+      if ( !mShowCrs || !layer->isSpatial() )
       {
         return layer->name();
       }

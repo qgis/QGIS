@@ -904,6 +904,7 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
 {
   mConfig = config;
   mConfig.update( mLayer->fields() );
+  mLayer->setAttributeTableConfig( mConfig );
   mFilterModel->setAttributeTableConfig( mConfig );
   mTableView->setAttributeTableConfig( mConfig );
 }

@@ -180,6 +180,11 @@ void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
 {
 }
 
+void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface * )
+{
+
+}
+
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
@@ -227,6 +232,8 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   , mConfigObject( new QgsLayoutConfigObject( this, item ) )
 {
   setupUi( this );
+
+  mVariableEditor->setMinimumHeight( mVariableEditor->fontMetrics().height() * 15 );
 
   mItemRotationSpinBox->setClearValue( 0 );
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );

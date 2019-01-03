@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>830</height>
+    <height>1122</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QgsCollapsibleGroupBox" name="groupTerrain">
      <property name="title">
       <string>Terrain</string>
      </property>
@@ -83,6 +83,47 @@
          <double>10.000000000000000</double>
         </property>
        </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Map theme</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QComboBox" name="cboTerrainMapTheme">
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
+     <property name="title">
+      <string>Terrain shading</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupLights">
+     <property name="title">
+      <string>Lights</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QgsLightsWidget" name="widgetLights" native="true"/>
       </item>
      </layout>
     </widget>
@@ -224,18 +265,39 @@
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsPhongMaterialWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsphongmaterialwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsLightsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgslightswidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboTerrainLayer</tabstop>
   <tabstop>spinTerrainScale</tabstop>
   <tabstop>spinTerrainResolution</tabstop>
   <tabstop>spinTerrainSkirtHeight</tabstop>
+  <tabstop>cboTerrainMapTheme</tabstop>
+  <tabstop>groupTerrainShading</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
   <tabstop>spinGroundError</tabstop>
   <tabstop>chkShowLabels</tabstop>
   <tabstop>chkShowTileInfo</tabstop>
   <tabstop>chkShowBoundingBoxes</tabstop>
+  <tabstop>chkShowCameraViewCenter</tabstop>
  </tabstops>
  <resources/>
  <connections/>

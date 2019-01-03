@@ -163,6 +163,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapAtlasMargin, //!< Map atlas margin
       MapLayers, //!< Map layer set
       MapStylePreset, //!< Layer and style map theme
+      MapLabelMargin, //!< Map label margin
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color

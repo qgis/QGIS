@@ -57,7 +57,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
 
   mValueGroupBox->hide();
-  mLoadGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel();
@@ -93,6 +92,20 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEditValues->setPlaceholderText( tr( "Search…" ) );
 
   editorSplit->setSizes( QList<int>( {175, 300} ) );
+
+  functionsplit->setCollapsible( 0, false );
+  connect( mShowHelpButton, &QPushButton::clicked, this, [ = ]()
+  {
+    functionsplit->setSizes( QList<int>( {mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(),
+                                          mHelpAndValuesWidget->minimumWidth()
+                                         } ) );
+    mShowHelpButton->setEnabled( false );
+  } );
+  connect( functionsplit, &QSplitter::splitterMoved, this, [ = ]( int, int )
+  {
+    mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
+  } );
+
 
   QgsSettings settings;
   splitter->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
@@ -222,14 +235,21 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( !item )
     return;
 
-  if ( item->getItemType() == QgsExpressionItem::Field && mFieldValues.contains( item->text() ) )
+  bool isField = mLayer && item->getItemType() == QgsExpressionItem::Field;
+  if ( isField )
   {
-    const QStringList &values = mFieldValues[item->text()];
-    mValuesModel->setStringList( values );
+    if ( mFieldValues.contains( item->text() ) )
+    {
+      const QStringList &values = mFieldValues[item->text()];
+      mValuesModel->setStringList( values );
+    }
+    else
+    {
+      mValuesModel->setStringList( QStringList() );
+    }
   }
-
-  mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  mValueGroupBox->setVisible( isField );
+  mShowHelpButton->setText( isField ? tr( "Show Values" ) : tr( "Show Help" ) );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -329,8 +349,8 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
 void QgsExpressionBuilderWidget::btnNewFile_pressed()
 {
   bool ok;
-  QString text = QInputDialog::getText( this, tr( "Enter new file name" ),
-                                        tr( "File name:" ), QLineEdit::Normal,
+  QString text = QInputDialog::getText( this, tr( "New File" ),
+                                        tr( "New file name:" ), QLineEdit::Normal,
                                         QString(), &ok );
   if ( ok && !text.isEmpty() )
   {
@@ -595,6 +615,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<>" ), QStringLiteral( " <> " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "<=" ), QStringLiteral( " <= " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( ">=" ), QStringLiteral( " >= " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "[]" ), QStringLiteral( "[ ]" ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "||" ), QStringLiteral( " || " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IN" ), QStringLiteral( " IN " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
@@ -944,6 +965,10 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
       }
       break;
     }
+    case QgsExpressionNode::NodeType::ntIndexOperator:
+    {
+      break;
+    }
   }
 }
 
@@ -1094,7 +1119,7 @@ void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::Keyb
   if ( state & Qt::ControlModifier )
   {
     int position = txtExpressionString->positionFromLineIndex( line, index );
-    long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, ( long int )position );
+    long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, static_cast<long int>( position ) );
     QgsExpressionFunction *func = QgsExpression::Functions()[fncIndex];
     QString help = getFunctionHelp( func );
     txtHelpText->setText( help );

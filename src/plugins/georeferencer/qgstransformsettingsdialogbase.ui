@@ -7,13 +7,207 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>572</height>
+    <height>702</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Transformation Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="7" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Output settings</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="mWorldFileCheckBox">
+        <property name="text">
+         <string>Create world file only (linear transforms)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Output raster</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsFileWidget" name="mOutputRaster"/>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="cbxZeroAsTrans">
+        <property name="text">
+         <string>Use 0 for transparency when needed</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mCompressionLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Compression</string>
+        </property>
+        <property name="buddy">
+         <cstring>cmbCompressionComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cmbCompressionComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QGroupBox" name="cbxUserResolution">
+        <property name="title">
+         <string>Set target resolution</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="1" column="1">
+          <widget class="QgsValidatedDoubleSpinBox" name="dsbVerticalRes">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>0.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Horizontal</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Vertical</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QgsValidatedDoubleSpinBox" name="dsbHorizRes">
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>999999.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="saveGcpCheckBox">
+        <property name="text">
+         <string>Save GCP Points</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Reports</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="1">
+       <widget class="QgsFileWidget" name="mPdfMap"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsFileWidget" name="mPdfReport"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Generate PDF report</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Generate PDF map</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -92,7 +286,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -114,222 +308,32 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Output settings</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Output raster</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsFileWidget" name="mOutputRaster">
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="cmbCompressionComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QGroupBox" name="cbxUserResolution">
-        <property name="title">
-         <string>Set target resolution</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Horizontal</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QgsValidatedDoubleSpinBox" name="dsbHorizRes">
-           <property name="decimals">
-            <number>5</number>
-           </property>
-           <property name="minimum">
-            <double>0.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>999999.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Vertical</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QgsValidatedDoubleSpinBox" name="dsbVerticalRes">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="frame">
-            <bool>true</bool>
-           </property>
-           <property name="decimals">
-            <number>5</number>
-           </property>
-           <property name="minimum">
-            <double>-999999.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>0.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mCompressionLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Compression</string>
-        </property>
-        <property name="buddy">
-         <cstring>cmbCompressionComboBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="cbxZeroAsTrans">
-        <property name="text">
-         <string>Use 0 for transparency when needed</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mWorldFileCheckBox">
-        <property name="text">
-         <string>Create world file only (linear transforms)</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="6" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
     <widget class="QCheckBox" name="cbxLoadInQgisWhenDone">
      <property name="text">
       <string>Load in QGIS when done</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Reports</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Generate PDF map</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsFileWidget" name="mPdfMap">
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Generate PDF report</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsFileWidget" name="mPdfReport">
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsValidatedDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header location="global">qgsvalidateddoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsValidatedDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header location="global">qgsvalidateddoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -345,7 +349,6 @@
   <tabstop>dsbVerticalRes</tabstop>
   <tabstop>mPdfMap</tabstop>
   <tabstop>mPdfReport</tabstop>
-  <tabstop>cbxLoadInQgisWhenDone</tabstop>
  </tabstops>
  <resources/>
  <connections>

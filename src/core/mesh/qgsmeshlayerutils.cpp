@@ -17,103 +17,22 @@
 
 #include "qgsmeshlayerutils.h"
 
-#include "qgsmeshdataprovider.h"
-
 #include <limits>
 
 ///@cond PRIVATE
 
-void QgsMeshLayerUtils::calculateMinimumMaximum( double &min, double &max, const QVector<double> &arr )
+QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &block )
 {
-  bool found = false;
+  Q_ASSERT( QgsMeshDataBlock::ActiveFlagInteger != block.type() );
+  int count = block.count();
+  QVector<double> ret( count );
 
-  min = std::numeric_limits<double>::max();
-  max = std::numeric_limits<double>::min();
-
-  for ( const double val : arr )
-  {
-    if ( !std::isnan( val ) )
-    {
-      found = true;
-      if ( val < min )
-        min = val;
-      if ( val > max )
-        max = val;
-    }
-  }
-
-  if ( !found )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-  }
-}
-
-void QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( double &min, double &max, QgsMeshDataProvider *provider, int groupIndex )
-{
-  if ( groupIndex < 0 || !provider || groupIndex >= provider->datasetGroupCount() )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-    return;
-  }
-
-  min = std::numeric_limits<double>::max();
-  max = std::numeric_limits<double>::min();
-
-  int count = provider->datasetCount( groupIndex );
   for ( int i = 0; i < count; ++i )
   {
-    double dMin, dMax;
-    calculateMinMaxForDataset( dMin, dMax, provider, QgsMeshDatasetIndex( groupIndex, i ) );
-    min = std::min( min, dMin );
-    max = std::max( max, dMax );
+    double mag = block.value( i ).scalar();
+    ret[i] = mag;
   }
-}
-
-void QgsMeshLayerUtils::calculateMinMaxForDataset( double &min, double &max, QgsMeshDataProvider *provider, QgsMeshDatasetIndex index )
-{
-  if ( !index.isValid() || !provider )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-    return;
-  }
-
-  const QgsMeshDatasetGroupMetadata metadata = provider->datasetGroupMetadata( index );
-  bool onVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-  int count;
-  if ( onVertices )
-    count = provider->vertexCount();
-  else
-    count = provider->faceCount();
-
-  bool firstIteration = true;
-  for ( int i = 0; i < count; ++i )
-  {
-    double v = provider->datasetValue( index, i ).scalar();
-
-    if ( std::isnan( v ) )
-      continue;
-    if ( firstIteration )
-    {
-      firstIteration = false;
-      min = v;
-      max = v;
-    }
-    else
-    {
-      if ( v < min )
-      {
-        min = v;
-      }
-      if ( v > max )
-      {
-        max = v;
-      }
-    }
-  }
-
+  return ret;
 }
 
 void QgsMeshLayerUtils::boundingBoxToScreenRectangle( const QgsMapToPixel &mtp,

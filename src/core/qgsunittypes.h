@@ -226,6 +226,7 @@ class CORE_EXPORT QgsUnitTypes
      * Converts a translated string to a distance unit.
      * \param string string representing a distance unit
      * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns the distance unit
      * \see toString()
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok SIP_OUT = nullptr );
@@ -282,6 +283,7 @@ class CORE_EXPORT QgsUnitTypes
      * Converts a translated string to an areal unit.
      * \param string string representing an areal unit
      * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns the area unit
      * \see toString()
      */
     Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );

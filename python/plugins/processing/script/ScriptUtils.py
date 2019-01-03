@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.processing import alg as algfactory
 import os
 import inspect
 import importlib
@@ -66,20 +67,26 @@ def loadAlgorithm(moduleName, filePath):
         spec = importlib.util.spec_from_file_location(moduleName, filePath)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        for x in dir(module):
-            obj = getattr(module, x)
-            if inspect.isclass(obj) and issubclass(obj, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and obj.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
-                scriptsRegistry[x] = filePath
-                return obj()
+        try:
+            alg = algfactory.instances.pop().createInstance()
+            scriptsRegistry[alg.name()] = filePath
+            return alg
+        except IndexError:
+            for x in dir(module):
+                obj = getattr(module, x)
+                if inspect.isclass(obj) and issubclass(obj, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and obj.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+                    o = obj()
+                    scriptsRegistry[o.name()] = filePath
+                    return o
     except ImportError as e:
         QgsMessageLog.logMessage(QCoreApplication.translate("ScriptUtils", "Could not import script algorithm '{}' from '{}'\n{}").format(moduleName, filePath, str(e)),
                                  QCoreApplication.translate("ScriptUtils", "Processing"),
                                  Qgis.Critical)
 
 
-def findAlgorithmSource(className):
+def findAlgorithmSource(name):
     global scriptsRegistry
     try:
-        return scriptsRegistry[className]
+        return scriptsRegistry[name]
     except:
         return None

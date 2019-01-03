@@ -34,14 +34,17 @@ Base class for processing algorithm dialogs.
       FormatHtml,
     };
 
-    QgsProcessingAlgorithmDialogBase( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
+    ~QgsProcessingAlgorithmDialogBase();
 
-    void setAlgorithm( QgsProcessingAlgorithm *algorithm );
+    void setAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
 %Docstring
 Sets the ``algorithm`` to run in the dialog.
+
+Ownership of the algorithm instance is transferred to the dialog.
 
 .. seealso:: :py:func:`algorithm`
 %End
@@ -112,9 +115,6 @@ the given ``format``.
 %End
 
   public slots:
-
-    virtual void accept();
-
 
     void reportError( const QString &error, bool fatalError );
 %Docstring
@@ -268,6 +268,11 @@ Formats an input ``string`` for display in the log tab.
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 %Docstring
 Called when the algorithm has finished executing.
+%End
+
+    virtual void runAlgorithm();
+%Docstring
+Called when the dialog's algorithm should be run. Must be overridden by subclasses.
 %End
 
 };

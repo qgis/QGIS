@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgslayoutexporter.h"
+#ifndef QT_NO_PRINTER
+
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
@@ -297,6 +299,7 @@ class LayoutContextSettingsRestorer
       : mLayout( layout )
       , mPreviousDpi( layout->renderContext().dpi() )
       , mPreviousFlags( layout->renderContext().flags() )
+      , mPreviousTextFormat( layout->renderContext().textRenderFormat() )
       , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
     {
     }
@@ -305,6 +308,7 @@ class LayoutContextSettingsRestorer
     {
       mLayout->renderContext().setDpi( mPreviousDpi );
       mLayout->renderContext().setFlags( mPreviousFlags );
+      mLayout->renderContext().setTextRenderFormat( mPreviousTextFormat );
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
     }
 
@@ -315,6 +319,7 @@ class LayoutContextSettingsRestorer
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
     QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
+    QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
 };
 ///@endcond PRIVATE
@@ -494,6 +499,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
+  mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
+
   QPrinter printer;
   preparePrintAsPdf( mLayout, printer, filePath );
   preparePrint( mLayout, printer, false );
@@ -538,7 +545,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
       if ( total > 0 )
         feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
       else
-        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ).arg( total ) );
+        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ) );
       feedback->setProgress( step * i );
     }
     if ( feedback && feedback->isCanceled() )
@@ -562,6 +569,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
 
     iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+    iterator->layout()->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
     if ( first )
     {
@@ -778,6 +787,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
 
   QFileInfo fi( filePath );
   PageExportDetails pageDetails;
@@ -1016,12 +1026,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
   printer.setOutputFileName( filePath );
-  // setOutputFormat should come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
-  // [LS] This should be QPrinter::NativeFormat for Mac, otherwise fonts are not embed-able
-  // and text is not searchable; however, there are several bugs with <= Qt 4.8.5, 5.1.1, 5.2.0:
-  // https://bugreports.qt.io/browse/QTBUG-10094 - PDF font embedding fails
-  // https://bugreports.qt.io/browse/QTBUG-33583 - PDF output converts text to outline
-  // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
 
   updatePrinterPageSize( layout, printer, firstPageToBeExported( layout ) );
@@ -1622,3 +1626,4 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   return w.write( image );
 }
 
+#endif // ! QT_NO_PRINTER

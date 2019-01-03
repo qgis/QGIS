@@ -94,9 +94,13 @@ Key of the parent legend node. For legends with tree hierarchy
    Parameter parentRuleKey added in QGIS 2.8
 %End
 
-    void setSymbol( QgsSymbol *s /Transfer/ );
+    void setSymbol( QgsSymbol *s );
 %Docstring
-Sets symbol of the item. Takes ownership of symbol.
+Sets the symbol of the item.
+
+Does not take ownership of symbol -- an internal clone is made of the symbol.
+
+.. seealso:: :py:func:`symbol`
 %End
 
     void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings /Transfer/ );
@@ -117,7 +121,6 @@ Returns extra information for data-defined size legend rendering. Normally it re
 %End
 
 };
-
 
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 

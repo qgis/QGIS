@@ -305,8 +305,12 @@
 %Include auto_generated/fieldformatter/qgsvaluemapfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsvaluerelationfieldformatter.sip
 %Include auto_generated/geocms/geonode/qgsgeonodeconnection.sip
+%Include auto_generated/validity/qgsabstractvaliditycheck.sip
+%Include auto_generated/validity/qgsvaliditycheckcontext.sip
+%Include auto_generated/validity/qgsvaliditycheckregistry.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
+%Include auto_generated/qgsabstractcontentcache.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsactionscoperegistry.sip
 %Include auto_generated/qgsanimatedicon.sip
@@ -331,6 +335,7 @@
 %Include auto_generated/qgsgeometryvalidator.sip
 %Include auto_generated/qgsgml.sip
 %Include auto_generated/qgsgmlschema.sip
+%Include auto_generated/qgsimagecache.sip
 %Include auto_generated/qgsmaplayer.sip
 %Include auto_generated/qgsmaplayerlegend.sip
 %Include auto_generated/qgsmaplayermodel.sip
@@ -382,6 +387,7 @@
 %Include auto_generated/locator/qgslocator.sip
 %Include auto_generated/locator/qgslocatorfilter.sip
 %Include auto_generated/locator/qgslocatormodel.sip
+%Include auto_generated/locator/qgslocatormodelbridge.sip
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingprovider.sip

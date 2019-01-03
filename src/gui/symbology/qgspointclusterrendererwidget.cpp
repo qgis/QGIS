@@ -123,7 +123,10 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &co
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
   if ( mCenterSymbolToolButton )
+  {
     mCenterSymbolToolButton->setMapCanvas( context.mapCanvas() );
+    mCenterSymbolToolButton->setMessageBar( context.messageBar() );
+  }
 }
 
 void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int index )

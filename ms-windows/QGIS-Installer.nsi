@@ -37,14 +37,15 @@ RequestExecutionLevel admin
 
 !addplugindir osgeo4w/untgz
 !addplugindir osgeo4w/nsis
+!addplugindir osgeo4w/inetc
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;Publisher variables
 
 !define PUBLISHER "QGIS Development Team"
-!define WEB_SITE "http://qgis.org"
-!define WIKI_PAGE "http://qgis.org/en/docs/"
+!define WEB_SITE "https://qgis.org"
+!define WIKI_PAGE "https://qgis.org/en/docs/"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
@@ -404,9 +405,9 @@ Function DownloadDataSet
 	download:
 	SetShellVarContext current
 	InitPluginsDir
-	NSISdl::download "$HTTP_PATH/$ARCHIVE_NAME" "$TEMP\$ARCHIVE_NAME"
-	Pop $0
-	StrCmp $0 "success" download_ok download_failed
+	inetc::get /caption "$ARCHIVE_NAME" /canceltext "Cancel" "$HTTP_PATH/$ARCHIVE_NAME" "$TEMP\$ARCHIVE_NAME" /end
+	Pop $0 # return value = exit code, "OK" means OK
+	StrCmp $0 "OK" download_ok download_failed
 
 	download_ok:
 	InitPluginsDir
@@ -443,7 +444,7 @@ Section /O "North Carolina Data Set" SecNorthCarolinaSDB
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 293314
 
-	StrCpy $HTTP_PATH "http://grass.osgeo.org/sampledata"
+	StrCpy $HTTP_PATH "https://grass.osgeo.org/sampledata"
 	StrCpy $ARCHIVE_NAME "nc_spm_latest.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "North Carolina"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "nc_spm_08"
@@ -461,7 +462,7 @@ Section /O "South Dakota (Spearfish) Data Set" SecSpearfishSDB
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 42171
 
-	StrCpy $HTTP_PATH "http://grass.osgeo.org/sampledata"
+	StrCpy $HTTP_PATH "https://grass.osgeo.org/sampledata"
 	StrCpy $ARCHIVE_NAME "spearfish_grass60data-0.3.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "South Dakota (Spearfish)"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "spearfish60"
@@ -479,7 +480,7 @@ Section /O "Alaska Data Set" SecAlaskaSDB
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 33914
 
-	StrCpy $HTTP_PATH "http://qgis.org/downloads/data"
+	StrCpy $HTTP_PATH "https://qgis.org/downloads/data"
 	StrCpy $ARCHIVE_NAME "qgis_sample_data.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "Alaska"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "qgis_sample_data"

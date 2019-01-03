@@ -35,6 +35,8 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorLayers`
 
+.. seealso:: :py:func:`compatibleMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -55,7 +57,26 @@ value.
 
 .. seealso:: :py:func:`compatibleRasterLayers`
 
+.. seealso:: :py:func:`compatibleMeshLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
+%End
+
+    static QList<QgsMeshLayer *> compatibleMeshLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of mesh layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.6
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -76,6 +97,7 @@ value.
       UnknownType,
       Vector,
       Raster,
+      Mesh,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );

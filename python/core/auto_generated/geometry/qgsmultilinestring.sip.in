@@ -55,7 +55,10 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( sipCpp->asWkt() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

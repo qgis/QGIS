@@ -21,11 +21,14 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <memory>
 #include <QString>
 
 struct sqlite3;
 struct sqlite3_stmt;
+class QVariant;
 
 /**
  * \ingroup core
@@ -134,8 +137,17 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
      * Prepares a \a sql statement, returning the result. The \a resultCode
      * argument will be filled with the sqlite3 result code.
      */
-    sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode ) const;
+    sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode SIP_OUT ) const;
 
+    /**
+     * Executes the \a sql command in the database. Multiple sql queries can be run within
+     * one single command.
+     * Errors are reported to \a errorMessage.
+     * Returns SQLITE_OK in case of success or an sqlite error code.
+     *
+     * \since QGIS 3.6
+     */
+    int exec( const QString &sql, QString &errorMessage SIP_OUT ) const;
 };
 
 /**
@@ -153,6 +165,21 @@ class CORE_EXPORT QgsSqliteUtils
      * characters correctly escaped.
      */
     static QString quotedString( const QString &value );
+
+    /**
+     * Returns a properly quoted version of \a identifier.
+     *
+     * \since QGIS 3.6
+     */
+    static QString quotedIdentifier( const QString &identifier );
+
+    /**
+     * Returns a properly quoted and escaped version of \a value
+     * for use in SQL strings.
+     *
+     * \since QGIS 3.6
+     */
+    static QString quotedValue( const QVariant &value );
 };
 
 /**

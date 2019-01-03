@@ -19,12 +19,14 @@
 #define QGSLAYOUTMAPWIDGET_H
 
 #include "ui_qgslayoutmapwidgetbase.h"
+#include "ui_qgslayoutmaplabelingwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmapgrid.h"
 
 class QgsMapLayer;
 class QgsLayoutItemMap;
 class QgsLayoutItemMapOverview;
+class QgsLayoutMapLabelingWidget;
 
 /**
  * \ingroup app
@@ -38,12 +40,15 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     explicit QgsLayoutMapWidget( QgsLayoutItemMap *item );
 
     void setReportTypeString( const QString &string ) override;
+    void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
 
   public slots:
     void mScaleLineEdit_editingFinished();
-    void mSetToMapCanvasExtentButton_clicked();
-    void mViewExtentInCanvasButton_clicked();
-    void mUpdatePreviewButton_clicked();
+    void setToMapCanvasExtent();
+    void setToMapCanvasScale();
+    void viewExtentInCanvas();
+    void viewScaleInCanvas();
+    void updatePreview();
     void mFollowVisibilityPresetCheckBox_stateChanged( int state );
     void mKeepLayerListCheckBox_stateChanged( int state );
     void mKeepLayerStylesCheckBox_stateChanged( int state );
@@ -52,6 +57,8 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void mOverviewInvertCheckbox_toggled( bool state );
     void mOverviewCenterCheckbox_toggled( bool state );
+    void overviewStackingChanged( int value );
+    void overviewStackingLayerChanged( QgsMapLayer *layer );
 
     void mXMinLineEdit_editingFinished();
     void mXMaxLineEdit_editingFinished();
@@ -116,9 +123,14 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void mapCrsChanged( const QgsCoordinateReferenceSystem &crs );
     void overviewSymbolChanged();
+    void showLabelSettings();
+    void switchToMoveContentTool();
+
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
+    QgsLayoutDesignerInterface *mInterface = nullptr;
+    QPointer< QgsLayoutMapLabelingWidget > mLabelWidget;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();
@@ -127,21 +139,6 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void blockAllSignals( bool b );
 
     void rotationChanged( double value );
-
-    void handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction );
-
-    void insertFrameDisplayEntries( QComboBox *c );
-    void insertAnnotationDisplayEntries( QComboBox *c );
-    void insertAnnotationPositionEntries( QComboBox *c );
-    void insertAnnotationDirectionEntries( QComboBox *c );
-
-    void initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
-    void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
 
     //! Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type
     void toggleAtlasScalingOptionsByLayerType();
@@ -162,6 +159,54 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void storeCurrentLayerSet();
 
+};
+
+
+class QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsLayoutMapItemBlocksLabelsModel( QgsLayoutItemMap *map, QgsLayoutModel *layoutModel, QObject *parent = nullptr );
+
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+  protected:
+
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+    QgsLayoutModel *mLayoutModel = nullptr;
+    QPointer< QgsLayoutItemMap > mMapItem;
+
+};
+
+/**
+ * \ingroup app
+ * Allows configuration of layout map labeling settings.
+ * */
+class QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map );
+
+  protected:
+    bool setNewItem( QgsLayoutItem *item ) override;
+
+  private slots:
+    void updateGuiElements();
+    void labelMarginChanged( double val );
+    void labelMarginUnitsChanged();
+    void showPartialsToggled( bool checked );
+
+  private:
+    QPointer< QgsLayoutItemMap > mMapItem;
 };
 
 #endif

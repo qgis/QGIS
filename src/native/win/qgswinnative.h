@@ -40,6 +40,10 @@ class QgsWinNativeEventFilter : public QObject, public QAbstractNativeEventFilte
   signals:
 
     void usbStorageNotification( const QString &path, bool inserted );
+
+  private:
+
+    quintptr mLastMessageHash = 0;
 };
 
 
@@ -53,15 +57,18 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
                                const QString &version ) override;
     void cleanup() override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    void showFileProperties( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
     void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects ) override;
     NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
+    bool openTerminalAtPath( const QString &path ) override;
 
   private:
 
-    Capabilities mCapabilities = nullptr;
+    QWindow *mWindow = nullptr;
+    Capabilities mCapabilities = NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
     bool mWinToastInitialized = false;
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;

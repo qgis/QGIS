@@ -196,6 +196,16 @@ void QgsRendererPropertiesDialog::setMapCanvas( QgsMapCanvas *canvas )
   }
 }
 
+void QgsRendererPropertiesDialog::setContext( const QgsSymbolWidgetContext &context )
+{
+  mMapCanvas = context.mapCanvas();
+  mMessageBar = context.messageBar();
+  if ( mActiveWidget )
+  {
+    mActiveWidget->setContext( context );
+  }
+}
+
 void QgsRendererPropertiesDialog::setDockMode( bool dockMode )
 {
   mDockMode = dockMode;
@@ -249,10 +259,11 @@ void QgsRendererPropertiesDialog::rendererChanged()
     stackedWidget->setCurrentWidget( mActiveWidget );
     if ( mActiveWidget->renderer() )
     {
-      if ( mMapCanvas )
+      if ( mMapCanvas || mMessageBar )
       {
         QgsSymbolWidgetContext context;
         context.setMapCanvas( mMapCanvas );
+        context.setMessageBar( mMessageBar );
         mActiveWidget->setContext( context );
       }
       changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );

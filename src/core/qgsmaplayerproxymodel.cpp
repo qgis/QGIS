@@ -19,8 +19,10 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsmeshlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsmeshdataprovider.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -127,6 +129,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   // layer type
   if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayer::RasterLayer ) ||
        ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) ||
+       ( mFilters.testFlag( MeshLayer ) && layer->type() == QgsMapLayer::MeshLayer ) ||
        ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayer::PluginLayer ) )
     return true;
 

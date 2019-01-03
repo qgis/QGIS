@@ -42,20 +42,27 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   QApplication::setOverrideCursor( Qt::ArrowCursor );
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
 
-  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all bad layers unmodified (you can fix them later)." ) );
-  dialog->buttonBox->button( QDialogButtonBox::Apply )->setToolTip( tr( "Apply fixes to bad layers (remaining bad layers will be removed from the project)." ) );
-  dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all bad layers from the project" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all unavailable layers unmodified (you can fix them later)." ) );
+  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setText( tr( "Keep Unavailable Layers" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all unavailable layers from the project" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setText( tr( "Remove Unavailable Layers" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
-      tr( "Handle bad layers" ),
-      tr( "%1 of %2 bad layers were not fixable." )
+      tr( "Handle unavailable layers" ),
+      tr( "%1 of %2 unavailable layers were not fixable." )
       .arg( layers.size() - dialog->layerCount() )
       .arg( layers.size() ),
       Qgis::Warning, QgisApp::instance()->messageTimeout() );
 
   if ( dialog->layerCount() > 0 )
-    dialog->exec();
+  {
+    if ( dialog->exec() == dialog->Accepted )
+    {
+      emit layersChanged();
+    }
+  }
 
   delete dialog;
   QApplication::restoreOverrideCursor();
@@ -74,10 +81,13 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   mBrowseButton = new QPushButton( tr( "Browse" ) );
   buttonBox->addButton( mBrowseButton, QDialogButtonBox::ActionRole );
   mBrowseButton->setDisabled( true );
+  mApplyButton = new QPushButton( tr( "Apply changes" ) );
+  mApplyButton->setToolTip( tr( "Apply fixes to unavailable layers (remaining unavailable layers will be removed from the project)." ) );
+  buttonBox->addButton( mApplyButton, QDialogButtonBox::ActionRole );
 
   connect( mLayerList, &QTableWidget::itemSelectionChanged, this, &QgsHandleBadLayers::selectionChanged );
   connect( mBrowseButton, &QAbstractButton::clicked, this, &QgsHandleBadLayers::browseClicked );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsHandleBadLayers::apply );
+  connect( mApplyButton, &QAbstractButton::clicked, this, &QgsHandleBadLayers::apply );
   connect( buttonBox->button( QDialogButtonBox::Ignore ), &QPushButton::clicked, this, &QgsHandleBadLayers::reject );
   connect( buttonBox->button( QDialogButtonBox::Discard ), &QPushButton::clicked, this, &QgsHandleBadLayers::accept );
 
@@ -349,7 +359,7 @@ void QgsHandleBadLayers::editAuthCfg()
 void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
-
+  buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
   QList<QgsMapLayer *> toRemove;
   for ( const auto &l : QgsProject::instance()->mapLayers( ) )
   {
@@ -390,7 +400,7 @@ void QgsHandleBadLayers::accept()
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,
                              tr( "Unhandled layer will be lost." ),
-                             tr( "There are still %n unhandled layer(s), that will be lost if you closed now.",
+                             tr( "There are still %n unhandled layer(s). If they are not fixed, they will be disabled/deactivated until the project is opened again.",
                                  "unhandled layers",
                                  mLayerList->rowCount() ),
                              QMessageBox::Ok | QMessageBox::Cancel,

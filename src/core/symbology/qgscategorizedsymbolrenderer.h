@@ -247,6 +247,19 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     int matchToSymbols( QgsStyle *style, QgsSymbol::SymbolType type,
                         QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
 
+
+    /**
+     * Create categories for a list of \a values.
+     * The returned symbols in the category list will be a modification of \a symbol.
+     *
+     * If \a layer and \a fieldName are specified it will try to find nicer values
+     * to represent the description for the categories based on the respective field
+     * configuration.
+     *
+     * \since QGIS 3.6
+     */
+    static QgsCategoryList createCategories( const QVariantList &values, const QgsSymbol *symbol, QgsVectorLayer *layer = nullptr, const QString &fieldName = QString() );
+
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;

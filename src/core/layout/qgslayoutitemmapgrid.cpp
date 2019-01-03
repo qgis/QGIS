@@ -69,13 +69,13 @@ void QgsLayoutItemMapGridStack::moveGridDown( const QString &gridId )
 QgsLayoutItemMapGrid *QgsLayoutItemMapGridStack::grid( const QString &gridId ) const
 {
   QgsLayoutItemMapItem *item = QgsLayoutItemMapItemStack::item( gridId );
-  return dynamic_cast<QgsLayoutItemMapGrid *>( item );
+  return qobject_cast<QgsLayoutItemMapGrid *>( item );
 }
 
 QgsLayoutItemMapGrid *QgsLayoutItemMapGridStack::grid( const int index ) const
 {
   QgsLayoutItemMapItem *item = QgsLayoutItemMapItemStack::item( index );
-  return dynamic_cast<QgsLayoutItemMapGrid *>( item );
+  return qobject_cast<QgsLayoutItemMapGrid *>( item );
 }
 
 QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const
@@ -83,7 +83,7 @@ QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const
   QList< QgsLayoutItemMapGrid * > list;
   for ( QgsLayoutItemMapItem *item : mItems )
   {
-    if ( QgsLayoutItemMapGrid *grid = dynamic_cast<QgsLayoutItemMapGrid *>( item ) )
+    if ( QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
     {
       list.append( grid );
     }
@@ -94,7 +94,7 @@ QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const
 QgsLayoutItemMapGrid &QgsLayoutItemMapGridStack::operator[]( int idx )
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
-  QgsLayoutItemMapGrid *grid = dynamic_cast<QgsLayoutItemMapGrid *>( item );
+  QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item );
   return *grid;
 }
 
@@ -134,7 +134,7 @@ void QgsLayoutItemMapGridStack::calculateMaxGridExtension( double &top, double &
 
   for ( QgsLayoutItemMapItem *item : mItems )
   {
-    if ( QgsLayoutItemMapGrid *grid = dynamic_cast<QgsLayoutItemMapGrid *>( item ) )
+    if ( QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
     {
       double gridTop = 0.0;
       double gridRight = 0.0;
@@ -234,6 +234,7 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( QStringLiteral( "gridFrameStyle" ), mGridFrameStyle );
   mapGridElem.setAttribute( QStringLiteral( "gridFrameSideFlags" ), mGridFrameSides );
   mapGridElem.setAttribute( QStringLiteral( "gridFrameWidth" ), qgsDoubleToString( mGridFrameWidth ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridFrameMargin" ), qgsDoubleToString( mGridFrameMargin ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFramePenThickness" ), qgsDoubleToString( mGridFramePenThickness ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsSymbolLayerUtils::encodeColor( mGridFramePenColor ) );
   mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor1 ) );
@@ -294,6 +295,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridFrameStyle = static_cast< QgsLayoutItemMapGrid::FrameStyle >( itemElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() );
   mGridFrameSides = static_cast< QgsLayoutItemMapGrid::FrameSideFlags >( itemElem.attribute( QStringLiteral( "gridFrameSideFlags" ), QStringLiteral( "15" ) ).toInt() );
   mGridFrameWidth = itemElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble();
+  mGridFrameMargin = itemElem.attribute( QStringLiteral( "gridFrameMargin" ), QStringLiteral( "0.0" ) ).toDouble();
   mGridFramePenThickness = itemElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.3" ) ).toDouble();
   mGridFramePenColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
   mGridFrameFillColor1 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
@@ -773,6 +775,7 @@ void QgsLayoutItemMapGrid::drawGridFrameBorder( QPainter *p, const QMap< double,
   switch ( mGridFrameStyle )
   {
     case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::ZebraNautical:
       drawGridFrameZebraBorder( p, borderPos, border, extension );
       break;
     case QgsLayoutItemMapGrid::InteriorTicks:
@@ -782,6 +785,7 @@ void QgsLayoutItemMapGrid::drawGridFrameBorder( QPainter *p, const QMap< double,
       break;
 
     case QgsLayoutItemMapGrid::LineBorder:
+    case QgsLayoutItemMapGrid::LineBorderNautical:
       drawGridFrameLineBorder( p, border, extension );
       break;
 
@@ -800,44 +804,43 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
 
   if ( extension )
   {
-    *extension = mGridFrameWidth + mGridFramePenThickness / 2.0;
+    *extension = mGridFrameMargin + mGridFrameWidth + mGridFramePenThickness / 2.0;
     return;
   }
 
   QMap< double, double > pos = borderPos;
 
-  double currentCoord = 0;
-  if ( ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right ) && testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
-  {
-    currentCoord = - mGridFrameWidth;
-    pos.insert( 0, 0 );
-  }
-  else if ( ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom ) && testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) )
-  {
-    currentCoord = - mGridFrameWidth;
-    pos.insert( 0, 0 );
-  }
-  bool color1 = true;
+  double currentCoord = 0.0;
+  bool color1 = false;
   double x = 0;
   double y = 0;
   double width = 0;
   double height = 0;
+
+  bool drawTLBox = false;
+  bool drawTRBox = false;
+  bool drawBLBox = false;
+  bool drawBRBox = false;
 
   if ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right )
   {
     pos.insert( mMap->rect().height(), mMap->rect().height() );
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) )
     {
-      pos.insert( mMap->rect().height() + mGridFrameWidth, mMap->rect().height() + mGridFrameWidth );
+      drawBLBox = border == QgsLayoutItemMapGrid::Left;
+      drawBRBox = border == QgsLayoutItemMapGrid::Right;
     }
+    if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
+    {
+      drawTLBox = border == QgsLayoutItemMapGrid::Left;
+      drawTRBox = border == QgsLayoutItemMapGrid::Right;
+    }
+    if ( !drawTLBox && border == QgsLayoutItemMapGrid::Left )
+      color1 = true;
   }
   else if ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom )
   {
     pos.insert( mMap->rect().width(), mMap->rect().width() );
-    if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) )
-    {
-      pos.insert( mMap->rect().width() + mGridFrameWidth, mMap->rect().width() + mGridFrameWidth );
-    }
   }
 
   //set pen to current frame pen
@@ -854,7 +857,7 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
     {
       height = posIt.key() - currentCoord;
       width = mGridFrameWidth;
-      x = ( border == QgsLayoutItemMapGrid::Left ) ? -mGridFrameWidth : mMap->rect().width();
+      x = ( border == QgsLayoutItemMapGrid::Left ) ? -( mGridFrameWidth + mGridFrameMargin ) : mMap->rect().width() + mGridFrameMargin;
       y = currentCoord;
     }
     else //top or bottom
@@ -862,11 +865,26 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
       height = mGridFrameWidth;
       width = posIt.key() - currentCoord;
       x = currentCoord;
-      y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth : mMap->rect().height();
+      y = ( border == QgsLayoutItemMapGrid::Top ) ? -( mGridFrameWidth + mGridFrameMargin ) : mMap->rect().height() + mGridFrameMargin;
     }
     p->drawRect( QRectF( x, y, width, height ) );
     currentCoord = posIt.key();
     color1 = !color1;
+  }
+
+  if ( mGridFrameStyle == ZebraNautical || qgsDoubleNear( mGridFrameMargin, 0.0 ) )
+  {
+    //draw corners
+    width = height = ( mGridFrameWidth + mGridFrameMargin ) ;
+    p->setBrush( QBrush( mGridFrameFillColor1 ) );
+    if ( drawTLBox )
+      p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+    if ( drawTRBox )
+      p->drawRect( QRectF( mMap->rect().width(), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+    if ( drawBLBox )
+      p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), mMap->rect().height(), width, height ) );
+    if ( drawBRBox )
+      p->drawRect( QRectF( mMap->rect().width(), mMap->rect().height(), width, height ) );
   }
 }
 
@@ -880,7 +898,7 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
   if ( extension )
   {
     if ( mGridFrameStyle != QgsLayoutItemMapGrid::InteriorTicks )
-      *extension = mGridFrameWidth;
+      *extension = mGridFrameMargin + mGridFrameWidth;
     return;
   }
 
@@ -906,17 +924,17 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
       if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks )
       {
         width = mGridFrameWidth;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? 0 : mMap->rect().width() - mGridFrameWidth;
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? 0 + mGridFrameMargin : mMap->rect().width() - mGridFrameWidth - mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         width = mGridFrameWidth;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth : mMap->rect().width();
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth - mGridFrameMargin : mMap->rect().width() + mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks )
       {
         width = mGridFrameWidth * 2;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth : mMap->rect().width() - mGridFrameWidth;
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth - mGridFrameMargin : mMap->rect().width() - mGridFrameWidth + mGridFrameMargin;
       }
     }
     else //top or bottom
@@ -926,17 +944,17 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
       if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks )
       {
         height = mGridFrameWidth;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? 0 : mMap->rect().height() - mGridFrameWidth;
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? 0 + mGridFrameMargin : mMap->rect().height() - mGridFrameWidth - mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         height = mGridFrameWidth;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth : mMap->rect().height();
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth - mGridFrameMargin : mMap->rect().height() + mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks )
       {
         height = mGridFrameWidth * 2;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth : mMap->rect().height() - mGridFrameWidth;
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth - mGridFrameMargin : mMap->rect().height() - mGridFrameWidth + mGridFrameMargin;
       }
     }
     p->drawLine( QLineF( x, y, x + width, y + height ) );
@@ -952,7 +970,7 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
 
   if ( extension )
   {
-    *extension = mGridFramePenThickness / 2.0;
+    *extension = mGridFrameMargin + mGridFramePenThickness / 2.0;
     return;
   }
 
@@ -963,19 +981,49 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
   p->setBrush( Qt::NoBrush );
   p->setPen( framePen );
 
+  const bool drawDiagonals = mGridFrameStyle == LineBorderNautical && !qgsDoubleNear( mGridFrameMargin, 0.0 );
+
   switch ( border )
   {
     case QgsLayoutItemMapGrid::Left:
-      p->drawLine( QLineF( 0, 0, 0, mMap->rect().height() ) );
+      p->drawLine( QLineF( 0 - mGridFrameMargin, 0 - mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
+      //corner left-top
+      if ( drawDiagonals )
+      {
+        const double X1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0;
+        const double Y1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0;
+        p->drawLine( QLineF( 0, 0, X1, Y1 ) );
+      }
       break;
     case QgsLayoutItemMapGrid::Right:
-      p->drawLine( QLineF( mMap->rect().width(), 0, mMap->rect().width(), mMap->rect().height() ) );
+      p->drawLine( QLineF( mMap->rect().width() + mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
+      //corner right-bottom
+      if ( drawDiagonals )
+      {
+        const double X1 = mMap->rect().width() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        const double Y1 = mMap->rect().height() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        p->drawLine( QLineF( mMap->rect().width(), mMap->rect().height(), X1, Y1 ) );
+      }
       break;
     case QgsLayoutItemMapGrid::Top:
-      p->drawLine( QLineF( 0, 0, mMap->rect().width(), 0 ) );
+      p->drawLine( QLineF( 0 - mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, 0 - mGridFrameMargin ) );
+      //corner right-top
+      if ( drawDiagonals )
+      {
+        const double X1 = mMap->rect().width() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        const double Y1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0 ;
+        p->drawLine( QLineF( mMap->rect().width(), 0, X1, Y1 ) );
+      }
       break;
     case QgsLayoutItemMapGrid::Bottom:
-      p->drawLine( QLineF( 0, mMap->rect().height(), mMap->rect().width(), mMap->rect().height() ) );
+      p->drawLine( QLineF( 0 - mGridFrameMargin, mMap->rect().height() + mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
+      //corner left-bottom
+      if ( drawDiagonals )
+      {
+        const double X1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0 ;
+        const double Y1 = mMap->rect().height() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        p->drawLine( QLineF( 0, mMap->rect().height(), X1, Y1 ) );
+      }
       break;
   }
 }
@@ -1018,13 +1066,23 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
   int rotation = 0;
 
   double gridFrameDistance = 0;
-  if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame && mGridFrameStyle != QgsLayoutItemMapGrid::LineBorder )
+  switch ( mGridFrameStyle )
   {
-    gridFrameDistance = mGridFrameWidth;
-  }
-  if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::LineBorder )
-  {
-    gridFrameDistance += ( mGridFramePenThickness / 2.0 );
+    case InteriorTicks:
+    case ExteriorTicks:
+    case InteriorExteriorTicks:
+      gridFrameDistance = mGridFrameWidth;
+      break;
+
+    case QgsLayoutItemMapGrid::Zebra:
+    case QgsLayoutItemMapGrid::ZebraNautical:
+    case QgsLayoutItemMapGrid::LineBorder:
+    case QgsLayoutItemMapGrid::LineBorderNautical:
+      gridFrameDistance += ( mGridFramePenThickness / 2.0 );
+      break;
+
+    case QgsLayoutItemMapGrid::NoFrame:
+      break;
   }
 
   if ( frameBorder == QgsLayoutItemMapGrid::Left )
@@ -1042,7 +1100,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mLeftGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1114,7 +1172,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mRightGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1186,7 +1244,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mBottomGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1262,7 +1320,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
 
     if ( mTopGridAnnotationPosition == QgsLayoutItemMapGrid::InsideMapFrame )
     {
-      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         gridFrameDistance = 0;
       }
@@ -1856,9 +1914,9 @@ bool QgsLayoutItemMapGrid::shouldShowDivisionForSide( QgsLayoutItemMapGrid::Anno
     case QgsLayoutItemMapGrid::Top:
       return shouldShowDivisionForDisplayMode( coordinate, mTopFrameDivisions );
     case QgsLayoutItemMapGrid::Bottom:
-    default: //prevent warnings
       return shouldShowDivisionForDisplayMode( coordinate, mBottomFrameDivisions );
   }
+  return false; // no warnings
 }
 
 bool QgsLayoutItemMapGrid::shouldShowDivisionForDisplayMode( QgsLayoutItemMapGrid::AnnotationCoordinate coordinate, QgsLayoutItemMapGrid::DisplayMode mode ) const
@@ -1971,8 +2029,6 @@ void QgsLayoutItemMapGrid::setAnnotationDisplay( const QgsLayoutItemMapGrid::Dis
     case QgsLayoutItemMapGrid::Bottom:
       mBottomGridAnnotationDisplay = display;
       break;
-    default:
-      return;
   }
 
   if ( mMap )
@@ -1993,9 +2049,9 @@ QgsLayoutItemMapGrid::DisplayMode QgsLayoutItemMapGrid::annotationDisplay( const
     case QgsLayoutItemMapGrid::Top:
       return mTopGridAnnotationDisplay;
     case QgsLayoutItemMapGrid::Bottom:
-    default:
       return mBottomGridAnnotationDisplay;
   }
+  return mBottomGridAnnotationDisplay; // no warnings
 }
 
 double QgsLayoutItemMapGrid::maxExtension() const
@@ -2131,8 +2187,6 @@ void QgsLayoutItemMapGrid::setAnnotationDirection( const QgsLayoutItemMapGrid::A
     case QgsLayoutItemMapGrid::Bottom:
       mBottomGridAnnotationDirection = direction;
       break;
-    default:
-      return;
   }
 
   if ( mMap )
@@ -2199,8 +2253,6 @@ void QgsLayoutItemMapGrid::setAnnotationPosition( const AnnotationPosition posit
     case QgsLayoutItemMapGrid::Bottom:
       mBottomGridAnnotationPosition = position;
       break;
-    default:
-      return;
   }
 
   if ( mMap )
@@ -2221,9 +2273,9 @@ QgsLayoutItemMapGrid::AnnotationPosition QgsLayoutItemMapGrid::annotationPositio
     case QgsLayoutItemMapGrid::Top:
       return mTopGridAnnotationPosition;
     case QgsLayoutItemMapGrid::Bottom:
-    default:
       return mBottomGridAnnotationPosition;
   }
+  return mLeftGridAnnotationPosition; // no warnings
 }
 
 QgsLayoutItemMapGrid::AnnotationDirection QgsLayoutItemMapGrid::annotationDirection( const BorderSide border ) const
@@ -2242,9 +2294,9 @@ QgsLayoutItemMapGrid::AnnotationDirection QgsLayoutItemMapGrid::annotationDirect
     case QgsLayoutItemMapGrid::Top:
       return mTopGridAnnotationDirection;
     case QgsLayoutItemMapGrid::Bottom:
-    default:
       return mBottomGridAnnotationDirection;
   }
+  return mLeftGridAnnotationDirection; // no warnings
 }
 
 void QgsLayoutItemMapGrid::setFrameDivisions( const QgsLayoutItemMapGrid::DisplayMode divisions, const QgsLayoutItemMapGrid::BorderSide border )
@@ -2263,8 +2315,6 @@ void QgsLayoutItemMapGrid::setFrameDivisions( const QgsLayoutItemMapGrid::Displa
     case QgsLayoutItemMapGrid::Bottom:
       mBottomFrameDivisions = divisions;
       break;
-    default:
-      return;
   }
 
   if ( mMap )
@@ -2284,9 +2334,9 @@ QgsLayoutItemMapGrid::DisplayMode QgsLayoutItemMapGrid::frameDivisions( const Qg
     case QgsLayoutItemMapGrid::Top:
       return mTopFrameDivisions;
     case QgsLayoutItemMapGrid::Bottom:
-    default:
       return mBottomFrameDivisions;
   }
+  return mLeftFrameDivisions; // no warnings
 }
 
 int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTransform &inverseTransform ) const

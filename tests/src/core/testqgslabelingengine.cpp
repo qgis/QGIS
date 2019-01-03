@@ -40,6 +40,7 @@ class TestQgsLabelingEngine : public QObject
     void cleanupTestCase();
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testEngineSettings();
     void testBasic();
     void testDiagrams();
     void testRuleBased();
@@ -51,6 +52,8 @@ class TestQgsLabelingEngine : public QObject
     void testRegisterFeatureUnprojectible();
     void testRotateHidePartial();
     void testParallelLabelSmallFeature();
+    void testLabelBoundary();
+    void testLabelBlockingRegion();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -97,6 +100,42 @@ void TestQgsLabelingEngine::cleanup()
 {
   QgsProject::instance()->removeMapLayer( vl->id() );
   vl = nullptr;
+}
+
+void TestQgsLabelingEngine::testEngineSettings()
+{
+  // test labeling engine settings
+
+  // getters/setters
+  QgsLabelingEngineSettings settings;
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( settings.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // reading from project
+  QgsProject p;
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  settings.writeSettingsToProject( &p );
+  QgsLabelingEngineSettings settings2;
+  settings2.readSettingsFromProject( &p );
+  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+
+  settings.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  settings.writeSettingsToProject( &p );
+  settings2.readSettingsFromProject( &p );
+  QCOMPARE( settings2.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // test that older setting is still respected as a fallback
+  QgsProject p2;
+  QgsLabelingEngineSettings settings3;
+  p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), false );
+  settings3.readSettingsFromProject( &p2 );
+  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+
+  p2.writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  settings3.readSettingsFromProject( &p2 );
+  QCOMPARE( settings3.defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
 }
 
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
@@ -766,6 +805,158 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
 
   // no need to actually check the result here -- we were just testing that no hang/crash occurred
   //  QVERIFY( imageCheck( "label_rotate_hide_partial", img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLabelBoundary()
+{
+  // test that no labels are drawn outside of the specified label boundary
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f( vl2->fields(), 1 );
+
+  for ( int x = 0; x < 15; x++ )
+  {
+    for ( int y = 0; y < 12; y++ )
+    {
+      f.setGeometry( qgis::make_unique< QgsPoint >( x, y ) );
+      vl2->dataProvider()->addFeature( f );
+    }
+  }
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  mapSettings.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((3 1, 12 1, 12 9, 3 9, 3 1),(8 4, 10 4, 10 7, 8 7, 8 4))" ) ) );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_boundary_geometry" ), img, 20 ) );
+
+  // with rotation
+  mapSettings.setRotation( 45 );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "rotated_label_boundary_geometry" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLabelBlockingRegion()
+{
+  // test that no labels are drawn inside blocking regions
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f( vl2->fields(), 1 );
+
+  for ( int x = 0; x < 15; x++ )
+  {
+    for ( int y = 0; y < 12; y++ )
+    {
+      f.setGeometry( qgis::make_unique< QgsPoint >( x, y ) );
+      vl2->dataProvider()->addFeature( f );
+    }
+  }
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QList< QgsLabelBlockingRegion > regions;
+  regions << QgsLabelBlockingRegion( QgsGeometry::fromWkt( QStringLiteral( "Polygon((6 1, 12 1, 12 9, 6 9, 6 1),(8 4, 10 4, 10 7, 8 7, 8 4))" ) ) );
+  regions << QgsLabelBlockingRegion( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 3 0, 3 3, 0 3, 0 0))" ) ) );
+  mapSettings.setLabelBlockingRegions( regions );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_blocking_geometry" ), img, 20 ) );
+
+  // with rotation
+  mapSettings.setRotation( 45 );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "rotated_label_blocking_geometry" ), img, 20 ) );
+
+  // blocking regions WITH label margin
+  mapSettings.setRotation( 0 );
+  mapSettings.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((1 1, 14 1, 14 9, 1 9, 1 1))" ) ) );
+
+  QgsMapRendererSequentialJob job3( mapSettings );
+  job3.start();
+  job3.waitForFinished();
+
+  img = job3.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_blocking_boundary_geometry" ), img, 20 ) );
+
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

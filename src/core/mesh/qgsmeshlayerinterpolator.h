@@ -49,7 +49,7 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
     //! Ctor
     QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
                               const QVector<double> &datasetValues,
-                              const QVector<bool> &activeFaceFlagValues,
+                              const QgsMeshDataBlock &activeFaceFlagValues,
                               bool dataIsOnVertices,
                               const QgsRenderContext &context,
                               const QSize &size );
@@ -63,7 +63,7 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
   private:
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;
-    const QVector<bool> &mActiveFaceFlagValues;
+    const QgsMeshDataBlock &mActiveFaceFlagValues;
     const QgsRenderContext &mContext;
     bool mDataOnVertices = true;
     QSize mOutputSize;

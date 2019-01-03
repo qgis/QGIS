@@ -118,6 +118,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void opacityChanged( double value );
     void createAuxiliaryField();
     void updateModelFilters();
+    void forceRHRToggled( bool checked );
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -125,6 +126,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsStyle *mStyle = nullptr;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mClipFeaturesAction = nullptr;
+    QAction *mStandardizeRingsAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyleProxyModel *mModel = nullptr;

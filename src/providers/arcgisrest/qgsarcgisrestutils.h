@@ -24,6 +24,7 @@ class QNetworkReply;
 class QgsNetworkAccessManager;
 class QgsFields;
 class QgsAbstractGeometry;
+class QgsAbstractVectorLayerLabeling;
 class QgsCoordinateReferenceSystem;
 class QgsFeedback;
 class QgsSymbol;
@@ -54,9 +55,13 @@ class QgsArcGisRestUtils
     static std::unique_ptr< QgsSymbol > parseEsriSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsFillSymbol > parseEsriFillSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr< QgsFillSymbol > parseEsriPictureFillSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsMarkerSymbol > parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr< QgsMarkerSymbol > parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData );
     static QgsFeatureRenderer *parseEsriRenderer( const QVariantMap &rendererData );
+    static QgsAbstractVectorLayerLabeling *parseEsriLabeling( const QVariantList &labelingData );
 
+    static QString parseEsriLabelingExpression( const QString &string );
     static QColor parseEsriColorJson( const QVariant &colorData );
     static Qt::PenStyle parseEsriLineStyle( const QString &style );
     static Qt::BrushStyle parseEsriFillStyle( const QString &style );
@@ -64,6 +69,10 @@ class QgsArcGisRestUtils
     static QDateTime parseDateTime( const QVariant &value );
 
     static QUrl parseUrl( const QUrl &url );
+    static void adjustBaseUrl( QString &baseUrl, const QString name );
+    static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid )> &visitor, const QVariantMap &serviceData, const QString &parentUrl );
 };
 
 class QgsArcGisAsyncQuery : public QObject
@@ -91,6 +100,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
   public:
     QgsArcGisAsyncParallelQuery( QObject *parent = nullptr );
     void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
+
   signals:
     void finished( QStringList errors );
   private slots:

@@ -6,19 +6,22 @@
 #include <string>
 #include <stddef.h>
 #include <limits>
+#include <assert.h>
+#include <memory>
 
 #include "mdal.h"
-#include "mdal_loader.hpp"
+#include "mdal_driver_manager.hpp"
 #include "mdal_data_model.hpp"
 
 #define NODATA std::numeric_limits<double>::quiet_NaN()
+
 static const char *EMPTY_STR = "";
 
 static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.0.10";
+  return "0.1.2";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -36,6 +39,77 @@ const char *_return_str( const std::string &str )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
+/// DRIVERS
+///////////////////////////////////////////////////////////////////////////////////////
+
+int MDAL_driverCount()
+{
+  size_t count = MDAL::DriverManager::instance().driversCount();
+  return static_cast<int>( count );
+}
+
+DriverH MDAL_driverFromIndex( int index )
+{
+  size_t idx = static_cast<size_t>( index );
+  std::shared_ptr<MDAL::Driver> driver = MDAL::DriverManager::instance().driver( idx );
+  return static_cast<DriverH>( driver.get() );
+}
+
+DriverH MDAL_driverFromName( const char *name )
+{
+  std::string nm = name;
+  std::shared_ptr<MDAL::Driver> driver = MDAL::DriverManager::instance().driver( nm );
+  return static_cast<DriverH>( driver.get() );
+}
+
+bool MDAL_DR_meshLoadCapability( DriverH driver )
+{
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return false;
+  }
+
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return d->type() == MDAL::DriverType::CanReadMeshAndDatasets;
+}
+
+const char *MDAL_DR_longName( DriverH driver )
+{
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return EMPTY_STR;
+  }
+
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return _return_str( d->longName() );
+}
+
+const char *MDAL_DR_name( DriverH driver )
+{
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return EMPTY_STR;
+  }
+
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return _return_str( d->name() );
+}
+
+const char *MDAL_DR_filters( DriverH driver )
+{
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return EMPTY_STR;
+  }
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return _return_str( d->filters() );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
 /// MESH
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -48,7 +122,7 @@ MeshH MDAL_LoadMesh( const char *meshFile )
   }
 
   std::string filename( meshFile );
-  return static_cast< MeshH >( MDAL::Loader::load( filename, &sLastStatus ).release() );
+  return static_cast< MeshH >( MDAL::DriverManager::instance().load( filename, &sLastStatus ).release() );
 }
 
 
@@ -70,9 +144,29 @@ const char *MDAL_M_projection( MeshH mesh )
   }
 
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  return _return_str( m->crs );
+  return _return_str( m->crs() );
 }
 
+void MDAL_M_extent( MeshH mesh, double *minX, double *maxX, double *minY, double *maxY )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    *minX = std::numeric_limits<double>::quiet_NaN();
+    *maxX = std::numeric_limits<double>::quiet_NaN();
+    *minY = std::numeric_limits<double>::quiet_NaN();
+    *maxY = std::numeric_limits<double>::quiet_NaN();
+  }
+  else
+  {
+    MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+    const MDAL::BBox extent = m->extent();
+    *minX = extent.minX;
+    *maxX = extent.maxX;
+    *minY = extent.minY;
+    *maxY = extent.maxY;
+  }
+}
 
 int MDAL_M_vertexCount( MeshH mesh )
 {
@@ -83,74 +177,8 @@ int MDAL_M_vertexCount( MeshH mesh )
   }
 
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  int len = static_cast<int>( m->vertices.size() );
+  int len = static_cast<int>( m->verticesCount() );
   return len;
-}
-
-double MDAL_M_vertexXCoordinatesAt( MeshH mesh, int index )
-{
-  if ( !mesh )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  if ( index < 0 )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  size_t i = static_cast<size_t>( index );
-  if ( m->vertices.size() <= i )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  return m->vertices[i].x;
-}
-
-double MDAL_M_vertexYCoordinatesAt( MeshH mesh, int index )
-{
-  if ( !mesh )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  if ( index < 0 )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  size_t i = static_cast<size_t>( index );
-  if ( m->vertices.size() <= i )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  return m->vertices[i].y;
-}
-
-double MDAL_M_vertexZCoordinatesAt( MeshH mesh, int index )
-{
-  if ( !mesh )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  if ( index < 0 )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  size_t i = static_cast<size_t>( index );
-  if ( m->vertices.size() <= i )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return NODATA;
-  }
-  return m->vertices[i].z;
 }
 
 int MDAL_M_faceCount( MeshH mesh )
@@ -161,11 +189,11 @@ int MDAL_M_faceCount( MeshH mesh )
     return 0;
   }
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  int len = static_cast<int>( m->faces.size() );
+  int len = static_cast<int>( m->facesCount() );
   return len;
 }
 
-int MDAL_M_faceVerticesCountAt( MeshH mesh, int index )
+int MDAL_M_faceVerticesMaximumCount( MeshH mesh )
 {
   if ( !mesh )
   {
@@ -173,52 +201,7 @@ int MDAL_M_faceVerticesCountAt( MeshH mesh, int index )
     return 0;
   }
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  if ( index < 0 )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  size_t i = static_cast<size_t>( index );
-  if ( m->faces.size() <= i )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  int len = static_cast<int>( m->faces[i].size() );
-  return len;
-}
-
-int MDAL_M_faceVerticesIndexAt( MeshH mesh, int face_index, int vertex_index )
-{
-  if ( !mesh )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  if ( face_index < 0 )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  size_t fi = static_cast<size_t>( face_index );
-  if ( m->faces.size() <= fi )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  if ( vertex_index < 0 )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  size_t vi = static_cast<size_t>( vertex_index );
-  if ( m->faces[fi].size() <= vi )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
-    return 0;
-  }
-  int len = static_cast<int>( m->faces[fi][vi] );
+  int len = static_cast<int>( m->faceVerticesMaximumCount() );
   return len;
 }
 
@@ -239,7 +222,7 @@ void MDAL_M_LoadDatasets( MeshH mesh, const char *datasetFile )
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
 
   std::string filename( datasetFile );
-  MDAL::Loader::loadDatasets( m, datasetFile, &sLastStatus );
+  MDAL::DriverManager::instance().loadDatasets( m, datasetFile, &sLastStatus );
 }
 
 int MDAL_M_datasetGroupCount( MeshH mesh )
@@ -280,9 +263,108 @@ DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
+/// MESH VERTICES
+///////////////////////////////////////////////////////////////////////////////////////
+
+MeshVertexIteratorH MDAL_M_vertexIterator( MeshH mesh )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return nullptr;
+  }
+  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+  std::unique_ptr<MDAL::MeshVertexIterator> it = m->readVertices();
+  return static_cast< MeshVertexIteratorH >( it.release() );
+}
+
+int MDAL_VI_next( MeshVertexIteratorH iterator, int verticesCount, double *coordinates )
+{
+  if ( !iterator )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return 0;
+  }
+  MDAL::MeshVertexIterator *it = static_cast< MDAL::MeshVertexIterator * >( iterator );
+  size_t size = static_cast<size_t>( verticesCount );
+  if ( size == 0 )
+  {
+    return 0;
+  }
+  size_t ret = it->next( size, coordinates );
+  return static_cast<int>( ret );
+}
+
+void MDAL_VI_close( MeshVertexIteratorH iterator )
+{
+  if ( iterator )
+  {
+    MDAL::MeshVertexIterator *it = static_cast< MDAL::MeshVertexIterator * >( iterator );
+    delete it;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+/// MESH FACES
+///////////////////////////////////////////////////////////////////////////////////////
+
+MeshFaceIteratorH MDAL_M_faceIterator( MeshH mesh )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return nullptr;
+  }
+  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+  std::unique_ptr<MDAL::MeshFaceIterator > it = m->readFaces();
+  return static_cast< MeshFaceIteratorH >( it.release() );
+}
+
+int MDAL_FI_next( MeshFaceIteratorH iterator,
+                  int faceOffsetsBufferLen,
+                  int *faceOffsetsBuffer,
+                  int vertexIndicesBufferLen,
+                  int *vertexIndicesBuffer )
+{
+  if ( !iterator )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return 0;
+  }
+  MDAL::MeshFaceIterator *it = static_cast< MDAL::MeshFaceIterator * >( iterator );
+  size_t ret = it->next( static_cast<size_t>( faceOffsetsBufferLen ),
+                         faceOffsetsBuffer,
+                         static_cast<size_t>( vertexIndicesBufferLen ),
+                         vertexIndicesBuffer );
+  return static_cast<int>( ret );
+}
+
+
+void MDAL_FI_close( MeshFaceIteratorH iterator )
+{
+  if ( iterator )
+  {
+    MDAL::MeshFaceIterator *it = static_cast< MDAL::MeshFaceIterator * >( iterator );
+    delete it;
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////
 /// DATASET GROUPS
 ///////////////////////////////////////////////////////////////////////////////////////
 
+MeshH MDAL_G_mesh( DatasetGroupH group )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDatasetGroup;
+    return nullptr;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  MDAL::Mesh *m = g->mesh();
+  return static_cast< MeshH >( m );
+}
 
 int MDAL_G_datasetCount( DatasetGroupH group )
 {
@@ -388,7 +470,7 @@ bool MDAL_G_hasScalarData( DatasetGroupH group )
     return true;
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  return g->isScalar;
+  return g->isScalar();
 }
 
 bool MDAL_G_isOnVertices( DatasetGroupH group )
@@ -399,8 +481,31 @@ bool MDAL_G_isOnVertices( DatasetGroupH group )
     return true;
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  return g->isOnVertices;
+  return g->isOnVertices();
 }
+
+void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double *max )
+{
+  if ( !min || !max )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return;
+  }
+
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    *min = NODATA;
+    *max = NODATA;
+    return;
+  }
+
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  MDAL::Statistics stats = g->statistics();
+  *min = stats.minimum;
+  *max = stats.maximum;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASETS
@@ -414,7 +519,7 @@ DatasetGroupH MDAL_D_group( DatasetH dataset )
     return nullptr;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  return static_cast< MDAL::DatasetGroup * >( d->parent );
+  return static_cast< MDAL::DatasetGroup * >( d->group() );
 }
 
 double MDAL_D_time( DatasetH dataset )
@@ -425,7 +530,7 @@ double MDAL_D_time( DatasetH dataset )
     return NODATA;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  return d->time;
+  return d->time();
 
 }
 
@@ -437,59 +542,8 @@ int MDAL_D_valueCount( DatasetH dataset )
     return 0;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  int len = static_cast<int>( d->values.size() );
+  int len = static_cast<int>( d->valuesCount() );
   return len;
-}
-
-double MDAL_D_value( DatasetH dataset, int valueIndex )
-{
-  return MDAL_D_valueX( dataset, valueIndex );
-}
-
-double MDAL_D_valueX( DatasetH dataset, int valueIndex )
-{
-  if ( !dataset )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
-    return NODATA;
-  }
-  MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  int len = static_cast<int>( d->values.size() );
-  if ( len <= valueIndex )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
-    return NODATA;
-  }
-  size_t i = static_cast<size_t>( valueIndex );
-  if ( d->values[i].noData )
-  {
-    return NODATA;
-  }
-  else
-    return d->values[i].x;
-}
-
-double MDAL_D_valueY( DatasetH dataset, int valueIndex )
-{
-  if ( !dataset )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
-    return NODATA;
-  }
-  MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  int len = static_cast<int>( d->values.size() );
-  if ( len <= valueIndex )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
-    return NODATA;
-  }
-  size_t i = static_cast<size_t>( valueIndex );
-  if ( d->values[i].noData )
-  {
-    return NODATA;
-  }
-  else
-    return d->values[i].y;
 }
 
 bool MDAL_D_isValid( DatasetH dataset )
@@ -500,17 +554,100 @@ bool MDAL_D_isValid( DatasetH dataset )
     return false;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  return d->isValid;
+  return d->isValid();
 }
 
-bool MDAL_D_active( DatasetH dataset, int faceIndex )
+int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType dataType, void *buffer )
 {
   if ( !dataset )
   {
     sLastStatus = MDAL_Status::Err_IncompatibleDataset;
-    return false;
+    return 0;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  size_t i = static_cast<size_t>( faceIndex );
-  return d->isActive( i );
+  size_t indexStartSizeT = static_cast<size_t>( indexStart );
+  size_t countSizeT = static_cast<size_t>( count );
+  MDAL::DatasetGroup *g = d->group();
+  assert( g );
+
+  MDAL::Mesh *m = d->mesh();
+  assert( m );
+
+  size_t valuesCount = 0;
+
+  // Check that we are requesting correct 1D/2D for given dataset
+  switch ( dataType )
+  {
+    case MDAL_DataType::SCALAR_DOUBLE:
+      if ( !g->isScalar() )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = d->valuesCount();
+      break;
+    case MDAL_DataType::VECTOR_2D_DOUBLE:
+      if ( g->isScalar() )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = d->valuesCount();
+      break;
+    case MDAL_DataType::ACTIVE_INTEGER:
+      valuesCount = m->facesCount();
+      break;
+  }
+
+  // Check that we are not reaching out of values limit
+  if ( valuesCount <= indexStartSizeT )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return 0;
+  }
+
+  if ( valuesCount < indexStartSizeT + countSizeT )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return 0;
+  }
+
+  // Request data
+  size_t writtenValuesCount = 0;
+  switch ( dataType )
+  {
+    case MDAL_DataType::SCALAR_DOUBLE:
+      writtenValuesCount = d->scalarData( indexStartSizeT, countSizeT, static_cast<double *>( buffer ) );
+      break;
+    case MDAL_DataType::VECTOR_2D_DOUBLE:
+      writtenValuesCount = d->vectorData( indexStartSizeT, countSizeT, static_cast<double *>( buffer ) );
+      break;
+    case MDAL_DataType::ACTIVE_INTEGER:
+      writtenValuesCount = d->activeData( indexStartSizeT, countSizeT, static_cast<int *>( buffer ) );
+      break;
+  }
+
+  return static_cast<int>( writtenValuesCount );
+}
+
+void MDAL_D_minimumMaximum( DatasetH dataset, double *min, double *max )
+{
+  if ( !min || !max )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return;
+  }
+
+  if ( !dataset )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    *min = NODATA;
+    *max = NODATA;
+    return;
+  }
+
+  MDAL::Dataset *ds = static_cast< MDAL::Dataset * >( dataset );
+  MDAL::Statistics stats = ds->statistics();
+  *min = stats.minimum;
+  *max = stats.maximum;
 }

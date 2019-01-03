@@ -33,6 +33,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsFilledMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "SvgMarker" )
           sipType = sipType_QgsSvgMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterMarker" )
+          sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
         else
@@ -463,6 +465,9 @@ Abstract base class for marker symbol layers.
     virtual void startRender( QgsSymbolRenderContext &context );
 
 
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context ) = 0;
 %Docstring
 Renders a marker at the specified point. Derived classes must implement this to
@@ -811,6 +816,14 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 #include "qgssymbollayer.h"
 %End
   public:
+
+    enum RenderRingFilter
+    {
+      AllRings,
+      ExteriorRingOnly,
+      InteriorRingsOnly,
+    };
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
 
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
@@ -875,8 +888,35 @@ Returns the units for the line's offset.
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
 
+    RenderRingFilter ringFilter() const;
+%Docstring
+Returns the line symbol layer's ring filter, which controls which rings are
+rendered when the line symbol is being used to draw a polygon's rings.
+
+This setting has no effect when the line symbol is not being rendered
+for a polygon.
+
+.. seealso:: :py:func:`setRingFilter`
+
+.. versionadded:: 3.6
+%End
+
+    void setRingFilter( QgsLineSymbolLayer::RenderRingFilter filter );
+%Docstring
+Sets the line symbol layer's ring ``filter``, which controls which rings are
+rendered when the line symbol is being used to draw a polygon's rings.
+
+This setting has no effect when the line symbol is not being rendered
+for a polygon.
+
+.. seealso:: :py:func:`ringFilter`
+
+.. versionadded:: 3.6
+%End
+
   protected:
     QgsLineSymbolLayer( bool locked = false );
+
 
 };
 

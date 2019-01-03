@@ -200,6 +200,28 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      */
     int currentExportLayer() const { return mCurrentExportLayer; }
 
+    /**
+     * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see setTextRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    QgsRenderContext::TextRenderFormat textRenderFormat() const
+    {
+      return mTextRenderFormat;
+    }
+
+    /**
+     * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
+     *
+     * \see textRenderFormat()
+     * \since QGIS 3.4.3
+     */
+    void setTextRenderFormat( QgsRenderContext::TextRenderFormat format )
+    {
+      mTextRenderFormat = format;
+    }
+
   signals:
 
     /**
@@ -229,6 +251,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     bool mGridVisible = false;
     bool mBoundingBoxesVisible = true;
     bool mPagesVisible = true;
+
+    QgsRenderContext::TextRenderFormat mTextRenderFormat = QgsRenderContext::TextFormatAlwaysOutlines;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

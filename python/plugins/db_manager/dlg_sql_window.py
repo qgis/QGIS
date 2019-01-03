@@ -26,8 +26,10 @@ from builtins import next
 from builtins import str
 from hashlib import md5
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem
+import os
+
+from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem, QFileDialog
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
@@ -116,6 +118,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.btnClear.clicked.connect(self.clearSql)
 
         self.presetStore.clicked.connect(self.storePreset)
+        self.presetSaveAsFile.clicked.connect(self.saveAsFilePreset)
+        self.presetLoadFile.clicked.connect(self.loadFilePreset)
         self.presetDelete.clicked.connect(self.deletePreset)
         self.presetCombo.activated[str].connect(self.loadPreset)
         self.presetCombo.activated[str].connect(self.presetName.setText)
@@ -223,6 +227,47 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.presetCombo.setCurrentIndex(self.presetCombo.count() - 1)
         else:
             self.presetCombo.setCurrentIndex(index)
+
+    def saveAsFilePreset(self):
+        settings = QgsSettings()
+        lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
+
+        query = self._getSqlQuery()
+        if query == "":
+            return
+
+        filename, _ = QFileDialog.getSaveFileName(
+            self,
+            self.tr('Save SQL Query'),
+            lastDir,
+            self.tr("SQL File (*.sql, *.SQL)"))
+
+        if filename:
+            if not filename.lower().endswith('.sql'):
+                filename += ".sql"
+
+            with open(filename, 'w') as f:
+                f.write(query)
+                lastDir = os.path.dirname(filename)
+                settings.setValue('DB_Manager/lastDirSQLFile', lastDir)
+
+    def loadFilePreset(self):
+        settings = QgsSettings()
+        lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
+
+        filename, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Load SQL Query"),
+            lastDir,
+            self.tr("SQL File (*.sql, *.SQL)"))
+
+        if filename:
+            with open(filename, 'r') as f:
+                self.editSql.clear()
+                for line in f:
+                    self.editSql.insertText(line)
+                lastDir = os.path.dirname(filename)
+                settings.setValue('DB_Manager/lastDirSQLFile', lastDir)
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
@@ -384,6 +429,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if layer.isValid():
             return layer
         else:
+            e = BaseError(self.tr("There was an error creating the SQL layer, please check the logs for further information."))
+            DlgDbError.showError(e, self)
             return None
 
     def loadSqlLayer(self):
@@ -557,7 +604,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def _getSqlQuery(self):
         sql = self.editSql.selectedText()
         if len(sql) == 0:
-            sql = self.editSql.text()
+            sql = self.editSql.text().replace('\n', ' ').strip()
         return sql
 
     def uniqueChanged(self):

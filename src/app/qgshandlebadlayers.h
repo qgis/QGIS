@@ -32,6 +32,15 @@ class APP_EXPORT QgsHandleBadLayersHandler
 
     //! Implementation of the handler
     void handleBadLayers( const QList<QDomNode> &layers ) override;
+
+  signals:
+
+    /**
+     * Emitted when layers have changed
+     * \since QGIS 3.6
+     */
+    void layersChanged();
+
 };
 
 
@@ -57,6 +66,7 @@ class APP_EXPORT QgsHandleBadLayers
 
   private:
     QPushButton *mBrowseButton = nullptr;
+    QPushButton *mApplyButton = nullptr;
     const QList<QDomNode> &mLayers;
     QList<int> mRows;
     QString mVectorFileFilter;

@@ -203,12 +203,13 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
   if ( !symbol )
     return;
 
+  std::unique_ptr< QgsSymbol > s( symbol ); // this method takes ownership of symbol
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !vlayer || !vlayer->renderer() )
     return;
 
-  mItem.setSymbol( symbol );
-  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), symbol );
+  mItem.setSymbol( s.get() ); // doesn't transfer ownership
+  vlayer->renderer()->setLegendSymbolItem( mItem.ruleKey(), s.release() ); // DOES transfer ownership!
 
   mPixmap = QPixmap();
 
@@ -226,6 +227,22 @@ void QgsSymbolLegendNode::uncheckAllItems()
   checkAll( false );
 }
 
+void QgsSymbolLegendNode::toggleAllItems()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+  if ( !vlayer || !vlayer->renderer() )
+    return;
+
+  const QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
+  for ( const auto &item : symbolList )
+  {
+    vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), ! vlayer->renderer()->legendSymbolItemChecked( item.ruleKey() ) );
+  }
+
+  emit dataChanged();
+  vlayer->triggerRepaint();
+}
+
 QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
@@ -238,7 +255,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
     return nullptr;
 
   // setup temporary render context
-  std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
+  std::unique_ptr<QgsRenderContext> context = qgis::make_unique<QgsRenderContext>( );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
@@ -251,8 +268,8 @@ void QgsSymbolLegendNode::checkAll( bool state )
   if ( !vlayer || !vlayer->renderer() )
     return;
 
-  QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
-  Q_FOREACH ( const QgsLegendSymbolItem &item, symbolList )
+  const QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
+  for ( const auto &item : symbolList )
   {
     vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
   }

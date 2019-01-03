@@ -31,6 +31,8 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   setPanelTitle( tr( "Layout Properties" ) );
   blockSignals( true );
 
+  mVariableEditor->setMinimumHeight( mVariableEditor->fontMetrics().height() * 15 );
+
   updateSnappingElements();
 
   mGridSpacingUnitsCombo->linkToWidget( mGridResolutionSpinBox );

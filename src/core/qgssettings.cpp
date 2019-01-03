@@ -102,6 +102,10 @@ void QgsSettings::endGroup()
   }
 }
 
+QString QgsSettings::group() const
+{
+  return mUserSettings->group();
+}
 
 QStringList QgsSettings::allKeys() const
 {

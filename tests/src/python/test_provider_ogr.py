@@ -16,10 +16,12 @@ import os
 import shutil
 import sys
 import tempfile
+import hashlib
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsApplication,
+from qgis.PyQt.QtCore import QVariant, QByteArray
+from qgis.core import (NULL,
+                       QgsApplication,
                        QgsRectangle,
                        QgsProviderRegistry,
                        QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
@@ -488,6 +490,69 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(f.isValid())
         self.assertEqual(f.id(), 8)
         del it
+
+    def testBinaryField(self):
+        source = os.path.join(TEST_DATA_DIR, 'attachments.gdb')
+        vl = QgsVectorLayer(source + "|layername=points__ATTACH")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        data_field = fields[fields.lookupField('DATA')]
+        self.assertEqual(data_field.type(), QVariant.ByteArray)
+        self.assertEqual(data_field.typeName(), 'Binary')
+
+        features = {f['ATTACHMENTID']: f for f in vl.getFeatures()}
+        self.assertEqual(len(features), 2)
+        self.assertIsInstance(features[1]['DATA'], QByteArray)
+        self.assertEqual(hashlib.md5(features[1]['DATA'].data()).hexdigest(), 'ef3dbc530cc39a545832a6c82aac57b6')
+        self.assertIsInstance(features[2]['DATA'], QByteArray)
+        self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
+
+    def testBlobCreation(self):
+        """
+        Test creating binary blob field in existing table
+        """
+        tmpfile = os.path.join(self.basetestpath, 'newbinaryfield.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        f = QgsFeature(dp.fields())
+        f.setAttributes([1, 'str', 100])
+        self.assertTrue(dp.addFeature(f))
+
+        # add binary field
+        self.assertTrue(dp.addAttributes([QgsField('binfield', QVariant.ByteArray)]))
+
+        fields = dp.fields()
+        bin1_field = fields[fields.lookupField('binfield')]
+        self.assertEqual(bin1_field.type(), QVariant.ByteArray)
+        self.assertEqual(bin1_field.typeName(), 'Binary')
+
+        f = QgsFeature(fields)
+        bin_1 = b'xxx'
+        bin_val1 = QByteArray(bin_1)
+        f.setAttributes([2, 'str2', 200, bin_val1])
+        self.assertTrue(dp.addFeature(f))
+
+        f2 = [f for f in dp.getFeatures()][1]
+        self.assertEqual(f2.attributes(), [2, 'str2', 200, QByteArray(bin_1)])
+
+    def testBoolFieldEvaluation(self):
+        datasource = os.path.join(unitTestDataPath(), 'bool_geojson.json')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().at(0).name(), 'bool')
+        self.assertEqual(vl.fields().at(0).type(), QVariant.Bool)
+        self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
+        self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
 
 
 if __name__ == '__main__':

@@ -28,8 +28,20 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsMapSettings,
                        QgsProject,
                        QgsMultiBandColorRenderer,
-                       QgsCoordinateReferenceSystem
-                       )
+                       QgsCoordinateReferenceSystem,
+                       QgsTextFormat,
+                       QgsFontUtils,
+                       QgsPalLayerSettings,
+                       QgsNullSymbolRenderer,
+                       QgsPoint,
+                       QgsFeature,
+                       QgsVectorLayerSimpleLabeling,
+                       QgsLabelingEngineSettings,
+                       QgsLayoutMeasurement,
+                       QgsUnitTypes,
+                       QgsLayoutObject,
+                       QgsProperty,
+                       QgsReadWriteContext)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -83,87 +95,6 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.map.setFrameEnabled(True)
         self.map.setLayers([self.raster_layer])
         self.layout.addLayoutItem(self.map)
-
-    def testOverviewMap(self):
-        overviewMap = QgsLayoutItemMap(self.layout)
-        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
-        overviewMap.setFrameEnabled(True)
-        overviewMap.setLayers([self.raster_layer])
-        self.layout.addLayoutItem(overviewMap)
-        # zoom in
-        myRectangle = QgsRectangle(96, -152, 160, -120)
-        self.map.setExtent(myRectangle)
-        myRectangle2 = QgsRectangle(0, -256, 256, 0)
-        overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setLinkedMap(self.map)
-        checker = QgsLayoutChecker('composermap_overview', self.layout)
-        checker.setColorTolerance(6)
-        checker.setControlPathPrefix("composer_mapoverview")
-        myTestResult, myMessage = checker.testLayout()
-        self.report += checker.report()
-        self.layout.removeLayoutItem(overviewMap)
-        assert myTestResult, myMessage
-
-    def testOverviewMapBlend(self):
-        overviewMap = QgsLayoutItemMap(self.layout)
-        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
-        overviewMap.setFrameEnabled(True)
-        overviewMap.setLayers([self.raster_layer])
-        self.layout.addLayoutItem(overviewMap)
-        # zoom in
-        myRectangle = QgsRectangle(96, -152, 160, -120)
-        self.map.setExtent(myRectangle)
-        myRectangle2 = QgsRectangle(0, -256, 256, 0)
-        overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setLinkedMap(self.map)
-        overviewMap.overview().setBlendMode(QPainter.CompositionMode_Multiply)
-        checker = QgsLayoutChecker('composermap_overview_blending', self.layout)
-        checker.setControlPathPrefix("composer_mapoverview")
-        myTestResult, myMessage = checker.testLayout()
-        self.report += checker.report()
-        self.layout.removeLayoutItem(overviewMap)
-        assert myTestResult, myMessage
-
-    def testOverviewMapInvert(self):
-        overviewMap = QgsLayoutItemMap(self.layout)
-        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
-        overviewMap.setFrameEnabled(True)
-        overviewMap.setLayers([self.raster_layer])
-        self.layout.addLayoutItem(overviewMap)
-        # zoom in
-        myRectangle = QgsRectangle(96, -152, 160, -120)
-        self.map.setExtent(myRectangle)
-        myRectangle2 = QgsRectangle(0, -256, 256, 0)
-        overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setLinkedMap(self.map)
-        overviewMap.overview().setInverted(True)
-        checker = QgsLayoutChecker('composermap_overview_invert', self.layout)
-        checker.setControlPathPrefix("composer_mapoverview")
-        myTestResult, myMessage = checker.testLayout()
-        self.report += checker.report()
-        self.layout.removeLayoutItem(overviewMap)
-        assert myTestResult, myMessage
-
-    def testOverviewMapCenter(self):
-        overviewMap = QgsLayoutItemMap(self.layout)
-        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
-        overviewMap.setFrameEnabled(True)
-        overviewMap.setLayers([self.raster_layer])
-        self.layout.addLayoutItem(overviewMap)
-        # zoom in
-        myRectangle = QgsRectangle(192, -288, 320, -224)
-        self.map.setExtent(myRectangle)
-        myRectangle2 = QgsRectangle(0, -256, 256, 0)
-        overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setLinkedMap(self.map)
-        overviewMap.overview().setInverted(False)
-        overviewMap.overview().setCentered(True)
-        checker = QgsLayoutChecker('composermap_overview_center', self.layout)
-        checker.setControlPathPrefix("composer_mapoverview")
-        myTestResult, myMessage = checker.testLayout()
-        self.report += checker.report()
-        self.layout.removeLayoutItem(overviewMap)
-        assert myTestResult, myMessage
 
     def testMapCrs(self):
         # create layout with layout map
@@ -243,6 +174,231 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(map.requiresRasterization())
 
         self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+
+    def testLabelMargin(self):
+        """
+        Test rendering map item with a label margin set
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'X'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
+        vl.setRenderer(QgsNullSymbolRenderer())
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(15):
+            for y in range(15):
+                f.setGeometry(QgsPoint(x, y))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        p.setLabelingEngineSettings(engine_settings)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        checker = QgsLayoutChecker('composermap_label_nomargin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
+        checker = QgsLayoutChecker('composermap_label_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
+        checker = QgsLayoutChecker('composermap_label_cm_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        map.setMapRotation(45)
+        map.zoomToExtent(vl.extent())
+        map.setScale(map.scale() * 1.2)
+        checker = QgsLayoutChecker('composermap_rotated_label_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        # data defined
+        map.setMapRotation(0)
+        map.zoomToExtent(vl.extent())
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapLabelMargin, QgsProperty.fromExpression('1+3'))
+        map.refresh()
+        checker = QgsLayoutChecker('composermap_dd_label_margin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testPartialLabels(self):
+        """
+        Test rendering map item with a show partial labels flag
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'X'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
+        vl.setRenderer(QgsNullSymbolRenderer())
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(15):
+            for y in range(15):
+                f.setGeometry(QgsPoint(x, y))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        p.setLabelingEngineSettings(engine_settings)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        # default should always be to hide partial labels
+        self.assertFalse(map.mapFlags() & QgsLayoutItemMap.ShowPartialLabels)
+
+        # hiding partial labels (the default)
+        map.setMapFlags(QgsLayoutItemMap.MapItemFlags())
+        checker = QgsLayoutChecker('composermap_label_nomargin', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        # showing partial labels
+        map.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
+        checker = QgsLayoutChecker('composermap_show_partial_labels', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testBlockingItems(self):
+        """
+        Test rendering map item with blocking items
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'X'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
+        vl.setRenderer(QgsNullSymbolRenderer())
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(15):
+            for y in range(15):
+                f.setGeometry(QgsPoint(x, y))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        p.setLabelingEngineSettings(engine_settings)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        map.setId('map')
+        layout.addLayoutItem(map)
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(0, 5, 50, 80))
+        map2.setFrameEnabled(True)
+        map2.setBackgroundEnabled(False)
+        map2.setId('map2')
+        layout.addLayoutItem(map2)
+
+        map3 = QgsLayoutItemMap(layout)
+        map3.attemptSetSceneRect(QRectF(150, 160, 50, 50))
+        map3.setFrameEnabled(True)
+        map3.setBackgroundEnabled(False)
+        map3.setId('map3')
+        layout.addLayoutItem(map3)
+
+        map.addLabelBlockingItem(map2)
+        map.addLabelBlockingItem(map3)
+        map.setMapFlags(QgsLayoutItemMap.MapItemFlags())
+        checker = QgsLayoutChecker('composermap_label_blockers', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        doc = QDomDocument("testdoc")
+        elem = layout.writeXml(doc, QgsReadWriteContext())
+
+        l2 = QgsLayout(p)
+        self.assertTrue(l2.readXml(elem, doc, QgsReadWriteContext()))
+        map_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemMap) and i.id() == 'map'][0]
+        map2_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemMap) and i.id() == 'map2'][0]
+        map3_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemMap) and i.id() == 'map3'][0]
+        self.assertTrue(map_restore.isLabelBlockingItem(map2_restore))
+        self.assertTrue(map_restore.isLabelBlockingItem(map3_restore))
 
 
 if __name__ == '__main__':

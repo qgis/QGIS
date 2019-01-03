@@ -68,6 +68,7 @@
 #include "qgsgeometrycheckregistry.h"
 #include "qgsgeometrycheck.h"
 #include "qgsanalysis.h"
+#include "qgssymbolwidgetcontext.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -407,13 +408,32 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setEnabled( true );
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
-    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
     double precision( mLayer->geometryOptions()->geometryPrecision() );
     bool ok = true;
     QString precisionStr( QLocale().toString( precision, ok ) );
     if ( precision == 0.0 || ! ok )
       precisionStr = QString();
     mGeometryPrecisionLineEdit->setText( precisionStr );
+
+    mRemoveDuplicateNodesManuallyActivated = mLayer->geometryOptions()->removeDuplicateNodes();
+    mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
+    if ( !precisionStr.isNull() )
+      mRemoveDuplicateNodesCheckbox->setEnabled( false );
+    connect( mGeometryPrecisionLineEdit, &QLineEdit::textChanged, this, [this]
+    {
+      if ( !mGeometryPrecisionLineEdit->text().isEmpty() )
+      {
+        if ( mRemoveDuplicateNodesCheckbox->isEnabled() )
+          mRemoveDuplicateNodesManuallyActivated  = mRemoveDuplicateNodesCheckbox->isChecked();
+        mRemoveDuplicateNodesCheckbox->setEnabled( false );
+        mRemoveDuplicateNodesCheckbox->setChecked( true );
+      }
+      else
+      {
+        mRemoveDuplicateNodesCheckbox->setEnabled( true );
+        mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
+      }
+    } );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
@@ -428,6 +448,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       geometryCheckLayout->addWidget( cb );
     }
     mGeometryValidationGroupBox->setLayout( geometryCheckLayout );
+    mGeometryValidationGroupBox->setVisible( !geometryCheckFactories.isEmpty() );
 
     QLayout *topologyCheckLayout = new QVBoxLayout();
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -440,6 +461,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       topologyCheckLayout->addWidget( cb );
     }
     mTopologyChecksGroupBox->setLayout( topologyCheckLayout );
+    mTopologyChecksGroupBox->setVisible( !topologyCheckFactories.isEmpty() );
   }
   else
   {
@@ -497,11 +519,6 @@ void QgsVectorLayerProperties::syncToLayer()
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
   txtDisplayName->setText( mLayer->name() );
-  pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
-                                     "builder and allows you to create a subset of features to display on "
-                                     "the map canvas rather than displaying all features in the layer" ) );
-  txtSubsetSQL->setWhatsThis( tr( "The query used to limit the features in the "
-                                  "layer is shown here. To enter or modify the query, click on the Query Builder button" ) );
 
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
@@ -922,8 +939,8 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
     askToUser.setText( tr( "Load default style from: " ) );
     askToUser.setIcon( QMessageBox::Question );
     askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-    askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
-    askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+    askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+    askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
     switch ( askToUser.exec() )
     {
@@ -977,8 +994,8 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
     askToUser.setText( tr( "Save default style to: " ) );
     askToUser.setIcon( QMessageBox::Question );
     askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-    askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
-    askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+    askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+    askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
     switch ( askToUser.exec() )
     {
@@ -1520,7 +1537,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   {
     mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
-    mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( QgisApp::instance()->mapCanvas() );
+    context.setMessageBar( QgisApp::instance()->messageBar() );
+    mRendererDialog->setContext( context );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::layerVariablesChanged, this, &QgsVectorLayerProperties::updateVariableEditor );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::widgetChanged, this,  [ = ] { updateAuxiliaryStoragePage(); } );

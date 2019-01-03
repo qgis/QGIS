@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCURVEV2_H
-#define QGSCURVEV2_H
+#ifndef QGSCURVE_H
+#define QGSCURVE_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -105,6 +105,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * Returns the number of points in the curve.
      */
     virtual int numPoints() const = 0;
+
+#ifdef SIP_RUN
+    int __len__() const;
+    % Docstring
+    Returns the number of points in the curve.
+    % End
+    % MethodCode
+    sipRes = sipCpp->numPoints();
+    % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+#endif
 
     /**
      * Sums up the area of the curve by iterating over the vertices (shoelace formula).
@@ -213,6 +229,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     double sinuosity() const;
 
+    //! Curve orientation
+    enum Orientation
+    {
+      Clockwise, //!< Clockwise orientation
+      CounterClockwise, //!< Counter-clockwise orientation
+    };
+
+    /**
+     * Returns the curve's orientation, e.g. clockwise or counter-clockwise.
+     *
+     * \warning The result is not predictable for non-closed curves.
+     *
+     * \since QGIS 3.6
+     */
+    Orientation orientation() const;
+
 #ifndef SIP_RUN
 
     /**
@@ -260,4 +292,4 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     mutable QgsRectangle mBoundingBox;
 };
 
-#endif // QGSCURVEV2_H
+#endif // QGSCURVE_H

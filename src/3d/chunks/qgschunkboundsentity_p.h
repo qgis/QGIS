@@ -67,7 +67,7 @@ class LineMeshGeometry : public Qt3DRender::QGeometry
 
     int vertexCount()
     {
-      return mVertices.size();
+      return mVertexCount;
     }
 
     void setVertices( const QList<QVector3D> &vertices );
@@ -75,7 +75,7 @@ class LineMeshGeometry : public Qt3DRender::QGeometry
   private:
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-    QList<QVector3D> mVertices;
+    int mVertexCount = 0;
 
 };
 

@@ -34,6 +34,7 @@ class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
+class QgsImageCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
@@ -48,6 +49,7 @@ class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
+class QgsValidityCheckRegistry;
 class QTranslator;
 
 /**
@@ -595,15 +597,31 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
      * within SVG files.
+     *
+     * \see imageCache()
      * \since QGIS 3.0
      */
     static QgsSvgCache *svgCache();
+
+    /**
+     * Returns the application's image cache, used for caching resampled versions of raster images.
+     *
+     * \see svgCache()
+     * \since QGIS 3.6
+     */
+    static QgsImageCache *imageCache();
 
     /**
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+
+    /**
+     * Returns the application's validity check registry, used for managing validity checks.
+     * \since QGIS 3.6
+     */
+    static QgsValidityCheckRegistry *validityCheckRegistry();
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
@@ -857,6 +875,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
+      QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
@@ -867,6 +886,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsRuntimeProfiler *mProfiler = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
+      QgsImageCache *mImageCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;

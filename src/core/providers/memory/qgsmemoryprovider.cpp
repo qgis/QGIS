@@ -93,13 +93,20 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
                   // string types
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+
+                  // boolean
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
+
+                  // blob
+                  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
+
                 );
 
   if ( url.hasQueryItem( QStringLiteral( "field" ) ) )
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime)" // type
+                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
                         "(?:\\((\\-?\\d+)"                // length
                         "(?:\\,(\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
@@ -154,6 +161,18 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         {
           type = QVariant::DateTime;
           typeName = QStringLiteral( "datetime" );
+          length = -1;
+        }
+        else if ( typeName == QLatin1String( "bool" ) || typeName == QLatin1String( "boolean" ) )
+        {
+          type = QVariant::Bool;
+          typeName = QStringLiteral( "boolean" );
+          length = -1;
+        }
+        else if ( typeName == QLatin1String( "binary" ) )
+        {
+          type = QVariant::ByteArray;
+          typeName = QStringLiteral( "binary" );
           length = -1;
         }
 
@@ -443,6 +462,8 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::LongLong:
       case QVariant::StringList:
       case QVariant::List:
+      case QVariant::Bool:
+      case QVariant::ByteArray:
         break;
       default:
         QgsDebugMsg( "Field type not supported: " + it->typeName() );
@@ -595,9 +616,16 @@ QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | RenameAttributes | CreateSpatialIndex |
-         SelectAtId | CircularGeometries;
+         SelectAtId | CircularGeometries | FastTruncate;
 }
 
+bool QgsMemoryProvider::truncate()
+{
+  mFeatures.clear();
+  clearMinMaxCache();
+  mExtent.setMinimal();
+  return true;
+}
 
 void QgsMemoryProvider::updateExtents()
 {

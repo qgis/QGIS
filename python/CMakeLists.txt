@@ -66,6 +66,7 @@ ENDIF ()
 ADD_SUBDIRECTORY(PyQt)
 ADD_SUBDIRECTORY(ext-libs)
 ADD_SUBDIRECTORY(testing)
+ADD_SUBDIRECTORY(processing)
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${PYTHON_INCLUDE_PATH}
@@ -115,6 +116,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/plugins
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h

@@ -109,6 +109,7 @@ SET(QGIS_CORE_SRCS
   locator/qgslocator.cpp
   locator/qgslocatorfilter.cpp
   locator/qgslocatormodel.cpp
+  locator/qgslocatormodelbridge.cpp
 
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
@@ -138,6 +139,7 @@ SET(QGIS_CORE_SRCS
   scalebar/qgsticksscalebarrenderer.cpp
 
   qgis.cpp
+  qgsabstractcontentcache.cpp
   qgsapplication.cpp
   qgsaction.cpp
   qgsactionscope.cpp
@@ -212,6 +214,7 @@ SET(QGIS_CORE_SRCS
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
+  qgsimagecache.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslabelfeature.cpp
@@ -525,6 +528,10 @@ SET(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  validity/qgsabstractvaliditycheck.cpp
+  validity/qgsvaliditycheckcontext.cpp
+  validity/qgsvaliditycheckregistry.cpp
+
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -585,6 +592,7 @@ ELSE(NOT MSVC)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
+  qgsabstractcontentcache.h
   qgsapplication.h
   qgsactionmanager.h
   qgsactionscoperegistry.h
@@ -593,6 +601,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
+  qgscoordinateutils.h
   qgscredentials.h
   qgsdataitem.h
   qgsdataprovider.h
@@ -612,6 +621,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgsimagecache.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
@@ -681,6 +691,7 @@ SET(QGIS_CORE_MOC_HDRS
   locator/qgslocator.h
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
+  locator/qgslocatormodelbridge.h
 
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
@@ -840,7 +851,6 @@ SET(QGIS_CORE_HDRS
   qgscoordinateformatter.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
-  qgscoordinateutils.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h
@@ -1180,6 +1190,10 @@ SET(QGIS_CORE_HDRS
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
+
+  validity/qgsabstractvaliditycheck.h
+  validity/qgsvaliditycheckcontext.h
+  validity/qgsvaliditycheckregistry.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
@@ -1218,6 +1232,7 @@ INCLUDE_DIRECTORIES(
   symbology
   metadata
   mesh
+  validity
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
@@ -1269,8 +1284,7 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library
-
-ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
+ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
 
 GENERATE_EXPORT_HEADER(
   qgis_core
@@ -1332,8 +1346,12 @@ IF (WIN32)
 ENDIF (WIN32)
 
 IF (APPLE)
-  TARGET_LINK_LIBRARIES(qgis_core qgis_native ${LIBTASN1_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_core ${LIBTASN1_LIBRARY})
 ENDIF (APPLE)
+
+IF (APPLE AND NOT IOS)
+  TARGET_LINK_LIBRARIES(qgis_core qgis_native)
+ENDIF (APPLE AND NOT IOS)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
@@ -1360,8 +1378,13 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
-  Qt5::SerialPort
 )
+
+IF (Qt5SerialPort_FOUND)
+  TARGET_LINK_LIBRARIES(qgis_core
+    Qt5::SerialPort
+  )
+ENDIF (Qt5SerialPort_FOUND)
 
 IF (Qt5Positioning_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core

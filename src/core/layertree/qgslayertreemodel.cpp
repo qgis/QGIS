@@ -260,17 +260,27 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
     if ( index == mCurrentIndex )
       f.setUnderline( true );
-    return f;
-  }
-  else if ( role == Qt::ForegroundRole )
-  {
-    QBrush brush( Qt::black, Qt::SolidPattern );
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
       if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
-        brush.setColor( Qt::lightGray );
+        f.setItalic( !f.italic() );
+      }
+    }
+    return f;
+  }
+  else if ( role == Qt::ForegroundRole )
+  {
+    QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
+      {
+        QColor fadedTextColor = brush.color();
+        fadedTextColor.setAlpha( 128 );
+        brush.setColor( fadedTextColor );
       }
     }
     return brush;

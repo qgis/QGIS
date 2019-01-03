@@ -21,6 +21,7 @@
 #include <QString>
 #include <QDir>
 #include <QWindow>
+#include <QProcess>
 #include <QAbstractEventDispatcher>
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>
@@ -29,6 +30,20 @@
 #include <QtWinExtras/QWinJumpListCategory>
 #include "wintoastlib.h"
 #include <Dbt.h>
+#include <memory>
+
+
+struct ITEMIDLISTDeleter
+{
+  void operator()( ITEMIDLIST *pidl )
+  {
+    ILFree( pidl );
+  }
+};
+
+using ITEMIDLIST_unique_ptr = std::unique_ptr< ITEMIDLIST, ITEMIDLISTDeleter>;
+
+
 
 QgsNative::Capabilities QgsWinNative::capabilities() const
 {
@@ -40,6 +55,7 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
     const QString &organizationName,
     const QString &version )
 {
+  mWindow = window;
   if ( mTaskButton )
     return; // already initialized!
 
@@ -69,24 +85,46 @@ void QgsWinNative::cleanup()
 {
   if ( mWinToastInitialized )
     WinToastLib::WinToast::instance()->clear();
+  mWindow = nullptr;
+}
+
+std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
+{
+  const QString nativePath = QDir::toNativeSeparators( path );
+
+  std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
+  nativePath.toWCharArray( pathArray.get() );
+  pathArray[static_cast< size_t >( nativePath.length() )] = 0;
+  return pathArray;
 }
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
-  const QString nativePath = QDir::toNativeSeparators( path );
-
-  wchar_t *pathArray = new wchar_t[static_cast< uint>( nativePath.length() + 1 )];
-  nativePath.toWCharArray( pathArray );
-  pathArray[nativePath.length()] = 0;
-
-  ITEMIDLIST *pidl = ILCreateFromPathW( pathArray );
+  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  ITEMIDLIST_unique_ptr pidl( ILCreateFromPathW( pathArray.get() ) );
   if ( pidl )
   {
-    SHOpenFolderAndSelectItems( pidl, 0, nullptr, 0 );
-    ILFree( pidl );
+    SHOpenFolderAndSelectItems( pidl.get(), 0, nullptr, 0 );
+    pidl.reset();
   }
+}
 
-  delete[] pathArray;
+void QgsWinNative::showFileProperties( const QString &path )
+{
+  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  ITEMIDLIST_unique_ptr pidl( ILCreateFromPathW( pathArray.get() ) );
+  if ( pidl )
+  {
+    SHELLEXECUTEINFO info{ sizeof( info ) };
+    if ( mWindow )
+      info.hwnd = reinterpret_cast<HWND>( mWindow->winId() );
+    info.nShow = SW_SHOWNORMAL;
+    info.fMask = SEE_MASK_INVOKEIDLIST;
+    info.lpIDList = pidl.get();
+    info.lpVerb = "properties";
+
+    ShellExecuteEx( &info );
+  }
 }
 
 void QgsWinNative::showUndefinedApplicationProgress()
@@ -99,7 +137,7 @@ void QgsWinNative::setApplicationProgress( double progress )
 {
   mTaskProgress->setMaximum( 100 );
   mTaskProgress->show();
-  mTaskProgress->setValue( progress );
+  mTaskProgress->setValue( static_cast< int >( std::round( progress ) ) );
 }
 
 void QgsWinNative::hideApplicationProgress()
@@ -163,10 +201,32 @@ QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QStri
   return result;
 }
 
+bool QgsWinNative::openTerminalAtPath( const QString &path )
+{
+  // logic from https://github.com/Microsoft/vscode/blob/fec1775aa52e2124d3f09c7b2ac8f69c57309549/src/vs/workbench/parts/execution/electron-browser/terminal.ts#L44
+  const bool isWow64 = qEnvironmentVariableIsSet( "PROCESSOR_ARCHITEW6432" );
+  QString windir = qgetenv( "WINDIR" );
+  if ( windir.isEmpty() )
+    windir = QStringLiteral( "C:\\Windows" );
+  const QString term = QStringLiteral( "%1\\%2\\cmd.exe" ).arg( windir, isWow64 ? QStringLiteral( "Sysnative" ) : QStringLiteral( "System32" ) );
+
+  QProcess process;
+  process.setProgram( term );
+  process.setCreateProcessArgumentsModifier( []( QProcess::CreateProcessArguments * args )
+  {
+    args->flags |= CREATE_NEW_CONSOLE;
+    args->startupInfo->dwFlags &= ~ STARTF_USESTDHANDLES;
+  } );
+  process.setWorkingDirectory( path );
+
+  qint64 pid;
+  return process.startDetached( &pid );
+}
+
 bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, long * )
 {
   static const QByteArray sWindowsGenericMSG{ "windows_generic_MSG" };
-  if ( eventType != sWindowsGenericMSG )
+  if ( !message || eventType != sWindowsGenericMSG )
     return false;
 
   MSG *pWindowsMessage = static_cast<MSG *>( message );
@@ -178,12 +238,27 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
   unsigned int wParam = pWindowsMessage->wParam;
   if ( wParam == DBT_DEVICEARRIVAL || wParam == DBT_DEVICEREMOVECOMPLETE )
   {
-    long lParam = pWindowsMessage->lParam;
-    unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( lParam )->dbch_devicetype;
+    if ( !pWindowsMessage->lParam )
+      return false;
+
+    unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( pWindowsMessage->lParam )->dbch_devicetype;
     if ( deviceType == DBT_DEVTYP_VOLUME )
     {
+      const DEV_BROADCAST_VOLUME *broadcastVolume = reinterpret_cast<const DEV_BROADCAST_VOLUME *>( pWindowsMessage->lParam );
+      if ( !broadcastVolume )
+        return false;
+
+      // Seen in qfilesystemwatcher_win.cpp from Qt:
+      // WM_DEVICECHANGE/DBT_DEVTYP_VOLUME messages are sent to all toplevel windows. Compare a hash value to ensure
+      // it is handled only once.
+      const quintptr newHash = reinterpret_cast<quintptr>( broadcastVolume ) + pWindowsMessage->wParam
+                               + quintptr( broadcastVolume->dbcv_flags ) + quintptr( broadcastVolume->dbcv_unitmask );
+      if ( newHash == mLastMessageHash )
+        return false;
+      mLastMessageHash = newHash;
+
       // need to handle disks with multiple partitions -- these are given by a single event
-      unsigned long unitmask = reinterpret_cast<DEV_BROADCAST_VOLUME *>( lParam )->dbcv_unitmask;
+      unsigned long unitmask = broadcastVolume->dbcv_unitmask;
       std::vector< QString > drives;
       char driveName[] = "A:/";
       unitmask &= 0x3ffffff;
@@ -199,6 +274,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
       {
         emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
       }
+      return false;
     }
   }
   return false;

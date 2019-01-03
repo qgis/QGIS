@@ -181,6 +181,36 @@ buildSupportedRasterFileFilter to a string, which is then returned.
    This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
 %End
 
+    virtual QString fileMeshFilters() const;
+%Docstring
+Returns mesh file filter string
+
+Returns a string suitable for a QFileDialog of mesh file formats
+supported by all data providers.
+
+This walks through all data providers appending calls to their
+fileMeshFilters to a string, which is then returned.
+
+.. seealso:: :py:func:`fileMeshDatasetFilters`
+
+.. versionadded:: 3.6
+%End
+
+    virtual QString fileMeshDatasetFilters() const;
+%Docstring
+Returns mesh's dataset file filter string
+
+Returns a string suitable for a QFileDialog of mesh datasets file formats
+supported by all data providers.
+
+This walks through all data providers appending calls to their
+fileMeshFilters to a string, which is then returned.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. versionadded:: 3.6
+%End
+
     virtual QString databaseDrivers() const;
 %Docstring
 Returns a string containing the available database drivers

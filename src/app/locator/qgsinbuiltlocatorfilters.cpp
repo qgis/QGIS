@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QToolButton>
+#include <QClipboard>
 
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
@@ -25,8 +27,9 @@
 #include "qgsmaplayermodel.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
-#include <QToolButton>
-#include <QClipboard>
+#include "qgsfeatureaction.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -146,6 +149,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
   }
 
   QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
+  QRegularExpression newLineToSpace( QStringLiteral( "[\\s\\n\\r]+" ) );
 
   Q_FOREACH ( QAction *action, parent->actions() )
   {
@@ -164,6 +168,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     searchText.replace( '&', QString() );
 
     QString tooltip = action->toolTip();
+    tooltip.replace( newLineToSpace, QStringLiteral( " " ) );
     QRegularExpressionMatch match = extractFromTooltip.match( tooltip );
     if ( match.hasMatch() )
     {
@@ -173,7 +178,12 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     tooltip.replace( QStringLiteral( "…" ), QString() );
     searchText.replace( QStringLiteral( "..." ), QString() );
     searchText.replace( QStringLiteral( "…" ), QString() );
-    if ( searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0 )
+    bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
+    if ( action->isChecked() )
+    {
+      searchText += QStringLiteral( " [%1]" ).arg( tr( "Active" ) );
+    }
+    if ( uniqueTooltip )
     {
       searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
     }
@@ -335,6 +345,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   if ( string.length() < 3 && !context.usingPrefix )
     return;
 
+  mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
@@ -351,18 +362,20 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     req.setSubsetOfAttributes( expression.referencedAttributeIndexes( layer->fields() ).toList() );
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
+    QString enhancedSearch = string;
+    enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
-                             .arg( layer->displayExpression(),
-                                   string ) );
+                             .arg( layer->displayExpression(), enhancedSearch ) );
     req.setLimit( 30 );
 
-    PreparedLayer preparedLayer;
-    preparedLayer.expression = expression;
-    preparedLayer.context = context;
-    preparedLayer.layerId = layer->id();
-    preparedLayer.layerName = layer->name();
-    preparedLayer.iterator =  layer->getFeatures( req );
-    preparedLayer.layerIcon = QgsMapLayerModel::iconForLayer( layer );
+    std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
+    preparedLayer->expression = expression;
+    preparedLayer->context = context;
+    preparedLayer->layerId = layer->id();
+    preparedLayer->layerName = layer->name();
+    preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+    preparedLayer->request = req;
+    preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
   }
@@ -375,24 +388,27 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   QgsFeature f;
 
   // we cannot used const loop since iterator::nextFeature is not const
-  for ( PreparedLayer preparedLayer : mPreparedLayers )
+  for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
-    while ( preparedLayer.iterator.nextFeature( f ) )
+    QgsFeatureIterator it = preparedLayer->featureSource->getFeatures( preparedLayer->request );
+    while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return;
 
       QgsLocatorResult result;
-      result.group = preparedLayer.layerName;
+      result.group = preparedLayer->layerName;
 
-      preparedLayer.context.setFeature( f );
+      preparedLayer->context.setFeature( f );
 
-      result.displayString = preparedLayer.expression.evaluate( &( preparedLayer.context ) ).toString();
+      result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = QVariantList() << f.id() << preparedLayer.layerId;
-      result.icon = preparedLayer.layerIcon;
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
+
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
       emit resultFetched( result );
 
       foundInCurrentLayer++;
@@ -407,14 +423,40 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
 void QgsAllLayersFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
+  triggerResultFromAction( result, NoEntry );
+}
+
+void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
+{
   QVariantList dataList = result.userData.toList();
-  QgsFeatureId id = dataList.at( 0 ).toLongLong();
+  QgsFeatureId fid = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
-  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+  if ( actionId == OpenForm )
+  {
+    QgsFeature f;
+    QgsFeatureRequest request;
+    request.setFilterFid( fid );
+    bool fetched = layer->getFeatures( request ).nextFeature( f );
+    if ( !fetched )
+      return;
+    QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QString(), -1, QgisApp::instance() );
+    if ( layer->isEditable() )
+    {
+      action.editFeature( false );
+    }
+    else
+    {
+      action.viewFeatureForm();
+    }
+  }
+  else
+  {
+    QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+  }
 }
 
 //

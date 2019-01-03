@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSURFACEV2_H
-#define QGSSURFACEV2_H
+#ifndef QGSSURFACE_H
+#define QGSSURFACE_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -80,4 +80,4 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
     mutable QgsRectangle mBoundingBox;
 };
 
-#endif // QGSSURFACEV2_H
+#endif // QGSSURFACE_H

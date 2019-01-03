@@ -31,7 +31,7 @@ import warnings
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
 from qgis.PyQt.QtGui import QCursor
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -56,9 +56,13 @@ with warnings.catch_warnings():
 
 class ExtentSelectionPanel(BASE, WIDGET):
 
+    hasChanged = pyqtSignal()
+
     def __init__(self, dialog, param):
         super(ExtentSelectionPanel, self).__init__(None)
         self.setupUi(self)
+
+        self.leText.textChanged.connect(lambda: self.hasChanged.emit())
 
         self.dialog = dialog
         self.param = param

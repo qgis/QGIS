@@ -95,6 +95,8 @@ SET(QGIS_GUI_SRCS
   editorwidgets/core/qgssearchwidgetwrapper.cpp
   editorwidgets/core/qgswidgetwrapper.cpp
 
+  editorwidgets/qgsbinarywidgetfactory.cpp
+  editorwidgets/qgsbinarywidgetwrapper.cpp
   editorwidgets/qgscheckboxconfigdlg.cpp
   editorwidgets/qgscheckboxsearchwidgetwrapper.cpp
   editorwidgets/qgscheckboxwidgetwrapper.cpp
@@ -268,6 +270,7 @@ SET(QGIS_GUI_SRCS
   qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
+  qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfloatingwidget.cpp
@@ -367,7 +370,6 @@ SET(QGIS_GUI_SRCS
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
-  qgssvgsourcelineedit.cpp
   qgssymbolbutton.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
@@ -378,6 +380,7 @@ SET(QGIS_GUI_SRCS
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputwidget.cpp
+  qgsvaliditycheckresultswidget.cpp
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
@@ -448,6 +451,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfeaturelistcombobox.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
+  qgsfilecontentsourcelineedit.h
   qgsfilewidget.h
   qgsfilterlineedit.h
   qgsfloatingwidget.h
@@ -540,7 +544,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsstatusbar.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
-  qgssvgsourcelineedit.h
   qgssymbolbutton.h
   qgstablewidgetbase.h
   qgstabwidget.h
@@ -550,6 +553,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputwidget.h
+  qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
   qgsvscrollarea.h
   qgsfiledownloaderdialog.h
@@ -657,6 +661,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/core/qgssearchwidgetwrapper.h
   editorwidgets/core/qgswidgetwrapper.h
 
+  editorwidgets/qgsbinarywidgetwrapper.h
   editorwidgets/qgscheckboxconfigdlg.h
   editorwidgets/qgscheckboxsearchwidgetwrapper.h
   editorwidgets/qgscheckboxwidgetwrapper.h
@@ -831,6 +836,7 @@ SET(QGIS_GUI_HDRS
   editorwidgets/core/qgseditorwidgetfactory.h
   editorwidgets/core/qgseditorwidgetautoconf.h
 
+  editorwidgets/qgsbinarywidgetfactory.h
   editorwidgets/qgscheckboxwidgetfactory.h
   editorwidgets/qgsclassificationwidgetwrapperfactory.h
   editorwidgets/qgscolorwidgetfactory.h
@@ -948,6 +954,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/native
 
   ${CMAKE_BINARY_DIR}/src/core

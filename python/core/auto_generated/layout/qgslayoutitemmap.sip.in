@@ -31,6 +31,13 @@ Layout graphical items for displaying a map.
       Auto
     };
 
+    enum MapItemFlag
+    {
+      ShowPartialLabels,
+    };
+    typedef QFlags<QgsLayoutItemMap::MapItemFlag> MapItemFlags;
+
+
     explicit QgsLayoutItemMap( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
@@ -41,6 +48,26 @@ Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
 
     virtual QIcon icon() const;
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
+
+    QgsLayoutItemMap::MapItemFlags mapFlags() const;
+%Docstring
+Returns the map item's flags, which control how the map content is drawn.
+
+.. seealso:: :py:func:`setMapFlags`
+
+.. versionadded:: 3.6
+%End
+
+    void setMapFlags( QgsLayoutItemMap::MapItemFlags flags );
+%Docstring
+Sets the map item's ``flags``, which control how the map content is drawn.
+
+.. seealso:: :py:func:`mapFlags`
+
+.. versionadded:: 3.6
+%End
 
     void assignFreeId();
 %Docstring
@@ -448,6 +475,30 @@ Returns the map item's first overview. This is a convenience function.
 .. seealso:: :py:func:`overviews`
 %End
 
+    QgsLayoutMeasurement labelMargin() const;
+%Docstring
+Returns the margin from the map edges in which no labels may be placed.
+
+If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+of the map.
+
+.. seealso:: :py:func:`setLabelMargin`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelMargin( const QgsLayoutMeasurement &margin );
+%Docstring
+Sets the ``margin`` from the map edges in which no labels may be placed.
+
+If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+of the map.
+
+.. seealso:: :py:func:`labelMargin`
+
+.. versionadded:: 3.6
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 
@@ -474,6 +525,48 @@ will be calculated. This can be expensive to calculate, so if they are not requi
 %Docstring
 Returns a list of the layers which will be rendered within this map item, considering
 any locked layers, linked map theme, and data defined settings.
+%End
+
+    void addLabelBlockingItem( QgsLayoutItem *item );
+%Docstring
+Sets the specified layout ``item`` as a "label blocking item" for this map.
+
+Items which are marked as label blocking items prevent any map labels from being placed
+in the area of the map item covered by the ``item``.
+
+.. seealso:: :py:func:`removeLabelBlockingItem`
+
+.. seealso:: :py:func:`isLabelBlockingItem`
+
+.. versionadded:: 3.6
+%End
+
+    void removeLabelBlockingItem( QgsLayoutItem *item );
+%Docstring
+Removes the specified layout ``item`` from the map's "label blocking items".
+
+Items which are marked as label blocking items prevent any map labels from being placed
+in the area of the map item covered by the item.
+
+.. seealso:: :py:func:`addLabelBlockingItem`
+
+.. seealso:: :py:func:`isLabelBlockingItem`
+
+.. versionadded:: 3.6
+%End
+
+    bool isLabelBlockingItem( QgsLayoutItem *item ) const;
+%Docstring
+Returns true if the specified ``item`` is a "label blocking item".
+
+Items which are marked as label blocking items prevent any map labels from being placed
+in the area of the map item covered by the item.
+
+.. seealso:: :py:func:`addLabelBlockingItem`
+
+.. seealso:: :py:func:`removeLabelBlockingItem`
+
+.. versionadded:: 3.6
 %End
 
   protected:
@@ -556,6 +649,9 @@ Updates the bounding rect of this item. Call this function before doing any chan
 
 
 };
+
+QFlags<QgsLayoutItemMap::MapItemFlag> operator|(QgsLayoutItemMap::MapItemFlag f1, QFlags<QgsLayoutItemMap::MapItemFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -1548,3 +1548,97 @@ QString QgsExpressionNodeBinaryOperator::text() const
   return BINARY_OPERATOR_TEXT[mOp];
 }
 
+//
+
+QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  const QVariant container = mContainer->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR;
+  const QVariant index = mIndex->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR;
+
+  switch ( container.type() )
+  {
+    case QVariant::Map:
+      return QgsExpressionUtils::getMapValue( container, parent ).value( index.toString() );
+
+    case QVariant::List:
+    case QVariant::StringList:
+    {
+      const QVariantList list = QgsExpressionUtils::getListValue( container, parent );
+      qlonglong pos = QgsExpressionUtils::getIntValue( index, parent );
+      if ( pos >= list.length() || pos < -list.length() )
+      {
+        return QVariant();
+      }
+      if ( pos < 0 )
+      {
+        // negative indices are from back of list
+        pos += list.length();
+      }
+
+      return list.at( pos );
+    }
+
+    default:
+      parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
+      return QVariant();
+  }
+}
+
+QgsExpressionNode::NodeType QgsExpressionNodeIndexOperator::nodeType() const
+{
+  return ntIndexOperator;
+}
+
+bool QgsExpressionNodeIndexOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  bool resC = mContainer->prepare( parent, context );
+  bool resV = mIndex->prepare( parent, context );
+  return resC && resV;
+}
+
+QString QgsExpressionNodeIndexOperator::dump() const
+{
+  return QStringLiteral( "%1[%2]" ).arg( mContainer->dump(), mIndex->dump() );
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedColumns() const
+{
+  return mContainer->referencedColumns() + mIndex->referencedColumns();
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedVariables() const
+{
+  return mContainer->referencedVariables() + mIndex->referencedVariables();
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedFunctions() const
+{
+  return mContainer->referencedFunctions() + mIndex->referencedFunctions();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeIndexOperator::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  lst += mContainer->nodes() + mIndex->nodes();
+  return lst;
+}
+
+bool QgsExpressionNodeIndexOperator::needsGeometry() const
+{
+  return mContainer->needsGeometry() || mIndex->needsGeometry();
+}
+
+QgsExpressionNode *QgsExpressionNodeIndexOperator::clone() const
+{
+  QgsExpressionNodeIndexOperator *copy = new QgsExpressionNodeIndexOperator( mContainer->clone(), mIndex->clone() );
+  cloneTo( copy );
+  return copy;
+}
+
+bool QgsExpressionNodeIndexOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return mContainer->isStatic( parent, context ) && mIndex->isStatic( parent, context );
+}

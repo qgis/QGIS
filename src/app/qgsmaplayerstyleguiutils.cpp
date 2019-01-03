@@ -101,7 +101,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
     return;
 
   bool ok;
-  QString text = QInputDialog::getText( nullptr, tr( "New style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
@@ -166,7 +166,7 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
   QString name = layer->styleManager()->currentStyle();
 
   bool ok;
-  QString text = QInputDialog::getText( nullptr, tr( "Rename style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "Rename Style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         name, &ok );
   if ( !ok )

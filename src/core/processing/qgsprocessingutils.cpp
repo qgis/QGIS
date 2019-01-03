@@ -30,6 +30,7 @@
 #include "qgsfileutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsmeshlayer.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -37,7 +38,9 @@ QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *
     return QList<QgsRasterLayer *>();
 
   QList<QgsRasterLayer *> layers;
-  Q_FOREACH ( QgsRasterLayer *l, project->layers<QgsRasterLayer *>() )
+
+  const auto rasterLayers = project->layers<QgsRasterLayer *>();
+  for ( QgsRasterLayer *l : rasterLayers )
   {
     if ( canUseLayer( l ) )
       layers << l;
@@ -59,7 +62,8 @@ QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *
     return QList<QgsVectorLayer *>();
 
   QList<QgsVectorLayer *> layers;
-  Q_FOREACH ( QgsVectorLayer *l, project->layers<QgsVectorLayer *>() )
+  const auto vectorLayers = project->layers<QgsVectorLayer *>();
+  for ( QgsVectorLayer *l :  vectorLayers )
   {
     if ( canUseLayer( l, geometryTypes ) )
       layers << l;
@@ -75,15 +79,46 @@ QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *
   return layers;
 }
 
+QList<QgsMeshLayer *> QgsProcessingUtils::compatibleMeshLayers( QgsProject *project, bool sort )
+{
+  if ( !project )
+    return QList<QgsMeshLayer *>();
+
+  QList<QgsMeshLayer *> layers;
+  const auto meshLayers = project->layers<QgsMeshLayer *>();
+  for ( QgsMeshLayer *l : meshLayers )
+  {
+    if ( canUseLayer( l ) )
+      layers << l;
+  }
+
+  if ( sort )
+  {
+    std::sort( layers.begin(), layers.end(), []( const QgsMeshLayer * a, const QgsMeshLayer * b ) -> bool
+    {
+      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+    } );
+  }
+  return layers;
+}
+
 QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, bool sort )
 {
   if ( !project )
     return QList<QgsMapLayer *>();
 
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( QgsRasterLayer *rl, compatibleRasterLayers( project, false ) )
+
+  const auto rasterLayers = compatibleRasterLayers( project, false );
+  for ( QgsRasterLayer *rl : rasterLayers )
     layers << rl;
-  Q_FOREACH ( QgsVectorLayer *vl, compatibleVectorLayers( project, QList< int >(), false ) )
+
+  const auto vectorLayers = compatibleVectorLayers( project, QList< int >(), false );
+  for ( QgsVectorLayer *vl : vectorLayers )
+    layers << vl;
+
+  const auto meshLayers = compatibleMeshLayers( project, false );
+  for ( QgsMeshLayer *vl : meshLayers )
     layers << vl;
 
   if ( sort )
@@ -114,7 +149,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
       case QgsMapLayer::PluginLayer:
         return true;
       case QgsMapLayer::MeshLayer:
-        return false;
+        return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
     }
     return true;
   } ), layers.end() );
@@ -131,6 +166,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case Raster:
         return l->type() == QgsMapLayer::RasterLayer;
+
+      case Mesh:
+        return l->type() == QgsMapLayer::MeshLayer;
     }
     return true;
   };
@@ -214,6 +252,15 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( rasterLayer->isValid() )
     {
       return rasterLayer.release();
+    }
+  }
+  if ( typeHint == UnknownType || typeHint == Mesh )
+  {
+    QgsMeshLayer::LayerOptions meshOptions;
+    std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
+    if ( meshLayer->isValid() )
+    {
+      return meshLayer.release();
     }
   }
   return nullptr;
@@ -310,6 +357,11 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   {
     return new QgsProcessingFeatureSource( vl, context );
   }
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
+{
+  return layer && layer->dataProvider();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
@@ -494,7 +546,7 @@ void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString
 QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs )
 {
   QgsRectangle extent;
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( const QgsMapLayer *layer : layers )
   {
     if ( !layer )
       continue;
@@ -600,7 +652,9 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
 
   QString inputs;
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
+
+  const auto parameterDefinitions = algorithm->parameterDefinitions();
+  for ( const QgsProcessingParameterDefinition *def : parameterDefinitions )
   {
     inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
     inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
@@ -609,7 +663,8 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     s += QObject::tr( "<h2>Input parameters</h2>\n" ) + inputs;
 
   QString outputs;
-  Q_FOREACH ( const QgsProcessingOutputDefinition *def, algorithm->outputDefinitions() )
+  const auto outputDefinitions = algorithm->outputDefinitions();
+  for ( const QgsProcessingOutputDefinition *def : outputDefinitions )
   {
     outputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
     outputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
@@ -754,7 +809,6 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
     fieldsSubset.append( fields.at( i ) );
   return fieldsSubset;
 }
-
 
 //
 // QgsProcessingFeatureSource

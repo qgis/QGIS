@@ -26,9 +26,19 @@ start_app()
 class TestPython__repr__(unittest.TestCase):
 
     def testQgsGeometryRepr(self):
+
+        g = QgsGeometry()
+        self.assertEqual(g.__repr__(), '<QgsGeometry: null>')
         p = QgsPointXY(123.456, 987.654)
         g = QgsGeometry.fromPointXY(p)
         self.assertTrue(g.__repr__().startswith('<QgsGeometry: Point (123.456'))
+        g = QgsGeometry(QgsLineString([QgsPoint(0, 2), QgsPoint(1010, 2)]))
+        g = g.densifyByCount(1000)
+        # long strings must be truncated for performance -- otherwise they flood the console/first aid output
+        self.assertTrue(g.__repr__().startswith('<QgsGeometry: LineString (0 2,'))
+        self.assertTrue(
+            g.__repr__().endswith('...>'))
+        self.assertEqual(len(g.__repr__()), 1018)
 
     def testQgsPointRepr(self):
         p = QgsPoint(123.456, 987.654, 100)

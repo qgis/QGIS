@@ -155,6 +155,7 @@
         <file>themes/default/grass_mapset.svg</file>
         <file>themes/default/grass_mapset_open.svg</file>
         <file>themes/default/grass_mapset_search.svg</file>
+        <file>themes/default/grid.svg</file>
         <file>themes/default/histogram.svg</file>
         <file>themes/default/heatmap.svg</file>
         <file>themes/default/join_bevel.svg</file>
@@ -276,6 +277,7 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.svg</file>
+        <file>themes/default/mActionToggleAllLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.svg</file>
         <file>themes/default/mActionHideDeselectedLayers.svg</file>
         <file>themes/default/mActionHistory.svg</file>
@@ -314,6 +316,8 @@
         <file>themes/default/mActionNewVectorLayer.svg</file>
         <file>themes/default/mActionVertexTool.svg</file>
         <file>themes/default/mActionVertexToolActiveLayer.svg</file>
+        <file>themes/default/mActionViewExtentInCanvas.svg</file>
+        <file>themes/default/mActionViewScaleInCanvas.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
@@ -363,6 +367,8 @@
         <file>themes/default/mActionSelectRectangle.svg</file>
         <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
+        <file>themes/default/mActionSetToCanvasExtent.svg</file>
+        <file>themes/default/mActionSetToCanvasScale.svg</file>
         <file>themes/default/mActionSharing.svg</file>
         <file>themes/default/mActionSharingExport.svg</file>
         <file>themes/default/mActionSharingImport.svg</file>
@@ -584,6 +590,7 @@
         <file>themes/default/symbologyRemove.svg</file>
         <file>themes/default/sync_views.svg</file>
         <file>themes/default/text.svg</file>
+        <file>themes/default/title_label.svg</file>
         <file>themes/default/tracking.svg</file>
         <file>themes/default/transformed.svg</file>
         <file>themes/default/transp-background_8x8.png</file>
@@ -671,7 +678,8 @@
         <file>themes/default/mActionEllipseCenterPoint.svg</file>
         <file>themes/default/mActionEllipseExtent.svg</file>
         <file>themes/default/mActionRectangleExtent.svg</file>
-        <file>themes/default/mActionRectangle3Points.svg</file>
+        <file>themes/default/mActionRectangle3PointsDistance.svg</file>
+        <file>themes/default/mActionRectangle3PointsProjected.svg</file>
         <file>themes/default/mActionRectangleCenter.svg</file>
         <file>themes/default/mActionRegularPolygonCenterCorner.svg</file>
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
@@ -725,6 +733,15 @@
         <file>themes/default/mIconFolderOpen.svg</file>
         <file>themes/default/mIconFolderProject.svg</file>
         <file>themes/default/mActionActive.svg</file>
+        <file>themes/default/mIconAllRings.svg</file>
+        <file>themes/default/mIconExteriorRing.svg</file>
+        <file>themes/default/mIconInteriorRings.svg</file>
+        <file>themes/default/mIconFieldBinary.svg</file>
+        <file>themes/default/mActionTrimExtendFeature.svg</file>
+        <file>themes/default/mActionTerminal.svg</file>
+        <file>themes/default/mIconFolder24.svg</file>
+        <file>themes/default/mActionNewFolder.svg</file>
+        <file>themes/default/mIconFieldBool.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

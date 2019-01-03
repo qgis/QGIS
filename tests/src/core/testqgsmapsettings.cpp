@@ -35,6 +35,8 @@ class TestQgsMapSettings: public QObject
     void initTestCase();
     void cleanupTestCase();
     void testDefaults();
+    void testGettersSetters();
+    void testLabelingEngineSettings();
     void visibleExtent();
     void mapUnitsPerPixel();
     void testDevicePixelRatio();
@@ -43,6 +45,7 @@ class TestQgsMapSettings: public QObject
     void testMapLayerListUtils();
     void testXmlReadWrite();
     void testSetLayers();
+    void testLabelBoundary();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -80,6 +83,43 @@ void TestQgsMapSettings::testDefaults()
 {
   QgsMapSettings ms;
   QCOMPARE( ms.destinationCrs(), QgsCoordinateReferenceSystem() );
+}
+
+void TestQgsMapSettings::testGettersSetters()
+{
+  // basic getter/setter tests
+  QgsMapSettings ms;
+
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+}
+
+void TestQgsMapSettings::testLabelingEngineSettings()
+{
+  // test that setting labeling engine settings for QgsMapSettings works
+  QgsMapSettings ms;
+  QgsLabelingEngineSettings les;
+  les.setNumCandidatePositions( 4, 8, 15 ); // 23, 42... ;)
+  ms.setLabelingEngineSettings( les );
+  int c1, c2, c3;
+  ms.labelingEngineSettings().numCandidatePositions( c1, c2, c3 );
+  QCOMPARE( c1, 4 );
+  QCOMPARE( c2, 8 );
+  QCOMPARE( c3, 15 );
+
+  // ensure that setting labeling engine settings also sets text format
+  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  // but we should be able to override this manually
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
 }
 
 void TestQgsMapSettings::visibleExtent()
@@ -326,6 +366,14 @@ void TestQgsMapSettings::testSetLayers()
   // non spatial and null layers should be stripped
   ms.setLayers( QList< QgsMapLayer * >() << vlA.get() << nonSpatial.get() << nullptr << vlB.get() );
   QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlA.get() << vlB.get() );
+}
+
+void TestQgsMapSettings::testLabelBoundary()
+{
+  QgsMapSettings ms;
+  QVERIFY( ms.labelBoundaryGeometry().isNull() );
+  ms.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1, 0 1, 0 0 ))" ) ) );
+  QCOMPARE( ms.labelBoundaryGeometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

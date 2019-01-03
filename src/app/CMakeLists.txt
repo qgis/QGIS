@@ -81,6 +81,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
+  qgsmaptooltrimextendfeature.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
@@ -109,6 +110,8 @@ SET(QGIS_APP_SRCS
   qgsmaptooltextannotation.cpp
 
   decorations/qgsdecorationitem.cpp
+  decorations/qgsdecorationtitle.cpp
+  decorations/qgsdecorationtitledialog.cpp
   decorations/qgsdecorationcopyright.cpp
   decorations/qgsdecorationcopyrightdialog.cpp
   decorations/qgsdecorationlayoutextent.cpp
@@ -201,6 +204,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutscalebarwidget.cpp
   layout/qgslayoutshapewidget.cpp
   layout/qgslayouttablebackgroundcolorsdialog.cpp
+  layout/qgslayoutvaliditychecks.cpp
   layout/qgsreportfieldgroupsectionwidget.cpp
   layout/qgsreportlayoutsectionwidget.cpp
   layout/qgsreportorganizerwidget.cpp
@@ -315,6 +319,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
   qgsmaptooldeletering.h
+  qgsmaptooltrimextendfeature.h
   qgsmaptoolfeatureaction.h
   qgsmaptoolformannotation.h
   qgsmaptoolhtmlannotation.h
@@ -363,6 +368,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygoncentercorner.h
 
   decorations/qgsdecorationitem.h
+  decorations/qgsdecorationtitle.h
+  decorations/qgsdecorationtitledialog.h
   decorations/qgsdecorationcopyright.h
   decorations/qgsdecorationcopyrightdialog.h
   decorations/qgsdecorationlayoutextent.h
@@ -470,6 +477,7 @@ IF (WITH_3D)
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptool.cpp
     3d/qgs3dmaptoolidentify.cpp
+    3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
@@ -486,6 +494,7 @@ IF (WITH_3D)
     3d/qgs3dmapconfigwidget.h
     3d/qgs3dmaptool.h
     3d/qgs3dmaptoolidentify.h
+    3d/qgslightswidget.h
     3d/qgsline3dsymbolwidget.h
     3d/qgspoint3dsymbolwidget.h
     3d/qgspolygon3dsymbolwidget.h
@@ -663,6 +672,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable

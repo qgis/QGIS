@@ -38,9 +38,9 @@ Constructor
 %Docstring
 Format the exception for sending to client
 
-:param responseFormat: QString to store the content type of the response format.
 
-:return: QByteArray the fermatted response.
+:return: - QByteArray the fermatted response.
+         - responseFormat:  QString to store the content type of the response format.
 
 The defaolt implementation return text/xml format.
 %End
