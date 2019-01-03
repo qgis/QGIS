@@ -44,6 +44,7 @@ QgsQuadix::QgsQuadix( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPoint
 QgsQuadix QgsQuadix::rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode )
 {
   QgsQuadix rect;
+  double azimuth = p1.azimuth( p2 ) + 90.0 * QgsGeometryUtils::leftOfLine( p3.x(), p3.y(), p1.x(), p1.y(), p2.x(), p2.y() );
   switch ( mode )
   {
     case Distance:
@@ -51,7 +52,6 @@ QgsQuadix QgsQuadix::rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p
       double inclination = 90.0;
       double distance = 0;
 
-      double azimuth = p1.azimuth( p2 ) + 90.0 * QgsGeometryUtils::leftOfLine( p3.x(), p3.y(), p1.x(), p1.y(), p2.x(), p2.y() );
       if ( p2.is3D() && p3.is3D() )
       {
         inclination = p2.inclination( p3 );
@@ -71,7 +71,6 @@ QgsQuadix QgsQuadix::rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p
                        QgsVector3D( p2.x(), p2.y(), p2.z() ),
                        QgsVector3D( p3.x(), p3.y(), p3.z() ) );
       QgsPoint point3( v3.x(), v3.y(), v3.z() );
-      double azimuth = p1.azimuth( p2 ) + 90.0;
       double inclination = p3.inclination( point3 );
       double distance = p3.distance3D( point3 );
 

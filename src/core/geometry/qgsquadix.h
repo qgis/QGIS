@@ -65,10 +65,23 @@ class CORE_EXPORT QgsQuadix
     };
     // 3 points distance
     // 3 points projected
+
+    /**
+     *
+     * Construct a QgsQuadix as a Rectangle from 3 points.
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
+     * \param mode Construction mode to construct the rectangle from 3 points
+     * \see ConstructionOption
+     */
     static QgsQuadix rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
     // Extent
     static QgsQuadix rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
+
+#ifndef SIP_RUN
     static constexpr auto &rectangleFromDiagonal = rectangleFromExtent;
+#endif
     // Square by diagonal
     static QgsQuadix squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
     // center, point
