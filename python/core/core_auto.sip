@@ -288,6 +288,7 @@
 %Include auto_generated/geometry/qgsmultipolygon.sip
 %Include auto_generated/geometry/qgsmultisurface.sip
 %Include auto_generated/geometry/qgspolygon.sip
+%Include auto_generated/geometry/qgsquadix.sip
 %Include auto_generated/geometry/qgsrectangle.sip
 %Include auto_generated/geometry/qgsreferencedgeometry.sip
 %Include auto_generated/geometry/qgsregularpolygon.sip
@@ -456,5 +457,6 @@
 %Include auto_generated/layertree/qgslayertreenode.sip
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
 %Include auto_generated/qgsuserprofilemanager.sip
+%Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/qgsuserprofile.sip
