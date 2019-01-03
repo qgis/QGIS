@@ -57,7 +57,6 @@ Construct a QgsQuadix from three :py:class:`QgsPoint`.
     static QgsQuadix rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
     static QgsQuadix fromRectangle( const QgsRectangle &rectangle );
 
-
     bool operator==( const QgsQuadix &other ) const;
     bool operator!=( const QgsQuadix &other ) const;
 
@@ -78,12 +77,12 @@ Construct a QgsQuadix from three :py:class:`QgsPoint`.
 Returns a list including the vertices of the quadrilateral.
 %End
 
-    QgsPolygon *toPolygon() const /Factory/;
+    QgsPolygon *toPolygon( bool force2D = false ) const /Factory/;
 %Docstring
 Returns as a polygon.
 %End
 
-    QgsLineString *toLineString() const /Factory/;
+    QgsLineString *toLineString( bool force2D = false ) const /Factory/;
 %Docstring
 Returns as a linestring.
 %End
