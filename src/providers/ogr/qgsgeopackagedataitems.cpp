@@ -506,7 +506,7 @@ bool QgsGeoPackageAbstractLayerItem::deleteLayer()
     return true;
   }
 
-  if ( layersList.isEmpty() )
+  if ( !layersList.isEmpty() )
   {
     QgsProject::instance()->removeMapLayers( layersList );
   }
