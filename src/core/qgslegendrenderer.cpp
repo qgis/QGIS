@@ -630,11 +630,6 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendSty
     node->removeCustomProperty( QStringLiteral( "legend/title-style" ) );
 }
 
-void QgsLegendRenderer::drawLegend( QPainter *painter )
-{
-  paintAndDetermineSize( painter );
-}
-
 
 //new version of classes using QgsRenderContext
 QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext *rendercontext, QPointF point, Qt::AlignmentFlag halignment, double legendWidth )
