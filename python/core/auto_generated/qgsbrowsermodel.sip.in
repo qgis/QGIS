@@ -117,6 +117,17 @@ items, i.e. it does not fetch children.
 %End
 
 
+    QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
+%Docstring
+Returns index of layer item with given uri. It only searches in currently fetched
+items, i.e. it does not fetch children.
+
+:param uri: item uri
+:param index: the current index of the parent (to search for children)
+
+:return: model index, invalid if item not found *
+%End
+
  void connectItem( QgsDataItem *item ) /Deprecated/;
 %Docstring
 
