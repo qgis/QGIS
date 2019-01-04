@@ -46,7 +46,7 @@ QMenuBar::item:pressed
 }
 
 QAbstractSpinBox {
-    padding: 0.1em 0em 0.1em 0.1em;
+    padding: 0.12em 0em 0.12em 0.12em;
     border: 1px solid #222;
     border-radius: 0.2em;
     background-color: @darkgradient;
@@ -56,10 +56,10 @@ QAbstractSpinBox {
 QAbstractSpinBox::up-button {
     subcontrol-origin: border;
     subcontrol-position: top right;
-    padding-top:-0.2em;
+    padding-top:0em;
     padding-right:0.05em;
     width: 0.8em;
-    height: 1.2em;
+    height: 0.8em;
     image: url(@theme_path/icons/arrow-up.svg);
 }
 
@@ -69,7 +69,7 @@ QAbstractSpinBox::down-button {
     padding-top:0.2em;
     padding-right:0.05em;
     width: 0.8em;
-    height: 1.2em;
+    height: 0.8em;
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
@@ -114,7 +114,7 @@ QWidget:disabled
 
 QLineEdit, QTextEdit, QPlainTextEdit
 {
-    padding: 0.1em;
+    padding: 0.12em;
     border-width: 1px;
     border-color: @itemdarkbackground;
     border-style: solid;
@@ -125,7 +125,7 @@ QLineEdit, QTextEdit, QPlainTextEdit
 
 QPushButton 
 {
-    padding: 0.1em;
+    padding: 0.12em;
     border-width: 1px;
     border-color: @itemdarkbackground;
     border-style: solid;
@@ -136,7 +136,7 @@ QPushButton
 
 QToolButton
 {
-    padding: 0.1em;
+    padding: 0.12em;
     border-width: 1px;
     border-color: @itemdarkbackground;
     border-style: solid;
@@ -190,7 +190,7 @@ QComboBox {
     border-style: solid;
     border: 1px solid #1e1e1e;
     border-radius: 0.2em;
-    padding: 0.1em 1em 0.1em 0.1em;
+    padding: 0.12em 1.2em 0.12em 0.12em;
 }
 
 
@@ -199,7 +199,7 @@ QComboBox:hover,QPushButton:hover,QToolButton:hover,QAbstractSpinBox:hover {
 }
 
 QComboBox:on {
-    padding: 0.1em;
+    padding: 0.12em;
     padding-left: 0.2em;
     background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1,
         stop: 0     #555,
@@ -221,7 +221,7 @@ QComboBox:editable QLineEdit {
 QComboBox QAbstractItemView, QComboBox QListView {
     border: none;
     border-radius: 0;
-    padding: 0.1em;
+    padding: 0.12em;
     background: @itemdarkbackground;
     color: @itembackground;
     selection-background-color: @selection;
@@ -242,16 +242,16 @@ QComboBox::down-arrow
 }
 
 QComboBox:item {
-    padding-left: 1.5em;
-    height:1.2em;
+    padding-left: 1.3em;
+    height:1.25em;
 }
 QComboBox:item:selected {
-    padding-left: 1.5em;
-    height:1.2em;
+    padding-left: 1.3em;
+    height:1.25em;
 }
 QComboBox:item:checked {
-    padding-left: 1.5em;
-    height:1.2em;
+    padding-left: 1.3em;
+    height:1.25em;
 }
 
 QLineEdit:focus
@@ -424,6 +424,10 @@ QProgressBar::chunk
     background-color: @selection;
     width: 3px;
     margin: 1px;
+}
+
+QTabWidget::pane {
+    border: 1px solid @itemdarkbackground;
 }
 
 QTabBar::tab {
