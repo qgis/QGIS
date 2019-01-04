@@ -78,7 +78,8 @@ namespace MDAL
   class MemoryMesh: public Mesh
   {
     public:
-      MemoryMesh( size_t verticesCount,
+      MemoryMesh( const std::string &driverName,
+                  size_t verticesCount,
                   size_t facesCount,
                   size_t faceVerticesMaximumCount,
                   BBox extent,

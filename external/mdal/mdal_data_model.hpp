@@ -44,6 +44,8 @@ namespace MDAL
       Dataset( DatasetGroup *parent );
       virtual ~Dataset();
 
+      std::string driverName() const;
+
       size_t valuesCount() const;
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) = 0;
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) = 0;
@@ -73,14 +75,19 @@ namespace MDAL
   class DatasetGroup
   {
     public:
-      DatasetGroup( Mesh *parent,
-                    const std::string &uri );
+      DatasetGroup( const std::string &driverName,
+                    Mesh *parent,
+                    const std::string &uri
+                  );
 
-      DatasetGroup( Mesh *parent,
+      DatasetGroup( const std::string &driverName,
+                    Mesh *parent,
                     const std::string &uri,
                     const std::string &name );
 
       ~DatasetGroup();
+
+      std::string driverName() const;
 
       std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );
@@ -104,7 +111,14 @@ namespace MDAL
 
       Mesh *mesh() const;
 
+      bool isInEditMode() const;
+      void startEditing();
+      void stopEditing();
+
     private:
+      bool mInEditMode = false;
+
+      const std::string mDriverName;
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
       bool mIsOnVertices = true;
@@ -136,12 +150,15 @@ namespace MDAL
   class Mesh
   {
     public:
-      Mesh( size_t verticesCount,
+      Mesh( const std::string &driverName,
+            size_t verticesCount,
             size_t facesCount,
             size_t faceVerticesMaximumCount,
             BBox extent,
             const std::string &uri );
       virtual ~Mesh();
+
+      std::string driverName() const;
 
       void setSourceCrs( const std::string &str );
       void setSourceCrsFromWKT( const std::string &wkt );
@@ -165,6 +182,7 @@ namespace MDAL
       size_t faceVerticesMaximumCount() const;
 
     private:
+      const std::string mDriverName;
       size_t mVerticesCount = 0;
       size_t mFacesCount = 0;
       size_t mFaceVerticesMaximumCount = 0; //typically 3 or 4, sometimes up to 9

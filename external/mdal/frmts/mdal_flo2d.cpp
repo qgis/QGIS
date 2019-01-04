@@ -73,13 +73,14 @@ static double getDouble( const std::string &val )
 void MDAL::DriverFlo2D::addStaticDataset(
   bool isOnVertices,
   std::vector<double> &vals,
-  const std::string &name,
+  const std::string &groupName,
   const std::string &datFileName )
 {
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          name(),
                                           mMesh.get(),
                                           datFileName,
-                                          name
+                                          groupName
                                         );
   group->setIsOnVertices( isOnVertices );
   group->setIsScalar( true );
@@ -186,6 +187,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
   size_t face_idx = 0;
 
   std::shared_ptr<DatasetGroup> depthDsGroup = std::make_shared< DatasetGroup >(
+        name(),
         mMesh.get(),
         datFileName,
         "Depth"
@@ -195,6 +197,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
 
 
   std::shared_ptr<DatasetGroup> waterLevelDsGroup = std::make_shared< DatasetGroup >(
+        name(),
         mMesh.get(),
         datFileName,
         "Water Level"
@@ -203,6 +206,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
   waterLevelDsGroup->setIsScalar( true );
 
   std::shared_ptr<DatasetGroup> flowDsGroup = std::make_shared< DatasetGroup >(
+        name(),
         mMesh.get(),
         datFileName,
         "Velocity"
@@ -486,6 +490,7 @@ void MDAL::DriverFlo2D::createMesh( const std::vector<CellCenter> &cells, double
 
   mMesh.reset(
     new MemoryMesh(
+      name(),
       vertices.size(),
       faces.size(),
       4, //maximum quads
@@ -567,6 +572,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
 
     // Create dataset now
     std::shared_ptr<DatasetGroup> ds = std::make_shared< DatasetGroup >(
+                                         name(),
                                          mMesh.get(),
                                          datFileName,
                                          grpName
@@ -630,7 +636,7 @@ MDAL::DriverFlo2D::DriverFlo2D()
       "FLO2D",
       "Flo2D",
       "*.nc",
-      DriverType::CanReadMeshAndDatasets )
+      Capability::ReadMesh )
 {
 
 }

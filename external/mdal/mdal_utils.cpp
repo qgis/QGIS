@@ -182,6 +182,21 @@ std::string MDAL::join( const std::vector<std::string> parts, const std::string 
   return res.str();
 }
 
+std::string MDAL::leftJustified( const std::string &str, size_t width, char fill )
+{
+  std::string ret( str );
+  if ( ret.size() > width )
+  {
+    ret = ret.substr( 0, width );
+  }
+  else
+  {
+    ret = ret + std::string( width - ret.size(), fill );
+  }
+  assert( ret.size() == width );
+  return ret;
+}
+
 std::string MDAL::toLower( const std::string &std )
 {
   std::string res( std );
@@ -220,13 +235,6 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
     }
   }
   return res;
-}
-
-std::string MDAL::removeLastChar( const std::string &str )
-{
-  std::string ret( str );
-  ret.pop_back();
-  return ret;
 }
 
 MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
@@ -348,7 +356,12 @@ MDAL::Statistics _calculateStatistics( const std::vector<double> &values, size_t
   return ret;
 }
 
-MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<DatasetGroup> grp )
+MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<MDAL::DatasetGroup> grp )
+{
+  return calculateStatistics( grp.get() );
+}
+
+MDAL::Statistics MDAL::calculateStatistics( DatasetGroup *grp )
 {
   Statistics ret;
   if ( !grp )
@@ -416,6 +429,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
     return;
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          mesh->driverName(),
                                           mesh,
                                           mesh->uri(),
                                           "Bed Elevation"

@@ -119,6 +119,7 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
   double eps = std::numeric_limits<double>::min();
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          name(),
                                           mMesh.get(),
                                           mFileName,
                                           datasetName
@@ -216,6 +217,7 @@ std::shared_ptr<MDAL::MemoryDataset> MDAL::DriverHec2D::readElemOutput( const Hd
   double eps = std::numeric_limits<double>::min();
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          name(),
                                           mMesh.get(),
                                           mFileName,
                                           datasetName
@@ -441,6 +443,7 @@ void MDAL::DriverHec2D::parseMesh(
 
   mMesh.reset(
     new MemoryMesh(
+      name(),
       vertices.size(),
       faces.size(),
       maxVerticesInFace,
@@ -456,7 +459,7 @@ MDAL::DriverHec2D::DriverHec2D()
   : Driver( "HEC2D",
             "HEC-RAS 2D",
             "*.hdf",
-            DriverType::CanReadMeshAndDatasets )
+            Capability::ReadMesh )
 {
 }
 

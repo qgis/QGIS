@@ -70,7 +70,7 @@ namespace MDAL
       std::string mDatFile;
       std::shared_ptr<MDAL::DatasetGroup> readXmdfGroupAsDatasetGroup(
         const HdfGroup &rootGroup,
-        const std::string &name,
+        const std::string &groupName,
         size_t vertexCount,
         size_t faceCount );
 

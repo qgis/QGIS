@@ -89,7 +89,7 @@ MDAL::DriverXmdf::DriverXmdf()
   : Driver( "XMDF",
             "TUFLOW XMDF",
             "*.xmdf",
-            DriverType::CanReadOnlyDatasets )
+            Capability::ReadDatasets )
 {
 }
 
@@ -166,10 +166,10 @@ void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh, MDAL
     HdfGroup gMaximums = gMesh.group( "Maximums" );
     if ( gMaximums.isValid() )
     {
-      for ( const std::string &name : gMaximums.groups() )
+      for ( const std::string &groupName : gMaximums.groups() )
       {
-        HdfGroup g = gMaximums.group( name );
-        std::shared_ptr<MDAL::DatasetGroup> maxGroup = readXmdfGroupAsDatasetGroup( g, name + "/Maximums", vertexCount, faceCount );
+        HdfGroup g = gMaximums.group( groupName );
+        std::shared_ptr<MDAL::DatasetGroup> maxGroup = readXmdfGroupAsDatasetGroup( g, groupName + "/Maximums", vertexCount, faceCount );
         if ( !maxGroup || maxGroup->datasets.size() != 1 )
           MDAL::debug( "Maximum dataset should have just one timestep!" );
         else
@@ -197,10 +197,10 @@ void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh, MDAL
 
 void MDAL::DriverXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, const HdfGroup &rootGroup, size_t vertexCount, size_t faceCount )
 {
-  for ( const std::string &name : rootGroup.groups() )
+  for ( const std::string &groupName : rootGroup.groups() )
   {
-    HdfGroup g = rootGroup.group( name );
-    std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( g, name, vertexCount, faceCount );
+    HdfGroup g = rootGroup.group( groupName );
+    std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( g, groupName, vertexCount, faceCount );
     if ( ds && ds->datasets.size() > 0 )
       groups.push_back( ds );
   }
@@ -208,7 +208,7 @@ void MDAL::DriverXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, con
 
 
 std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGroup(
-  const HdfGroup &rootGroup, const std::string &name, size_t vertexCount, size_t faceCount )
+  const HdfGroup &rootGroup, const std::string &groupName, size_t vertexCount, size_t faceCount )
 {
   std::shared_ptr<DatasetGroup> group;
   std::vector<std::string> gDataNames = rootGroup.datasets();
@@ -218,7 +218,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
        !MDAL::contains( gDataNames, "Mins" ) ||
        !MDAL::contains( gDataNames, "Maxs" ) )
   {
-    MDAL::debug( "ignoring dataset " + name + " - not having required arrays" );
+    MDAL::debug( "ignoring dataset " + groupName + " - not having required arrays" );
     return group;
   }
 
@@ -241,7 +241,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
        dimMaxs.size() != 1
      )
   {
-    MDAL::debug( "ignoring dataset " + name + " - arrays not having correct dimension counts" );
+    MDAL::debug( "ignoring dataset " + groupName + " - arrays not having correct dimension counts" );
     return group;
   }
   hsize_t nTimeSteps = dimTimes[0];
@@ -251,12 +251,12 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
        dimMins[0] != nTimeSteps ||
        dimMaxs[0] != nTimeSteps )
   {
-    MDAL::debug( "ignoring dataset " + name + " - arrays not having correct dimension sizes" );
+    MDAL::debug( "ignoring dataset " + groupName + " - arrays not having correct dimension sizes" );
     return group;
   }
   if ( dimValues[1] != vertexCount || dimActive[1] != faceCount )
   {
-    MDAL::debug( "ignoring dataset " + name + " - not aligned with the used mesh" );
+    MDAL::debug( "ignoring dataset " + groupName + " - not aligned with the used mesh" );
     return group;
   }
 
@@ -266,9 +266,10 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGrou
 
   // all fine, set group and return
   group = std::make_shared<MDAL::DatasetGroup>(
+            name(),
             mMesh,
             mDatFile,
-            name
+            groupName
           );
   group->setIsScalar( !isVector );
   group->setIsOnVertices( true );
