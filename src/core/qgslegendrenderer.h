@@ -63,9 +63,20 @@ class CORE_EXPORT QgsLegendRenderer
      */
     void drawLegend( QPainter *painter );
 
+    /**
+     * Draw the legend using a given QgsRenderContext. It willoccupy the area reported in legendSize().
+     */
     void drawLegend( QgsRenderContext *rendercontext );
 
+    /**
+     * Set the style of a QgsLayerTreeNode,
+     * This class requires a node and a style to apply to the node
+     */
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
+
+    /**
+     * Returns the style of a given QgsLayerTreeNode in a given QgsLayerTreeModel
+     */
     static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 
   private:
@@ -114,6 +125,11 @@ class CORE_EXPORT QgsLegendRenderer
         int column = 0;
     };
 
+    /**
+     * displays the legend and return the size of said legend.
+     * If the painter is null, only the size will be given,
+     * since a painter is needed to render the legend.
+     */
     QSizeF paintAndDetermineSize( QPainter *painter = nullptr );
 
     //! Create list of atoms according to current layer splitting mode
@@ -136,9 +152,15 @@ class CORE_EXPORT QgsLegendRenderer
      * style top space */
     QSizeF drawAtom( const Atom &atom, QPainter *painter = nullptr, QPointF point = QPointF() );
 
+    /** 
+     * Displays the symbol of a given QgsLayerTreeModelLegendNode
+     */
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QPainter *painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
 
-    //! Draws a layer item
+    /**
+     * Displays the title of a layer given the QgsLayerTreeLayer, a painter and QPointF
+     * otherwise return the size the of the title
+     */
     QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter = nullptr, QPointF point = QPointF() );
 
     /**
@@ -147,16 +169,33 @@ class CORE_EXPORT QgsLegendRenderer
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-
+    /**
+     * displays the legend and return the size of said legend.
+     * If QgsRenderContext is null, only the size will be given.
+     */
     QSizeF paintAndDetermineSize( QgsRenderContext *rendercontext );
 
+    /**
+     * Draws title in the legend using the title font and the specified alignment
+     * If no rendercontext is specified, function returns the required width/height to draw the title.
+     */
     QSizeF drawTitle( QgsRenderContext *rendercontext, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
+    /**
+     * Draw atom and return its actual size, the atom is drawn with the space above it
+     *  so that first atoms in column are all aligned to the same line regardles their
+     * style top space */
     QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
+    /** 
+     * Displays the symbol of a given QgsLayerTreeModelLegendNode
+     */
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext, QPointF point = QPointF(), double labelXOffset = 0 );
 
-    //! Draws a layer item
+    /**
+     * Displays the title of a layer given the QgsLayerTreeLayer, a rendercontext and QPointF
+     * otherwise return the size the of the title
+     */
     QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
     /**
@@ -165,6 +204,9 @@ class CORE_EXPORT QgsLegendRenderer
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
+    /**
+     * Returns the style of a given QgsLayerTreeNode
+     */
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
   private:
