@@ -71,8 +71,17 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Returns the source spatial reference system.
      * \see setSourceCrs()
+     * \see ellipsoidCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
+
+    /**
+     * Returns the ellipsoid (destination) spatial reference system.
+     * \see sourceCrs()
+     * \see ellipsoid()
+     * \since QGIS 3.6
+     */
+    QgsCoordinateReferenceSystem ellipsoidCrs() const { return mCoordTransform.destinationCrs(); }
 
     /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
@@ -98,6 +107,7 @@ class CORE_EXPORT QgsDistanceArea
      * ellipsoid if a valid ellipsoid has been set.
      * \see setEllipsoid()
      * \see willUseEllipsoid()
+     * \see ellipsoidCrs()
      */
     QString ellipsoid() const { return mEllipsoid; }
 
