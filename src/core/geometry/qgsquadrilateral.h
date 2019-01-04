@@ -36,7 +36,7 @@ class CORE_EXPORT QgsQuadrilateral
     QgsQuadrilateral();
 
     /**
-     * Construct a QgsQuadrilateral from three QgsPointV2.
+     * Construct a QgsQuadrilateral from three QgsPoint.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsQuadrilateral
     QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 
     /**
-     * Construct a QgsQuadrilateral from three QgsPoint.
+     * Construct a QgsQuadrilateral from four QgsPoint.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -63,8 +63,6 @@ class CORE_EXPORT QgsQuadrilateral
       Distance, //<! Second distance is equal to the distance between 2nd and 3rd point
       Projected, //<! Second distance is equal to the distance of the perpendicualr projection of the 3rd point on the segment or its extension.
     };
-    // 3 points distance
-    // 3 points projected
 
     /**
      *
@@ -112,12 +110,12 @@ class CORE_EXPORT QgsQuadrilateral
     QgsPointSequence points() const;
 
     /**
-     * Returns as a polygon.
+     * Returnns as a new polygon. Ownership is transferred to the caller.
      */
     QgsPolygon *toPolygon( bool force2D = false ) const SIP_FACTORY;
 
     /**
-     * Returns as a linestring.
+     * Returnns as a new linestring. Ownership is transferred to the caller.
      */
     QgsLineString *toLineString( bool force2D = false ) const SIP_FACTORY;
 

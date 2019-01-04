@@ -18,25 +18,22 @@
 #include "qgsquadrilateral.h"
 #include "qgsgeometryutils.h"
 
-QgsQuadrilateral::QgsQuadrilateral()
+QgsQuadrilateral::QgsQuadrilateral() = default;
+
+QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
+  : mPoint1( p1 )
+  , mPoint2( p2 )
+  , mPoint3( p3 )
+  , mPoint4( p4 )
 {
 
 }
 
-QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ):
-  mPoint1( p1 ),
-  mPoint2( p2 ),
-  mPoint3( p3 ),
-  mPoint4( p4 )
-{
-
-}
-
-QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 ):
-  mPoint1( QgsPoint( p1 ) ),
-  mPoint2( QgsPoint( p2 ) ),
-  mPoint3( QgsPoint( p3 ) ),
-  mPoint4( QgsPoint( p4 ) )
+QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 )
+  : mPoint1( QgsPoint( p1 ) )
+  , mPoint2( QgsPoint( p2 ) )
+  , mPoint3( QgsPoint( p3 ) )
+  , mPoint4( QgsPoint( p4 ) )
 {
 
 }
@@ -114,9 +111,9 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromExtent( const QgsPoint &p1, cons
   }
 
   return QgsQuadrilateral( QgsPoint( xMin, yMin, z ),
-                    QgsPoint( xMin, yMax, z ),
-                    QgsPoint( xMax, yMax, z ),
-                    QgsPoint( xMax, yMin, z ) );
+                           QgsPoint( xMin, yMax, z ),
+                           QgsPoint( xMax, yMax, z ),
+                           QgsPoint( xMax, yMin, z ) );
 }
 
 QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 )
@@ -146,13 +143,13 @@ QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const
 QgsQuadrilateral QgsQuadrilateral::rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point )
 {
 
-  double xOffset = fabs( point.x() - center.x() );
-  double yOffset = fabs( point.y() - center.y() );
+  double xOffset = std::fabs( point.x() - center.x() );
+  double yOffset = std::fabs( point.y() - center.y() );
 
   return QgsQuadrilateral( QgsPoint( center.x() - xOffset, center.y() - yOffset, center.z() ),
-                    QgsPoint( center.x() - xOffset, center.y() + yOffset, center.z() ),
-                    QgsPoint( center.x() + xOffset, center.y() + yOffset, center.z() ),
-                    QgsPoint( center.x() + xOffset, center.y() - yOffset, center.z() ) );
+                           QgsPoint( center.x() - xOffset, center.y() + yOffset, center.z() ),
+                           QgsPoint( center.x() + xOffset, center.y() + yOffset, center.z() ),
+                           QgsPoint( center.x() + xOffset, center.y() - yOffset, center.z() ) );
 
 }
 
@@ -190,10 +187,11 @@ bool QgsQuadrilateral::operator!=( const QgsQuadrilateral &other ) const
 
 bool QgsQuadrilateral::isEmpty() const
 {
-  return ( ( mPoint1 == QgsPoint() ) &&
-           ( mPoint2 == QgsPoint() ) &&
-           ( mPoint3 == QgsPoint() ) &&
-           ( mPoint4 == QgsPoint() )
+  return (
+           ( QgsGeometryUtils::segmentSide( mPoint1, mPoint2, mPoint3 ) == 0 ) ||
+           ( QgsGeometryUtils::segmentSide( mPoint2, mPoint3, mPoint4 ) == 0 ) ||
+           ( QgsGeometryUtils::segmentSide( mPoint3, mPoint4, mPoint1 ) == 0 ) ||
+           ( QgsGeometryUtils::segmentSide( mPoint3, mPoint4, mPoint2 ) == 0 )
          );
 }
 
@@ -235,7 +233,7 @@ QgsPointSequence QgsQuadrilateral::points() const
 
 QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 {
-  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+  std::unique_ptr<QgsPolygon> polygon = qgis::make_unique< QgsPolygon >();
   if ( isEmpty() )
   {
     return polygon.release();
@@ -248,7 +246,7 @@ QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 
 QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 {
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  std::unique_ptr<QgsLineString> ext = qgis::make_unique< QgsLineString>();
   if ( isEmpty() )
   {
     return ext.release();
