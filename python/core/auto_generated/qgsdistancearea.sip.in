@@ -64,6 +64,19 @@ Sets source spatial reference system ``crs``.
 Returns the source spatial reference system.
 
 .. seealso:: :py:func:`setSourceCrs`
+
+.. seealso:: :py:func:`ellipsoidCrs`
+%End
+
+    QgsCoordinateReferenceSystem ellipsoidCrs() const;
+%Docstring
+Returns the ellipsoid (destination) spatial reference system.
+
+.. seealso:: :py:func:`sourceCrs`
+
+.. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.6
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -99,6 +112,8 @@ ellipsoid if a valid ellipsoid has been set.
 .. seealso:: :py:func:`setEllipsoid`
 
 .. seealso:: :py:func:`willUseEllipsoid`
+
+.. seealso:: :py:func:`ellipsoidCrs`
 %End
 
     double ellipsoidSemiMajor() const;
