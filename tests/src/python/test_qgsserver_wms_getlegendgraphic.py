@@ -42,6 +42,9 @@ RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
     """QGIS Server WMS Tests for GetLegendGraphic request"""
 
+    # Set to True to re-generate reference files for this class
+    #regenerate_reference = True
+
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
         parms = {

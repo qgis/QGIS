@@ -217,6 +217,10 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         return control.compareImages(control_image), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
+
+        reference_path = unitTestDataPath('control_images') + '/qgis_server_accesscontrol/' + image + '/' + image + '.png'
+        self.store_reference(reference_path, response)
+
         self.assertEqual(
             headers.get("Content-Type"), "image/png",
             "Content type is wrong: %s" % headers.get("Content-Type"))

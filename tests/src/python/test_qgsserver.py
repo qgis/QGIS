@@ -185,6 +185,10 @@ class QgsServerTestBase(unittest.TestCase):
         return control.compareImages(control_image, max_diff), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize()):
+
+        reference_path = unitTestDataPath('control_images') + '/qgis_server/' + image + '/' + image + '.png'
+        self.store_reference(reference_path, response)
+
         self.assertEqual(
             headers.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (headers.get("Content-Type"), response))
