@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsquadix.h
+                         qgsquadrilateral.h
                          -------------------
     begin                : November 2018
     copyright            : (C) 2018 by Loïc Bartoletti
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSQUADIX_H
-#define QGSQUADIX_H
+#ifndef QGSQUADRILATERAL_H
+#define QGSQUADRILATERAL_H
 
 
 #include "qgis_core.h"
@@ -26,32 +26,32 @@
 
 /**
  * \ingroup core
- * \class QgsQuadix
- * \brief Quadix (Quadrilateral) geometry type.
+ * \class QgsQuadrilateral
+ * \brief Quadrilateral (Quadrilateral) geometry type.
  * \since QGIS 3.6
  */
-class CORE_EXPORT QgsQuadix
+class CORE_EXPORT QgsQuadrilateral
 {
   public:
-    QgsQuadix();
+    QgsQuadrilateral();
 
     /**
-     * Construct a QgsQuadix from three QgsPointV2.
+     * Construct a QgsQuadrilateral from three QgsPointV2.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
      * \param p4 fourth point
      */
-    QgsQuadix( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
+    QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 
     /**
-     * Construct a QgsQuadix from three QgsPoint.
+     * Construct a QgsQuadrilateral from three QgsPoint.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
      * \param p4 fourth point
      */
-    explicit QgsQuadix( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 );
+    explicit QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 );
 
 
     /**
@@ -68,31 +68,31 @@ class CORE_EXPORT QgsQuadix
 
     /**
      *
-     * Construct a QgsQuadix as a Rectangle from 3 points.
+     * Construct a QgsQuadrilateral as a Rectangle from 3 points.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
      * \param mode Construction mode to construct the rectangle from 3 points
      * \see ConstructionOption
      */
-    static QgsQuadix rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
+    static QgsQuadrilateral rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
     // Extent
-    static QgsQuadix rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
+    static QgsQuadrilateral rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
 
 #ifndef SIP_RUN
     static constexpr auto &rectangleFromDiagonal = rectangleFromExtent;
 #endif
     // Square by diagonal
-    static QgsQuadix squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
+    static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
     // center, point
-    static QgsQuadix rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
+    static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
     // rectangle
-    static QgsQuadix fromRectangle( const QgsRectangle &rectangle );
+    static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle );
     // TODO:
     // Rhombus
 
-    bool operator==( const QgsQuadix &other ) const;
-    bool operator!=( const QgsQuadix &other ) const;
+    bool operator==( const QgsQuadrilateral &other ) const;
+    bool operator!=( const QgsQuadrilateral &other ) const;
 
     bool isEmpty() const;
     enum Point
@@ -143,4 +143,4 @@ class CORE_EXPORT QgsQuadix
     QgsPoint mPoint1, mPoint2, mPoint3, mPoint4;
 };
 
-#endif // QGSQUADIX_H
+#endif // QGSQUADRILATERAL_H

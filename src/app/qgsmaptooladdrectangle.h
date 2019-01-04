@@ -18,7 +18,7 @@
 
 #include "qgspolygon.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsquadix.h"
+#include "qgsquadrilateral.h"
 #include "qgis_app.h"
 
 class QgsPolygon;
@@ -53,7 +53,7 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     //! The rubberband to show the rectangle currently working on
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Rectangle
-    QgsQuadix mRectangle;
+    QgsQuadrilateral mRectangle;
 
     //! Layer type which will be used for rubberband
     QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;

@@ -71,7 +71,7 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         double dist = mPoints.at( 0 ).distance( point );
         double angle = mPoints.at( 0 ).azimuth( point );
 
-        mRectangle = QgsQuadix::rectangleFromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
+        mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
         mTempRubberBand->setGeometry( mRectangle.toPolygon() );
       }
       break;

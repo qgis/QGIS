@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsquadix.cpp
+                         qgsquadrilateral.cpp
                          -------------------
     begin                : November 2018
     copyright            : (C) 2018 by Loïc Bartoletti
@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsquadix.h"
+#include "qgsquadrilateral.h"
 #include "qgsgeometryutils.h"
 
-QgsQuadix::QgsQuadix()
+QgsQuadrilateral::QgsQuadrilateral()
 {
 
 }
 
-QgsQuadix::QgsQuadix( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ):
+QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ):
   mPoint1( p1 ),
   mPoint2( p2 ),
   mPoint3( p3 ),
@@ -32,7 +32,7 @@ QgsQuadix::QgsQuadix( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3
 
 }
 
-QgsQuadix::QgsQuadix( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 ):
+QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 ):
   mPoint1( QgsPoint( p1 ) ),
   mPoint2( QgsPoint( p2 ) ),
   mPoint3( QgsPoint( p3 ) ),
@@ -41,9 +41,9 @@ QgsQuadix::QgsQuadix( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPoint
 
 }
 
-QgsQuadix QgsQuadix::rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode )
+QgsQuadrilateral QgsQuadrilateral::rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode )
 {
-  QgsQuadix rect;
+  QgsQuadrilateral rect;
   double azimuth = p1.azimuth( p2 ) + 90.0 * QgsGeometryUtils::leftOfLine( p3.x(), p3.y(), p1.x(), p1.y(), p2.x(), p2.y() );
   switch ( mode )
   {
@@ -83,7 +83,7 @@ QgsQuadix QgsQuadix::rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p
 
 }
 
-QgsQuadix QgsQuadix::rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 )
+QgsQuadrilateral QgsQuadrilateral::rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 )
 {
   double z = p1.z();
 
@@ -113,13 +113,13 @@ QgsQuadix QgsQuadix::rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2
     yMax = p1.y();
   }
 
-  return QgsQuadix( QgsPoint( xMin, yMin, z ),
+  return QgsQuadrilateral( QgsPoint( xMin, yMin, z ),
                     QgsPoint( xMin, yMax, z ),
                     QgsPoint( xMax, yMax, z ),
                     QgsPoint( xMax, yMin, z ) );
 }
 
-QgsQuadix QgsQuadix::squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 )
+QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 )
 {
   QgsPoint point2, point3 = QgsPoint( p2.x(), p2.y() ), point4;
 
@@ -139,26 +139,26 @@ QgsQuadix QgsQuadix::squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 
     point4.addZValue( z );
   }
 
-  return QgsQuadix( p1, point2, point3, point4 );
+  return QgsQuadrilateral( p1, point2, point3, point4 );
 
 }
 
-QgsQuadix QgsQuadix::rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point )
+QgsQuadrilateral QgsQuadrilateral::rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point )
 {
 
   double xOffset = fabs( point.x() - center.x() );
   double yOffset = fabs( point.y() - center.y() );
 
-  return QgsQuadix( QgsPoint( center.x() - xOffset, center.y() - yOffset, center.z() ),
+  return QgsQuadrilateral( QgsPoint( center.x() - xOffset, center.y() - yOffset, center.z() ),
                     QgsPoint( center.x() - xOffset, center.y() + yOffset, center.z() ),
                     QgsPoint( center.x() + xOffset, center.y() + yOffset, center.z() ),
                     QgsPoint( center.x() + xOffset, center.y() - yOffset, center.z() ) );
 
 }
 
-QgsQuadix QgsQuadix::fromRectangle( const QgsRectangle &rectangle )
+QgsQuadrilateral QgsQuadrilateral::fromRectangle( const QgsRectangle &rectangle )
 {
-  return QgsQuadix(
+  return QgsQuadrilateral(
            QgsPoint( rectangle.xMaximum(), rectangle.yMinimum() ),
            QgsPoint( rectangle.xMinimum(), rectangle.yMaximum() ),
            QgsPoint( rectangle.xMaximum(), rectangle.yMaximum() ),
@@ -166,7 +166,7 @@ QgsQuadix QgsQuadix::fromRectangle( const QgsRectangle &rectangle )
          );
 }
 
-bool QgsQuadix::operator==( const QgsQuadix &other ) const
+bool QgsQuadrilateral::operator==( const QgsQuadrilateral &other ) const
 {
   if ( isEmpty() && other.isEmpty() )
   {
@@ -183,12 +183,12 @@ bool QgsQuadix::operator==( const QgsQuadix &other ) const
          );
 }
 
-bool QgsQuadix::operator!=( const QgsQuadix &other ) const
+bool QgsQuadrilateral::operator!=( const QgsQuadrilateral &other ) const
 {
   return !operator==( other );
 }
 
-bool QgsQuadix::isEmpty() const
+bool QgsQuadrilateral::isEmpty() const
 {
   return ( ( mPoint1 == QgsPoint() ) &&
            ( mPoint2 == QgsPoint() ) &&
@@ -197,7 +197,7 @@ bool QgsQuadix::isEmpty() const
          );
 }
 
-void QgsQuadix::setPoint( const QgsPoint &newPoint, Point index )
+void QgsQuadrilateral::setPoint( const QgsPoint &newPoint, Point index )
 {
   switch ( index )
   {
@@ -216,7 +216,7 @@ void QgsQuadix::setPoint( const QgsPoint &newPoint, Point index )
   }
 }
 
-void QgsQuadix::setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
+void QgsQuadrilateral::setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
   mPoint1 = p1;
   mPoint2 = p2;
@@ -224,7 +224,7 @@ void QgsQuadix::setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoin
   mPoint4 = p4;
 }
 
-QgsPointSequence QgsQuadix::points() const
+QgsPointSequence QgsQuadrilateral::points() const
 {
   QgsPointSequence pts;
 
@@ -233,7 +233,7 @@ QgsPointSequence QgsQuadix::points() const
   return pts;
 }
 
-QgsPolygon *QgsQuadix::toPolygon( bool force2D ) const
+QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 {
   std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
   if ( isEmpty() )
@@ -246,7 +246,7 @@ QgsPolygon *QgsQuadix::toPolygon( bool force2D ) const
   return polygon.release();
 }
 
-QgsLineString *QgsQuadix::toLineString( bool force2D ) const
+QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 {
   std::unique_ptr<QgsLineString> ext( new QgsLineString() );
   if ( isEmpty() )
@@ -265,7 +265,7 @@ QgsLineString *QgsQuadix::toLineString( bool force2D ) const
   return ext.release();
 }
 
-QString QgsQuadix::toString( int pointPrecision ) const
+QString QgsQuadrilateral::toString( int pointPrecision ) const
 {
   QString rep;
   if ( isEmpty() )
@@ -280,12 +280,12 @@ QString QgsQuadix::toString( int pointPrecision ) const
   return rep;
 }
 
-double QgsQuadix::area() const
+double QgsQuadrilateral::area() const
 {
   return toPolygon()->area();
 }
 
-double QgsQuadix::perimeter() const
+double QgsQuadrilateral::perimeter() const
 {
   return toPolygon()->perimeter();
 }

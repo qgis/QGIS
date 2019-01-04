@@ -288,7 +288,7 @@
 %Include auto_generated/geometry/qgsmultipolygon.sip
 %Include auto_generated/geometry/qgsmultisurface.sip
 %Include auto_generated/geometry/qgspolygon.sip
-%Include auto_generated/geometry/qgsquadix.sip
+%Include auto_generated/geometry/qgsquadrilateral.sip
 %Include auto_generated/geometry/qgsrectangle.sip
 %Include auto_generated/geometry/qgsreferencedgeometry.sip
 %Include auto_generated/geometry/qgsregularpolygon.sip

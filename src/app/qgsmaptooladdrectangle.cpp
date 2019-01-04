@@ -98,7 +98,7 @@ void QgsMapToolAddRectangle::clean()
     mParentTool->deleteTempRubberBand();
   }
 
-  mRectangle = QgsQuadix();
+  mRectangle = QgsQuadrilateral();
 
   QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( vLayer )

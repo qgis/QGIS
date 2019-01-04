@@ -90,10 +90,10 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         switch ( mCreateMode )
         {
           case DistanceMode:
-            mRectangle = QgsQuadix::rectangleFrom3points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadix::Distance );
+            mRectangle = QgsQuadrilateral::rectangleFrom3points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadrilateral::Distance );
             break;
           case ProjectedMode:
-            mRectangle = QgsQuadix::rectangleFrom3points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadix::Projected );
+            mRectangle = QgsQuadrilateral::rectangleFrom3points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadrilateral::Projected );
             break;
         }
 

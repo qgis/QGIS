@@ -505,7 +505,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsmultisurface.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
-  geometry/qgsquadix.cpp
+  geometry/qgsquadrilateral.cpp
   geometry/qgsrectangle.cpp
   geometry/qgsreferencedgeometry.cpp
   geometry/qgsregularpolygon.cpp
@@ -1168,7 +1168,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultipolygon.h
   geometry/qgsmultisurface.h
   geometry/qgspolygon.h
-  geometry/qgsquadix.h
+  geometry/qgsquadrilateral.h
   geometry/qgsrectangle.h
   geometry/qgsreferencedgeometry.h
   geometry/qgsregularpolygon.h
