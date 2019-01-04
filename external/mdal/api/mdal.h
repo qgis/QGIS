@@ -55,6 +55,7 @@ enum MDAL_Status
   Err_IncompatibleDataset,
   Err_IncompatibleDatasetGroup,
   Err_MissingDriver,
+  Err_MissingDriverCapability,
   // Warnings
   Warn_UnsupportedElement,
   Warn_InvalidElements,
@@ -100,6 +101,9 @@ MDAL_EXPORT DriverH MDAL_driverFromName( const char *name );
  * if false, driver can be only used to load datasets to existing mesh
  */
 MDAL_EXPORT bool MDAL_DR_meshLoadCapability( DriverH driver );
+
+//! Returns whether driver has capability to write/edit dataset (groups)
+MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( DriverH driver );
 
 /**
  * Returns name of MDAL driver
@@ -162,6 +166,37 @@ MDAL_EXPORT void MDAL_M_LoadDatasets( MeshH mesh, const char *datasetFile );
 MDAL_EXPORT int MDAL_M_datasetGroupCount( MeshH mesh );
 //! Returns dataset group handle
 MDAL_EXPORT DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index );
+
+/**
+ * Adds empty (new) dataset group to the mesh
+ * This increases dataset group count MDAL_M_datasetGroupCount() by 1
+ *
+ * The Dataset Group is opened in edit mode.
+ * To persist dataset group, call MDAL_G_closeEditMode();
+ *
+ * It is not possible to read and write to the same group
+ * at the same time. Finalize edits before reading.
+ *
+ * \param mesh mesh handle
+ * \param driver the driver to use for storing the data
+ * \param name dataset group name
+ * \param isOnVertices whether data is defined on vertices
+ * \param hasScalarData whether data is scalar (false = vector data)
+ * \param datasetGroupFile file to store the new dataset group
+ * \returns empty pointer if not possible to create group, otherwise handle to new group
+ */
+MDAL_EXPORT DatasetGroupH MDAL_M_addDatasetGroup( MeshH mesh,
+    const char *name,
+    bool isOnVertices,
+    bool hasScalarData,
+    DriverH driver,
+    const char *datasetGroupFile );
+
+/**
+ * Returns name of MDAL driver
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_M_driverName( MeshH mesh );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// MESH VERTICES
@@ -248,10 +283,22 @@ MDAL_EXPORT const char *MDAL_G_metadataKey( DatasetGroupH group, int index );
 MDAL_EXPORT const char *MDAL_G_metadataValue( DatasetGroupH group, int index );
 
 /**
+ * Adds new metadata to the group
+ * Group must be in edit mode MDAL_G_isInEditMode()
+ */
+MDAL_EXPORT void MDAL_G_setMetadata( DatasetGroupH group, const char *key, const char *val );
+
+/**
  * Returns dataset group name
  * not thread-safe and valid only till next call
  */
 MDAL_EXPORT const char *MDAL_G_name( DatasetGroupH group );
+
+/**
+ * Returns name of MDAL driver
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_G_driverName( DatasetGroupH group );
 
 //! Whether dataset has scalar data associated
 MDAL_EXPORT bool MDAL_G_hasScalarData( DatasetGroupH group );
@@ -260,10 +307,47 @@ MDAL_EXPORT bool MDAL_G_hasScalarData( DatasetGroupH group );
 MDAL_EXPORT bool MDAL_G_isOnVertices( DatasetGroupH group );
 
 /**
- * Returns the min and max values of the group
+ * Returns the minimum and maximum values of the group
  * Returns NaN on error
  */
 MDAL_EXPORT void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double *max );
+
+/**
+ * Adds empty (new) dataset to the group
+ * This increases dataset group count MDAL_G_datasetCount() by 1
+ *
+ * The dataset is opened in edit mode.
+ * To persist dataset, call MDAL_G_closeEditMode() on parent group
+ *
+ * Minimum and maximum dataset values are automatically calculated
+ *
+ * \param group parent group handle
+ * \param time time for dataset
+ * \param values For scalar data on vertices, the size must be vertex count
+ * For scalar data on faces, the size must be faces count
+ * For vector data on vertices, the size must be vertex count * 2 (x1, y1, x2, y2, ..., xN, yN)
+ * For vector data on faces, the size must be faces count * 2 (x1, y1, x2, y2, ..., xN, yN)
+ * \param active if null pointer, all faces are active. Otherwise size must be equal to face count.
+ * \returns empty pointer if not possible to create dataset (e.g. group opened in read mode), otherwise handle to new dataset
+ */
+MDAL_EXPORT DatasetH MDAL_G_addDataset( DatasetGroupH group,
+                                        double time,
+                                        const double *values,
+                                        const int *active
+                                      );
+
+//! Returns whether dataset group is in edit mode
+MDAL_EXPORT bool MDAL_G_isInEditMode( DatasetGroupH group );
+
+/**
+ * Close edit mode for group and all its datasets.
+ * This may effectively write the data to the files and/or
+ * reopen the file in read-only mode
+ *
+ * When closed, minimum and maximum dataset group values are automatically calculated
+ */
+MDAL_EXPORT void MDAL_G_closeEditMode( DatasetGroupH group );
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASETS
@@ -307,7 +391,7 @@ enum MDAL_DataType
 MDAL_EXPORT int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType dataType, void *buffer );
 
 /**
- * Returns the min and max values of the dataset
+ * Returns the minimum and maximum values of the dataset
  * Returns NaN on error
  */
 MDAL_EXPORT void MDAL_D_minimumMaximum( DatasetH dataset, double *min, double *max );

@@ -367,6 +367,7 @@ void MDAL::DriverGdal::addDatasetGroups()
       continue;
 
     std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                            name(),
                                             mMesh.get(),
                                             mFileName,
                                             band->first
@@ -405,6 +406,7 @@ void MDAL::DriverGdal::createMesh()
   initFaces( vertices, faces, is_longitude_shifted );
 
   mMesh.reset( new MemoryMesh(
+                 name(),
                  vertices.size(),
                  faces.size(),
                  4, //maximum quads
@@ -483,7 +485,7 @@ MDAL::DriverGdal::DriverGdal( const std::string &name,
                               const std::string &description,
                               const std::string &filter,
                               const std::string &gdalDriverName ):
-  Driver( name, description, filter, DriverType::CanReadMeshAndDatasets ),
+  Driver( name, description, filter, Capability::ReadMesh ),
   mGdalDriverName( gdalDriverName ),
   mPafScanline( nullptr )
 {}

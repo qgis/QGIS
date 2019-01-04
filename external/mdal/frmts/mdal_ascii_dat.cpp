@@ -27,7 +27,7 @@ MDAL::DriverAsciiDat::DriverAsciiDat( ):
   Driver( "ASCII_DAT",
           "DAT",
           "*.dat",
-          DriverType::CanReadOnlyDatasets
+          Capability::ReadDatasets
         )
 {
 }
@@ -93,7 +93,7 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
   bool isVector = false;
 
   std::shared_ptr<DatasetGroup> group; // DAT outputs data
-  std::string name( MDAL::baseName( mDatFile ) );
+  std::string groupName( MDAL::baseName( mDatFile ) );
 
   if ( line == "DATASET" )
     oldFormat = false;
@@ -103,9 +103,10 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
     isVector = ( line == "VECTOR" );
 
     group = std::make_shared< DatasetGroup >(
+              name(),
               mesh,
               mDatFile,
-              name
+              groupName
             );
     group->setIsScalar( !isVector );
   }
@@ -114,7 +115,7 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
 
   // see if it contains face-centered results - supported by BASEMENT
   bool faceCentered = false;
-  if ( !oldFormat && contains( name, "_els_" ) )
+  if ( !oldFormat && contains( groupName, "_els_" ) )
     faceCentered = true;
 
   if ( group )
@@ -158,9 +159,10 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
       isVector = cardType == "BEGVEC";
 
       group = std::make_shared< DatasetGroup >(
+                name(),
                 mesh,
                 mDatFile,
-                name
+                groupName
               );
       group->setIsScalar( !isVector );
       group->setIsOnVertices( !faceCentered );

@@ -17,6 +17,11 @@ MDAL::Dataset::Dataset( MDAL::DatasetGroup *parent )
   assert( mParent );
 }
 
+std::string MDAL::Dataset::driverName() const
+{
+  return group()->driverName();
+}
+
 size_t MDAL::Dataset::valuesCount() const
 {
   if ( group()->isOnVertices() )
@@ -69,20 +74,30 @@ void MDAL::Dataset::setIsValid( bool isValid )
   mIsValid = isValid;
 }
 
-MDAL::DatasetGroup::DatasetGroup( MDAL::Mesh *parent,
+MDAL::DatasetGroup::DatasetGroup( const std::string &driverName,
+                                  MDAL::Mesh *parent,
                                   const std::string &uri,
                                   const std::string &name )
-  : mParent( parent )
+  : mDriverName( driverName )
+  , mParent( parent )
   , mUri( uri )
 {
   assert( mParent );
   setName( name );
 }
 
+std::string MDAL::DatasetGroup::driverName() const
+{
+  return mDriverName;
+}
+
 MDAL::DatasetGroup::~DatasetGroup() = default;
 
-MDAL::DatasetGroup::DatasetGroup( MDAL::Mesh *parent, const std::string &uri )
-  : mParent( parent )
+MDAL::DatasetGroup::DatasetGroup( const std::string &driverName,
+                                  MDAL::Mesh *parent,
+                                  const std::string &uri )
+  : mDriverName( driverName )
+  , mParent( parent )
   , mUri( uri )
 {
   assert( mParent );
@@ -145,6 +160,21 @@ MDAL::Mesh *MDAL::DatasetGroup::mesh() const
   return mParent;
 }
 
+bool MDAL::DatasetGroup::isInEditMode() const
+{
+  return mInEditMode;
+}
+
+void MDAL::DatasetGroup::startEditing()
+{
+  mInEditMode = true;
+}
+
+void MDAL::DatasetGroup::stopEditing()
+{
+  mInEditMode = false;
+}
+
 bool MDAL::DatasetGroup::isOnVertices() const
 {
   return mIsOnVertices;
@@ -171,13 +201,25 @@ void MDAL::DatasetGroup::setIsScalar( bool isScalar )
   mIsScalar = isScalar;
 }
 
-MDAL::Mesh::Mesh( size_t verticesCount, size_t facesCount, size_t faceVerticesMaximumCount, MDAL::BBox extent, const std::string &uri )
-  : mVerticesCount( verticesCount )
+MDAL::Mesh::Mesh(
+  const std::string &driverName,
+  size_t verticesCount,
+  size_t facesCount,
+  size_t faceVerticesMaximumCount,
+  MDAL::BBox extent,
+  const std::string &uri )
+  : mDriverName( driverName )
+  , mVerticesCount( verticesCount )
   , mFacesCount( facesCount )
   , mFaceVerticesMaximumCount( faceVerticesMaximumCount )
   , mExtent( extent )
   , mUri( uri )
 {
+}
+
+std::string MDAL::Mesh::driverName() const
+{
+  return mDriverName;
 }
 
 MDAL::Mesh::~Mesh() = default;

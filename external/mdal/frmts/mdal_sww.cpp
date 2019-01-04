@@ -20,7 +20,7 @@ MDAL::DriverSWW::DriverSWW()
   : Driver( "SWW",
             "AnuGA",
             "*.sww",
-            DriverType::CanReadMeshAndDatasets )
+            Capability::ReadMesh )
 {
 }
 
@@ -178,6 +178,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load( const std::string &resultsFil
   }
   std::unique_ptr< MDAL::MemoryMesh > mesh(
     new MemoryMesh(
+      name(),
       nodes.size(),
       elements.size(),
       3, // triangles
@@ -190,6 +191,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load( const std::string &resultsFil
 
   // Create a dataset for the bed elevation
   std::shared_ptr<MDAL::DatasetGroup> bedDs = std::make_shared<MDAL::DatasetGroup> (
+        name(),
         mesh.get(),
         mFileName,
         "Bed Elevation" );
@@ -249,6 +251,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load( const std::string &resultsFil
 
   // load results
   std::shared_ptr<MDAL::DatasetGroup> dss = std::make_shared<MDAL::DatasetGroup> (
+        name(),
         mesh.get(),
         mFileName,
         "Stage" );
@@ -256,6 +259,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load( const std::string &resultsFil
   dss->setIsScalar( true );
 
   std::shared_ptr<MDAL::DatasetGroup> dsd = std::make_shared<MDAL::DatasetGroup> (
+        name(),
         mesh.get(),
         mFileName,
         "Depth" );
@@ -326,6 +330,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load( const std::string &resultsFil
        nc_inq_varid( ncid, "ymomentum", &momentumyid ) == NC_NOERR )
   {
     std::shared_ptr<MDAL::DatasetGroup> mds = std::make_shared<MDAL::DatasetGroup> (
+          name(),
           mesh.get(),
           mFileName,
           "Momentum" );

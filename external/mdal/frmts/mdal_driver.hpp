@@ -12,10 +12,12 @@
 
 namespace MDAL
 {
-  enum DriverType
+  enum Capability
   {
-    CanReadMeshAndDatasets,
-    CanReadOnlyDatasets
+    None          = 0,
+    ReadMesh      = 1 << 0, //! Can read mesh and all datasets stored in the mesh file
+    ReadDatasets  = 1 << 1, //! Can read only datasets (groups) from existing mesh
+    WriteDatasets = 1 << 2, //! Can write datasets (groups)
   };
 
   class Driver
@@ -24,7 +26,7 @@ namespace MDAL
       Driver( const std::string &name,
               const std::string &longName,
               const std::string &filters,
-              DriverType type
+              int capabilityFlags
             );
       virtual ~Driver();
 
@@ -33,7 +35,7 @@ namespace MDAL
       std::string name() const;
       std::string longName() const;
       std::string filters() const;
-      DriverType type() const;
+      bool hasCapability( Capability capability ) const;
 
       virtual bool canRead( const std::string &uri ) = 0;
 
@@ -42,11 +44,29 @@ namespace MDAL
       // loads datasets
       virtual void load( const std::string &uri, Mesh *mesh, MDAL_Status *status );
 
+      // create new dataset group
+      virtual void createDatasetGroup(
+        Mesh *mesh,
+        const std::string &groupName,
+        bool isOnVertices,
+        bool hasScalarData,
+        const std::string &datasetGroupFile );
+
+      // create new dataset from array
+      virtual void createDataset( DatasetGroup *group,
+                                  double time,
+                                  const double *values,
+                                  const int *active );
+
+      // persist to the file
+      // returns true on error, false on success
+      virtual bool persist( DatasetGroup *group );
+
     private:
       std::string mName;
       std::string mLongName;
       std::string mFilters;
-      DriverType mType;
+      int mCapabilityFlags;
   };
 
 } // namespace MDAL

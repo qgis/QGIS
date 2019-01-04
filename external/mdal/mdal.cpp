@@ -12,6 +12,7 @@
 #include "mdal.h"
 #include "mdal_driver_manager.hpp"
 #include "mdal_data_model.hpp"
+#include "mdal_utils.hpp"
 
 #define NODATA std::numeric_limits<double>::quiet_NaN()
 
@@ -21,7 +22,7 @@ static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.1.2";
+  return "0.1.3";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -50,6 +51,12 @@ int MDAL_driverCount()
 
 DriverH MDAL_driverFromIndex( int index )
 {
+  if ( index < 0 )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return nullptr;
+  }
+
   size_t idx = static_cast<size_t>( index );
   std::shared_ptr<MDAL::Driver> driver = MDAL::DriverManager::instance().driver( idx );
   return static_cast<DriverH>( driver.get() );
@@ -71,7 +78,18 @@ bool MDAL_DR_meshLoadCapability( DriverH driver )
   }
 
   MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
-  return d->type() == MDAL::DriverType::CanReadMeshAndDatasets;
+  return d->hasCapability( MDAL::Capability::ReadMesh );
+}
+
+bool MDAL_DR_writeDatasetsCapability( DriverH driver )
+{
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return false;
+  }
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return d->hasCapability( MDAL::Capability::WriteDatasets );
 }
 
 const char *MDAL_DR_longName( DriverH driver )
@@ -260,6 +278,72 @@ DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index )
   }
   size_t i = static_cast<size_t>( index );
   return static_cast< DatasetH >( m->datasetGroups[i].get() );
+}
+
+DatasetGroupH MDAL_M_addDatasetGroup(
+  MeshH mesh,
+  const char *name,
+  bool isOnVertices,
+  bool hasScalarData,
+  DriverH driver,
+  const char *datasetGroupFile )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return nullptr;
+  }
+
+  if ( !name )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return nullptr;
+  }
+
+  if ( !datasetGroupFile )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return nullptr;
+  }
+
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return nullptr;
+  }
+
+  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+  MDAL::Driver *dr = static_cast< MDAL::Driver * >( driver );
+
+  if ( !dr->hasCapability( MDAL::Capability::WriteDatasets ) )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriverCapability;
+    return nullptr;
+  }
+
+  const size_t index = m->datasetGroups.size();
+  dr->createDatasetGroup( m,
+                          name,
+                          isOnVertices,
+                          hasScalarData,
+                          datasetGroupFile
+                        );
+  if ( index < m->datasetGroups.size() ) // we have new dataset group
+    return static_cast< DatasetGroupH >( m->datasetGroups[ index ].get() );
+  else
+    return nullptr;
+}
+
+const char *MDAL_M_driverName( MeshH mesh )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return nullptr;
+  }
+
+  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+  return _return_str( m->driverName() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -506,6 +590,138 @@ void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double *max )
   *max = stats.maximum;
 }
 
+DatasetH MDAL_G_addDataset( DatasetGroupH group, double time, const double *values, const int *active )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return nullptr;
+  }
+
+  if ( !values )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return nullptr;
+  }
+
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  if ( !g->isInEditMode() )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return nullptr;
+  }
+
+  const std::string driverName = g->driverName();
+  std::shared_ptr<MDAL::Driver> dr = MDAL::DriverManager::instance().driver( driverName );
+  if ( !dr )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return nullptr;
+  }
+
+  if ( !dr->hasCapability( MDAL::Capability::WriteDatasets ) )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriverCapability;
+    return nullptr;
+  }
+
+  const size_t index = g->datasets.size();
+  dr->createDataset( g,
+                     time,
+                     values,
+                     active
+                   );
+  if ( index < g->datasets.size() ) // we have new dataset
+    return static_cast< DatasetGroupH >( g->datasets[ index ].get() );
+  else
+    return nullptr;
+}
+
+bool MDAL_G_isInEditMode( DatasetGroupH group )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return true;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  return g->isInEditMode();
+}
+
+void MDAL_G_closeEditMode( DatasetGroupH group )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+
+  if ( !g->isInEditMode() )
+  {
+    return;
+  }
+
+  g->setStatistics( MDAL::calculateStatistics( g ) );
+  g->stopEditing();
+
+  const std::string driverName = g->driverName();
+  std::shared_ptr<MDAL::Driver> dr = MDAL::DriverManager::instance().driver( driverName );
+  if ( !dr )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return;
+  }
+
+  if ( !dr->hasCapability( MDAL::Capability::WriteDatasets ) )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriverCapability;
+    return;
+  }
+
+  bool error = dr->persist( g );
+  if ( error )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+  }
+}
+
+
+void MDAL_G_setMetadata( DatasetGroupH group, const char *key, const char *val )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+  }
+
+  if ( !key )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return;
+  }
+
+  if ( !val )
+  {
+    sLastStatus = MDAL_Status::Err_InvalidData;
+    return;
+  }
+
+  const std::string k( key );
+  const std::string v( val );
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  g->setMetadata( k, v );
+}
+
+const char *MDAL_G_driverName( DatasetGroupH group )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return EMPTY_STR;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  return _return_str( g->driverName() );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASETS

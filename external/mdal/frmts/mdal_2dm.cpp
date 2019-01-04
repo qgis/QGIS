@@ -17,13 +17,20 @@
 #include "mdal.h"
 #include "mdal_utils.hpp"
 
+#define DRIVER_NAME "2DM"
+
 MDAL::Mesh2dm::Mesh2dm( size_t verticesCount,
                         size_t facesCount,
                         size_t faceVerticesMaximumCount,
                         MDAL::BBox extent,
                         const std::string &uri,
                         const std::map<size_t, size_t> vertexIDtoIndex )
-  : MemoryMesh( verticesCount, facesCount, faceVerticesMaximumCount, extent, uri )
+  : MemoryMesh( DRIVER_NAME,
+                verticesCount,
+                facesCount,
+                faceVerticesMaximumCount,
+                extent,
+                uri )
   , mVertexIDtoIndex( vertexIDtoIndex )
 {
 }
@@ -58,10 +65,10 @@ size_t MDAL::Mesh2dm::vertexIndex( size_t vertexID ) const
 
 
 MDAL::Driver2dm::Driver2dm():
-  Driver( "2DM",
+  Driver( DRIVER_NAME,
           "2DM Mesh File",
           "*.2dm",
-          DriverType::CanReadMeshAndDatasets
+          Capability::ReadMesh
         )
 {
 }

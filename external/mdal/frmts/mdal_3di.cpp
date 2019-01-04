@@ -126,6 +126,7 @@ void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
 
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          name(),
                                           mesh,
                                           mesh->uri(),
                                           "Bed Elevation"

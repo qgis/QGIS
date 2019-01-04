@@ -91,8 +91,18 @@ size_t MDAL::MemoryDataset::vectorData( size_t indexStart, size_t count, double 
   return copyValues;
 }
 
-MDAL::MemoryMesh::MemoryMesh( size_t verticesCount, size_t facesCount, size_t faceVerticesMaximumCount, MDAL::BBox extent, const std::string &uri )
-  : MDAL::Mesh( verticesCount, facesCount, faceVerticesMaximumCount, extent, uri )
+MDAL::MemoryMesh::MemoryMesh( const std::string &driverName,
+                              size_t verticesCount,
+                              size_t facesCount,
+                              size_t faceVerticesMaximumCount,
+                              MDAL::BBox extent,
+                              const std::string &uri )
+  : MDAL::Mesh( driverName,
+                verticesCount,
+                facesCount,
+                faceVerticesMaximumCount,
+                extent,
+                uri )
 {
 }
 
