@@ -579,10 +579,14 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
 
       try
       {
+        QgsPointXY p;
         if ( prevLon < -120 )
-          currentPart << mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
         else
-          currentPart << mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+
+        if ( std::isfinite( p.x() ) && std::isfinite( p.y() ) )
+          currentPart << p;
       }
       catch ( QgsCsException & )
       {
@@ -593,10 +597,14 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
       currentPart.clear();
       try
       {
+        QgsPointXY p;
         if ( lon < -120 )
-          currentPart << mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
         else
-          currentPart << mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          p = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+
+        if ( std::isfinite( p.x() ) && std::isfinite( p.y() ) )
+          currentPart << p;
       }
       catch ( QgsCsException & )
       {
