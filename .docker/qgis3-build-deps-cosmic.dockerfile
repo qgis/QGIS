@@ -30,7 +30,6 @@ RUN  apt-get update \
     libfcgi-dev \
     libgdal-dev \
     libgeos-dev \
-    libgeographic-dev \
     libgsl-dev \
     libpq-dev \
     libproj-dev \
