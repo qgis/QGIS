@@ -319,6 +319,19 @@ class CORE_EXPORT QgsDistanceArea
      */
     QList< QList< QgsPointXY > > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
 
+    /**
+     * Calculates the latitude at which the geodesic line joining \a p1 and \a p2 crosses
+     * the international date line (longitude +/- 180 degrees).
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a p1 and \a p2 must be in the ellipsoidCrs() of this QgsDistanceArea object. The returned latitude
+     * will also be in this same CRS.
+     *
+     * \since QGIS 3.6
+     */
+    double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
+
   private:
 
     /**

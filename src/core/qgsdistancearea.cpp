@@ -457,8 +457,10 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
 
-double calculateLatitudeGeodesicIntersectionAtDateLine( QgsPointXY p1, QgsPointXY p2, GeographicLib::Geodesic &geod )
+double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, const QgsPointXY &pp2 ) const
 {
+  QgsPointXY p1 = pp1;
+  QgsPointXY p2 = pp2;
   if ( p1.x() < -120 )
     p1.setX( p1.x() + 360 );
   if ( p2.x() < -120 )
@@ -474,6 +476,7 @@ double calculateLatitudeGeodesicIntersectionAtDateLine( QgsPointXY p1, QgsPointX
   double lat = p2y;
   double lon = p2x;
 
+  GeographicLib::Geodesic geod( mSemiMajor, 1 / mInvFlattening );
   GeographicLib::GeodesicLine line = geod.InverseLine( p1y, p1x, p2y, p2x );
   double intersectionDist = line.Distance();
 
@@ -572,7 +575,7 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
       // when breaking the geodesic at the date line, we need to calculate the latitude
       // at which the geodesic intersects the date line, and add points to both line segments at this latitude
       // on the date line.
-      double lat180 = calculateLatitudeGeodesicIntersectionAtDateLine( currentPart.constLast(), QgsPointXY( lon, lat ), geod );
+      double lat180 = latitudeGeodesicCrossesDateLine( currentPart.constLast(), QgsPointXY( lon, lat ) );
 
       try
       {
