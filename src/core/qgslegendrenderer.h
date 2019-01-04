@@ -152,7 +152,7 @@ class CORE_EXPORT QgsLegendRenderer
      * style top space */
     QSizeF drawAtom( const Atom &atom, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-    /** 
+    /**
      * Displays the symbol of a given QgsLayerTreeModelLegendNode
      */
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QPainter *painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsLegendRenderer
      * style top space */
     QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
-    /** 
+    /**
      * Displays the symbol of a given QgsLayerTreeModelLegendNode
      */
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext, QPointF point = QPointF(), double labelXOffset = 0 );
