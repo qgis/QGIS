@@ -40,7 +40,6 @@ RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
-
     """QGIS Server WMS Tests for GetLegendGraphic request"""
 
     def test_getLegendGraphics(self):
@@ -104,6 +103,30 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerSpace")
+
+    def test_wms_GetLegendGraphic_LayerTitleSpace(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            # "HEIGHT": "500",
+            # "WIDTH": "500",
+            "LAYERTITLESPACE": "20.0",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
+            "LAYERTITLE": "TRUE",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerTitleSpace")
 
     def test_wms_GetLegendGraphic_ShowFeatureCount(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
