@@ -34,8 +34,7 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 
-#include <GeographicLib/Geodesic.hpp>
-#include <GeographicLib/GeodesicLine.hpp>
+#include <geodesic.h>
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
@@ -476,9 +475,13 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
   double lat = p2y;
   double lon = p2x;
 
-  GeographicLib::Geodesic geod( mSemiMajor, 1 / mInvFlattening );
-  GeographicLib::GeodesicLine line = geod.InverseLine( p1y, p1x, p2y, p2x );
-  double intersectionDist = line.Distance();
+  geod_geodesic geod;
+  geod_init( &geod, mSemiMajor, 1 / mInvFlattening );
+
+  geod_geodesicline line;
+  geod_inverseline( &line, &geod, p1y, p1x, p2y, p2x, GEOD_ALL );
+
+  double intersectionDist = line.s13;
 
   int iterations = 0;
   double t = 0;
@@ -500,8 +503,8 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
       }
       QgsDebugMsgLevel( QStringLiteral( "Narrowed window to %1, %2 - %3, %4" ).arg( p1x ).arg( p1y ).arg( p2x ).arg( p2y ), 4 );
 
-      line = geod.InverseLine( p1y, p1x, p2y, p2x );
-      intersectionDist = line.Distance() * 0.5;
+      geod_inverseline( &line, &geod, p1y, p1x, p2y, p2x, GEOD_ALL );
+      intersectionDist = line.s13 * 0.5;
     }
     else
     {
@@ -513,9 +516,10 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
 
     // now work out the point on the geodesic this far from p1 - this becomes our new candidate for crossing the date line
 
-    // (use LONG_UNROLL - we don't want to wrap longitudes > 180 around)
-    ( void )line.GenPosition( false, intersectionDist, GeographicLib::GeodesicLine::LATITUDE | GeographicLib::GeodesicLine::LONGITUDE | GeographicLib::GeodesicLine::LONG_UNROLL,
-                              lat, lon, t, t, t, t, t, t );
+    geod_position( &line, intersectionDist, &lat, &lon, &t );
+    // we don't want to wrap longitudes > 180 around)
+    if ( lon < 0 )
+      lon += 360;
 
     iterations++;
     QgsDebugMsgLevel( QStringLiteral( "After %1 iterations lon is %2, lat is %3, dist from p1: %4" ).arg( iterations ).arg( lon ).arg( lat ).arg( intersectionDist ), 4 );
@@ -532,7 +536,8 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
     return QList< QList< QgsPointXY > >() << ( QList< QgsPointXY >() << p1 << p2 );
   }
 
-  GeographicLib::Geodesic geod( mSemiMajor, 1 / mInvFlattening );
+  geod_geodesic geod;
+  geod_init( &geod, mSemiMajor, 1 / mInvFlattening );
 
   QgsPointXY pp1, pp2;
   try
@@ -546,8 +551,9 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
     return QList< QList< QgsPointXY > >();
   }
 
-  GeographicLib::GeodesicLine line = geod.InverseLine( pp1.y(), pp1.x(), pp2.y(), pp2.x() );
-  const double totalDist = line.Distance();
+  geod_geodesicline line;
+  geod_inverseline( &line, &geod, pp1.y(), pp1.x(), pp2.y(), pp2.x(), GEOD_ALL );
+  const double totalDist = line.s13;
 
   QList< QList< QgsPointXY > > res;
   QList< QgsPointXY > currentPart;
@@ -555,6 +561,7 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
   double d = interval;
   double prevLon = p1.x();
   bool lastRun = false;
+  double t = 0;
   while ( true )
   {
     double lat, lon;
@@ -567,7 +574,7 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
     }
     else
     {
-      ( void )line.Position( d, lat, lon );
+      geod_position( &line, d, &lat, &lon, &t );
     }
 
     if ( breakLine && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon < -120 ) ) )
