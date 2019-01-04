@@ -65,7 +65,7 @@ void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolAddRectangle::deactivate( )
 {
-  if ( !mParentTool || mRectangle.isEmpty() )
+  if ( !mParentTool || !mRectangle.isValid() )
   {
     return;
   }

@@ -27,7 +27,9 @@
 /**
  * \ingroup core
  * \class QgsQuadrilateral
- * \brief Quadrilateral (Quadrilateral) geometry type.
+ * \brief Quadrilateral geometry type.
+ * A quadrilateral is a polygon with four edges (or sides) and four vertices or corners.
+ * This class allows the creation of simple quadrilateral (which does not self-intersect).
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsQuadrilateral
@@ -65,7 +67,6 @@ class CORE_EXPORT QgsQuadrilateral
     };
 
     /**
-     *
      * Construct a QgsQuadrilateral as a Rectangle from 3 points.
      * \param p1 first point
      * \param p2 second point
@@ -74,25 +75,62 @@ class CORE_EXPORT QgsQuadrilateral
      * \see ConstructionOption
      */
     static QgsQuadrilateral rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
-    // Extent
+
+    /**
+     * Construct a QgsQuadrilateral as a Rectangle from is extent.
+     * Z is taken from point \a p1.
+     * \param p1 first point
+     * \param p2 second point
+     */
     static QgsQuadrilateral rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
 
 #ifndef SIP_RUN
+
+    /**
+     * Alias for rectangleFromDiagonal
+     */
     static constexpr auto &rectangleFromDiagonal = rectangleFromExtent;
 #endif
-    // Square by diagonal
+
+    /**
+     * Construct a QgsQuadrilateral as a Square from a diagonal.
+     * Z is taken from point \a p1.
+     * \param p1 first point
+     * \param p2 second point
+     */
     static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
-    // center, point
+
+    /**
+     * Construct a QgsQuadrilateral as a Rectangle from center point \a center
+     * and another point \a point.
+     * Z is taken from \a center point.
+     * \param center center point
+     * \param point corner point
+     */
     static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
-    // rectangle
+
+    /**
+     * Construct a QgsQuadrilateral as a Rectangle from a QgsRectangle.
+     * \param rectangle rectangle
+     */
     static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle );
+
     // TODO:
     // Rhombus
 
     bool operator==( const QgsQuadrilateral &other ) const;
     bool operator!=( const QgsQuadrilateral &other ) const;
 
-    bool isEmpty() const;
+    /**
+     * Convenient method to determine if a QgsQuadrilateral is valid.
+     * A QgsQuadrilateral must be simple (not self-intersecting) and
+     * cannot have collinear points.
+     */
+    bool isValid() const;
+
+    /**
+     * Simple enumeration to ensure indices in setPoint
+     */
     enum Point
     {
       Point1,
@@ -101,8 +139,22 @@ class CORE_EXPORT QgsQuadrilateral
       Point4,
     };
 
-    void setPoint( const QgsPoint &newPoint, Point index );
-    void setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
+    /**
+     * Sets the point \a newPoint at the \a index.
+     * Returns false if the QgsQuadrilateral is not valid.
+     * \see Point
+     */
+    bool setPoint( const QgsPoint &newPoint, Point index );
+
+    /**
+     * Set all points
+     * Returns false if the QgsQuadrilateral is not valid.
+     * \param p1 first point
+     * \param p2 second point
+     * \param p3 third point
+     * \param p4 fourth point
+     */
+    bool setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 
     /**
      * Returns a list including the vertices of the quadrilateral.

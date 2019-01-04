@@ -21,20 +21,13 @@
 QgsQuadrilateral::QgsQuadrilateral() = default;
 
 QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
-  : mPoint1( p1 )
-  , mPoint2( p2 )
-  , mPoint3( p3 )
-  , mPoint4( p4 )
 {
-
+  setPoints( p1, p2, p3, p4 );
 }
 
 QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 )
-  : mPoint1( QgsPoint( p1 ) )
-  , mPoint2( QgsPoint( p2 ) )
-  , mPoint3( QgsPoint( p3 ) )
-  , mPoint4( QgsPoint( p4 ) )
 {
+  setPoints( QgsPoint( p1 ), QgsPoint( p2 ), QgsPoint( p3 ), QgsPoint( p4 ) );
 
 }
 
@@ -165,11 +158,7 @@ QgsQuadrilateral QgsQuadrilateral::fromRectangle( const QgsRectangle &rectangle 
 
 bool QgsQuadrilateral::operator==( const QgsQuadrilateral &other ) const
 {
-  if ( isEmpty() && other.isEmpty() )
-  {
-    return true;
-  }
-  else if ( isEmpty() || other.isEmpty() )
+  if ( !isValid() || !other.isValid() )
   {
     return false;
   }
@@ -185,41 +174,92 @@ bool QgsQuadrilateral::operator!=( const QgsQuadrilateral &other ) const
   return !operator==( other );
 }
 
-bool QgsQuadrilateral::isEmpty() const
+// Returns true is segments are not self-intersected
+//
+// p3    p1
+// | \  /|
+// |  \/ |
+// |  /\ |
+// | /  \|
+// p2    p4
+
+static bool isNotAntiParallelogram( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
+{
+  QgsPoint inter;
+  bool isIntersection = false;
+  QgsGeometryUtils::segmentIntersection( p1, p2, p3, p4, inter, isIntersection );
+
+  return !isIntersection;
+}
+
+static bool isNotCollinear( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
+{
+  bool isCollinear =
+    (
+      ( QgsGeometryUtils::segmentSide( p1, p2, p3 ) == 0 ) ||
+      ( QgsGeometryUtils::segmentSide( p2, p3, p4 ) == 0 ) ||
+      ( QgsGeometryUtils::segmentSide( p3, p4, p1 ) == 0 ) ||
+      ( QgsGeometryUtils::segmentSide( p3, p4, p2 ) == 0 )
+    );
+
+  return !isCollinear;
+
+}
+
+// Convenient method to validate inputs
+static bool validate( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
   return (
-           ( QgsGeometryUtils::segmentSide( mPoint1, mPoint2, mPoint3 ) == 0 ) ||
-           ( QgsGeometryUtils::segmentSide( mPoint2, mPoint3, mPoint4 ) == 0 ) ||
-           ( QgsGeometryUtils::segmentSide( mPoint3, mPoint4, mPoint1 ) == 0 ) ||
-           ( QgsGeometryUtils::segmentSide( mPoint3, mPoint4, mPoint2 ) == 0 )
+           isNotAntiParallelogram( p1, p2, p3, p4 ) &&
+           isNotCollinear( p1, p2, p3, p4 )
          );
 }
 
-void QgsQuadrilateral::setPoint( const QgsPoint &newPoint, Point index )
+bool QgsQuadrilateral::isValid() const
+{
+  return validate( mPoint1, mPoint2, mPoint3, mPoint4 );
+}
+
+bool QgsQuadrilateral::setPoint( const QgsPoint &newPoint, Point index )
 {
   switch ( index )
   {
     case Point1:
+      if ( validate( newPoint, mPoint2, mPoint3, mPoint4 ) == false )
+        return false;
       mPoint1 = newPoint;
       break;
     case Point2:
+      if ( validate( mPoint1, newPoint, mPoint3, mPoint4 ) == false )
+        return false;
       mPoint2 = newPoint;
       break;
     case Point3:
+      if ( validate( mPoint1, mPoint2, newPoint, mPoint4 ) == false )
+        return false;
       mPoint3 = newPoint;
       break;
     case Point4:
+      if ( validate( mPoint1, mPoint2, mPoint3, newPoint ) == false )
+        return false;
       mPoint4 = newPoint;
       break;
   }
+
+  return true;
 }
 
-void QgsQuadrilateral::setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
+bool QgsQuadrilateral::setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
+  if ( validate( p1, p2, p3, p4 ) == false )
+    return false;
+
   mPoint1 = p1;
   mPoint2 = p2;
   mPoint3 = p3;
   mPoint4 = p4;
+
+  return true;
 }
 
 QgsPointSequence QgsQuadrilateral::points() const
@@ -234,7 +274,7 @@ QgsPointSequence QgsQuadrilateral::points() const
 QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 {
   std::unique_ptr<QgsPolygon> polygon = qgis::make_unique< QgsPolygon >();
-  if ( isEmpty() )
+  if ( !isValid() )
   {
     return polygon.release();
   }
@@ -247,7 +287,7 @@ QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 {
   std::unique_ptr<QgsLineString> ext = qgis::make_unique< QgsLineString>();
-  if ( isEmpty() )
+  if ( !isValid() )
   {
     return ext.release();
   }
@@ -266,7 +306,7 @@ QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 QString QgsQuadrilateral::toString( int pointPrecision ) const
 {
   QString rep;
-  if ( isEmpty() )
+  if ( !isValid() )
     rep = QStringLiteral( "Empty" );
   else
     rep = QStringLiteral( "Quadrilateral (Point 1: %1, Point 2: %2, Point 3: %3, Point 4: %4)" )
