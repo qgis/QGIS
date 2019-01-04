@@ -437,6 +437,7 @@ QProgressBar::chunk
 
 QTabWidget::pane {
     border: 1px solid @itemdarkbackground;
+    top:-1px;
 }
 
 QTabBar::tab {
