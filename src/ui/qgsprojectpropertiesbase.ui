@@ -2423,6 +2423,9 @@
                     </item>
                     <item>
                      <widget class="QSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
+                      <property name="maximum">
+                       <number>9999999</number>
+                      </property>
                       <property name="value">
                        <number>1</number>
                       </property>
