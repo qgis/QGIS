@@ -415,8 +415,13 @@ namespace QgsWms
                                       QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
       }
 
+      //number of atlas features might be restricted
+      int maxAtlasFeatures = QgsServerProjectUtils::wmsMaxAtlasFeatures( *mProject );
+      nAtlasFeatures = std::min( nAtlasFeatures, maxAtlasFeatures );
+
       QString filterString;
       int currentAtlasPk = 0;
+
       for ( int i = 0; i < nAtlasFeatures; ++i )
       {
         if ( i > 0 )

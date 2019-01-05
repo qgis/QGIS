@@ -147,6 +147,8 @@ namespace QgsServerProjectUtils
    */
   SERVER_EXPORT int wmsImageQuality( const QgsProject &project );
 
+  SERVER_EXPORT int wmsMaxAtlasFeatures( const QgsProject &project );
+
   /**
    * Returns if layer ids are used as name in WMS.
    * \param project the QGIS project

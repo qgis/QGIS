@@ -154,6 +154,8 @@ Returns the quality for WMS images defined in a QGIS project.
 :return: quality if defined in project, -1 otherwise.
 %End
 
+  int wmsMaxAtlasFeatures( const QgsProject &project );
+
   bool wmsUseLayerIds( const QgsProject &project );
 %Docstring
 Returns if layer ids are used as name in WMS.
