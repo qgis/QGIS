@@ -24,6 +24,9 @@ from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 class TestQgsServerAccessControlWMSGetlegendgraphic(TestQgsServerAccessControl):
 
+    # Set to True to re-generate reference files for this class
+    #regenerate_reference = True
+
     def test_wms_getlegendgraphic_hello(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
