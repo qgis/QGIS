@@ -396,61 +396,79 @@ namespace QgsWms
                                       QStringLiteral( "The atlas has no coverage layer" ) );
       }
 
-      QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
-      if ( pkIndexes.size() < 1 )
-      {
-        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                      QStringLiteral( "An error occurred during the Atlas print" ) );
-      }
-      QStringList pkAttributeNames;
-      for ( int i = 0; i < pkIndexes.size(); ++i )
-      {
-        pkAttributeNames.append( cLayer->fields()[pkIndexes.at( i )].name() );
-      }
-
-      int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
-      if ( nAtlasFeatures * pkIndexes.size() != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
-      {
-        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                      QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
-      }
-
-      //number of atlas features might be restricted
       int maxAtlasFeatures = QgsServerProjectUtils::wmsMaxAtlasFeatures( *mProject );
-      nAtlasFeatures = std::min( nAtlasFeatures, maxAtlasFeatures );
-
-      QString filterString;
-      int currentAtlasPk = 0;
-
-      for ( int i = 0; i < nAtlasFeatures; ++i )
+      if ( atlasPk.size() == 1 && atlasPk.at( 0 ) == QStringLiteral( "*" ) )
       {
-        if ( i > 0 )
+        atlas->setFilterFeatures( false );
+        atlas->updateFeatures();
+        if ( atlas->count() > maxAtlasFeatures )
         {
-          filterString.append( " OR " );
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QString( "The project configuration allows to print maximum %1 atlas features at a time" ).arg( maxAtlasFeatures ) );
         }
-
-        filterString.append( "( " );
-
-        for ( int j = 0; j < pkIndexes.size(); ++j )
-        {
-          if ( j > 0 )
-          {
-            filterString.append( " AND " );
-          }
-          filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ) ).arg( atlasPk.at( currentAtlasPk ) ) );
-          ++currentAtlasPk;
-        }
-
-        filterString.append( " )" );
       }
-
-      atlas->setFilterFeatures( true );
-      QString errorString;
-      atlas->setFilterExpression( filterString, errorString );
-      if ( !errorString.isEmpty() )
+      else
       {
-        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                      QStringLiteral( "An error occurred during the Atlas print" ) );
+        QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
+        if ( pkIndexes.size() < 1 )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+        }
+        QStringList pkAttributeNames;
+        for ( int i = 0; i < pkIndexes.size(); ++i )
+        {
+          pkAttributeNames.append( cLayer->fields()[pkIndexes.at( i )].name() );
+        }
+
+        int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
+        if ( nAtlasFeatures * pkIndexes.size() != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
+        }
+
+        //number of atlas features might be restricted
+        if ( nAtlasFeatures > maxAtlasFeatures )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QString( "%1 atlas features have been requestet, but the project configuration only allows to print %2 atlas features at a time" )
+                                        .arg( nAtlasFeatures ).arg( maxAtlasFeatures ) );
+        }
+
+        QString filterString;
+        int currentAtlasPk = 0;
+
+        for ( int i = 0; i < nAtlasFeatures; ++i )
+        {
+          if ( i > 0 )
+          {
+            filterString.append( " OR " );
+          }
+
+          filterString.append( "( " );
+
+          for ( int j = 0; j < pkIndexes.size(); ++j )
+          {
+            if ( j > 0 )
+            {
+              filterString.append( " AND " );
+            }
+            filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ) ).arg( atlasPk.at( currentAtlasPk ) ) );
+            ++currentAtlasPk;
+          }
+
+          filterString.append( " )" );
+        }
+
+        atlas->setFilterFeatures( true );
+        QString errorString;
+        atlas->setFilterExpression( filterString, errorString );
+        if ( !errorString.isEmpty() )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+        }
       }
     }
 
