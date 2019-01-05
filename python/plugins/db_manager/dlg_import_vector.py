@@ -156,7 +156,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
         settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
         settings.setValue("/UI/lastVectorFileFilter", lastVectorFormat)
 
-        self.cboInputLayer.setCurrentIndex(-1)
         self.cboInputLayer.setEditText(filename)
 
     def reloadInputLayer(self):
@@ -368,6 +367,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # create spatial index
         if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
             self.db.connector.createSpatialIndex((schema, table), geom)
+
+        # add comment on table
+        if self.chkCom.isEnabled() and self.chkCom.isChecked():
+            # using connector executing COMMENT ON TABLE query (with editCome.text() value)
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}E\''.format(schema, table, self.editCom.text()))
 
         self.db.connection().reconnect()
         self.db.refresh()
