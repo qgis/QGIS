@@ -155,6 +155,13 @@ Returns the quality for WMS images defined in a QGIS project.
 %End
 
   int wmsMaxAtlasFeatures( const QgsProject &project );
+%Docstring
+Returns the maximum number of atlas features which can be printed in a request
+
+:param project: the QGIS project
+
+:return: the number of atlas features
+%End
 
   bool wmsUseLayerIds( const QgsProject &project );
 %Docstring
