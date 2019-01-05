@@ -668,7 +668,7 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                                   QgsPointXY(175.76717768974583578,
                                                                              8.93749416467257873)), 8.80683758146703966, 5)
 
-        # calculation should be ellipsoid dependant!
+        # calculation should be ellipsoid dependent!
         da.setEllipsoid("Phobos2000")
         self.assertAlmostEqual(da.latitudeGeodesicCrossesDateLine(QgsPointXY(-175.15030911497356669, 8.59851183021221033),
                                                                   QgsPointXY(175.76717768974583578,
