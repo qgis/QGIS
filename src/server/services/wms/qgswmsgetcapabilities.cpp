@@ -690,7 +690,11 @@ namespace QgsWms
         if ( cLayer )
         {
           QString layerName = cLayer->shortName();
-          if ( layerName.isEmpty() )
+          if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
+          {
+            layerName = cLayer->id();
+          }
+          else if ( layerName.isEmpty() )
           {
             layerName = cLayer->name();
           }
