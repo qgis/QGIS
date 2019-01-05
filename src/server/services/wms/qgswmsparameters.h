@@ -1149,7 +1149,10 @@ namespace QgsWms
        */
       QString layoutParameter( const QString &id, bool &ok ) const;
 
-      //! Returns the ATLAS_PK parameter
+      /**
+       * Returns the ATLAS_PK parameter
+       * \since QGIS 3.6
+      */
       QStringList atlasPk() const;
 
     private:

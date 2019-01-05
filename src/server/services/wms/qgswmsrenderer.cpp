@@ -379,7 +379,7 @@ namespace QgsWms
     //atlas print?
     QgsLayoutAtlas *atlas = 0;
     QStringList atlasPk = mWmsParameters.atlasPk();
-    if ( atlasPk.size() > 0 ) //atlas print requested?
+    if ( !atlasPk.isEmpty() ) //atlas print requested?
     {
       atlas = layout->atlas();
       if ( !atlas || !atlas->enabled() )
