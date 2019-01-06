@@ -564,3 +564,50 @@ tests:
         name: expected/saga/zonal_grid_stats.dbf
         type: vector
   
+  - algorithm: saga:resampling
+    name: Resample down
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      KEEP_TYPE: true
+      SCALE_DOWN: 3
+      SCALE_UP: 5
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 0.0005
+    results:
+      OUTPUT:
+        hash: 1b3a17a724c489ea2eea60b39bc1b9c79778832bd41e982a4e9fb09f
+        type: rasterhash
+
+  - algorithm: saga:resampling
+    name: Resample up
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      KEEP_TYPE: true
+      SCALE_DOWN: 3
+      SCALE_UP: 5
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 5.0e-05
+    results:
+      OUTPUT:
+        hash: 32008adf7520fee2848d689fcb53d0f8ac862bcd162575b03fefc7f1
+        type: rasterhash
+
+  - algorithm: saga:resamplingfilter
+    name: Resampling filter
+    params:
+      GRID:
+        name: dem.tif
+        type: raster
+      SCALE: 10.0
+    results:
+      HIPASS:
+        hash: cf992e69d506924bb59a5fbabd86617e263cb951a61c1b3c0b10012b
+        type: rasterhash
+      LOPASS:
+        hash: f36069a8ceb7ffe839a34f66b82eebacb80143e9df4ed54485bf8293
+        type: rasterhash
+
