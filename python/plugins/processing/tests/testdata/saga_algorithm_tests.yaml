@@ -611,3 +611,60 @@ tests:
         hash: f36069a8ceb7ffe839a34f66b82eebacb80143e9df4ed54485bf8293
         type: rasterhash
 
+  - algorithm: saga:fillsinks
+    name: Fill sinks (Planchon/Darboux)
+    params:
+      DEM:
+        name: dem.tif
+        type: raster
+      MINSLOPE: 0.01
+    results:
+      RESULT:
+        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        type: rasterhash
+
+  - algorithm: saga:fillsinksqmofesp
+    name: Fill sinks (QM of ESP)
+    params:
+      DEM:
+        name: dem.tif
+        type: raster
+      DZFILL: 0.01
+    results:
+      FILLED:
+        hash: ebd24bb7d011f0c4d87d1e4748e89d90d5a78cfa820070ece87df4d0
+        type: rasterhash
+      SINKS:
+        hash: 83d1936c0421783372573c9dcd04e6415e9db911c5fa254e74c929b0
+        type: rasterhash
+
+  - algorithm: saga:fillsinkswangliu
+    name: Fill sinks Wang & Liu
+    params:
+      ELEV:
+        name: dem.tif
+        type: raster
+      MINSLOPE: 0.01
+    results:
+      FDIR:
+        hash: 24367e9ca83c757628f329029d82341fe9111138e019138c949c34c0
+        type: rasterhash
+      FILLED:
+        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        type: rasterhash
+      WSHED:
+        hash: d891f15de1c742986647d619788c7b16a21909bf9c06c70579a4797c
+        type: rasterhash
+
+  - algorithm: saga:fillsinksxxlwangliu
+    name: Fill Sinks Wang & Lui XXL
+    params:
+      ELEV:
+        name: dem.tif
+        type: raster
+      MINSLOPE: 0.1
+    results:
+      FILLED:
+        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        type: rasterhash
+
