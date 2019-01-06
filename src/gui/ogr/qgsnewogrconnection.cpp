@@ -34,7 +34,9 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
 {
   setupUi( this );
   connect( btnConnect, &QPushButton::clicked, this, &QgsNewOgrConnection::btnConnect_clicked );
+  Q_NOWARN_DEPRECATED_PUSH
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
+  Q_NOWARN_DEPRECATED_POP
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
