@@ -2725,6 +2725,8 @@ namespace QgsWms
       }
       else if ( mLayerGroups.contains( nickname ) )
       {
+        // Reverse order of layers form a group
+        QList<QgsMapLayer *> layersFromGroup;
         for ( QgsMapLayer *layer : mLayerGroups[nickname] )
         {
           if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
@@ -2737,9 +2739,10 @@ namespace QgsWms
                 throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
               }
             }
-            layers.append( layer );
+            layersFromGroup.push_front( layer );
           }
         }
+        layers.append( layersFromGroup );
       }
       else
       {
