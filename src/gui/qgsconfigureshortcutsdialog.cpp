@@ -83,7 +83,7 @@ void QgsConfigureShortcutsDialog::populateActions()
       continue;
     }
 
-    if ( actionText.length() == 0 )
+    if ( actionText.isEmpty() )
     {
       continue;
     }
