@@ -955,7 +955,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     statement += QStringLiteral( ") " );
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      statement += QStringLiteral( " OUTPUT inserted." ) + mFidColName + QStringLiteral( "  INTO @px " );
+      statement += QStringLiteral( " OUTPUT inserted." ) + mFidColName + QStringLiteral( " INTO @px " );
     }
     statement += QStringLiteral( " VALUES (" ) + values + ')';
 
