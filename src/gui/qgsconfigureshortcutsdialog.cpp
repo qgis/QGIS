@@ -83,6 +83,11 @@ void QgsConfigureShortcutsDialog::populateActions()
       continue;
     }
 
+    if ( actionText.length() == 0 )
+    {
+      continue;
+    }
+
     QStringList lst;
     lst << actionText << sequence;
     QTreeWidgetItem *item = new QTreeWidgetItem( lst );
