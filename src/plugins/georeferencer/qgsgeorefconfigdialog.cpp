@@ -91,32 +91,9 @@ void QgsGeorefConfigDialog::buttonBox_rejected()
 void QgsGeorefConfigDialog::readSettings()
 {
   QgsSettings s;
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() )
-  {
-    mShowIDsCheckBox->setChecked( true );
-  }
-  else
-  {
-    mShowIDsCheckBox->setChecked( false );
-  }
-
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool() )
-  {
-    mShowCoordsCheckBox->setChecked( true );
-  }
-  else
-  {
-    mShowCoordsCheckBox->setChecked( false );
-  }
-
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
-  {
-    mShowDockedCheckBox->setChecked( true );
-  }
-  else
-  {
-    mShowDockedCheckBox->setChecked( false );
-  }
+  mShowIDsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() );
+  mShowCoordsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool() );
+  mShowDockedCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() );
 
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ).toString() == QLatin1String( "mapUnits" ) )
   {

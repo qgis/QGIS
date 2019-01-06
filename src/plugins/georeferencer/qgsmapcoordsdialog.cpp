@@ -46,6 +46,8 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
+  mMinimizeWindowCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
+
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
   connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked,
@@ -63,6 +65,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), mMinimizeWindowCheckBox->isChecked() );
 }
 
 void QgsMapCoordsDialog::updateOK()
@@ -119,7 +122,10 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
 {
   if ( isEnable )
   {
-    parentWidget()->showMinimized();
+    if ( mMinimizeWindowCheckBox->isChecked() )
+    {
+      parentWidget()->showMinimized();
+    }
 
     Q_ASSERT( parentWidget()->parentWidget() );
     parentWidget()->parentWidget()->activateWindow();
