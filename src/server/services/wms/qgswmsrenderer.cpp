@@ -2737,7 +2737,7 @@ namespace QgsWms
                 throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
               }
             }
-            layers.insert( 0, layer );
+            layers.append( layer );
           }
         }
       }
