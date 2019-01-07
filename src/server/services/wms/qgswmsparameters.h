@@ -1151,8 +1151,8 @@ namespace QgsWms
 
       /**
        * Returns the ATLAS_PK parameter
-       * \since QGIS 3.6
        * \returns The ATLAS_PK parameter
+       * \since QGIS 3.6
       */
       QStringList atlasPk() const;
 
