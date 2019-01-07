@@ -153,6 +153,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
     void dataDefinedSizeLegend();
+    void mergeClicked();
+    void showContextMenu( QPoint p );
 
   protected:
 
@@ -191,8 +193,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
   private:
     QString mOldClassificationAttribute;
     QgsCategoryList mCopyBuffer;
+    QMenu *mContextMenu = nullptr;
+    QAction *mMergeCategoriesAction = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
+
+    friend class TestQgsCategorizedRendererWidget;
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H

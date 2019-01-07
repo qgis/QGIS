@@ -125,40 +125,97 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
 
   const QgsRendererCategory category = mRenderer->categories().value( index.row() );
 
-  if ( role == Qt::CheckStateRole && index.column() == 0 )
+  switch ( role )
   {
-    return category.renderState() ? Qt::Checked : Qt::Unchecked;
-  }
-  else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
-  {
-    switch ( index.column() )
+    case Qt::CheckStateRole:
     {
-      case 1:
-        return category.value().toString();
-      case 2:
-        return category.label();
-      default:
-        return QVariant();
+      if ( index.column() == 0 )
+      {
+        return category.renderState() ? Qt::Checked : Qt::Unchecked;
+      }
+      break;
     }
-  }
-  else if ( role == Qt::DecorationRole && index.column() == 0 && category.symbol() )
-  {
-    return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
-  }
-  else if ( role == Qt::TextAlignmentRole )
-  {
-    return ( index.column() == 0 ) ? Qt::AlignHCenter : Qt::AlignLeft;
-  }
-  else if ( role == Qt::EditRole )
-  {
-    switch ( index.column() )
+
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
     {
-      case 1:
-        return category.value();
-      case 2:
-        return category.label();
-      default:
-        return QVariant();
+      switch ( index.column() )
+      {
+        case 1:
+        {
+          if ( category.value().type() == QVariant::List )
+          {
+            QStringList res;
+            const QVariantList list = category.value().toList();
+            res.reserve( list.size() );
+            for ( const QVariant &v : list )
+              res << v.toString();
+
+            return res.join( ';' );
+          }
+          else
+          {
+            return category.value().toString();
+          }
+        }
+        case 2:
+          return category.label();
+      }
+      break;
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( index.column() == 0 && category.symbol() )
+      {
+        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
+      }
+      break;
+    }
+
+    case Qt::ForegroundRole:
+    {
+      QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
+      if ( index.column() == 1 && category.value().type() == QVariant::List )
+      {
+        QColor fadedTextColor = brush.color();
+        fadedTextColor.setAlpha( 128 );
+        brush.setColor( fadedTextColor );
+      }
+      return brush;
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      return ( index.column() == 0 ) ? Qt::AlignHCenter : Qt::AlignLeft;
+    }
+
+    case Qt::EditRole:
+    {
+      switch ( index.column() )
+      {
+        case 1:
+        {
+          if ( category.value().type() == QVariant::List )
+          {
+            QStringList res;
+            const QVariantList list = category.value().toList();
+            res.reserve( list.size() );
+            for ( const QVariant &v : list )
+              res << v.toString();
+
+            return res.join( ';' );
+          }
+          else
+          {
+            return category.value();
+          }
+        }
+
+        case 2:
+          return category.label();
+      }
+      break;
     }
   }
 
@@ -194,6 +251,20 @@ bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex &index, const
         case QVariant::Double:
           val = value.toDouble();
           break;
+        case QVariant::List:
+        {
+          const QStringList parts = value.toString().split( ';' );
+          QVariantList list;
+          list.reserve( parts.count() );
+          for ( const QString &p : parts )
+            list << p;
+
+          if ( list.count() == 1 )
+            val = list.at( 0 );
+          else
+            val = list;
+          break;
+        }
         default:
           val = value.toString();
           break;
@@ -392,7 +463,7 @@ QgsRendererWidget *QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer *l
 
 QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-
+  , mContextMenu( new QMenu( this ) )
 {
 
   // try to recognize the previous renderer
@@ -450,7 +521,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsCategorizedSymbolRendererWidget::categoryColumnChanged );
 
   connect( viewCategories, &QAbstractItemView::doubleClicked, this, &QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked );
-  connect( viewCategories, &QTreeView::customContextMenuRequested, this, &QgsCategorizedSymbolRendererWidget::contextMenuViewCategories );
+  connect( viewCategories, &QTreeView::customContextMenuRequested, this, &QgsCategorizedSymbolRendererWidget::showContextMenu );
 
   connect( btnChangeCategorizedSymbol, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol );
   connect( btnAddCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::addCategories );
@@ -476,6 +547,9 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   btnAdvanced->setMenu( advMenu );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
+
+  mMergeCategoriesAction = new QAction( tr( "Merge Categories" ), this );
+  connect( mMergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::mergeClicked );
 }
 
 QgsCategorizedSymbolRendererWidget::~QgsCategorizedSymbolRendererWidget()
@@ -720,11 +794,28 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
       QVariant value = cats.at( i ).value();
       for ( int j = 0; j < prevCats.size() && !contains; ++j )
       {
-        if ( prevCats.at( j ).value() == value )
+        const QVariant prevCatValue = prevCats.at( j ).value();
+        if ( prevCatValue.type() == QVariant::List )
         {
-          contains = true;
-          break;
+          const QVariantList list = prevCatValue.toList();
+          for ( const QVariant &v : list )
+          {
+            if ( v == value )
+            {
+              contains = true;
+              break;
+            }
+          }
         }
+        else
+        {
+          if ( prevCats.at( j ).value() == value )
+          {
+            contains = true;
+          }
+        }
+        if ( contains )
+          break;
       }
 
       if ( !contains )
@@ -1060,4 +1151,58 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
     } );
     openPanel( panel );  // takes ownership of the panel
   }
+}
+
+void QgsCategorizedSymbolRendererWidget::mergeClicked()
+{
+  QList<int> categoryIndexes = selectedCategories();
+  if ( categoryIndexes.count() < 2 )
+    return;
+
+  const QgsCategoryList &categories = mRenderer->categories();
+
+  QStringList labels;
+  QVariantList values;
+  values.reserve( categoryIndexes.count() );
+  labels.reserve( categoryIndexes.count() );
+  for ( int i : categoryIndexes )
+  {
+    QVariant v = categories.at( i ).value();
+    if ( v.type() == QVariant::List )
+    {
+      values.append( v.toList() );
+    }
+    else
+      values << v;
+
+    labels << categories.at( i ).label();
+  }
+
+  // modify first category (basically we "merge up" into the first selected category)
+  mRenderer->updateCategoryLabel( categoryIndexes.at( 0 ), labels.join( ',' ) );
+  mRenderer->updateCategoryValue( categoryIndexes.at( 0 ), values );
+
+  categoryIndexes.pop_front();
+  mModel->deleteRows( categoryIndexes );
+
+  emit widgetChanged();
+}
+
+void QgsCategorizedSymbolRendererWidget::showContextMenu( QPoint )
+{
+  mContextMenu->clear();
+  const QList< QAction * > actions = contextMenu->actions();
+  for ( QAction *act : actions )
+  {
+    mContextMenu->addAction( act );
+  }
+
+  mContextMenu->addSeparator();
+
+  if ( viewCategories->selectionModel()->selectedRows().count() > 1 )
+  {
+    mContextMenu->addAction( mMergeCategoriesAction );
+  }
+
+  mContextMenu->exec( QCursor::pos() );
 }

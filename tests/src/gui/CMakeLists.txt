@@ -121,6 +121,7 @@ ADD_QGIS_TEST(edittooltest testqgsmaptooledit.cpp)
 #ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
+ADD_QGIS_TEST(categorizedrendererwidget testqgscategorizedrendererwidget.cpp)
 ADD_QGIS_TEST(doublespinbox testqgsdoublespinbox.cpp)
 ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp)
 ADD_QGIS_TEST(attributeformtest testqgsattributeform.cpp)
