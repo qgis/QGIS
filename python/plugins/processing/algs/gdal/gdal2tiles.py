@@ -35,7 +35,6 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingOutputFolder,
                        QgsProcessingParameterFolderDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -230,12 +229,8 @@ class gdal2tiles(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
-        commands = []
+        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
-        else:
-            commands = [self.commandName() + '.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands.insert(0, 'python3')
 
         return commands

@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QFileInfo
 
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
@@ -116,12 +115,8 @@ class polygonize(GdalAlgorithm):
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
-        commands = []
+        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
-        else:
-            commands = [self.commandName() + '.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands.insert(0, 'python3')
 
         return commands

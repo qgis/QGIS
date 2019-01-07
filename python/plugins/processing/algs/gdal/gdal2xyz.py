@@ -26,7 +26,6 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
@@ -95,11 +94,8 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
-        commands = []
+        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
-        else:
-            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
+            commands.insert(0, 'python3')
 
         return commands
