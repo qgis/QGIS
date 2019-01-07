@@ -1408,17 +1408,15 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-QString QgsOgrProvider::jsonStringValue( const QVariant &value, const QVariant::Type &type ) const
+QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
 {
-  switch ( type )
+  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson().constData() );
+  if ( stringValue.isEmpty() )
   {
-    case QVariant::Map:
-      return QString::fromUtf8( QJsonDocument::fromVariant( value.toMap() ).toJson().data() );
-    case QVariant::List:
-      return QString::fromUtf8( QJsonDocument::fromVariant( value.toList() ).toJson().data() );
-    default:
-      return value.toString();
+    //store as string, because it's no valid QJson value
+    stringValue = value.toString();
   }
+  return stringValue;
 }
 
 bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
@@ -1550,7 +1548,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
           if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
-            stringValue = jsonStringValue( attrVal, attrVal.type() );
+            stringValue = jsonStringValue( attrVal );
           else
           {
             stringValue = attrVal.toString();
@@ -2139,7 +2137,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             QString stringValue;
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
             if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
-              stringValue = jsonStringValue( it2.value(), it2->type() );
+              stringValue = jsonStringValue( it2.value() );
             else
               stringValue = it2->toString();
 #else
