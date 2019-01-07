@@ -2725,7 +2725,7 @@ namespace QgsWms
       }
       else if ( mLayerGroups.contains( nickname ) )
       {
-        // Reverse order of layers form a group
+        // Reverse order of layers from a group
         QList<QgsMapLayer *> layersFromGroup;
         for ( QgsMapLayer *layer : mLayerGroups[nickname] )
         {
