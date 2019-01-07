@@ -1,9 +1,0 @@
-r.mapcalc
-Raster map calculator. 
-Raster (r.*)
-ParameterMultipleInput|maps|Raster maps used in the calculator|3|True
-ParameterString|expression|Expression to evaluate. The raster names used in expression should be the same than in QGIS|None|True|True
-ParameterFile|file|File containing expression(s) to evaluate (same rule for raster names than above)|True
-ParameterString|seed|Integer seed for rand() function|None|False|True
-*ParameterBoolean|-s|Generate random seed (result is non-deterministic)|False
-OutputDirectory|output_dir|Results Directory
