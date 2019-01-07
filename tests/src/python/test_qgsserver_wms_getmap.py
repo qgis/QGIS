@@ -41,8 +41,9 @@ RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetMap(QgsServerTestBase):
-
     """QGIS Server WMS Tests for GetMap request"""
+
+    #regenerate_reference = True
 
     def test_wms_getmap_basic_mode(self):
         # 1 bits
@@ -355,7 +356,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         err = b"cannot be converted into a rectangle" in r
         self.assertTrue(err)
 
-        # opacities should be a list of int
+        # opacities should be a list of int
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -1329,6 +1330,50 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r_group_sld, _ = self._result(self._execute_request(qs))
         self.assertEqual(r_individual, r_group_sld, 'Individual layers query and SLD group layers query results should be identical')
+
+    def test_wms_getmap_group_regression_20810(self):
+        """A WMS shall render the requested layers by drawing the leftmost in the list
+        bottommost, the next one over that, and so on. Even if the layers are inside groups."""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_grouped_layers.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "613402.5658687877003,5809005.018114360981,619594.408781287726,5813869.006602735259",
+            "CRS": "EPSG:25832",
+            "WIDTH": "429",
+            "HEIGHT": "337",
+            "LAYERS": "osm,areas and symbols",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_GroupedLayersUp")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_grouped_layers.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "613402.5658687877003,5809005.018114360981,619594.408781287726,5813869.006602735259",
+            "CRS": "EPSG:25832",
+            "WIDTH": "429",
+            "HEIGHT": "337",
+            "LAYERS": "areas and symbols,osm",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_GroupedLayersDown")
 
 
 if __name__ == '__main__':

@@ -217,31 +217,9 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         return control.compareImages(control_image), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
-
-        reference_path = unitTestDataPath('control_images') + '/qgis_server_accesscontrol/' + image + '/' + image + '.png'
-        self.store_reference(reference_path, response)
-
-        self.assertEqual(
-            headers.get("Content-Type"), "image/png",
-            "Content type is wrong: %s" % headers.get("Content-Type"))
-
-        test, report = self._img_diff(response, image, max_diff, max_size_diff)
-
-        with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
-            encoded_rendered_file = base64.b64encode(rendered_file.read())
-            message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
-                report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image
-            )
-
-        # If the failure is in image sizes the diff file will not exists.
-        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
-            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
-                encoded_diff_file = base64.b64encode(diff_file.read())
-                message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                    encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image
-                )
-
-        self.assertTrue(test, message)
+        super()._img_diff_error(response, headers, image, max_diff=max_diff,
+                                max_size_diff=max_size_diff,
+                                unittest_data_path='qgis_server_accesscontrol')
 
     def _geo_img_diff(self, image_1, image_2):
         if os.name == 'nt':
