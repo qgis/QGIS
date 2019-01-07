@@ -151,17 +151,17 @@ void TestQgsCategorizedRendererWidget::merge()
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 5 ).value().toString(), QString() );
 
   // no selection, should have no effect
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
 
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
   // one selection, should have no effect
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
 
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 4, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 4 );
 
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toString(), QStringLiteral( "a" ) );
@@ -179,7 +179,7 @@ void TestQgsCategorizedRendererWidget::merge()
   // selection should always "merge into" first selected item
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 0, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 3 );
 
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toList().at( 0 ).toString(), QStringLiteral( "b" ) );
@@ -198,7 +198,7 @@ void TestQgsCategorizedRendererWidget::merge()
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
   //"" entry should be ignored
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
 
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
 
@@ -214,15 +214,15 @@ void TestQgsCategorizedRendererWidget::merge()
 
   widget->viewCategories->selectionModel()->clearSelection();
   // unmerge
-  widget->unmerge();
+  widget->unmergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
   // not a list
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
-  widget->unmerge();
+  widget->unmergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
   // list
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
-  widget->unmerge();
+  widget->unmergeSelectedCategories();
 
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toString(), QStringLiteral( "b" ) );
@@ -240,15 +240,15 @@ void TestQgsCategorizedRendererWidget::merge()
 
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 4, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
-  widget->mergeClicked();
+  widget->mergeSelectedCategories();
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
-  widget->unmerge();
+  widget->unmergeSelectedCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toString(), QStringLiteral( "b" ) );
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 1 ).value().toString(), QString() );
