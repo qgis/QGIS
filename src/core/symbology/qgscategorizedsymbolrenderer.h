@@ -44,6 +44,8 @@ class CORE_EXPORT QgsRendererCategory
     /**
     * Constructor for a new QgsRendererCategory, with the specified \a value and \a symbol.
     *
+    * If \a value is a list, then the category will match any of the values from this list.
+    *
     * The ownership of \a symbol is transferred to the category.
     *
     * The \a label argument specifies the label used for this category in legends and the layer tree.
@@ -57,6 +59,9 @@ class CORE_EXPORT QgsRendererCategory
 
     /**
      * Returns the value corresponding to this category.
+     *
+     * If the returned value is a list, then the category will match any of the values from this list.
+     *
      * \see setValue()
      */
     QVariant value() const;
@@ -76,6 +81,9 @@ class CORE_EXPORT QgsRendererCategory
 
     /**
      * Sets the \a value corresponding to this category.
+     *
+     * If \a value is a list, then the category will match any of the values from this list.
+     *
      * \see value()
      */
     void setValue( const QVariant &value );
@@ -175,8 +183,35 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     int categoryIndexForLabel( const QString &val );
 
+    /**
+     * Changes the value for the category with the specified index.
+     *
+     * If \a value is a list, then the category will match any of the values from this list.
+     *
+     * \see updateCategorySymbol()
+     * \see updateCategoryLabel()
+     */
     bool updateCategoryValue( int catIndex, const QVariant &value );
+
+    /**
+     * Changes the \a symbol for the category with the specified index.
+     *
+     * Ownership of \a symbol is transferred to the renderer.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategoryLabel()
+     */
     bool updateCategorySymbol( int catIndex, QgsSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Changes the \a label for the category with the specified index.
+     *
+     * A category's label is used to represent the category within
+     * legends and the layer tree.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategoryLabel()
+     */
     bool updateCategoryLabel( int catIndex, const QString &label );
 
     //! \since QGIS 2.5
