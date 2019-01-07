@@ -37,6 +37,9 @@ The ``render`` argument indicates whether the category should initially be rende
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
+%Docstring
+Copy constructor.
+%End
 
     QVariant value() const;
 %Docstring
@@ -129,6 +132,14 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
+%Docstring
+Constructor for QgsCategorizedSymbolRenderer.
+
+The ``attrName`` argument specifies the layer's field name, or expression, which the categories will be matched against.
+
+A list of renderer ``categories`` can optionally be specified. If no categories are specified in the constructor, they
+can be added later by calling addCategory().
+%End
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
@@ -165,47 +176,137 @@ symbol for the renderer.
 %End
 
     const QgsCategoryList &categories() const;
+%Docstring
+Returns a list of all categories recognized by the renderer.
+%End
 
     int categoryIndexForValue( const QVariant &val );
 %Docstring
-Returns index of category with specified value (-1 if not found)
+Returns the index for the category with the specified value (or -1 if not found).
 %End
 
     int categoryIndexForLabel( const QString &val );
 %Docstring
-Returns index of category with specified label (-1 if not found or not unique)
+Returns the index of the category with the specified label (or -1 if the label was not found, or is not unique).
 
 .. versionadded:: 2.5
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
+%Docstring
+Changes the value for the category with the specified index.
+
+.. seealso:: :py:func:`updateCategorySymbol`
+
+.. seealso:: :py:func:`updateCategoryLabel`
+
+.. seealso:: :py:func:`updateCategoryRenderState`
+%End
+
     bool updateCategorySymbol( int catIndex, QgsSymbol *symbol /Transfer/ );
+%Docstring
+Changes the ``symbol`` for the category with the specified index.
+
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategoryLabel`
+
+.. seealso:: :py:func:`updateCategoryRenderState`
+%End
+
     bool updateCategoryLabel( int catIndex, const QString &label );
+%Docstring
+Changes the ``label`` for the category with the specified index.
+
+A category's label is used to represent the category within
+legends and the layer tree.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategoryLabel`
+
+.. seealso:: :py:func:`updateCategoryRenderState`
+%End
 
     bool updateCategoryRenderState( int catIndex, bool render );
 %Docstring
+Changes the render state for the category with the specified index.
+
+The render state indicates whether or not the category will be rendered,
+and is reflected in whether the category is checked with the project's layer tree.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategorySymbol`
+
+.. seealso:: :py:func:`updateCategoryLabel`
 
 .. versionadded:: 2.5
 %End
 
     void addCategory( const QgsRendererCategory &category );
+%Docstring
+Adds a new ``category`` to the renderer.
+
+.. seealso:: :py:func:`categories`
+%End
+
     bool deleteCategory( int catIndex );
+%Docstring
+Deletes the category with the specified index from the renderer.
+
+.. seealso:: :py:func:`deleteAllCategories`
+%End
+
     void deleteAllCategories();
+%Docstring
+Deletes all existing categories from the renderer.
+
+.. seealso:: :py:func:`deleteCategory`
+%End
 
     void moveCategory( int from, int to );
 %Docstring
-Moves the category at index position from to index position to.
+Moves an existing category at index position from to index position to.
 %End
 
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+%Docstring
+Sorts the existing categories by their value.
+
+.. seealso:: :py:func:`sortByLabel`
+%End
+
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
+%Docstring
+Sorts the existing categories by their label.
+
+.. seealso:: :py:func:`sortByValue`
+%End
 
     QString classAttribute() const;
+%Docstring
+Returns the class attribute for the renderer, which is the field name
+or expression string from the layer which will be matched against the
+renderer categories.
+
+.. seealso:: :py:func:`setClassAttribute`
+%End
+
     void setClassAttribute( const QString &attr );
+%Docstring
+Sets the class attribute for the renderer, which is the field name
+or expression string from the layer which will be matched against the
+renderer categories.
+
+.. seealso:: :py:func:`classAttribute`
+%End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-create renderer from XML element
+Creates a categorized renderer from an XML ``element``.
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
