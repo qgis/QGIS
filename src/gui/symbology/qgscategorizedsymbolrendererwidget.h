@@ -154,6 +154,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void updateSymbolsFromWidget();
     void dataDefinedSizeLegend();
     void mergeClicked();
+    void unmerge();
     void showContextMenu( QPoint p );
 
   protected:
@@ -195,6 +196,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     QgsCategoryList mCopyBuffer;
     QMenu *mContextMenu = nullptr;
     QAction *mMergeCategoriesAction = nullptr;
+    QAction *mUnmergeCategoriesAction = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 

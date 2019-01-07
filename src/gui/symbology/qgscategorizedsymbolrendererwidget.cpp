@@ -100,13 +100,21 @@ QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelInd
 
 Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex &index ) const
 {
-  if ( !index.isValid() )
+  if ( !index.isValid() || !mRenderer )
   {
     return Qt::ItemIsDropEnabled;
   }
 
   Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
-  if ( index.column() == 1 || index.column() == 2 )
+  if ( index.column() == 1 )
+  {
+    const QgsRendererCategory category = mRenderer->categories().value( index.row() );
+    if ( category.value().type() != QVariant::List )
+    {
+      flags |= Qt::ItemIsEditable;
+    }
+  }
+  else if ( index.column() == 2 )
   {
     flags |= Qt::ItemIsEditable;
   }
@@ -550,6 +558,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   mMergeCategoriesAction = new QAction( tr( "Merge Categories" ), this );
   connect( mMergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::mergeClicked );
+  mUnmergeCategoriesAction = new QAction( tr( "Unmerge Categories" ), this );
+  connect( mUnmergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::unmerge );
 }
 
 QgsCategorizedSymbolRendererWidget::~QgsCategorizedSymbolRendererWidget()
@@ -1183,6 +1193,7 @@ void QgsCategorizedSymbolRendererWidget::mergeClicked()
   for ( int i : categoryIndexes )
   {
     QVariant v = categories.at( i ).value();
+
     if ( v.type() == QVariant::List )
     {
       values.append( v.toList() );
@@ -1203,6 +1214,31 @@ void QgsCategorizedSymbolRendererWidget::mergeClicked()
   emit widgetChanged();
 }
 
+void QgsCategorizedSymbolRendererWidget::unmerge()
+{
+  const QList<int> categoryIndexes = selectedCategories();
+  if ( categoryIndexes.isEmpty() )
+    return;
+
+  const QgsCategoryList &categories = mRenderer->categories();
+  for ( int i : categoryIndexes )
+  {
+    const QVariant v = categories.at( i ).value();
+    if ( v.type() != QVariant::List )
+      continue;
+
+    const QVariantList list = v.toList();
+    for ( int j = 1; j < list.count(); ++j )
+    {
+      mModel->addCategory( QgsRendererCategory( list.at( j ), categories.at( i ).symbol()->clone(), list.at( j ).toString(), categories.at( i ).renderState() ) );
+    }
+    mRenderer->updateCategoryValue( i, list.at( 0 ) );
+    mRenderer->updateCategoryLabel( i, list.at( 0 ).toString() );
+  }
+
+  emit widgetChanged();
+}
+
 void QgsCategorizedSymbolRendererWidget::showContextMenu( QPoint )
 {
   mContextMenu->clear();
@@ -1217,6 +1253,18 @@ void QgsCategorizedSymbolRendererWidget::showContextMenu( QPoint )
   if ( viewCategories->selectionModel()->selectedRows().count() > 1 )
   {
     mContextMenu->addAction( mMergeCategoriesAction );
+  }
+  if ( viewCategories->selectionModel()->selectedRows().count() == 1 )
+  {
+    const QList<int> categoryIndexes = selectedCategories();
+    const QgsCategoryList &categories = mRenderer->categories();
+    const QVariant v = categories.at( categoryIndexes.at( 0 ) ).value();
+    if ( v.type() == QVariant::List )
+      mContextMenu->addAction( mUnmergeCategoriesAction );
+  }
+  else if ( viewCategories->selectionModel()->selectedRows().count() > 1 )
+  {
+    mContextMenu->addAction( mUnmergeCategoriesAction );
   }
 
   mContextMenu->exec( QCursor::pos() );
