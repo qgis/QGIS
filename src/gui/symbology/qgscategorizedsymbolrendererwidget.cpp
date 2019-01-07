@@ -159,7 +159,10 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             for ( const QVariant &v : list )
               res << v.toString();
 
-            return res.join( ';' );
+            if ( role == Qt::DisplayRole )
+              return res.join( ';' );
+            else // tooltip
+              return res.join( '\n' );
           }
           else
           {
