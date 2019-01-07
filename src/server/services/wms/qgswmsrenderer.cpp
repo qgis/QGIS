@@ -404,7 +404,7 @@ namespace QgsWms
         if ( atlas->count() > maxAtlasFeatures )
         {
           throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                        QString( "The project configuration allows to print maximum %1 atlas features at a time" ).arg( maxAtlasFeatures ) );
+                                        QString( "The project configuration allows printing maximum %1 atlas features at a time" ).arg( maxAtlasFeatures ) );
         }
       }
       else
@@ -432,7 +432,7 @@ namespace QgsWms
         if ( nAtlasFeatures > maxAtlasFeatures )
         {
           throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
-                                        QString( "%1 atlas features have been requestet, but the project configuration only allows to print %2 atlas features at a time" )
+                                        QString( "%1 atlas features have been requestet, but the project configuration only allows printing %2 atlas features at a time" )
                                         .arg( nAtlasFeatures ).arg( maxAtlasFeatures ) );
         }
 
