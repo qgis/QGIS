@@ -872,7 +872,15 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     QString statement;
     QString values;
-    statement = QStringLiteral( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      statement += QStringLiteral( "DECLARE @px TABLE (id INT); " );
+      statement += QStringLiteral( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
+    }
+    else
+    {
+      statement += QStringLiteral( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
+    }
 
     bool first = true;
     QSqlQuery query = createQuery();
@@ -947,10 +955,14 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     statement += QStringLiteral( ") " );
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      statement += QStringLiteral( " OUTPUT inserted." ) + mFidColName;
+      statement += QStringLiteral( " OUTPUT inserted." ) + mFidColName + QStringLiteral( " INTO @px " );
     }
     statement += QStringLiteral( " VALUES (" ) + values + ')';
 
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      statement += QStringLiteral( "; SELECT id FROM @px;" );
+    }
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
     {
