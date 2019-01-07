@@ -211,6 +211,57 @@ void TestQgsCategorizedRendererWidget::merge()
 
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).label(), QStringLiteral( "b,d,e,c,a" ) );
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 1 ).label(), QString() );
+
+  widget->viewCategories->selectionModel()->clearSelection();
+  // unmerge
+  widget->unmerge();
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
+  // not a list
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  widget->unmerge();
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
+  // list
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  widget->unmerge();
+
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toString(), QStringLiteral( "b" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 1 ).value().toString(), QString() );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 2 ).value().toString(), QStringLiteral( "d" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 3 ).value().toString(), QStringLiteral( "e" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 4 ).value().toString(), QStringLiteral( "c" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 5 ).value().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).label(), QStringLiteral( "b" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 1 ).label(), QString() );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 2 ).label(), QStringLiteral( "d" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 3 ).label(), QStringLiteral( "e" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 4 ).label(), QStringLiteral( "c" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 5 ).label(), QStringLiteral( "a" ) );
+
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
+  widget->mergeClicked();
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 4, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
+  widget->mergeClicked();
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 3, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
+  widget->unmerge();
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toString(), QStringLiteral( "b" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 1 ).value().toString(), QString() );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 2 ).value().toString(), QStringLiteral( "d" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 3 ).value().toString(), QStringLiteral( "c" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 4 ).value().toString(), QStringLiteral( "e" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 5 ).value().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).label(), QStringLiteral( "b" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 1 ).label(), QString() );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 2 ).label(), QStringLiteral( "d" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 3 ).label(), QStringLiteral( "c" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 4 ).label(), QStringLiteral( "e" ) );
+  QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 5 ).label(), QStringLiteral( "a" ) );
 }
 
 void TestQgsCategorizedRendererWidget::model()
