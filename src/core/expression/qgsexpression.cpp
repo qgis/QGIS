@@ -150,6 +150,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
     {
       QStringList quotedValues;
       const QVariantList values = value.toList();
+      quotedValues.reserve( values.count() );
       for ( const QVariant &v : values )
       {
         quotedValues += quotedValue( v );
