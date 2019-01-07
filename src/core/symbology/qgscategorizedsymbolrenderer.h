@@ -30,7 +30,7 @@ class QgsStyle;
 
 /**
  * \ingroup core
- * \brief categorized renderer
+ * \brief Represents an individual category (class) from a QgsCategorizedSymbolRenderer.
 */
 class CORE_EXPORT QgsRendererCategory
 {
@@ -41,20 +41,59 @@ class CORE_EXPORT QgsRendererCategory
      */
     QgsRendererCategory() = default;
 
-    //! takes ownership of symbol
+    /**
+    * Constructor for a new QgsRendererCategory, with the specified \a value and \a symbol.
+    *
+    * The ownership of \a symbol is transferred to the category.
+    *
+    * The \a label argument specifies the label used for this category in legends and the layer tree.
+    *
+    * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+    */
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
 
-    //! copy constructor
     QgsRendererCategory( const QgsRendererCategory &cat );
-
     QgsRendererCategory &operator=( QgsRendererCategory cat );
 
+    /**
+     * Returns the value corresponding to this category.
+     * \see setValue()
+     */
     QVariant value() const;
+
+    /**
+     * Returns the symbol which will be used to render this category.
+     * \see setSymbol()
+     */
     QgsSymbol *symbol() const;
+
+    /**
+     * Returns the label for this category, which is used to represent the category within
+     * legends and the layer tree.
+     * \see setLabel()
+     */
     QString label() const;
 
+    /**
+     * Sets the \a value corresponding to this category.
+     * \see value()
+     */
     void setValue( const QVariant &value );
+
+    /**
+     * Sets the symbol which will be used to render this category.
+     *
+     * Ownership of the symbol is transferred to the category.
+     *
+     * \see symbol()
+     */
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
+
+    /**
+     * Sets the \a label for this category, which is used to represent the category within
+     * legends and the layer tree.
+     * \see label()
+     */
     void setLabel( const QString &label );
 
     /**
@@ -72,8 +111,15 @@ class CORE_EXPORT QgsRendererCategory
     void setRenderState( bool render );
 
     // debugging
+
+    /**
+     * Returns a string representing the categories settings, used for debugging purposes only.
+     */
     QString dump() const;
 
+    /**
+     * Converts the category to a matching SLD rule, within the specified DOM document and \a element.
+     */
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
   protected:
