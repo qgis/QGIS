@@ -557,9 +557,9 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   mExpressionWidget->registerExpressionContextGenerator( this );
 
   mMergeCategoriesAction = new QAction( tr( "Merge Categories" ), this );
-  connect( mMergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::mergeClicked );
+  connect( mMergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::mergeSelectedCategories );
   mUnmergeCategoriesAction = new QAction( tr( "Unmerge Categories" ), this );
-  connect( mUnmergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::unmerge );
+  connect( mUnmergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories );
 }
 
 QgsCategorizedSymbolRendererWidget::~QgsCategorizedSymbolRendererWidget()
@@ -1163,7 +1163,7 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   }
 }
 
-void QgsCategorizedSymbolRendererWidget::mergeClicked()
+void QgsCategorizedSymbolRendererWidget::mergeSelectedCategories()
 {
   const QgsCategoryList &categories = mRenderer->categories();
 
@@ -1214,7 +1214,7 @@ void QgsCategorizedSymbolRendererWidget::mergeClicked()
   emit widgetChanged();
 }
 
-void QgsCategorizedSymbolRendererWidget::unmerge()
+void QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories()
 {
   const QList<int> categoryIndexes = selectedCategories();
   if ( categoryIndexes.isEmpty() )

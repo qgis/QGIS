@@ -153,8 +153,21 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
     void dataDefinedSizeLegend();
-    void mergeClicked();
-    void unmerge();
+
+    /**
+     * Merges all selected categories into a single multi-value category.
+     *
+     * \see unmergeSelectedCategories()
+     */
+    void mergeSelectedCategories();
+
+    /**
+     * Unmerges all selected multi-value categories into a individual value categories.
+     *
+     * \see mergeSelectedCategories()
+     */
+    void unmergeSelectedCategories();
+
     void showContextMenu( QPoint p );
 
   protected:
