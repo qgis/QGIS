@@ -29,6 +29,8 @@ Constructor for QgsRendererCategory.
 %Docstring
 Constructor for a new QgsRendererCategory, with the specified ``value`` and ``symbol``.
 
+If ``value`` is a list, then the category will match any of the values from this list.
+
 The ownership of ``symbol`` is transferred to the category.
 
 The ``label`` argument specifies the label used for this category in legends and the layer tree.
@@ -41,6 +43,8 @@ The ``render`` argument indicates whether the category should initially be rende
     QVariant value() const;
 %Docstring
 Returns the value corresponding to this category.
+
+If the returned value is a list, then the category will match any of the values from this list.
 
 .. seealso:: :py:func:`setValue`
 %End
@@ -63,6 +67,8 @@ legends and the layer tree.
     void setValue( const QVariant &value );
 %Docstring
 Sets the ``value`` corresponding to this category.
+
+If ``value`` is a list, then the category will match any of the values from this list.
 
 .. seealso:: :py:func:`value`
 %End
@@ -179,8 +185,38 @@ Returns index of category with specified label (-1 if not found or not unique)
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
+%Docstring
+Changes the value for the category with the specified index.
+
+If ``value`` is a list, then the category will match any of the values from this list.
+
+.. seealso:: :py:func:`updateCategorySymbol`
+
+.. seealso:: :py:func:`updateCategoryLabel`
+%End
+
     bool updateCategorySymbol( int catIndex, QgsSymbol *symbol /Transfer/ );
+%Docstring
+Changes the ``symbol`` for the category with the specified index.
+
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategoryLabel`
+%End
+
     bool updateCategoryLabel( int catIndex, const QString &label );
+%Docstring
+Changes the ``label`` for the category with the specified index.
+
+A category's label is used to represent the category within
+legends and the layer tree.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategoryLabel`
+%End
 
     bool updateCategoryRenderState( int catIndex, bool render );
 %Docstring
