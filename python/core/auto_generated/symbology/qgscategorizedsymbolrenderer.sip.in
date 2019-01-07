@@ -12,7 +12,7 @@
 class QgsRendererCategory
 {
 %Docstring
-categorized renderer
+Represents an individual category (class) from a QgsCategorizedSymbolRenderer.
 %End
 
 %TypeHeaderCode
@@ -27,22 +27,62 @@ Constructor for QgsRendererCategory.
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
 %Docstring
-takes ownership of symbol
+Constructor for a new QgsRendererCategory, with the specified ``value`` and ``symbol``.
+
+The ownership of ``symbol`` is transferred to the category.
+
+The ``label`` argument specifies the label used for this category in legends and the layer tree.
+
+The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
-%Docstring
-copy constructor
-%End
-
 
     QVariant value() const;
+%Docstring
+Returns the value corresponding to this category.
+
+.. seealso:: :py:func:`setValue`
+%End
+
     QgsSymbol *symbol() const;
+%Docstring
+Returns the symbol which will be used to render this category.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
     QString label() const;
+%Docstring
+Returns the label for this category, which is used to represent the category within
+legends and the layer tree.
+
+.. seealso:: :py:func:`setLabel`
+%End
 
     void setValue( const QVariant &value );
+%Docstring
+Sets the ``value`` corresponding to this category.
+
+.. seealso:: :py:func:`value`
+%End
+
     void setSymbol( QgsSymbol *s /Transfer/ );
+%Docstring
+Sets the symbol which will be used to render this category.
+
+Ownership of the symbol is transferred to the category.
+
+.. seealso:: :py:func:`symbol`
+%End
+
     void setLabel( const QString &label );
+%Docstring
+Sets the ``label`` for this category, which is used to represent the category within
+legends and the layer tree.
+
+.. seealso:: :py:func:`label`
+%End
 
     bool renderState() const;
 %Docstring
@@ -62,9 +102,16 @@ Sets whether the category is currently enabled and should be rendered.
 .. versionadded:: 2.5
 %End
 
+
     QString dump() const;
+%Docstring
+Returns a string representing the categories settings, used for debugging purposes only.
+%End
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+%Docstring
+Converts the category to a matching SLD rule, within the specified DOM document and ``element``.
+%End
 
   protected:
 
