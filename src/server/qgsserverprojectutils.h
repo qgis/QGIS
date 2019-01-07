@@ -148,6 +148,13 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT int wmsImageQuality( const QgsProject &project );
 
   /**
+   * Returns the maximum number of atlas features which can be printed in a request
+   * \param project the QGIS project
+   * \return the number of atlas features
+   */
+  SERVER_EXPORT int wmsMaxAtlasFeatures( const QgsProject &project );
+
+  /**
    * Returns if layer ids are used as name in WMS.
    * \param project the QGIS project
    * \returns if layer ids are used as name.

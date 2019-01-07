@@ -498,6 +498,10 @@ namespace QgsWms
 
     const QgsWmsParameter pWmtver( QgsWmsParameter::WMTVER );
     save( pWmtver );
+
+    const QgsWmsParameter pAtlasPk( QgsWmsParameter::ATLAS_PK,
+                                    QVariant::StringList );
+    save( pAtlasPk );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerParameters &parameters )
@@ -1132,6 +1136,11 @@ namespace QgsWms
     }
 
     return label;
+  }
+
+  QStringList QgsWmsParameters::atlasPk() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ATLAS_PK ].toStringList();
   }
 
   QStringList QgsWmsParameters::highlightLabelString() const

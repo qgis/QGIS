@@ -76,6 +76,7 @@
 #include <QDir>
 
 //for printing
+#include "qgslayoutatlas.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutsize.h"
@@ -375,7 +376,103 @@ namespace QgsWms
 
     std::unique_ptr<QgsPrintLayout> layout( sourceLayout->clone() );
 
-    configurePrintLayout( layout.get(), mapSettings );
+    //atlas print?
+    QgsLayoutAtlas *atlas = 0;
+    QStringList atlasPk = mWmsParameters.atlasPk();
+    if ( !atlasPk.isEmpty() ) //atlas print requested?
+    {
+      atlas = layout->atlas();
+      if ( !atlas || !atlas->enabled() )
+      {
+        //error
+        throw QgsBadRequestException( QStringLiteral( "NoAtlas" ),
+                                      QStringLiteral( "The template has no atlas enabled" ) );
+      }
+
+      QgsVectorLayer *cLayer = atlas->coverageLayer();
+      if ( !cLayer )
+      {
+        throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                      QStringLiteral( "The atlas has no coverage layer" ) );
+      }
+
+      int maxAtlasFeatures = QgsServerProjectUtils::wmsMaxAtlasFeatures( *mProject );
+      if ( atlasPk.size() == 1 && atlasPk.at( 0 ) == QStringLiteral( "*" ) )
+      {
+        atlas->setFilterFeatures( false );
+        atlas->updateFeatures();
+        if ( atlas->count() > maxAtlasFeatures )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QString( "The project configuration allows printing maximum %1 atlas features at a time" ).arg( maxAtlasFeatures ) );
+        }
+      }
+      else
+      {
+        QgsAttributeList pkIndexes = cLayer->primaryKeyAttributes();
+        if ( pkIndexes.size() < 1 )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+        }
+        QStringList pkAttributeNames;
+        for ( int i = 0; i < pkIndexes.size(); ++i )
+        {
+          pkAttributeNames.append( cLayer->fields()[pkIndexes.at( i )].name() );
+        }
+
+        int nAtlasFeatures = atlasPk.size() / pkIndexes.size();
+        if ( nAtlasFeatures * pkIndexes.size() != atlasPk.size() ) //Test is atlasPk.size() is a multiple of pkIndexes.size(). Bail out if not
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QStringLiteral( "Wrong number of ATLAS_PK parameters" ) );
+        }
+
+        //number of atlas features might be restricted
+        if ( nAtlasFeatures > maxAtlasFeatures )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QString( "%1 atlas features have been requestet, but the project configuration only allows printing %2 atlas features at a time" )
+                                        .arg( nAtlasFeatures ).arg( maxAtlasFeatures ) );
+        }
+
+        QString filterString;
+        int currentAtlasPk = 0;
+
+        for ( int i = 0; i < nAtlasFeatures; ++i )
+        {
+          if ( i > 0 )
+          {
+            filterString.append( " OR " );
+          }
+
+          filterString.append( "( " );
+
+          for ( int j = 0; j < pkIndexes.size(); ++j )
+          {
+            if ( j > 0 )
+            {
+              filterString.append( " AND " );
+            }
+            filterString.append( QString( "\"%1\" = %2" ).arg( pkAttributeNames.at( j ) ).arg( atlasPk.at( currentAtlasPk ) ) );
+            ++currentAtlasPk;
+          }
+
+          filterString.append( " )" );
+        }
+
+        atlas->setFilterFeatures( true );
+        QString errorString;
+        atlas->setFilterExpression( filterString, errorString );
+        if ( !errorString.isEmpty() )
+        {
+          throw QgsBadRequestException( QStringLiteral( "AtlasPrintError" ),
+                                        QStringLiteral( "An error occurred during the Atlas print" ) );
+        }
+      }
+    }
+
+    configurePrintLayout( layout.get(), mapSettings, atlas );
 
     // Get the temporary output file
     QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
@@ -385,6 +482,7 @@ namespace QgsWms
 
     }
 
+    QString exportError;
     if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       // Settings for the layout exporter
@@ -398,8 +496,21 @@ namespace QgsWms
       }
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
-      QgsLayoutExporter exporter( layout.get() );
-      exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
+      if ( atlas )
+      {
+        //export first page of atlas
+        atlas->beginRender();
+        if ( atlas->next() )
+        {
+          QgsLayoutExporter atlasSvgExport( atlas->layout() );
+          atlasSvgExport.exportToSvg( tempOutputFile.fileName(), exportSettings );
+        }
+      }
+      else
+      {
+        QgsLayoutExporter exporter( layout.get() );
+        exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
+      }
     }
     else if ( formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || formatString.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -424,8 +535,21 @@ namespace QgsWms
       exportSettings.imageSize = QSize( static_cast<int>( width.length() * dpi / 25.4 ), static_cast<int>( height.length() * dpi / 25.4 ) );
       // Export first page only (unless it's a pdf, see below)
       exportSettings.pages.append( 0 );
-      QgsLayoutExporter exporter( layout.get() );
-      exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
+      if ( atlas )
+      {
+        //only can give back one page in server rendering
+        atlas->beginRender();
+        if ( atlas->next() )
+        {
+          QgsLayoutExporter atlasPngExport( atlas->layout() );
+          atlasPngExport.exportToImage( tempOutputFile.fileName(), exportSettings );
+        }
+      }
+      else
+      {
+        QgsLayoutExporter exporter( layout.get() );
+        exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
+      }
     }
     else if ( formatString.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -443,7 +567,14 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Export all pages
       QgsLayoutExporter exporter( layout.get() );
-      exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
+      if ( atlas )
+      {
+        exporter.exportToPdf( atlas, tempOutputFile.fileName(), exportSettings, exportError );
+      }
+      else
+      {
+        exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
+      }
     }
     else //unknown format
     {
@@ -454,7 +585,7 @@ namespace QgsWms
     return tempOutputFile.readAll();
   }
 
-  bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings )
+  bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint )
   {
     c->renderContext().setSelectionColor( mapSettings.selectionColor() );
     // Maps are configured first
@@ -463,42 +594,46 @@ namespace QgsWms
     // Layout maps now use a string UUID as "id", let's assume that the first map
     // has id 0 and so on ...
     int mapId = 0;
+
     for ( const auto &map : qgis::as_const( maps ) )
     {
       QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( mapId );
       mapId++;
 
-      //map extent is mandatory
-      if ( !cMapParams.mHasExtent )
+      if ( !atlasPrint || !map->atlasDriven() ) //No need to extent, scal, rotation set with atlas feature
       {
-        //remove map from composition if not referenced by the request
-        c->removeLayoutItem( map );
-        continue;
-      }
-      // Change CRS of map set to "project CRS" to match requested CRS
-      // (if map has a valid preset crs then we keep this crs and don't use the
-      // requested crs for this map item)
-      if ( mapSettings.destinationCrs().isValid() && !map->presetCrs().isValid() )
-        map->setCrs( mapSettings.destinationCrs() );
+        //map extent is mandatory
+        if ( !cMapParams.mHasExtent )
+        {
+          //remove map from composition if not referenced by the request
+          c->removeLayoutItem( map );
+          continue;
+        }
+        // Change CRS of map set to "project CRS" to match requested CRS
+        // (if map has a valid preset crs then we keep this crs and don't use the
+        // requested crs for this map item)
+        if ( mapSettings.destinationCrs().isValid() && !map->presetCrs().isValid() )
+          map->setCrs( mapSettings.destinationCrs() );
 
-      QgsRectangle r( cMapParams.mExtent );
-      if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
-           mapSettings.destinationCrs().hasAxisInverted() )
-      {
-        r.invert();
-      }
-      map->setExtent( r );
+        QgsRectangle r( cMapParams.mExtent );
+        if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
+             mapSettings.destinationCrs().hasAxisInverted() )
+        {
+          r.invert();
+        }
+        map->setExtent( r );
 
-      // scale
-      if ( cMapParams.mScale > 0 )
-      {
-        map->setScale( cMapParams.mScale );
-      }
+        // scale
+        if ( cMapParams.mScale > 0 )
+        {
+          map->setScale( cMapParams.mScale );
+        }
 
-      // rotation
-      if ( cMapParams.mRotation )
-      {
-        map->setMapRotation( cMapParams.mRotation );
+        // rotation
+        if ( cMapParams.mRotation )
+        {
+          map->setMapRotation( cMapParams.mRotation );
+        }
       }
 
       if ( !map->keepLayerSet() )
