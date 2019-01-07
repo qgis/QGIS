@@ -1,4 +1,4 @@
-r.mapcalculator
+r.mapcalc.simple
 Calculate new raster map from a r.mapcalc expression.
 Raster (r.*)
 ParameterRaster|a|Raster layer A|False
