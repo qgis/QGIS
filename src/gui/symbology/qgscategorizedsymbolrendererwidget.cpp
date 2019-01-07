@@ -164,6 +164,10 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             else // tooltip
               return res.join( '\n' );
           }
+          else if ( !category.value().isValid() || category.value().isNull() || category.value().toString().isEmpty() )
+          {
+            return tr( "all other values" );
+          }
           else
           {
             return category.value().toString();
@@ -173,6 +177,17 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
           return category.label();
       }
       break;
+    }
+
+    case Qt::FontRole:
+    {
+      if ( index.column() == 1 && category.value().type() != QVariant::List && ( !category.value().isValid() || category.value().isNull() || category.value().toString().isEmpty() ) )
+      {
+        QFont italicFont;
+        italicFont.setItalic( true );
+        return italicFont;
+      }
+      return QVariant();
     }
 
     case Qt::DecorationRole:
@@ -187,7 +202,8 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
     case Qt::ForegroundRole:
     {
       QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
-      if ( index.column() == 1 && category.value().type() == QVariant::List )
+      if ( index.column() == 1 && ( category.value().type() == QVariant::List
+                                    || !category.value().isValid() || category.value().isNull() || category.value().toString().isEmpty() ) )
       {
         QColor fadedTextColor = brush.color();
         fadedTextColor.setAlpha( 128 );
