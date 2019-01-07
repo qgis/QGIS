@@ -1155,11 +1155,26 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
 
 void QgsCategorizedSymbolRendererWidget::mergeClicked()
 {
-  QList<int> categoryIndexes = selectedCategories();
+  const QgsCategoryList &categories = mRenderer->categories();
+
+  QList<int> selectedCategoryIndexes = selectedCategories();
+  QList< int > categoryIndexes;
+
+  // filter out "" entry
+  for ( int i : selectedCategoryIndexes )
+  {
+    QVariant v = categories.at( i ).value();
+
+    if ( !v.isValid() || v == "" )
+    {
+      continue;
+    }
+
+    categoryIndexes.append( i );
+  }
+
   if ( categoryIndexes.count() < 2 )
     return;
-
-  const QgsCategoryList &categories = mRenderer->categories();
 
   QStringList labels;
   QVariantList values;

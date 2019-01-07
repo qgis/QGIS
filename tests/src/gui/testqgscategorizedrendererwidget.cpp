@@ -196,6 +196,8 @@ void TestQgsCategorizedRendererWidget::merge()
   // merging categories which are already lists
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 1, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
+  //"" entry should be ignored
+  widget->viewCategories->selectionModel()->select( widget->viewCategories->model()->index( 2, 0 ), QItemSelectionModel::Select | QItemSelectionModel::Rows );
   widget->mergeClicked();
 
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
