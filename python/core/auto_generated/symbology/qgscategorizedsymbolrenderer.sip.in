@@ -39,6 +39,9 @@ The ``render`` argument indicates whether the category should initially be rende
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
+%Docstring
+Copy constructor.
+%End
 
     QVariant value() const;
 %Docstring

@@ -248,9 +248,9 @@ void TestQgsCategorizedRendererWidget::model()
   QCOMPARE( model->data( model->index( 1, 2 ), Qt::DisplayRole ).toString(), QStringLiteral( "list" ) );
   QCOMPARE( model->data( model->index( 2, 2 ), Qt::DisplayRole ).toString(), QStringLiteral( "dd" ) );
 
-  QCOMPARE( model->data( model->index( 0, 0 ), Qt::CheckStateRole ).toInt(), Qt::Checked );
-  QCOMPARE( model->data( model->index( 1, 0 ), Qt::CheckStateRole ).toInt(), Qt::Checked );
-  QCOMPARE( model->data( model->index( 2, 0 ), Qt::CheckStateRole ).toInt(), Qt::Unchecked );
+  QCOMPARE( model->data( model->index( 0, 0 ), Qt::CheckStateRole ).toInt(), static_cast< int >( Qt::Checked ) );
+  QCOMPARE( model->data( model->index( 1, 0 ), Qt::CheckStateRole ).toInt(), static_cast< int >( Qt::Checked ) );
+  QCOMPARE( model->data( model->index( 2, 0 ), Qt::CheckStateRole ).toInt(), static_cast< int >( Qt::Unchecked ) );
 }
 
 QGSTEST_MAIN( TestQgsCategorizedRendererWidget )
