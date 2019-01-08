@@ -43,6 +43,7 @@ class CORE_EXPORT QgsQuadrilateral
      * \param p2 second point
      * \param p3 third point
      * \param p4 fourth point
+     * \see setPoints
      */
     QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 
@@ -52,6 +53,7 @@ class CORE_EXPORT QgsQuadrilateral
      * \param p2 second point
      * \param p3 third point
      * \param p4 fourth point
+     * \see setPoints
      */
     explicit QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 );
 
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsQuadrilateral
      * \param mode Construction mode to construct the rectangle from 3 points
      * \see ConstructionOption
      */
-    static QgsQuadrilateral rectangleFrom3points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
+    static QgsQuadrilateral rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
 
     /**
      * Construct a QgsQuadrilateral as a Rectangle from is extent.
@@ -118,6 +120,13 @@ class CORE_EXPORT QgsQuadrilateral
     // TODO:
     // Rhombus
 
+    /**
+     * Compare two QgsQuadrilateral but allow to specify the maximum difference
+     * allowable between points.
+     * \param other the QgsQuadrilateral to compare
+     * \param epsilon the maximum difference allowed / tolerance
+     */
+    bool equals( const QgsQuadrilateral &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const;
     bool operator==( const QgsQuadrilateral &other ) const;
     bool operator!=( const QgsQuadrilateral &other ) const;
 
@@ -148,7 +157,11 @@ class CORE_EXPORT QgsQuadrilateral
 
     /**
      * Set all points
-     * Returns false if the QgsQuadrilateral is not valid.
+     * Returns false if the QgsQuadrilateral is not valid:
+     * - The points do not have the same type
+     * - The quadrilateral would have auto intersections
+     * - The quadrilateral has double points
+     * - The quadrilateral has collinear points
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -188,7 +201,13 @@ class CORE_EXPORT QgsQuadrilateral
      * Returns 0 if the quadrilateral is empty.
      */
     double perimeter() const;
-
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsQuadrilateral: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
   private:
     QgsPoint mPoint1, mPoint2, mPoint3, mPoint4;
 };
