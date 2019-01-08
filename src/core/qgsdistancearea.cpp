@@ -457,7 +457,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
 
-double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, const QgsPointXY &pp2, double &fractionAlongLine ) const
+double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &pp1, const QgsPointXY &pp2, double &fractionAlongLine ) const
 {
   QgsPointXY p1 = pp1;
   QgsPointXY p2 = pp2;
@@ -487,7 +487,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
 
   int iterations = 0;
   double t = 0;
-  // iterate until our intersection candidate is within ~1 mm of the date line (or too many iterations happened)
+  // iterate until our intersection candidate is within ~1 mm of the antimeridian (or too many iterations happened)
   while ( std::fabs( lon - 180.0 ) > 0.00000001 && iterations < 100 )
   {
     if ( iterations > 0 && std::fabs( p2x - p1x ) > 5 )
@@ -516,7 +516,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
       intersectionDist *= ( 180.0 - p1x ) / ( lon - p1x );
     }
 
-    // now work out the point on the geodesic this far from p1 - this becomes our new candidate for crossing the date line
+    // now work out the point on the geodesic this far from p1 - this becomes our new candidate for crossing the antimeridian
 
     geod_position( &line, intersectionDist, &lat, &lon, &t );
     // we don't want to wrap longitudes > 180 around)
@@ -533,7 +533,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
   return lat;
 }
 
-QgsGeometry QgsDistanceArea::splitGeometryAtDateLine( const QgsGeometry &geometry ) const
+QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const
 {
   if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != QgsWkbTypes::LineGeometry )
     return geometry;
@@ -585,14 +585,14 @@ QgsGeometry QgsDistanceArea::splitGeometryAtDateLine( const QgsGeometry &geometr
         lat = y;
         mCoordTransform.transformInPlace( lon, lat, z );
 
-        //test if we crossed the dateline in this segment
+        //test if we crossed the antimeridian in this segment
         if ( i > 0 && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon  < -120 ) ) )
         {
           // we did!
           // when crossing the antimeridian, we need to calculate the latitude
           // at which the geodesic intersects the antimeridian
           double fract = 0;
-          double lat180 = latitudeGeodesicCrossesDateLine( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fract );
+          double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fract );
           if ( line->is3D() )
           {
             z = prevZ + ( p.z() - prevZ ) * fract;
@@ -711,11 +711,11 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
 
     if ( breakLine && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon < -120 ) ) )
     {
-      // when breaking the geodesic at the date line, we need to calculate the latitude
-      // at which the geodesic intersects the date line, and add points to both line segments at this latitude
-      // on the date line.
+      // when breaking the geodesic at the antimeridian, we need to calculate the latitude
+      // at which the geodesic intersects the antimeridian, and add points to both line segments at this latitude
+      // on the antimeridian.
       double fraction;
-      double lat180 = latitudeGeodesicCrossesDateLine( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
+      double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
 
       try
       {
