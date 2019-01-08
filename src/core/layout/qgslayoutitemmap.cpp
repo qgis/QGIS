@@ -138,6 +138,9 @@ void QgsLayoutItemMap::refresh()
 
 double QgsLayoutItemMap::scale() const
 {
+  if ( rect().isEmpty() )
+    return 0;
+
   QgsScaleCalculator calculator;
   calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //Using mm
