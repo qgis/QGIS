@@ -310,6 +310,7 @@
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
+%Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/qgsabstractcontentcache.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsactionscoperegistry.sip
