@@ -41,6 +41,7 @@ class QgsJoinWithLinesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsJoinWithLinesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
