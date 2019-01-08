@@ -126,6 +126,7 @@ class CORE_EXPORT QgsVector3D
       }
     }
 
+    //! Returns the distance with the \a other QgsVector3
     double distance( const QgsVector3D &other ) const
     {
       return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) +
@@ -133,6 +134,7 @@ class CORE_EXPORT QgsVector3D
                         ( mZ - other.z() ) * ( mZ - other.z() ) );
     }
 
+    //! Returns the perpendicular point of vector \a vp from [\a v1 - \a v2]
     static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp )
     {
       QgsVector3D d = ( v2 - v1 ) / v2.distance( v1 );

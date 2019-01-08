@@ -90,8 +90,14 @@ Normalizes the current vector in place.
 %End
 
     double distance( const QgsVector3D &other ) const;
+%Docstring
+Returns the distance with the ``other`` :py:class:`QgsVector3`
+%End
 
     static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp );
+%Docstring
+Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
+%End
 
 };
 
