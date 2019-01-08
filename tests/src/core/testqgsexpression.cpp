@@ -1129,6 +1129,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "coalesce null" ) << "coalesce(NULL)" << false << QVariant();
       QTest::newRow( "coalesce mid-null" ) << "coalesce(1, NULL, 3)" << false << QVariant( 1 );
       QTest::newRow( "coalesce exp" ) << "coalesce(NULL, 1+1)" << false << QVariant( 2 );
+      QTest::newRow( "nullif no substitution" ) << "nullif(3, '(none)')" << false << QVariant( 3 );
+      QTest::newRow( "nullif NULL" ) << "nullif(NULL, '(none)')" << false << QVariant();
+      QTest::newRow( "nullif substitute string" ) << "nullif('(none)', '(none)')" << false << QVariant();
+      QTest::newRow( "nullif substitute double" ) << "nullif(3.3, 3.3)" << false << QVariant();
+      QTest::newRow( "nullif substitute int" ) << "nullif(0, 0)" << false << QVariant();
       QTest::newRow( "regexp match" ) << "regexp_match('abc','.b.')" << false << QVariant( 1 );
       QTest::newRow( "regexp match invalid" ) << "regexp_match('abc DEF','[[[')" << true << QVariant();
       QTest::newRow( "regexp match escaped" ) << "regexp_match('abc DEF','\\\\s[A-Z]+')" << false << QVariant( 4 );
@@ -1552,7 +1557,7 @@ class TestQgsExpression: public QObject
       if ( featureMatched )
       {
         QgsFeature feat = res.value<QgsFeature>();
-        QCOMPARE( feat.id(), ( long long )featureId );
+        QCOMPARE( feat.id(), static_cast<QgsFeatureId>( featureId ) );
       }
     }
 
