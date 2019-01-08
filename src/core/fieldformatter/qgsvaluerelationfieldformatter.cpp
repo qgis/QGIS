@@ -39,9 +39,6 @@ QString QgsValueRelationFieldFormatter::id() const
 
 QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIndex )
-
   ValueRelationCache vrCache;
 
   if ( cache.isValid() )
@@ -55,7 +52,18 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
   if ( config.value( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
-    QStringList keyList = valueToStringList( value );
+    QStringList keyList;
+
+    if ( layer->fields().at( fieldIndex ).type() == QVariant::Map )
+    {
+      //because of json it's stored as QVariantList
+      keyList = value.toStringList();
+    }
+    else
+    {
+      keyList = valueToStringList( value );
+    }
+
     QStringList valueList;
 
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )

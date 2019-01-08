@@ -69,7 +69,22 @@ QVariant QgsValueRelationWidgetWrapper::value() const
         }
       }
     }
-    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    {
+      QVariantList vl;
+      //store as QVariantList because it's json
+      for ( const QString &s : qgis::as_const( selection ) )
+      {
+        vl << s;
+      }
+      v = vl;
+    }
+    else
+    {
+      //store as hstore string
+      v = selection.join( ',' ).prepend( '{' ).append( '}' );
+    }
   }
 
   if ( mLineEdit )
@@ -149,7 +164,17 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mTableWidget )
   {
-    QStringList checkList( QgsValueRelationFieldFormatter::valueToStringList( value ) );
+    QStringList checkList;
+
+    if ( layer()->fields().at( fieldIdx() ).type() == QVariant::Map )
+    {
+      //because of json it's stored as QVariantList
+      checkList = value.toStringList();
+    }
+    else
+    {
+      checkList = QgsValueRelationFieldFormatter::valueToStringList( value );
+    }
 
     QTableWidgetItem *lastChangedItem = nullptr;
 
