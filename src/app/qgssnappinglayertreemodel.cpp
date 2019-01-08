@@ -347,7 +347,7 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
         case 3:
           return tr( "Units" );
         case 4:
-          return tr( "Avoid intersection" );
+          return tr( "Avoid overlap" );
         default:
           return QVariant();
       }
@@ -493,7 +493,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       }
     }
 
-    // avoid intersection
+    // avoid intersection(Overlap)
     if ( idx.column() == AvoidIntersectionColumn )
     {
       if ( role == Qt::CheckStateRole && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
