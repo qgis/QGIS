@@ -456,7 +456,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
 
-double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, const QgsPointXY &pp2 ) const
+double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, const QgsPointXY &pp2, double &fractionAlongLine ) const
 {
   QgsPointXY p1 = pp1;
   QgsPointXY p2 = pp2;
@@ -481,6 +481,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
   geod_geodesicline line;
   geod_inverseline( &line, &geod, p1y, p1x, p2y, p2x, GEOD_ALL );
 
+  const double totalDist = line.s13;
   double intersectionDist = line.s13;
 
   int iterations = 0;
@@ -524,6 +525,8 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
     iterations++;
     QgsDebugMsgLevel( QStringLiteral( "After %1 iterations lon is %2, lat is %3, dist from p1: %4" ).arg( iterations ).arg( lon ).arg( lat ).arg( intersectionDist ), 4 );
   }
+
+  fractionAlongLine = intersectionDist / totalDist;
 
   // either converged on 180 longitude or hit too many iterations
   return lat;
@@ -583,7 +586,8 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
       // when breaking the geodesic at the date line, we need to calculate the latitude
       // at which the geodesic intersects the date line, and add points to both line segments at this latitude
       // on the date line.
-      double lat180 = latitudeGeodesicCrossesDateLine( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ) );
+      double fraction;
+      double lat180 = latitudeGeodesicCrossesDateLine( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
 
       try
       {

@@ -328,9 +328,14 @@ class CORE_EXPORT QgsDistanceArea
      * \a p1 and \a p2 must be in the ellipsoidCrs() of this QgsDistanceArea object. The returned latitude
      * will also be in this same CRS.
      *
+     * \param p1 Starting point, in ellipsoidCrs()
+     * \param p2 Ending point, in ellipsoidCrs()
+     * \param fractionAlongLine will be set to the fraction along the geodesic line joining \a p1 to \a p2 at which the date line crossing occurs.
+     *
+     * \returns the latitude at which the geodesic crosses the date line
      * \since QGIS 3.6
      */
-    double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
+    double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine SIP_OUT ) const;
 
   private:
 

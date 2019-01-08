@@ -391,7 +391,7 @@ will return two lines, corresponding to the portions at either side of the date 
 .. versionadded:: 3.6
 %End
 
-    double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
+    double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine /Out/ ) const;
 %Docstring
 Calculates the latitude at which the geodesic line joining ``p1`` and ``p2`` crosses
 the international date line (longitude +/- 180 degrees).
@@ -400,6 +400,12 @@ The ellipsoid settings defined on this QgsDistanceArea object will be used durin
 
 ``p1`` and ``p2`` must be in the ellipsoidCrs() of this QgsDistanceArea object. The returned latitude
 will also be in this same CRS.
+
+:param p1: Starting point, in ellipsoidCrs()
+:param p2: Ending point, in ellipsoidCrs()
+
+:return: - the latitude at which the geodesic crosses the date line
+         - fractionAlongLine:  will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the date line crossing occurs.
 
 .. versionadded:: 3.6
 %End
