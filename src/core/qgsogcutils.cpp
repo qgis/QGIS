@@ -1808,6 +1808,10 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
       {
         escape = element.attribute( "escape" );
       }
+      else if ( element.hasAttribute( "escapeChar" ) )
+      {
+        escape = element.attribute( "escapeChar" );
+      }
       // replace
       QString oprValue = static_cast<const QgsExpression::NodeLiteral*>( opRight )->value().toString();
       if ( !wildCard.isEmpty() && wildCard != "%" )
