@@ -24,12 +24,7 @@ class QgsSLLayerItem : public QgsLayerItem
     QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void deleteLayer();
+    bool deleteLayer() override;
 #endif
 };
 

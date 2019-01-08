@@ -23,6 +23,7 @@
 #include "qgsnative.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
 #include "qgsnewnamedialog.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserdockwidget_p.h"
@@ -390,6 +391,25 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   } );
   menu->addAction( addAction );
 
+  if ( item->capabilities2() & QgsDataItem::Delete )
+  {
+    QStringList selectedDeletableItemPaths;
+    for ( QgsDataItem *selectedItem : selectedItems )
+    {
+      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & QgsDataItem::Delete ) )
+        selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
+    }
+
+    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer" )
+                               : tr( "Delete Selected Layers" );
+    QAction *deleteAction = new QAction( deleteText, menu );
+    connect( deleteAction, &QAction::triggered, this, [ = ]
+    {
+      deleteLayers( selectedDeletableItemPaths );
+    } );
+    menu->addAction( deleteAction );
+  }
+
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
@@ -455,6 +475,22 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
   }
   if ( !layerUriList.isEmpty() )
     QgisApp::instance()->handleDropUriList( layerUriList );
+}
+
+void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths )
+{
+  for ( const QString &itemPath : itemPaths )
+  {
+    //get the item from browserModel by its path
+    QgsLayerItem *item = qobject_cast<QgsLayerItem *>( QgisApp::instance()->browserModel()->dataItem( QgisApp::instance()->browserModel()->findUri( itemPath ) ) );
+    if ( !item )
+    {
+      QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
+      return;
+    }
+    if ( !item->deleteLayer() )
+      QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+  }
 }
 
 void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )

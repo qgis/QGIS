@@ -80,9 +80,6 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 {
   QList<QAction *> lst;
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'…" ).arg( mName ), this );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
-  lst.append( actionDeleteLayer );
   // Check capabilities: for now rename is only available for vectors
   if ( capabilities2() & QgsDataItem::Capability::Rename )
   {
@@ -496,7 +493,7 @@ void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
   }
 }
 
-void QgsGeoPackageAbstractLayerItem::deleteLayer()
+bool QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   // Check if the layer(s) are in the registry
   const QList<QgsMapLayer *> layersList( layersInProject( ) );
@@ -505,14 +502,14 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
                                 " do you want to remove it from the project and delete it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     {
-      return;
+      return true;
     }
   }
   else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
                                    QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
   {
-    return;
+    return true;
   }
 
   if ( ! layersList.isEmpty() )
@@ -532,7 +529,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
     if ( mParent )
       mParent->refreshConnections();
   }
-
+  return true;
 }
 
 void QgsGeoPackageAbstractLayerItem::renameLayer( )
@@ -733,6 +730,7 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
+  mCapabilities |= Delete;
   mToolTip = uri;
   setState( Populated ); // no children are expected
 }

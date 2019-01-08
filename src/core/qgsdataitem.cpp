@@ -701,6 +701,11 @@ QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
   }
 }
 
+bool QgsLayerItem::deleteLayer()
+{
+  return false;
+}
+
 bool QgsLayerItem::equal( const QgsDataItem *other )
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );

@@ -371,6 +371,30 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   return QModelIndex(); // not found
 }
 
+QModelIndex QgsBrowserModel::findUri( const QString &uri, QModelIndex index )
+{
+  for ( int i = 0; i < this->rowCount( index ); i++ )
+  {
+    QModelIndex idx = this->index( i, 0, index );
+
+    if ( qobject_cast<QgsLayerItem *>( dataItem( idx ) ) )
+    {
+      QString itemUri = qobject_cast<QgsLayerItem *>( dataItem( idx ) )->uri();
+
+      if ( itemUri == uri )
+      {
+        QgsDebugMsgLevel( "Arrived " + itemUri, 4 );
+        return idx; // we have found the item we have been looking for
+      }
+    }
+
+    QModelIndex childIdx = findUri( uri, idx );
+    if ( childIdx.isValid() )
+      return childIdx;
+  }
+  return QModelIndex();
+}
+
 void QgsBrowserModel::connectItem( QgsDataItem * )
 {
   // deprecated, no use

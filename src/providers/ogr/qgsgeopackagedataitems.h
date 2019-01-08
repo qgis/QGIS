@@ -47,10 +47,10 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     QList<QgsMapLayer *> layersInProject() const;
 
 #ifdef HAVE_GUI
+    bool deleteLayer() override;
     QList<QAction *> actions( QWidget *menu ) override;
 
   public slots:
-    virtual void deleteLayer();
     //! Renames the layer: default implementation does nothing!
     virtual void renameLayer();
 #endif

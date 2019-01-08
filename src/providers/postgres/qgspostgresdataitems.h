@@ -129,7 +129,7 @@ class QgsPGLayerItem : public QgsLayerItem
 
   public slots:
 #ifdef HAVE_GUI
-    void deleteLayer();
+    bool deleteLayer() override;
     void renameLayer();
     void truncateTable();
     void refreshMaterializedView();
