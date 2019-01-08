@@ -325,11 +325,16 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // painter is already scaled to dots
       // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
       p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
+      // scale to layout units for background and frame rendering
+      p.scale( context.scaleFactor(), context.scaleFactor() );
       drawBackground( context );
+      p.scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
       double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
       QgsLayoutItemRenderContext itemRenderContext( context, viewScale );
       draw( itemRenderContext );
+      p.scale( context.scaleFactor(), context.scaleFactor() );
       drawFrame( context );
+      p.scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
       p.end();
 
       QgsImageOperation::multiplyOpacity( image, mEvaluatedOpacity );
