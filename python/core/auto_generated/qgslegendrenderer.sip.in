@@ -53,6 +53,10 @@ Draw the legend with given painter. It will occupy the area reported in legendSi
 Painter should be scaled beforehand so that units correspond to millimeters.
 %End
 
+    void drawLegend( QgsRenderContext *rendercontext);
+%Docstring
+Draw the legend with given painter. It will occupy the area reported in legendSize().
+%End
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
     static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
