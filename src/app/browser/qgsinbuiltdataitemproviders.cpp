@@ -23,6 +23,7 @@
 #include "qgsnative.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
 #include "qgsnewnamedialog.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserdockwidget_p.h"
@@ -484,7 +485,7 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths )
     QgsLayerItem *item = qobject_cast<QgsLayerItem *>( QgisApp::instance()->browserModel()->dataItem( QgisApp::instance()->browserModel()->findUri( itemPath ) ) );
     if ( !item )
     {
-      QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item with path %1 not found anymore." ).arg( itemPath ) );
+      QgsMessageLog::logMessage( tr( "Item with path %1 no longer exists." ).arg( itemPath ) );
       return;
     }
     if ( !item->deleteLayer() )

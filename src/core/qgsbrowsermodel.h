@@ -141,7 +141,10 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * items, i.e. it does not fetch children.
      * \param uri item uri
      * \param index the current index of the parent (to search for children)
-     * \returns model index, invalid if item not found */
+     * \returns model index, invalid if item not found
+     *
+     * \since QGIS 3.6
+     */
     QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
 
     /**
