@@ -560,6 +560,7 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
   currentPart << p1;
   double d = interval;
   double prevLon = p1.x();
+  double prevLat = p1.y();
   bool lastRun = false;
   double t = 0;
   while ( true )
@@ -582,7 +583,7 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
       // when breaking the geodesic at the date line, we need to calculate the latitude
       // at which the geodesic intersects the date line, and add points to both line segments at this latitude
       // on the date line.
-      double lat180 = latitudeGeodesicCrossesDateLine( currentPart.constLast(), QgsPointXY( lon, lat ) );
+      double lat180 = latitudeGeodesicCrossesDateLine( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ) );
 
       try
       {
@@ -621,6 +622,7 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
     }
 
     prevLon = lon;
+    prevLat = lat;
 
     try
     {
