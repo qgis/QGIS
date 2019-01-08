@@ -104,6 +104,7 @@ void QgsExpressionSelectionDialog::mActionSelect_triggered()
 {
   mLayer->selectByExpression( mExpressionBuilder->expressionText(),
                               QgsVectorLayer::SetSelection );
+  pushSelectedFeaturesMessage();
   saveRecent();
 }
 
@@ -111,6 +112,7 @@ void QgsExpressionSelectionDialog::mActionAddToSelection_triggered()
 {
   mLayer->selectByExpression( mExpressionBuilder->expressionText(),
                               QgsVectorLayer::AddToSelection );
+  pushSelectedFeaturesMessage();
   saveRecent();
 }
 
@@ -118,6 +120,7 @@ void QgsExpressionSelectionDialog::mActionSelectIntersect_triggered()
 {
   mLayer->selectByExpression( mExpressionBuilder->expressionText(),
                               QgsVectorLayer::IntersectSelection );
+  pushSelectedFeaturesMessage();
   saveRecent();
 }
 
@@ -125,7 +128,26 @@ void QgsExpressionSelectionDialog::mActionRemoveFromSelection_triggered()
 {
   mLayer->selectByExpression( mExpressionBuilder->expressionText(),
                               QgsVectorLayer::RemoveFromSelection );
+  pushSelectedFeaturesMessage();
   saveRecent();
+}
+
+void QgsExpressionSelectionDialog::pushSelectedFeaturesMessage()
+{
+  int count = mLayer->selectedFeatureCount();
+  if ( count > 0 )
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "%1 matching %2 selected" ).arg( count )
+                              .arg( count == 1 ? tr( "feature" ) : tr( "features" ) ),
+                              Qgis::Info );
+  }
+  else
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              Qgis::Warning );
+  }
 }
 
 void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
