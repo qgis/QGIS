@@ -525,23 +525,23 @@ bool QgsGeoPackageAbstractLayerItem::deleteLayer()
   }
   else
   {
-    if ( mParent )
+
+    QgsGeoPackageConnectionItem *connectionParentItem = qobject_cast<QgsGeoPackageConnectionItem *>( mParent );
+    if ( connectionParentItem )
     {
-      QgsGeoPackageConnectionItem *connectionParentItem = qobject_cast<QgsGeoPackageConnectionItem *>( mParent );
-      if ( connectionParentItem )
+      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> has been deleted successfully."
+                                  " Compact database (VACUUM) <b>%2</b> now?" ).arg( mName, connectionParentItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> deleted successfully."
-                                    " Compact database (VACUUM) <b>%2</b> now?" ).arg( mName, connectionParentItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
-        {
-          connectionParentItem->vacuumGeoPackageDbAction();
-        }
+        connectionParentItem->vacuumGeoPackageDbAction();
       }
-      mParent->refreshConnections();
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "The Layer <b>%1</b> has been deleted successfully." ).arg( mName ) );
     }
+    if ( mParent )
+      mParent->refreshConnections();
+
   }
   return true;
 }
