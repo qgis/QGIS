@@ -70,6 +70,11 @@ class CORE_EXPORT QgsQuadrilateral
 
     /**
      * Construct a QgsQuadrilateral as a Rectangle from 3 points.
+     * In the case where one of the points is of type PointZ. The other points
+     * will also be of type Z, even if they are of type Point. In addition,
+     * the z used will be the one of the first point with a Z.
+     * This ensures consistency in point types and the ability to export to a
+     * Polygon or LineString.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -121,7 +126,7 @@ class CORE_EXPORT QgsQuadrilateral
     // Rhombus
 
     /**
-     * Compare two QgsQuadrilateral but allow to specify the maximum difference
+     * Compare two QgsQuadrilateral but allows you to specify the maximum difference
      * allowable between points.
      * \param other the QgsQuadrilateral to compare
      * \param epsilon the maximum difference allowed / tolerance

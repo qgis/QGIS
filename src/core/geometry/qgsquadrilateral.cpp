@@ -46,11 +46,11 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
   if ( !std::isnan( z ) )
   {
     pType = QgsWkbTypes::addZ( pType );
-
   }
   else
   {
-
+    // This is only necessary to facilitate the calculation of the perpendicular
+    // point with QgsVector3D.
     if ( mode == Projected )
       z = 0;
   }
@@ -59,14 +59,13 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
   QgsPoint point3( pType, p3.x(), p3.y(), std::isnan( p3.z() ) ? z : p3.z() );
 
   QgsQuadrilateral rect;
+  double inclination = 90.0;
+  double distance = 0;
   double azimuth = point1.azimuth( point2 ) + 90.0 * QgsGeometryUtils::leftOfLine( point3.x(), point3.y(), point1.x(), point1.y(), point2.x(), point2.y() );
   switch ( mode )
   {
     case Distance:
     {
-      double inclination = 90.0;
-      double distance = 0;
-
       if ( point2.is3D() && point3.is3D() )
       {
         inclination = point2.inclination( point3 );
@@ -85,31 +84,29 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
       QgsVector3D v3 = QgsVector3D::perpendicularPoint( QgsVector3D( point1.x(), point1.y(), std::isnan( point1.z() ) ? z : point1.z() ),
                        QgsVector3D( point2.x(), point2.y(), std::isnan( point2.z() ) ? z : point2.z() ),
                        QgsVector3D( point3.x(), point3.y(), std::isnan( point3.z() ) ? z : point3.z() ) );
-      QgsPoint point_3( pType, v3.x(), v3.y(), v3.z() );
-      double inclination = 90.0;
-      double distance = 0;
+      QgsPoint pV3( pType, v3.x(), v3.y(), v3.z() );
       if ( p3.is3D() )
       {
-        inclination = point_3.inclination( p3 );
-        distance = p3.distance3D( point_3 );
+        inclination = pV3.inclination( p3 );
+        distance = p3.distance3D( pV3 );
       }
       else
-        distance = p3.distance( point_3 );
+        distance = p3.distance( pV3 );
 
-
-      QgsPoint pf1 = point1;
-      QgsPoint pf2 = point2;
-      QgsPoint pf3 = point2.project( distance, azimuth, inclination );
-      QgsPoint pf4 = point1.project( distance, azimuth, inclination ) ;
+      // Final points
+      QgsPoint fp1 = point1;
+      QgsPoint fp2 = point2;
+      QgsPoint fp3 = point2.project( distance, azimuth, inclination );
+      QgsPoint fp4 = point1.project( distance, azimuth, inclination ) ;
 
       if ( pType != QgsWkbTypes::PointZ )
       {
-        pf1.dropZValue();
-        pf2.dropZValue();
-        pf3.dropZValue();
-        pf4.dropZValue();
+        fp1.dropZValue();
+        fp2.dropZValue();
+        fp3.dropZValue();
+        fp4.dropZValue();
       }
-      rect.setPoints( pf1, pf2, pf3, pf4 );
+      rect.setPoints( fp1, fp2, fp3, fp4 );
       break;
     }
   }
