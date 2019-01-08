@@ -59,7 +59,16 @@ Draw the legend with given painter. It will occupy the area reported in legendSi
 %End
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
+%Docstring
+Set the style of a QgsLayerTreeNode,
+This class requires a node and a style to apply to the node
+%End
+
     static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
+%Docstring
+Returns the style of a given QgsLayerTreeNode in a given QgsLayerTreeModel
+%End
+
 
 };
 
