@@ -2988,6 +2988,48 @@ tests:
         name: expected/hub_lines_field_subset.gml
         type: vector
 
+  - algorithm: native:hublines
+    name: Hub lines geodesic
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      ANTIMERIDIAN_SPLIT: false
+      GEODESIC: true
+      GEODESIC_DISTANCE: 1000.0
+      HUBS:
+        name: custom/geodesic_hub.shp
+        type: vector
+      HUB_FIELD: id
+      SPOKES:
+        name: custom/geodesic_spoke.shp
+        type: vector
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/geodesic_hub_no_split.shp
+        type: vector
+
+  - algorithm: native:hublines
+    name: Hub lines, geodesic, split
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      ANTIMERIDIAN_SPLIT: true
+      GEODESIC: true
+      GEODESIC_DISTANCE: 1000.0
+      HUBS:
+        name: custom/geodesic_hub.shp
+        type: vector
+      HUB_FIELD: id
+      SPOKES:
+        name: custom/geodesic_spoke.shp
+        type: vector
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/geodesic_hub_split.shp
+        type: vector
+
   - algorithm: qgis:pointstopath
     name: Points to path (non grouped)
     params:
