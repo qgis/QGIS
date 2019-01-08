@@ -525,11 +525,10 @@ bool QgsGeoPackageAbstractLayerItem::deleteLayer()
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
     if ( mParent )
     {
       QgsGeoPackageConnectionItem *connectionParentItem = qobject_cast<QgsGeoPackageConnectionItem *>( mParent );
-      if( connectionParentItem )
+      if ( connectionParentItem )
       {
         if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> deleted successfully."
                                     " Compact database (VACUUM) <b>%2</b> now?" ).arg( mName, connectionParentItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
@@ -538,6 +537,10 @@ bool QgsGeoPackageAbstractLayerItem::deleteLayer()
         }
       }
       mParent->refreshConnections();
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
     }
   }
   return true;
