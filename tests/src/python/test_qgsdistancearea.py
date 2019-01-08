@@ -694,6 +694,11 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                         QgsPointXY(179.92498611649580198, 7.24703528617311754))
         self.assertAlmostEqual(lat, 7.6112109902580265, 5)
         self.assertAlmostEqual(fract, 0.04111771567489498, 5)
+        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(360 - 178.20070563806575592, 16.09649962419504732),
+                                                        QgsPointXY(179.92498611649580198, 7.24703528617311754))
+        self.assertAlmostEqual(lat, 7.6112109902580265, 5)
+        self.assertAlmostEqual(fract, 0.04111771567489498, 5)
+
         lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(175.76717768974583578, 8.93749416467257873),
                                                         QgsPointXY(-175.15030911497356669, 8.59851183021221033))
         self.assertAlmostEqual(lat, 8.80683758146703966, 5)
@@ -762,6 +767,73 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                             1000000, True))
         self.assertEqual(g.asWkt(0),
                          'MultiLineString ((-13536427 14138932, -16514348 11691516, -17948849 9406595, -18744235 7552985, -19255354 6014890, -19622372 4688888, -19909239 3505045, -20037508 2933522),(20037508 2933522, 19925702 2415579, 19712755 1385803, 19513769 388441, 19318507 -600065, 19117459 -1602293, 18899973 -2642347, 18651869 -3748726, 18351356 -4958346, 17960498 -6322823, 17404561 -7918366, 16514601 -9855937, 14851845 -12232940, 13760912 -13248201))')
+
+    def testSplitGeometryAtDateline(self):
+        da = QgsDistanceArea()
+        crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        da.setSourceCrs(crs, QgsProject.instance().transformContext())
+        da.setEllipsoid("WGS84")
+
+        # noops
+        g = da.splitGeometryAtDateLine(QgsGeometry())
+        self.assertTrue(g.isNull())
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('Point(1 2)'))
+        self.assertEqual(g.asWkt(), 'Point (1 2)')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('MultiPoint(1 2, 3 4)'))
+        self.assertEqual(g.asWkt(), 'MultiPoint ((1 2),(3 4))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('PointZ(1 2 3)'))
+        self.assertEqual(g.asWkt(), 'PointZ (1 2 3)')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('PointM(1 2 3)'))
+        self.assertEqual(g.asWkt(), 'PointM (1 2 3)')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString()'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ()')
+
+        # lines
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(0 0, -170 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((0 0, -170 0))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(-170 0, 0 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((-170 0, 0 0))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(179 0, -179 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((179 0, 180 0),(-180 0, -179 0))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(179 0, 181 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((179 0, 180 0),(-180 0, -179 0))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(-179 0, 179 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((-179 0, -180 0),(180 0, 179 0))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(181 0, 179 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((-179 0, -180 0),(180 0, 179 0))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(179 10, -179 -20)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 10, 180 -5.362),(-180 -5.362, -179 -20))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(179 -80, -179 70)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 -80, 180 -55.685),(-180 -55.685, -179 70))')
+
+        # multiline input
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('MultiLineString((1 10, 50 30),(179 -80, -179 70))'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((1 10, 50 30),(179 -80, 180 -55.685),(-180 -55.685, -179 70))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('MultiLineString((1 10, 50 30),(179 -80, 179.99 70))'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((1 10, 50 30),(179 -80, 179.99 70))')
+
+        # with z/m
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineStringZ(179 -80 1, -179 70 10)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineStringM(179 -80 1, -179 70 10)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringM ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineStringZM(179 -80 1 -4, -179 70 10 -30)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringZM ((179 -80 1 -4, 180 -55.685 2.466 -8.234),(-180 -55.685 2.466 -8.234, -179 70 10 -30))')
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('MultiLineStringZ((179 -80 1, -179 70 10),(-170 -5 1, -181 10 5))'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10),(-170 -5 1, -181 10 5))')
+
+        # different ellipsoid - should change intersection latitude
+        da.setEllipsoid("Phobos2000")
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString(179 10, -179 -20)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 10, 180 -5.459),(-180 -5.459, -179 -20))')
+
+        # with reprojection
+        da.setEllipsoid("WGS84")
+        # with reprojection
+        da.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext())
+
+        g = da.splitGeometryAtDateLine(QgsGeometry.fromWkt('LineString( -13536427 14138932, 13760912 -13248201)'))
+        self.assertEqual(g.asWkt(1), 'MultiLineString ((-13536427 14138932, -20037508.3 2933521.7),(20037508.3 2933521.7, 13760912 -13248201))')
 
 
 if __name__ == '__main__':

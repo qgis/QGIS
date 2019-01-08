@@ -333,9 +333,34 @@ class CORE_EXPORT QgsDistanceArea
      * \param fractionAlongLine will be set to the fraction along the geodesic line joining \a p1 to \a p2 at which the date line crossing occurs.
      *
      * \returns the latitude at which the geodesic crosses the date line
+     * \see breakGeometryAtDateLine()
+     *
      * \since QGIS 3.6
      */
     double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine SIP_OUT ) const;
+
+    /**
+     * Splits a (Multi)LineString \a geometry at the international date line (longitude +/- 180 degrees).
+     * The returned geometry will always be a multi-part geometry.
+     *
+     * Whenever line segments in the input geometry cross the international date line, they will be
+     * split into two segments, with the latitude of the breakpoint being determined using a geodesic
+     * line connecting the points either side of this segment.
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a geometry must be in the sourceCrs() of this QgsDistanceArea object. The returned geometry
+     * will also be in this same CRS.
+     *
+     * If \a geometry contains M or Z values, these will be linearly interpolated for the new vertices
+     * created at the date line.
+     *
+     * \note Non-(Multi)LineString geometries will be returned unchanged.
+     *
+     * \see latitudeGeodesicCrossesDateLine()
+     * \since QGIS 3.6
+     */
+    QgsGeometry splitGeometryAtDateLine( const QgsGeometry &geometry ) const;
 
   private:
 
