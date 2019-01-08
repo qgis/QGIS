@@ -532,11 +532,11 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
   return lat;
 }
 
-QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
+QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
 {
   if ( !willUseEllipsoid() )
   {
-    return QList< QList< QgsPointXY > >() << ( QList< QgsPointXY >() << p1 << p2 );
+    return QVector< QVector< QgsPointXY > >() << ( QVector< QgsPointXY >() << p1 << p2 );
   }
 
   geod_geodesic geod;
@@ -551,15 +551,15 @@ QList< QList<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, 
   catch ( QgsCsException & )
   {
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate geodesic line." ) );
-    return QList< QList< QgsPointXY > >();
+    return QVector< QVector< QgsPointXY > >();
   }
 
   geod_geodesicline line;
   geod_inverseline( &line, &geod, pp1.y(), pp1.x(), pp2.y(), pp2.x(), GEOD_ALL );
   const double totalDist = line.s13;
 
-  QList< QList< QgsPointXY > > res;
-  QList< QgsPointXY > currentPart;
+  QVector< QVector< QgsPointXY > > res;
+  QVector< QgsPointXY > currentPart;
   currentPart << p1;
   double d = interval;
   double prevLon = p1.x();

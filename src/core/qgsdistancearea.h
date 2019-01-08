@@ -317,7 +317,7 @@ class CORE_EXPORT QgsDistanceArea
      *
      * \since QGIS 3.6
      */
-    QList< QList< QgsPointXY > > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
+    QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
 
     /**
      * Calculates the latitude at which the geodesic line joining \a p1 and \a p2 crosses
