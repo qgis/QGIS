@@ -143,6 +143,9 @@ RUN locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
+# OTB: download and install otb packages for QGIS tests
+RUN curl https://orfeo-toolbox.org/packages/qgis/OTB-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run
+ENV OTB_INSTALL_DIR=/tmp/OTB-Linux64
 ENV CC=/usr/lib/ccache/clang
 ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
