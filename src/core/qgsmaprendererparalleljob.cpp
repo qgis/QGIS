@@ -297,7 +297,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     // draw the labels!
     try
     {
-      drawLabeling( self->mSettings, job.context, self->mLabelingEngineV2.get(), &painter );
+      drawLabeling( job.context, self->mLabelingEngineV2.get(), &painter );
     }
     catch ( QgsException &e )
     {
