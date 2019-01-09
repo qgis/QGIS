@@ -71,9 +71,11 @@ Draws the legend with given ``painter``. The legend will occupy the area reporte
 The ``painter`` should be scaled beforehand so that units correspond to millimeters.
 %End
 
-    void drawLegend( QgsRenderContext *rendercontext );
+    void drawLegend( QgsRenderContext &context );
 %Docstring
-Draws the legend using a given :py:class:`QgsRenderContext`. The legend will occupy the area reported in legendSize().
+Draws the legend using a given render ``context``. The legend will occupy the area reported in legendSize().
+
+.. versionadded:: 3.6
 %End
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );

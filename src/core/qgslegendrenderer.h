@@ -86,9 +86,11 @@ class CORE_EXPORT QgsLegendRenderer
     void drawLegend( QPainter *painter );
 
     /**
-     * Draws the legend using a given QgsRenderContext. The legend will occupy the area reported in legendSize().
+     * Draws the legend using a given render \a context. The legend will occupy the area reported in legendSize().
+     *
+     * \since QGIS 3.6
      */
-    void drawLegend( QgsRenderContext *rendercontext );
+    void drawLegend( QgsRenderContext &context );
 
     /**
      * Sets the \a style of a \a node.
