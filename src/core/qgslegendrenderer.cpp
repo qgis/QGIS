@@ -830,12 +830,12 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
 }
 
 
-void QgsLegendRenderer::drawLegend( QgsRenderContext *rendercontext )
+void QgsLegendRenderer::drawLegend( QgsRenderContext &context )
 {
-  paintAndDetermineSize( rendercontext );
+  paintAndDetermineSize( &context );
 }
 
-QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext *rendercontext )
+QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext *context )
 {
   QSizeF size( 0, 0 );
   QgsLayerTreeGroup *rootGroup = mLegendModel->rootGroup();
@@ -888,7 +888,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext *rendercontext
       point.ry() += spaceAboveAtom( atom );
     }
 
-    QSizeF atomSize = drawAtom( atom, rendercontext, point );
+    QSizeF atomSize = drawAtom( atom, context, point );
     columnWidth = std::max( atomSize.width(), columnWidth );
 
     point.ry() += atom.size.height();
@@ -929,7 +929,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext *rendercontext
       point.rx() = size.width() - mSettings.boxSpace();
     }
     point.ry() = mSettings.boxSpace();
-    drawTitle( rendercontext, point, mSettings.titleAlignment(), size.width() );
+    drawTitle( context, point, mSettings.titleAlignment(), size.width() );
   }
 
   return size;
