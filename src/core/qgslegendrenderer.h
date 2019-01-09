@@ -45,37 +45,62 @@ class QgsRenderContext;
 class CORE_EXPORT QgsLegendRenderer
 {
   public:
-    //! Construct legend renderer. The ownership of legend model does not change
+
+    /**
+     * Constructor for QgsLegendRenderer. The ownership of the legend model is not changed,
+     * and the model must exist for the lifetime of this renderer.
+     */
     QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings );
 
-    //! Run the layout algorithm and determine the size required for legend
+    /**
+     * Runs the layout algorithm and returns the minimum size required for the legend.
+     * \see setLegendSize()
+     * \see legendSize()
+     */
     QSizeF minimumSize();
 
-    //! Sets the preferred resulting legend size.
+    /**
+     * Sets the preferred resulting legend size.
+     *
+     * If the size is null, the legend will be drawn with the minimum possible size to fit its content.
+     *
+     * \see legendSize()
+     * \see minimumSize()
+     */
     void setLegendSize( QSizeF s ) { mLegendSize = s; }
 
-    //! Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size
+    /**
+     * Returns the preferred legend size set by the client.
+     *
+     * If the returned size is null, the legend will be drawn with the minimum possible size to fit its content.
+     *
+     * \see minimumSize()
+     * \see setLegendSize()
+     */
     QSizeF legendSize() const { return mLegendSize; }
 
     /**
-     * Draw the legend with given painter. It will occupy the area reported in legendSize().
-     * Painter should be scaled beforehand so that units correspond to millimeters.
+     * Draws the legend with given \a painter. The legend will occupy the area reported in legendSize().
+     * The \a painter should be scaled beforehand so that units correspond to millimeters.
      */
     void drawLegend( QPainter *painter );
 
     /**
-     * Draw the legend using a given QgsRenderContext. It will occupy the area reported in legendSize().
+     * Draws the legend using a given QgsRenderContext. The legend will occupy the area reported in legendSize().
      */
     void drawLegend( QgsRenderContext *rendercontext );
 
     /**
-     * Set the style of a QgsLayerTreeNode,
-     * This class requires a node and a style to apply to the node
+     * Sets the \a style of a \a node.
+     *
+     * \see nodeLegendStyle()
      */
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
 
     /**
-     * Returns the style of a given QgsLayerTreeNode in a given QgsLayerTreeModel
+     * Returns the style for the given \a node, within the specified \a model.
+     *
+     * \see setNodeLegendStyle()
      */
     static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 
@@ -84,9 +109,11 @@ class CORE_EXPORT QgsLegendRenderer
 #ifndef SIP_RUN
 
     /**
-     * Nucleon is either group title, layer title or layer child item.
-     *  E.g. layer title nucleon is just title, it does not
-     *  include all layer subitems, the same with groups.
+     * A legend Nucleon is either a group title, a layer title or a layer child item.
+     *
+     * E.g. a layer title nucleon is just the layer's title, it does not
+     * include all of that layer's subitems. Similarly, a group's title nucleon is just
+     * the group title, and does not include the actual content of that group.
      */
     class Nucleon
     {
@@ -95,117 +122,165 @@ class CORE_EXPORT QgsLegendRenderer
         Nucleon() = default;
 
         QObject *item = nullptr;
-        // Symbol size size without any space around for symbol item
+
+        //! Symbol size, not including any preset padding space around the symbol
         QSizeF symbolSize;
-        // Label size without any space around for symbol item
+
+        //! Label size, not including any preset padding space around the label
         QSizeF labelSize;
+
+        //! Nucleon size
         QSizeF size;
-        // Offset of symbol label, this offset is the same for all symbol labels
-        // of the same layer in the same column
+
+        /**
+         * Horizontal offset for the symbol label.
+         *
+         * This offset is the same for all symbol labels belonging to the same layer,
+         * within the same legend column.
+         */
         double labelXOffset = 0.0;
     };
 
     /**
-     * Atom is indivisible set (indivisible into more columns). It may consists
-     *  of one or more Nucleon, depending on layer splitting mode:
+     * An Atom is indivisible set of legend Nucleons (i.e. it is indivisible into more columns).
+     *
+     * An Atom may consist of one or more Nucleon(s), depending on the layer splitting mode:
+     *
      *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
      *  2) layer split:    [group_title ...] layer_title layer_item
      *              or:    layer_item
-     *  It means that group titles must not be split from layer title and layer title
-     *  must not be split from first item, because it would look bad and it would not
-     *  be readable to leave group or layer title at the bottom of column.
+     *
+     * This means that group titles must not be split from layer titles and layer titles
+     * must not be split from the first layer item, because this results in a poor layout
+     * and it would not be logical to leave a group or layer title at the bottom of a column,
+     * separated from the actual content of that group or layer.
      */
     class Atom
     {
       public:
-        Atom(): size( QSizeF( 0, 0 ) ) {}
+        Atom();
+
+        //! List of child Nucleons belonging to this Atom.
         QList<Nucleon> nucleons;
-        // Atom size including nucleons interspaces but without any space around atom.
-        QSizeF size;
+
+        //! Atom size, including internal spacing between Nucleons, but excluding any padding space around the Atom itself.
+        QSizeF size = QSizeF( 0, 0 );
+
+        //! Corresponding column index
         int column = 0;
     };
 
     /**
-     * displays the legend and return the size of said legend.
-     * If the painter is null, only the size will be given,
-     * since a painter is needed to render the legend.
+     * Draws the legend and returns the actual size of the legend.
+     *
+     * If \a painter is nullptr, only the size of the legend will be calculated and no
+     * painting will be attempted.
      */
     QSizeF paintAndDetermineSize( QPainter *painter = nullptr );
 
-    //! Create list of atoms according to current layer splitting mode
+    /**
+     * Returns a list of Atoms for the specified \a parentGroup, respecting the current layer's
+     * splitting settings.
+     */
     QList<Atom> createAtomList( QgsLayerTreeGroup *parentGroup, bool splitLayer );
 
-    //! Divide atoms to columns and set columns on atoms
+    /**
+     * Divides a list of Atoms into columns, and sets the column index for each atom in the list.
+     */
     void setColumns( QList<Atom> &atomList );
 
     /**
-     * Draws title in the legend using the title font and the specified alignment
-     * If no painter is specified, function returns the required width/height to draw the title.
+     * Draws a title in the legend using the title font and the specified alignment settings.
+     *
+     * Returns the size required to draw the complete title.
+     *
+     * If \a painter is nullptr, no painting will be attempted, but the required size will still be calculated and returned.
      */
     QSizeF drawTitle( QPainter *painter = nullptr, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
+    /**
+     * Returns the calculated padding space required above the given \a atom.
+     */
     double spaceAboveAtom( const Atom &atom );
 
     /**
-     * Draw atom and return its actual size, the atom is drawn with the space above it
-     *  so that first atoms in column are all aligned to the same line regardles their
-     * style top space */
+     * Draws an \a atom and return its actual size.
+     *
+     * The \a atom is drawn with the space above it, so that the first atoms in column are all
+     * aligned to the same line regardless of their style top spacing.
+    */
     QSizeF drawAtom( const Atom &atom, QPainter *painter = nullptr, QPointF point = QPointF() );
 
     /**
-     * Displays the symbol of a given QgsLayerTreeModelLegendNode
+     * Draws the symbol of a given symbol QgsLayerTreeModelLegendNode.
      */
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QPainter *painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
 
     /**
-     * Displays the title of a layer given the QgsLayerTreeLayer, a painter and QPointF
-     * otherwise return the size the of the title
+     * Draws the title of a layer, given a QgsLayerTreeLayer, and a destination \a painter.
+     *
+     * Returns the size of the title.
+     *
+     * The \a painter may be nullptr, in which case on the size is calculated and no painting is attempted.
      */
     QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter = nullptr, QPointF point = QPointF() );
 
     /**
      * Draws a group item.
-     * Returns list of sizes of layers and groups including this group.
+     * Returns the size of the title.
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );
 
     /**
-     * displays the legend and return the size of said legend.
-     * If QgsRenderContext is null, only the size will be given.
+     * Draws the legend using the specified render \a context, and returns the actual size of the legend.
+     *
+     * If \a context is nullptr, only the size of the legend will be calculated and no
+     * painting will be attempted.
      */
-    QSizeF paintAndDetermineSize( QgsRenderContext *rendercontext );
+    QSizeF paintAndDetermineSize( QgsRenderContext *context );
 
     /**
-     * Draws title in the legend using the title font and the specified alignment
-     * If no rendercontext is specified, function returns the required width/height to draw the title.
+     * Draws a title in the legend using the specified render \a context, with the title font and the specified alignment settings.
+     *
+     * Returns the size required to draw the complete title.
+     *
+     * If \a context is nullptr, no painting will be attempted, but the required size will still be calculated and returned.
      */
-    QSizeF drawTitle( QgsRenderContext *rendercontext, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+    QSizeF drawTitle( QgsRenderContext *context, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
     /**
-     * Draw atom and return its actual size, the atom is drawn with the space above it
-     *  so that first atoms in column are all aligned to the same line regardles their
-     * style top space */
+     * Draws an \a atom and return its actual size, using the specified render \a context.
+     *
+     * The \a atom is drawn with the space above it, so that the first atoms in column are all
+     * aligned to the same line regardless of their style top spacing.
+     *
+     * If \a context is nullptr, no painting will be attempted, but the required size will still be calculated and returned.
+    */
     QSizeF drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point = QPointF() );
 
     /**
-     * Displays the symbol of a given QgsLayerTreeModelLegendNode
+     * Draws the symbol of a given symbol QgsLayerTreeModelLegendNode, using the specified render \a context.
      */
-    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext, QPointF point = QPointF(), double labelXOffset = 0 );
+    Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPointF point = QPointF(), double labelXOffset = 0 );
 
     /**
-     * Displays the title of a layer given the QgsLayerTreeLayer, a rendercontext and QPointF
-     * otherwise return the size the of the title
+     * Draws the title of a layer, given a QgsLayerTreeLayer, and a destination render \a context.
+     *
+     * Returns the size of the title.
+     *
+     * The \a context may be nullptr, in which case on the size is calculated and no painting is attempted.
      */
-    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *rendercontext, QPointF point = QPointF() );
+    QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, QPointF point = QPointF() );
 
     /**
-     * Draws a group item.
-     * Returns list of sizes of layers and groups including this group.
+     * Draws a group's title, using the specified render \a context.
+     *
+     * Returns the size of the title.
      */
-    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *rendercontext, QPointF point = QPointF() );
+    QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, QPointF point = QPointF() );
 
     /**
-     * Returns the style of a given QgsLayerTreeNode
+     * Returns the style of the given \a node.
      */
     QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
 
