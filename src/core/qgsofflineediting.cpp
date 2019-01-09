@@ -56,6 +56,7 @@ extern "C"
 #define CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE "isOfflineEditable"
 #define CUSTOM_PROPERTY_REMOTE_SOURCE "remoteSource"
 #define CUSTOM_PROPERTY_REMOTE_PROVIDER "remoteProvider"
+#define CUSTOM_SHOW_FEATURE_COUNT "showFeatureCount"
 #define PROJECT_ENTRY_SCOPE_OFFLINE "OfflineEditingPlugin"
 #define PROJECT_ENTRY_KEY_OFFLINE_DB_PATH "/OfflineDbPath"
 
@@ -843,6 +844,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         if ( newLayerTreeLayer )
         {
           QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
+          //copy the showFeatureCount property to the new node
+          newLayerTreeLayerClone->setCustomProperty( CUSTOM_SHOW_FEATURE_COUNT, layerTreeLayer->customProperty( CUSTOM_SHOW_FEATURE_COUNT ) );
           QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
           parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
           if ( grp )
