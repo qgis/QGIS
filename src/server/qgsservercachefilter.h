@@ -22,7 +22,6 @@
 
 #include <QMultiMap>
 #include <QDomDocument>
-#include <QObject>
 #include "qgsserverrequest.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"

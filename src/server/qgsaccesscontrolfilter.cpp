@@ -22,9 +22,6 @@
 #include "qgsmessagelog.h"
 #include "qgsfeature.h"
 
-#include <QString>
-#include <QStringList>
-
 
 //! Constructor
 QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *serverInterface ):

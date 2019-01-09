@@ -25,38 +25,26 @@
 #include "qgsfeaturefilter.h"
 #include <QDomDocument>
 #include <QMap>
-#include <QPair>
 #include <QString>
-#include <map>
 
-class QgsCapabilitiesCache;
 class QgsCoordinateReferenceSystem;
 class QgsPrintLayout;
-class QgsConfigParser;
 class QgsFeature;
-class QgsFeatureRenderer;
 class QgsMapLayer;
 class QgsMapSettings;
 class QgsPointXY;
 class QgsRasterLayer;
-class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
-class QgsSymbol;
-class QgsSymbol;
 class QgsAccessControl;
 class QgsDxfExport;
 class QgsLayerTreeModel;
 class QgsLayerTree;
 
-class QColor;
-class QFile;
-class QFont;
 class QImage;
 class QPaintDevice;
 class QPainter;
-class QStandardItem;
 class QgsLayerTreeGroup;
 
 namespace QgsWms

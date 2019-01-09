@@ -24,7 +24,6 @@
 #define QGSWMSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswmsserviceexception.h"
 
 class QgsRectangle;
 

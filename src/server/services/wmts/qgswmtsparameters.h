@@ -22,8 +22,6 @@
 #include <QObject>
 #include <QMetaEnum>
 
-#include "qgswmtsserviceexception.h"
-#include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
 #include "qgsserverparameters.h"
 

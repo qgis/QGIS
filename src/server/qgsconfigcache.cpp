@@ -17,7 +17,6 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
-#include "qgsaccesscontrol.h"
 
 #include <QFile>
 

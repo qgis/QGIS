@@ -25,16 +25,8 @@
 #include "qgswfsparameters.h"
 
 #include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmapserviceexception.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
 #include "qgsdatetimefieldformatter.h"
-
-#include <QStringList>
 
 namespace QgsWfs
 {

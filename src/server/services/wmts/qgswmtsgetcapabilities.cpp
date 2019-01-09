@@ -20,13 +20,7 @@
 
 #include "qgsproject.h"
 #include "qgsexception.h"
-#include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgslayertree.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreemodellegendnode.h"
-
-#include <QStringList>
 
 namespace QgsWmts
 {

@@ -21,6 +21,7 @@
 
 
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetstyles.h"
 #include "qgsserverprojectutils.h"
 

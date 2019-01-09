@@ -17,7 +17,6 @@
 
 #include "qgswfsparameters.h"
 #include "qgsmessagelog.h"
-#include <iostream>
 
 namespace QgsWfs
 {

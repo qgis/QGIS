@@ -23,15 +23,11 @@
 #include <QMap>
 #include "qgis_sip.h"
 #include <QString>
-#include <QStringList>
 #include <QPair>
 #include <QColor>
-#include <QHash>
 
 #include "qgis_server.h"
 
-class QDomDocument;
-class QImage;
 class QgsServerException;
 class QgsServerRequest;
 class QgsServerResponse;

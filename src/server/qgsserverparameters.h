@@ -19,7 +19,6 @@
 #define QGSSERVERPARAMETERS_H
 
 #include <QMap>
-#include <QObject>
 #include <QMetaEnum>
 #include <QUrlQuery>
 #include <QColor>

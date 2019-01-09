@@ -21,7 +21,6 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
 #include "qgsfontutils.h"
@@ -33,16 +32,12 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
 #include "qgsserverrequest.h"
-#include "qgsbufferserverresponse.h"
-#include "qgsbufferserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
-#include "qgsserverprojectutils.h"
 #include "qgsserverparameters.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
-#include <QImage>
 #include <QSettings>
 #include <QDateTime>
 

@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
 #include "qgsproject.h"
