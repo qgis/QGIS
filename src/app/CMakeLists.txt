@@ -481,10 +481,12 @@ IF (WITH_3D)
     3d/qgs3dmaptoolidentify.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
+    3d/qgsmesh3dsymbolwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
+    3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
   )
 
@@ -498,10 +500,12 @@ IF (WITH_3D)
     3d/qgs3dmaptoolidentify.h
     3d/qgslightswidget.h
     3d/qgsline3dsymbolwidget.h
+    3d/qgsmesh3dsymbolwidget.h
     3d/qgspoint3dsymbolwidget.h
     3d/qgspolygon3dsymbolwidget.h
     3d/qgsphongmaterialwidget.h
     3d/qgsvectorlayer3drendererwidget.h
+    3d/qgsmeshlayer3drendererwidget.h
     layout/qgslayout3dmapwidget.h
   )
 ENDIF (WITH_3D)

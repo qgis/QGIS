@@ -138,7 +138,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
       {
         QgsPointXY mapPoint = mCoordinateTransform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
         QgsMeshVertex mapVertex( mapPoint );
-        mapVertex.setZ( vertex.z() );
+        mapVertex.addZValue( vertex.z() );
         mapVertex.setM( vertex.m() );
         mTriangularMesh.vertices[i] = mapVertex;
       }
@@ -255,7 +255,7 @@ QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &recta
   return indexes;
 }
 
-QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
+std::unique_ptr< QgsPolygon > QgsMeshUtils::toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
 {
   QVector<QgsPoint> ring;
   for ( int j = 0; j < face.size(); ++j )
@@ -267,7 +267,12 @@ QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<Qgs
   }
   std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
   polygon->setExteriorRing( new QgsLineString( ring ) );
-  return QgsGeometry( std::move( polygon ) );
+  return polygon;
+}
+
+QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
+{
+  return QgsGeometry( QgsMeshUtils::toPolygon( face, vertices ) );
 }
 
 QList<int> QgsMeshUtils::nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces )

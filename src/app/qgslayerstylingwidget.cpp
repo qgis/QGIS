@@ -51,6 +51,7 @@
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
+#include "qgsmeshlayer3drendererwidget.h"
 #endif
 
 
@@ -204,6 +205,13 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     symbolItem->setData( Qt::UserRole, Symbology );
     symbolItem->setToolTip( tr( "Symbology" ) );
     mOptionsListWidget->addItem( symbolItem );
+
+#ifdef HAVE_3D
+    QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
+    symbol3DItem->setData( Qt::UserRole, Symbology3D );
+    symbol3DItem->setToolTip( tr( "3D View" ) );
+    mOptionsListWidget->addItem( symbol3DItem );
+#endif
   }
 
   Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mPageFactories )
@@ -355,6 +363,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mMeshStyleWidget = widget;
     }
+#ifdef HAVE_3D
+    else if ( QgsMeshLayer3DRendererWidget *widget = qobject_cast<QgsMeshLayer3DRendererWidget *>( current ) )
+    {
+      mMesh3DWidget = widget;
+    }
+#endif
   }
 
   mWidgetStack->clear();
@@ -517,6 +531,20 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         mWidgetStack->setMainPanel( mMeshStyleWidget );
         break;
       }
+#ifdef HAVE_3D
+      case 1:  // 3D View
+      {
+        if ( !mMesh3DWidget )
+        {
+          mMesh3DWidget = new QgsMeshLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+          mMesh3DWidget->setDockMode( true );
+          connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+        }
+        mMesh3DWidget->setLayer( meshLayer );
+        mWidgetStack->setMainPanel( mMesh3DWidget );
+        break;
+      }
+#endif
       default:
         break;
     }
