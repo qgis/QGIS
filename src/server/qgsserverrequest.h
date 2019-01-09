@@ -84,9 +84,9 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * \returns  the request url
      *
-     * Subclasses may override in case the original URL needs to be
-     * returned instead of the rewritten one (i.e. from a web server
-     * rewrite module).
+     * Subclasses may override in case the original URL (not rewritten, e.g.from
+     * a web server rewrite module) needs to be returned instead of the URL
+     * seen by QGIS server.
      */
     virtual QUrl url() const;
 
