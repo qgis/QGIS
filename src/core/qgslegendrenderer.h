@@ -59,12 +59,12 @@ class CORE_EXPORT QgsLegendRenderer
 
     /**
      * Draw the legend with given painter. It will occupy the area reported in legendSize().
-     *  Painter should be scaled beforehand so that units correspond to millimeters.
+     * Painter should be scaled beforehand so that units correspond to millimeters.
      */
     void drawLegend( QPainter *painter );
 
     /**
-     * Draw the legend using a given QgsRenderContext. It willoccupy the area reported in legendSize().
+     * Draw the legend using a given QgsRenderContext. It will occupy the area reported in legendSize().
      */
     void drawLegend( QgsRenderContext *rendercontext );
 
