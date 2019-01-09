@@ -12,7 +12,6 @@
 
 
 
-
 class QgsAccessControl : QgsFeatureFilterProvider
 {
 %Docstring

@@ -20,7 +20,6 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
-#include <QStringList>
 
 void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer *> &layers )
 {

@@ -20,16 +20,10 @@
 #include "qgis.h"
 #include "qgsrequesthandler.h"
 #include "qgsmessagelog.h"
-#include "qgsserverexception.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
-#include <QBuffer>
 #include <QByteArray>
 #include <QDomDocument>
-#include <QFile>
-#include <QImage>
-#include <QTextStream>
-#include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
 

@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgswmsutils.h"
 #include "qgsdxfwriter.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"

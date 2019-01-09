@@ -21,7 +21,6 @@
 #include "qgswmsutils.h"
 #include "qgswmsrenderer.h"
 #include "qgsfilterrestorer.h"
-#include "qgscapabilitiescache.h"
 #include "qgsexception.h"
 #include "qgsfields.h"
 #include "qgsfieldformatter.h"
@@ -44,12 +43,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgssymbol.h"
 #include "qgsrenderer.h"
-#include "qgspaintenginehack.h"
-#include "qgsogcutils.h"
 #include "qgsfeature.h"
 #include "qgsaccesscontrol.h"
 #include "qgsfeaturerequest.h"
@@ -72,7 +67,6 @@
 #include <QPainter>
 #include <QStringList>
 #include <QTemporaryFile>
-#include <QTextStream>
 #include <QDir>
 
 //for printing
@@ -91,17 +85,10 @@
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
-#include "qgslayoutitempicture.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemshape.h"
 #include "qgsfeaturefilterprovidergroup.h"
 #include "qgsogcutils.h"
 #include "qgsunittypes.h"
-#include <QBuffer>
-#include <QPrinter>
-#include <QSvgGenerator>
 #include <QUrl>
-#include <QPaintEngine>
 
 namespace QgsWms
 {

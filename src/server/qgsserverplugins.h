@@ -21,7 +21,6 @@
 #define SIP_NO_FILE
 
 
-#include "qgsrequesthandler.h"
 #include "qgsserverinterface.h"
 
 // This is needed by SIP otherwise it doesn't find QgsPythonUtils header

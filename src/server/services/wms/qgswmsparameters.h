@@ -19,13 +19,11 @@
 #define QGSWMSPARAMETERS_H
 
 #include <QMap>
-#include <QObject>
 #include <QMetaEnum>
 #include <QColor>
 
 #include "qgsrectangle.h"
 #include "qgswmsserviceexception.h"
-#include "qgsserverrequest.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"

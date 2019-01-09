@@ -18,8 +18,6 @@
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include <iostream>
-#include <QUrl>
 
 namespace QgsWms
 {

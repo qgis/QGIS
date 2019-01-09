@@ -16,9 +16,6 @@ email                : david dot marteau at 3liz dot com
  ***************************************************************************/
 #include "qgsmodule.h"
 #include "qgsdxfwriter.h"
-#include "qgswmsutils.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
 #include "qgswmsrenderer.h"
 

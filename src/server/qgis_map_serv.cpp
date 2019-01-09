@@ -19,8 +19,6 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgslogger.h"
-#include "qgsserverlogger.h"
 #include "qgsfcgiserverresponse.h"
 #include "qgsfcgiserverrequest.h"
 

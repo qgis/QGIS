@@ -17,11 +17,9 @@
 
 
 #include "qgsserverplugins.h"
-#include "qgsmapserviceexception.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgspythonutils.h"
-#include "qgsserverlogger.h"
 
 #include <QLibrary>
 
