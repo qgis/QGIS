@@ -48,6 +48,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsproviderregistry.h"
 #include "sqlite3.h"
+#include "qgstransaction.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -1375,22 +1376,46 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString database = values.at( 0 ).toString();
+  QString database;
+  const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+
+  if ( layer )
+  {
+    const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+    database = decodedUri.value( QStringLiteral( "path" ) ).toString();
+    if ( database.isEmpty() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Could not extract file path from layer `%1`." ).arg( layer->name() ) );
+    }
+  }
+  else
+  {
+    database = values.at( 0 ).toString();
+  }
+
   const QString table = values.at( 1 ).toString();
   const QString idColumn = values.at( 2 ).toString();
   const QString filterAttribute = values.at( 3 ).toString();
   const QVariant filterValue = values.at( 4 ).toString();
   const QVariantMap defaultValues = values.at( 5 ).toMap();
 
-
   // read from database
   sqlite3_database_unique_ptr sqliteDb;
   sqlite3_statement_unique_ptr sqliteStatement;
 
-  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_SHAREDCACHE, nullptr ) != SQLITE_OK )
   {
     parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
     return QVariant();
+  }
+
+  QString enableReadUncommitted = QStringLiteral( "PRAGMA read_uncommitted = true;" );
+
+  QString errorMessage;
+  if ( sqliteDb.exec( enableReadUncommitted, errorMessage ) != SQLITE_OK )
+  {
+    // TODO HANDLE AN ERROR
+    Q_ASSERT( false );
   }
 
   QString currentValSql;
@@ -1400,7 +1425,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
   }
 
-  int result;
+  int result = SQLITE_ERROR;
   sqliteStatement = sqliteDb.prepare( currentValSql, result );
   if ( result == SQLITE_OK )
   {
@@ -1433,8 +1458,18 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     upsertSql += QLatin1String( " VALUES " );
     upsertSql += '(' + vals.join( ',' ) + ')';
 
-    QString errorMessage;
-    result = sqliteDb.exec( upsertSql, errorMessage );
+    if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
+    {
+      QgsTransaction *transaction = layer->dataProvider()->transaction();
+      if ( transaction->executeSql( upsertSql, errorMessage ) )
+      {
+        result = SQLITE_OK;
+      }
+    }
+    else
+    {
+      result = sqliteDb.exec( upsertSql, errorMessage );
+    }
     if ( result == SQLITE_OK )
     {
       return nextId;
