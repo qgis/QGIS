@@ -19,8 +19,6 @@
 #ifndef QGSFCGISERVERREQUEST_H
 #define QGSFCGISERVERREQUEST_H
 
-#define SIP_NO_FILE
-
 
 #include "qgsserverrequest.h"
 
@@ -44,6 +42,16 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
      */
     bool hasError() const { return mHasError; }
 
+    /**
+     * \returns  the request url
+     *
+     * Subclasses may override in case the original URL needs to be
+     * returned instead of the rewritten one (i.e. from a web server
+     * rewrite module).
+     */
+    QUrl url() const override;
+
+
   private:
     void readData();
 
@@ -53,7 +61,9 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 
 
     QByteArray mData;
-    bool       mHasError;
+    bool       mHasError = false;
+    //! Url before the server rewrite
+    QUrl       mOriginalUrl;
 };
 
 #endif

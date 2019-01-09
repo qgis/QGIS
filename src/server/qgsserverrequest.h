@@ -83,8 +83,12 @@ class SERVER_EXPORT QgsServerRequest
 
     /**
      * \returns  the request url
+     *
+     * Subclasses may override in case the original URL needs to be
+     * returned instead of the rewritten one (i.e. from a web server
+     * rewrite module).
      */
-    QUrl url() const;
+    virtual QUrl url() const;
 
     /**
      * \returns the request method
