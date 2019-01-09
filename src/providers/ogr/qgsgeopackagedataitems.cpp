@@ -529,7 +529,7 @@ bool QgsGeoPackageAbstractLayerItem::deleteLayer()
     QgsGeoPackageConnectionItem *connectionParentItem = qobject_cast<QgsGeoPackageConnectionItem *>( mParent );
     if ( connectionParentItem )
     {
-      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> was deleted successfully."
+      if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> was successfully deleted."
                                   " Compact database (VACUUM) <b>%2</b> now?" ).arg( mName, connectionParentItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
       {
         connectionParentItem->vacuumGeoPackageDbAction();
