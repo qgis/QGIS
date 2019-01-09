@@ -89,6 +89,7 @@
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
 #include "qgsalgorithmsnaptogrid.h"
+#include "qgsalgorithmsplitlineantimeridian.h"
 #include "qgsalgorithmsplitlinesbylength.h"
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsalgorithmstringconcatenation.h"
@@ -227,6 +228,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSnapToGridAlgorithm() );
+  addAlgorithm( new QgsSplitGeometryAtAntimeridianAlgorithm() );
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
