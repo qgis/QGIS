@@ -537,7 +537,7 @@ bool QgsGeoPackageAbstractLayerItem::deleteLayer()
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "The layer <b>%1</b> was deleted successfully." ).arg( mName ) );
+      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( mName ) );
     }
     if ( mParent )
       mParent->refreshConnections();
