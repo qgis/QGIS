@@ -6715,4 +6715,40 @@ tests:
         name: expected/raster_zonal_stats_zone_crs_ref.csv
         type: vector
 
+  - algorithm: native:antimeridiansplit
+    name: Antimeridian split, lines
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/antimeridian_lines.gml|layername=antimeridian_lines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/antimeridian_lines_split.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 4
+        pk:
+        - pk
+
+  - algorithm: native:antimeridiansplit
+    name: Antimeridian split, multilines
+    ellipsoid: GRS80
+    project_crs: EPSG:4326
+    params:
+      INPUT:
+        name: custom/antimeridian_multilines.gml|layername=antimeridian_multilines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/antimeridian_multilines_split.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 4
+        pk:
+        - pk
+
 # See ../README.md for a description of the file format
