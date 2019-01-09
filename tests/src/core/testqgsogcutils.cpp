@@ -330,10 +330,16 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "<PropertyName>NAME</PropertyName><Literal>._QGIS.\\.</Literal></PropertyIsLike>"
     "</Filter>" )
   << QString( "NAME LIKE '_\\\\_QGIS_.'" );
-  // different single chars
+  // different escape chars
   QTest::newRow( "like escape char" ) << QString(
     "<Filter>"
     "<PropertyIsLike wildCard=\"*\" singleChar=\".\" escape=\"!\">"
+    "<PropertyName>NAME</PropertyName><Literal>_QGIS.!.!!%QGIS*!*</Literal></PropertyIsLike>"
+    "</Filter>" )
+  << QString( "NAME LIKE '\\\\_QGIS_.!\\\\%QGIS%*'" );
+  QTest::newRow( "like escape char" ) << QString(
+    "<Filter>"
+    "<PropertyIsLike wildCard=\"*\" singleChar=\".\" escapeChar=\"!\">"
     "<PropertyName>NAME</PropertyName><Literal>_QGIS.!.!!%QGIS*!*</Literal></PropertyIsLike>"
     "</Filter>" )
   << QString( "NAME LIKE '\\\\_QGIS_.!\\\\%QGIS%*'" );
