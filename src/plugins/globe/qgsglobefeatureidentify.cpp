@@ -57,7 +57,7 @@ void QgsGlobeFeatureIdentifyCallback::onHit( osgEarth::ObjectID id )
   std::string layerId;
   if ( feature->getUserValue( "qgisLayerId", layerId ) )
   {
-    QgsVectorLayer *lyr = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( QString::fromStdString( layerId ) ) );
+    QgsVectorLayer *lyr = QgsProject::instance()->mapLayer<QgsVectorLayer *>( QString::fromStdString( layerId ) );
 #endif
     if ( lyr )
     {

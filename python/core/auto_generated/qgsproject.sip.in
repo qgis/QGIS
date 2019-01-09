@@ -720,6 +720,7 @@ Retrieve a pointer to a registered layer by layer ID.
 .. seealso:: :py:func:`mapLayers`
 %End
 
+
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 %Docstring
 Retrieve a list of matching registered layers by layer name.

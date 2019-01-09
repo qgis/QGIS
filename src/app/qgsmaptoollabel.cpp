@@ -690,7 +690,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
   : pos( p )
 {
-  layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( pos.layerID ) );
+  layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( pos.layerID );
   if ( layer && layer->labelsEnabled() && !p.isDiagram )
   {
     settings = layer->labeling()->settings( pos.providerID );

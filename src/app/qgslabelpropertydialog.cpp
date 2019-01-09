@@ -93,7 +93,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
 void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, int featureId, const QString &labelText )
 {
   //get feature attributes
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !vlayer )
   {
     return;
