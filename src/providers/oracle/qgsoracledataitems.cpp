@@ -336,7 +336,7 @@ QList<QAction *> QgsOracleLayerItem::actions( QWidget *parent )
   return lst;
 }
 
-void QgsOracleLayerItem::deleteLayer()
+bool QgsOracleLayerItem::deleteLayer()
 {
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
                               QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.ownerName, mLayerProperty.tableName ),
@@ -354,6 +354,8 @@ void QgsOracleLayerItem::deleteLayer()
     QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
     deleteLater();
   }
+
+  return res;
 }
 
 QString QgsOracleLayerItem::createUri()
