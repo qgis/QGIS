@@ -407,7 +407,7 @@ will also be in this same CRS.
 :return: - the latitude at which the geodesic crosses the antimeridian
          - fractionAlongLine:  will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
 
-.. seealso:: :py:func:`breakGeometryAtAntimeridian`
+.. seealso:: :py:func:`splitGeometryAtAntimeridian`
 
 
 .. versionadded:: 3.6
