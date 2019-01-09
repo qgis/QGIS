@@ -23,6 +23,7 @@
 #include "qgsrastershader.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -35,7 +36,7 @@
 #include "qgspolygon3dsymbol.h"
 #include "qgsterrainentity_p.h"
 #include "qgsvectorlayer3drenderer.h"
-
+#include "qgsmeshlayer3drenderer.h"
 
 class TestQgs3DRendering : public QObject
 {
@@ -48,6 +49,7 @@ class TestQgs3DRendering : public QObject
     void testDemTerrain();
     void testExtrudedPolygons();
     void testMapTheme();
+    void testMesh();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -58,6 +60,7 @@ class TestQgs3DRendering : public QObject
     QgsRasterLayer *mLayerDtm;
     QgsRasterLayer *mLayerRgb;
     QgsVectorLayer *mLayerBuildings;
+    QgsMeshLayer *mLayerMesh;
 };
 
 //runs before all tests
@@ -91,6 +94,17 @@ void TestQgs3DRendering::initTestCase()
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
+
+  mLayerMesh = new QgsMeshLayer( dataDir + "/mesh/quad_and_triangle.2dm", "mesh", "mdal" );
+  QVERIFY( mLayerMesh->isValid() );
+  mProject->addMapLayer( mLayerMesh );
+
+  QgsPhongMaterialSettings meshMaterial;
+  meshMaterial.setAmbient( Qt::lightGray );
+  QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
+  symbolMesh3d->setMaterial( meshMaterial );
+  QgsMeshLayer3DRenderer *meshRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMesh->setRenderer3D( meshRenderer3d );
 
   mProject->setCrs( mLayerDtm->crs() );
 
@@ -276,6 +290,32 @@ void TestQgs3DRendering::testMapTheme()
   QVERIFY( renderCheck( "terrain_theme", img, 40 ) );
 }
 
+void TestQgs3DRendering::testMesh()
+{
+  QgsRectangle fullExtent = mLayerMesh->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMesh );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( QgsVector3D( 1500, 2500, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 1500, 2500, 20 ), 500, 45, 0 );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QVERIFY( renderCheck( "mesh3d", img, 40 ) );
+}
 
 bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {

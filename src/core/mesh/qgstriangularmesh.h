@@ -22,6 +22,7 @@
 #define SIP_NO_FILE
 
 #include <QVector>
+#include <memory>
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsgeometry.h"
@@ -144,6 +145,9 @@ namespace QgsMeshUtils
 {
   //! Returns face as polygon geometry
   CORE_EXPORT QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
+
+  //! Returns face as polygon geometry, caller is responsible for delete
+  CORE_EXPORT std::unique_ptr< QgsPolygon > toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
   /**
    * Returns unique native faces indexes from list of triangle indexes
