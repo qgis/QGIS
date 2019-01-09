@@ -260,6 +260,11 @@ void QgsOfflineEditing::synchronize()
       updateMapThemes( offlineLayer, remoteLayer );
       updateLayerOrder( offlineLayer, remoteLayer );
 
+      //set QgsLayerTreeNode properties back
+      QgsLayerTreeLayer *layerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( offlineLayer->id() );
+      QgsLayerTreeLayer *newLayerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( remoteLayer->id() );
+      newLayerTreeLayer->setCustomProperty( CUSTOM_SHOW_FEATURE_COUNT, layerTreeLayer->customProperty( CUSTOM_SHOW_FEATURE_COUNT ) );
+
       // apply layer edit log
       QString qgisLayerId = layer->id();
       QString sql = QStringLiteral( "SELECT \"id\" FROM 'log_layer_ids' WHERE \"qgis_id\" = '%1'" ).arg( qgisLayerId );
