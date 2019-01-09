@@ -333,7 +333,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param fractionAlongLine will be set to the fraction along the geodesic line joining \a p1 to \a p2 at which the antimeridian crossing occurs.
      *
      * \returns the latitude at which the geodesic crosses the antimeridian
-     * \see breakGeometryAtAntimeridian()
+     * \see splitGeometryAtAntimeridian()
      *
      * \since QGIS 3.6
      */
