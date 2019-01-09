@@ -441,6 +441,8 @@ namespace QgsWms
       }
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      // Print as raster
+      exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
       // Export all pages
       QgsLayoutExporter exporter( layout.get() );
       exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
