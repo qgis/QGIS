@@ -649,6 +649,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(lat, 0, 5)
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(180, -10), QgsPointXY(180, -10))
         self.assertAlmostEqual(lat, -10, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(171, 0), QgsPointXY(181, 0))
+        self.assertAlmostEqual(lat, 0, 5)
+        self.assertAlmostEqual(fract, 0.9, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(181, 0), QgsPointXY(171, 0))
+        self.assertAlmostEqual(lat, 0, 5)
+        self.assertAlmostEqual(fract, 0.1, 5)
 
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(138.26237, -20.314687), QgsPointXY(-151.6, -77.8))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
@@ -658,7 +664,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(fract, 0.007113545719515548, 5)
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-151.6, -77.8), QgsPointXY(138.26237, -20.314687))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.007113545719515548, 5)
+        self.assertAlmostEqual(fract, 0.9928864542804845, 5)
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(170.60188754234980024, -70.81368329001529105),
                                                             QgsPointXY(-164.61259948055175073, -76.66761193248410677))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
@@ -667,7 +673,7 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                             QgsPointXY(170.60188754234980024,
                                                                        -70.81368329001529105))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.0879577697523441, 5)
+        self.assertAlmostEqual(fract, 0.9120422302476558, 5)
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(178.44469761238570982, -73.47820480021761114),
                                                             QgsPointXY(-179.21026002627399976, -74.08952948682963324))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
@@ -676,7 +682,7 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                             QgsPointXY(178.44469761238570982,
                                                                        -73.47820480021761114))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.6713541474159178, 5)
+        self.assertAlmostEqual(fract, 0.3286458525840822, 5)
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(179.83103440731269984, -73.8481044794813215),
                                                             QgsPointXY(-179.93191793815378787, -73.90885909527753483))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
@@ -684,7 +690,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-179.93191793815378787, -73.90885909527753483),
                                                             QgsPointXY(179.83103440731269984, -73.8481044794813215))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.7135414998986486, 5)
+        self.assertAlmostEqual(fract, 0.28645850010135143, 5)
 
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(179.92498611649580198, 7.24703528617311754),
                                                             QgsPointXY(-178.20070563806575592, 16.09649962419504732))
@@ -693,11 +699,11 @@ class TestQgsDistanceArea(unittest.TestCase):
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-178.20070563806575592, 16.09649962419504732),
                                                             QgsPointXY(179.92498611649580198, 7.24703528617311754))
         self.assertAlmostEqual(lat, 7.6112109902580265, 5)
-        self.assertAlmostEqual(fract, 0.04111771567489498, 5)
+        self.assertAlmostEqual(fract, 0.958882284325105, 5)
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(360 - 178.20070563806575592, 16.09649962419504732),
                                                             QgsPointXY(179.92498611649580198, 7.24703528617311754))
         self.assertAlmostEqual(lat, 7.6112109902580265, 5)
-        self.assertAlmostEqual(fract, 0.04111771567489498, 5)
+        self.assertAlmostEqual(fract, 0.95888228432510, 5)
 
         lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(175.76717768974583578, 8.93749416467257873),
                                                             QgsPointXY(-175.15030911497356669, 8.59851183021221033))
@@ -707,7 +713,7 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                             QgsPointXY(175.76717768974583578,
                                                                        8.93749416467257873))
         self.assertAlmostEqual(lat, 8.80683758146703966, 5)
-        self.assertAlmostEqual(fract, 0.46581637044475815, 5)
+        self.assertAlmostEqual(fract, 0.5341836295552418, 5)
 
         # calculation should be ellipsoid dependent!
         da.setEllipsoid("Phobos2000")
@@ -715,7 +721,25 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                             QgsPointXY(175.76717768974583578,
                                                                        8.93749416467257873))
         self.assertAlmostEqual(lat, 8.836479503936307, 5)
-        self.assertAlmostEqual(fract, 0.46593364650414865, 5)
+        self.assertAlmostEqual(fract, 0.5340663534958514, 5)
+
+        # no ellipsoid
+        da.setEllipsoid("NONE")
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175, 8),
+                                                            QgsPointXY(175,
+                                                                       9))
+        self.assertAlmostEqual(lat, 8.5, 5)
+        self.assertAlmostEqual(fract, 0.5, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(165, 8),
+                                                            QgsPointXY(-175,
+                                                                       9))
+        self.assertAlmostEqual(lat, 8.75, 5)
+        self.assertAlmostEqual(fract, 0.75, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175, 8),
+                                                            QgsPointXY(165,
+                                                                       9))
+        self.assertAlmostEqual(lat, 8.25, 5)
+        self.assertAlmostEqual(fract, 0.25, 5)
 
     def testGeodesicLine(self):
         da = QgsDistanceArea()

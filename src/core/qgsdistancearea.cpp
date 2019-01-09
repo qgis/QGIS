@@ -476,6 +476,14 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
   double lat = p2y;
   double lon = p2x;
 
+  if ( mEllipsoid == GEO_NONE )
+  {
+    fractionAlongLine = ( 180 - p1x ) / ( p2x - p1x );
+    if ( p1.x() >= 180 )
+      fractionAlongLine = 1 - fractionAlongLine;
+    return p1y + ( 180 - p1x ) / ( p2x - p1x ) * ( p2y - p1y );
+  }
+
   geod_geodesic geod;
   geod_init( &geod, mSemiMajor, 1 / mInvFlattening );
 
@@ -528,6 +536,8 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
   }
 
   fractionAlongLine = intersectionDist / totalDist;
+  if ( p1.x() >= 180 )
+    fractionAlongLine = 1 - fractionAlongLine;
 
   // either converged on 180 longitude or hit too many iterations
   return lat;
