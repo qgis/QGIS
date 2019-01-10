@@ -19,7 +19,8 @@ from qgis.core import (QgsApplication,
                        QgsValidityCheckRegistry,
                        QgsValidityCheckResult,
                        QgsValidityCheckContext,
-                       QgsFeedback)
+                       QgsFeedback,
+                       check)
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -53,11 +54,36 @@ class TestContext(QgsValidityCheckContext):
         return 0
 
 
+# register some checks using the decorator syntax
+@check.register(type=QgsAbstractValidityCheck.TypeLayoutCheck)
+def my_check(context, feedback):
+    assert context
+
+
+@check.register(type=QgsAbstractValidityCheck.TypeLayoutCheck)
+def my_check2(context, feedback):
+    res = QgsValidityCheckResult()
+    res.type = QgsValidityCheckResult.Warning
+    res.title = 'test'
+    res.detailedDescription = 'blah blah'
+    return [res]
+
+
 class TestQgsValidityChecks(unittest.TestCase):
 
     def testAppRegistry(self):
         # ensure there is an application instance
         self.assertIsNotNone(QgsApplication.validityCheckRegistry())
+
+    def testDecorator(self):
+        # test that checks registered using the decorator have worked
+        self.assertEqual(len(QgsApplication.validityCheckRegistry().checks()), 2)
+
+        context = TestContext()
+        feedback = QgsFeedback()
+        res = QgsApplication.validityCheckRegistry().runChecks(QgsAbstractValidityCheck.TypeLayoutCheck, context, feedback)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].title, 'test')
 
     def testRegistry(self):
         registry = QgsValidityCheckRegistry()
