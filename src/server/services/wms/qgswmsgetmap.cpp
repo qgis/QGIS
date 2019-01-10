@@ -42,7 +42,7 @@ namespace QgsWms
     if ( result )
     {
       QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
-      writeImage( response, *result, format, renderer.getImageQuality() );
+      writeImage( response, *result, format, renderer.imageQuality() );
     }
     else
     {
