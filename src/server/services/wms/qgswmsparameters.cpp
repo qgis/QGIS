@@ -310,7 +310,9 @@ namespace QgsWms
     const QgsWmsParameter pSRS( QgsWmsParameter::SRS );
     save( pSRS );
 
-    const QgsWmsParameter pFormat( QgsWmsParameter::FORMAT );
+    const QgsWmsParameter pFormat( QgsWmsParameter::FORMAT,
+                                   QVariant::String,
+                                   QVariant( "png" ) );
     save( pFormat );
 
     const QgsWmsParameter pInfoFormat( QgsWmsParameter::INFO_FORMAT );
