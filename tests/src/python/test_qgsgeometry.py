@@ -601,6 +601,69 @@ class TestQgsGeometry(unittest.TestCase):
         with self.assertRaises(ValueError):
             QgsGeometry().asPolygon()
 
+        # as multipoint
+        self.assertEqual(QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asMultiPoint(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        self.assertEqual(QgsGeometry.fromWkt('MultiPointZ(11 13 1,14 15 2)').asMultiPoint(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        self.assertEqual(QgsGeometry.fromWkt('MultiPointM(11 13 1,14 15 2)').asMultiPoint(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        self.assertEqual(QgsGeometry.fromWkt('MultiPointZM(11 13 1 2,14 15 3 4)').asMultiPoint(), [QgsPointXY(11, 13), QgsPointXY(14, 15)])
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Point(11 13)').asMultiPoint()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('LineString(11 13,14 15)').asMultiPoint()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiLineString((11 13, 14 15),(1 2, 3 4))').asMultiPoint()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Polygon((11 13,14 15, 14 13, 11 13))').asMultiPoint()
+        with self.assertRaises(ValueError):
+            QgsGeometry().asMultiPoint()
+
+        # as multilinestring
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineString((11 13,14 15, 11 15, 11 13))').asMultiPolyline(),
+                         [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineStringZ((11 13 1,14 15 2, 11 15 3, 11 13 1))').asMultiPolyline(),
+                         [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineStringM((11 13 1,14 15 2, 11 15 3, 11 13 1))').asMultiPolyline(),
+                         [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
+        self.assertEqual(QgsGeometry.fromWkt('MultiLineStringZM((11 13 1 11,14 15 2 12 , 11 15 3 13 , 11 13 1 11))').asMultiPolyline(),
+                         [[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]])
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Point(11 13)').asMultiPolyline()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asMultiPolyline()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Polygon((11 13, 14 15, 17 18, 11 13))').asMultiPolyline()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('LineString(11 13,14 15)').asPolygon()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiPolygon(((11 13,14 15, 11 15, 11 13)))').asMultiPolyline()
+        with self.assertRaises(ValueError):
+            QgsGeometry().asPolygon()
+
+        # as multipolygon
+        self.assertEqual(QgsGeometry.fromWkt('MultiPolygon(((11 13,14 15, 11 15, 11 13)))').asMultiPolygon(),
+                         [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiPolygonZ(((11 13 1,14 15 2, 11 15 3 , 11 13 1)))').asMultiPolygon(),
+            [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
+        self.assertEqual(
+            QgsGeometry.fromWkt('MultiPolygonM(((11 13 1,14 15 2, 11 15 3 , 11 13 1)))').asMultiPolygon(),
+            [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
+        self.assertEqual(QgsGeometry.fromWkt(
+            'MultiPolygonZM(((11 13 1 11,14 15 2 12, 11 15 3 13, 11 13 1 11)))').asMultiPolygon(),
+            [[[QgsPointXY(11, 13), QgsPointXY(14, 15), QgsPointXY(11, 15), QgsPointXY(11, 13)]]])
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Point(11 13)').asMultiPolygon()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiPoint(11 13,14 15)').asMultiPolygon()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('Polygon((11 13, 14 15, 17 18, 11 13))').asMultiPolygon()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('LineString(11 13,14 15)').asPolygon()
+        with self.assertRaises(TypeError):
+            QgsGeometry.fromWkt('MultiLineString((11 13,14 15, 11 15, 11 13))').asMultiPolygon()
+        with self.assertRaises(ValueError):
+            QgsGeometry().asPolygon()
+
     def testReferenceGeometry(self):
         """ Test parsing a whole range of valid reference wkt formats and variants, and checking
         expected values such as length, area, centroids, bounding boxes, etc of the resultant geometry.
