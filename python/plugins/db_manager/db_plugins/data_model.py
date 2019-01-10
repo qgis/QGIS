@@ -259,7 +259,7 @@ class SimpleTableModel(QStandardItemModel):
 class TableFieldsModel(SimpleTableModel):
 
     def __init__(self, parent, editable=False):
-        SimpleTableModel.__init__(self, ['Name', 'Type', 'Null', 'Default', 'Comment'], editable, parent)
+        SimpleTableModel.__init__(self, ['Name', 'Type', 'Null', 'Default'], editable, parent)
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Vertical and role == Qt.DisplayRole:
@@ -273,7 +273,7 @@ class TableFieldsModel(SimpleTableModel):
         return flags
 
     def append(self, fld):
-        data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String(), fld.getComment()]
+        data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String()]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
         self.setData(self.index(row, 0), fld, Qt.UserRole)
@@ -290,6 +290,7 @@ class TableFieldsModel(SimpleTableModel):
         val = self.data(self.index(row, 0), Qt.UserRole)
         fld = val if val is not None else self._getNewObject()
         fld.name = self.data(self.index(row, 0)) or ""
+
         typestr = self.data(self.index(row, 1)) or ""
         regex = QRegExp("([^\\(]+)\\(([^\\)]+)\\)")
         startpos = regex.indexIn(typestr)
@@ -302,7 +303,6 @@ class TableFieldsModel(SimpleTableModel):
 
         fld.notNull = self.data(self.index(row, 2), Qt.CheckStateRole) == Qt.Unchecked
         fld.primaryKey = self.data(self.index(row, 1), Qt.UserRole)
-        fld.comment = self.data(self.index(row, 4), Qt.UserRole)
         return fld
 
     def getFields(self):

@@ -59,6 +59,10 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = TableIndexesModel(self)
         self.viewIndexes.setModel(m)
 
+        #Display comment in line edit
+        m = self.table.comment
+        self.viewComment.setText(m)
+
         self.btnAddColumn.clicked.connect(self.addColumn)
         self.btnAddGeometryColumn.clicked.connect(self.addGeometryColumn)
         self.btnEditColumn.clicked.connect(self.editColumn)
@@ -70,6 +74,11 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.btnAddIndex.clicked.connect(self.createIndex)
         self.btnAddSpatialIndex.clicked.connect(self.createSpatialIndex)
         self.btnDeleteIndex.clicked.connect(self.deleteIndex)
+
+        #Connect button add Comment to function
+        self.btnAddComment.clicked.connect(self.createComment)
+        #Connect button delete Comment to function
+        self.btnDeleteComment.clicked.connect(self.deleteComment)
 
         self.refresh()
 
@@ -153,7 +162,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         with OverrideCursor(Qt.WaitCursor):
             self.aboutToChangeTable.emit()
             try:
-                fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String(), new_fld.comment)
+                fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String())
                 self.refresh()
             except BaseError as e:
                 DlgDbError.showError(e, self)
@@ -322,3 +331,29 @@ class DlgTableProperties(QDialog, Ui_Dialog):
                 self.refresh()
             except BaseError as e:
                 DlgDbError.showError(e, self)
+
+    def createComment(self):
+        #Function that add a comment to the selected table
+        try:
+            #Using the db connector, executing de SQL query Comment on table
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(self.table.schema().name, self.table.name, self.viewComment.text()))
+        except DbError as e:
+            DlgDbError.showError(e, self)
+            return
+        self.refresh()
+        #Display successful message
+        QMessageBox.information(self, self.tr("Add comment"), self.tr("Table successfully commented"))
+
+    def deleteComment(self):
+        #Function that drop the comment to the selected table
+        try:
+            #Using the db connector, executing de SQL query Comment on table using the NULL definition
+            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(self.table.schema().name, self.table.name))
+        except DbError as e:
+            DlgDbError.showError(e, self)
+            return
+        self.refresh()
+        #Refresh line edit, put a void comment
+        self.viewComment.setText('')
+        #Display successful message
+        QMessageBox.information(self, self.tr("Delete comment"), self.tr("Comment deleted"))
