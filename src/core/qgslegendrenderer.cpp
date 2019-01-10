@@ -380,7 +380,7 @@ QSizeF QgsLegendRenderer::drawTitleInternal( QgsRenderContext *context, QPainter
   QStringList lines = mSettings.splitStringForWrapping( mSettings.title() );
   double y = point.y();
 
-  if ( context )
+  if ( context && context->painter() )
   {
     context->painter()->setPen( mSettings.fontColor() );
   }
@@ -420,7 +420,7 @@ QSizeF QgsLegendRenderer::drawTitleInternal( QgsRenderContext *context, QPainter
 
     QRectF r( textBoxLeft, y, textBoxWidth, height );
 
-    if ( context->painter() )
+    if ( context && context->painter() )
     {
       mSettings.drawText( context->painter(), r, *titlePart, titleFont, halignment, Qt::AlignVCenter, Qt::TextDontClip );
     }
