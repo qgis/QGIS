@@ -17,16 +17,12 @@
 
 #include "qgswmtsutils.h"
 #include "qgswmtsparameters.h"
-#include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
 
 #include "qgsproject.h"
 #include "qgsexception.h"
-#include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayertree.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgssettings.h"
 
 

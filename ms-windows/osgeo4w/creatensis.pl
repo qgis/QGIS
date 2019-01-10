@@ -78,6 +78,9 @@ chdir $packages;
 system "wget $wgetopt -c http://qgis.org/downloads/Untgz.zip" unless -f "Untgz.zip";
 die "download of Untgz.zip failed" if $?;
 
+system "wget $wgetopt -c https://qgis.org/downloads/Inetc.zip" unless -f "Inetc.zip";
+die "download of Inetc.zip failed" if $?;
+
 my %dep;
 my %file;
 my %lic;
@@ -384,6 +387,12 @@ close F;
 unless(-d "untgz") {
 	system "unzip $packages/Untgz.zip";
 	die "unpacking Untgz.zip failed" if $?;
+}
+
+unless(-d "inetc") {
+	mkdir "inetc", 0755;
+	system "unzip -p $packages/Inetc.zip Plugins/x86-ansi/INetC.dll >inetc/INetC.dll";
+	die "unpacking Inetc.zip failed" if $?;
 }
 
 chdir "..";

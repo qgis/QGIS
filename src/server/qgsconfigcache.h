@@ -22,7 +22,6 @@
 
 #include <QCache>
 #include <QFileSystemWatcher>
-#include <QMap>
 #include <QObject>
 #include <QDomDocument>
 

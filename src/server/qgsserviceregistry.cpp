@@ -19,7 +19,6 @@
 
 #include "qgsserviceregistry.h"
 #include "qgsservice.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include <algorithm>

@@ -206,8 +206,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
+        QgsSettings settings;
+        QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                         QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable(); } );
+                         QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
 
         // allow editing
         unsigned int cap = vlayer->dataProvider()->capabilities();
@@ -680,7 +682,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;
 
@@ -710,7 +712,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color 
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;
 
@@ -803,7 +805,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   std::unique_ptr< QgsSymbol > newSymbol( originalSymbol->clone() );
   newSymbol->setColor( color );
   node->setSymbol( newSymbol.release() );
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
+  if ( QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId ) )
   {
     layer->emitStyleChanged();
   }

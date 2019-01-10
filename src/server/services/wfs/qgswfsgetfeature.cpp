@@ -22,15 +22,12 @@
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsfields.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
 #include "qgsdatetimefieldformatter.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsfeatureiterator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterrestorer.h"
 #include "qgsproject.h"
@@ -38,8 +35,6 @@
 #include "qgsjsonutils.h"
 
 #include "qgswfsgetfeature.h"
-
-#include <QStringList>
 
 namespace QgsWfs
 {

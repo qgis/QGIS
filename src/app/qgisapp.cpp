@@ -328,6 +328,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
 #include "qgsappwindowmanager.h"
+#include "qgsvaliditycheckregistry.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -422,6 +423,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationdock.h"
 #include "qgsmaptooltrimextendfeature.h"
+#include "qgslayoutvaliditychecks.h"
 
 #include "vertextool/qgsvertextool.h"
 
@@ -578,8 +580,12 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       break;
     }
     case 1:
-      QgisApp::instance()->attributeTable();
+    {
+      QgsSettings settings;
+      QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
+      QgisApp::instance()->attributeTable( initialMode );
       break;
+    }
     case 2:
       mapStyleDock( true );
       break;
@@ -760,7 +766,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mStyleSheetBuilder = new QgisAppStyleSheet( this );
   connect( mStyleSheetBuilder, &QgisAppStyleSheet::appStyleSheetChanged,
            this, &QgisApp::setAppStyleSheet );
-  mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
   endProfile();
 
   QWidget *centralWidget = this->centralWidget();
@@ -1231,6 +1236,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     settings.setValue( QStringLiteral( "/qgis/iconSize" ), size );
     setIconSizes( size );
   }
+
+  QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutScaleBarValidityCheck() );
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -3253,6 +3260,7 @@ void QgisApp::setTheme( const QString &themeName )
 #endif
 #endif
 
+  mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
   QgsApplication::setUITheme( theme );
 
   //QgsDebugMsg("Setting theme to \n" + themeName);
@@ -10443,15 +10451,15 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
   static std::once_flag initialized;
   std::call_once( initialized, []
   {
-    sProjectPropertiesPagesMap.insert( tr( "General" ), QStringLiteral( "mProjOptsGeneral" ) );
-    sProjectPropertiesPagesMap.insert( tr( "Metadata" ), QStringLiteral( "mMetadataPage" ) );
-    sProjectPropertiesPagesMap.insert( tr( "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
-    sProjectPropertiesPagesMap.insert( tr( "Default Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
-    sProjectPropertiesPagesMap.insert( tr( "Data Sources" ), QStringLiteral( "mTab_DataSources" ) );
-    sProjectPropertiesPagesMap.insert( tr( "Relations" ), QStringLiteral( "mTabRelations" ) );
-    sProjectPropertiesPagesMap.insert( tr( "Variables" ), QStringLiteral( "mTab_Variables" ) );
-    sProjectPropertiesPagesMap.insert( tr( "Macros" ), QStringLiteral( "mProjOptsMacros" ) );
-    sProjectPropertiesPagesMap.insert( tr( "QGIS Server" ), QStringLiteral( "mProjOptsOWS" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "General" ), QStringLiteral( "mProjOptsGeneral" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Metadata" ), QStringLiteral( "mMetadataPage" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Default Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Data Sources" ), QStringLiteral( "mTab_DataSources" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Relations" ), QStringLiteral( "mTabRelations" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Variables" ), QStringLiteral( "mTab_Variables" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Macros" ), QStringLiteral( "mProjOptsMacros" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "QGIS Server" ), QStringLiteral( "mProjOptsOWS" ) );
   } );
 
   return sProjectPropertiesPagesMap;
@@ -10503,24 +10511,24 @@ QMap< QString, int > QgisApp::optionsPagesMap()
   static std::once_flag initialized;
   std::call_once( initialized, []
   {
-    sOptionsPagesMap.insert( tr( "General" ), 0 );
-    sOptionsPagesMap.insert( tr( "System" ), 1 );
-    sOptionsPagesMap.insert( tr( "CRS" ), 2 );
-    sOptionsPagesMap.insert( tr( "Data Sources" ), 3 );
-    sOptionsPagesMap.insert( tr( "Rendering" ), 4 );
-    sOptionsPagesMap.insert( tr( "Canvas & Legend" ), 5 );
-    sOptionsPagesMap.insert( tr( "Map Tools" ), 6 );
-    sOptionsPagesMap.insert( tr( "Colors" ), 7 );
-    sOptionsPagesMap.insert( tr( "Digitizing" ), 8 );
-    sOptionsPagesMap.insert( tr( "Layouts" ), 9 );
-    sOptionsPagesMap.insert( tr( "GDAL" ), 10 );
-    sOptionsPagesMap.insert( tr( "Variables" ), 11 );
-    sOptionsPagesMap.insert( tr( "Authentication" ), 12 );
-    sOptionsPagesMap.insert( tr( "Network" ), 13 );
-    sOptionsPagesMap.insert( tr( "Locator" ), 14 );
-    sOptionsPagesMap.insert( tr( "Advanced" ), 15 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "General" ), 0 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "System" ), 1 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), 2 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), 3 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), 4 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), 5 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), 6 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), 7 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), 8 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), 9 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), 10 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Variables" ), 11 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), 12 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Network" ), 13 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), 14 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), 15 );
 #ifdef HAVE_OPENCL
-    sOptionsPagesMap.insert( tr( "Acceleration" ), 16 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), 16 );
 #endif
   } );
 

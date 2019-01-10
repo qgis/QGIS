@@ -25,7 +25,6 @@
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertreemodel.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 

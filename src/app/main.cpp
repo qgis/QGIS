@@ -99,6 +99,7 @@ typedef SInt32 SRefCon;
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
 #include "qgsfirstrundialog.h"
+#include "qgsproxystyle.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1221,14 +1222,18 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString presetStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
-  QString activeStyleName = presetStyle;
-  if ( activeStyleName.isEmpty() ) // not set, using default style
+  QString desiredStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
+  const QString theme = settings.value( QStringLiteral( "UI/UITheme" ) ).toString();
+  if ( theme != QLatin1String( "default" ) )
   {
-    //not set, check default
-    activeStyleName = QApplication::style()->metaObject()->className();
+    if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
+    {
+      desiredStyle = QStringLiteral( "fusion" );
+    }
   }
-  if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+  const QString activeStyleName = QApplication::style()->metaObject()->className();
+  if ( desiredStyle.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive )
+       || ( desiredStyle.isEmpty() && activeStyleName.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive ) ) )
   {
     //never allow Adwaita themes - the Qt variants of these are VERY broken
     //for apps like QGIS. E.g. oversized controls like spinbox widgets prevent actually showing
@@ -1238,13 +1243,21 @@ int main( int argc, char *argv[] )
     //style choices can cause Qt apps to crash...
     if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
     {
-      presetStyle = QStringLiteral( "fusion" );
+      desiredStyle = QStringLiteral( "fusion" );
     }
   }
-  if ( !presetStyle.isEmpty() )
+  if ( !desiredStyle.isEmpty() )
   {
-    QApplication::setStyle( presetStyle );
-    settings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
+    QApplication::setStyle( new QgsAppStyle( desiredStyle ) );
+
+    if ( activeStyleName != desiredStyle )
+      settings.setValue( QStringLiteral( "qgis/style" ), desiredStyle );
+  }
+  else
+  {
+    // even if user has not set a style, we need to override the application style with the QgsAppStyle proxy
+    // based on the default style (or we miss custom style tweaks)
+    QApplication::setStyle( new QgsAppStyle( activeStyleName ) );
   }
 
   // set authentication database directory

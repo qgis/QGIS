@@ -26,14 +26,19 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayoututils.h"
 #include "qgsexception.h"
+#include "qgsvectorlayer.h"
+#include "qgssinglesymbolrenderer.h"
 
 #include <QPainter>
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
+  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "overview" ), QStringLiteral( "memory" ) ) )
 {
   createDefaultFrameSymbol();
 }
+
+QgsLayoutItemMapOverview::~QgsLayoutItemMapOverview() = default;
 
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
@@ -42,6 +47,8 @@ void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   mFrameSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+
+  mExtentLayer->setRenderer( new QgsSingleSymbolRenderer( mFrameSymbol->clone() ) );
 }
 
 void QgsLayoutItemMapOverview::draw( QPainter *painter )
@@ -223,7 +230,7 @@ void QgsLayoutItemMapOverview::setLinkedMap( QgsLayoutItemMap *map )
   mFrameMap = map;
   //connect to new map signals
   connectSignals();
-  mMap->update();
+  mMap->invalidateCache();
 }
 
 QgsLayoutItemMap *QgsLayoutItemMapOverview::linkedMap()
@@ -243,6 +250,62 @@ void QgsLayoutItemMapOverview::connectSignals()
     connect( mFrameMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
     connect( mFrameMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
+}
+
+QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
+{
+  if ( !mEnabled || !mFrameMap || !mMap || !mMap->layout() )
+  {
+    return nullptr;
+  }
+
+  const QgsLayoutItemMap *overviewFrameMap = linkedMap();
+  if ( !overviewFrameMap )
+  {
+    return nullptr;
+  }
+
+  //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
+  QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
+  QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
+
+  if ( overviewFrameMap->crs() != mMap->crs() )
+  {
+    // reproject extent
+    QgsCoordinateTransform ct( overviewFrameMap->crs(),
+                               mMap->crs(), mLayout->project() );
+    g = g.densifyByCount( 20 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+  }
+
+  //get current map's extent as a QPolygonF
+  QPolygonF thisExtent = mMap->visibleExtentPolygon();
+  QgsGeometry thisGeom = QgsGeometry::fromQPolygonF( thisExtent );
+  //intersect the two
+  QgsGeometry intersectExtent = thisGeom.intersection( g );
+
+  mExtentLayer->setBlendMode( mBlendMode );
+
+  static_cast< QgsSingleSymbolRenderer * >( mExtentLayer->renderer() )->setSymbol( mFrameSymbol->clone() );
+  mExtentLayer->dataProvider()->truncate();
+  mExtentLayer->setCrs( mMap->crs() );
+
+  if ( mInverted )
+  {
+    intersectExtent = thisGeom.difference( intersectExtent );
+  }
+
+  QgsFeature f;
+  f.setGeometry( intersectExtent );
+  mExtentLayer->dataProvider()->addFeature( f );
+
+  return mExtentLayer.get();
 }
 
 void QgsLayoutItemMapOverview::setFrameSymbol( QgsFillSymbol *symbol )
@@ -295,13 +358,10 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
                               center.x() - extent.width() / 2 + extent.width(),
                               center.y() - extent.height() / 2 + extent.height() );
     mMap->setExtent( movedExtent );
-
-    //must invalidate cache so that map gets redrawn
-    mMap->invalidateCache();
   }
 
   //repaint map so that overview gets updated
-  mMap->update();
+  mMap->invalidateCache();
 }
 
 
@@ -338,19 +398,19 @@ void QgsLayoutItemMapOverviewStack::moveOverviewDown( const QString &overviewId 
 QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const QString &overviewId ) const
 {
   QgsLayoutItemMapItem *item = QgsLayoutItemMapItemStack::item( overviewId );
-  return dynamic_cast<QgsLayoutItemMapOverview *>( item );
+  return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
 QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const int index ) const
 {
   QgsLayoutItemMapItem *item = QgsLayoutItemMapItemStack::item( index );
-  return dynamic_cast<QgsLayoutItemMapOverview *>( item );
+  return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
 QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx )
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
-  QgsLayoutItemMapOverview *overview = dynamic_cast<QgsLayoutItemMapOverview *>( item );
+  QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( item );
   return *overview;
 }
 
@@ -360,7 +420,7 @@ QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const
   QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();
   for ( ; it != mItems.end(); ++it )
   {
-    QgsLayoutItemMapOverview *overview = dynamic_cast<QgsLayoutItemMapOverview *>( *it );
+    QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( *it );
     if ( overview )
     {
       list.append( overview );
@@ -384,4 +444,59 @@ bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDom
   }
 
   return true;
+}
+
+QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QList<QgsMapLayer *> &layers )
+{
+  QList<QgsMapLayer *> res = layers;
+  res.reserve( layers.count() + mItems.count() );
+  for ( QgsLayoutItemMapItem  *item : qgis::as_const( mItems ) )
+  {
+    if ( !item )
+      continue;
+
+    QgsVectorLayer *l = static_cast< QgsLayoutItemMapOverview * >( item )->asMapLayer();
+    if ( !l )
+      continue;
+
+    switch ( item->stackingPosition() )
+    {
+      case QgsLayoutItemMapItem::StackAboveMapLabels:
+        continue;
+
+      case QgsLayoutItemMapItem::StackAboveMapLayer:
+      case QgsLayoutItemMapItem::StackBelowMapLayer:
+      {
+        QgsMapLayer *stackLayer = item->stackingLayer();
+        if ( !stackLayer )
+          continue;
+
+        auto pos = std::find( res.begin(), res.end(), stackLayer );
+        if ( pos == res.end() )
+          continue;
+
+        if ( item->stackingPosition() == QgsLayoutItemMapItem::StackBelowMapLayer )
+        {
+          pos++;
+          if ( pos == res.end() )
+          {
+            res.push_back( l );
+            break;
+          }
+        }
+        res.insert( pos, l );
+        break;
+      }
+
+      case QgsLayoutItemMapItem::StackBelowMap:
+        res.push_back( l );
+        break;
+
+      case QgsLayoutItemMapItem::StackBelowMapLabels:
+        res.push_front( l );
+        break;
+    }
+  }
+
+  return res;
 }

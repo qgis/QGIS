@@ -19,12 +19,9 @@
 #define QGSWFSPARAMETERS_H
 
 #include <QMap>
-#include <QObject>
 #include <QMetaEnum>
 
 #include "qgsrectangle.h"
-#include "qgswfsserviceexception.h"
-#include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
 #include "qgsserverparameters.h"
 

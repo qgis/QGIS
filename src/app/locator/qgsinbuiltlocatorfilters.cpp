@@ -317,7 +317,7 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
   QVariantList dataList = result.userData.toList();
   QgsFeatureId id = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;
 
@@ -431,7 +431,7 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
   QVariantList dataList = result.userData.toList();
   QgsFeatureId fid = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;
 

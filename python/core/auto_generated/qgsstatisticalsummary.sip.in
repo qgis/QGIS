@@ -46,6 +46,8 @@ specifying the statistic in the constructor or via setStatistics().
       FirstQuartile,
       ThirdQuartile,
       InterQuartileRange,
+      First,
+      Last,
       All
     };
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
@@ -216,6 +218,24 @@ Returns calculated range (difference between maximum and minimum values). A NaN 
 be calculated.
 %End
 
+    double first() const;
+%Docstring
+Returns the first value obtained. A NaN value may be returned if no values were encountered.
+
+.. seealso:: :py:func:`last`
+
+.. versionadded:: 3.6
+%End
+
+    double last() const;
+%Docstring
+Returns the last value obtained. A NaN value may be returned if no values were encountered.
+
+.. seealso:: :py:func:`first`
+
+.. versionadded:: 3.6
+%End
+
     double stDev() const;
 %Docstring
 Returns population standard deviation. This is only calculated if Statistic.StDev has
@@ -296,9 +316,18 @@ be calculated.
 
     static QString displayName( QgsStatisticalSummary::Statistic statistic );
 %Docstring
-Returns the friendly display name for a statistic
+Returns the friendly display name for a ``statistic``.
 
-:param statistic: statistic to return name for
+.. seealso:: :py:func:`shortName`
+%End
+
+    static QString shortName( QgsStatisticalSummary::Statistic statistic );
+%Docstring
+Returns a short, friendly display name for a ``statistic``, suitable for use in a field name.
+
+.. seealso:: :py:func:`displayName`
+
+.. versionadded:: 3.6
 %End
 
 };

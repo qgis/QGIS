@@ -98,6 +98,15 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea = false;
 
+    //! Indicates whether the user chose "Map units" instead of directly selecting a unit
+    bool mUseMapUnits = false;
+
+    /**
+     * Indicates whether we need to measure distances in Cartesian instead of
+     * spherical coordinates, such as when measuring in degrees in a geographic CRS
+     */
+    bool mForceCartesian = true;
+
     //! Number of decimal places we want.
     int mDecimalPlaces = 3;
 
@@ -106,6 +115,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Current unit for distance values
     QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
+
+    //! Current map unit for distance values
+    QgsUnitTypes::DistanceUnit mMapDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
     //! Current unit for area values
     QgsUnitTypes::AreaUnit mAreaUnits  = QgsUnitTypes::AreaUnknownUnit;

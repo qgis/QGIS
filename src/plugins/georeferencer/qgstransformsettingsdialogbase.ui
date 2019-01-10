@@ -30,7 +30,7 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Output settings</string>
+      <string>Output Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="3" column="0" colspan="2">
@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsFileWidget" name="mOutputRaster"/>
+       <widget class="QgsFileWidget" name="mOutputRaster" native="true"/>
       </item>
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxZeroAsTrans">
@@ -176,10 +176,10 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
       <item row="0" column="1">
-       <widget class="QgsFileWidget" name="mPdfMap"/>
+       <widget class="QgsFileWidget" name="mPdfMap" native="true"/>
       </item>
       <item row="1" column="1">
-       <widget class="QgsFileWidget" name="mPdfReport"/>
+       <widget class="QgsFileWidget" name="mPdfReport" native="true"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
@@ -211,7 +211,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Transformation parameters</string>
+      <string>Transformation Parameters</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
@@ -286,7 +286,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>

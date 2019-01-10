@@ -443,7 +443,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
   programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
 
-  qDebug() << programTemplate;
+  // qDebug() << programTemplate;
 
   // Create a program from the kernel source
   cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );

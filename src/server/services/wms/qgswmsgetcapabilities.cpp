@@ -23,6 +23,7 @@
 #include "qgsserverprojectutils.h"
 
 #include "qgslayoutmanager.h"
+#include "qgslayoutatlas.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemlabel.h"
@@ -30,11 +31,6 @@
 #include "qgslayoutframe.h"
 #include "qgslayoutpagecollection.h"
 
-#include "qgslayertreenode.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertreelayer.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 
 #include "qgsexception.h"
@@ -679,6 +675,27 @@ namespace QgsWms
       //get paper width and height in mm from composition
       composerTemplateElem.setAttribute( QStringLiteral( "width" ), width.length() );
       composerTemplateElem.setAttribute( QStringLiteral( "height" ), height.length() );
+
+      //atlas enabled and atlas covering layer
+      QgsLayoutAtlas *atlas = layout->atlas();
+      if ( atlas && atlas->enabled() )
+      {
+        composerTemplateElem.setAttribute( QStringLiteral( "atlasEnabled" ), QStringLiteral( "1" ) );
+        QgsVectorLayer *cLayer = atlas->coverageLayer();
+        if ( cLayer )
+        {
+          QString layerName = cLayer->shortName();
+          if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
+          {
+            layerName = cLayer->id();
+          }
+          else if ( layerName.isEmpty() )
+          {
+            layerName = cLayer->name();
+          }
+          composerTemplateElem.setAttribute( QStringLiteral( "atlasCoverageLayer" ), layerName );
+        }
+      }
 
       //add available composer maps and their size in mm
       QList<QgsLayoutItemMap *> layoutMapList;
@@ -1738,6 +1755,22 @@ namespace QgsWms
 
         //displayfield
         layerElem.setAttribute( QStringLiteral( "displayField" ), displayField );
+
+        //primary key
+        QgsAttributeList pkAttributes = vLayer->primaryKeyAttributes();
+        if ( pkAttributes.size() > 0 )
+        {
+          QDomElement pkElem = doc.createElement( QStringLiteral( "PrimaryKey" ) );
+          QgsAttributeList::const_iterator pkIt = pkAttributes.constBegin();
+          for ( ; pkIt != pkAttributes.constEnd(); ++pkIt )
+          {
+            QDomElement pkAttributeElem = doc.createElement( QStringLiteral( "PrimaryKeyAttribute" ) );
+            QDomText pkAttName = doc.createTextNode( layerFields.at( *pkIt ).name() );
+            pkAttributeElem.appendChild( pkAttName );
+            pkElem.appendChild( pkAttributeElem );
+          }
+          layerElem.appendChild( pkElem );
+        }
 
         //geometry type
         layerElem.setAttribute( QStringLiteral( "geometryType" ), QgsWkbTypes::displayString( vLayer->wkbType() ) );

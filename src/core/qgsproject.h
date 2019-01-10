@@ -702,6 +702,30 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Retrieve a pointer to a registered layer by \p layerId converted
+     * to type T. This is a convenience template.
+     * A nullptr will be returned if the layer is not found or
+     * if it cannot be cast to type T.
+     *
+     * \code{cpp}
+     * QgsVectorLayer *layer = project->mapLayer<QgsVectorLayer*>( layerId );
+     * \endcode
+     *
+     * \see mapLayer()
+     * \see mapLayers()
+     *
+     * \since QGIS 3.6
+     */
+    template <class T>
+    T mapLayer( const QString &layerId ) const
+    {
+      return qobject_cast<T>( mapLayer( layerId ) );
+    }
+#endif
+
     /**
      * Retrieve a list of matching registered layers by layer name.
      * \param layerName name of layers to match

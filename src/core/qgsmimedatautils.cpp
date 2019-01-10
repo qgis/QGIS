@@ -85,7 +85,7 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
       return nullptr;
     }
     QString layerId = url.queryItemValue( QStringLiteral( "layerid" ) );
-    QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+    QgsVectorLayer *vectorLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
     if ( !vectorLayer )
     {
       error = QObject::tr( "Cannot get memory layer." );

@@ -165,7 +165,7 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   //important - we need a deep copy of the categories list, not a shared copy. This is required because
   //QgsRendererCategory::symbol() is marked const, and so retrieving the symbol via this method does not
   //trigger a detachment and copy of mCategories BUT that same method CAN be used to modify a symbol in place
-  Q_FOREACH ( const QgsRendererCategory &cat, categories )
+  for ( const QgsRendererCategory &cat : categories )
   {
     if ( !cat.symbol() )
     {
@@ -179,10 +179,22 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
 {
   mSymbolHash.clear();
 
-  for ( int i = 0; i < mCategories.size(); ++i )
+  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
-    const QgsRendererCategory &cat = mCategories.at( i );
-    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : nullptr );
+    const QVariant val = cat.value();
+    QString valAsString;
+    if ( val.type() == QVariant::List )
+    {
+      const QVariantList list = val.toList();
+      for ( const QVariant &v : list )
+      {
+        mSymbolHash.insert( v.toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : nullptr );
+      }
+    }
+    else
+    {
+      mSymbolHash.insert( val.toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : nullptr );
+    }
   }
 }
 
@@ -411,7 +423,7 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
     mExpression->prepare( &context.expressionContext() );
   }
 
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
     cat.symbol()->startRender( context, fields );
   }
@@ -421,7 +433,7 @@ void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
   QgsFeatureRenderer::stopRender( context );
 
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
     cat.symbol()->stopRender( context );
   }
@@ -518,7 +530,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
   QString activeValues;
   QString inactiveValues;
 
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
     if ( cat.value() == "" )
     {
@@ -530,26 +542,55 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
     allActive = allActive && cat.renderState();
 
     QVariant::Type valType = isExpression ? cat.value().type() : fields.at( attrNum ).type();
+    const bool isList = cat.value().type() == QVariant::List;
     QString value = QgsExpression::quotedValue( cat.value(), valType );
 
     if ( !cat.renderState() )
     {
       if ( cat.value() != "" )
       {
-        if ( !inactiveValues.isEmpty() )
-          inactiveValues.append( ',' );
+        if ( isList )
+        {
+          const QVariantList list = cat.value().toList();
+          for ( const QVariant &v : list )
+          {
+            if ( !inactiveValues.isEmpty() )
+              inactiveValues.append( ',' );
 
-        inactiveValues.append( value );
+            inactiveValues.append( QgsExpression::quotedValue( v, isExpression ? v.type() : fields.at( attrNum ).type() ) );
+          }
+        }
+        else
+        {
+          if ( !inactiveValues.isEmpty() )
+            inactiveValues.append( ',' );
+
+          inactiveValues.append( value );
+        }
       }
     }
     else
     {
       if ( cat.value() != "" )
       {
-        if ( !activeValues.isEmpty() )
-          activeValues.append( ',' );
+        if ( isList )
+        {
+          const QVariantList list = cat.value().toList();
+          for ( const QVariant &v : list )
+          {
+            if ( !activeValues.isEmpty() )
+              activeValues.append( ',' );
 
-        activeValues.append( value );
+            activeValues.append( QgsExpression::quotedValue( v, isExpression ? v.type() : fields.at( attrNum ).type() ) );
+          }
+        }
+        else
+        {
+          if ( !activeValues.isEmpty() )
+            activeValues.append( ',' );
+
+          activeValues.append( value );
+        }
       }
     }
   }
@@ -579,7 +620,7 @@ QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context )
   Q_UNUSED( context );
   QgsSymbolList lst;
   lst.reserve( mCategories.count() );
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : mCategories )
   {
     lst.append( cat.symbol() );
   }
@@ -604,7 +645,26 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   {
     if ( catElem.tagName() == QLatin1String( "category" ) )
     {
-      QVariant value = QVariant( catElem.attribute( QStringLiteral( "value" ) ) );
+      QVariant value;
+      if ( catElem.hasAttribute( QStringLiteral( "value" ) ) )
+      {
+        value = QVariant( catElem.attribute( QStringLiteral( "value" ) ) );
+      }
+      else
+      {
+        QVariantList values;
+        QDomElement valElem = catElem.firstChildElement();
+        while ( !valElem.isNull() )
+        {
+          if ( valElem.tagName() == QLatin1String( "val" ) )
+          {
+            values << QVariant( valElem.attribute( QStringLiteral( "value" ) ) );
+          }
+          valElem = valElem.nextSiblingElement();
+        }
+        if ( !values.isEmpty() )
+          value = values;
+      }
       QString symbolName = catElem.attribute( QStringLiteral( "symbol" ) );
       QString label = catElem.attribute( QStringLiteral( "label" ) );
       bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
@@ -646,7 +706,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    Q_FOREACH ( const QgsRendererCategory &cat, r->mCategories )
+    for ( const QgsRendererCategory &cat : r->mCategories )
     {
       convertSymbolRotation( cat.symbol(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
@@ -659,7 +719,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
-    Q_FOREACH ( const QgsRendererCategory &cat, r->mCategories )
+    for ( const QgsRendererCategory &cat : r->mCategories )
     {
       convertSymbolSizeScale( cat.symbol(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
@@ -706,7 +766,20 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
       symbols.insert( symbolName, cat.symbol() );
 
       QDomElement catElem = doc.createElement( QStringLiteral( "category" ) );
-      catElem.setAttribute( QStringLiteral( "value" ), cat.value().toString() );
+      if ( cat.value().type() == QVariant::List )
+      {
+        const QVariantList list = cat.value().toList();
+        for ( const QVariant &v : list )
+        {
+          QDomElement valueElem = doc.createElement( QStringLiteral( "val" ) );
+          valueElem.setAttribute( "value", v.toString() );
+          catElem.appendChild( valueElem );
+        }
+      }
+      else
+      {
+        catElem.setAttribute( QStringLiteral( "value" ), cat.value().toString() );
+      }
       catElem.setAttribute( QStringLiteral( "symbol" ), symbolName );
       catElem.setAttribute( QStringLiteral( "label" ), cat.label() );
       catElem.setAttribute( QStringLiteral( "render" ), cat.renderState() ? "true" : "false" );
@@ -769,7 +842,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 {
   QgsLegendSymbolList lst;
   int i = 0;
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : mCategories )
   {
     lst << QgsLegendSymbolItem( cat.symbol(), cat.label(), QString::number( i++ ), true );
   }
@@ -782,7 +855,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
-    Q_FOREACH ( const QgsRendererCategory &category, mCategories )
+    for ( const QgsRendererCategory &category : mCategories )
     {
       const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( category.symbol() );
       if ( ddSize )
@@ -821,9 +894,27 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
   QString value = valueForFeature( feature, context ).toString();
   int i = 0;
 
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : mCategories )
   {
-    if ( value == cat.value() )
+    bool match = false;
+    if ( cat.value().type() == QVariant::List )
+    {
+      const QVariantList list = cat.value().toList();
+      for ( const QVariant &v : list )
+      {
+        if ( value == v )
+        {
+          match = true;
+          break;
+        }
+      }
+    }
+    else
+    {
+      match = value == cat.value();
+    }
+
+    if ( match )
     {
       if ( cat.renderState() || mCounting )
         return QSet< QString >() << QString::number( i );
@@ -869,7 +960,7 @@ void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
     randomRamp->setTotalColorCount( mCategories.count() );
   }
 
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : mCategories )
   {
     double value = count / num;
     cat.symbol()->setColor( mSourceColorRamp->color( value ) );
@@ -880,7 +971,7 @@ void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
 void QgsCategorizedSymbolRenderer::updateSymbols( QgsSymbol *sym )
 {
   int i = 0;
-  Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
+  for ( const QgsRendererCategory &cat : mCategories )
   {
     QgsSymbol *symbol = sym->clone();
     symbol->setColor( cat.symbol()->color() );

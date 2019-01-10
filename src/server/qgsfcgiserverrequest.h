@@ -24,7 +24,6 @@
 
 #include "qgsserverrequest.h"
 
-#include <QBuffer>
 
 /**
  * \ingroup server

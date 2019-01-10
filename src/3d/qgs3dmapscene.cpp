@@ -86,7 +86,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   // create terrain entity
 
-  createTerrain();
+  createTerrainDeferred();
   connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapScene::createTerrain );
@@ -349,14 +349,6 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
 void Qgs3DMapScene::createTerrain()
 {
-  if ( mTerrain )
-  {
-    mChunkEntities.removeOne( mTerrain );
-
-    mTerrain->deleteLater();
-    mTerrain = nullptr;
-  }
-
   if ( !mTerrainUpdateScheduled )
   {
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
@@ -368,6 +360,14 @@ void Qgs3DMapScene::createTerrain()
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
+  if ( mTerrain )
+  {
+    mChunkEntities.removeOne( mTerrain );
+
+    mTerrain->deleteLater();
+    mTerrain = nullptr;
+  }
+
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
 

@@ -137,6 +137,17 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly ) SIP_SKIP;
 
     /**
+     * Returns index of layer item with given uri. It only searches in currently fetched
+     * items, i.e. it does not fetch children.
+     * \param uri item uri
+     * \param index the current index of the parent (to search for children)
+     * \returns model index, invalid if item not found
+     *
+     * \since QGIS 3.6
+     */
+    QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
+
+    /**
      * \deprecated Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
      */
     Q_DECL_DEPRECATED void connectItem( QgsDataItem *item ) SIP_DEPRECATED;

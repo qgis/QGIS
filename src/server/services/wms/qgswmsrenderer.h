@@ -25,38 +25,26 @@
 #include "qgsfeaturefilter.h"
 #include <QDomDocument>
 #include <QMap>
-#include <QPair>
 #include <QString>
-#include <map>
 
-class QgsCapabilitiesCache;
 class QgsCoordinateReferenceSystem;
 class QgsPrintLayout;
-class QgsConfigParser;
 class QgsFeature;
-class QgsFeatureRenderer;
 class QgsMapLayer;
 class QgsMapSettings;
 class QgsPointXY;
 class QgsRasterLayer;
-class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
-class QgsSymbol;
-class QgsSymbol;
 class QgsAccessControl;
 class QgsDxfExport;
 class QgsLayerTreeModel;
 class QgsLayerTree;
 
-class QColor;
-class QFile;
-class QFont;
 class QImage;
 class QPaintDevice;
 class QPainter;
-class QStandardItem;
 class QgsLayerTreeGroup;
 
 namespace QgsWms
@@ -282,8 +270,14 @@ namespace QgsWms
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
-      //! configure the print layout for the GetPrint request
-      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings );
+      /*
+       * Configures the print layout for the GetPrint request
+       *\param c the print layout
+       *\param mapSettings the map settings
+       *\param atlasPrint true if atlas is used for printing
+       *\returns true in case of success
+       * */
+      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
 
       //! Creates external WMS layer. Caller takes ownership
       QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;

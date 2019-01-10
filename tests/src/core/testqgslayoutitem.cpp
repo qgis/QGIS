@@ -24,6 +24,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayouteffect.h"
 #include "qgsfillsymbollayer.h"
@@ -1976,6 +1977,21 @@ void TestQgsLayoutItem::opacity()
   QCOMPARE( item->opacity(), 1.0 );
 
   checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency35" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+
+  // with background and frame
+  l.removeLayoutItem( item );
+
+  QgsLayoutItemLabel *labelItem = new QgsLayoutItemLabel( &l );
+  l.addLayoutItem( labelItem );
+  labelItem->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
+  labelItem->setBackgroundEnabled( true );
+  labelItem->setBackgroundColor( QColor( 40, 140, 240 ) );
+  labelItem->setFrameEnabled( true );
+  labelItem->setFrameStrokeColor( QColor( 40, 30, 20 ) );
+  labelItem->setItemOpacity( 0.5 );
+  checker = QgsLayoutChecker( QStringLiteral( "composereffects_transparency_bgframe" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testLayout( mReport ) );
 

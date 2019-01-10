@@ -57,6 +57,8 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void mOverviewInvertCheckbox_toggled( bool state );
     void mOverviewCenterCheckbox_toggled( bool state );
+    void overviewStackingChanged( int value );
+    void overviewStackingLayerChanged( QgsMapLayer *layer );
 
     void mXMinLineEdit_editingFinished();
     void mXMaxLineEdit_editingFinished();
@@ -137,21 +139,6 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void blockAllSignals( bool b );
 
     void rotationChanged( double value );
-
-    void handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction );
-
-    void insertFrameDisplayEntries( QComboBox *c );
-    void insertAnnotationDisplayEntries( QComboBox *c );
-    void insertAnnotationPositionEntries( QComboBox *c );
-    void insertAnnotationDirectionEntries( QComboBox *c );
-
-    void initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
-    void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
 
     //! Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type
     void toggleAtlasScalingOptionsByLayerType();

@@ -18,8 +18,6 @@
 #include "qgswmsparameters.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include <iostream>
-#include <QUrl>
 
 namespace QgsWms
 {
@@ -498,6 +496,10 @@ namespace QgsWms
 
     const QgsWmsParameter pWmtver( QgsWmsParameter::WMTVER );
     save( pWmtver );
+
+    const QgsWmsParameter pAtlasPk( QgsWmsParameter::ATLAS_PK,
+                                    QVariant::StringList );
+    save( pAtlasPk );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerParameters &parameters )
@@ -1109,12 +1111,13 @@ namespace QgsWms
     settings.setBoxSpace( boxSpaceAsDouble() );
     settings.setSymbolSize( QSizeF( symbolWidthAsDouble(), symbolHeightAsDouble() ) );
 
-    settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, layerSpaceAsDouble() );
-    settings.rstyle( QgsLegendStyle::Subgroup ).setFont( layerFont() );
+    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Top, layerSpaceAsDouble() );
+    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Bottom, layerTitleSpaceAsDouble() );
+    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setFont( layerFont() );
 
-    settings.rstyle( QgsLegendStyle::SymbolLabel ).setFont( itemFont() );
-    settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, symbolSpaceAsDouble() );
-    settings.rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Left, iconLabelSpaceAsDouble() );
+    settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setFont( itemFont() );
+    settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
+    settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setMargin( QgsLegendStyle::Side::Left, iconLabelSpaceAsDouble() );
 
     return settings;
   }
@@ -1131,6 +1134,11 @@ namespace QgsWms
     }
 
     return label;
+  }
+
+  QStringList QgsWmsParameters::atlasPk() const
+  {
+    return mWmsParameters[ QgsWmsParameter::ATLAS_PK ].toStringList();
   }
 
   QStringList QgsWmsParameters::highlightLabelString() const

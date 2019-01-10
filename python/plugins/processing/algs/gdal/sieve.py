@@ -104,7 +104,7 @@ class sieve(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
-        mask = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:
             arguments.append('-mask {}'.format(mask.source()))
 
@@ -119,11 +119,8 @@ class sieve(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        commands = []
+        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
-        else:
-            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
+            commands.insert(0, 'python3')
 
         return commands

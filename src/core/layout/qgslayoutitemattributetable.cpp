@@ -399,6 +399,8 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   QgsExpressionContext context = createExpressionContext();
   context.setFields( layer->fields() );
 
+  QgsFeatureRequest req;
+
   //prepare filter expression
   std::unique_ptr<QgsExpression> filterExpression;
   bool activeFilter = false;
@@ -408,6 +410,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     if ( !filterExpression->hasParserError() )
     {
       activeFilter = true;
+      req.setFilterExpression( mFeatureFilter );
     }
   }
 
@@ -430,8 +433,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       }
     }
   }
-
-  QgsFeatureRequest req;
 
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
   {

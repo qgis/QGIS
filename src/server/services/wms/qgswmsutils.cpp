@@ -24,8 +24,8 @@
 #include "qgsmodule.h"
 #include "qgswmsutils.h"
 #include "qgsmediancut.h"
-#include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
+#include "qgswmsserviceexception.h"
 
 namespace QgsWms
 {

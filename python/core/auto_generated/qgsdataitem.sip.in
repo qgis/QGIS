@@ -201,6 +201,7 @@ Items that return valid URI will be returned in mime data when dragging a select
       Fast,
       Collapse,
       Rename,
+      Delete,
     };
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
@@ -485,6 +486,11 @@ Returns the string representation of the given ``layerType``
 Returns the icon name of the given ``layerType``
 
 .. versionadded:: 3
+%End
+
+    virtual bool deleteLayer();
+%Docstring
+Delete this layer item
 %End
 
   protected:

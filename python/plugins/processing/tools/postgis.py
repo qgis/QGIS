@@ -112,7 +112,7 @@ class TableConstraint(object):
     match_types = {'u': 'UNSPECIFIED', 'f': 'FULL', 'p': 'PARTIAL'}
 
     def __init__(self, row):
-        (self.name, con_type, self.is_defferable, self.is_deffered, keys) = row[:5]
+        (self.name, con_type, self.is_deferable, self.is_deferred, keys) = row[:5]
         self.keys = list(map(int, keys.split(' ')))
         self.con_type = TableConstraint.types[con_type]  # Convert to enum
         if self.con_type == TableConstraint.TypeCheck:

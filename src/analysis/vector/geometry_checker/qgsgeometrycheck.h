@@ -33,10 +33,91 @@ class QgsFeaturePool;
 
 /**
  * \ingroup analysis
- * This class manages all known geometry check factories.
+ * This class implements a geometry check.
  *
- * QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
- * QgsAnalysis::geometryCheckRegistry().
+ * Geometry checks run over a set of features and can detect errors like topological
+ * or other issues which are reported in the geometry validation panel in QGIS and
+ * help a user to create valid geometries.
+ *
+ * Implementing a custom geometry check consists of the following parts
+ *
+ * ### Writing the check
+ *
+ * A new subclass of QgsGeometryCheck needs to be written and at least the following
+ * abstract methods need to be implemented:
+ *
+ *  - `compatibleGeometryTypes()`
+ *
+ *    A list of geometry types to which this check applies
+ *
+ *  - `resolutionMethods()`
+ *
+ *    A list of names for (automated) resolution methods that can be used to fix errors of this type
+ *
+ *  - `description()`
+ *
+ *    A description for the geometry check.
+ *
+ *  - `id()`
+ *
+ *    A unique id for this check.
+ *
+ *  - `checkType()`
+ *
+ *    One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
+ *
+ *  - \link collectErrors() `collectErrors(featurePools, errors, messages, feedback, ids)`\endlink
+ *
+ *    This method will be called to validate geometries. All geometries which should be validated are passed
+ *    into this method with the parameter ids and should be retrieved from the available featurePools to make
+ *    use of caching. New errors should be appended to the error list and other message strings to messages.
+ *    The method needs to return a tuple (errors, messages).
+ *
+ *
+ * ### Creating a geometry check factory
+ *
+ * A Geometry check factory manages meta information for checks. There will always be one single
+ * geometry check factory created per check type, but it's possible that multiple QgsGeometryCheck
+ * instances are created and used in parallel.
+ *
+ * A new subclass of QgsGeometryCheckFactory needs to be written and at least the following
+ * abstract methods need to be implemented:
+ *
+ *  - \link QgsGeometryCheckFactory::createGeometryCheck() `createGeometryCheck(context, configuration)`\endlink
+ *
+ *    Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
+ *
+ *  - \link QgsGeometryCheckFactory::id() `id()\endlink
+ *
+ *    A unique id for this geometry check.
+ *
+ *  - \link QgsGeometryCheckFactory::description() `description()\endlink
+ *
+ *    A description for this geometry check that can be presented to the user for more explanation.
+ *
+ *  - \link QgsGeometryCheckFactory::isCompatible() `QgsGeometryCheckFactory::isCompatible(layer)`\endlink
+ *
+ *    Returns a boolean that determines if this check is available for a given layer. This often
+ *    checks for the geometry type of the layer.
+ *
+ *  - \link QgsGeometryCheckFactory::flags() `flags()`\endlink
+ *
+ *    Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
+ *
+ *  - \link QgsGeometryCheckFactory::checkType() `checkType()`\endlink
+ *
+ *    Returns the type of this geometry check.
+ *
+ * ### Registering the geometry check
+ *
+ * Finally the geometry check factory needs to be registered in QGIS, so the system
+ * is aware of the available geometry checks.
+ *
+ * \code{.py}
+ * # Make sure you always keep a
+ * checkFactory = MyGeometryCheckFactory()
+ * QgsAnalysis.geometryCheckRegistry().registerGeometryCheck(checkFactory)
+ * \endcode
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
@@ -173,6 +254,11 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     virtual ~QgsGeometryCheck() = default;
 
 #ifndef SIP_RUN
+
+    /**
+     * Returns the configuration value with the \a name, saved in the QGIS settings for
+     * this geometry check. If no configuration could be found, \a defaultValue is returned.
+     */
     template <class T>
     T configurationValue( const QString &name, const QVariant &defaultValue = QVariant() )
     {
@@ -253,14 +339,48 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
+
+    /**
+     * Returns all layers and feature ids.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
     QMap<QString, QgsFeatureIds> allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const SIP_SKIP;
+
+    /**
+     * Replaces a part in a feature geometry.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
     void replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
+
+    /**
+     * Deletes a part of a feature geometry.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
     void deleteFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
+
+    /**
+     * Deletes a ring in a feature geometry.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
     void deleteFeatureGeometryRing( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
 
     const QgsGeometryCheckContext *mContext;
     QVariantMap mConfiguration;
 
+    /**
+     * Determines the scale factor of a layer to the map coordinate reference system.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
     double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
 };
 

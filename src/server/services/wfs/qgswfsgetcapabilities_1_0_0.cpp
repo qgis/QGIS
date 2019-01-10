@@ -24,13 +24,9 @@
 #include "qgswfsgetcapabilities_1_0_0.h"
 
 #include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
-
-#include <QStringList>
 
 namespace QgsWfs
 {

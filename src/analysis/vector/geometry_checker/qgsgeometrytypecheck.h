@@ -20,6 +20,9 @@
 
 #include "qgssinglegeometrycheck.h"
 
+/**
+ * \ingroup analysis
+ */
 class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckError
 {
   public:
@@ -40,6 +43,9 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
     QgsWkbTypes::Type mFlatType;
 };
 
+/**
+ * \ingroup analysis
+ */
 class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
 {
   public:

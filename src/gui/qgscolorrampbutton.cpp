@@ -553,7 +553,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
     pm.fill( Qt::transparent );
 
     QPainter painter;
-    QPen pen  = ( QApplication::palette().buttonText().color() );
+    QPen pen  = ( palette().buttonText().color() );
 
     painter.begin( &pm );
     painter.setPen( pen );

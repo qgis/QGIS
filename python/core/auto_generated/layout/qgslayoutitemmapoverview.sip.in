@@ -102,6 +102,14 @@ Returns a list of QgsLayoutItemMapOverviews contained by the stack.
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
 
+    QList< QgsMapLayer * > modifyMapLayerList( const QList< QgsMapLayer * > &layers );
+%Docstring
+Alters the list of map ``layers`` which will be rendered for the link map item, inserting
+temporary layers which represent overview extents as required.
+
+.. versionadded:: 3.6
+%End
+
 };
 
 class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
@@ -127,6 +135,7 @@ Constructor for QgsLayoutItemMapOverview.
 :param name: friendly display name for overview
 :param map: QgsLayoutItemMap the overview is attached to
 %End
+    ~QgsLayoutItemMapOverview();
 
     virtual void draw( QPainter *painter );
 
@@ -216,6 +225,17 @@ Sets whether the extent of the map is forced to center on the overview
 %Docstring
 Reconnects signals for overview map, so that overview correctly follows changes to source
 map's extent.
+%End
+
+    QgsVectorLayer *asMapLayer();
+%Docstring
+Returns a vector layer to render as part of the QgsLayoutItemMap render, containing
+a feature representing the overview extent (and with an appropriate renderer set matching
+the overview's frameSymbol() ).
+
+Ownership of the layer remain with the overview item.
+
+.. versionadded:: 3.6
 %End
 
   public slots:

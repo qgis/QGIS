@@ -22,6 +22,7 @@
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
+#include <QJsonDocument>
 
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For QGIS purposes, both
@@ -151,6 +152,13 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+          varType = QVariant::Map;
+        else
+          varType = QVariant::String;
+        break;
+#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -238,6 +246,16 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
+      case QVariant::Map:
+      {
+        //it has to be JSON
+        //it's null if no json format
+        if ( encoding )
+          value = QJsonDocument::fromJson( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ).toUtf8() ).toVariant();
+        else
+          value = QJsonDocument::fromJson( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ).toUtf8() ).toVariant();
+        break;
+      }
       default:
         Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
         if ( ok )

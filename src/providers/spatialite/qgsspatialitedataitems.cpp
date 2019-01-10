@@ -37,27 +37,17 @@ QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QS
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
+  mCapabilities |= Delete;
   setState( Populated ); // no children are expected
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLLayerItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), parent );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsSLLayerItem::deleteLayer );
-  lst.append( actionDeleteLayer );
-
-  return lst;
-}
-
-void QgsSLLayerItem::deleteLayer()
+bool QgsSLLayerItem::deleteLayer()
 {
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Object" ),
                               QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+    return true;
 
   QgsDataSourceUri uri( mUri );
   QString errCause;
@@ -71,6 +61,7 @@ void QgsSLLayerItem::deleteLayer()
     QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
     mParent->refresh();
   }
+  return true;
 }
 #endif
 

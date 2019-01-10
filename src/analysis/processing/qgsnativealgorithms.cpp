@@ -42,6 +42,7 @@
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
 #include "qgsalgorithmextractvertices.h"
+#include "qgsalgorithmextractzmvalues.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfiltervertices.h"
@@ -71,6 +72,7 @@
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
+#include "qgsalgorithmrasterzonalstats.h"
 #include "qgsalgorithmreclassifybylayer.h"
 #include "qgsalgorithmremoveduplicatesbyattribute.h"
 #include "qgsalgorithmremoveduplicatevertices.h"
@@ -170,7 +172,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
   addAlgorithm( new QgsExtractByExtentAlgorithm() );
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
+  addAlgorithm( new QgsExtractMValuesAlgorithm() );
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
+  addAlgorithm( new QgsExtractZValuesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
   addAlgorithm( new QgsFilterVerticesByM() );
@@ -201,6 +205,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
+  addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );

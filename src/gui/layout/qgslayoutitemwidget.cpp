@@ -233,6 +233,8 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 {
   setupUi( this );
 
+  mVariableEditor->setMinimumHeight( mVariableEditor->fontMetrics().height() * 15 );
+
   mItemRotationSpinBox->setClearValue( 0 );
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
   mStrokeUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );

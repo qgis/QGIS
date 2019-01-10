@@ -22,9 +22,7 @@
 #include <QDebug>
 
 #include "qgsservicenativeloader.h"
-#include "qgsserviceregistry.h"
 #include "qgsservicemodule.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgis.h"
 

@@ -30,7 +30,7 @@ class QgsStyle;
 
 /**
  * \ingroup core
- * \brief categorized renderer
+ * \brief Represents an individual category (class) from a QgsCategorizedSymbolRenderer.
 */
 class CORE_EXPORT QgsRendererCategory
 {
@@ -41,20 +41,70 @@ class CORE_EXPORT QgsRendererCategory
      */
     QgsRendererCategory() = default;
 
-    //! takes ownership of symbol
+    /**
+    * Constructor for a new QgsRendererCategory, with the specified \a value and \a symbol.
+    *
+    * If \a value is a list, then the category will match any of the values from this list.
+    *
+    * The ownership of \a symbol is transferred to the category.
+    *
+    * The \a label argument specifies the label used for this category in legends and the layer tree.
+    *
+    * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+    */
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
 
-    //! copy constructor
+    /**
+     * Copy constructor.
+     */
     QgsRendererCategory( const QgsRendererCategory &cat );
-
     QgsRendererCategory &operator=( QgsRendererCategory cat );
 
+    /**
+     * Returns the value corresponding to this category.
+     *
+     * If the returned value is a list, then the category will match any of the values from this list.
+     *
+     * \see setValue()
+     */
     QVariant value() const;
+
+    /**
+     * Returns the symbol which will be used to render this category.
+     * \see setSymbol()
+     */
     QgsSymbol *symbol() const;
+
+    /**
+     * Returns the label for this category, which is used to represent the category within
+     * legends and the layer tree.
+     * \see setLabel()
+     */
     QString label() const;
 
+    /**
+     * Sets the \a value corresponding to this category.
+     *
+     * If \a value is a list, then the category will match any of the values from this list.
+     *
+     * \see value()
+     */
     void setValue( const QVariant &value );
+
+    /**
+     * Sets the symbol which will be used to render this category.
+     *
+     * Ownership of the symbol is transferred to the category.
+     *
+     * \see symbol()
+     */
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
+
+    /**
+     * Sets the \a label for this category, which is used to represent the category within
+     * legends and the layer tree.
+     * \see label()
+     */
     void setLabel( const QString &label );
 
     /**
@@ -72,8 +122,15 @@ class CORE_EXPORT QgsRendererCategory
     void setRenderState( bool render );
 
     // debugging
+
+    /**
+     * Returns a string representing the categories settings, used for debugging purposes only.
+     */
     QString dump() const;
 
+    /**
+     * Converts the category to a matching SLD rule, within the specified DOM document and \a element.
+     */
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
   protected:
@@ -95,6 +152,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
+    /**
+     * Constructor for QgsCategorizedSymbolRenderer.
+     *
+     * The \a attrName argument specifies the layer's field name, or expression, which the categories will be matched against.
+     *
+     * A list of renderer \a categories can optionally be specified. If no categories are specified in the constructor, they
+     * can be added later by calling addCategory().
+     */
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
@@ -118,38 +183,131 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     void updateSymbols( QgsSymbol *sym );
 
+    /**
+     * Returns a list of all categories recognized by the renderer.
+     */
     const QgsCategoryList &categories() const { return mCategories; }
 
-    //! Returns index of category with specified value (-1 if not found)
+    /**
+     * Returns the index for the category with the specified value (or -1 if not found).
+     */
     int categoryIndexForValue( const QVariant &val );
 
     /**
-     * Returns index of category with specified label (-1 if not found or not unique)
+     * Returns the index of the category with the specified label (or -1 if the label was not found, or is not unique).
      * \since QGIS 2.5
      */
     int categoryIndexForLabel( const QString &val );
 
+    /**
+     * Changes the value for the category with the specified index.
+     *
+     * If \a value is a list, then the category will match any of the values from this list.
+     *
+     * \see updateCategorySymbol()
+     * \see updateCategoryLabel()
+     * \see updateCategoryRenderState()
+     */
     bool updateCategoryValue( int catIndex, const QVariant &value );
+
+    /**
+     * Changes the \a symbol for the category with the specified index.
+     *
+     * Ownership of \a symbol is transferred to the renderer.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategoryLabel()
+     * \see updateCategoryRenderState()
+     */
     bool updateCategorySymbol( int catIndex, QgsSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Changes the \a label for the category with the specified index.
+     *
+     * A category's label is used to represent the category within
+     * legends and the layer tree.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategoryLabel()
+     * \see updateCategoryRenderState()
+     */
     bool updateCategoryLabel( int catIndex, const QString &label );
 
-    //! \since QGIS 2.5
+    /**
+     * Changes the render state for the category with the specified index.
+     *
+     * The render state indicates whether or not the category will be rendered,
+     * and is reflected in whether the category is checked with the project's layer tree.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategorySymbol()
+     * \see updateCategoryLabel()
+     *
+     * \since QGIS 2.5
+     */
     bool updateCategoryRenderState( int catIndex, bool render );
 
+    /**
+     * Adds a new \a category to the renderer.
+     *
+     * \see categories()
+     */
     void addCategory( const QgsRendererCategory &category );
+
+    /**
+     * Deletes the category with the specified index from the renderer.
+     *
+     * \see deleteAllCategories()
+     */
     bool deleteCategory( int catIndex );
+
+    /**
+     * Deletes all existing categories from the renderer.
+     *
+     * \see deleteCategory()
+     */
     void deleteAllCategories();
 
-    //! Moves the category at index position from to index position to.
+    /**
+     * Moves an existing category at index position from to index position to.
+     */
     void moveCategory( int from, int to );
 
+    /**
+     * Sorts the existing categories by their value.
+     *
+     * \see sortByLabel()
+     */
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+
+    /**
+     * Sorts the existing categories by their label.
+     *
+     * \see sortByValue()
+     */
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
+    /**
+     * Returns the class attribute for the renderer, which is the field name
+     * or expression string from the layer which will be matched against the
+     * renderer categories.
+     *
+     * \see setClassAttribute()
+     */
     QString classAttribute() const { return mAttrName; }
+
+    /**
+     * Sets the class attribute for the renderer, which is the field name
+     * or expression string from the layer which will be matched against the
+     * renderer categories.
+     *
+     * \see classAttribute()
+     */
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }
 
-    //! create renderer from XML element
+    /**
+     * Creates a categorized renderer from an XML \a element.
+     */
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;

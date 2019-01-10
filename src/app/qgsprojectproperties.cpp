@@ -127,6 +127,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mDistanceUnitsCombo->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
   mDistanceUnitsCombo->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
   mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mDistanceUnitsCombo->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
+  mDistanceUnitsCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
   mDistanceUnitsCombo->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
   mDistanceUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
 
@@ -138,6 +140,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
   mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
   mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
+  mAreaUnitsCombo->addItem( tr( "Square centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
+  mAreaUnitsCombo->addItem( tr( "Square millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
   mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
   mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
 
@@ -636,6 +640,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     mWMSImageQualitySpinBox->setValue( imageQuality );
   }
+
+  mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
 
   mWMTSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMTSMinScaleLineEdit->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), 5000 ) );
@@ -1259,6 +1265,9 @@ void QgsProjectProperties::apply()
   {
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), imageQualityValue );
   }
+
+  int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), mWMTSMinScaleLineEdit->value() );

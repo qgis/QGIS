@@ -18,8 +18,6 @@
 #include "qgswmtsparameters.h"
 #include "qgswmtsgetfeatureinfo.h"
 
-#include <QImage>
-
 namespace QgsWmts
 {
 

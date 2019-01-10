@@ -1,9 +1,0 @@
-r.mapcalc
-Raster map calculator.
-Raster (r.*)
-QgsProcessingParameterMultipleLayers|maps|Raster maps used in the calculator|3|None|True
-QgsProcessingParameterString|expression|Expression to evaluate. Syntax e.g. `raster_out=raster1+raster2`. Use original filenames, without extension|None|True|True
-QgsProcessingParameterFile|file|File containing expression(s) to evaluate (same rule for raster names than above)|QgsProcessingParameterFile.File|txt|None|True
-QgsProcessingParameterString|seed|Integer seed for rand() function|None|False|True
-*QgsProcessingParameterBoolean|-s|Generate random seed (result is non-deterministic)|False
-QgsProcessingParameterFolderDestination|output_dir|Results Directory

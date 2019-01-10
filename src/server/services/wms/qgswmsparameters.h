@@ -19,13 +19,11 @@
 #define QGSWMSPARAMETERS_H
 
 #include <QMap>
-#include <QObject>
 #include <QMetaEnum>
 #include <QColor>
 
 #include "qgsrectangle.h"
 #include "qgswmsserviceexception.h"
-#include "qgsserverrequest.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
 #include "qgsogcutils.h"
@@ -168,7 +166,8 @@ namespace QgsWms
         GRID_INTERVAL_Y,
         WITH_GEOMETRY,
         WITH_MAPTIP,
-        WMTVER
+        WMTVER,
+        ATLAS_PK
       };
       Q_ENUM( Name )
 
@@ -1147,6 +1146,13 @@ namespace QgsWms
        * \since QGIS 3.4
        */
       QString layoutParameter( const QString &id, bool &ok ) const;
+
+      /**
+       * Returns the ATLAS_PK parameter
+       * \returns The ATLAS_PK parameter
+       * \since QGIS 3.6
+      */
+      QStringList atlasPk() const;
 
     private:
       bool loadParameter( const QString &name, const QString &value ) override;

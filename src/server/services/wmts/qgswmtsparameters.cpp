@@ -17,7 +17,6 @@
 
 #include "qgswmtsparameters.h"
 #include "qgsmessagelog.h"
-#include <iostream>
 
 namespace QgsWmts
 {

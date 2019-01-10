@@ -30,8 +30,10 @@
 class QgsVectorLayer;
 
 /**
- *  Class to select destination file, type and CRS for ogr layers
- *  \note not available in Python bindings
+ * \ingroup gui
+ * Class to select destination file, type and CRS for ogr layers
+ * \note not available in Python bindings
+ * \since QGIS 1.0
  */
 class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
 {
@@ -52,16 +54,58 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
       AllOptions = ~0 //!< Show all options
     };
 
+    /**
+     * Construct a new QgsVectorLayerSaveAsDialog
+     */
     QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+
+    /**
+     * Construct a new QgsVectorLayerSaveAsDialog
+     */
     QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
+    /**
+     * The format in which the export should be written.
+     * \see QgsVectorFileWriter::filterForDriver()
+     */
     QString format() const;
+
+    /**
+     * The encoding of the target file.
+     */
     QString encoding() const;
+
+    /**
+     * Returns the target filename.
+     */
     QString filename() const;
+
+    /**
+     * Returns the target layer name
+     */
     QString layername() const;
+
+    /**
+     * Returns a list of additional data source options which are passed to OGR.
+     * Refer to the OGR documentation for the target format for available options.
+     */
     QStringList datasourceOptions() const;
+
+    /**
+     * Returns a list of additional layer options which are passed to OGR.
+     * Refer to the OGR documentation for the target format for available options.
+     */
     QStringList layerOptions() const;
+
+    /**
+     * Returns the internal CRS ID.
+     * \see QgsCoordinateReferenceSystem::srsid()
+     */
     long crs() const;
+
+    /**
+     * Returns a list of attributes which are selected for saving.
+     */
     QgsAttributeList selectedAttributes() const;
     //! Returns selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
     QgsAttributeList attributesAsDisplayedValues() const;
@@ -99,7 +143,16 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
+    /**
+     * Determines if filtering the export by an extent is activated.
+     * \see filterExtent()
+     */
     bool hasFilterExtent() const;
+
+    /**
+     * Determines the extent to be exported.
+     * \see hasFilterExtent()
+     */
     QgsRectangle filterExtent() const;
 
     /**

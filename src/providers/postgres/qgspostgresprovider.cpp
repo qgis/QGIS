@@ -243,11 +243,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
 
   if ( connectionRO()->pgVersion() >= 90200 )
   {
-    nativeTypes << QgsVectorDataProvider::NativeType( tr( "Map (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
+    nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
 
     if ( connectionRO()->pgVersion() >= 90400 )
     {
-      nativeTypes << QgsVectorDataProvider::NativeType( tr( "Map (jsonb)" ), QStringLiteral( "jsonb" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
+      nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (jsonb)" ), QStringLiteral( "jsonb" ), QVariant::Map, -1, -1, -1, -1, QVariant::String );
     }
   }
   setNativeTypes( nativeTypes );

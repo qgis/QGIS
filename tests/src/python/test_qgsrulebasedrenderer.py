@@ -261,35 +261,44 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         cats.append(QgsRendererCategory('a\nb', QgsMarkerSymbol(), "id a\\nb"))
         cats.append(QgsRendererCategory('a\\b', QgsMarkerSymbol(), "id a\\\\b"))
         cats.append(QgsRendererCategory('a\tb', QgsMarkerSymbol(), "id a\\tb"))
+        cats.append(QgsRendererCategory(['c', 'd'], QgsMarkerSymbol(), "c/d"))
         c = QgsCategorizedSymbolRenderer("id", cats)
 
         r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(len(r.rootRule().children()), 7)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
         self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" = \'a\'\'b\'')
         self.assertEqual(r.rootRule().children()[3].filterExpression(), '"id" = \'a\\nb\'')
         self.assertEqual(r.rootRule().children()[4].filterExpression(), '"id" = \'a\\\\b\'')
         self.assertEqual(r.rootRule().children()[5].filterExpression(), '"id" = \'a\\tb\'')
+        self.assertEqual(r.rootRule().children()[6].filterExpression(), '"id" IN (\'c\',\'d\')')
 
         # Next try with an expression based category
         cats = []
         cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
         cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
         c = QgsCategorizedSymbolRenderer("id + 1", cats)
 
         r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(len(r.rootRule().children()), 3)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), 'id + 1 = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), 'id + 1 = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), 'id + 1 IN (3,4)')
 
         # Last try with an expression which is just a quoted field name
         cats = []
         cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
         cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        cats.append(QgsRendererCategory([3, 4], QgsMarkerSymbol(), "result 3/4"))
         c = QgsCategorizedSymbolRenderer('"id"', cats)
 
         r = QgsRuleBasedRenderer.convertFromRenderer(c)
+        self.assertEqual(len(r.rootRule().children()), 3)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" IN (3,4)')
 
     def testConvertFromGraduatedRenderer(self):
         # Test converting graduated renderer to rule based

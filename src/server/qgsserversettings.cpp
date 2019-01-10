@@ -21,8 +21,6 @@
 
 #include <QSettings>
 
-#include <iostream>
-
 QgsServerSettings::QgsServerSettings()
 {
   load();

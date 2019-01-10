@@ -37,6 +37,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
+#include "qgssymbollayerutils.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
@@ -49,6 +50,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
+#include "qgsvaliditycheckregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -762,7 +764,46 @@ void QgsApplication::setUITheme( const QString &themeName )
   }
   file.close();
 
+  if ( Qgis::UI_SCALE_FACTOR != 1.0 )
+  {
+    // apply OS-specific UI scale factor to stylesheet's em values
+    int index = 0;
+    QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    QRegularExpressionMatch match = regex.match( styledata, index );
+    while ( match.hasMatch() )
+    {
+      index = match.capturedStart();
+      styledata.remove( index, match.captured( 0 ).length() );
+      QString number = QString::number( match.captured( 0 ).toDouble() * Qgis::UI_SCALE_FACTOR );
+      styledata.insert( index, number );
+      index += number.length();
+      match = regex.match( styledata, index );
+    }
+  }
+
   qApp->setStyleSheet( styledata );
+
+  QFile palettefile( path + "/palette.txt" );
+  QFileInfo paletteInfo( palettefile );
+  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  {
+    QPalette pal = qApp->palette();
+    QTextStream in( &palettefile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      QStringList parts = line.split( ':' );
+      if ( parts.count() == 2 )
+      {
+        int role = parts.at( 0 ).trimmed().toInt();
+        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+    }
+    palettefile.close();
+    qApp->setPalette( pal );
+  }
+
   setThemeName( themeName );
 }
 
@@ -1778,6 +1819,11 @@ QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry(
   return members()->mNetworkContentFetcherRegistry;
 }
 
+QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry()
+{
+  return members()->mValidityCheckRegistry;
+}
+
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
 {
   return members()->mSymbolLayerRegistry;
@@ -1859,10 +1905,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   m3DRendererRegistry = new Qgs3DRendererRegistry();
   mProjectStorageRegistry = new QgsProjectStorageRegistry();
   mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+  mValidityCheckRegistry = new QgsValidityCheckRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
+  delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
   delete mAnnotationRegistry;

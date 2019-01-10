@@ -34,17 +34,19 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
 
   setAttribute( Qt::WA_DeleteOnClose );
 
-  mPointFromCanvasPushButton = new QPushButton( QIcon( ":/icons/default/mPushButtonPencil.png" ), tr( "From map canvas" ) );
+  mPointFromCanvasPushButton = new QPushButton( QIcon( ":/icons/default/mPushButtonPencil.png" ), tr( "From Map Canvas" ) );
   mPointFromCanvasPushButton->setCheckable( true );
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
 
-  // User can input either DD or DMS coords (from QGis mapcanav we take DD coords)
+  // User can input either DD or DMS coords (from QGis mapcanvas we take DD coords)
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( this );
   leXCoord->setValidator( validator );
   leYCoord->setValidator( validator );
 
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
+
+  mMinimizeWindowCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
 
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
@@ -63,6 +65,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), mMinimizeWindowCheckBox->isChecked() );
 }
 
 void QgsMapCoordsDialog::updateOK()
@@ -119,7 +122,10 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
 {
   if ( isEnable )
   {
-    parentWidget()->showMinimized();
+    if ( mMinimizeWindowCheckBox->isChecked() )
+    {
+      parentWidget()->showMinimized();
+    }
 
     Q_ASSERT( parentWidget()->parentWidget() );
     parentWidget()->parentWidget()->activateWindow();

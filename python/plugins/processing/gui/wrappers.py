@@ -395,7 +395,9 @@ class ExtentWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return ExtentSelectionPanel(self.dialog, self.parameterDefinition())
+            widget = ExtentSelectionPanel(self.dialog, self.parameterDefinition())
+            widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             widget = QComboBox()
             widget.setEditable(True)

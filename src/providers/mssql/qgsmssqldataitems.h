@@ -140,6 +140,12 @@ class QgsMssqlLayerItem : public QgsLayerItem
 
     bool disableInvalidGeometryHandling() const;
 
+  public slots:
+#ifdef HAVE_GUI
+    bool deleteLayer() override;
+    void truncateTable();
+#endif
+
   private:
     QgsMssqlLayerProperty mLayerProperty;
     bool mDisableInvalidGeometryHandling = false;

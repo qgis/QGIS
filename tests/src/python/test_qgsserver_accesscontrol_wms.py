@@ -213,7 +213,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
-            "LAYERS": "Hello_grp,Country_grp",
+            "LAYERS": "Country_grp,Hello_grp",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "-16817707,-6318936.5,5696513,16195283.5",

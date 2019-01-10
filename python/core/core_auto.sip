@@ -80,7 +80,6 @@
 %Include auto_generated/qgsmargins.sip
 %Include auto_generated/qgsmimedatautils.sip
 %Include auto_generated/qgsmultirenderchecker.sip
-%Include auto_generated/qgsnetworkreply.sip
 %Include auto_generated/qgsobjectcustomproperties.sip
 %Include auto_generated/qgsogcutils.sip
 %Include auto_generated/qgsoptional.sip
@@ -306,6 +305,9 @@
 %Include auto_generated/fieldformatter/qgsvaluemapfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsvaluerelationfieldformatter.sip
 %Include auto_generated/geocms/geonode/qgsgeonodeconnection.sip
+%Include auto_generated/validity/qgsabstractvaliditycheck.sip
+%Include auto_generated/validity/qgsvaliditycheckcontext.sip
+%Include auto_generated/validity/qgsvaliditycheckregistry.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/qgsabstractcontentcache.sip
@@ -313,7 +315,6 @@
 %Include auto_generated/qgsactionscoperegistry.sip
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsauxiliarystorage.sip
-%Include auto_generated/qgsblockingnetworkrequest.sip
 %Include auto_generated/qgsbrowsermodel.sip
 %Include auto_generated/qgsbrowserproxymodel.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip

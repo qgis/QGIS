@@ -22,6 +22,15 @@ An item which is drawn inside a QgsLayoutItemMap, e.g., a grid or map overview.
 %End
   public:
 
+    enum StackingPosition
+    {
+      StackBelowMap,
+      StackBelowMapLayer,
+      StackAboveMapLayer,
+      StackBelowMapLabels,
+      StackAboveMapLabels,
+    };
+
     QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapItem, attached to the specified ``map``.
@@ -113,15 +122,69 @@ Returns whether the item will be drawn.
 Returns true if the item is drawn using advanced effects, such as blend modes.
 %End
 
+    StackingPosition stackingPosition() const;
+%Docstring
+Returns the item's stacking position, which specifies where the in the map's
+stack the item should be rendered.
+
+.. seealso:: :py:func:`setStackingPosition`
+
+.. seealso:: :py:func:`stackingLayer`
+
+.. versionadded:: 3.6
+%End
+
+    void setStackingPosition( StackingPosition position );
+%Docstring
+Sets the item's stacking ``position``, which specifies where the in the map's
+stack the item should be rendered.
+
+.. seealso:: :py:func:`stackingPosition`
+
+.. seealso:: :py:func:`setStackingLayer`
+
+.. versionadded:: 3.6
+%End
+
+    QgsMapLayer *stackingLayer() const;
+%Docstring
+Returns the item's stacking layer, which specifies where the in the map's
+stack the item should be rendered.
+
+This setting is only used when stackingPosition() is StackBelowMapLayer or
+StackAboveMapLayer.
+
+.. seealso:: :py:func:`setStackingLayer`
+
+.. seealso:: :py:func:`stackingPosition`
+
+.. versionadded:: 3.6
+%End
+
+    void setStackingLayer( QgsMapLayer *layer );
+%Docstring
+Sets the item's stacking ``layer``, which specifies where the in the map's
+stack the item should be rendered.
+
+This setting is only used when stackingPosition() is StackBelowMapLayer or
+StackAboveMapLayer.
+
+.. seealso:: :py:func:`stackingLayer`
+
+.. seealso:: :py:func:`setStackingPosition`
+
+.. versionadded:: 3.6
+%End
+
   protected:
 
 
 
 
 
+
+
 };
-
-
 
 class QgsLayoutItemMapItemStack
 {
@@ -180,9 +243,13 @@ map item after restoration from XML.
 .. seealso:: :py:func:`readXml`
 %End
 
-    void drawItems( QPainter *painter );
+    void drawItems( QPainter *painter, bool ignoreStacking = true );
 %Docstring
 Draws the items from the stack on a specified ``painter``.
+
+If ``ignoreStacking`` is true, then all items will be drawn, regardless
+of their actual stacking position settings. If it is false, only items
+which are set to stack above the map item will be drawn.
 %End
 
     bool containsAdvancedEffects() const;

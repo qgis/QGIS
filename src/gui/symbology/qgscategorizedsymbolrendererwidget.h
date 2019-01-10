@@ -154,6 +154,22 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void updateSymbolsFromWidget();
     void dataDefinedSizeLegend();
 
+    /**
+     * Merges all selected categories into a single multi-value category.
+     *
+     * \see unmergeSelectedCategories()
+     */
+    void mergeSelectedCategories();
+
+    /**
+     * Unmerges all selected multi-value categories into a individual value categories.
+     *
+     * \see mergeSelectedCategories()
+     */
+    void unmergeSelectedCategories();
+
+    void showContextMenu( QPoint p );
+
   protected:
 
     void updateUiFromRenderer();
@@ -191,8 +207,13 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
   private:
     QString mOldClassificationAttribute;
     QgsCategoryList mCopyBuffer;
+    QMenu *mContextMenu = nullptr;
+    QAction *mMergeCategoriesAction = nullptr;
+    QAction *mUnmergeCategoriesAction = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
+
+    friend class TestQgsCategorizedRendererWidget;
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H

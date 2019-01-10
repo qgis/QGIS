@@ -21,7 +21,6 @@
 #define QGSACCESSCONTROLPLUGIN_H
 
 #include <QMultiMap>
-#include <QList>
 #include <QString>
 #include "qgis_server.h"
 #include "qgis_sip.h"
@@ -31,7 +30,6 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 class QgsServerInterface;
 class QgsMapLayer;
 class QgsVectorLayer;
-class QgsExpression;
 class QgsFeature;
 
 

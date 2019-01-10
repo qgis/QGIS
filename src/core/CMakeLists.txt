@@ -152,7 +152,6 @@ SET(QGIS_CORE_SRCS
   qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
-  qgsblockingnetworkrequest.cpp
   qgsbrowsermodel.cpp
   qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
@@ -258,7 +257,6 @@ SET(QGIS_CORE_SRCS
   qgsnetworkcontentfetcher.cpp
   qgsnetworkcontentfetcherregistry.cpp
   qgsnetworkcontentfetchertask.cpp
-  qgsnetworkreply.cpp
   qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
@@ -530,6 +528,10 @@ SET(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  validity/qgsabstractvaliditycheck.cpp
+  validity/qgsvaliditycheckcontext.cpp
+  validity/qgsvaliditycheckregistry.cpp
+
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -596,7 +598,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsauxiliarystorage.h
-  qgsblockingnetworkrequest.h
   qgsbrowsermodel.h
   qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
@@ -911,7 +912,6 @@ SET(QGIS_CORE_HDRS
   qgsmargins.h
   qgsmimedatautils.h
   qgsmultirenderchecker.h
-  qgsnetworkreply.h
   qgsobjectcustomproperties.h
   qgsogcutils.h
   qgsoptional.h
@@ -1190,6 +1190,10 @@ SET(QGIS_CORE_HDRS
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
+
+  validity/qgsabstractvaliditycheck.h
+  validity/qgsvaliditycheckcontext.h
+  validity/qgsvaliditycheckregistry.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
@@ -1228,6 +1232,7 @@ INCLUDE_DIRECTORIES(
   symbology
   metadata
   mesh
+  validity
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri

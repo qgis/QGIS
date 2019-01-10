@@ -155,6 +155,12 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTDateTime;
       break;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+    case QVariant::Map:
+      ogrType = OFTString;
+      ogrSubType = OFSTJSON;
+      break;
+#endif
     default:
       return false;
   }
@@ -471,6 +477,9 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
       << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+    nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
 
   bool supportsDate = true;
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
@@ -1009,6 +1018,7 @@ void QgsOgrProvider::loadFields()
     OGRFieldSubType ogrSubType = OFSTNone;
 
     QVariant::Type varType;
+    QVariant::Type varSubType = QVariant::Invalid;
     switch ( ogrType )
     {
       case OFTInteger:
@@ -1041,6 +1051,19 @@ void QgsOgrProvider::loadFields()
         break;
 
       case OFTString:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+        if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+        {
+          ogrSubType = OFSTJSON;
+          varType = QVariant::Map;
+          varSubType = QVariant::String;
+        }
+        else
+        {
+          varType = QVariant::String;
+        }
+        break;
+#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -1081,7 +1104,7 @@ void QgsOgrProvider::loadFields()
 #else
                           textEncoding()->toUnicode( typeName.toStdString().c_str() ),
 #endif
-                          width, prec
+                          width, prec, QString(), varSubType
                         );
 
     // check if field is nullable
@@ -1385,6 +1408,17 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
+QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
+{
+  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson().constData() );
+  if ( stringValue.isEmpty() )
+  {
+    //store as string, because it's no valid QJson value
+    stringValue = value.toString();
+  }
+  return stringValue;
+}
+
 bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 {
   bool returnValue = true;
@@ -1509,13 +1543,26 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTString:
+        {
+          QString stringValue;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+          if ( OGR_Fld_GetSubType( fldDef ) == OFSTJSON )
+            stringValue = jsonStringValue( attrVal );
+          else
+          {
+            stringValue = attrVal.toString();
+          }
+#else
+          stringValue = attrVal.toString();
+#endif
           QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
                             .arg( qgisAttId )
                             .arg( attrVal.toString(),
                                   textEncoding()->name().data() ), 3 );
-          OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
+          OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( stringValue ).constData() );
           break;
-
+        }
         case OFTBinary:
         {
           const QByteArray ba = attrVal.toByteArray();
@@ -1633,7 +1680,9 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::ByteArray:
       type = OFTBinary;
       break;
-
+    case QVariant::Map:
+      type = OFTString;
+      break;
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
       ignoreErrorOut = true;
@@ -1652,7 +1701,11 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::Bool:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
       break;
-
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+    case QVariant::Map:
+      OGR_Fld_SetSubType( fielddefn.get(), OFSTJSON );
+      break;
+#endif
     default:
       break;
   }
@@ -2080,8 +2133,19 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTString:
-            OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( it2->toString() ).constData() );
+          {
+            QString stringValue;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
+            if ( OGR_Fld_GetSubType( fd ) == OFSTJSON )
+              stringValue = jsonStringValue( it2.value() );
+            else
+              stringValue = it2->toString();
+#else
+            stringValue = it2->toString();
+#endif
+            OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
             break;
+          }
 
           case OFTBinary:
           {

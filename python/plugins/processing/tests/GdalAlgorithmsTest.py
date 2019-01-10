@@ -59,6 +59,11 @@ from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
 from processing.algs.gdal.fillnodata import fillnodata
 from processing.algs.gdal.rearrange_bands import rearrange_bands
+from processing.algs.gdal.gdaladdo import gdaladdo
+from processing.algs.gdal.sieve import sieve
+from processing.algs.gdal.gdal2xyz import gdal2xyz
+from processing.algs.gdal.polygonize import polygonize
+
 from processing.tools.system import isWindows
 
 from qgis.core import (QgsProcessingContext,
@@ -2368,6 +2373,230 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM \'polys2\'" ' +
                  '-f "ESRI Shapefile"'])
+
+    def testGdalAddo(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            alg = gdaladdo()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest 2 4 8 16'])
+
+            # with "clean" option
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': True,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest -clean 2 4 8 16'])
+
+            # ovr format
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 1}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest -ro 2 4 8 16'])
+
+            # Erdas format
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 2}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest --config USE_RRD YES 2 4 8 16'])
+
+            # custom resampling method format
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 4,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r cubicspline 2 4 8 16'])
+
+            # more levels
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16 32 64',
+                                        'CLEAN': False,
+                                        'RESAMPLING': 0,
+                                        'FORMAT': 0}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest 2 4 8 16 32 64'])
+
+            # without advanced params
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'LEVELS': '2 4 8 16',
+                                        'CLEAN': False}, context, feedback),
+                ['gdaladdo',
+                 source + ' ' + '-r nearest 2 4 8 16'])
+
+    def testSieve(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'raster.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.tif'
+            alg = sieve()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 10,
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'NO_MASK': False,
+                                        'MASK_LAYER': None,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # Eight connectedness and custom threshold
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 16,
+                                        'EIGHT_CONNECTEDNESS': True,
+                                        'NO_MASK': False,
+                                        'MASK_LAYER': None,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 16 -8 -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # without default mask layer
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 10,
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'NO_MASK': True,
+                                        'MASK_LAYER': None,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -nomask -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+            # defaults with external validity mask
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'THRESHOLD': 10,
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'NO_MASK': False,
+                                        'MASK_LAYER': mask,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_sieve.py',
+                 '-st 10 -4 -mask ' +
+                 mask +
+                 ' -of GTiff ' +
+                 source + ' ' +
+                 outsource])
+
+    def testGdal2Xyz(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.csv'
+            alg = gdal2xyz()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'CSV': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal2xyz.py',
+                 '-band 1 ' +
+                 source + ' ' +
+                 outsource])
+
+            # csv output
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'CSV': True,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal2xyz.py',
+                 '-band 1 -csv ' +
+                 source + ' ' +
+                 outsource])
+
+    def testGdalPolygonize(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + '/check.shp'
+            alg = polygonize()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "ESRI Shapefile" DN'
+                 ])
+
+            # 8 connectedness
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EIGHT_CONNECTEDNESS': True,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-8 -b 1 -f "ESRI Shapefile" DN'
+                 ])
+
+            # custom output format
+            outsource = outdir + '/check.gpkg'
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'DN',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "GPKG" DN'
+                 ])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):

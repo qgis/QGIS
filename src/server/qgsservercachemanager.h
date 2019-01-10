@@ -23,7 +23,6 @@
 #include "qgsaccesscontrol.h"
 #include "qgsserverrequest.h"
 
-#include <QMultiMap>
 #include <QDomDocument>
 #include "qgis_server.h"
 #include "qgis_sip.h"
