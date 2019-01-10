@@ -160,7 +160,6 @@ class CORE_EXPORT QgsLegendRenderer
     class Atom
     {
       public:
-        Atom();
 
         //! List of child Nucleons belonging to this Atom.
         QList<Nucleon> nucleons;
@@ -294,6 +293,12 @@ class CORE_EXPORT QgsLegendRenderer
     QSizeF mLegendSize;
 
 #endif
+    QSizeF drawTitleInternal( QgsRenderContext *context, QPainter *painter, QPointF point, Qt::AlignmentFlag halignment, double legendWidth );
+    QSizeF drawAtomInteral( const Atom &atom, QgsRenderContext *context, QPainter *painter, QPointF point );
+    QgsLegendRenderer::Nucleon drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPainter *painter, QPointF point, double labelXOffset );
+    QSizeF drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, QPainter *painter, QPointF point );
+    QSizeF drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, QPainter *painter, QPointF point );
+    QSizeF paintAndDetermineSizeInternal( QgsRenderContext *context, QPainter *painter );
 };
 
 #endif // QGSLEGENDRENDERER_H
