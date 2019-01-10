@@ -67,6 +67,7 @@ def cleanup():
 
 
 class AlgNoInputs(unittest.TestCase):
+
     def setUp(self):
         cleanup()
 
@@ -118,6 +119,7 @@ class AlgInstanceTests(unittest.TestCase):
 
 
 class AlgHelpTests(unittest.TestCase):
+
     def test_has_help_from_help_decorator(self):
         cleanup()
         define_new()
@@ -131,6 +133,7 @@ class AlgHelpTests(unittest.TestCase):
 
 
 class TestAlg(unittest.TestCase):
+
     def setUp(self):
         cleanup()
         define_new()
