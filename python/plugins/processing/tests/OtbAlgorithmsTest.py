@@ -33,6 +33,7 @@ import shutil
 import nose2
 
 from qgis.core import (QgsProcessingParameterNumber,
+                       QgsApplication,
                        QgsProcessingParameterDefinition)
 from qgis.testing import start_app, unittest
 #from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
@@ -43,18 +44,11 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools import dataobjects
 import AlgorithmsTestBase
 
-#export QGIS_DISABLE_MESSAGE_HOOKS=1
-#sys.path.append('/home/rashad/projects/qgis/qgis/build/output/python')
-#sys.path.append('/home/rashad/projects/qgis/qgis/build/output/python/plugins')
-#sys.path.append('/home/rashad/projects/qgis/otb-plugin')
-
-# /home/rashad/projects/otb/gitlab/build"
 OTB_INSTALL_DIR = os.environ.get('OTB_INSTALL_DIR')
 
 
 class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
-    #algList = []
     def test_init_algorithms(self):
         algs_txt = os.path.join(self.descrFolder, 'algs.txt')
         with open(algs_txt) as lines:
@@ -67,10 +61,11 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 data = line.split('|')
                 descriptionFile = os.path.join(self.descrFolder, str(data[1]) + '.txt')
                 alg = OtbAlgorithm(data[0], data[1], descriptionFile)
-                print("Loading Algorithm: '{}' - OK".format(alg.id()))
+                self.assertIsInstance(alg, OtbAlgorithm)
                 ret, msg = alg.canExecute()
-                line = lines.readline().strip('\n').strip()
+                print("canExecute '{}' - {}".format(alg.id(), ret))
                 self.assertEqual(ret, True)
+                line = lines.readline().strip('\n').strip()
 
     def test_choice_parameter_smoothing(self):
         alg_smoothing = OtbAlgorithm('Image Filtering', 'Smoothing', os.path.join(self.descrFolder, 'Smoothing.txt'))
@@ -88,10 +83,15 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         cls.descrFolder = os.path.join(OTB_INSTALL_DIR, 'share', 'otb', 'description')
         from processing.core.Processing import Processing
         Processing.initialize()
+        ProcessingConfig.setSettingValue("OTB_ACTIVATE", True)
         ProcessingConfig.setSettingValue(OtbSettings.FOLDER, OTB_INSTALL_DIR)
         ProcessingConfig.setSettingValue(OtbSettings.APP_FOLDER, os.path.join(OTB_INSTALL_DIR, 'lib', 'otb', 'applications'))
-        ProcessingConfig.setSettingValue("OTB_ACTIVATE", True)
         ProcessingConfig.readSettings()
+        #refresh OTB Algorithms after settings are changed.
+        for p in QgsApplication.processingRegistry().providers():
+            if p.id() == "otb":
+                p.refreshAlgorithms()
+
         cls.cleanup_paths = []
 
     @classmethod
@@ -102,6 +102,7 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             shutil.rmtree(path)
 
     def test_definition_file(self):
+        print("OTB_INSTALL_DIR = '{}'".format(OTB_INSTALL_DIR))
         return 'otb_algorithm_tests.yaml'
 
 

@@ -83,7 +83,6 @@ def geoidFile():
 
 def executeOtb(command, feedback, addToLog=True):
     loglines = []
-    feedback.setProgress(0)
     with subprocess.Popen(
             [command],
             shell=True,

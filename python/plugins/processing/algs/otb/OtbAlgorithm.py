@@ -188,7 +188,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
         return valid_params
 
-    def get_value(self, v):
+    def otbParameterValue(self, v):
         if isinstance(v, QgsMapLayer):
             return v.source()
         elif isinstance(v, QgsProcessingOutputLayerDefinition):
@@ -222,9 +222,9 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             if isinstance(v, list):
                 value = ''
                 for i in list(filter(None, v)):
-                    value += '"{}" '.format(self.get_value(i))
+                    value += '"{}" '.format(self.otbParameterValue(i))
             else:
-                value = '"{}"'.format(self.get_value(v))
+                value = '"{}"'.format(self.otbParameterValue(v))
 
             if k == output_key and 'outputpixeltype' in parameters:
                 output_pixel_type = self.pixelTypes[int(parameters['outputpixeltype'])]
