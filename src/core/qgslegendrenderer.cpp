@@ -471,10 +471,10 @@ double QgsLegendRenderer::spaceAboveAtom( const Atom &atom )
 // Draw atom and expand its size (using actual nucleons labelXOffset)
 QSizeF QgsLegendRenderer::drawAtom( const Atom &atom, QPainter *painter, QPointF point )
 {
-  return drawAtomInteral( atom, nullptr, painter, point );
+  return drawAtomInternal( atom, nullptr, painter, point );
 }
 
-QSizeF QgsLegendRenderer::drawAtomInteral( const Atom &atom, QgsRenderContext *context, QPainter *painter, QPointF point )
+QSizeF QgsLegendRenderer::drawAtomInternal( const Atom &atom, QgsRenderContext *context, QPainter *painter, QPointF point )
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );
@@ -694,7 +694,7 @@ QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext *rendercontext, QPointF po
 
 QSizeF QgsLegendRenderer::drawAtom( const Atom &atom, QgsRenderContext *rendercontext, QPointF point )
 {
-  return drawAtomInteral( atom, rendercontext, nullptr, point );
+  return drawAtomInternal( atom, rendercontext, nullptr, point );
 }
 
 QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *rendercontext, QPointF point, double labelXOffset )
