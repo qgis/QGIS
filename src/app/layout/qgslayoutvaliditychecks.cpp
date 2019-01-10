@@ -51,9 +51,9 @@ bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext
     {
       QgsValidityCheckResult res;
       res.type = QgsValidityCheckResult::Warning;
-      res.title = tr( "Scalebar is not linked to a map" );
+      res.title = QObject::tr( "Scalebar is not linked to a map" );
       const QString name = bar->displayName().toHtmlEscaped();
-      res.detailedDescription = tr( "The scalebar “%1” is not linked to a map item. This scale will be misleading." ).arg( name );
+      res.detailedDescription = QObject::tr( "The scalebar “%1” is not linked to a map item. This scale will be misleading." ).arg( name );
       mResults.append( res );
     }
   }

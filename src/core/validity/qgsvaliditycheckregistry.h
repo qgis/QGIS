@@ -19,7 +19,6 @@
 #include "qgis_sip.h"
 #include "qgsabstractvaliditycheck.h"
 #include <QList>
-#include <QPointer>
 #include <memory>
 #include <vector>
 

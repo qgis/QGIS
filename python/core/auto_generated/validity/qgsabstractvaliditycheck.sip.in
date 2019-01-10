@@ -41,8 +41,7 @@ result will be communicated to users, but not prevent them from proceeding.
 
 };
 
-
-class QgsAbstractValidityCheck : QObject
+class QgsAbstractValidityCheck
 {
 %Docstring
 Abstract base class for individual validity checks.
@@ -76,6 +75,8 @@ Checks must be registered in the application's :py:class:`QgsValidityCheckRegist
       TypeLayoutCheck,
       TypeUserCheck,
     };
+
+    virtual ~QgsAbstractValidityCheck();
 
     virtual QgsAbstractValidityCheck *create() const = 0 /Factory/;
 %Docstring
@@ -125,9 +126,6 @@ The ``context`` argument gives the wider in which the check is being run.
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
