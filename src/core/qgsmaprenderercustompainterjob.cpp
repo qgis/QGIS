@@ -295,12 +295,12 @@ void QgsMapRendererCustomPainterJob::doRender()
         mLabelJob.img->fill( 0 );
         painter.begin( mLabelJob.img );
         mLabelJob.context.setPainter( &painter );
-        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2.get(), &painter );
+        drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
       }
       else
       {
-        drawLabeling( mSettings, mLabelJob.context, mLabelingEngineV2.get(), mPainter );
+        drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), mPainter );
       }
 
       mLabelJob.complete = true;
@@ -318,8 +318,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   QgsDebugMsgLevel( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ), 2 );
 }
 
-
-void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
+void QgsMapRendererJob::drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
 {
   QgsDebugMsgLevel( QStringLiteral( "Draw labeling start" ), 5 );
 
@@ -329,22 +328,22 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderC
   // Reset the composition mode before rendering the labels
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
-  // TODO: this is not ideal - we could override rendering stopped flag that has been set in meanwhile
-  renderContext = QgsRenderContext::fromMapSettings( settings );
   renderContext.setPainter( painter );
 
   if ( labelingEngine2 )
   {
-    // set correct extent
-    renderContext.setExtent( settings.visibleExtent() );
-    renderContext.setCoordinateTransform( QgsCoordinateTransform() );
-
     labelingEngine2->run( renderContext );
   }
 
   QgsDebugMsg( QStringLiteral( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
 }
 
+void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
+{
+  Q_UNUSED( settings );
+
+  drawLabeling( renderContext, labelingEngine2, painter );
+}
 
 bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
 {
