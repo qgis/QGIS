@@ -303,10 +303,10 @@ namespace QgsWms
     public:
 
       //! Returns the image quality to use for getMap request
-      int getImageQuality() const;
+      int imageQuality() const;
 
       //! Returns the precision to use for GetFeatureInfo request
-      int getWMSPrecision() const;
+      int wmsPrecision() const;
 
   };
 
