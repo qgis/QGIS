@@ -17,7 +17,12 @@
 #include "qgslayoutvaliditychecks.h"
 #include "qgsvaliditycheckcontext.h"
 #include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemmap.h"
 #include "qgslayout.h"
+
+//
+// QgsLayoutScaleBarValidityCheck
+//
 
 QgsLayoutScaleBarValidityCheck *QgsLayoutScaleBarValidityCheck::create() const
 {
@@ -62,6 +67,62 @@ bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext
 }
 
 QList<QgsValidityCheckResult> QgsLayoutScaleBarValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+{
+  return mResults;
+}
+
+
+//
+// QgsLayoutOverviewValidityCheck
+//
+
+QgsLayoutOverviewValidityCheck *QgsLayoutOverviewValidityCheck::create() const
+{
+  return new QgsLayoutOverviewValidityCheck();
+}
+
+QString QgsLayoutOverviewValidityCheck::id() const
+{
+  return QStringLiteral( "layout_overview_check" );
+}
+
+int QgsLayoutOverviewValidityCheck::checkType() const
+{
+  return QgsAbstractValidityCheck::TypeLayoutCheck;
+}
+
+bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+{
+  if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
+    return false;
+
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  if ( !layoutContext )
+    return false;
+
+  QList< QgsLayoutItemMap * > mapItems;
+  layoutContext->layout->layoutItems( mapItems );
+  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  {
+    for ( int i = 0; i < map->overviews()->size(); ++i )
+    {
+      QgsLayoutItemMapOverview *overview = map->overviews()->overview( i );
+      if ( overview && overview->enabled() && !overview->linkedMap() )
+      {
+        QgsValidityCheckResult res;
+        res.type = QgsValidityCheckResult::Warning;
+        res.title = QObject::tr( "Overview is not linked to a map" );
+        const QString name = map->displayName().toHtmlEscaped();
+        res.detailedDescription = QObject::tr( "The map “%1” includes an overview (“%2”) which is not linked to a map item." ).arg( name, overview->name() );
+        mResults.append( res );
+      }
+    }
+  }
+
+  return true;
+}
+
+QList<QgsValidityCheckResult> QgsLayoutOverviewValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
 {
   return mResults;
 }
