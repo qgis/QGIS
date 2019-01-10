@@ -67,21 +67,6 @@ namespace QgsWms
    */
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
                    int imageQuality = -1 );
-
-  /**
-   * Parse bbox parameter
-   * \param bboxstr the bbox string as comma separated values
-   * \returns QgsRectangle
-   *
-   * If the parsing fail then an empty bbox is returned
-   */
-  QgsRectangle parseBbox( const QString &bboxstr );
-
-  /**
-   * Reads the layers and style lists from the parameters LAYERS and STYLES
-   */
-  void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList );
-
 } // namespace QgsWms
 
 #endif
