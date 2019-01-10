@@ -47,11 +47,6 @@ namespace QgsWms
   };
 
   /**
-   * Returns the highest version supported by this implementation
-   */
-  QString ImplementationVersion();
-
-  /**
    * Returns WMS service URL
    */
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
