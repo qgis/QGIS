@@ -423,7 +423,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       mbrFilter += QStringLiteral( "ymax >= %1" ).arg( qgsDoubleToString( mFilterRect.yMinimum() ) );
       QString idxName = QStringLiteral( "idx_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QStringLiteral( "%1 IN (SELECT pkid FROM %2 WHERE %3)" )
-                     .arg( quotedPrimaryKey(),
+                     .arg( QStringLiteral( "ROWID" ),
                            QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
                            mbrFilter );
     }
@@ -432,7 +432,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       // using the MbrCache spatial index
       QString idxName = QStringLiteral( "cache_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QStringLiteral( "%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))" )
-                     .arg( quotedPrimaryKey(),
+                     .arg( QStringLiteral( "ROWID" ),
                            QgsSpatiaLiteProvider::quotedIdentifier( idxName ),
                            mbr( mFilterRect ) );
     }
@@ -506,7 +506,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   {
     if ( ic == 0 )
     {
-      if ( mHasPrimaryKey )
+      if ( mHasPrimaryKey && sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
       {
         // first column always contains the ROWID (or the primary key)
         QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
