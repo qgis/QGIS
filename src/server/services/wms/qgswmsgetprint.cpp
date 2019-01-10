@@ -25,37 +25,26 @@
 namespace QgsWms
 {
   void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
-                      const QString &version, const QgsServerRequest &request,
+                      const QString &, const QgsServerRequest &request,
                       QgsServerResponse &response )
   {
-    QgsServerRequest::Parameters params = request.parameters();
-
-    Q_UNUSED( version );
-
-    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    const QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
     QgsRenderer renderer( serverIface, project, wmsParameters );
 
-    QString format = params.value( "FORMAT" );
+    const QgsWmsParameters::Format format = wmsParameters.format();
     QString contentType;
 
     // GetPrint supports svg/png/pdf
-    if ( format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
-         format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+    if ( format == QgsWmsParameters::PNG )
     {
-      format   = "png";
       contentType = "image/png";
     }
-    else if ( format.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::SVG )
     {
-      format   = "svg";
       contentType = "image/svg+xml";
     }
-    else if ( format.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PDF )
     {
-      format = "pdf";
       contentType = "application/pdf";
     }
     else
@@ -65,11 +54,7 @@ namespace QgsWms
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
-    response.write( renderer.getPrint( format ) );
+    response.write( renderer.getPrint() );
   }
 
 } // namespace QgsWms
-
-
-
-
