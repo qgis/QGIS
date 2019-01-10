@@ -306,11 +306,14 @@ namespace QgsWms
         NONE,
         JPG,
         PNG,
+        SVG,
+        PDF,
         TEXT,
         XML,
         HTML,
         GML
       };
+      Q_ENUM( Format )
 
       /**
        * Constructor for WMS parameters with specific values.
@@ -502,6 +505,13 @@ namespace QgsWms
        * \returns FORMAT parameter as string
        */
       QString formatAsString() const;
+
+      /**
+       * Returns format parameter as a string.
+       * \returns format parameter as a string.
+       * \since QGIS 3.6
+       */
+      static QString formatAsString( Format format );
 
       /**
        * Returns format. If the FORMAT parameter is not used, then the

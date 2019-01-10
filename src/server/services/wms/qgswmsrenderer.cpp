@@ -273,7 +273,7 @@ namespace QgsWms
   }
 
 
-  QByteArray QgsRenderer::getPrint( const QString &formatString )
+  QByteArray QgsRenderer::getPrint()
   {
     //GetPrint request needs a template parameter
     QString templateName = mWmsParameters.composerTemplate();
@@ -462,7 +462,10 @@ namespace QgsWms
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
     // Get the temporary output file
-    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
+    const QgsWmsParameters::Format format = mWmsParameters.format();
+    const QString extension = mWmsParameters.formatAsString( format ).toLower();
+
+    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( extension ) );
     if ( !tempOutputFile.open() )
     {
       throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
@@ -470,7 +473,7 @@ namespace QgsWms
     }
 
     QString exportError;
-    if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( format == QgsWmsParameters::SVG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::SvgExportSettings exportSettings;
@@ -499,10 +502,11 @@ namespace QgsWms
         exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || formatString.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PNG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::ImageExportSettings exportSettings;
+
       // Get the dpi from input or use the default
       double dpi( layout->renderContext().dpi( ) );
       if ( !mWmsParameters.dpi().isEmpty() )
@@ -538,7 +542,7 @@ namespace QgsWms
         exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( formatString.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PDF )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::PdfExportSettings exportSettings;
@@ -569,7 +573,7 @@ namespace QgsWms
     else //unknown format
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( formatString ) );
+                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( mWmsParameters.formatAsString() ) );
     }
 
     return tempOutputFile.readAll();
