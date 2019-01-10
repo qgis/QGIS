@@ -3332,8 +3332,28 @@ class TestQgsExpression: public QObject
       zustaendigkeitskataster->addFeature( feature2 );
 
       zustaendigkeitskataster->commitChanges();
-
       QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 2 );
+
+      QCOMPARE( zustaendigkeitskataster->editBuffer(), nullptr );
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->transaction(), nullptr );
+
+      zustaendigkeitskataster->startEditing();
+      QgsExpressionContext context2( QgsExpressionContextUtils::globalProjectLayerScopes( zustaendigkeitskataster ) );
+      QgsFeature feature3 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
+      QCOMPARE( feature3.attribute( "T_Id" ), 2 );
+      feature3.setAttribute( "url_behoerde", "url_behoerde" );
+      feature3.setAttribute( "url_kataster", "url_kataster" );
+      zustaendigkeitskataster->addFeature( feature3 );
+
+      QgsFeature feature4 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
+      QCOMPARE( feature4.attribute( "T_Id" ), 3 );
+      feature4.setAttribute( "url_behoerde", "url_behoerde_x" );
+      feature4.setAttribute( "url_kataster", "url_kataster_x" );
+      zustaendigkeitskataster->addFeature( feature4 );
+
+      zustaendigkeitskataster->commitChanges();
+
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4 );
     }
 
 };
