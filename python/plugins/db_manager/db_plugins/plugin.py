@@ -1101,7 +1101,27 @@ class TableField(TableSubItemObject):
     def rename(self, new_name):
         return self.update(new_name)
 
-    def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None):
+    def getComment(self):
+        # Function returning the comment of a field if exists
+        tab = self.table()
+            #SQL Query checking if a comment exists for the field
+        sql_cpt = u"Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
+            #SQL Query that return the comment of the field
+        sql = u"Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
+        c = tab.database().connector._execute(None, sql_cpt)# Execute Check query
+        res = tab.database().connector._fetchone(c)[0] #Store result
+        if res == 1: 
+            # When a comment exists
+            c = tab.database().connector._execute(None, sql) #Execute query
+            res = tab.database().connector._fetchone(c)[0] #Store result
+            tab.database().connector._close_cursor(c) #Close cursor
+            return res #Return comment
+        else:
+            return '' #Return void string 
+
+
+
+    def update(self, new_name, new_type_str=None, new_not_null=None, new_default_str=None, new_comment=None):
         self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
@@ -1111,10 +1131,12 @@ class TableField(TableSubItemObject):
             new_not_null = None
         if self.default2String() == new_default_str:
             new_default_str = None
-
+        if self.comment == new_comment:
+            # Update also a new_comment
+            new_comment = None
         ret = self.table().database().connector.updateTableColumn((self.table().schemaName(), self.table().name),
                                                                   self.name, new_name, new_type_str, new_not_null,
-                                                                  new_default_str)
+                                                                  new_default_str, new_comment)
         if ret is not False:
             self.table().refreshFields()
         return ret
