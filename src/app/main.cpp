@@ -1224,7 +1224,6 @@ int main( int argc, char *argv[] )
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
   QString desiredStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
-#ifndef Q_OS_MACX
   const QString theme = settings.value( QStringLiteral( "UI/UITheme" ) ).toString();
   if ( theme != QLatin1String( "default" ) )
   {
@@ -1233,7 +1232,6 @@ int main( int argc, char *argv[] )
       desiredStyle = QStringLiteral( "fusion" );
     }
   }
-#endif
   const QString activeStyleName = QApplication::style()->metaObject()->className();
   if ( desiredStyle.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive )
        || ( desiredStyle.isEmpty() && activeStyleName.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive ) ) )
