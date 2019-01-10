@@ -135,7 +135,7 @@ QByteArray QgsFcgiServerRequest::data() const
 
 QUrl QgsFcgiServerRequest::url() const
 {
-  return mOriginalUrl;
+  return mOriginalUrl.isEmpty() ? QgsServerRequest::url() : mOriginalUrl;
 }
 
 // Read post put data

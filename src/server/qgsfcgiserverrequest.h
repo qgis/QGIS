@@ -45,9 +45,11 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
     /**
      * \returns  the request url
      *
-     * Subclasses may override in case the original URL needs to be
-     * returned instead of the rewritten one (i.e. from a web server
-     * rewrite module).
+     * Overrides base implementation because FCGI is typically behind
+     * a proxy server and QGIS Server will see a rewritten QUERY_STRING.
+     * FCGI implementation stores the REQUEST_URI (which is the URL seen
+     * by the proxy before it gets rewritten) and returns it instead of
+     * the rewritten one.
      */
     QUrl url() const override;
 
