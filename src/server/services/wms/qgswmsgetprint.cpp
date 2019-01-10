@@ -50,7 +50,7 @@ namespace QgsWms
     else
     {
       throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                 QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
+                                 QString( "Output format %1 is not supported by the GetPrint request" ).arg( wmsParameters.formatAsString() ) );
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
