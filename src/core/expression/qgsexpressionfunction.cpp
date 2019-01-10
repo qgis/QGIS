@@ -1376,6 +1376,8 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
+  static QMap<QString, qlonglong> counterCache;
+
   QString database;
   const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
 
@@ -1403,38 +1405,75 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
   sqlite3_database_unique_ptr sqliteDb;
   sqlite3_statement_unique_ptr sqliteStatement;
 
-  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_SHAREDCACHE, nullptr ) != SQLITE_OK )
+  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
   {
     parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
     return QVariant();
   }
 
-  QString enableReadUncommitted = QStringLiteral( "PRAGMA read_uncommitted = true;" );
-
   QString errorMessage;
-  if ( sqliteDb.exec( enableReadUncommitted, errorMessage ) != SQLITE_OK )
-  {
-    // TODO HANDLE AN ERROR
-    Q_ASSERT( false );
-  }
-
   QString currentValSql;
-  currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
-  if ( !filterAttribute.isNull() )
+
+  qlonglong nextId;
+  bool cachedMode = false;
+  bool valueRetrieved = false;
+
+  QString cacheString = QStringLiteral( "%1:%2:%3:%4:%5" ).arg( database, table, idColumn, filterAttribute, filterValue.toString() );
+
+  // Running in transaction mode, check for cached value first
+  if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
   {
-    currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
+    cachedMode = true;
+
+    auto cachedCounter = counterCache.find( cacheString );
+
+    if ( cachedCounter != counterCache.end() )
+    {
+      qlonglong &cachedValue = cachedCounter.value();
+      nextId = cachedValue;
+      nextId += 1;
+      cachedValue = nextId;
+      valueRetrieved = true;
+    }
   }
 
-  int result = SQLITE_ERROR;
-  sqliteStatement = sqliteDb.prepare( currentValSql, result );
-  if ( result == SQLITE_OK )
+  // Either not in cached mode or no cached value found, obtain from DB
+  if ( !cachedMode || !valueRetrieved )
   {
-    qlonglong nextId = 0;
-    if ( sqliteStatement.step() == SQLITE_ROW )
+    int result = SQLITE_ERROR;
+
+    currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
+    if ( !filterAttribute.isNull() )
     {
-      nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
+      currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
     }
 
+    sqliteStatement = sqliteDb.prepare( currentValSql, result );
+
+    if ( result == SQLITE_OK )
+    {
+      nextId = 0;
+      if ( sqliteStatement.step() == SQLITE_ROW )
+      {
+        nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
+      }
+
+      // If in cached mode: add value to cache and connect to transaction
+      if ( cachedMode && result == SQLITE_OK )
+      {
+        counterCache.insert( cacheString, nextId );
+
+        QObject::connect( layer->dataProvider()->transaction(), &QgsTransaction::destroyed, [cacheString]()
+        {
+          counterCache.remove( cacheString );
+        } );
+      }
+      valueRetrieved = true;
+    }
+  }
+
+  if ( valueRetrieved )
+  {
     QString upsertSql;
     upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
     QStringList cols;
@@ -1458,6 +1497,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     upsertSql += QLatin1String( " VALUES " );
     upsertSql += '(' + vals.join( ',' ) + ')';
 
+    int result = SQLITE_ERROR;
     if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
     {
       QgsTransaction *transaction = layer->dataProvider()->transaction();

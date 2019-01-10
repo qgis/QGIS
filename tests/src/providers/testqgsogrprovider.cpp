@@ -24,10 +24,6 @@
 #include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>
 #include <qgsnetworkaccessmanager.h>
-#include <qgsproject.h>
-#include <qgsvectorlayerutils.h>
-#include <qgstransactiongroup.h>
-#include <sqlite3.h>
 
 #include <QObject>
 
@@ -50,7 +46,6 @@ class TestQgsOgrProvider : public QObject
 
     void setupProxy();
     void decodeUri();
-    void testGpkgTransactions();
 
   private:
     QString mTestDataDir;
@@ -134,42 +129,6 @@ void TestQgsOgrProvider::decodeUri()
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
-
-void TestQgsOgrProvider::testGpkgTransactions()
-{
-  QTemporaryDir tempDir;
-  QFile::copy( mTestDataDir + QStringLiteral( "kbs.qgs" ), tempDir.filePath( "kbs.qgs" ) );
-  QFile::copy( mTestDataDir + QStringLiteral( "kbs.gpkg" ), tempDir.filePath( "kbs.gpkg" ) );
-
-  sqlite3_enable_shared_cache( 1 );
-  QgsProject *project = QgsProject::instance();
-  QVERIFY( project->read( tempDir.filePath( "kbs.qgs" ) ) );
-
-  QgsVectorLayer *zustaendigkeitskataster = project->mapLayer<QgsVectorLayer *>( QStringLiteral( "zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17" ) );
-
-  // There is a default expression setup, dear reader of this test
-  QVERIFY( zustaendigkeitskataster->defaultValueDefinition( 0 ).expression().contains( "sqlite_fetch_and_increment" ) );
-
-  zustaendigkeitskataster->startEditing();
-
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( zustaendigkeitskataster ) );
-  QgsFeature feature = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
-  QCOMPARE( feature.attribute( "T_Id" ), 0 );
-  feature.setAttribute( "url_behoerde", "url_behoerde" );
-  feature.setAttribute( "url_kataster", "url_kataster" );
-  zustaendigkeitskataster->addFeature( feature );
-
-  QgsFeature feature2 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
-  QCOMPARE( feature2.attribute( "T_Id" ), 1 );
-  feature2.setAttribute( "url_behoerde", "url_behoerde_x" );
-  feature2.setAttribute( "url_kataster", "url_kataster_x" );
-  zustaendigkeitskataster->addFeature( feature2 );
-
-  zustaendigkeitskataster->commitChanges();
-
-  QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 2 );
-}
-
 
 QGSTEST_MAIN( TestQgsOgrProvider )
 #include "testqgsogrprovider.moc"
