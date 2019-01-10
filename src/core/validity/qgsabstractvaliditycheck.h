@@ -66,9 +66,6 @@ class CORE_EXPORT QgsValidityCheckResult
 
 };
 
-// note -- this is a QObject so that we can store just weak pointers to it -- avoiding crashes
-// if a Python plugin doesn't correctly remove checks on plugin unload
-
 /**
  * \class QgsAbstractValidityCheck
  * \ingroup core
@@ -92,7 +89,7 @@ class CORE_EXPORT QgsValidityCheckResult
  *
  * \since QGIS 3.6
  */
-class CORE_EXPORT QgsAbstractValidityCheck : public QObject
+class CORE_EXPORT QgsAbstractValidityCheck
 {
 
   public:
@@ -103,6 +100,8 @@ class CORE_EXPORT QgsAbstractValidityCheck : public QObject
       TypeLayoutCheck = 0, //!< Print layout validity check, triggered on exporting a print layout
       TypeUserCheck = 10000, //!< Starting point for custom user types
     };
+
+    virtual ~QgsAbstractValidityCheck() = default;
 
     /**
      * Creates a new instance of the check and returns it.
@@ -157,8 +156,5 @@ class CORE_EXPORT QgsAbstractValidityCheck : public QObject
     virtual QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) = 0;
 
 };
-
-
-
 
 #endif // QGSABSTRACTVALIDITYCHECK_H
