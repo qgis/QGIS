@@ -463,7 +463,7 @@ namespace QgsWms
 
     // Get the temporary output file
     const QgsWmsParameters::Format format = mWmsParameters.format();
-    const QString extension = mWmsParameters.formatAsString( format ).toLower();
+    const QString extension = QgsWmsParameters::formatAsString( format ).toLower();
 
     QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( extension ) );
     if ( !tempOutputFile.open() )
