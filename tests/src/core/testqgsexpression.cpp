@@ -3320,19 +3320,19 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( zustaendigkeitskataster ) );
       QgsFeature feature = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
-      QCOMPARE( feature.attribute( "T_Id" ), 0 );
+      QCOMPARE( feature.attribute( "T_Id" ).toInt(), 0 );
       feature.setAttribute( "url_behoerde", "url_behoerde" );
       feature.setAttribute( "url_kataster", "url_kataster" );
       zustaendigkeitskataster->addFeature( feature );
 
       QgsFeature feature2 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
-      QCOMPARE( feature2.attribute( "T_Id" ), 1 );
+      QCOMPARE( feature2.attribute( "T_Id" ).toInt(), 1 );
       feature2.setAttribute( "url_behoerde", "url_behoerde_x" );
       feature2.setAttribute( "url_kataster", "url_kataster_x" );
       zustaendigkeitskataster->addFeature( feature2 );
 
       zustaendigkeitskataster->commitChanges();
-      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 2 );
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 2l );
 
       QCOMPARE( zustaendigkeitskataster->editBuffer(), nullptr );
       QCOMPARE( zustaendigkeitskataster->dataProvider()->transaction(), nullptr );
@@ -3340,20 +3340,20 @@ class TestQgsExpression: public QObject
       zustaendigkeitskataster->startEditing();
       QgsExpressionContext context2( QgsExpressionContextUtils::globalProjectLayerScopes( zustaendigkeitskataster ) );
       QgsFeature feature3 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
-      QCOMPARE( feature3.attribute( "T_Id" ), 2 );
+      QCOMPARE( feature3.attribute( "T_Id" ).toInt(), 2 );
       feature3.setAttribute( "url_behoerde", "url_behoerde" );
       feature3.setAttribute( "url_kataster", "url_kataster" );
       zustaendigkeitskataster->addFeature( feature3 );
 
       QgsFeature feature4 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
-      QCOMPARE( feature4.attribute( "T_Id" ), 3 );
+      QCOMPARE( feature4.attribute( "T_Id" ).toInt(), 3 );
       feature4.setAttribute( "url_behoerde", "url_behoerde_x" );
       feature4.setAttribute( "url_kataster", "url_kataster_x" );
       zustaendigkeitskataster->addFeature( feature4 );
 
       zustaendigkeitskataster->commitChanges();
 
-      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4 );
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4l );
     }
 
 };
