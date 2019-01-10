@@ -97,7 +97,6 @@ namespace QgsWms
 
       /**
        * Returns printed page as binary
-        \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
         \returns printed page as binary or 0 in case of error*/
       QByteArray getPrint();
 
