@@ -103,16 +103,6 @@ namespace QgsWms
     return UNKN;
   }
 
-  void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList )
-  {
-    //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
-    layersList = parameters.value( QStringLiteral( "LAYER" ) ).split( ',', QString::SkipEmptyParts );
-    layersList = layersList + parameters.value( QStringLiteral( "LAYERS" ) ).split( ',', QString::SkipEmptyParts );
-    stylesList = parameters.value( QStringLiteral( "STYLE" ) ).split( ',', QString::SkipEmptyParts );
-    stylesList = stylesList + parameters.value( QStringLiteral( "STYLES" ) ).split( ',', QString::SkipEmptyParts );
-  }
-
-
   // Write image response
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
                    int imageQuality )
@@ -180,25 +170,4 @@ namespace QgsWms
                                  QString( "Output format '%1' is not supported in the GetMap request" ).arg( formatStr ) );
     }
   }
-
-  QgsRectangle parseBbox( const QString &bboxStr )
-  {
-    QStringList lst = bboxStr.split( ',' );
-    if ( lst.count() != 4 )
-      return QgsRectangle();
-
-    double d[4];
-    bool ok;
-    for ( int i = 0; i < 4; i++ )
-    {
-      lst[i].replace( ' ', '+' );
-      d[i] = lst[i].toDouble( &ok );
-      if ( !ok )
-        return QgsRectangle();
-    }
-    return QgsRectangle( d[0], d[1], d[2], d[3] );
-  }
-
 } // namespace QgsWms
-
-
