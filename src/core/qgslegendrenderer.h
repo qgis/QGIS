@@ -294,7 +294,7 @@ class CORE_EXPORT QgsLegendRenderer
 
 #endif
     QSizeF drawTitleInternal( QgsRenderContext *context, QPainter *painter, QPointF point, Qt::AlignmentFlag halignment, double legendWidth );
-    QSizeF drawAtomInteral( const Atom &atom, QgsRenderContext *context, QPainter *painter, QPointF point );
+    QSizeF drawAtomInternal( const Atom &atom, QgsRenderContext *context, QPainter *painter, QPointF point );
     QgsLegendRenderer::Nucleon drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPainter *painter, QPointF point, double labelXOffset );
     QSizeF drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, QgsRenderContext *context, QPainter *painter, QPointF point );
     QSizeF drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, QgsRenderContext *context, QPainter *painter, QPointF point );
