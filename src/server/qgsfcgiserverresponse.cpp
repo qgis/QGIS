@@ -21,6 +21,7 @@
 #include "qgsfcgiserverresponse.h"
 #include "qgsmessagelog.h"
 #include <fcgi_stdio.h>
+#include <QDebug>
 
 //
 // QgsFcgiServerResponse

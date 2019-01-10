@@ -341,7 +341,7 @@ bool QgsOracleLayerItem::deleteLayer()
   if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
                               QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.ownerName, mLayerProperty.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+    return true;
 
   QString errCause;
   bool res = ::deleteLayer( mUri, errCause );
