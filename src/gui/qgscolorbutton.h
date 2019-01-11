@@ -271,6 +271,16 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     QgsColorSchemeRegistry *colorSchemeRegistry() { return mColorSchemeRegistry; }
 
+    /**
+     * Creates an icon for displaying a \a color in a drop-down menu.
+     *
+     * If \a showChecks set to true, then a checkboard pattern will be shown behind
+     * semi-transparent colors.
+     *
+     * \since QGIS 3.6
+     */
+    static QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
+
   public slots:
 
     /**
@@ -447,14 +457,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * the color picking operation
      */
     void stopPicking( QPoint eventPos, bool samplingColor = true );
-
-    /**
-     * Create a color icon for display in the drop-down menu
-     * \param color for icon
-     * \param showChecks set to true to display a checkboard pattern behind
-     * transparent colors
-     */
-    QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
 
   private slots:
 

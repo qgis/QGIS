@@ -305,6 +305,16 @@ that are shown in the button's drop-down menu.
 .. seealso:: :py:func:`setColorSchemeRegistry`
 %End
 
+    static QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
+%Docstring
+Creates an icon for displaying a ``color`` in a drop-down menu.
+
+If ``showChecks`` set to true, then a checkboard pattern will be shown behind
+semi-transparent colors.
+
+.. versionadded:: 3.6
+%End
+
   public slots:
 
     void setColor( const QColor &color );
