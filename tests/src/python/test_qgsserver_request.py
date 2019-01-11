@@ -10,6 +10,8 @@ the Free Software Foundation; either version 2 of the License, or
 
 """
 import unittest
+import os
+from urllib.parse import parse_qs, urlparse
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '29/04/2017'
@@ -19,7 +21,7 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.PyQt.QtCore import QUrl
-from qgis.server import QgsServerRequest
+from qgis.server import QgsServerRequest, QgsFcgiServerRequest
 
 
 class QgsServerRequestTest(unittest.TestCase):
@@ -65,6 +67,47 @@ class QgsServerRequestTest(unittest.TestCase):
         self.assertEqual(request.method(), QgsServerRequest.GetMethod)
         request.setMethod(QgsServerRequest.PostMethod)
         self.assertEqual(request.method(), QgsServerRequest.PostMethod)
+
+    def test_fcgiRequest(self):
+        """Test various combinations of FCGI env parameters with rewritten urls"""
+
+        def _test_url(url, env={}):
+            for k in ('QUERY_STRING', 'REQUEST_URI', 'SERVER_NAME', 'SERVER_PORT', 'SCRIPT_NAME'):
+                try:
+                    del os.environ[k]
+                except KeyError:
+                    pass
+                try:
+                    os.environ[k] = env[k]
+                except KeyError:
+                    pass
+            request = QgsFcgiServerRequest()
+            self.assertEqual(request.url().toString(), url)
+            # Check MAP
+            if 'QUERY_STRING' in env:
+                map = {k.upper(): v[0] for k, v in parse_qs(env['QUERY_STRING']).items()}['MAP']
+            else:
+                map = {k.upper(): v[0] for k, v in parse_qs(urlparse(env['REQUEST_URI']).query).items()}['MAP']
+            self.assertEqual(request.parameter('MAP'), map)
+
+        _test_url('http://somesite.com/somepath/index.html?map=/my/path.qgs', {
+            'REQUEST_URI': '/somepath/index.html?map=/my/path.qgs',
+            'SERVER_NAME': 'somesite.com',
+        })
+        _test_url('http://somesite.com/somepath?map=/my/path.qgs', {
+            'REQUEST_URI': '/somepath?map=/my/path.qgs',
+            'SERVER_NAME': 'somesite.com',
+        })
+        _test_url('http://somesite.com/somepath/path', {
+            'REQUEST_URI': '/somepath/path',
+            'SERVER_NAME': 'somesite.com',
+            'QUERY_STRING': 'map=/my/path.qgs'
+        })
+        _test_url('http://somesite.com/somepath/path/?token=QGIS2019', {
+            'REQUEST_URI': '/somepath/path/?token=QGIS2019',
+            'SERVER_NAME': 'somesite.com',
+            'QUERY_STRING': 'map=/my/path.qgs',
+        })
 
 
 if __name__ == '__main__':
