@@ -31,6 +31,8 @@ from qgis.core import (QgsProviderRegistry,
                        QgsVectorLayerUtils,
                        QgsSettings,
                        QgsDefaultValue,
+                       QgsFeatureRequest,
+                       QgsRectangle,
                        QgsWkbTypes)
 
 from qgis.testing import start_app, unittest
@@ -751,6 +753,57 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         registry = QgsProviderRegistry.instance()
         components = registry.decodeUri('spatialite', uri)
         self.assertEqual(components['path'], filename)
+
+    def testPKNotInt(self):
+        """ Check when primary key is not an integer """
+        # create test db
+        dbname = os.path.join(tempfile.gettempdir(), "test_pknotint.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+
+        # try the two differents types of index creation
+        for index_creation_method in ['CreateSpatialIndex', 'CreateMbrCache']:
+
+            table_name = "pk_is_string_{}".format(index_creation_method)
+
+            cur.execute("BEGIN")
+            sql = "SELECT InitSpatialMetadata()"
+            cur.execute(sql)
+
+            # create table with spatial index and pk is string
+            sql = "CREATE TABLE {}(id VARCHAR PRIMARY KEY NOT NULL, name TEXT NOT NULL);"
+            cur.execute(sql.format(table_name))
+
+            sql = "SELECT AddGeometryColumn('{}', 'geometry',  4326, 'POINT', 'XY')"
+            cur.execute(sql.format(table_name))
+
+            sql = "SELECT {}('{}', 'geometry')"
+            cur.execute(sql.format(index_creation_method, table_name))
+
+            sql = "insert into {} ('id', 'name', 'geometry') values( 'test_id', 'test_name', st_geomfromtext('POINT(1 2)', 4326))"
+            cur.execute(sql.format(table_name))
+
+            cur.execute("COMMIT")
+
+            testPath = "dbname={} table='{}' (geometry)".format(dbname, table_name)
+            vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.featureCount(), 1)
+
+            # make spatial request to force the index use
+            request = QgsFeatureRequest(QgsRectangle(0, 0, 2, 3))
+            feature = next(vl.getFeatures(request), None)
+            self.assertTrue(feature)
+
+            self.assertEqual(feature.id(), 1)
+            point = feature.geometry().asPoint()
+            self.assertTrue(point)
+            self.assertEqual(point.x(), 1)
+            self.assertEqual(point.y(), 2)
+
+        con.close()
 
     def testLoadStyle(self):
         """Check that we can store and load a style"""
