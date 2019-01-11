@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfcgiserverrequest.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFcgiServerRequest: QgsServerRequest
+{
+%Docstring
+Class defining fcgi request
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfcgiserverrequest.h"
+%End
+  public:
+    QgsFcgiServerRequest();
+
+    virtual QByteArray data() const;
+
+
+    bool hasError() const;
+%Docstring
+Returns true if an error occurred during initialization
+%End
+
+    virtual QUrl url() const;
+
+%Docstring
+
+:return: the request url
+
+Overrides base implementation because FCGI is typically behind
+a proxy server and QGIS Server will see a rewritten QUERY_STRING.
+FCGI implementation stores the REQUEST_URI (which is the URL seen
+by the proxy before it gets rewritten) and returns it instead of
+the rewritten one.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfcgiserverrequest.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
