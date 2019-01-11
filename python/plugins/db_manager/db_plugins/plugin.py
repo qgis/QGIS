@@ -1111,7 +1111,7 @@ class TableField(TableSubItemObject):
             tab.database().connector._close_cursor(c) #Close cursor
             return res #Return comment
         else:
-            return '' #Return void string 
+            return ''
 
     def delete(self):
         return self.table().deleteField(self)
