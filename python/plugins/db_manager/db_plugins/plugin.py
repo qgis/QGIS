@@ -1096,7 +1096,7 @@ class TableField(TableSubItemObject):
         return txt
 
     def getComment(self):
-        # Function returning the comment of a field if exists
+        """Returns the comment for a field"""
         tab = self.table()
             #SQL Query checking if a comment exists for the field
         sql_cpt = u"Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
