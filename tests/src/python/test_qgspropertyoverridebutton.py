@@ -85,6 +85,35 @@ class TestQgsPropertyOverrideButton(unittest.TestCase):
         self.assertNotIn('Project Color', [a.text() for a in button.menu().actions()])
         self.assertNotIn('Color', [a.text() for a in button.menu().actions()])
 
+    def testLinkedColorButton(self):
+        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.ColorWithAlpha)
+        button = QgsPropertyOverrideButton()
+        button.init(0, QgsProperty(), definition)
+        cb = QgsColorButton()
+        button.registerEnabledWidget(cb, False)
+
+        # set button to a non color property
+        button.setToProperty(QgsProperty.fromValue('#ff0000'))
+        self.assertFalse(cb.isEnabled())
+        button.setActive(False)
+        self.assertTrue(cb.isEnabled())
+
+        # set button to a color property
+        button.setToProperty(QgsProperty.fromExpression('project_color(\'Cthulhu\'s delight\')'))
+        self.assertFalse(cb.isEnabled())
+        button.setActive(False)
+        self.assertTrue(cb.isEnabled())
+
+        # test with FlagDisableCheckedWidgetOnlyWhenProjectColorSet set
+        button.setFlags(QgsPropertyOverrideButton.FlagDisableCheckedWidgetOnlyWhenProjectColorSet)
+        button.setToProperty(QgsProperty.fromValue('#ff0000'))
+        self.assertTrue(cb.isEnabled())
+        button.setActive(False)
+        self.assertTrue(cb.isEnabled())
+        button.setToProperty(QgsProperty.fromExpression('project_color(\'Cthulhu\'s delight\')'))
+        self.assertFalse(cb.isEnabled())
+        button.setActive(False)
+        self.assertTrue(cb.isEnabled())
 
 if __name__ == '__main__':
     unittest.main()

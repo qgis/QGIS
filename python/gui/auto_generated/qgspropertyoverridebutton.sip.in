@@ -31,6 +31,13 @@ and layouts.
 %End
   public:
 
+    enum Flag
+    {
+      FlagDisableCheckedWidgetOnlyWhenProjectColorSet,
+    };
+    typedef QFlags<QgsPropertyOverrideButton::Flag> Flags;
+
+
     QgsPropertyOverrideButton( QWidget *parent /TransferThis/ = 0,
                                const QgsVectorLayer *layer = 0 );
 %Docstring
@@ -40,6 +47,23 @@ Constructor for QgsPropertyOverrideButton.
 :param layer: associated vector layer
 %End
 
+    Flags flags() const;
+%Docstring
+Returns the button's flags, which control the button behavior.
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.6
+%End
+
+    void setFlags( QgsPropertyOverrideButton::Flags flags );
+%Docstring
+Sets the button's ``flags``, which control the button behavior.
+
+.. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.6
+%End
 
     void init( int propertyKey,
                const QgsProperty &property,
@@ -240,6 +264,8 @@ Emitted when creating a new auxiliary field
 
 
 };
+
+QFlags<QgsPropertyOverrideButton::Flag> operator|(QgsPropertyOverrideButton::Flag f1, QFlags<QgsPropertyOverrideButton::Flag> f2);
 
 
 /************************************************************************
