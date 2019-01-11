@@ -763,7 +763,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         con = spatialite_connect(dbname, isolation_level=None)
         cur = con.cursor()
 
-        # try the two differents types of index creation
+        # try the two different types of index creation
         for index_creation_method in ['CreateSpatialIndex', 'CreateMbrCache']:
 
             table_name = "pk_is_string_{}".format(index_creation_method)
