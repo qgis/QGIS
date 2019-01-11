@@ -65,7 +65,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   QgsSettings settings;
 
   mSchemeList->header()->hide();
-  mSchemeList->setColumnWidth( 0, 44 );
+  mSchemeList->setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6 );
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();

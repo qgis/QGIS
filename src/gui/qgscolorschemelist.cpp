@@ -704,9 +704,12 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   }
 
   QRect rect = option.rect;
+  const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
+  const int cornerSize = iconSize / 6;
   //center it
-  rect.setLeft( option.rect.center().x() - 15 );
-  rect.setSize( QSize( 30, 30 ) );
+  rect.setLeft( option.rect.center().x() - iconSize / 2 );
+
+  rect.setSize( QSize( iconSize, iconSize ) );
   rect.adjust( 0, 1, 0, 1 );
   //create an icon pixmap
   painter->save();
@@ -717,12 +720,12 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
     //start with checkboard pattern
     QBrush checkBrush = QBrush( transparentBackground() );
     painter->setBrush( checkBrush );
-    painter->drawRoundedRect( rect, 5, 5 );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
   }
 
   //draw semi-transparent color on top
   painter->setBrush( color );
-  painter->drawRoundedRect( rect, 5, 5 );
+  painter->drawRoundedRect( rect, cornerSize, cornerSize );
   painter->restore();
 }
 
@@ -738,9 +741,10 @@ QPixmap QgsColorSwatchDelegate::transparentBackground() const
 
 QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
   Q_UNUSED( index );
-  return QSize( 30, 32 );
+
+  const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
+  return QSize( iconSize, iconSize * 32 / 30.0 );
 }
 
 bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
