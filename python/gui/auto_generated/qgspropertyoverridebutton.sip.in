@@ -212,6 +212,12 @@ Updates list of fields.
 Set whether the current property override definition is to be used
 %End
 
+
+
+    void aboutToShowMenu();
+    void menuActionTriggered( QAction *action );
+
+
   signals:
 
     void changed();

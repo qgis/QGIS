@@ -220,6 +220,15 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      */
     void setActive( bool active );
 
+
+    ///@cond PRIVATE
+
+    // exposed to Python for testing only
+    void aboutToShowMenu();
+    void menuActionTriggered( QAction *action );
+
+    ///@endcond
+
   signals:
 
     //! Emitted when property definition changes
@@ -263,6 +272,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QMenu *mFieldsMenu = nullptr;
     QMenu *mVariablesMenu = nullptr;
     QAction *mActionVariables = nullptr;
+    QMenu *mColorsMenu = nullptr;
+    QAction *mActionColors = nullptr;
 
     QAction *mActionActive = nullptr;
     QAction *mActionDescription = nullptr;
@@ -312,8 +323,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     std::shared_ptr< QgsSymbol > mSymbol;
 
   private slots:
-    void aboutToShowMenu();
-    void menuActionTriggered( QAction *action );
+
     void showHelp();
     void updateSiblingWidgets( bool state );
 };
