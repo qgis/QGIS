@@ -25,7 +25,6 @@ from qgis.gui import (QgsColorButton,
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
 
-
 start_app()
 
 
@@ -114,6 +113,7 @@ class TestQgsPropertyOverrideButton(unittest.TestCase):
         self.assertFalse(cb.isEnabled())
         button.setActive(False)
         self.assertTrue(cb.isEnabled())
+
 
 if __name__ == '__main__':
     unittest.main()
