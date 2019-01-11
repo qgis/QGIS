@@ -48,6 +48,8 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsproviderregistry.h"
 #include "sqlite3.h"
+#include "qgstransaction.h"
+#include "qgsthreadingutils.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -1375,78 +1377,163 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString database = values.at( 0 ).toString();
-  const QString table = values.at( 1 ).toString();
-  const QString idColumn = values.at( 2 ).toString();
-  const QString filterAttribute = values.at( 3 ).toString();
-  const QVariant filterValue = values.at( 4 ).toString();
-  const QVariantMap defaultValues = values.at( 5 ).toMap();
+  static QMap<QString, qlonglong> counterCache;
+  QVariant functionResult;
 
-
-  // read from database
-  sqlite3_database_unique_ptr sqliteDb;
-  sqlite3_statement_unique_ptr sqliteStatement;
-
-  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+  std::function<void()> fetchAndIncrementFunc = [ =, &functionResult ]()
   {
-    parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
-    return QVariant();
-  }
+    QString database;
+    const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
 
-  QString currentValSql;
-  currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
-  if ( !filterAttribute.isNull() )
-  {
-    currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
-  }
-
-  int result;
-  sqliteStatement = sqliteDb.prepare( currentValSql, result );
-  if ( result == SQLITE_OK )
-  {
-    qlonglong nextId = 0;
-    if ( sqliteStatement.step() == SQLITE_ROW )
+    if ( layer )
     {
-      nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
-    }
-
-    QString upsertSql;
-    upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
-    QStringList cols;
-    QStringList vals;
-    cols << QgsSqliteUtils::quotedIdentifier( idColumn );
-    vals << QgsSqliteUtils::quotedValue( nextId );
-
-    if ( !filterAttribute.isNull() )
-    {
-      cols << QgsSqliteUtils::quotedIdentifier( filterAttribute );
-      vals << QgsSqliteUtils::quotedValue( filterValue );
-    }
-
-    for ( QVariantMap::const_iterator iter = defaultValues.constBegin(); iter != defaultValues.constEnd(); ++iter )
-    {
-      cols << QgsSqliteUtils::quotedIdentifier( iter.key() );
-      vals << iter.value().toString();
-    }
-
-    upsertSql += QLatin1String( " (" ) + cols.join( ',' ) + ')';
-    upsertSql += QLatin1String( " VALUES " );
-    upsertSql += '(' + vals.join( ',' ) + ')';
-
-    QString errorMessage;
-    result = sqliteDb.exec( upsertSql, errorMessage );
-    if ( result == SQLITE_OK )
-    {
-      return nextId;
+      const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+      database = decodedUri.value( QStringLiteral( "path" ) ).toString();
+      if ( database.isEmpty() )
+      {
+        parent->setEvalErrorString( QObject::tr( "Could not extract file path from layer `%1`." ).arg( layer->name() ) );
+      }
     }
     else
     {
-      parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
-      return QVariant();
+      database = values.at( 0 ).toString();
     }
-  }
 
-  return QVariant(); // really?
+    const QString table = values.at( 1 ).toString();
+    const QString idColumn = values.at( 2 ).toString();
+    const QString filterAttribute = values.at( 3 ).toString();
+    const QVariant filterValue = values.at( 4 ).toString();
+    const QVariantMap defaultValues = values.at( 5 ).toMap();
+
+    // read from database
+    sqlite3_database_unique_ptr sqliteDb;
+    sqlite3_statement_unique_ptr sqliteStatement;
+
+    if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+    {
+      parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
+      functionResult = QVariant();
+      return;
+    }
+
+    QString errorMessage;
+    QString currentValSql;
+
+    qlonglong nextId;
+    bool cachedMode = false;
+    bool valueRetrieved = false;
+
+    QString cacheString = QStringLiteral( "%1:%2:%3:%4:%5" ).arg( database, table, idColumn, filterAttribute, filterValue.toString() );
+
+    // Running in transaction mode, check for cached value first
+    if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
+    {
+      cachedMode = true;
+
+      auto cachedCounter = counterCache.find( cacheString );
+
+      if ( cachedCounter != counterCache.end() )
+      {
+        qlonglong &cachedValue = cachedCounter.value();
+        nextId = cachedValue;
+        nextId += 1;
+        cachedValue = nextId;
+        valueRetrieved = true;
+      }
+    }
+
+    // Either not in cached mode or no cached value found, obtain from DB
+    if ( !cachedMode || !valueRetrieved )
+    {
+      int result = SQLITE_ERROR;
+
+      currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
+      if ( !filterAttribute.isNull() )
+      {
+        currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
+      }
+
+      sqliteStatement = sqliteDb.prepare( currentValSql, result );
+
+      if ( result == SQLITE_OK )
+      {
+        nextId = 0;
+        if ( sqliteStatement.step() == SQLITE_ROW )
+        {
+          nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
+        }
+
+        // If in cached mode: add value to cache and connect to transaction
+        if ( cachedMode && result == SQLITE_OK )
+        {
+          counterCache.insert( cacheString, nextId );
+
+          QObject::connect( layer->dataProvider()->transaction(), &QgsTransaction::destroyed, [cacheString]()
+          {
+            counterCache.remove( cacheString );
+          } );
+        }
+        valueRetrieved = true;
+      }
+    }
+
+    if ( valueRetrieved )
+    {
+      QString upsertSql;
+      upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
+      QStringList cols;
+      QStringList vals;
+      cols << QgsSqliteUtils::quotedIdentifier( idColumn );
+      vals << QgsSqliteUtils::quotedValue( nextId );
+
+      if ( !filterAttribute.isNull() )
+      {
+        cols << QgsSqliteUtils::quotedIdentifier( filterAttribute );
+        vals << QgsSqliteUtils::quotedValue( filterValue );
+      }
+
+      for ( QVariantMap::const_iterator iter = defaultValues.constBegin(); iter != defaultValues.constEnd(); ++iter )
+      {
+        cols << QgsSqliteUtils::quotedIdentifier( iter.key() );
+        vals << iter.value().toString();
+      }
+
+      upsertSql += QLatin1String( " (" ) + cols.join( ',' ) + ')';
+      upsertSql += QLatin1String( " VALUES " );
+      upsertSql += '(' + vals.join( ',' ) + ')';
+
+      int result = SQLITE_ERROR;
+      if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
+      {
+        QgsTransaction *transaction = layer->dataProvider()->transaction();
+        if ( transaction->executeSql( upsertSql, errorMessage ) )
+        {
+          result = SQLITE_OK;
+        }
+      }
+      else
+      {
+        result = sqliteDb.exec( upsertSql, errorMessage );
+      }
+      if ( result == SQLITE_OK )
+      {
+        functionResult = QVariant( nextId );
+        return;
+      }
+      else
+      {
+        parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
+        functionResult = QVariant();
+        return;
+      }
+    }
+
+    functionResult = QVariant();
+  };
+
+  QgsThreadingUtils::runOnMainThread( fetchAndIncrementFunc );
+
+  return functionResult;
 }
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

@@ -33,6 +33,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsvectorlayerutils.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -3298,6 +3299,63 @@ class TestQgsExpression: public QObject
       e = QgsExpression( QStringLiteral( "map('a',1,'bbb',2,'c',3)['b'||'b'||'b']" ) );
       QCOMPARE( e.evaluate( &context ).toInt(), 2 );
     }
+
+
+    void testSqliteFetchAndIncrementWithTranscationMode()
+    {
+      QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
+      QTemporaryDir tempDir;
+      QFile::copy( testDataDir + QStringLiteral( "kbs.qgs" ), tempDir.filePath( "kbs.qgs" ) );
+      QFile::copy( testDataDir + QStringLiteral( "kbs.gpkg" ), tempDir.filePath( "kbs.gpkg" ) );
+
+      QgsProject *project = QgsProject::instance();
+      QVERIFY( project->read( tempDir.filePath( "kbs.qgs" ) ) );
+
+      QgsVectorLayer *zustaendigkeitskataster = project->mapLayer<QgsVectorLayer *>( QStringLiteral( "zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17" ) );
+
+      // There is a default expression setup, dear reader of this test
+      QVERIFY( zustaendigkeitskataster->defaultValueDefinition( 0 ).expression().contains( "sqlite_fetch_and_increment" ) );
+
+      zustaendigkeitskataster->startEditing();
+
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( zustaendigkeitskataster ) );
+      QgsFeature feature = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
+      QCOMPARE( feature.attribute( "T_Id" ).toInt(), 0 );
+      feature.setAttribute( "url_behoerde", "url_behoerde" );
+      feature.setAttribute( "url_kataster", "url_kataster" );
+      zustaendigkeitskataster->addFeature( feature );
+
+      QgsFeature feature2 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
+      QCOMPARE( feature2.attribute( "T_Id" ).toInt(), 1 );
+      feature2.setAttribute( "url_behoerde", "url_behoerde_x" );
+      feature2.setAttribute( "url_kataster", "url_kataster_x" );
+      zustaendigkeitskataster->addFeature( feature2 );
+
+      zustaendigkeitskataster->commitChanges();
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 2l );
+
+      QCOMPARE( zustaendigkeitskataster->editBuffer(), nullptr );
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->transaction(), nullptr );
+
+      zustaendigkeitskataster->startEditing();
+      QgsExpressionContext context2( QgsExpressionContextUtils::globalProjectLayerScopes( zustaendigkeitskataster ) );
+      QgsFeature feature3 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
+      QCOMPARE( feature3.attribute( "T_Id" ).toInt(), 2 );
+      feature3.setAttribute( "url_behoerde", "url_behoerde" );
+      feature3.setAttribute( "url_kataster", "url_kataster" );
+      zustaendigkeitskataster->addFeature( feature3 );
+
+      QgsFeature feature4 = QgsVectorLayerUtils::createFeature( zustaendigkeitskataster, QgsGeometry(), QgsAttributeMap(), &context );
+      QCOMPARE( feature4.attribute( "T_Id" ).toInt(), 3 );
+      feature4.setAttribute( "url_behoerde", "url_behoerde_x" );
+      feature4.setAttribute( "url_kataster", "url_kataster_x" );
+      zustaendigkeitskataster->addFeature( feature4 );
+
+      zustaendigkeitskataster->commitChanges();
+
+      QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4l );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )
