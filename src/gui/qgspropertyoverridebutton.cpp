@@ -749,25 +749,31 @@ void QgsPropertyOverrideButton::updateGui()
 
   QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
   QString deftip = tr( "undefined" );
+  QString deftype;
   if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && hasExp )
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpression.svg" ) );
 
-    QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
-    if ( rx.match( mExpressionString ).hasMatch() )
+    QRegularExpression rx( QStringLiteral( "^project_color\\('(.*)'\\)$" ) );
+    QRegularExpressionMatch match = rx.match( mExpressionString );
+    if ( match.hasMatch() )
     {
       icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColorOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColor.svg" ) );
-    }
-
-    QgsExpression exp( mExpressionString );
-    if ( exp.hasParserError() )
-    {
-      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionError.svg" ) );
-      deftip = tr( "Parse error: %1" ).arg( exp.parserErrorString() );
+      deftip = match.captured( 1 );
+      deftype = tr( "project color" );
     }
     else
     {
-      deftip = mExpressionString;
+      QgsExpression exp( mExpressionString );
+      if ( exp.hasParserError() )
+      {
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionError.svg" ) );
+        deftip = tr( "Parse error: %1" ).arg( exp.parserErrorString() );
+      }
+      else
+      {
+        deftip = mExpressionString;
+      }
     }
   }
   else if ( mProperty.propertyType() != QgsProperty::ExpressionBasedProperty && hasField )
@@ -807,10 +813,9 @@ void QgsPropertyOverrideButton::updateGui()
     mFullDescription += tr( "<b>Valid input types:</b><br>%1<br>" ).arg( mDataTypesString );
   }
 
-  QString deftype;
-  if ( deftip != tr( "undefined" ) )
+  if ( deftype.isEmpty() && deftip != tr( "undefined" ) )
   {
-    deftype = QStringLiteral( " (%1)" ).arg( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) );
+    deftype = mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" );
   }
 
   // truncate long expressions, or tool tip may be too wide for screen
@@ -820,7 +825,7 @@ void QgsPropertyOverrideButton::updateGui()
     deftip.append( QChar( 0x2026 ) );
   }
 
-  mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype, deftip );
+  mFullDescription += tr( "<b>Current definition (%1):</b><br>%2" ).arg( deftype, deftip );
 
   setToolTip( mFullDescription );
 
