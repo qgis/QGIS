@@ -41,6 +41,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
 
   SendScintilla( SCI_SETADDITIONALSELECTIONTYPING, 1 );
   SendScintilla( SCI_SETMULTIPASTE, 1 );
+  SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
 }
 
 // Workaround a bug in QScintilla 2.8.X
