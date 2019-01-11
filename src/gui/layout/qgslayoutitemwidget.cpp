@@ -252,6 +252,11 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   mSizeLockAspectRatio->setWidthSpinBox( mWidthSpin );
   mSizeLockAspectRatio->setHeightSpinBox( mHeightSpin );
 
+  mItemFrameColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
+  mItemFrameColorDDBtn->registerEnabledWidget( mFrameColorButton, false );
+  mItemBackgroundColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
+  mItemBackgroundColorDDBtn->registerEnabledWidget( mBackgroundColorButton, false );
+
   connect( mFrameColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mFrameColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged );
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mStrokeWidthSpinBox_valueChanged );
