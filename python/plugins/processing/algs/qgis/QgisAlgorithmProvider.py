@@ -98,7 +98,6 @@ from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
-from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtract import RandomExtract
@@ -210,7 +209,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsToPaths(),
                 PoleOfInaccessibility(),
                 Polygonize(),
-                PolygonsToLines(),
                 PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtract(),

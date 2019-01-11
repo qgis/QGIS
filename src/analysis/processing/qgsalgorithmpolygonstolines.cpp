@@ -1,0 +1,150 @@
+/***************************************************************************
+                         qgsalgorithmpolygonstolines.cpp
+                         ---------------------
+    begin                : January 2019
+    copyright            : (C) 2019 by Matthias Kuhn
+    email                : matthias@opengis.ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsalgorithmpolygonstolines.h"
+#include "qgsgeometrycollection.h"
+#include "qgscurvepolygon.h"
+#include "qgscurve.h"
+#include "qgsmultilinestring.h"
+
+///@cond PRIVATE
+
+QString QgsPolygonsToLinesAlgorithm::name() const
+{
+  return QStringLiteral( "polygonstolines" );
+}
+
+QString QgsPolygonsToLinesAlgorithm::displayName() const
+{
+  return QObject::tr( "Polygons to lines" );
+}
+
+QStringList QgsPolygonsToLinesAlgorithm::tags() const
+{
+  return QObject::tr( "line,polygon,convert" ).split( ',' );
+}
+
+QString QgsPolygonsToLinesAlgorithm::group() const
+{
+  return QObject::tr( "Vector creation" );
+}
+
+QString QgsPolygonsToLinesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
+QString QgsPolygonsToLinesAlgorithm::outputName() const
+{
+  return QObject::tr( "Lines" );
+}
+
+QString QgsPolygonsToLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Converts polygons to lines" );
+}
+
+QString QgsPolygonsToLinesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Converts polygons to lines." );
+}
+
+QgsPolygonsToLinesAlgorithm *QgsPolygonsToLinesAlgorithm::createInstance() const
+{
+  return new QgsPolygonsToLinesAlgorithm();
+}
+
+QList<int> QgsPolygonsToLinesAlgorithm::inputLayerTypes() const
+{
+  return QList< int >() << QgsProcessing::TypeVectorPolygon;
+}
+
+QgsFeatureList QgsPolygonsToLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsFeatureList result;
+  QgsFeature feat = feature;
+  if ( feat.hasGeometry() )
+    feat.setGeometry( convertToLines( feat.geometry() ) );
+
+  result << feat;
+  return result;
+}
+
+QgsGeometry QgsPolygonsToLinesAlgorithm::convertToLines( const QgsGeometry &geometry ) const
+{
+  auto rings = extractRings( geometry.constGet() );
+
+  QgsWkbTypes::Type resultType = outWkbType( geometry.wkbType() );
+
+  std::unique_ptr<QgsMultiCurve> lineGeometry;
+
+  if ( QgsWkbTypes::flatType( resultType ) == QgsWkbTypes::MultiLineString )
+    lineGeometry = qgis::make_unique<QgsMultiLineString>();
+  else
+    lineGeometry = qgis::make_unique<QgsMultiCurve>();
+
+  for ( auto ring : qgis::as_const( rings ) )
+    lineGeometry->addGeometry( ring );
+
+  return QgsGeometry( lineGeometry.release() );
+}
+
+QgsWkbTypes::Type QgsPolygonsToLinesAlgorithm::outWkbType( QgsWkbTypes::Type polygonWkbType ) const
+{
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::NoGeometry;
+
+  if ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( polygonWkbType ) ) == QgsWkbTypes::Polygon )
+    wkbType = QgsWkbTypes::MultiLineString;
+  else if ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( polygonWkbType ) ) == QgsWkbTypes::CurvePolygon )
+    wkbType = QgsWkbTypes::MultiCurve;
+
+  if ( QgsWkbTypes::hasM( polygonWkbType ) )
+    wkbType = QgsWkbTypes::addM( wkbType );
+  if ( QgsWkbTypes::hasZ( polygonWkbType ) )
+    wkbType = QgsWkbTypes::addZ( wkbType );
+
+  return wkbType;
+}
+
+QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGeometry *geom ) const
+{
+  QList<QgsCurve *> rings;
+
+  if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+  {
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      rings.append( extractRings( collection->geometryN( i ) ) );
+    }
+  }
+  else if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
+  {
+    rings.append( polygon->exteriorRing()->clone() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      rings.append( polygon->interiorRing( i )->clone() );
+    }
+  }
+
+  return rings;
+}
+
+
+
+///@endcond
+
+
