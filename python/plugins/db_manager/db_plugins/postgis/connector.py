@@ -899,7 +899,7 @@ class PostGisDBConnector(DBConnector):
         if comment is not None:
             schema, tablename = self.getSchemaTableName(table)
             sql = u"COMMENT ON COLUMN %s.%s.%s is '%s'" % (schema, tablename, column, comment)
-            self._execute(c, sql) 
+            self._execute(c, sql)
 
         self._commit()
 

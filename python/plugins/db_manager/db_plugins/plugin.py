@@ -1140,7 +1140,6 @@ class TableField(TableSubItemObject):
         return ret
 
 
-
 class TableConstraint(TableSubItemObject):
 
     """ class that represents a constraint of a table (relation) """

@@ -281,7 +281,6 @@ class PGTable(Table):
             self.deleted.emit()
         return ret
 
-
 class PGVectorTable(PGTable, VectorTable):
 
     def __init__(self, row, db, schema=None):
