@@ -753,6 +753,12 @@ void QgsPropertyOverrideButton::updateGui()
   {
     icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpression.svg" ) );
 
+    QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
+    if ( rx.match( mExpressionString ).hasMatch() )
+    {
+      icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColorOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColor.svg" ) );
+    }
+
     QgsExpression exp( mExpressionString );
     if ( exp.hasParserError() )
     {
