@@ -829,8 +829,28 @@ void QgsPropertyOverrideButton::setActivePrivate( bool active )
   }
 }
 
+QgsPropertyOverrideButton::Flags QgsPropertyOverrideButton::flags() const
+{
+  return mFlags;
+}
+
+void QgsPropertyOverrideButton::setFlags( Flags flags )
+{
+  mFlags = flags;
+}
+
 void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 {
+  if ( state && mFlags & FlagDisableCheckedWidgetOnlyWhenProjectColorSet )
+  {
+    state = false;
+    QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
+    if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !mExpressionString.isEmpty()
+         && rx.match( mExpressionString ).hasMatch() )
+    {
+      state = true;
+    }
+  }
 
   Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )
   {

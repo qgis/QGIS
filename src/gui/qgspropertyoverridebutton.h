@@ -54,6 +54,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
   public:
 
+    //! Flags controlling button behavior
+    enum Flag
+    {
+      FlagDisableCheckedWidgetOnlyWhenProjectColorSet = 1 << 1, //!< Indicates that registered widgets will only be disabled when the property is set to follow a project color
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsPropertyOverrideButton.
      * \param parent parent widget
@@ -62,6 +69,21 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QgsPropertyOverrideButton( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                const QgsVectorLayer *layer = nullptr );
 
+    /**
+     * Returns the button's flags, which control the button behavior.
+     *
+     * \see setFlags()
+     * \since QGIS 3.6
+     */
+    Flags flags() const;
+
+    /**
+     * Sets the button's \a flags, which control the button behavior.
+     *
+     * \see flags()
+     * \since QGIS 3.6
+     */
+    void setFlags( QgsPropertyOverrideButton::Flags flags );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
@@ -322,11 +344,14 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     std::shared_ptr< QgsSymbol > mSymbol;
 
+    Flags mFlags = nullptr;
+
   private slots:
 
     void showHelp();
     void updateSiblingWidgets( bool state );
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsPropertyOverrideButton::Flags )
 
 #endif // QGSPROPERTYOVERRIDEBUTTON_H
