@@ -109,6 +109,13 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mStrokeColorButton->setNoColorString( tr( "Transparent Line" ) );
   mStrokeColorButton->setShowNoColor( true );
 
+  mFillColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
+  mFillColorDDBtn->registerEnabledWidget( mFillColorButton, false );
+  mFillColor2DDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
+  mFillColor2DDBtn->registerEnabledWidget( mFillColor2Button, false );
+  mLineColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
+  mLineColorDDBtn->registerEnabledWidget( mStrokeColorButton, false );
+
   if ( mScalebar )
   {
     mFillColorDDBtn->registerExpressionContextGenerator( mScalebar );
