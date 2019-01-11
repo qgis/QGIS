@@ -1133,8 +1133,8 @@ class TableField(TableSubItemObject):
             # Update also a new_comment
             new_comment = None
         ret = self.table().database().connector.updateTableColumn((self.table().schemaName(), self.table().name),
-                                                                  self.name, new_name, new_type_str, new_not_null,
-                                                                  new_default_str, new_comment)
+                                                                     self.name, new_name, new_type_str,
+                                                                     new_not_null, new_default_str, new_comment)
         if ret is not False:
             self.table().refreshFields()
         return ret

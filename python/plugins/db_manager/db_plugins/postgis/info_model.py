@@ -111,7 +111,7 @@ class PGTableInfo(TableInfo):
             if self.table.rowCount is not None:
                 if abs(self.table.estimatedRowCount - self.table.rowCount) > 1 and \
                         (self.table.estimatedRowCount > 2 * self.table.rowCount
-                        or self.table.rowCount > 2 * self.table.estimatedRowCount):
+                         or self.table.rowCount > 2 * self.table.estimatedRowCount):
                     ret.append(HtmlParagraph(QApplication.translate("DBManagerPlugin",
                                                                     "<warning> There's a significant difference between estimated and real row count. "
                                                                     'Consider running <a href="action:vacuumanalyze/run">VACUUM ANALYZE</a>.')))
