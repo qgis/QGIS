@@ -23,12 +23,15 @@
 #include "qgspanelwidget.h"
 #include "qgspropertyassistantwidget.h"
 #include "qgsauxiliarystorage.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscolorbutton.h"
 
 #include <QClipboard>
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPointer>
 #include <QGroupBox>
+#include <QRegularExpression>
 
 QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
     const QgsVectorLayer *layer )
@@ -68,6 +71,10 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
   mActionVariables = new QAction( tr( "Variable" ), this );
   mVariablesMenu = new QMenu( this );
   mActionVariables->setMenu( mVariablesMenu );
+
+  mActionColors = new QAction( tr( "Color" ), this );
+  mColorsMenu = new QMenu( this );
+  mActionColors->setMenu( mColorsMenu );
 
   mActionActive = new QAction( this );
   QFont f = mActionActive->font();
@@ -309,6 +316,7 @@ void QgsPropertyOverrideButton::setToProperty( const QgsProperty &property )
   updateGui();
 }
 
+///@cond PRIVATE
 void QgsPropertyOverrideButton::aboutToShowMenu()
 {
   mDefineMenu->clear();
@@ -410,6 +418,52 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   mFieldsMenu->menuAction()->setCheckable( true );
   mFieldsMenu->menuAction()->setChecked( fieldActive && mProperty.propertyType() == QgsProperty::FieldBasedProperty && !mProperty.transformer() );
 
+  bool colorActive = false;
+  mColorsMenu->clear();
+  if ( mDefinition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha
+       || mDefinition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha )
+  {
+    // project colors menu
+    QAction *colorTitleAct = mDefineMenu->addAction( tr( "Project Color" ) );
+    colorTitleAct->setFont( titlefont );
+    colorTitleAct->setEnabled( false );
+
+    QList<QgsProjectColorScheme *> projectSchemes;
+    QgsApplication::colorSchemeRegistry()->schemes( projectSchemes );
+    if ( projectSchemes.length() > 0 )
+    {
+      QgsProjectColorScheme *scheme = projectSchemes.at( 0 );
+      const QgsNamedColorList colors = scheme->fetchColors();
+      for ( const auto &color : colors )
+      {
+        if ( color.second.isEmpty() )
+          continue;
+
+        QPixmap icon = QgsColorButton::createMenuIcon( color.first, mDefinition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha );
+        QAction *act = mColorsMenu->addAction( color.second );
+        act->setIcon( icon );
+        if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && hasExp && mExpressionString == QStringLiteral( "project_color('%1')" ).arg( color.second ) )
+        {
+          act->setCheckable( true );
+          act->setChecked( true );
+          colorActive = true;
+        }
+      }
+    }
+
+    if ( mColorsMenu->actions().isEmpty() )
+    {
+      QAction *act = mColorsMenu->addAction( tr( "No colors set" ) );
+      act->setEnabled( false );
+    }
+
+    mDefineMenu->addAction( mActionColors );
+    mColorsMenu->menuAction()->setCheckable( true );
+    mColorsMenu->menuAction()->setChecked( colorActive && !mProperty.transformer() );
+
+    mDefineMenu->addSeparator();
+  }
+
   QAction *exprTitleAct = mDefineMenu->addAction( tr( "Expression" ) );
   exprTitleAct->setFont( titlefont );
   exprTitleAct->setEnabled( false );
@@ -470,7 +524,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
       mActionExpression->setText( expString );
     }
     mDefineMenu->addAction( mActionExpression );
-    mActionExpression->setChecked( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !variableActive && !mProperty.transformer() );
+    mActionExpression->setChecked( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !variableActive && !colorActive && !mProperty.transformer() );
 
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
@@ -582,7 +636,21 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
     updateGui();
     emit changed();
   }
+  else if ( mColorsMenu->actions().contains( action ) )  // a color name clicked
+  {
+    if ( mExpressionString != QStringLiteral( "project_color('%1')" ).arg( action->text() ) )
+    {
+      mExpressionString = QStringLiteral( "project_color('%1')" ).arg( action->text() );
+    }
+    mProperty.setExpressionString( mExpressionString );
+    mProperty.setTransformer( nullptr );
+    setActivePrivate( true );
+    updateSiblingWidgets( isActive() );
+    updateGui();
+    emit changed();
+  }
 }
+///@endcond
 
 void QgsPropertyOverrideButton::showDescriptionDialog()
 {
