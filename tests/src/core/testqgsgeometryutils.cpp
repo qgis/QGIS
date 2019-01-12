@@ -64,6 +64,7 @@ class TestQgsGeometryUtils: public QObject
     void testCircleCircleIntersection();
     void testTangentPointAndCircle();
     void testCircleCircleOuterTangents();
+    void testCircleCircleInnerTangents();
     void testGml();
     void testInterpolatePointOnLineQgsPoint();
     void testInterpolatePointOnLine();
@@ -968,6 +969,45 @@ void TestQgsGeometryUtils::testCircleCircleOuterTangents()
   QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
   QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
   QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
+}
+
+void TestQgsGeometryUtils::testCircleCircleInnerTangents()
+{
+  QgsPointXY l1p1;
+  QgsPointXY l1p2;
+  QgsPointXY l2p1;
+  QgsPointXY l2p2;
+
+  // no tangents, intersecting circles
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 1, 2 ), 4, QgsPointXY( 2, 3 ), 1, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // no tangents, same circles
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 1, 2 ), 4, QgsPointXY( 1, 2 ), 4, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // no tangents, touching circles
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 0, 0 ), 4, QgsPointXY( 0, 8 ), 4, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // tangents
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 1, 2 ), 1, QgsPointXY( 10, 3 ), 4, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 7.437, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 6.071, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 1.641, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 1.232, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 8.173, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), -0.558, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 1.457, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), 2.89, 0.01 );
+
+  // tangents, larger circle first
+  QCOMPARE( QgsGeometryUtils::circleCircleInnerTangents( QgsPointXY( 10, 3 ), 4, QgsPointXY( 1, 2 ), 1, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 7.437, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 6.071, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 1.641, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 1.232, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 8.173, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), -0.558, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 1.457, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), 2.89, 0.01 );
 }
 
 void TestQgsGeometryUtils::testGml()
