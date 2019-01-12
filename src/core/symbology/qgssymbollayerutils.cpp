@@ -672,7 +672,7 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size,
   }
 
   // If the context has no feature and there are DD properties,
-  // use a clone and clear all DDs: see issue #19096
+  // use a clone and clear some DDs: see issue #19096
   // Applying a data defined size to a categorized layer hides its category symbol in the layers panel and legend
   if ( symbol->hasDataDefinedProperties() &&
        !( customContext
@@ -682,7 +682,13 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size,
     const QgsSymbolLayerList layers( symbol_noDD->symbolLayers() );
     for ( const auto &layer : layers )
     {
-      layer->dataDefinedProperties().clear();
+      for ( int i = 0; i < layer->dataDefinedProperties().count(); ++i )
+      {
+        QgsProperty &prop = layer->dataDefinedProperties().property( i );
+        // don't clear project color properties -- we want to show them in symbol previews
+        if ( prop.isActive() && !prop.isProjectColor() )
+          prop.setActive( false );
+      }
     }
     symbol_noDD->drawPreviewIcon( &painter, size, customContext );
   }

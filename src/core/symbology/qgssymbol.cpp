@@ -474,6 +474,14 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
   symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
 
+  if ( !customContext )
+  {
+    // if no render context was passed, build a minimal expression context
+    QgsExpressionContext expContext;
+    expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+    context.setExpressionContext( expContext );
+  }
+
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
     if ( !layer->enabled() )
