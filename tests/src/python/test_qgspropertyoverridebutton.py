@@ -31,6 +31,9 @@ start_app()
 class TestQgsPropertyOverrideButton(unittest.TestCase):
 
     def testProjectColor(self):
+        scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
+        scheme.setColors([])
+
         definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.ColorWithAlpha)
         button = QgsPropertyOverrideButton()
         button.init(0, QgsProperty(), definition)
@@ -43,7 +46,6 @@ class TestQgsPropertyOverrideButton(unittest.TestCase):
         self.assertEqual([a.text() for a in color_action.menu().actions()][0], 'No colors set')
 
         # add some project colors
-        scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
         scheme.setColors([[QColor(255, 0, 0), 'color 1'], [QColor(255, 255, 0), 'burnt marigold']])
 
         button.aboutToShowMenu()
@@ -89,30 +91,29 @@ class TestQgsPropertyOverrideButton(unittest.TestCase):
         button = QgsPropertyOverrideButton()
         button.init(0, QgsProperty(), definition)
         cb = QgsColorButton()
-        button.registerEnabledWidget(cb, False)
+        button.registerLinkedWidget(cb)
 
-        # set button to a non color property
-        button.setToProperty(QgsProperty.fromValue('#ff0000'))
-        self.assertFalse(cb.isEnabled())
-        button.setActive(False)
-        self.assertTrue(cb.isEnabled())
+        project_scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
+        project_scheme.setColors([[QColor(255, 0, 0), 'col1'], [QColor(0, 255, 0), 'col2']])
 
-        # set button to a color property
-        button.setToProperty(QgsProperty.fromExpression('project_color(\'Cthulhu\'s delight\')'))
-        self.assertFalse(cb.isEnabled())
-        button.setActive(False)
-        self.assertTrue(cb.isEnabled())
-
-        # test with FlagDisableCheckedWidgetOnlyWhenProjectColorSet set
-        button.setFlags(QgsPropertyOverrideButton.FlagDisableCheckedWidgetOnlyWhenProjectColorSet)
         button.setToProperty(QgsProperty.fromValue('#ff0000'))
         self.assertTrue(cb.isEnabled())
+        self.assertFalse(cb.linkedProjectColorName())
         button.setActive(False)
         self.assertTrue(cb.isEnabled())
+        self.assertFalse(cb.linkedProjectColorName())
         button.setToProperty(QgsProperty.fromExpression('project_color(\'Cthulhu\'s delight\')'))
-        self.assertFalse(cb.isEnabled())
+        self.assertTrue(cb.isEnabled())
+        self.assertFalse(cb.linkedProjectColorName())
+        button.setToProperty(QgsProperty.fromExpression('project_color(\'col1\')'))
+        self.assertTrue(cb.isEnabled())
+        self.assertEqual(cb.linkedProjectColorName(), 'col1')
         button.setActive(False)
         self.assertTrue(cb.isEnabled())
+        self.assertFalse(cb.linkedProjectColorName())
+        button.setActive(True)
+        self.assertTrue(cb.isEnabled())
+        self.assertEqual(cb.linkedProjectColorName(), 'col1')
 
 
 if __name__ == '__main__':

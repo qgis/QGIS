@@ -31,13 +31,6 @@ and layouts.
 %End
   public:
 
-    enum Flag
-    {
-      FlagDisableCheckedWidgetOnlyWhenProjectColorSet,
-    };
-    typedef QFlags<QgsPropertyOverrideButton::Flag> Flags;
-
-
     QgsPropertyOverrideButton( QWidget *parent /TransferThis/ = 0,
                                const QgsVectorLayer *layer = 0 );
 %Docstring
@@ -45,24 +38,6 @@ Constructor for QgsPropertyOverrideButton.
 
 :param parent: parent widget
 :param layer: associated vector layer
-%End
-
-    Flags flags() const;
-%Docstring
-Returns the button's flags, which control the button behavior.
-
-.. seealso:: :py:func:`setFlags`
-
-.. versionadded:: 3.6
-%End
-
-    void setFlags( QgsPropertyOverrideButton::Flags flags );
-%Docstring
-Sets the button's ``flags``, which control the button behavior.
-
-.. seealso:: :py:func:`flags`
-
-.. versionadded:: 3.6
 %End
 
     void init( int propertyKey,
@@ -221,6 +196,17 @@ Register an expression context generator class that will be used to retrieve
 an expression context for the button when required.
 %End
 
+    void registerLinkedWidget( QWidget *widget );
+%Docstring
+Registers a ``widget`` which is linked to this button. The meaning of linked widgets
+depends on the property type, and the type of linked widget.
+
+For color properties, linking a QgsColorButton allows the color button to correctly
+reflect the status of the property when it's set to follow a project color.
+
+.. versionadded:: 3.6
+%End
+
     void updateFieldLists();
 %Docstring
 Updates list of fields.
@@ -264,9 +250,6 @@ Emitted when creating a new auxiliary field
 
 
 };
-
-QFlags<QgsPropertyOverrideButton::Flag> operator|(QgsPropertyOverrideButton::Flag f1, QFlags<QgsPropertyOverrideButton::Flag> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
