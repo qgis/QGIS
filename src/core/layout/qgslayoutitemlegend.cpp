@@ -47,6 +47,13 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
+
+  // If project colors change, we need to redraw legend, as legend symbols may rely on project colors
+  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [ = ]
+  {
+    invalidateCache();
+    update();
+  } );
 }
 
 QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
