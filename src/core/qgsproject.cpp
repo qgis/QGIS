@@ -52,6 +52,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
 #include "qgsauxiliarystorage.h"
+#include "qgssymbollayerutils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -713,6 +714,7 @@ void QgsProject::clear()
   mArchive->clear();
 
   emit labelingEngineSettingsChanged();
+  emit projectColorsChanged();
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -1378,6 +1380,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   emit readProjectWithContext( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
   emit topologicalEditingChanged();
+  emit projectColorsChanged();
 
   // if all went well, we're allegedly in pristine state
   if ( clean )
@@ -2940,6 +2943,25 @@ void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
     else
       it.value()->setFlags( it.value()->flags() | QgsMapLayer::Removable );
   }
+}
+
+void QgsProject::setProjectColors( const QgsNamedColorList &colors )
+{
+  // save colors to project
+  QStringList customColors;
+  QStringList customColorLabels;
+
+  QgsNamedColorList::const_iterator colorIt = colors.constBegin();
+  for ( ; colorIt != colors.constEnd(); ++colorIt )
+  {
+    QString color = QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first );
+    QString label = ( *colorIt ).second;
+    customColors.append( color );
+    customColorLabels.append( label );
+  }
+  writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ), customColors );
+  writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
+  emit projectColorsChanged();
 }
 
 void QgsProject::generateTsFile( const QString &locale )
