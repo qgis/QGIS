@@ -173,7 +173,7 @@ QToolButton::hover, QToolButton::menu-button::hover
     border-color: #1e1e1e;
     border-style: solid;
     border-radius: 0px;
-    background-color: none;
+    background-color: transparent;
 }
 QToolButton:checked
 {
@@ -191,6 +191,14 @@ QToolBar QToolButton, QToolButton::menu-button
     background-color: none;
 }
 
+QPushButton:hover, QToolButton:hover {
+    background-color: @itemdarkbackground;
+}
+
+QPushButton:pressed, QToolButton:pressed {
+    background-color: @darkalternativegradient;
+}
+
 /* ==================================================================================== */
 /* COMBO BOX                                                                            */
 /* ==================================================================================== */
@@ -206,8 +214,8 @@ QComboBox {
 }
 
 
-QComboBox:hover,QPushButton:hover,QToolButton:hover,QAbstractSpinBox:hover {
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #565656,stop: 1 #464646);
+QComboBox:hover, QAbstractSpinBox:hover {
+    background-color: @darkalternativegradient;
 }
 
 QComboBox:on {
@@ -694,6 +702,11 @@ QHeaderView::section {
 QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
     background-color: @darkgradient;
     color:@text;
+}
+
+QgsColorButton:hover, QgsColorRampButton:hover, QgsSymbolButton:hover, QgsFontButton:hover {
+    background-color: @darkalternativegradient;
+    color:@itembackground;
 }
 
 QgsMessageBar QLabel, QgsMessageBar QTextEdit, QMessageBar QToolButton, QMessageBar QToolButton::menu-button {
