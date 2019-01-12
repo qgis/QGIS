@@ -200,9 +200,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * Calculates the inner tangent points between this circle
      * and an \a other circle.
      *
-     * The outer tangent points correspond to the points at which the two lines
+     * The inner tangent points correspond to the points at which the two lines
      * which are drawn so that they are tangential to both circles but on
-     * different sides, touching the circles and crossing eachother.
+     * different sides, touching the circles and crossing each other.
      *
      * The first tangent line is described by the points
      * stored in \a line1P1 and \a line1P2,

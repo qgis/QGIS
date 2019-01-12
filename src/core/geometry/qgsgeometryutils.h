@@ -207,9 +207,9 @@ class CORE_EXPORT QgsGeometryUtils
      * center1 and \a center2 and with radii of \a radius1 and \a radius2
      * respectively.
      *
-     * The outer tangent points correspond to the points at which the two lines
+     * The inner tangent points correspond to the points at which the two lines
      * which are drawn so that they are tangential to both circles and are
-     * crossing eachother.
+     * crossing each other.
      *
      * The first tangent line is described by the points
      * stored in \a line1P1 and \a line1P2,
