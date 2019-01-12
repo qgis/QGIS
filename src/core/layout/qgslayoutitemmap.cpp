@@ -1522,6 +1522,11 @@ void QgsLayoutItemMap::connectUpdateSlot()
       }
     } );
 
+    // If project colors change, we need to redraw the map, as layer symbols may rely on project colors
+    connect( project, &QgsProject::projectColorsChanged, this, [ = ]
+    {
+      invalidateCache();
+    } );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
 
