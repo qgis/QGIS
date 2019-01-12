@@ -418,6 +418,13 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
   return QSet<QString>();
 }
 
+bool QgsProperty::isProjectColor() const
+{
+  QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
+  return d->type == QgsProperty::ExpressionBasedProperty && !d->expressionString.isEmpty()
+         && rx.match( d->expressionString ).hasMatch();
+}
+
 QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
 {
   if ( ok )

@@ -353,6 +353,13 @@ class CORE_EXPORT QgsProperty
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
+     * Returns true if the property is set to a linked project color.
+     *
+     * \since QGIS 3.6
+     */
+    bool isProjectColor() const;
+
+    /**
      * Calculates the current value of the property, including any transforms which are set for the property
      * \param context QgsExpressionContext to evaluate the property for. The variables and functions contained
      * in the expression context can be used to alter the calculated value for the property, so that a property

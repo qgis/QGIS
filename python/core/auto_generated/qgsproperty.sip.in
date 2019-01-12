@@ -313,6 +313,13 @@ Returns the set of any fields referenced by the property for a specified
 expression context.
 %End
 
+    bool isProjectColor() const;
+%Docstring
+Returns true if the property is set to a linked project color.
+
+.. versionadded:: 3.6
+%End
+
     QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property, including any transforms which are set for the property
