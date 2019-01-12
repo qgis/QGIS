@@ -99,11 +99,15 @@ QMenu::item:disabled
     padding: 0.2em 1.3em 0.2em 1.3em;
 }
 
-
 QMenu::item:selected
 {
     background-color: @selection;
     color: @text;
+}
+
+QMenu::item:checked
+{
+    text-decoration:underline;
 }
 
 QWidget:disabled
@@ -252,6 +256,7 @@ QComboBox:item:selected {
 QComboBox:item:checked {
     padding-left: 1.3em;
     height:1.25em;
+    text-decoration:underline;
 }
 
 QLineEdit:focus
@@ -270,15 +275,15 @@ QTextEdit:focus
 /* ==================================================================================== */
 
 QScrollBar:horizontal {
-    background-color: #333;
+    background-color: @itemdarkbackground;
     height: 0.5em;
     margin: 0px;
     padding: 0px;
 }
 
 QScrollBar::handle:horizontal {
-    border: 1px solid #111;
-    background: @itembackground;
+    border: 1px solid @itemdarkbackground;
+    background: @background;
 }
 
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
@@ -288,14 +293,14 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 }
 
 QScrollBar:vertical {
-    background-color: #333;
+    background-color: @itemdarkbackground;
     width: 0.5em;
     margin: 0;
 }
 
 QScrollBar::handle:vertical {
-    border: 1px solid #111;
-    background: @itembackground;
+    border: 1px solid @itemdarkbackground;
+    background: @background;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
@@ -544,26 +549,32 @@ QCheckBox::indicator:checked {
 /* SLIDER                                                                                */
 /* ==================================================================================== */
 
-QSlider::groove:horizontal,
-QSlider::groove:vertical  {
+QSlider::groove:horizontal {
     border: 1px solid @itemdarkbackground;
     height: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
-    background-color: @itembackground;
+    background-color: @itemdarkbackground;
+    margin: 2px 0;
+}
+
+QSlider::groove:vertical  {
+    border: 1px solid @itemdarkbackground;
+    width: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+    background-color: @itemdarkbackground;
     margin: 2px 0;
 }
 
 QSlider::handle:horizontal {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
-    border: 1px solid itemdarkbackground;
-    width: 1em;
+    background: @gradient;
+    border: 1px solid @itemdarkbackground;
+    width: 1.3em;
     margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
     border-radius: 0.15em;
 }
 QSlider::handle:vertical {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
-    border: 1px solid itemdarkbackground;
-    height: 1em;
-    margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    background: @gradient;
+    border: 1px solid @itemdarkbackground;
+    height: 1.3em;
+    margin: 0 -2px; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
     border-radius: 0.15em;
 }
 
