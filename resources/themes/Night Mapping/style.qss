@@ -214,7 +214,7 @@ QComboBox {
 }
 
 
-QComboBox:hover, QAbstractSpinBox:hover {
+QComboBox:hover,QAbstractSpinBox:hover {
     background-color: @darkalternativegradient;
 }
 
@@ -437,7 +437,10 @@ QMenu::separator
 
 QProgressBar
 {
-    border: 2px solid grey;
+    height: 1.3em;
+    border-width: 1px;
+    border-color: @itemdarkbackground;
+    border-style: solid;
     text-align: center;
 }
 
@@ -445,7 +448,6 @@ QProgressBar::chunk
 {
     background-color: @focus;
     width: 3px;
-    margin: 1px;
 }
 
 QTabWidget::pane {

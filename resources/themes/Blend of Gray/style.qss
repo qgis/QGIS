@@ -429,15 +429,19 @@ QMenu::separator
 
 QProgressBar
 {
-    border: 2px solid grey;
+    height: 1.3em;
+    border-width: 1px;
+    border-color: @itemdarkbackground;
+    border-style: solid;
+    border-radius: 0.2em;
     text-align: center;
+    
 }
 
 QProgressBar::chunk
 {
     background-color: @selection;
     width: 3px;
-    margin: 1px;
 }
 
 QTabWidget::pane {
