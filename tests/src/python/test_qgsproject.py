@@ -1183,6 +1183,13 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(spy), 2)
         self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()], [])
 
+        # should be no signal on project destruction -- can cause a crash
+        p = QgsProject()
+        spy = QSignalSpy(p.projectColorsChanged)
+        p.deleteLater()
+        del p
+        self.assertEqual(len(spy), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1502,6 +1502,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr< QTranslator > mTranslator;
 
+    bool mIsBeingDeleted = false;
+
     friend class QgsProjectDirtyBlocker;
 
     // Required by QGIS Server for switching the current project instance

@@ -406,6 +406,8 @@ QgsProject::QgsProject( QObject *parent )
 
 QgsProject::~QgsProject()
 {
+  mIsBeingDeleted = true;
+
   clear();
   delete mBadLayerHandler;
   delete mRelationManager;
@@ -714,7 +716,12 @@ void QgsProject::clear()
   mArchive->clear();
 
   emit labelingEngineSettingsChanged();
-  emit projectColorsChanged();
+
+  if ( !mIsBeingDeleted )
+  {
+    // possibly other signals should also not be thrown on destruction -- e.g. labelEngineSettingsChanged, etc.
+    emit projectColorsChanged();
+  }
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
