@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgsproject.h"
 #include <QIcon>
 
 const double ICON_PADDING_FACTOR = 0.16;
@@ -49,6 +50,10 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   // svg
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsStyleModel::rebuildSymbolIcons );
   connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsStyleModel::rebuildSymbolIcons );
+
+  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+  // need updating to reflect the new colors
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsStyleModel::rebuildSymbolIcons );
 }
 
 QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const

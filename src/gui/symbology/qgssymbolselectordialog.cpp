@@ -35,6 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgsproject.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -311,6 +312,14 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
     // have been generated using the temporary "downloading" image. In this case
     // we require the preview to be regenerated to use the correct fetched
     // image
+    symbolChanged();
+    updatePreview();
+  } );
+
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [ = ]
+  {
+    // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+    // need updating to reflect the new colors
     symbolChanged();
     updatePreview();
   } );
