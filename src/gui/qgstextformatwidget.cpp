@@ -167,16 +167,11 @@ void QgsTextFormatWidget::initWidget()
   mShadowColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setDefaultColor( Qt::black );
 
-  mFontColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mFontColorDDBtn->registerEnabledWidget( btnTextColor, false );
-  mBufferColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mBufferColorDDBtn->registerEnabledWidget( btnBufferColor, false );
-  mShapeStrokeColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mShapeStrokeColorDDBtn->registerEnabledWidget( mShapeStrokeColorBtn, false );
-  mShapeFillColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mShapeFillColorDDBtn->registerEnabledWidget( mShapeFillColorBtn, false );
-  mShadowColorDDBtn->setFlags( QgsPropertyOverrideButton::FlagDisableCheckedWidgetOnlyWhenProjectColorSet );
-  mShadowColorDDBtn->registerEnabledWidget( mShadowColorBtn, false );
+  mFontColorDDBtn->registerLinkedWidget( btnTextColor );
+  mBufferColorDDBtn->registerLinkedWidget( btnBufferColor );
+  mShapeStrokeColorDDBtn->registerLinkedWidget( mShapeStrokeColorBtn );
+  mShapeFillColorDDBtn->registerLinkedWidget( mShapeFillColorBtn );
+  mShadowColorDDBtn->registerLinkedWidget( mShadowColorBtn );
 
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );
