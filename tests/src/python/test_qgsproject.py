@@ -27,12 +27,14 @@ from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsRasterLayer,
                        QgsMapLayer,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils,
+                       QgsProjectColorScheme)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt import sip
 
 from qgis.testing import start_app, unittest
@@ -1168,6 +1170,18 @@ class TestQgsProject(unittest.TestCase):
         project.setDirty(False)
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
         self.assertFalse(project.isDirty())
+
+    def testColorScheme(self):
+        p = QgsProject.instance()
+        spy = QSignalSpy(p.projectColorsChanged)
+        p.setProjectColors([[QColor(255, 0, 0), 'red'], [QColor(0, 255, 0), 'green']])
+        self.assertEqual(len(spy), 1)
+        scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
+        self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()], [['#ff0000', 'red'], ['#00ff00', 'green']])
+        # except color changed signal when clearing project
+        p.clear()
+        self.assertEqual(len(spy), 2)
+        self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()], [])
 
 
 if __name__ == '__main__':
