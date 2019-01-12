@@ -854,13 +854,7 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 {
   if ( state && mFlags & FlagDisableCheckedWidgetOnlyWhenProjectColorSet )
   {
-    state = false;
-    QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
-    if ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty && !mExpressionString.isEmpty()
-         && rx.match( mExpressionString ).hasMatch() )
-    {
-      state = true;
-    }
+    state = mProperty.isProjectColor();
   }
 
   Q_FOREACH ( const SiblingWidget &sw, mSiblingWidgets )

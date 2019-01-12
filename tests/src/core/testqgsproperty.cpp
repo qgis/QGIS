@@ -92,6 +92,7 @@ class TestQgsProperty : public QObject
     void collectionStack(); //test for QgsPropertyCollectionStack
     void curveTransform();
     void asVariant();
+    void isProjectColor();
 
   private:
 
@@ -1776,6 +1777,22 @@ void TestQgsProperty::asVariant()
   QCOMPARE( fromVar.propertyType(), QgsProperty::FieldBasedProperty );
   QVERIFY( fromVar.isActive() );
   QCOMPARE( fromVar.field(), QStringLiteral( "field1" ) );
+}
+
+void TestQgsProperty::isProjectColor()
+{
+  QgsProperty p = QgsProperty::fromValue( 3, true );
+  QVERIFY( !p.isProjectColor() );
+  p = QgsProperty::fromField( QStringLiteral( "blah" ), true );
+  QVERIFY( !p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "1+2" ), true );
+  QVERIFY( !p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "project_color('mine')" ), true );
+  QVERIFY( p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "project_color('burnt pineapple Skin 76')" ), true );
+  QVERIFY( p.isProjectColor() );
+  p.setActive( false );
+  QVERIFY( p.isProjectColor() );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, const QVector<double> &x, const QVector<double> &y )
