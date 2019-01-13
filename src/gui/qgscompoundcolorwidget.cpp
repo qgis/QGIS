@@ -178,6 +178,48 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSpinBoxRadius->setValue( settings.value( QStringLiteral( "Windows/ColorDialog/sampleRadius" ), 1 ).toInt() );
   mSamplePreview->setColor( QColor() );
 
+  // hidpi friendly sizes
+  const int swatchWidth = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.9 * mSwatchButton1->fontMetrics().height(), 38.0 ) ) );
+  const int swatchHeight = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.5 * mSwatchButton1->fontMetrics().height(), 30.0 ) ) );
+  mSwatchButton1->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton1->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton2->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton2->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton3->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton3->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton4->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton4->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton5->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton5->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton6->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton6->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton7->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton7->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton8->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton8->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton9->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton9->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton10->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton10->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton11->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton11->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton12->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton12->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton13->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton13->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton14->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton14->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton15->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton15->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton16->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton16->setMaximumSize( swatchWidth, swatchHeight );
+  const int previewHeight = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 2.0 * mSwatchButton1->fontMetrics().height(), 40.0 ) ) );
+  mColorPreview->setMinimumSize( 0, previewHeight );
+  mPreviewWidget->setMaximumHeight( previewHeight * 2 );
+  const int swatchAddSize = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.4 * mSwatchButton1->fontMetrics().height(), 28.0 ) ) );
+  mAddCustomColorButton->setMinimumWidth( swatchAddSize );
+  mAddCustomColorButton->setMaximumWidth( swatchAddSize );
+
   if ( color.isValid() )
   {
     setColor( color );
