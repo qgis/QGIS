@@ -65,7 +65,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   QgsSettings settings;
 
   mSchemeList->header()->hide();
-  mSchemeList->setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6 );
+  mSchemeList->setColumnWidth( 0, static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6 ) );
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
@@ -613,7 +613,8 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
 
 QScreen *QgsCompoundColorWidget::findScreenAt( QPoint pos )
 {
-  for ( QScreen *screen : QGuiApplication::screens() )
+  const QList< QScreen * > screens = QGuiApplication::screens();
+  for ( QScreen *screen : screens )
   {
     if ( screen->geometry().contains( pos ) )
     {
@@ -753,7 +754,7 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
   //scan through image and sum rgb components
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
-    QRgb *scanLine = ( QRgb * )image.constScanLine( heightIndex );
+    const QRgb *scanLine = reinterpret_cast< const QRgb * >( image.constScanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       tmpRgb = scanLine[widthIndex];
