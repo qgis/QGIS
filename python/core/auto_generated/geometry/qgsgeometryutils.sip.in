@@ -204,6 +204,29 @@ Returns the number of tangents (either 0 or 2).
 .. versionadded:: 3.2
 %End
 
+    static int circleCircleInnerTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ );
+%Docstring
+Calculates the inner tangent points for two circles, centered at \a
+center1 and ``center2`` and with radii of ``radius1`` and ``radius2``
+respectively.
+
+The inner tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles and are
+crossing each other.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+.. versionadded:: 3.6
+%End
+
     static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
 Project the point on a segment

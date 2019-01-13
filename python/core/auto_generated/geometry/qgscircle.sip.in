@@ -190,6 +190,31 @@ Note that this method is 2D only and does not consider the z-value of the circle
 .. versionadded:: 3.2
 %End
 
+    int innerTangents( const QgsCircle &other,
+                       QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+                       QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) const;
+%Docstring
+Calculates the inner tangent points between this circle
+and an ``other`` circle.
+
+The inner tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles but on
+different sides, touching the circles and crossing each other.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+Note that this method is 2D only and does not consider the z-value of the circle.
+
+.. seealso:: :py:func:`tangentToPoint`
+
+.. versionadded:: 3.6
+%End
+
     virtual double area() const;
 
     virtual double perimeter() const;

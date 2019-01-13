@@ -489,6 +489,52 @@ int QgsGeometryUtils::circleCircleOuterTangents( const QgsPointXY &center1, doub
   return 2;
 }
 
+// inspired by http://csharphelper.com/blog/2014/12/find-the-tangent-lines-between-two-circles-in-c/
+int QgsGeometryUtils::circleCircleInnerTangents( const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2, QgsPointXY &line1P1, QgsPointXY &line1P2, QgsPointXY &line2P1, QgsPointXY &line2P2 )
+{
+  if ( radius1 > radius2 )
+    return circleCircleInnerTangents( center2, radius2, center1, radius1, line1P1, line1P2, line2P1, line2P2 );
+
+  // determine the straight-line distance between the centers
+  const double d = center1.distance( center2 );
+
+  // check for solvability
+  if ( ( d <= ( radius1 + radius2 ) ) or ( qgsDoubleNear( d, ( radius1 + radius2 ) ) ) )
+  {
+    // no solution. circles intersect or touch.
+    return 0;
+  }
+
+  const double radius1a = radius1 + radius2;
+  if ( !tangentPointAndCircle( center1, radius1a, center2, line1P2, line2P2 ) )
+  {
+    // there are no tangents
+    return 0;
+  }
+
+  // get the vector perpendicular to the
+  // first tangent with length radius2
+  QgsVector v1( ( line1P2.y() - center2.y() ), -( line1P2.x() - center2.x() ) );
+  const double v1Length = v1.length();
+  v1 = v1 * ( radius2 / v1Length );
+
+  // offset the tangent vector's points
+  line1P1 = center2 + v1;
+  line1P2 = line1P2 + v1;
+
+  // get the vector perpendicular to the
+  // second tangent with length radius2
+  QgsVector v2( -( line2P2.y() - center2.y() ), line2P2.x() - center2.x() );
+  const double v2Length = v2.length();
+  v2 = v2 * ( radius2 / v2Length );
+
+  // offset the tangent vector's points in opposite direction
+  line2P1 = center2 + v2;
+  line2P2 = line2P2 + v2;
+
+  return 2;
+}
+
 QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
 {
   QVector<SelfIntersection> intersections;

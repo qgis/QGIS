@@ -7812,7 +7812,7 @@ void TestQgsGeometry::circle()
   QGSCOMPARENEAR( t2.x(), 2.2, 0.01 );
   QGSCOMPARENEAR( t2.y(), 5.82, 0.01 );
 
-  // two circle tangents
+  // two outer circle tangents
   QgsPointXY l1p1, l1p2, l2p1, l2p2;
   QCOMPARE( QgsCircle( QgsPoint( 1, 2 ), 4 ).outerTangents( QgsCircle( QgsPoint( 2, 3 ), 1 ), l1p1, l1p2, l2p1, l2p2 ), 0 );
   QCOMPARE( QgsCircle( QgsPoint( 1, 2 ), 1 ).outerTangents( QgsCircle( QgsPoint( 10, 3 ), 4 ), l1p1, l1p2, l2p1, l2p2 ), 2 );
@@ -7824,6 +7824,20 @@ void TestQgsGeometry::circle()
   QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
   QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
   QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
+
+  // two inner circle tangents
+  QCOMPARE( QgsCircle( QgsPoint( 1, 2 ), 4 ).innerTangents( QgsCircle( QgsPoint( 2, 3 ), 1 ), l1p1, l1p2, l2p1, l2p2 ), 0 );
+  QCOMPARE( QgsCircle( QgsPoint( 0, 0 ), 4 ).innerTangents( QgsCircle( QgsPoint( 8, 0 ), 5 ), l1p1, l1p2, l2p1, l2p2 ), 0 );
+  QCOMPARE( QgsCircle( QgsPoint( 0, 0 ), 4 ).innerTangents( QgsCircle( QgsPoint( 8, 0 ), 4 ), l1p1, l1p2, l2p1, l2p2 ), 0 );
+  QCOMPARE( QgsCircle( QgsPoint( 1, 2 ), 1 ).innerTangents( QgsCircle( QgsPoint( 10, 3 ), 4 ), l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 7.437, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 6.071, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 1.641, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 1.232, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 8.173, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), -0.558, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 1.457, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), 2.89, 0.01 );
 }
 
 void TestQgsGeometry::regularPolygon()
