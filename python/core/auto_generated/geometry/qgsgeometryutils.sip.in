@@ -213,9 +213,9 @@ Calculates the inner tangent points for two circles, centered at \a
 center1 and ``center2`` and with radii of ``radius1`` and ``radius2``
 respectively.
 
-The outer tangent points correspond to the points at which the two lines
+The inner tangent points correspond to the points at which the two lines
 which are drawn so that they are tangential to both circles and are
-crossing eachother.
+crossing each other.
 
 The first tangent line is described by the points
 stored in ``line1P1`` and ``line1P2``,
