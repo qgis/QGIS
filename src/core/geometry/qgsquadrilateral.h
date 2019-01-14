@@ -38,7 +38,7 @@ class CORE_EXPORT QgsQuadrilateral
     QgsQuadrilateral();
 
     /**
-     * Construct a QgsQuadrilateral from three QgsPoint.
+     * Construct a QgsQuadrilateral from four QgsPoint.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsQuadrilateral
     QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 
     /**
-     * Construct a QgsQuadrilateral from four QgsPoint.
+     * Construct a QgsQuadrilateral from four QgsPointXY.
      * \param p1 first point
      * \param p2 second point
      * \param p3 third point
@@ -84,7 +84,8 @@ class CORE_EXPORT QgsQuadrilateral
     static QgsQuadrilateral rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
 
     /**
-     * Construct a QgsQuadrilateral as a Rectangle from is extent.
+     * Construct a QgsQuadrilateral as a rectangle from an extent, defined by
+     * two opposite corner points.
      * Z is taken from point \a p1.
      * \param p1 first point
      * \param p2 second point
@@ -100,7 +101,7 @@ class CORE_EXPORT QgsQuadrilateral
 #endif
 
     /**
-     * Construct a QgsQuadrilateral as a Square from a diagonal.
+     * Construct a QgsQuadrilateral as a square from a diagonal.
      * Z is taken from point \a p1.
      * \param p1 first point
      * \param p2 second point
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsQuadrilateral
     static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
 
     /**
-     * Construct a QgsQuadrilateral as a Rectangle from center point \a center
+     * Construct a QgsQuadrilateral as a rectangle from center point \a center
      * and another point \a point.
      * Z is taken from \a center point.
      * \param center center point
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsQuadrilateral
     static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
 
     /**
-     * Construct a QgsQuadrilateral as a Rectangle from a QgsRectangle.
+     * Construct a QgsQuadrilateral as a rectangle from a QgsRectangle.
      * \param rectangle rectangle
      */
     static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle );
@@ -126,8 +127,7 @@ class CORE_EXPORT QgsQuadrilateral
     // Rhombus
 
     /**
-     * Compare two QgsQuadrilateral but allows you to specify the maximum difference
-     * allowable between points.
+     * Compares two QgsQuadrilateral, allowing specification of the maximum allowable difference between points.
      * \param other the QgsQuadrilateral to compare
      * \param epsilon the maximum difference allowed / tolerance
      */
@@ -167,10 +167,6 @@ class CORE_EXPORT QgsQuadrilateral
      * - The quadrilateral would have auto intersections
      * - The quadrilateral has double points
      * - The quadrilateral has collinear points
-     * \param p1 first point
-     * \param p2 second point
-     * \param p3 third point
-     * \param p4 fourth point
      */
     bool setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 
@@ -180,12 +176,12 @@ class CORE_EXPORT QgsQuadrilateral
     QgsPointSequence points() const;
 
     /**
-     * Returnns as a new polygon. Ownership is transferred to the caller.
+     * Returns the quadrilateral as a new polygon. Ownership is transferred to the caller.
      */
     QgsPolygon *toPolygon( bool force2D = false ) const SIP_FACTORY;
 
     /**
-     * Returnns as a new linestring. Ownership is transferred to the caller.
+     * Returns the quadrilateral as a new linestring. Ownership is transferred to the caller.
      */
     QgsLineString *toLineString( bool force2D = false ) const SIP_FACTORY;
 
@@ -196,14 +192,12 @@ class CORE_EXPORT QgsQuadrilateral
     QString toString( int pointPrecision = 17 ) const;
 
     /**
-     * Returns the area.
-     * Returns 0 if the quadrilateral is empty.
+     * Returns the area of the quadrilateral, or 0 if the quadrilateral is empty.
      */
     double area() const;
 
     /**
-     * Returns the perimeter.
-     * Returns 0 if the quadrilateral is empty.
+     * Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is empty.
      */
     double perimeter() const;
 #ifdef SIP_RUN

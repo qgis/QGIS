@@ -28,7 +28,6 @@ QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, cons
 QgsQuadrilateral::QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 )
 {
   setPoints( QgsPoint( p1 ), QgsPoint( p2 ), QgsPoint( p3 ), QgsPoint( p4 ) );
-
 }
 
 QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode )
@@ -253,7 +252,7 @@ bool QgsQuadrilateral::operator!=( const QgsQuadrilateral &other ) const
   return !operator==( other );
 }
 
-// Returns true is segments are not self-intersected ( [2-3] / [4-1] or [1-2] /
+// Returns true if segments are not self-intersected ( [2-3] / [4-1] or [1-2] /
 // [3-4] )
 //
 // p3    p1      p1    p3
@@ -284,7 +283,6 @@ static bool isNotCollinear( const QgsPoint &p1, const QgsPoint &p2, const QgsPoi
 
 
   return !isCollinear;
-
 }
 
 static bool notHaveDoublePoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
@@ -298,9 +296,8 @@ static bool notHaveDoublePoints( const QgsPoint &p1, const QgsPoint &p2, const Q
 
 static bool haveSameType( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
-  bool bla = !( ( p1.wkbType() != p2.wkbType() ) || ( p1.wkbType() != p3.wkbType() ) || ( p1.wkbType() != p4.wkbType() ) );
-  return bla;
-
+  bool sameType = !( ( p1.wkbType() != p2.wkbType() ) || ( p1.wkbType() != p3.wkbType() ) || ( p1.wkbType() != p4.wkbType() ) );
+  return sameType;
 }
 // Convenient method to validate inputs
 static bool validate( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
@@ -349,7 +346,6 @@ bool QgsQuadrilateral::setPoint( const QgsPoint &newPoint, Point index )
 
 bool QgsQuadrilateral::setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
-
   if ( validate( p1, p2, p3, p4 ) == false )
     return false;
 

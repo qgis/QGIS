@@ -28,7 +28,7 @@ This class allows the creation of simple quadrilateral (which does not self-inte
 
     QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
 %Docstring
-Construct a QgsQuadrilateral from three :py:class:`QgsPoint`.
+Construct a QgsQuadrilateral from four :py:class:`QgsPoint`.
 
 :param p1: first point
 :param p2: second point
@@ -40,7 +40,7 @@ Construct a QgsQuadrilateral from three :py:class:`QgsPoint`.
 
     explicit QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 );
 %Docstring
-Construct a QgsQuadrilateral from four :py:class:`QgsPoint`.
+Construct a QgsQuadrilateral from four :py:class:`QgsPointXY`.
 
 :param p1: first point
 :param p2: second point
@@ -76,7 +76,8 @@ Polygon or LineString.
 
     static QgsQuadrilateral rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
 %Docstring
-Construct a QgsQuadrilateral as a Rectangle from is extent.
+Construct a QgsQuadrilateral as a rectangle from an extent, defined by
+two opposite corner points.
 Z is taken from point ``p1``.
 
 :param p1: first point
@@ -86,7 +87,7 @@ Z is taken from point ``p1``.
 
     static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
 %Docstring
-Construct a QgsQuadrilateral as a Square from a diagonal.
+Construct a QgsQuadrilateral as a square from a diagonal.
 Z is taken from point ``p1``.
 
 :param p1: first point
@@ -95,7 +96,7 @@ Z is taken from point ``p1``.
 
     static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
 %Docstring
-Construct a QgsQuadrilateral as a Rectangle from center point ``center``
+Construct a QgsQuadrilateral as a rectangle from center point ``center``
 and another point ``point``.
 Z is taken from ``center`` point.
 
@@ -105,7 +106,7 @@ Z is taken from ``center`` point.
 
     static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle );
 %Docstring
-Construct a QgsQuadrilateral as a Rectangle from a :py:class:`QgsRectangle`.
+Construct a QgsQuadrilateral as a rectangle from a :py:class:`QgsRectangle`.
 
 :param rectangle: rectangle
 %End
@@ -113,8 +114,7 @@ Construct a QgsQuadrilateral as a Rectangle from a :py:class:`QgsRectangle`.
 
     bool equals( const QgsQuadrilateral &other, double epsilon = 4 * DBL_EPSILON ) const;
 %Docstring
-Compare two QgsQuadrilateral but allows you to specify the maximum difference
-allowable between points.
+Compares two QgsQuadrilateral, allowing specification of the maximum allowable difference between points.
 
 :param other: the QgsQuadrilateral to compare
 :param epsilon: the maximum difference allowed / tolerance
@@ -153,11 +153,6 @@ Returns false if the QgsQuadrilateral is not valid:
 - The quadrilateral would have auto intersections
 - The quadrilateral has double points
 - The quadrilateral has collinear points
-
-:param p1: first point
-:param p2: second point
-:param p3: third point
-:param p4: fourth point
 %End
 
     QgsPointSequence points() const;
@@ -167,12 +162,12 @@ Returns a list including the vertices of the quadrilateral.
 
     QgsPolygon *toPolygon( bool force2D = false ) const /Factory/;
 %Docstring
-Returnns as a new polygon. Ownership is transferred to the caller.
+Returns the quadrilateral as a new polygon. Ownership is transferred to the caller.
 %End
 
     QgsLineString *toLineString( bool force2D = false ) const /Factory/;
 %Docstring
-Returnns as a new linestring. Ownership is transferred to the caller.
+Returns the quadrilateral as a new linestring. Ownership is transferred to the caller.
 %End
 
     QString toString( int pointPrecision = 17 ) const;
@@ -183,14 +178,12 @@ Members will be truncated to the specified precision.
 
     double area() const;
 %Docstring
-Returns the area.
-Returns 0 if the quadrilateral is empty.
+Returns the area of the quadrilateral, or 0 if the quadrilateral is empty.
 %End
 
     double perimeter() const;
 %Docstring
-Returns the perimeter.
-Returns 0 if the quadrilateral is empty.
+Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is empty.
 %End
     SIP_PYOBJECT __repr__();
 %MethodCode
