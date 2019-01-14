@@ -609,6 +609,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
     mProperty.setExpressionString( mExpressionString );
     mProperty.setTransformer( nullptr );
     setActivePrivate( !mExpressionString.isEmpty() );
+    updateSiblingWidgets( isActive() );
     updateGui();
     emit changed();
   }
@@ -636,6 +637,7 @@ void QgsPropertyOverrideButton::showAssistant()
       widget->updateProperty( this->mProperty );
       mExpressionString = this->mProperty.asExpression();
       mFieldName = this->mProperty.field();
+      updateSiblingWidgets( isActive() );
       this->emit changed();
     } );
 
@@ -666,6 +668,7 @@ void QgsPropertyOverrideButton::showAssistant()
       mExpressionString = mProperty.asExpression();
       mFieldName = mProperty.field();
       widget->acceptPanel();
+      updateSiblingWidgets( isActive() );
       updateGui();
 
       emit changed();
