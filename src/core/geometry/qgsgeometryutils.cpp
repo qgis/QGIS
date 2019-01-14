@@ -497,15 +497,15 @@ int QgsGeometryUtils::circleCircleInnerTangents( const QgsPointXY &center1, doub
 
   // determine the straight-line distance between the centers
   const double d = center1.distance( center2 );
+  const double radius1a = radius1 + radius2;
 
   // check for solvability
-  if ( ( d <= ( radius1 + radius2 ) ) or ( qgsDoubleNear( d, ( radius1 + radius2 ) ) ) )
+  if ( d <= radius1a || qgsDoubleNear( d, radius1a ) )
   {
     // no solution. circles intersect or touch.
     return 0;
   }
 
-  const double radius1a = radius1 + radius2;
   if ( !tangentPointAndCircle( center1, radius1a, center2, line1P2, line2P2 ) )
   {
     // there are no tangents
