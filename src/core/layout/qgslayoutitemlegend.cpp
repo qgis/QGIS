@@ -160,6 +160,8 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   legendRenderer.setLegendSize( mSizeToContents ? QSize() : rect().size() );
 
   legendRenderer.drawLegend( context.renderContext() );
+
+  context.renderContext().painter()->restore();
 }
 
 void QgsLayoutItemLegend::adjustBoxSize()
