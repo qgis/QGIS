@@ -144,6 +144,29 @@ class CORE_EXPORT QgsVector3D
       return P;
     }
 
+    /**
+     * Returns a string representation of the 3D vector.
+     * Members will be truncated to the specified \a precision.
+     */
+    QString toString( int precision = 17 ) const
+    {
+      QString str = "QgsVector3D (";
+      str += qgsDoubleToString( mX, precision );
+      str += ' ';
+      str += qgsDoubleToString( mY, precision );
+      str += ' ';
+      str += qgsDoubleToString( mZ, precision );
+      str += ')';
+      return str;
+    }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
   private:
     double mX = 0, mY = 0, mZ = 0;
 };

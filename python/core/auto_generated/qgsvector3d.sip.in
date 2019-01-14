@@ -99,6 +99,17 @@ Returns the distance with the ``other`` :py:class:`QgsVector3`
 Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
 %End
 
+    QString toString( int precision = 17 ) const;
+%Docstring
+Returns a string representation of the 3D vector.
+Members will be truncated to the specified ``precision``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 };
 
 /************************************************************************
