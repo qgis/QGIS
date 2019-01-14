@@ -10,6 +10,7 @@
 
 
 
+
 class QgsStyleManagerDialog : QDialog
 {
 %Docstring
@@ -75,7 +76,11 @@ Close the dialog
 Open the associated help
 %End
 
-    void itemChanged( QStandardItem *item );
+ void itemChanged( QStandardItem *item ) /Deprecated/;
+%Docstring
+
+.. deprecated:: in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+%End
 
     void groupChanged( const QModelIndex & );
     void groupRenamed( QStandardItem * );
@@ -153,28 +158,36 @@ Remove all tags from selected symbols
 
   protected:
 
-    void populateTypes();
+ void populateTypes() /Deprecated/;
 %Docstring
-populate combo box with known style items (symbols, color ramps)
+Populate combo box with known style items (symbols, color ramps).
+
+.. deprecated:: in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
 %End
 
     void populateGroups();
 %Docstring
 populate the groups
 %End
-    void setSymbolsChecked( const QStringList & );
+
+ void setSymbolsChecked( const QStringList & ) /Deprecated/;
 %Docstring
-to set symbols checked when in editing mode
+
+.. deprecated:: in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
 %End
 
-    void populateSymbols( const QStringList &symbolNames, bool checkable = false );
+ void populateSymbols( const QStringList &symbolNames, bool checkable = false ) /Deprecated/;
 %Docstring
-populate list view with symbols of the current type with the given names
+Populates the list view with symbols of the current type with the given names.
+
+.. deprecated:: No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
 %End
 
-    void populateColorRamps( const QStringList &colorRamps, bool checkable = false );
+ void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) /Deprecated/;
 %Docstring
-populate list view with color ramps
+Populates the list view with color ramps of the current type with the given names.
+
+.. deprecated:: No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
 %End
 
     int currentItemType();
