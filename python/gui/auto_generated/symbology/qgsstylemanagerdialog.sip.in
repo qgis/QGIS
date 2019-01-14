@@ -40,6 +40,7 @@ Opens the add color ramp dialog, returning the new color ramp's name if the ramp
 
   public slots:
 
+
     void activate();
 %Docstring
 Raises, unminimizes and activates this window
@@ -48,32 +49,80 @@ Raises, unminimizes and activates this window
 %End
 
     void addItem();
+%Docstring
+Triggers the dialog for adding a new item, based on the currently
+selected item type tab.
+%End
+
     void editItem();
+%Docstring
+Triggers the dialog for editing the current item.
+%End
+
     void removeItem();
+%Docstring
+Removes the current selected item.
+%End
+
     void exportItemsSVG();
+%Docstring
+Triggers the dialog to export selected items as SVG files.
+
+.. seealso:: :py:func:`exportItemsPNG`
+
+.. seealso:: :py:func:`exportSelectedItemsImages`
+%End
+
     void exportItemsPNG();
+%Docstring
+Triggers the dialog to export selected items as PNG files.
+
+.. seealso:: :py:func:`exportItemsSVG`
+
+.. seealso:: :py:func:`exportSelectedItemsImages`
+%End
+
     void exportSelectedItemsImages( const QString &dir, const QString &format, QSize size );
+%Docstring
+Triggers the dialog to export selected items as images of the specified ``format`` and ``size``.
+
+.. seealso:: :py:func:`exportItemsSVG`
+
+.. seealso:: :py:func:`exportItemsPNG`
+%End
+
     void exportItems();
+%Docstring
+Triggers the dialog to export items.
+
+.. seealso:: :py:func:`importItems`
+%End
+
     void importItems();
+%Docstring
+Triggers the dialog to import items.
+
+.. seealso:: :py:func:`exportItems`
+%End
 
     void populateList();
 %Docstring
-adds symbols of some type to list
+Refreshes the list of items.
 %End
 
     void onFinished();
 %Docstring
-called when the dialog is going to be closed
+Called when the dialog is going to be closed.
 %End
 
     void onClose();
 %Docstring
-Close the dialog
+Closes the dialog
 %End
 
     void showHelp();
 %Docstring
-Open the associated help
+Opens the associated help
 %End
 
  void itemChanged( QStandardItem *item ) /Deprecated/;
@@ -83,38 +132,49 @@ Open the associated help
 %End
 
     void groupChanged( const QModelIndex & );
-    void groupRenamed( QStandardItem * );
+%Docstring
+Trigerred when the current group (or tag) is changed.
+%End
+
+    void groupRenamed( QStandardItem *item );
+%Docstring
+Triggered when a group ``item`` is renamed.
+%End
+
     int addTag();
 %Docstring
-add a tag
+Triggers the dialog to add a new tag.
 %End
+
     int addSmartgroup();
 %Docstring
-add a smartgroup
+Triggers the dialog to add a new smart group.
 %End
+
     void removeGroup();
 %Docstring
-remove a tag or smartgroup
+Removes the selected tag or smartgroup.
 %End
 
     void tagSymbolsAction();
 %Docstring
-carry out symbol tagging using check boxes
+Toggles the interactive item tagging mode.
 %End
 
     void editSmartgroupAction();
 %Docstring
-edit the selected smart group
+Triggers the dialog for editing the selected smart group.
 %End
 
-    void regrouped( QStandardItem * );
+ void regrouped( QStandardItem * ) /Deprecated/;
 %Docstring
-symbol changed from one group
+
+.. deprecated:: in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
 %End
 
-    void filterSymbols( const QString & );
+    void filterSymbols( const QString &filter );
 %Docstring
-filter the symbols based on input search term
+Sets the ``filter`` string to filter symbols by.
 %End
 
     void symbolSelected( const QModelIndex & );

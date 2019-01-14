@@ -208,7 +208,6 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   mSymbolTreeView->setSelectionModel( listItems->selectionModel() );
   mSymbolTreeView->setSelectionMode( listItems->selectionMode() );
 
-  //connect( model, &QStandardItemModel::itemChanged, this, &QgsStyleManagerDialog::itemChanged );
   connect( listItems->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsStyleManagerDialog::symbolSelected );
   connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -1291,32 +1290,9 @@ void QgsStyleManagerDialog::tagSymbolsAction()
   }
 }
 
-void QgsStyleManagerDialog::regrouped( QStandardItem *item )
+void QgsStyleManagerDialog::regrouped( QStandardItem * )
 {
-  QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
-  {
-    QgsDebugMsg( QStringLiteral( "Unknown style entity" ) );
-    return;
-  }
 
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
-  QString tag = treeModel->itemFromIndex( groupTree->currentIndex() )->text();
-
-  QString symbolName = item->text();
-  bool regrouped;
-  if ( item->checkState() == Qt::Checked )
-    regrouped = mStyle->tagSymbol( type, symbolName, QStringList( tag ) );
-  else
-    regrouped = mStyle->detagSymbol( type, symbolName, QStringList( tag ) );
-  if ( !regrouped )
-  {
-    int er = QMessageBox::critical( this, tr( "Group Items" ),
-                                    tr( "There was a problem with the symbols database while regrouping." ) );
-    // call the slot again to get back to normal
-    if ( er )
-      tagSymbolsAction();
-  }
 }
 
 void QgsStyleManagerDialog::setSymbolsChecked( const QStringList & )
