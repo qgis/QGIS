@@ -53,7 +53,6 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         self.algs = []
         #!hack for 6.6!#
         self.version = '6.6.0'
-        self.descriptionFile = ''
 
     def load(self):
         group = self.name()
@@ -118,16 +117,16 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
                     line = lines.readline().strip('\n').strip()
                 while line != '' and not line.startswith('#'):
                     data = line.split('|')
-                    self.descriptionFile = self.descrFile(folder, str(data[1]) + '.txt')
+                    descriptionFile = self.descrFile(folder, str(data[1]) + '.txt')
                     group, name = str(data[0]), str(data[1])
                     if name not in alg_names:
-                        algs.append(OtbAlgorithm(group, name, self.descriptionFile))
+                        algs.append(OtbAlgorithm(group, name, descriptionFile))
                         #avoid duplicate algorithms from algs.txt file (possible but rare)
                         alg_names.append(name)
                     line = lines.readline().strip('\n').strip()
         except Exception as e:
             import traceback
-            errmsg = "Could not open OTB algorithm from file: \n" + self.descriptionFile + "\nError:\n" + traceback.format_exc()
+            errmsg = "Could not open OTB algorithm from file: \n" + descriptionFile + "\nError:\n" + traceback.format_exc()
             QgsMessageLog.logMessage(self.tr(errmsg), self.tr('Processing'), Qgis.Critical)
         return algs
 
@@ -301,12 +300,8 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return os.path.join(self.descrFolder(d), f)
 
     def appDirs(self, v):
-        #!hack needed for QGIS < 3.2!#
-        v = v.replace(';', os.pathsep)
-        #!hack needed for QGIS < 3.2!#
-        folders = v.split(os.pathsep)
         app_dirs = []
-        for f in folders:
+        for f in v.split(';'):
             if f is not None and os.path.exists(f):
                 app_dirs.append(self.normalize_path(f))
         return app_dirs
@@ -327,7 +322,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return False
 
     def icon(self):
-        return QgsApplication.getThemeIcon("/providerOtb.png")
+        return QgsApplication.getThemeIcon("/providerOtb.svg")
 
     def tr(self, string, context=''):
         if context == '':
