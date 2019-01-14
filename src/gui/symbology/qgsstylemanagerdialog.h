@@ -23,9 +23,36 @@
 
 #include "ui_qgsstylemanagerdialogbase.h"
 #include "qgshelp.h"
+#include "qgsstylemodel.h"
 #include "qgis_gui.h"
 
 class QgsStyle;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsCheckableStyleModel: public QgsStyleProxyModel
+{
+    Q_OBJECT
+  public:
+
+    explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr );
+
+    void setCheckable( bool checkable );
+    void setCheckTag( const QString &tag );
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+
+  private:
+
+    QgsStyle *mStyle = nullptr;
+    bool mCheckable = false;
+    QString mCheckTag;
+
+};
+#endif
+///@endcond
 
 /**
  * \ingroup gui
@@ -83,7 +110,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Open the associated help
     void showHelp();
 
-    void itemChanged( QStandardItem *item );
+    /**
+     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void itemChanged( QStandardItem *item ) SIP_DEPRECATED;
 
     void groupChanged( const QModelIndex & );
     void groupRenamed( QStandardItem * );
@@ -131,19 +161,34 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
   protected:
 
-    //! populate combo box with known style items (symbols, color ramps)
-    void populateTypes();
+    /**
+     * Populate combo box with known style items (symbols, color ramps).
+     *
+     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void populateTypes() SIP_DEPRECATED;
 
     //! populate the groups
     void populateGroups();
-    //! to set symbols checked when in editing mode
-    void setSymbolsChecked( const QStringList & );
 
-    //! populate list view with symbols of the current type with the given names
-    void populateSymbols( const QStringList &symbolNames, bool checkable = false );
+    /**
+     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void setSymbolsChecked( const QStringList & ) SIP_DEPRECATED;
 
-    //! populate list view with color ramps
-    void populateColorRamps( const QStringList &colorRamps, bool checkable = false );
+    /**
+     * Populates the list view with symbols of the current type with the given names.
+     *
+     * \deprecated No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void populateSymbols( const QStringList &symbolNames, bool checkable = false ) SIP_DEPRECATED;
+
+    /**
+     * Populates the list view with color ramps of the current type with the given names.
+     *
+     * \deprecated No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) SIP_DEPRECATED;
 
     int currentItemType();
     QString currentItemName();
@@ -177,12 +222,14 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QgsStyle *mStyle = nullptr;
 
+    QgsCheckableStyleModel *mModel = nullptr;
+
     QString mStyleFilename;
 
     bool mModified = false;
 
     //! Mode to display the symbol list
-    bool mGrouppingMode = false;
+    bool mGroupingMode = false;
 
     //! space to store symbol tags
     QStringList mTagList;

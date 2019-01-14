@@ -145,123 +145,7 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="1" column="0">
-        <widget class="QTabWidget" name="tabItemType">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <widget class="QWidget" name="tabMarker">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <attribute name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconPointLayer.svg</normaloff>:/images/themes/default/mIconPointLayer.svg</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Marker</string>
-          </attribute>
-         </widget>
-         <widget class="QWidget" name="tabLine">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <attribute name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconLineLayer.svg</normaloff>:/images/themes/default/mIconLineLayer.svg</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Line</string>
-          </attribute>
-         </widget>
-         <widget class="QWidget" name="tabFill">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <attribute name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconPolygonLayer.svg</normaloff>:/images/themes/default/mIconPolygonLayer.svg</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Fill</string>
-          </attribute>
-         </widget>
-         <widget class="QWidget" name="tabColorRamp">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <attribute name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/styleicons/color.svg</normaloff>:/images/themes/default/styleicons/color.svg</iconset>
-          </attribute>
-          <attribute name="title">
-           <string>Color ramp</string>
-          </attribute>
-         </widget>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QListView" name="listItems">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>3</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>77</width>
-           <height>70</height>
-          </size>
-         </property>
-         <property name="textElideMode">
-          <enum>Qt::ElideNone</enum>
-         </property>
-         <property name="movement">
-          <enum>QListView::Static</enum>
-         </property>
-         <property name="resizeMode">
-          <enum>QListView::Adjust</enum>
-         </property>
-         <property name="spacing">
-          <number>5</number>
-         </property>
-         <property name="viewMode">
-          <enum>QListView::IconMode</enum>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <layout class="QHBoxLayout" name="symbolBtnsLayout">
          <item>
           <widget class="QPushButton" name="btnAddItem">
@@ -322,6 +206,111 @@
           <widget class="QgsFilterLineEdit" name="searchBox">
            <property name="text">
             <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QTabWidget" name="tabItemType">
+           <property name="documentMode">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="tabMarker">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mIconPointLayer.svg</normaloff>:/images/themes/default/mIconPointLayer.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Marker</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tabLine">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mIconLineLayer.svg</normaloff>:/images/themes/default/mIconLineLayer.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Line</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tabFill">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mIconPolygonLayer.svg</normaloff>:/images/themes/default/mIconPolygonLayer.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Fill</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tabColorRamp">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/styleicons/color.svg</normaloff>:/images/themes/default/styleicons/color.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Color ramp</string>
+            </attribute>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListView" name="listItems">
+           <property name="editTriggers">
+            <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>77</width>
+             <height>70</height>
+            </size>
+           </property>
+           <property name="textElideMode">
+            <enum>Qt::ElideNone</enum>
+           </property>
+           <property name="movement">
+            <enum>QListView::Static</enum>
+           </property>
+           <property name="resizeMode">
+            <enum>QListView::Adjust</enum>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="viewMode">
+            <enum>QListView::IconMode</enum>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -523,6 +512,38 @@
   <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
