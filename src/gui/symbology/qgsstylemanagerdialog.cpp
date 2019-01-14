@@ -357,7 +357,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 
   mModel->setEntityFilter( isSymbol  ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity );
   mModel->setEntityFilterEnabled( true );
-  mModel->setSymbolTypeFilterEnabled( isSymbol );
+  mModel->setSymbolTypeFilterEnabled( isSymbol && tabItemType->currentIndex() > 0 );
   mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
 
   populateList();
@@ -385,13 +385,13 @@ int QgsStyleManagerDialog::currentItemType()
 {
   switch ( tabItemType->currentIndex() )
   {
-    case 0:
-      return QgsSymbol::Marker;
     case 1:
-      return QgsSymbol::Line;
+      return QgsSymbol::Marker;
     case 2:
-      return QgsSymbol::Fill;
+      return QgsSymbol::Line;
     case 3:
+      return QgsSymbol::Fill;
+    case 4:
       return 3;
     default:
       return 0;
