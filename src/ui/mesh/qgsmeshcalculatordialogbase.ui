@@ -42,7 +42,7 @@
       </widget>
       <widget class="QGroupBox" name="mResultGroupBox">
        <property name="title">
-        <string>Result layer</string>
+        <string>Result Layer</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="8" column="0">
@@ -62,7 +62,7 @@
             </widget>
            </item>
            <item row="1" column="3">
-            <widget class="QDoubleSpinBox" name="mXMaxSpinBox">
+            <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
              <property name="decimals">
               <number>5</number>
              </property>
@@ -89,7 +89,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QDoubleSpinBox" name="mXMinSpinBox">
+            <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
              <property name="decimals">
               <number>5</number>
              </property>
@@ -102,7 +102,7 @@
             </widget>
            </item>
            <item row="2" column="3">
-            <widget class="QDoubleSpinBox" name="mYMaxSpinBox">
+            <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
              <property name="decimals">
               <number>5</number>
              </property>
@@ -122,7 +122,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QDoubleSpinBox" name="mYMinSpinBox">
+            <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
              <property name="decimals">
               <number>5</number>
              </property>
@@ -137,7 +137,7 @@
            <item row="0" column="0" colspan="2">
             <widget class="QPushButton" name="mCurrentLayerExtentButton">
              <property name="text">
-              <string>Current layer extent</string>
+              <string>Selected Layer Extent</string>
              </property>
             </widget>
            </item>
@@ -259,7 +259,7 @@
           <item>
            <widget class="QPushButton" name="mAllTimesButton">
             <property name="text">
-             <string>All seletected dataset times </string>
+             <string>All Selected Dataset Times </string>
             </property>
            </widget>
           </item>
@@ -330,8 +330,6 @@
         </item>
        </layout>
        <zorder>maskBox</zorder>
-       <zorder>verticalSpacer_3</zorder>
-       <zorder>verticalSpacer</zorder>
        <zorder>extendBox</zorder>
        <zorder>horizontalWidget</zorder>
       </widget>
@@ -341,7 +339,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Mesh calculator expression</string>
+          <string>Mesh Calculator Expression</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
@@ -594,6 +592,11 @@
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

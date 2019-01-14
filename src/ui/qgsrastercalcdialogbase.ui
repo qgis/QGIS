@@ -48,14 +48,14 @@
            </widget>
           </item>
           <item row="3" column="4">
-           <widget class="QSpinBox" name="mNRowsSpinBox">
+           <widget class="QgsSpinBox" name="mNRowsSpinBox">
             <property name="maximum">
              <number>999999999</number>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mYMinSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
             <property name="decimals">
              <number>5</number>
             </property>
@@ -96,7 +96,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QSpinBox" name="mNColumnsSpinBox">
+           <widget class="QgsSpinBox" name="mNColumnsSpinBox">
             <property name="maximum">
              <number>999999999</number>
             </property>
@@ -110,7 +110,7 @@
            </widget>
           </item>
           <item row="2" column="4">
-           <widget class="QDoubleSpinBox" name="mYMaxSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
             <property name="decimals">
              <number>5</number>
             </property>
@@ -123,7 +123,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mXMinSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
             <property name="decimals">
              <number>5</number>
             </property>
@@ -136,7 +136,7 @@
            </widget>
           </item>
           <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="mXMaxSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
             <property name="decimals">
              <number>5</number>
             </property>
@@ -499,15 +499,25 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFileWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

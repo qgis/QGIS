@@ -56,6 +56,11 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   connect( useExtentCb, &QCheckBox::stateChanged, this, &QgsMeshCalculatorDialog::toggleExtendMask );
   maskBox->setVisible( false );
 
+  mXMaxSpinBox->setShowClearButton( false );
+  mXMinSpinBox->setShowClearButton( false );
+  mYMaxSpinBox->setShowClearButton( false );
+  mYMinSpinBox->setShowClearButton( false );
+
   connect( mPlusPushButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mPlusPushButton_clicked );
   connect( mMinusPushButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mMinusPushButton_clicked );
   connect( mLessButton, &QPushButton::clicked, this, &QgsMeshCalculatorDialog::mLessButton_clicked );
