@@ -117,15 +117,18 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
 
             std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-            if ( mAdditionalSizes.isEmpty() )
-              icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
-
-            for ( const QVariant &size : mAdditionalSizes )
+            if ( symbol )
             {
-              QSize s = size.toSize();
-              icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
-            }
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
 
+              for ( const QVariant &size : mAdditionalSizes )
+              {
+                QSize s = size.toSize();
+                icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+              }
+
+            }
             mSymbolIconCache.insert( name, icon );
             return icon;
           }
@@ -137,14 +140,17 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
 
             std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-            if ( mAdditionalSizes.isEmpty() )
-              icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
-            for ( const QVariant &size : mAdditionalSizes )
+            if ( ramp )
             {
-              QSize s = size.toSize();
-              icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
-            }
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
+              for ( const QVariant &size : mAdditionalSizes )
+              {
+                QSize s = size.toSize();
+                icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+              }
 
+            }
             mColorRampIconCache.insert( name, icon );
             return icon;
           }
