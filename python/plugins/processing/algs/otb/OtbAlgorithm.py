@@ -66,7 +66,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         self.defineCharacteristicsFromFile()
 
     def icon(self):
-        return QgsApplication.getThemeIcon("/providerOtb.png")
+        return QgsApplication.getThemeIcon("/providerOtb.svg")
 
     def createInstance(self):
         return self.__class__(self._group, self._name, self._descriptionfile)
