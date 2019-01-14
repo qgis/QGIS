@@ -23,6 +23,7 @@
 #include "qgspanelwidget.h"
 #include "qgspropertyassistantwidget.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsguiutils.h"
 
 #include <QClipboard>
 #include <QMenu>
@@ -38,8 +39,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 {
   setFocusPolicy( Qt::StrongFocus );
 
-  // icon size is a bit bigger than text, but minimum size of 24 so that we get pixel-aligned rendering on low-dpi screens
-  int iconSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1, 24.0 ) );
+  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
 
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
   setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
