@@ -276,8 +276,15 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool editSymbol();
     bool editColorRamp();
 
-    bool removeSymbol();
-    bool removeColorRamp();
+    /**
+     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED bool removeSymbol() SIP_DEPRECATED;
+
+    /**
+     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED bool removeColorRamp() SIP_DEPRECATED;
 
     //! Enables or disbables the symbol specific inputs
     void enableSymbolInputs( bool );
@@ -294,6 +301,21 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void tabItemType_currentChanged( int );
 
   private:
+    int selectedItemType();
+
+    /**
+     * Returns true if the "All" tab is selected.
+     */
+    bool allTypesSelected() const;
+
+    struct ItemDetails
+    {
+      QgsStyle::StyleEntity entityType;
+      QgsSymbol::SymbolType symbolType;
+      QString name;
+    };
+
+    QList< ItemDetails > selectedItems();
 
     QgsStyle *mStyle = nullptr;
 

@@ -265,8 +265,17 @@ add a new color ramp to style
     bool editSymbol();
     bool editColorRamp();
 
-    bool removeSymbol();
-    bool removeColorRamp();
+ bool removeSymbol() /Deprecated/;
+%Docstring
+
+.. deprecated:: in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+%End
+
+ bool removeColorRamp() /Deprecated/;
+%Docstring
+
+.. deprecated:: in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+%End
 
     void enableSymbolInputs( bool );
 %Docstring

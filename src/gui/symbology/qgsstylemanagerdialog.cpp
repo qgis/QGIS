@@ -355,20 +355,54 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   actnExportAsSVG->setVisible( isSymbol );
 
   mModel->setEntityFilter( isSymbol  ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity );
-  mModel->setEntityFilterEnabled( true );
-  mModel->setSymbolTypeFilterEnabled( isSymbol && tabItemType->currentIndex() > 0 );
-  mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
+  mModel->setEntityFilterEnabled( !allTypesSelected() );
+  mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
+  if ( isSymbol && !allTypesSelected() )
+    mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
 
   populateList();
 }
 
+int QgsStyleManagerDialog::selectedItemType()
+{
+  QModelIndex index = listItems->selectionModel()->currentIndex();
+  if ( !index.isValid() )
+    return 0;
+
+  const QgsStyle::StyleEntity entity = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+  if ( entity == QgsStyle::ColorrampEntity )
+    return 3;
+
+  return  mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt();
+}
+
+bool QgsStyleManagerDialog::allTypesSelected() const
+{
+  return tabItemType->currentIndex() == 0;
+}
+
+QList< QgsStyleManagerDialog::ItemDetails > QgsStyleManagerDialog::selectedItems()
+{
+  QList<QgsStyleManagerDialog::ItemDetails > res;
+  QModelIndexList indices = listItems->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indices )
+  {
+    if ( !index.isValid() )
+      continue;
+
+    ItemDetails details;
+    details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+    if ( details.entityType == QgsStyle::SymbolEntity )
+      details.symbolType = static_cast< QgsSymbol::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+    details.name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
+
+    res << details;
+  }
+  return res;
+}
+
 void QgsStyleManagerDialog::populateList()
 {
-  if ( currentItemType() > 3 )
-  {
-    Q_ASSERT( false && "not implemented" );
-    return;
-  }
   groupChanged( groupTree->selectionModel()->currentIndex() );
 }
 
@@ -695,11 +729,11 @@ bool QgsStyleManagerDialog::addColorRamp( QAction *action )
 
 void QgsStyleManagerDialog::editItem()
 {
-  if ( currentItemType() < 3 )
+  if ( selectedItemType() < 3 )
   {
     editSymbol();
   }
-  else if ( currentItemType() == 3 )
+  else if ( selectedItemType() == 3 )
   {
     editColorRamp();
   }
@@ -808,76 +842,60 @@ bool QgsStyleManagerDialog::editColorRamp()
 
 void QgsStyleManagerDialog::removeItem()
 {
-  if ( currentItemType() < 3 )
+  const QList< ItemDetails > items = selectedItems();
+
+  if ( allTypesSelected() )
   {
-    removeSymbol();
-  }
-  else if ( currentItemType() == 3 )
-  {
-    removeColorRamp();
+    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Items" ),
+         QString( tr( "Do you really want to remove %n item(s)?", nullptr, items.count() ) ),
+         QMessageBox::Yes,
+         QMessageBox::No ) )
+      return;
   }
   else
   {
-    Q_ASSERT( false && "not implemented" );
+    if ( currentItemType() < 3 )
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Symbol" ),
+           QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
+    else
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
+           QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
   }
+
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
+  for ( const ItemDetails &details : items )
+  {
+    if ( details.name.isEmpty() )
+      continue;
+
+    if ( details.entityType == QgsStyle::SymbolEntity )
+      mStyle->removeSymbol( details.name );
+    else if ( details.entityType == QgsStyle::ColorrampEntity )
+      mStyle->removeColorRamp( details.name );
+  }
+
+  mModified = true;
 }
 
 bool QgsStyleManagerDialog::removeSymbol()
 {
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Symbol" ),
-       QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, indexes.count() ) ),
-       QMessageBox::Yes,
-       QMessageBox::No ) )
-    return false;
-
-  QgsTemporaryCursorOverride override( Qt::WaitCursor );
-
-  QStringList names;
-  names.reserve( indexes.count() );
-  for ( const QModelIndex &index : indexes )
-  {
-    names << mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-  }
-
-  for ( const QString &symbolName : qgis::as_const( names ) )
-  {
-    // delete from style and update list
-    if ( !symbolName.isEmpty() )
-      mStyle->removeSymbol( symbolName );
-  }
-
-  mModified = true;
-  return true;
+  return false;
 }
 
 bool QgsStyleManagerDialog::removeColorRamp()
 {
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
-       QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
-       QMessageBox::Yes,
-       QMessageBox::No ) )
-    return false;
-
-  QgsTemporaryCursorOverride override( Qt::WaitCursor );
-
-  QStringList names;
-  names.reserve( indexes.count() );
-  for ( const QModelIndex &index : indexes )
-  {
-    names << mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-  }
-
-  for ( const QString &rampName : qgis::as_const( names ) )
-  {
-    // delete from style and update list
-    if ( !rampName.isEmpty() )
-      mStyle->removeColorRamp( rampName );
-  }
-
-  mModified = true;
-  return true;
+  return false;
 }
 
 void QgsStyleManagerDialog::itemChanged( QStandardItem * )
@@ -908,12 +926,14 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  const QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
-  for ( const QModelIndex &index : indexes )
+  const QList< ItemDetails > items = selectedItems();
+  for ( const ItemDetails &details : items )
   {
-    QString name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-    QString path = dir + '/' + name + '.' + format;
-    std::unique_ptr< QgsSymbol > sym( mStyle->symbol( name ) );
+    if ( details.entityType != QgsStyle::SymbolEntity )
+      continue;
+
+    QString path = dir + '/' + details.name + '.' + format;
+    std::unique_ptr< QgsSymbol > sym( mStyle->symbol( details.name ) );
     if ( sym )
       sym->exportImage( path, format, size );
   }
@@ -1031,6 +1051,8 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   else if ( category == QLatin1String( "favorite" ) )
   {
     enableGroupInputs( false );
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
     mModel->setFavoritesOnly( true );
   }
   else if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
@@ -1280,10 +1302,6 @@ void QgsStyleManagerDialog::tagSymbolsAction()
 
     mModel->setCheckable( true );
 
-    // Connect to slot which handles regrouping
-    //connect( model, &QStandardItemModel::itemChanged,
-    //         this, &QgsStyleManagerDialog::regrouped );
-
     // No selection should be possible
     listItems->setSelectionMode( QAbstractItemView::NoSelection );
     mSymbolTreeView->setSelectionMode( QAbstractItemView::NoSelection );
@@ -1292,7 +1310,6 @@ void QgsStyleManagerDialog::tagSymbolsAction()
 
 void QgsStyleManagerDialog::regrouped( QStandardItem * )
 {
-
 }
 
 void QgsStyleManagerDialog::setSymbolsChecked( const QStringList & )
@@ -1416,49 +1433,19 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
 
 void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
 {
-  QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
+  const QList< ItemDetails > items = selectedItems();
+  for ( const ItemDetails &details : items )
   {
-    QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-    return;
-  }
-
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-
-  QStringList names;
-  names.reserve( indexes.count() );
-  for ( const QModelIndex &index : indexes )
-  {
-    names << mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-  }
-
-  for ( const QString &symbolName : qgis::as_const( names ) )
-  {
-    mStyle->addFavorite( type, symbolName );
+    mStyle->addFavorite( details.entityType, details.name );
   }
 }
 
 void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
 {
-  QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
+  const QList< ItemDetails > items = selectedItems();
+  for ( const ItemDetails &details : items )
   {
-    QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-    return;
-  }
-
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-
-  QStringList names;
-  names.reserve( indexes.count() );
-  for ( const QModelIndex &index : indexes )
-  {
-    names << mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-  }
-
-  for ( const QString &name : qgis::as_const( names ) )
-  {
-    mStyle->removeFavorite( type, name );
+    mStyle->removeFavorite( details.entityType, details.name );
   }
 }
 
@@ -1467,21 +1454,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
   QAction *selectedItem = qobject_cast<QAction *>( sender() );
   if ( selectedItem )
   {
-    QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-    if ( currentItemType() > 3 )
-    {
-      QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-      return;
-    }
-
-    const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-    QStringList names;
-    names.reserve( indexes.count() );
-    for ( const QModelIndex &index : indexes )
-    {
-      names << mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-    }
-
+    const QList< ItemDetails > items = selectedItems();
     QString tag;
     if ( newTag )
     {
@@ -1498,9 +1471,9 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    for ( const QString &name : qgis::as_const( names ) )
+    for ( const ItemDetails &details : items )
     {
-      mStyle->tagSymbol( type, name, QStringList( tag ) );
+      mStyle->tagSymbol( details.entityType, details.name, QStringList( tag ) );
     }
   }
 }
@@ -1511,23 +1484,10 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
 
   if ( selectedItem )
   {
-    QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-    if ( currentItemType() > 3 )
+    const QList< ItemDetails > items = selectedItems();
+    for ( const ItemDetails &details : items )
     {
-      QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-      return;
-    }
-    const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-    QStringList names;
-    names.reserve( indexes.count() );
-    for ( const QModelIndex &index : indexes )
-    {
-      names << mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
-    }
-
-    for ( const QString &name : qgis::as_const( names ) )
-    {
-      mStyle->detagSymbol( type, name );
+      mStyle->detagSymbol( details.entityType, details.name );
     }
   }
 }
