@@ -150,11 +150,11 @@ class CORE_EXPORT QgsVector3D
      */
     QString toString( int precision = 17 ) const
     {
-      QString str = "QgsVector3D (";
+      QString str = "Vector3D (";
       str += qgsDoubleToString( mX, precision );
-      str += ' ';
+      str += ", ";
       str += qgsDoubleToString( mY, precision );
-      str += ' ';
+      str += ", ";
       str += qgsDoubleToString( mZ, precision );
       str += ')';
       return str;
