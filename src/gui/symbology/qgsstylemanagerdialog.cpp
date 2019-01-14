@@ -97,7 +97,7 @@ QVariant QgsCheckableStyleModel::data( const QModelIndex &index, int role ) cons
 
     case Qt::CheckStateRole:
     {
-      if ( !mCheckable )
+      if ( !mCheckable || index.column() != 0 )
         return QVariant();
 
       const QStringList tags = data( index, QgsStyleModel::TagRole ).toStringList();
@@ -194,11 +194,19 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
+  mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   mModel = new QgsCheckableStyleModel( mStyle, this );
   mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   listItems->setModel( mModel );
+  mSymbolTreeView->setModel( mModel );
+
+  listItems->setSelectionBehavior( QAbstractItemView::SelectRows );
   listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mSymbolTreeView->setSelectionModel( listItems->selectionModel() );
+  mSymbolTreeView->setSelectionMode( listItems->selectionMode() );
 
   //connect( model, &QStandardItemModel::itemChanged, this, &QgsStyleManagerDialog::itemChanged );
   connect( listItems->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -236,6 +244,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   // Context menu for listItems
   listItems->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( listItems, &QWidget::customContextMenuRequested,
+           this, &QgsStyleManagerDialog::listitemsContextMenu );
+  mSymbolTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mSymbolTreeView, &QWidget::customContextMenuRequested,
            this, &QgsStyleManagerDialog::listitemsContextMenu );
 
   // Menu for the "Add item" toolbutton when in colorramp mode
@@ -286,6 +297,37 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
   connect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
+
+  connect( mButtonIconView, &QToolButton::toggled, this, [ = ]( bool active )
+  {
+    if ( active )
+    {
+      mSymbolViewStackedWidget->setCurrentIndex( 0 );
+      // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
+      QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 0, QgsSettings::Gui );
+    }
+  } );
+  connect( mButtonListView, &QToolButton::toggled, this, [ = ]( bool active )
+  {
+    if ( active )
+    {
+      QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 1, QgsSettings::Gui );
+      mSymbolViewStackedWidget->setCurrentIndex( 1 );
+    }
+  } );
+  // restore previous view
+  const int currentView = settings.value( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 0, QgsSettings::Gui ).toInt();
+  if ( currentView == 0 )
+    mButtonIconView->setChecked( true );
+  else
+    mButtonListView->setChecked( true );
+
+  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "Windows/StyleV2Manager/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  connect( mSymbolTreeView->header(), &QHeaderView::sectionResized, this, [this]
+  {
+    // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
+    QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
+  } );
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -1205,6 +1247,7 @@ void QgsStyleManagerDialog::tagSymbolsAction()
 
     // Reset the selection mode
     listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    mSymbolTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
   }
   else
   {
@@ -1244,6 +1287,7 @@ void QgsStyleManagerDialog::tagSymbolsAction()
 
     // No selection should be possible
     listItems->setSelectionMode( QAbstractItemView::NoSelection );
+    mSymbolTreeView->setSelectionMode( QAbstractItemView::NoSelection );
   }
 }
 
@@ -1363,7 +1407,9 @@ void QgsStyleManagerDialog::grouptreeContextMenu( QPoint point )
 
 void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
 {
-  QPoint globalPos = listItems->viewport()->mapToGlobal( point );
+  QPoint globalPos = mSymbolViewStackedWidget->currentIndex() == 0
+                     ? listItems->viewport()->mapToGlobal( point )
+                     : mSymbolTreeView->viewport()->mapToGlobal( point );
 
   // Clear all actions and create new actions for every group
   mGroupListMenu->clear();
