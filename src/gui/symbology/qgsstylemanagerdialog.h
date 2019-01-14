@@ -83,31 +83,82 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
   public slots:
 
+    // TODO QGIS 4.0 -- most of this should be private
+
     /**
      * Raises, unminimizes and activates this window
      * \since QGIS 3.4
      */
     void activate();
 
+    /**
+     * Triggers the dialog for adding a new item, based on the currently
+     * selected item type tab.
+     */
     void addItem();
+
+    /**
+     * Triggers the dialog for editing the current item.
+     */
     void editItem();
+
+    /**
+     * Removes the current selected item.
+     */
     void removeItem();
+
+    /**
+     * Triggers the dialog to export selected items as SVG files.
+     *
+     * \see exportItemsPNG()
+     * \see exportSelectedItemsImages()
+     */
     void exportItemsSVG();
+
+    /**
+     * Triggers the dialog to export selected items as PNG files.
+     *
+     * \see exportItemsSVG()
+     * \see exportSelectedItemsImages()
+     */
     void exportItemsPNG();
+
+    /**
+     * Triggers the dialog to export selected items as images of the specified \a format and \a size.
+     *
+     * \see exportItemsSVG()
+     * \see exportItemsPNG()
+     */
     void exportSelectedItemsImages( const QString &dir, const QString &format, QSize size );
+
+    /**
+     * Triggers the dialog to export items.
+     *
+     * \see importItems()
+     */
     void exportItems();
+
+    /**
+     * Triggers the dialog to import items.
+     *
+     * \see exportItems()
+     */
     void importItems();
 
-    //! adds symbols of some type to list
+    /**
+     * Refreshes the list of items.
+     */
     void populateList();
 
-    //! called when the dialog is going to be closed
+    /**
+     * Called when the dialog is going to be closed.
+     */
     void onFinished();
 
-    //! Close the dialog
+    //! Closes the dialog
     void onClose();
 
-    //! Open the associated help
+    //! Opens the associated help
     void showHelp();
 
     /**
@@ -115,26 +166,50 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      */
     Q_DECL_DEPRECATED void itemChanged( QStandardItem *item ) SIP_DEPRECATED;
 
+    /**
+     * Trigerred when the current group (or tag) is changed.
+     */
     void groupChanged( const QModelIndex & );
-    void groupRenamed( QStandardItem * );
-    //! add a tag
+
+    /**
+     * Triggered when a group \a item is renamed.
+     */
+    void groupRenamed( QStandardItem *item );
+
+    /**
+     * Triggers the dialog to add a new tag.
+     */
     int addTag();
-    //! add a smartgroup
+
+    /**
+     * Triggers the dialog to add a new smart group.
+     */
     int addSmartgroup();
-    //! remove a tag or smartgroup
+
+    /**
+     * Removes the selected tag or smartgroup.
+     */
     void removeGroup();
 
-    //! carry out symbol tagging using check boxes
+    /**
+     * Toggles the interactive item tagging mode.
+     */
     void tagSymbolsAction();
 
-    //! edit the selected smart group
+    /**
+     * Triggers the dialog for editing the selected smart group.
+     */
     void editSmartgroupAction();
 
-    //! symbol changed from one group
-    void regrouped( QStandardItem * );
+    /**
+     * \deprecated in QGIS 3.6 - has no effect and will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void regrouped( QStandardItem * ) SIP_DEPRECATED;
 
-    //! filter the symbols based on input search term
-    void filterSymbols( const QString & );
+    /**
+     * Sets the \a filter string to filter symbols by.
+     */
+    void filterSymbols( const QString &filter );
 
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex & );
