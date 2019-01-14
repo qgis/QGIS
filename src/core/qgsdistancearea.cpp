@@ -700,8 +700,8 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
   QVector< QgsPointXY > currentPart;
   currentPart << p1;
   double d = interval;
-  double prevLon = p1.x();
-  double prevLat = p1.y();
+  double prevLon = pp1.x();
+  double prevLat = pp1.y();
   bool lastRun = false;
   double t = 0;
   while ( true )
