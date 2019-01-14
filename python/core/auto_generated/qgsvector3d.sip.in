@@ -89,7 +89,27 @@ Returns the length of the vector
 Normalizes the current vector in place.
 %End
 
+    double distance( const QgsVector3D &other ) const;
+%Docstring
+Returns the distance with the ``other`` :py:class:`QgsVector3`
+%End
 
+    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp );
+%Docstring
+Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
+%End
+
+    QString toString( int precision = 17 ) const;
+%Docstring
+Returns a string representation of the 3D vector.
+Members will be truncated to the specified ``precision``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 };
 
 /************************************************************************

@@ -126,7 +126,47 @@ class CORE_EXPORT QgsVector3D
       }
     }
 
+    //! Returns the distance with the \a other QgsVector3
+    double distance( const QgsVector3D &other ) const
+    {
+      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) +
+                        ( mY - other.y() ) * ( mY - other.y() ) +
+                        ( mZ - other.z() ) * ( mZ - other.z() ) );
+    }
 
+    //! Returns the perpendicular point of vector \a vp from [\a v1 - \a v2]
+    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp )
+    {
+      QgsVector3D d = ( v2 - v1 ) / v2.distance( v1 );
+      QgsVector3D v = vp - v2;
+      double t = dotProduct( v, d );
+      QgsVector3D P = v2 + ( d * t );
+      return P;
+    }
+
+    /**
+     * Returns a string representation of the 3D vector.
+     * Members will be truncated to the specified \a precision.
+     */
+    QString toString( int precision = 17 ) const
+    {
+      QString str = "QgsVector3D (";
+      str += qgsDoubleToString( mX, precision );
+      str += ' ';
+      str += qgsDoubleToString( mY, precision );
+      str += ' ';
+      str += qgsDoubleToString( mZ, precision );
+      str += ')';
+      return str;
+    }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
   private:
     double mX = 0, mY = 0, mZ = 0;
 };
