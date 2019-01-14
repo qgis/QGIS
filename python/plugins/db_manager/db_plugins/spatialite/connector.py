@@ -573,6 +573,12 @@ class SpatiaLiteDBConnector(DBConnector):
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
         self._execute_and_commit(sql)
 
+        sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
+        self._execute_and_commit(sql)
+
+        sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
+        self._execute_and_commit(sql)
+
     def deleteTableColumn(self, table, column):
         """ delete column from a table """
         if not self.isGeometryColumn(table, column):
