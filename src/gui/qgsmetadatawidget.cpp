@@ -295,6 +295,8 @@ void QgsMetadataWidget::addConstraint()
 void QgsMetadataWidget::removeSelectedConstraint()
 {
   const QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
@@ -394,6 +396,9 @@ void QgsMetadataWidget::addLink()
 void QgsMetadataWidget::removeSelectedLink()
 {
   const QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
+
   mLinksModel->removeRow( selectedRows[0].row() );
 }
 
