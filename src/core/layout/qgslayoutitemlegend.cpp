@@ -156,12 +156,27 @@ void QgsLayoutItemLegend::refresh()
 
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
 {
+  QPainter *painter = context.renderContext().painter();
+  painter->save();
+
+  // painter is scaled to dots, so scale back to layout units
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
+
+  painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
+
+  if ( !mSizeToContents )
+  {
+    // set a clip region to crop out parts of legend which don't fit
+    QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
+    painter->setClipRect( thisPaintRect );
+  }
+
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( mSizeToContents ? QSize() : rect().size() );
 
-  legendRenderer.drawLegend( context.renderContext() );
+  legendRenderer.drawLegend( context );
 
-  context.renderContext().painter()->restore();
+  painter->restore();
 }
 
 void QgsLayoutItemLegend::adjustBoxSize()
