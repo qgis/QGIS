@@ -45,16 +45,20 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     QgsPanelWidgetStack( QWidget *parent = nullptr );
 
     /**
-     * Adds the main panel widget to the stack and selects it for the user
-     * The main widget can not be closed and only the showPanel signal is attached
+     * Sets the main \a panel widget for the stack and selects it for the user.
+     *
+     * The main widget cannot be closed and only the showPanel signal is attached
      * to handle children widget opening panels.
-     * \param panel The panel to set as the first widget in the stack.
+     *
+     * Ownership of \a panel is transferred to the stack.
+     *
      * \note a stack can have only one main panel. Any existing main panel
      * should be removed by first calling takeMainPanel().
+     *
      * \see mainPanel()
      * \see takeMainPanel()
      */
-    void setMainPanel( QgsPanelWidget *panel );
+    void setMainPanel( QgsPanelWidget *panel SIP_TRANSFER );
 
     /**
      * The main panel widget that is set in the stack. The main widget can not be closed
@@ -73,7 +77,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * \see mainPanel()
      * \see setMainPanel()
      */
-    QgsPanelWidget *takeMainPanel();
+    QgsPanelWidget *takeMainPanel() SIP_TRANSFERBACK;
 
     /**
      * Clear the stack of all widgets. Unless the panels autoDelete is set to false
