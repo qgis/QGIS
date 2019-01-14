@@ -31,13 +31,14 @@ for added panels.
 :param parent:
 %End
 
-    void setMainPanel( QgsPanelWidget *panel );
+    void setMainPanel( QgsPanelWidget *panel /Transfer/ );
 %Docstring
-Adds the main panel widget to the stack and selects it for the user
-The main widget can not be closed and only the showPanel signal is attached
+Sets the main ``panel`` widget for the stack and selects it for the user.
+
+The main widget cannot be closed and only the showPanel signal is attached
 to handle children widget opening panels.
 
-:param panel: The panel to set as the first widget in the stack.
+Ownership of ``panel`` is transferred to the stack.
 
 .. note::
 
@@ -59,7 +60,7 @@ and doesn't display a back button.
 .. seealso:: :py:func:`setMainPanel`
 %End
 
-    QgsPanelWidget *takeMainPanel();
+    QgsPanelWidget *takeMainPanel() /TransferBack/;
 %Docstring
 Removes the main panel widget from the stack and transfers ownsership to the
 caller.
