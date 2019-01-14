@@ -17,8 +17,8 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
-#include "qgsaccesscontrol.h"
-
+#include "qgsserverexception.h"
+#include "qgsstorebadlayerinfo.h"
 #include <QFile>
 
 QgsConfigCache *QgsConfigCache::instance()
@@ -41,8 +41,14 @@ const QgsProject *QgsConfigCache::project( const QString &path )
   if ( ! mProjectCache[ path ] )
   {
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+    QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
+    prj->setBadLayerHandler( badLayerHandler );
     if ( prj->read( path ) )
     {
+      if ( badLayerHandler->badLayers().size() > 0 )
+      {
+        throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
+      }
       mProjectCache.insert( path, prj.release() );
       mFileSystemWatcher.addPath( path );
     }
