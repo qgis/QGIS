@@ -203,13 +203,6 @@
           </spacer>
          </item>
          <item>
-          <widget class="QgsFilterLineEdit" name="searchBox">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <property name="spacing">
             <number>0</number>
@@ -265,6 +258,13 @@
            </item>
           </layout>
          </item>
+         <item>
+          <widget class="QgsFilterLineEdit" name="searchBox">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="3" column="0">
@@ -274,9 +274,17 @@
          </property>
          <item>
           <widget class="QTabWidget" name="tabItemType">
+           <property name="currentIndex">
+            <number>4</number>
+           </property>
            <property name="documentMode">
             <bool>true</bool>
            </property>
+           <widget class="QWidget" name="tabAll">
+            <attribute name="title">
+             <string>All</string>
+            </attribute>
+           </widget>
            <widget class="QWidget" name="tabMarker">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
@@ -334,7 +342,7 @@
               <normaloff>:/images/themes/default/styleicons/color.svg</normaloff>:/images/themes/default/styleicons/color.svg</iconset>
             </attribute>
             <attribute name="title">
-             <string>Color ramp</string>
+             <string>Color Ramp</string>
             </attribute>
            </widget>
           </widget>
@@ -342,7 +350,7 @@
          <item>
           <widget class="QStackedWidget" name="mSymbolViewStackedWidget">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page">
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -617,9 +625,9 @@
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnRemoveItem</tabstop>
   <tabstop>btnEditItem</tabstop>
-  <tabstop>searchBox</tabstop>
   <tabstop>mButtonIconView</tabstop>
   <tabstop>mButtonListView</tabstop>
+  <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
