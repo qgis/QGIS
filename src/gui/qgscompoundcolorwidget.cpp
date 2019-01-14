@@ -220,6 +220,9 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mAddCustomColorButton->setMinimumWidth( swatchAddSize );
   mAddCustomColorButton->setMaximumWidth( swatchAddSize );
 
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  mTabWidget->setIconSize( QSize( iconSize, iconSize ) );
+
   if ( color.isValid() )
   {
     setColor( color );
