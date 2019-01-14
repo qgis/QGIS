@@ -238,6 +238,14 @@ namespace QgsGuiUtils
     QString key = QStringLiteral( "Windows/%1/geometry" ).arg( subKey );
     return key;
   }
+
+  int scaleIconSize( int standardSize )
+  {
+    QFontMetrics fm( ( QFont() ) );
+    const double scale = 1.1 * standardSize / 24;
+    return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+  }
+
 }
 
 //
