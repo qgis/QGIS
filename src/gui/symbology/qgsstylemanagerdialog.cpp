@@ -132,7 +132,7 @@ bool QgsCheckableStyleModel::setData( const QModelIndex &i, const QVariant &valu
   }
   return QgsStyleProxyModel::setData( i, value, role );
 }
-
+///@endcond
 
 //
 // QgsStyleManagerDialog
