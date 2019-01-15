@@ -431,9 +431,6 @@
                   </item>
                   <item>
                    <widget class="QLabel" name="lblLocaleSample">
-                    <property name="styleSheet">
-                     <string notr="true">QLabel {background-color: #ffffff; }</string>
-                    </property>
                     <property name="text">
                      <string>Sample text for locale formatting</string>
                     </property>
