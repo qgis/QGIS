@@ -441,6 +441,16 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Imports the symbols and colorramps into the default style database from the given XML file
     bool importXml( const QString &filename );
 
+    /**
+     * Tests if the file at \a path is a QGIS style XML file.
+     *
+     * This method samples only the first line in the file, so is safe to call on
+     * large xml files.
+     *
+     * \since QGIS 3.6
+     */
+    static bool isXmlStyleFile( const QString &path );
+
   signals:
 
     /**

@@ -20,6 +20,7 @@
 #include "qgsogrutils.h"
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
+#include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
 #include <QAction>
@@ -257,8 +258,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
   std::call_once( initialized, [ = ]
   {
     buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-    QgsDebugMsgLevel( "extensions: " + sExtensions.join( " " ), 2 );
-    QgsDebugMsgLevel( "wildcards: " + sWildcards.join( " " ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
   } );
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
@@ -272,6 +273,11 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     return nullptr;
   if ( path.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
        !sExtensions.contains( QStringLiteral( "tif.xml" ) ) )
+    return nullptr;
+
+  // skip QGIS style xml files
+  if ( path.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) &&
+       QgsStyle::isXmlStyleFile( path ) )
     return nullptr;
 
   // Filter files by extension
