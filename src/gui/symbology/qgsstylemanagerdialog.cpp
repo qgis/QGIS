@@ -429,6 +429,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
   {
     auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, QStringList(), false, false );
+    cursorOverride.reset();
     QMessageBox::information( this, tr( "Import Symbols" ),
                               tr( "Symbols successfully imported." ) );
   }
