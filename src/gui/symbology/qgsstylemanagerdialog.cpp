@@ -205,9 +205,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   }
   if ( mStyle != QgsStyle::defaultStyle() )
   {
-    mActionCopyToDefault = new QAction( tr( "Copy Selection to Default Style" ), this );
+    mActionCopyToDefault = new QAction( tr( "Copy Selection to Default Style…" ), this );
     shareMenu->addAction( mActionCopyToDefault );
     connect( mActionCopyToDefault, &QAction::triggered, this, &QgsStyleManagerDialog::copyItemsToDefault );
+    connect( mCopyToDefaultButton, &QPushButton::clicked, this, &QgsStyleManagerDialog::copyItemsToDefault );
+  }
+  else
+  {
+    mCopyToDefaultButton->hide();
   }
 
   shareMenu->addSeparator();
@@ -386,6 +391,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
     QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
   } );
+
+  // set initial disabled state for actions requiring a selection
+  selectedSymbolsChanged( QItemSelection(), QItemSelection() );
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -1596,6 +1604,7 @@ void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection &select
   actnExportAsSVG->setDisabled( nothingSelected );
   if ( mActionCopyToDefault )
     mActionCopyToDefault->setDisabled( nothingSelected );
+  mCopyToDefaultButton->setDisabled( nothingSelected );
   actnEditItem->setDisabled( nothingSelected || mReadOnly );
 }
 
