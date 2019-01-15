@@ -13,7 +13,7 @@ QWindow, QMainWindow, QWidget
 
 QWidget:item:hover
 {
-    background-color: @selection;
+    background-color: @hover;
     color: @text;
 }
 
@@ -112,7 +112,7 @@ QMenu::item:checked
 
 QWidget:disabled
 {
-    color: #404040;
+    color: @itemalternativebackground;
     background-color: @background;
 }
 
@@ -497,7 +497,7 @@ QGroupBox::indicator:hover,
 QCheckBox::indicator:hover,
 QRadioButton::indicator:hover
 {
-    border: 1px solid @selection;
+    border: 1px solid @hover;
 }
 
 /* ==================================================================================== */
@@ -628,8 +628,8 @@ QTreeView::item, QTreeView::branch {
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: @toggleoff;
-    color: @itembackground;
+    background-color: @c7c7c7;
+    color: @text;
 }
 
 QTreeView::item:selected, QTreeView::branch:selected {
