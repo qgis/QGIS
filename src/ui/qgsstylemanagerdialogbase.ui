@@ -275,7 +275,7 @@
          <item>
           <widget class="QTabWidget" name="tabItemType">
            <property name="currentIndex">
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="documentMode">
             <bool>true</bool>
