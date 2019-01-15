@@ -61,10 +61,17 @@ namespace QgsWms
        */
       QPainter *takePainter();
 
+      const QList< QPair< QString, QString > > &errors() const { return mErrors; }
+
     private:
       bool mParallelRendering;
       QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
       std::unique_ptr<QPainter> mPainter;
+
+      void getRenderErrors( const QgsMapRendererJob *job );
+
+      //! Layer id / error message
+      QList< QPair< QString, QString > > mErrors;
   };
 
 

@@ -251,6 +251,11 @@ bool QgsVectorLayerRenderer::render()
   else
     drawRenderer( fit );
 
+  if ( !fit.isValid() )
+  {
+    mErrors.append( QStringLiteral( "Data source invalid" ) );
+  }
+
   if ( usingEffect )
   {
     mRenderer->paintEffect()->end( mContext );

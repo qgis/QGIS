@@ -47,8 +47,9 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     mIsTransactionConnection = true;
   }
 
-  if ( !mConn )
+  if ( !mConn || mConn->PQstatus() != CONNECTION_OK )
   {
+    mValid = false;
     mClosed = true;
     iteratorClosed();
     return;
