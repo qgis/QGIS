@@ -86,8 +86,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     struct ItemContext
     {
-      //!RenderContext
-      QgsRenderConter *context = nullptr;
+      //! Render context, if available
+      QgsRenderContext *context = nullptr;
       //! Painter
       QPainter *painter = nullptr;
       //! Top-left corner of the legend item
