@@ -2492,27 +2492,15 @@ static QVariant fcnMakeSquare( const QVariantList &values, const QgsExpressionCo
 {
   QgsGeometry pt1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( pt1.isNull() )
-  {
-    qDebug() << " pt1 null\n";
     return QVariant();
-  }
   if ( pt1.type() != QgsWkbTypes::PointGeometry || pt1.isMultipart() )
-  {
-    qDebug() << "pt1 bad\n";
     return QVariant();
-  }
 
   QgsGeometry pt2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
   if ( pt2.isNull() )
-  {
-    qDebug() << "pt2 null\n";
     return QVariant();
-  }
   if ( pt2.type() != QgsWkbTypes::PointGeometry || pt2.isMultipart() )
-  {
-    qDebug() << "pt2 bad\n";
     return QVariant();
-  }
 
   const QgsPoint *point1 = qgsgeometry_cast< const QgsPoint *>( pt1.constGet() );
   const QgsPoint *point2 = qgsgeometry_cast< const QgsPoint *>( pt2.constGet() );
@@ -2523,7 +2511,6 @@ static QVariant fcnMakeSquare( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnMakeRectangleFrom3Points( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-
   QgsGeometry pt1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( pt1.isNull() )
     return QVariant();
@@ -4958,13 +4945,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "circle" ), true, 0 ),
                                             fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "make_square" ), QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point2" ) ),
                                             fcnMakeSquare, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "make_rectangle_3points" ), QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point2" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point3" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "option" ), true, 0 ),
                                             fcnMakeRectangleFrom3Points, QStringLiteral( "GeometryGroup" ) );
     QgsStaticExpressionFunction *xAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
