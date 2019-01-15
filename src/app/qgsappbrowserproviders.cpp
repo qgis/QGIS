@@ -19,6 +19,8 @@
 #include "qgsstyle.h"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
+#include "qgsstylemanagerdialog.h"
+#include "qgsguiutils.h"
 #include <QDesktopServices>
 
 //
@@ -309,24 +311,43 @@ QgsMimeDataUtils::Uri QgsStyleXmlDataItem::mimeUri() const
 
 bool QgsStyleXmlDataItem::handleDoubleClick()
 {
-  QgsStyleExportImportDialog dlg( QgsStyle::defaultStyle(), QgisApp::instance(), QgsStyleExportImportDialog::Import );
-  dlg.setImportFilePath( mPath );
-  dlg.exec();
-
+  browseStyle( mPath );
   return true;
 }
 
 QList<QAction *> QgsStyleXmlDataItem::actions( QWidget *parent )
 {
-  QAction *importAction = new QAction( tr( "&Import Style…" ), parent );
+  QAction *browseAction = new QAction( tr( "&Open Style…" ), parent );
   const QString path = mPath;
+  connect( browseAction, &QAction::triggered, this, [path]
+  {
+    browseStyle( path );
+  } );
+
+  QAction *importAction = new QAction( tr( "&Import Style…" ), parent );
   connect( importAction, &QAction::triggered, this, [path]
   {
     QgsStyleExportImportDialog dlg( QgsStyle::defaultStyle(), QgisApp::instance(), QgsStyleExportImportDialog::Import );
     dlg.setImportFilePath( path );
     dlg.exec();
   } );
-  return QList<QAction *>() << importAction;
+  return QList<QAction *>() << browseAction << importAction;
+}
+
+void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
+{
+  QgsStyle s;
+  s.createMemoryDatabase();
+
+  auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+  if ( s.importXml( xmlPath ) )
+  {
+    cursorOverride.reset();
+    QgsStyleManagerDialog dlg( &s, QgisApp::instance(), Qt::WindowFlags(), true );
+    dlg.setSmartGroupsVisible( false );
+    dlg.setFavoritesGroupVisible( false );
+    dlg.exec();
+  }
 }
 
 //
