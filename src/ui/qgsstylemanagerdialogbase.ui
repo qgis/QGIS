@@ -190,6 +190,16 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="mCopyToDefaultButton">
+           <property name="toolTip">
+            <string>Copies the selected items to the default style library</string>
+           </property>
+           <property name="text">
+            <string>Copy to Default Style…</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -625,6 +635,7 @@
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnRemoveItem</tabstop>
   <tabstop>btnEditItem</tabstop>
+  <tabstop>mCopyToDefaultButton</tabstop>
   <tabstop>mButtonIconView</tabstop>
   <tabstop>mButtonListView</tabstop>
   <tabstop>searchBox</tabstop>
