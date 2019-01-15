@@ -23,7 +23,8 @@ A dialog allowing users to customize and populate a QgsStyle.
 %End
   public:
 
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(),
+                           bool readOnly = false );
 %Docstring
 Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
 
