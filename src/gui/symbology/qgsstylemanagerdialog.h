@@ -27,6 +27,7 @@
 #include "qgis_gui.h"
 
 class QgsStyle;
+class QgsTemporaryCursorOverride;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -333,6 +334,11 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QList< ItemDetails > selectedItems();
 
+    static void copyItems( const QList< ItemDetails > &items, QgsStyle *src, QgsStyle *dst,
+                           QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
+                           bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
+
+
     QgsStyle *mStyle = nullptr;
 
     QgsCheckableStyleModel *mModel = nullptr;
@@ -364,6 +370,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool mReadOnly = false;
     bool mFavoritesGroupVisible = true;
     bool mSmartGroupVisible = true;
+
+    friend class QgsStyleExportImportDialog;
 };
 
 #endif

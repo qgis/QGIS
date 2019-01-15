@@ -448,6 +448,157 @@ QList< QgsStyleManagerDialog::ItemDetails > QgsStyleManagerDialog::selectedItems
   return res;
 }
 
+void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget,
+                                       std::unique_ptr< QgsTemporaryCursorOverride > &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags )
+{
+  QStringList symbolTags;
+  bool symbolFavorite;
+  bool isSymbol = true;
+  bool prompt = true;
+  bool overwrite = true;
+
+  QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+
+  for ( auto &details : items )
+  {
+    std::unique_ptr< QgsSymbol > symbol( src->symbol( details.name ) );
+    std::unique_ptr< QgsColorRamp > ramp;
+
+    if ( !ignoreSourceTags )
+    {
+      symbolTags = src->tagsOfSymbol( details.entityType, details.name );
+    }
+    else
+    {
+      symbolTags.clear();
+    }
+
+    if ( isImport )
+    {
+      symbolTags << importTags;
+      symbolFavorite = addToFavorites;
+    }
+    else
+    {
+      symbolFavorite = details.entityType == QgsStyle::ColorrampEntity ? favoriteColorramps.contains( details.name ) : favoriteSymbols.contains( details.name );
+    }
+
+    if ( details.entityType == QgsStyle::ColorrampEntity )
+    {
+      isSymbol = false;
+      ramp.reset( src->colorRamp( details.name ) );
+    }
+
+    if ( isSymbol )
+    {
+      if ( dst->symbolNames().contains( details.name ) && prompt )
+      {
+        cursorOverride.reset();
+        int res = QMessageBox::warning( parentWidget, tr( "Export/import Symbols" ),
+                                        tr( "Symbol with name '%1' already exists.\nOverwrite?" )
+                                        .arg( details.name ),
+                                        QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+        cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+        switch ( res )
+        {
+          case QMessageBox::Cancel:
+            return;
+          case QMessageBox::No:
+            continue;
+          case QMessageBox::Yes:
+          {
+            QgsSymbol *newSymbol = symbol.get();
+            dst->addSymbol( details.name, symbol.release() );
+            dst->saveSymbol( details.name, newSymbol, symbolFavorite, symbolTags );
+            continue;
+          }
+          case QMessageBox::YesToAll:
+            prompt = false;
+            overwrite = true;
+            break;
+          case QMessageBox::NoToAll:
+            prompt = false;
+            overwrite = false;
+            break;
+        }
+      }
+
+      if ( dst->symbolNames().contains( details.name ) && overwrite )
+      {
+        QgsSymbol *newSymbol = symbol.get();
+        dst->addSymbol( details.name, symbol.release() );
+        dst->saveSymbol( details.name, newSymbol, symbolFavorite, symbolTags );
+        continue;
+      }
+      else if ( dst->symbolNames().contains( details.name ) && !overwrite )
+      {
+        continue;
+      }
+      else
+      {
+        QgsSymbol *newSymbol = symbol.get();
+        dst->addSymbol( details.name, symbol.release() );
+        dst->saveSymbol( details.name, newSymbol, symbolFavorite, symbolTags );
+        continue;
+      }
+    }
+    else
+    {
+      if ( dst->colorRampNames().contains( details.name ) && prompt )
+      {
+        cursorOverride.reset();
+        int res = QMessageBox::warning( parentWidget, tr( "Export/import Color Ramps" ),
+                                        tr( "Color ramp with name '%1' already exists.\nOverwrite?" )
+                                        .arg( details.name ),
+                                        QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+        cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+        switch ( res )
+        {
+          case QMessageBox::Cancel:
+            return;
+          case QMessageBox::No:
+            continue;
+          case QMessageBox::Yes:
+          {
+            QgsColorRamp *newRamp = ramp.get();
+            dst->addColorRamp( details.name, ramp.release() );
+            dst->saveColorRamp( details.name, newRamp, symbolFavorite, symbolTags );
+            continue;
+          }
+          case QMessageBox::YesToAll:
+            prompt = false;
+            overwrite = true;
+            break;
+          case QMessageBox::NoToAll:
+            prompt = false;
+            overwrite = false;
+            break;
+        }
+      }
+
+      if ( dst->colorRampNames().contains( details.name ) && overwrite )
+      {
+        QgsColorRamp *newRamp = ramp.get();
+        dst->addColorRamp( details.name, ramp.release() );
+        dst->saveColorRamp( details.name, newRamp, symbolFavorite, symbolTags );
+        continue;
+      }
+      else if ( dst->colorRampNames().contains( details.name ) && !overwrite )
+      {
+        continue;
+      }
+      else
+      {
+        QgsColorRamp *newRamp = ramp.get();
+        dst->addColorRamp( details.name, ramp.release() );
+        dst->saveColorRamp( details.name, newRamp, symbolFavorite, symbolTags );
+        continue;
+      }
+    }
+  }
+}
+
 void QgsStyleManagerDialog::populateList()
 {
   groupChanged( groupTree->selectionModel()->currentIndex() );
