@@ -317,6 +317,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void tabItemType_currentChanged( int );
 
+    void copyItemsToDefault();
+
   private:
     int selectedItemType();
 
@@ -364,6 +366,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
+
+    QAction *mActionCopyToDefault = nullptr;
 
     int mBlockGroupUpdates = 0;
 

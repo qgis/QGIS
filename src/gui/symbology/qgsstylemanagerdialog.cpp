@@ -203,9 +203,17 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     shareMenu->addAction( importAction );
     connect( importAction, &QAction::triggered, this, &QgsStyleManagerDialog::importItems );
   }
+  if ( mStyle != QgsStyle::defaultStyle() )
+  {
+    mActionCopyToDefault = new QAction( tr( "Copy Item(s) to Default Style…" ), this );
+    shareMenu->addAction( mActionCopyToDefault );
+    connect( mActionCopyToDefault, &QAction::triggered, this, &QgsStyleManagerDialog::copyItemsToDefault );
+  }
+
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
   shareMenu->addAction( actnExportAsSVG );
+
   connect( actnExportAsPNG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsPNG );
   connect( actnExportAsSVG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsSVG );
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
@@ -320,6 +328,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     btnAddTag->setVisible( false );
     btnManageGroups->setVisible( false );
   }
+  if ( mActionCopyToDefault )
+  {
+    mGroupMenu->addAction( mActionCopyToDefault );
+  }
   mGroupMenu->addAction( actnExportAsPNG );
   mGroupMenu->addAction( actnExportAsSVG );
 
@@ -408,6 +420,18 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
     mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
 
   populateList();
+}
+
+void QgsStyleManagerDialog::copyItemsToDefault()
+{
+  const QList< ItemDetails > items = selectedItems();
+  if ( !items.empty() )
+  {
+    auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, QStringList(), false, false );
+    QMessageBox::information( this, tr( "Import Symbols" ),
+                              tr( "Symbols successfully imported." ) );
+  }
 }
 
 int QgsStyleManagerDialog::selectedItemType()
@@ -1556,6 +1580,8 @@ void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection &select
   actnDetag->setDisabled( nothingSelected || mReadOnly );
   actnExportAsPNG->setDisabled( nothingSelected );
   actnExportAsSVG->setDisabled( nothingSelected );
+  if ( mActionCopyToDefault )
+    mActionCopyToDefault->setDisabled( nothingSelected );
   actnEditItem->setDisabled( nothingSelected || mReadOnly );
 }
 
