@@ -57,11 +57,11 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
             return Complete;
 
           case QgsExpression::boILike:
-            result = QString( "lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
+            result = QString( "lower(%1) LIKE lower(%2) ESCAPE '\\'" ).arg( op1, op2 );
             return Complete;
 
           case QgsExpression::boNotILike:
-            result = QString( "NOT lower(%1) LIKE lower(%2)" ).arg( op1, op2 );
+            result = QString( "NOT lower(%1) LIKE lower(%2) ESCAPE '\\'" ).arg( op1, op2 );
             return Complete;
 
           case QgsExpression::boIntDiv:
