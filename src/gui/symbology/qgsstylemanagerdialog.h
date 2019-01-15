@@ -35,7 +35,7 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
     Q_OBJECT
   public:
 
-    explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr );
+    explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr, bool readOnly = false );
 
     void setCheckable( bool checkable );
     void setCheckTag( const QString &tag );
@@ -49,6 +49,7 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
     QgsStyle *mStyle = nullptr;
     bool mCheckable = false;
     QString mCheckTag;
+    bool mReadOnly = false;
 
 };
 #endif
@@ -73,7 +74,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      * this style will be shown in the dialog, and changes made within the dialog will be applied to \a style.
      * The \a style object must last for the lifetime of the dialog.
      */
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
+                           bool readOnly = false );
 
     /**
      * Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
@@ -345,6 +347,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     int mBlockGroupUpdates = 0;
 
+    bool mReadOnly = false;
+    bool mFavoritesGroupVisible = true;
+    bool mSmartGroupVisible = true;
 };
 
 #endif
