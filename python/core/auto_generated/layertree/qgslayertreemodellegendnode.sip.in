@@ -76,6 +76,7 @@ Default implementation does nothing. *
 
     struct ItemContext
     {
+      QgsRenderContext *context;
       QPainter *painter;
       QPointF point;
       double labelXOffset;

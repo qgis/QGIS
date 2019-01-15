@@ -536,6 +536,7 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
 QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPainter *painter, QPointF point, double labelXOffset )
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
+  ctx.context = context;
   ctx.painter = context ? context->painter() : painter;
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
