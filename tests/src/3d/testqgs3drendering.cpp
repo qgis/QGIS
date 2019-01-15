@@ -95,12 +95,12 @@ void TestQgs3DRendering::initTestCase()
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
 
-  mLayerMesh = new QgsMeshLayer( dataDir + "/mesh/quad_and_triangle.2dm", "mesh", "mdal" );
+  mLayerMesh = new QgsMeshLayer( dataDir + "/mesh/quad_flower.2dm", "mesh", "mdal" );
   QVERIFY( mLayerMesh->isValid() );
+  mLayerMesh->setCrs( mLayerDtm->crs() );  // this testing mesh does not have any CRS defined originally
   mProject->addMapLayer( mLayerMesh );
 
   QgsPhongMaterialSettings meshMaterial;
-  meshMaterial.setAmbient( Qt::lightGray );
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setMaterial( meshMaterial );
   QgsMeshLayer3DRenderer *meshRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -299,7 +299,7 @@ void TestQgs3DRendering::testMesh()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << mLayerMesh );
   QgsPointLightSettings defaultLight;
-  defaultLight.setPosition( QgsVector3D( 1500, 2500, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -311,7 +311,7 @@ void TestQgs3DRendering::testMesh()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 1500, 2500, 20 ), 500, 45, 0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "mesh3d", img, 40 ) );
