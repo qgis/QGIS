@@ -53,10 +53,7 @@ static bool _initRenderer( const QString &name, QgsRendererWidgetFunc f, const Q
 
   if ( !iconName.isEmpty() )
   {
-    QString iconPath = QgsApplication::defaultThemePath() + iconName;
-    QPixmap pix;
-    if ( pix.load( iconPath ) )
-      m->setIcon( pix );
+    m->setIcon( QgsApplication::getThemeIcon( iconName ) );
   }
 
   QgsDebugMsg( "Set for " + name );

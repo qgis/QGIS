@@ -17,25 +17,14 @@
 #include "qgsapplication.h"
 #include <QFile>
 
-QString iconPath( const QString &iconFile )
-{
-  // try active theme
-  QString path = QgsApplication::activeThemePath();
-  if ( QFile::exists( path + iconFile ) )
-    return path + iconFile;
-
-  // use default theme
-  return QgsApplication::defaultThemePath() + iconFile;
-}
-
 QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
   connect( mAddButton, &QPushButton::clicked, this, &QgsDashSpaceDialog::mAddButton_clicked );
   connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceDialog::mRemoveButton_clicked );
 
-  mAddButton->setIcon( QIcon( iconPath( "symbologyAdd.svg" ) ) );
-  mRemoveButton->setIcon( QIcon( iconPath( "symbologyRemove.svg" ) ) );
+  mAddButton->setIcon( QgsApplication::getThemeIcon( "symbologyAdd.svg" ) );
+  mRemoveButton->setIcon( QgsApplication::getThemeIcon( "symbologyRemove.svg" ) );
 
   double dash = 0;
   double space = 0;
