@@ -68,6 +68,7 @@ class TestStyle : public QObject
     void testFavorites();
     void testTags();
     void testSmartGroup();
+    void testIsStyleXml();
 
 };
 
@@ -633,6 +634,14 @@ void TestStyle::testSmartGroup()
   style.remove( QgsStyle::SmartgroupEntity, 4 );
   QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "tag" ) << QStringLiteral( "tags" ) );
   QCOMPARE( groupModifiedSpy.count(), 8 );
+}
+
+void TestStyle::testIsStyleXml()
+{
+  QVERIFY( !QgsStyle::isXmlStyleFile( QString() ) );
+  QVERIFY( !QgsStyle::isXmlStyleFile( QStringLiteral( "blah" ) ) );
+  QVERIFY( QgsStyle::isXmlStyleFile( mTestDataDir + QStringLiteral( "categorized.xml" ) ) );
+  QVERIFY( !QgsStyle::isXmlStyleFile( mTestDataDir + QStringLiteral( "openstreetmap/testdata.xml" ) ) );
 }
 
 QGSTEST_MAIN( TestStyle )

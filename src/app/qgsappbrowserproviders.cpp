@@ -333,27 +333,6 @@ QList<QAction *> QgsStyleXmlDataItem::actions( QWidget *parent )
 // QgsStyleXmlDataItemProvider
 //
 
-
-bool isStyleFile( const QString &path )
-{
-  QFileInfo fileInfo( path );
-
-  if ( fileInfo.suffix().compare( QLatin1String( "xml" ), Qt::CaseInsensitive ) != 0 )
-    return false;
-
-  // sniff the first line of the file to see if it's a style file
-  if ( !QFile::exists( path ) )
-    return false;
-
-  QFile inputFile( path );
-  if ( !inputFile.open( QIODevice::ReadOnly ) )
-    return false;
-
-  QTextStream stream( &inputFile );
-  const QString line = stream.readLine();
-  return line == QLatin1String( "<!DOCTYPE qgis_style>" );
-}
-
 QString QgsStyleXmlDataItemProvider::name()
 {
   return QStringLiteral( "style_xml" );
@@ -366,7 +345,7 @@ int QgsStyleXmlDataItemProvider::capabilities()
 
 QgsDataItem *QgsStyleXmlDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  if ( isStyleFile( path ) )
+  if ( QgsStyle::isXmlStyleFile( path ) )
   {
     return new QgsStyleXmlDataItem( parentItem, QFileInfo( path ).fileName(), path );
   }
@@ -391,7 +370,7 @@ void QgsStyleXmlDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &u
 
 bool QgsStyleXmlDropHandler::handleFileDrop( const QString &file )
 {
-  if ( isStyleFile( file ) )
+  if ( QgsStyle::isXmlStyleFile( file ) )
   {
     QgsStyleExportImportDialog dlg( QgsStyle::defaultStyle(), QgisApp::instance(), QgsStyleExportImportDialog::Import );
     dlg.setImportFilePath( file );
