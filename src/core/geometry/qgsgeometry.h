@@ -106,6 +106,8 @@ struct QgsGeometryPrivate;
 class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
+    Q_PROPERTY( bool isNull READ isNull )
+
   public:
 
     /**
@@ -207,7 +209,7 @@ class CORE_EXPORT QgsGeometry
      * \see isEmpty()
      * \since QGIS 2.10
      */
-    Q_INVOKABLE bool isNull() const;
+    bool isNull() const;
 
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString &wkt );
