@@ -336,9 +336,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QList< ItemDetails > selectedItems();
 
-    static void copyItems( const QList< ItemDetails > &items, QgsStyle *src, QgsStyle *dst,
-                           QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
-                           bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
+    /**
+     * Returns count of items copied, excluding skipped items.
+     */
+    static int copyItems( const QList< ItemDetails > &items, QgsStyle *src, QgsStyle *dst,
+                          QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
+                          bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
 
 
     QgsStyle *mStyle = nullptr;
