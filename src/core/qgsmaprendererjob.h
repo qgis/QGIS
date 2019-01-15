@@ -55,6 +55,7 @@ struct LayerRenderJob
   bool cached; // if true, img already contains cached image from previous rendering
   QgsWeakMapLayerPointer layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+  QStringList errors; //! rendering errors
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;

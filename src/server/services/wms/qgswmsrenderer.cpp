@@ -2917,6 +2917,17 @@ namespace QgsWms
       QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), &filters );
       renderJob.render( mapSettings, &image );
       painter = renderJob.takePainter();
+
+      if ( !renderJob.errors().isEmpty() )
+      {
+        QString layerWMSName;
+        QgsMapLayer *errorLayer = mProject->mapLayer( renderJob.errors().at( 0 ).first );
+        if ( errorLayer )
+        {
+          layerWMSName = layerNickname( *errorLayer );
+        }
+        throw QgsServerException( QString( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+      }
     }
 
     return painter;
