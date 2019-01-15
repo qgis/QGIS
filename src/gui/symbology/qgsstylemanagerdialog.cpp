@@ -428,10 +428,14 @@ void QgsStyleManagerDialog::copyItemsToDefault()
   if ( !items.empty() )
   {
     auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-    copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, QStringList(), false, false );
+    const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, QStringList(), false, false );
     cursorOverride.reset();
-    QMessageBox::information( this, tr( "Import Symbols" ),
-                              tr( "Symbols successfully imported." ) );
+    if ( count > 0 )
+    {
+      QMessageBox::information( this, tr( "Import Symbols" ),
+                                count > 1 ? tr( "Successfully imported %1 items." ).arg( count )
+                                : tr( "Successfully imported item." ) );
+    }
   }
 }
 
@@ -473,11 +477,12 @@ QList< QgsStyleManagerDialog::ItemDetails > QgsStyleManagerDialog::selectedItems
   return res;
 }
 
-void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget,
-                                       std::unique_ptr< QgsTemporaryCursorOverride > &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags )
+int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget,
+                                      std::unique_ptr< QgsTemporaryCursorOverride > &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags )
 {
   bool prompt = true;
   bool overwriteAll = true;
+  int count = 0;
 
   const QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
   const QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
@@ -521,7 +526,7 @@ void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDe
           switch ( res )
           {
             case QMessageBox::Cancel:
-              return;
+              return count;
 
             case QMessageBox::No:
               continue;
@@ -547,6 +552,7 @@ void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDe
           QgsSymbol *newSymbol = symbol.get();
           dst->addSymbol( details.name, symbol.release() );
           dst->saveSymbol( details.name, newSymbol, addItemToFavorites, symbolTags );
+          count++;
         }
         break;
       }
@@ -573,7 +579,7 @@ void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDe
           switch ( res )
           {
             case QMessageBox::Cancel:
-              return;
+              return count;
 
             case QMessageBox::No:
               continue;
@@ -599,6 +605,7 @@ void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDe
           QgsColorRamp *newRamp = ramp.get();
           dst->addColorRamp( details.name, ramp.release() );
           dst->saveColorRamp( details.name, newRamp, addItemToFavorites, symbolTags );
+          count++;
         }
         break;
       }
@@ -609,6 +616,7 @@ void QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDe
 
     }
   }
+  return count;
 }
 
 void QgsStyleManagerDialog::populateList()
