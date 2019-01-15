@@ -53,6 +53,17 @@ Sets whether smart groups should be shown. The default is to show the groups.
 .. versionadded:: 3.6
 %End
 
+    void setBaseStyleName( const QString &name );
+%Docstring
+Sets the base ``name`` for the style, which is used by the dialog to reflect the
+original style/XML file name.
+
+``name`` should be stripped of any extensions and folder information, e.g. "transport_styles",
+not "d:/stuff/transport_styles.xml".
+
+.. versionadded:: 3.6
+%End
+
   public slots:
 
 

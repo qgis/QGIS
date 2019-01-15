@@ -427,12 +427,25 @@ void QgsStyleManagerDialog::copyItemsToDefault()
   const QList< ItemDetails > items = selectedItems();
   if ( !items.empty() )
   {
+    bool ok = false;
+    const QString tags = QInputDialog::getText( this, tr( "Import Items" ),
+                         tr( "Additional tags to add (comma separated)" ), QLineEdit::Normal,
+                         mBaseName, &ok );
+    if ( !ok )
+      return;
+
+    const QStringList parts = tags.split( ',', QString::SkipEmptyParts );
+    QStringList additionalTags;
+    additionalTags.reserve( parts.count() );
+    for ( const QString &tag : parts )
+      additionalTags << tag.trimmed();
+
     auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-    const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, QStringList(), false, false );
+    const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, additionalTags, false, false );
     cursorOverride.reset();
     if ( count > 0 )
     {
-      QMessageBox::information( this, tr( "Import Symbols" ),
+      QMessageBox::information( this, tr( "Import Items" ),
                                 count > 1 ? tr( "Successfully imported %1 items." ).arg( count )
                                 : tr( "Successfully imported item." ) );
     }
@@ -928,6 +941,11 @@ void QgsStyleManagerDialog::setSmartGroupsVisible( bool show )
 {
   mSmartGroupVisible = show;
   populateGroups();
+}
+
+void QgsStyleManagerDialog::setBaseStyleName( const QString &name )
+{
+  mBaseName = name;
 }
 
 void QgsStyleManagerDialog::activate()
