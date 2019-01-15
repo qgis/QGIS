@@ -25,6 +25,7 @@
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
+#include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -665,6 +666,11 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     return nullptr;
   if ( path.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
        !myExtensions.contains( QStringLiteral( "tif.xml" ) ) )
+    return nullptr;
+
+  // skip QGIS style xml files
+  if ( path.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) &&
+       QgsStyle::isXmlStyleFile( path ) )
     return nullptr;
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
