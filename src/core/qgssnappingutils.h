@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     //! Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
-    void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
+    void setIndexingStrategy( IndexingStrategy strategy );
     //! Find out which strategy is used for indexing - by default hybrid indexing is used
     IndexingStrategy indexingStrategy() const { return mStrategy; }
 

@@ -79,6 +79,15 @@ QgsPointLocator *QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer *vl,
   return mTemporaryLocators.value( vl );
 }
 
+void QgsSnappingUtils::setIndexingStrategy( IndexingStrategy strategy )
+{
+  if ( strategy != mStrategy )
+  {
+    clearAllLocators();
+    mStrategy = strategy;
+  }
+}
+
 bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &areaOfInterest )
 {
   if ( vl->geometryType() == QgsWkbTypes::NullGeometry || mStrategy == IndexNeverFull )

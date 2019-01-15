@@ -69,6 +69,7 @@ email                : sherman at mrcc.com
 #include "qgscoordinatetransformcontext.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgssnappingutils.h"
 #include <cmath>
 
 /**
@@ -2063,6 +2064,20 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
       }
     }
 
+    // read snapping utils
+    if ( mSnappingUtils )
+    {
+      QDomNode snappingNode = node.namedItem( QStringLiteral( "snappingUtils" ) );
+      if ( !snappingNode.isNull() )
+      {
+        QDomAttr attr = snappingNode.toElement().attributeNode( QStringLiteral( "strategy" ) );
+        if ( !attr.isNull() )
+        {
+          mSnappingUtils->setIndexingStrategy( static_cast<QgsSnappingUtils::IndexingStrategy>( attr.value().toInt() ) );
+        }
+      }
+    }
+
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
     if ( objectName() != QStringLiteral( "theMapCanvas" ) )
@@ -2110,6 +2125,13 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
     mapcanvasNode.setAttribute( QStringLiteral( "theme" ), mTheme );
   mapcanvasNode.setAttribute( QStringLiteral( "annotationsVisible" ), mAnnotationsVisible );
   qgisNode.appendChild( mapcanvasNode );
+
+  if ( mSnappingUtils )
+  {
+    QDomElement snappingNode = doc.createElement( QStringLiteral( "snappingUtils" ) );
+    snappingNode.setAttribute( QStringLiteral( "strategy" ), QString::number( static_cast<int>( snappingUtils()->indexingStrategy() ) ) );
+    mapcanvasNode.appendChild( snappingNode );
+  }
 
   mSettings.writeXml( mapcanvasNode, doc );
   // TODO: store only units, extent, projections, dest CRS

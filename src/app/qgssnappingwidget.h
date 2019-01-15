@@ -23,6 +23,7 @@ class QDoubleSpinBox;
 class QFont;
 class QToolButton;
 class QTreeView;
+class QLabel;
 
 class QgsDoubleSpinBox;
 class QgsFloatingWidget;
@@ -102,6 +103,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeUnit( int idx );
 
+    void changeStrategy( int idx );
+
     void enableTopologicalEditing( bool enabled );
 
     void enableIntersectionSnapping( bool enabled );
@@ -144,6 +147,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
     QComboBox *mUnitsComboBox = nullptr;
+    QLabel *mStrategyLabel = nullptr;
+    QComboBox *mStrategyComboBox = nullptr;
     QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;
     QAction *mIntersectionSnappingAction = nullptr;

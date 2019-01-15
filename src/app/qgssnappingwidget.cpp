@@ -37,6 +37,7 @@
 #include "qgsproject.h"
 #include "qgssnappingconfig.h"
 #include "qgssnappinglayertreemodel.h"
+#include "qgssnappingutils.h"
 #include "qgssnappingwidget.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"
@@ -196,6 +197,21 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mEnableTracingAction->setShortcut( tr( "T", "Keyboard shortcut: Enable tracing" ) );
   mEnableTracingAction->setObjectName( QStringLiteral( "EnableTracingAction" ) );
 
+  // indexing strategy
+  mStrategyLabel = new QLabel( tr( "Indexing Strategy" ) );
+  mStrategyComboBox = new QComboBox();
+  mStrategyComboBox->addItem( tr( "Always full" ), QgsSnappingUtils::IndexAlwaysFull );
+  mStrategyComboBox->setItemData( 0, tr( "For all layers, build index of full extent. Uses more memory, but queries are faster." ), Qt::ToolTipRole );
+  mStrategyComboBox->addItem( tr( "Never full" ), QgsSnappingUtils::IndexNeverFull );
+  mStrategyComboBox->setItemData( 1, tr( "For all layers, only create temporary indexes of small extent. Low memory usage, slower queries." ), Qt::ToolTipRole );
+  mStrategyComboBox->addItem( tr( "Hybrid" ), QgsSnappingUtils::IndexHybrid );
+  mStrategyComboBox->setItemData( 2, tr( "Compromise between speed and memory usage (default)." ), Qt::ToolTipRole );
+  mStrategyComboBox->addItem( tr( "Current extent" ), QgsSnappingUtils::IndexExtent );
+  mStrategyComboBox->setItemData( 3, tr( "For all layers, build index of the current extent." ), Qt::ToolTipRole );
+  mStrategyComboBox->setObjectName( QStringLiteral( "SnappingStrategyComboBox" ) );
+  mStrategyComboBox->setToolTip( tr( "Snapping indexing strategy" ) );
+  connect( mStrategyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSnappingWidget::changeStrategy );
+
   // tracing offset
   mTracingOffsetSpinBox = new QgsDoubleSpinBox;
   mTracingOffsetSpinBox->setRange( -1000000, 1000000 );
@@ -270,6 +286,9 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     interButton->setDefaultAction( mIntersectionSnappingAction );
     interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( interButton );
+
+    layout->addWidget( mStrategyLabel );
+    layout->addWidget( mStrategyComboBox );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->setAlignment( Qt::AlignRight );
@@ -365,6 +384,8 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
   }
 
+  mStrategyComboBox->setCurrentIndex( mStrategyComboBox->findData( mCanvas->snappingUtils()->indexingStrategy() ) );
+
   toggleSnappingWidgets( config.enabled() );
 }
 
@@ -410,6 +431,16 @@ void QgsSnappingWidget::changeUnit( int idx )
   mProject->setSnappingConfig( mConfig );
 
   updateToleranceDecimals();
+}
+
+void QgsSnappingWidget::changeStrategy( int idx )
+{
+  QgsSnappingUtils::IndexingStrategy strategy = static_cast<QgsSnappingUtils::IndexingStrategy>( mStrategyComboBox->itemData( idx ).toInt() );
+  if ( strategy != mCanvas->snappingUtils()->indexingStrategy() )
+  {
+    mCanvas->snappingUtils()->setIndexingStrategy( strategy );
+    mProject->setDirty();
+  }
 }
 
 void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
@@ -517,6 +548,8 @@ void QgsSnappingWidget::modeChanged()
     mTypeButton->setVisible( !advanced );
     mToleranceSpinBox->setVisible( !advanced );
     mUnitsComboBox->setVisible( !advanced );
+    mStrategyLabel->setVisible( advanced );
+    mStrategyComboBox->setVisible( advanced );
     if ( mDisplayMode == Widget && mAdvancedConfigWidget )
     {
       mAdvancedConfigWidget->setVisible( advanced );
