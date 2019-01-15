@@ -98,6 +98,17 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      */
     void setSmartGroupsVisible( bool show );
 
+    /**
+     * Sets the base \a name for the style, which is used by the dialog to reflect the
+     * original style/XML file name.
+     *
+     * \a name should be stripped of any extensions and folder information, e.g. "transport_styles",
+     * not "d:/stuff/transport_styles.xml".
+     *
+     * \since QGIS 3.6
+     */
+    void setBaseStyleName( const QString &name );
+
   public slots:
 
     // TODO QGIS 4.0 -- most of this should be private
@@ -377,6 +388,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool mReadOnly = false;
     bool mFavoritesGroupVisible = true;
     bool mSmartGroupVisible = true;
+    QString mBaseName;
 
     friend class QgsStyleExportImportDialog;
 };

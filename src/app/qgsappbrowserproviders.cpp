@@ -343,9 +343,11 @@ void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
   if ( s.importXml( xmlPath ) )
   {
     cursorOverride.reset();
+    QFileInfo fi( xmlPath );
     QgsStyleManagerDialog dlg( &s, QgisApp::instance(), Qt::WindowFlags(), true );
     dlg.setSmartGroupsVisible( false );
     dlg.setFavoritesGroupVisible( false );
+    dlg.setBaseStyleName( fi.baseName() );
     dlg.exec();
   }
 }
