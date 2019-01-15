@@ -83,6 +83,20 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        QString RampType = QString() );
 
+    /**
+     * Sets whether the favorites group should be shown. The default is to show the group.
+     *
+     * \since QGIS 3.6
+     */
+    void setFavoritesGroupVisible( bool show );
+
+    /**
+     * Sets whether smart groups should be shown. The default is to show the groups.
+     *
+     * \since QGIS 3.6
+     */
+    void setSmartGroupsVisible( bool show );
+
   public slots:
 
     // TODO QGIS 4.0 -- most of this should be private

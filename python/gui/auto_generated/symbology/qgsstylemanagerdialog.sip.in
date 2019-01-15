@@ -39,6 +39,20 @@ The ``style`` object must last for the lifetime of the dialog.
 Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
 %End
 
+    void setFavoritesGroupVisible( bool show );
+%Docstring
+Sets whether the favorites group should be shown. The default is to show the group.
+
+.. versionadded:: 3.6
+%End
+
+    void setSmartGroupsVisible( bool show );
+%Docstring
+Sets whether smart groups should be shown. The default is to show the groups.
+
+.. versionadded:: 3.6
+%End
+
   public slots:
 
 

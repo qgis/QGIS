@@ -747,6 +747,18 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   return name;
 }
 
+void QgsStyleManagerDialog::setFavoritesGroupVisible( bool show )
+{
+  mFavoritesGroupVisible = show;
+  populateGroups();
+}
+
+void QgsStyleManagerDialog::setSmartGroupsVisible( bool show )
+{
+  mSmartGroupVisible = show;
+  populateGroups();
+}
+
 void QgsStyleManagerDialog::activate()
 {
   raise();
@@ -1015,11 +1027,14 @@ void QgsStyleManagerDialog::populateGroups()
   QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   model->clear();
 
-  QStandardItem *favoriteSymbols = new QStandardItem( tr( "Favorites" ) );
-  favoriteSymbols->setData( "favorite" );
-  favoriteSymbols->setEditable( false );
-  setBold( favoriteSymbols );
-  model->appendRow( favoriteSymbols );
+  if ( mFavoritesGroupVisible )
+  {
+    QStandardItem *favoriteSymbols = new QStandardItem( tr( "Favorites" ) );
+    favoriteSymbols->setData( "favorite" );
+    favoriteSymbols->setEditable( false );
+    setBold( favoriteSymbols );
+    model->appendRow( favoriteSymbols );
+  }
 
   QStandardItem *allSymbols = new QStandardItem( tr( "All" ) );
   allSymbols->setData( "all" );
@@ -1036,26 +1051,31 @@ void QgsStyleManagerDialog::populateGroups()
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
+    item->setEditable( !mReadOnly );
     taggroup->appendRow( item );
   }
   taggroup->setText( tr( "Tags" ) );//set title later
   setBold( taggroup );
   model->appendRow( taggroup );
 
-  QStandardItem *smart = new QStandardItem( tr( "Smart Groups" ) );
-  smart->setData( "smartgroups" );
-  smart->setEditable( false );
-  setBold( smart );
-  QgsSymbolGroupMap sgMap = mStyle->smartgroupsListMap();
-  QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
-  while ( i != sgMap.constEnd() )
+  if ( mSmartGroupVisible )
   {
-    QStandardItem *item = new QStandardItem( i.value() );
-    item->setData( i.key() );
-    smart->appendRow( item );
-    ++i;
+    QStandardItem *smart = new QStandardItem( tr( "Smart Groups" ) );
+    smart->setData( "smartgroups" );
+    smart->setEditable( false );
+    setBold( smart );
+    QgsSymbolGroupMap sgMap = mStyle->smartgroupsListMap();
+    QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
+    while ( i != sgMap.constEnd() )
+    {
+      QStandardItem *item = new QStandardItem( i.value() );
+      item->setData( i.key() );
+      item->setEditable( !mReadOnly );
+      smart->appendRow( item );
+      ++i;
+    }
+    model->appendRow( smart );
   }
-  model->appendRow( smart );
 
   // expand things in the group tree
   int rows = model->rowCount( model->indexFromItem( model->invisibleRootItem() ) );
