@@ -205,7 +205,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   }
   if ( mStyle != QgsStyle::defaultStyle() )
   {
-    mActionCopyToDefault = new QAction( tr( "Copy Item(s) to Default Style…" ), this );
+    mActionCopyToDefault = new QAction( tr( "Copy Selection to Default Style" ), this );
     shareMenu->addAction( mActionCopyToDefault );
     connect( mActionCopyToDefault, &QAction::triggered, this, &QgsStyleManagerDialog::copyItemsToDefault );
   }
