@@ -67,16 +67,16 @@ void QgsCodeEditorPython::setSciLexerPython()
   pyLexer->setDefaultPaper( colors.value( QStringLiteral( "python/paperBackgroundColor" ), Qt::white ) );
   pyLexer->setFont( font, -1 );
   pyLexer->setColor( defaultColor, QsciLexerPython::Default );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/classFontColor" ), QColor( "#0000ff" ) ), QsciLexerPython::ClassName );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/numberFontColor" ), Qt::black ), QsciLexerPython::Number );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/commentFontColor" ), QColor( "#007f00" ) ), QsciLexerPython::Comment );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/commentBlockFontColor" ), QColor( "#007f00" ) ), QsciLexerPython::CommentBlock );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/keywordFontColor" ), Qt::darkGreen ), QsciLexerPython::Keyword );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/decoratorFontColor" ), Qt::darkBlue ), QsciLexerPython::Decorator );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/singleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerPython::SingleQuotedString );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/doubleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerPython::DoubleQuotedString );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/tripleSingleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerPython::TripleSingleQuotedString );
-  pyLexer->setColor( colors.value( QStringLiteral( "python/tripleDoubleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerPython::TripleDoubleQuotedString );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/classFontColor" ), QColor( 66, 113, 174 ) ), QsciLexerPython::ClassName );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/numberFontColor" ), QColor( 200, 40, 41 ) ), QsciLexerPython::Number );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/commentFontColor" ), QColor( 142, 144, 140 ) ), QsciLexerPython::Comment );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/commentBlockFontColor" ), QColor( 142, 144, 140 ) ), QsciLexerPython::CommentBlock );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/keywordFontColor" ), QColor( 137, 89, 168 ) ), QsciLexerPython::Keyword );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/decoratorFontColor" ), QColor( 62, 153, 159 ) ), QsciLexerPython::Decorator );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/singleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerPython::SingleQuotedString );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/doubleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerPython::DoubleQuotedString );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/tripleSingleQuoteFontColor" ), QColor( 234, 183, 0 ) ), QsciLexerPython::TripleSingleQuotedString );
+  pyLexer->setColor( colors.value( QStringLiteral( "python/tripleDoubleQuoteFontColor" ), QColor( 234, 183, 0 ) ), QsciLexerPython::TripleDoubleQuotedString );
 
   QsciAPIs *apis = new QsciAPIs( pyLexer );
 

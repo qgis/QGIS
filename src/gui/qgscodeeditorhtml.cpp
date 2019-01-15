@@ -62,11 +62,12 @@ void QgsCodeEditorHTML::setSciLexerHTML()
   lexer->setFont( font, -1 );
 
   lexer->setColor( defaultColor, QsciLexerHTML::Default );
-  lexer->setColor( colors.value( QStringLiteral( "html/tagFontColor" ), QColor( "#000080" ) ), QsciLexerHTML::Tag );
-  lexer->setColor( colors.value( QStringLiteral( "html/unknownTagFontColor" ), QColor( "#ff0000" ) ), QsciLexerHTML::UnknownTag );
-  lexer->setColor( colors.value( QStringLiteral( "html/numberFontColor" ), QColor( "#000000" ) ), QsciLexerHTML::HTMLNumber );
-  lexer->setColor( colors.value( QStringLiteral( "html/singleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerHTML::HTMLSingleQuotedString );
-  lexer->setColor( colors.value( QStringLiteral( "html/doubleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerHTML::HTMLDoubleQuotedString );
+  lexer->setColor( colors.value( QStringLiteral( "html/tagFontColor" ), QColor( 66, 113, 174 ) ), QsciLexerHTML::Tag );
+  lexer->setColor( colors.value( QStringLiteral( "html/unknownTagFontColor" ), QColor( 255, 0, 0 ) ), QsciLexerHTML::UnknownTag );
+  lexer->setColor( colors.value( QStringLiteral( "html/numberFontColor" ), QColor( 200, 40, 41 ) ), QsciLexerHTML::HTMLNumber );
+  lexer->setColor( colors.value( QStringLiteral( "html/commentFontColor" ), QColor( 142, 144, 140 ) ), QsciLexerHTML::HTMLComment );
+  lexer->setColor( colors.value( QStringLiteral( "html/singleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerHTML::HTMLSingleQuotedString );
+  lexer->setColor( colors.value( QStringLiteral( "html/doubleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerHTML::HTMLDoubleQuotedString );
 
   setLexer( lexer );
 }

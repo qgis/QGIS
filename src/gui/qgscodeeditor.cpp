@@ -104,19 +104,19 @@ void QgsCodeEditor::setSciWidget()
 
   setUtf8( true );
   setCaretLineVisible( true );
-  setCaretLineBackgroundColor( colors.value( QStringLiteral( "caretLineColor" ), QColor( "#fcf3ed" ) ) );
-  setCaretForegroundColor( colors.value( QStringLiteral( "cursorColor" ), QColor( "#333333" ) ) );
-  setSelectionForegroundColor( colors.value( QStringLiteral( "selectionForegroundColorEditor" ), QColor( "#303030" ) ) );
-  setSelectionBackgroundColor( colors.value( QStringLiteral( "selectionBackgroundColor" ), QColor( "#d7d7d7" ) ) );
+  setCaretLineBackgroundColor( colors.value( QStringLiteral( "caretLineColor" ), QColor( 252, 243, 237 ) ) );
+  setCaretForegroundColor( colors.value( QStringLiteral( "cursorColor" ), QColor( 51, 51, 51 ) ) );
+  setSelectionForegroundColor( colors.value( QStringLiteral( "selectionForegroundColorEditor" ), QColor( 48, 48, 48 ) ) );
+  setSelectionBackgroundColor( colors.value( QStringLiteral( "selectionBackgroundColor" ), QColor( 251, 251, 251 ) ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
-  setMatchedBraceBackgroundColor( colors.value( QStringLiteral( "matchedBraceColor" ), QColor( "#b7f907" ) ) );
+  setMatchedBraceBackgroundColor( colors.value( QStringLiteral( "matchedBraceColor" ), QColor( 183, 249, 7 ) ) );
   // whether margin will be shown
   setMarginVisible( mMargin );
-  setMarginsForegroundColor( colors.value( QStringLiteral( "marginForegroundColor" ), QColor( "#3e3ee3" ) ) );
-  setMarginsBackgroundColor( colors.value( QStringLiteral( "marginBackgroundColor" ), QColor( "#f9f9f9" ) ) );
-  setIndentationGuidesForegroundColor( colors.value( QStringLiteral( "marginForegroundColor" ), QColor( "#3e3ee3" ) ) );
-  setIndentationGuidesBackgroundColor( colors.value( QStringLiteral( "marginBackgroundColor" ), QColor( "#f9f9f9" ) ) );
+  setMarginsForegroundColor( colors.value( QStringLiteral( "marginForegroundColor" ), QColor( 62, 62, 227 ) ) );
+  setMarginsBackgroundColor( colors.value( QStringLiteral( "marginBackgroundColor" ), QColor( 249, 249, 249 ) ) );
+  setIndentationGuidesForegroundColor( colors.value( QStringLiteral( "marginForegroundColor" ), QColor( 62, 62, 227 ) ) );
+  setIndentationGuidesBackgroundColor( colors.value( QStringLiteral( "marginBackgroundColor" ), QColor( 249, 249, 249 ) ) );
   // whether margin will be shown
   setFoldingVisible( mFolding );
   QColor foldColor = colors.value( QStringLiteral( "foldColor" ), QColor( 244, 244, 244 ) );

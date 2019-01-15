@@ -130,14 +130,14 @@ void QgsCodeEditorExpression::initializeLexer()
   mSqlLexer->setColor( Qt::darkYellow, QsciLexerSQL::DoubleQuotedString ); // fields
 
   mSqlLexer->setColor( defaultColor, QsciLexerSQL::Default );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/commentFontColor" ), QColor( "#007f00" ) ), QsciLexerSQL::Comment );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/commentLineFontColor" ), QColor( "#007f00" ) ), QsciLexerSQL::CommentLine );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/numberFontColor" ), QColor( "#007f7f" ) ), QsciLexerSQL::Number );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/keywordFontColor" ), QColor( "#00007f" ) ), QsciLexerSQL::Keyword );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/singleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerSQL::SingleQuotedString );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/doubleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerSQL::DoubleQuotedString );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/operatorFontColor" ), Qt::black ), QsciLexerSQL::Operator );
-  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/identifierFontColor" ), Qt::black ), QsciLexerSQL::Identifier );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/commentFontColor" ), QColor( 142, 144, 140 ) ), QsciLexerSQL::Comment );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/commentLineFontColor" ), QColor( 142, 144, 140 ) ), QsciLexerSQL::CommentLine );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/numberFontColor" ), QColor( 200, 40, 41 ) ), QsciLexerSQL::Number );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/keywordFontColor" ), QColor( 137, 89, 168 ) ), QsciLexerSQL::Keyword );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/singleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerSQL::SingleQuotedString );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/doubleQuoteFontColor" ), QColor( 234, 183, 0 ) ), QsciLexerSQL::DoubleQuotedString );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/operatorFontColor" ), QColor( 66, 113, 174 ) ), QsciLexerSQL::Operator );
+  mSqlLexer->setColor( colors.value( QStringLiteral( "sql/identifierFontColor" ), QColor( 62, 153, 159 ) ), QsciLexerSQL::Identifier );
   mSqlLexer->setColor( colors.value( QStringLiteral( "sql/QuotedIdentifierFontColor" ), Qt::black ), QsciLexerSQL::QuotedIdentifier );
   mSqlLexer->setColor( colors.value( QStringLiteral( "sql/QuotedOperatorFontColor" ), Qt::black ), QsciLexerSQL::QuotedOperator );
 
