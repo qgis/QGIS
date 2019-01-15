@@ -163,6 +163,10 @@ class QgsStyleXmlDataItem : public QgsDataItem
     bool handleDoubleClick() override;
     QList< QAction * > actions( QWidget *parent ) override;
 
+  private:
+
+    static void browseStyle( const QString &xmlPath );
+
 };
 
 /**
