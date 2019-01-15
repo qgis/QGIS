@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscodeeditorhtml.h"
+#include "qgssymbollayerutils.h"
 
 #include <QWidget>
 #include <QString>
@@ -37,14 +38,35 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
 
 void QgsCodeEditorHTML::setSciLexerHTML()
 {
+  QHash< QString, QColor > colors;
+  if ( QgsApplication::instance()->themeName() != QStringLiteral( "default" ) )
+  {
+    QSettings ini( QgsApplication::instance()->uiThemes().value( QgsApplication::instance()->themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
+    for ( const auto &key : ini.allKeys() )
+    {
+      colors.insert( key, QgsSymbolLayerUtils::decodeColor( ini.value( key ).toString() ) );
+    }
+  }
+
   QFont font = getMonospaceFont();
 #ifdef Q_OS_MAC
   // The font size gotten from getMonospaceFont() is too small on Mac
   font.setPointSize( QLabel().font().pointSize() );
 #endif
+  QColor defaultColor = colors.value( QStringLiteral( "html/defaultFontColor" ), Qt::black );
 
   QsciLexerHTML *lexer = new QsciLexerHTML( this );
   lexer->setDefaultFont( font );
+  lexer->setDefaultColor( defaultColor );
+  lexer->setDefaultPaper( colors.value( QStringLiteral( "html/paperBackgroundColor" ), Qt::white ) );
   lexer->setFont( font, -1 );
+
+  lexer->setColor( defaultColor, QsciLexerHTML::Default );
+  lexer->setColor( colors.value( QStringLiteral( "html/tagFontColor" ), QColor( "#000080" ) ), QsciLexerHTML::Tag );
+  lexer->setColor( colors.value( QStringLiteral( "html/unknownTagFontColor" ), QColor( "#ff0000" ) ), QsciLexerHTML::UnknownTag );
+  lexer->setColor( colors.value( QStringLiteral( "html/numberFontColor" ), QColor( "#000000" ) ), QsciLexerHTML::HTMLNumber );
+  lexer->setColor( colors.value( QStringLiteral( "html/singleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerHTML::HTMLSingleQuotedString );
+  lexer->setColor( colors.value( QStringLiteral( "html/doubleQuoteFontColor" ), QColor( "#7f007f" ) ), QsciLexerHTML::HTMLDoubleQuotedString );
+
   setLexer( lexer );
 }

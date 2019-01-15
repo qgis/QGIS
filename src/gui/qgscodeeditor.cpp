@@ -14,8 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgscodeeditor.h"
 #include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <QWidget>
 #include <QFont>
@@ -90,16 +92,35 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 
 void QgsCodeEditor::setSciWidget()
 {
+  QHash< QString, QColor > colors;
+  if ( QgsApplication::instance()->themeName() != QStringLiteral( "default" ) )
+  {
+    QSettings ini( QgsApplication::instance()->uiThemes().value( QgsApplication::instance()->themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
+    for ( const auto &key : ini.allKeys() )
+    {
+      colors.insert( key, QgsSymbolLayerUtils::decodeColor( ini.value( key ).toString() ) );
+    }
+  }
+
   setUtf8( true );
   setCaretLineVisible( true );
-  setCaretLineBackgroundColor( QColor( 252, 243, 237 ) );
+  setCaretLineBackgroundColor( colors.value( QStringLiteral( "caretLineColor" ), QColor( "#fcf3ed" ) ) );
+  setCaretForegroundColor( colors.value( QStringLiteral( "cursorColor" ), QColor( "#333333" ) ) );
+  setSelectionForegroundColor( colors.value( QStringLiteral( "selectionForegroundColorEditor" ), QColor( "#303030" ) ) );
+  setSelectionBackgroundColor( colors.value( QStringLiteral( "selectionBackgroundColor" ), QColor( "#d7d7d7" ) ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
-  setMatchedBraceBackgroundColor( QColor( 183, 249, 7 ) );
+  setMatchedBraceBackgroundColor( colors.value( QStringLiteral( "matchedBraceColor" ), QColor( "#b7f907" ) ) );
   // whether margin will be shown
   setMarginVisible( mMargin );
+  setMarginsForegroundColor( colors.value( QStringLiteral( "marginForegroundColor" ), QColor( "#3e3ee3" ) ) );
+  setMarginsBackgroundColor( colors.value( QStringLiteral( "marginBackgroundColor" ), QColor( "#f9f9f9" ) ) );
+  setIndentationGuidesForegroundColor( colors.value( QStringLiteral( "marginForegroundColor" ), QColor( "#3e3ee3" ) ) );
+  setIndentationGuidesBackgroundColor( colors.value( QStringLiteral( "marginBackgroundColor" ), QColor( "#f9f9f9" ) ) );
   // whether margin will be shown
   setFoldingVisible( mFolding );
+  QColor foldColor = colors.value( QStringLiteral( "foldColor" ), QColor( 244, 244, 244 ) );
+  setFoldMarginColors( foldColor, foldColor );
   // indentation
   setAutoIndent( true );
   setIndentationWidth( 4 );
@@ -125,8 +146,6 @@ void QgsCodeEditor::setMarginVisible( bool margin )
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
     setMarginWidth( 1, QStringLiteral( "00000" ) );
-    setMarginsForegroundColor( QColor( 62, 62, 227 ) );
-    setMarginsBackgroundColor( QColor( 249, 249, 249 ) );
   }
   else
   {
@@ -142,7 +161,6 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   if ( folding )
   {
     setFolding( QsciScintilla::PlainFoldStyle );
-    setFoldMarginColors( QColor( 244, 244, 244 ), QColor( 244, 244, 244 ) );
   }
   else
   {
