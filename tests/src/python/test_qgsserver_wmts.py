@@ -34,6 +34,7 @@ from qgis.PyQt.QtCore import QSize
 import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
+from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
@@ -66,7 +67,35 @@ class TestQgsServerWMTS(QgsServerTestBase):
             reference_name = 'wmts_' + request.lower()
 
         reference_name += '.txt'
+        reference_path = self.testdata_path + reference_name
 
+        self.store_reference(reference_path, response)
+        f = open(reference_path, 'rb')
+        expected = f.read()
+        f.close()
+        response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
+        expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
+
+        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
+
+    def wmts_request_compare_project(self, project, request, version='', extra_query_string='', reference_base_name=None):
+        query_string = 'https://www.qgis.org/?SERVICE=WMTS&REQUEST=%s' % (request)
+        if version:
+            query_string += '&VERSION=%s' % version
+
+        if extra_query_string:
+            query_string += '&%s' % extra_query_string
+
+        header, body = self._execute_request_project(query_string, project)
+        self.assert_headers(header, body)
+        response = header + body
+
+        if reference_base_name is not None:
+            reference_name = reference_base_name
+        else:
+            reference_name = 'wmts_' + request.lower()
+
+        reference_name += '.txt'
         reference_path = self.testdata_path + reference_name
 
         self.store_reference(reference_path, response)
@@ -280,6 +309,22 @@ class TestQgsServerWMTS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         err = b"TileMatrixSet is unknown" in r
         self.assertTrue(err)
+
+    def test_wmts_config(self):
+        projectPath = self.projectGroupsPath
+        assert os.path.exists(projectPath), "Project file not found: " + projectPath
+
+        project = QgsProject()
+        project.read(projectPath)
+        self.wmts_request_compare_project(project, 'GetCapabilities', reference_base_name='wmts_getcapabilities_config')
+
+        self.assertTrue(project.removeEntry('WMTSGrids', 'Config'))
+        self.assertTrue(project.removeEntry('WMTSGrids', 'CRS'))
+        self.wmts_request_compare_project(project, 'GetCapabilities', reference_base_name='wmts_getcapabilities_config')
+
+        self.assertTrue(project.writeEntry('WMTSGrids', 'Config', ('EPSG:3857,20037508.342789248,-20037508.342789248,559082264.0287179,20',)))
+        self.assertTrue(project.writeEntry('WMTSGrids', 'CRS', ('EPSG:3857',)))
+        self.wmts_request_compare_project(project, 'GetCapabilities', reference_base_name='wmts_getcapabilities_config_3857')
 
 
 if __name__ == '__main__':

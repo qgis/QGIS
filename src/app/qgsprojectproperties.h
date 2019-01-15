@@ -99,9 +99,23 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Set WMS default extent to current canvas extent
      */
     void pbnWMSExtCanvas_clicked();
+
+    /**
+     *
+     */
     void pbnWMSAddSRS_clicked();
     void pbnWMSRemoveSRS_clicked();
     void pbnWMSSetUsedSRS_clicked();
+
+    /**
+     * Slots to link WMS CRS list to WMTS Grids tree view
+     */
+    void lwWmsRowsInserted( const QModelIndex &parent, int first, int last );
+    void lwWmsRowsRemoved( const QModelIndex &parent, int first, int last );
+
+    /**
+     *
+     */
     void mAddWMSPrintLayoutButton_clicked();
     void mRemoveWMSPrintLayoutButton_clicked();
     void mAddLayerRestrictionButton_clicked();
@@ -139,6 +153,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slot to link WMTS checkboxes in tree widget
      */
     void twWmtsItemChanged( QTreeWidgetItem *item, int column );
+    void twWmtsGridItemDoubleClicked( QTreeWidgetItem *item, int column );
+    void twWmtsGridItemChanged( QTreeWidgetItem *item, int column );
 
     /**
      * Slot to link WFS checkboxes
@@ -223,6 +239,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
+    //! add WMTS Grid definition based on CRS
+    void addWmtsGrid( const QString &crsStr );
     //! Check OWS configuration
     void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 

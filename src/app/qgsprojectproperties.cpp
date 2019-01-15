@@ -69,6 +69,7 @@
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QAbstractListModel>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -685,6 +686,40 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     }
   }
   connect( twWmtsLayers, &QTreeWidget::itemChanged, this, &QgsProjectProperties::twWmtsItemChanged );
+
+  for ( int i = 0; i < mWMSList->count(); i++ )
+  {
+    QString crsStr = mWMSList->item( i )->text();
+    addWmtsGrid( crsStr );
+  }
+  connect( mWMSList->model(), &QAbstractListModel::rowsInserted, this, &QgsProjectProperties::lwWmsRowsInserted );
+  connect( mWMSList->model(), &QAbstractListModel::rowsRemoved, this, &QgsProjectProperties::lwWmsRowsRemoved );
+  connect( twWmtsGrids, &QTreeWidget::itemDoubleClicked, this, &QgsProjectProperties::twWmtsGridItemDoubleClicked );
+  connect( twWmtsGrids, &QTreeWidget::itemChanged, this, &QgsProjectProperties::twWmtsGridItemChanged );
+  const QStringList wmtsGridList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "CRS" ) );
+  if ( !wmtsGridList.isEmpty() )
+  {
+    const QStringList wmtsGridConfigList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "Config" ) );
+    QMap<QString, QStringList> wmtsGridConfigs;
+    for ( const QString &c : wmtsGridConfigList )
+    {
+      QStringList config = c.split( ',' );
+      wmtsGridConfigs[config[0]] = config;
+    }
+    for ( QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+    {
+      QString crsStr = item->data( 0, Qt::UserRole ).toString();
+      if ( !wmtsGridList.contains( crsStr ) )
+        continue;
+
+      item->setCheckState( 1, Qt::Checked );
+      QStringList config = wmtsGridConfigs[crsStr];
+      item->setData( 2, Qt::DisplayRole, QVariant( config[1] ).toDouble() );
+      item->setData( 3, Qt::DisplayRole, QVariant( config[2] ).toDouble() );
+      item->setData( 4, Qt::DisplayRole, QVariant( config[3] ).toDouble() );
+      item->setData( 5, Qt::DisplayRole, QVariant( config[4] ).toInt() );
+    }
+  }
 
   mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), QString() ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSLayers" ), QStringLiteral( "/" ) );
@@ -1321,6 +1356,18 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ), wmtsPngLayerList );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ), wmtsJpegLayerList );
 
+  QStringList wmtsGridList;
+  QStringList wmtsGridConfigList;
+  for ( const QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  {
+    if ( !item->checkState( 1 ) )
+      continue;
+    wmtsGridList << item->data( 0, Qt::UserRole ).toString();
+    wmtsGridConfigList << QStringLiteral( "%1,%2,%3,%4,%5" ).arg( item->data( 0, Qt::UserRole ).toString(), item->data( 2, Qt::DisplayRole ).toString(), item->data( 3, Qt::DisplayRole ).toString(), item->data( 4, Qt::DisplayRole ).toString(), item->data( 5, Qt::DisplayRole ).toString() );
+  }
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "CRS" ), wmtsGridList );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "Config" ), wmtsGridConfigList );
+
   QgsProject::instance()->writeEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), mWFSUrlLineEdit->text() );
   QStringList wfsLayerList;
   QStringList wfstUpdateLayerList;
@@ -1412,6 +1459,71 @@ void QgsProjectProperties::apply()
 void QgsProjectProperties::showProjectionsTab()
 {
   mOptionsListWidget->setCurrentRow( 2 );
+}
+
+void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int first, int last )
+{
+  Q_UNUSED( parent );
+  for ( int i = first; i <= last; i++ )
+  {
+    QString crsStr = mWMSList->item( i )->text();
+    addWmtsGrid( crsStr );
+  }
+  twWmtsGrids->header()->resizeSections( QHeaderView::ResizeToContents );
+}
+
+void QgsProjectProperties::lwWmsRowsRemoved( const QModelIndex &parent, int first, int last )
+{
+  Q_UNUSED( parent );
+  Q_UNUSED( first );
+  Q_UNUSED( last );
+  QStringList crslist;
+  for ( int i = 0; i < mWMSList->count(); i++ )
+  {
+    crslist << mWMSList->item( i )->text();
+  }
+  for ( const QTreeWidgetItem *item : twWmtsGrids->findItems( QString(), Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  {
+    QString crsStr = item->data( 0, Qt::UserRole ).toString();
+    if ( crslist.contains( crsStr ) )
+      continue;
+    delete item;
+  }
+}
+
+void QgsProjectProperties::twWmtsGridItemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  Qt::ItemFlags flags = item->flags();
+  if ( column == 0 || column == 6 )
+  {
+    item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+  }
+  else
+  {
+    QString crsStr = item->text( 0 );
+    if ( crsStr == QStringLiteral( "EPSG:3857" ) && column != 5 )
+    {
+      item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+    }
+    else if ( crsStr == QStringLiteral( "EPSG:4326" ) && column != 5 )
+    {
+      item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+    }
+    else
+    {
+      item->setFlags( flags | Qt::ItemIsEditable );
+    }
+  }
+}
+
+void QgsProjectProperties::twWmtsGridItemChanged( QTreeWidgetItem *item, int column )
+{
+  if ( column == 4 || column == 5 )
+  {
+    double maxScale = item->data( 4, Qt::DisplayRole ).toFloat();
+    int lastLevel = item->data( 5, Qt::DisplayRole ).toInt();
+    item->setData( 6, Qt::DisplayRole, ( maxScale / std::pow( 2, lastLevel ) ) );
+  }
 }
 
 void QgsProjectProperties::twWmtsItemChanged( QTreeWidgetItem *item, int column )
@@ -2077,6 +2189,93 @@ void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup,
       treeItem->addChild( childItem );
     }
   }
+}
+
+void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
+{
+  QgsTreeWidgetItem *gridItem = new QgsTreeWidgetItem( QStringList() << crsStr );
+  gridItem->setFlags( gridItem->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+  gridItem->setCheckState( 1, Qt::Unchecked );
+  gridItem->setData( 0, Qt::UserRole, crsStr );
+
+  // Define or calculate top, left, max. scale
+  int lastLevel = 18;
+  double scaleDenominator = 0.0;
+  if ( crsStr == QStringLiteral( "EPSG:3857" ) )
+  {
+    gridItem->setData( 2, Qt::DisplayRole, 20037508.3427892480 );
+    gridItem->setData( 3, Qt::DisplayRole, -20037508.3427892480 );
+    scaleDenominator = 559082264.0287179;
+  }
+  else if ( crsStr == QStringLiteral( "EPSG:4326" ) )
+  {
+    gridItem->setData( 2, Qt::DisplayRole, 90.0 );
+    gridItem->setData( 3, Qt::DisplayRole, -180.0 );
+    scaleDenominator = 279541132.0143588675418869;
+  }
+  else
+  {
+    // calculate top, left and scale based on CRS bounds
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
+    QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, QgsProject::instance() );
+    try
+    {
+      // firstly transform CRS bounds expressed in WGS84 to CRS
+      QgsRectangle extent = crsTransform.transformBoundingBox( crs.bounds() );
+      // Constant
+      int tileSize = 256;
+      double POINTS_TO_M = 2.83464567 / 10000;
+      // Calculate scale denominator
+      int colRes = ( extent.xMaximum() - extent.xMinimum() ) / tileSize;
+      int rowRes = ( extent.yMaximum() - extent.yMinimum() ) / tileSize;
+      if ( colRes > rowRes )
+      {
+        scaleDenominator = std::ceil( colRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters ) / POINTS_TO_M );
+      }
+      else
+      {
+        scaleDenominator = std::ceil( rowRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters ) / POINTS_TO_M );
+      }
+      // Calculate resolution based on scale denominator
+      double res = POINTS_TO_M * scaleDenominator / QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+      // Get numbers of column and row for the resolution
+      int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * res ) );
+      int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * res ) );
+      // Update resolution and scale denominator to get 1 tile at this scale
+      if ( col > 1 || row > 1 )
+      {
+        // Update scale
+        if ( col > row )
+        {
+          res = col * res;
+          scaleDenominator = col * scaleDenominator;
+        }
+        else
+        {
+          res = row * res;
+          scaleDenominator = row * scaleDenominator;
+        }
+        // set col and row to 1 for the square
+        col = 1;
+        row = 1;
+      }
+      double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileSize * res );
+      double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileSize * res );
+
+      gridItem->setData( 2, Qt::DisplayRole, top );
+      gridItem->setData( 3, Qt::DisplayRole, left );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+    }
+  }
+  gridItem->setData( 4, Qt::DisplayRole, scaleDenominator );
+  gridItem->setData( 5, Qt::DisplayRole, lastLevel );
+  gridItem->setData( 6, Qt::DisplayRole, ( scaleDenominator / std::pow( 2, lastLevel ) ) );
+  twWmtsGrids->blockSignals( true );
+  twWmtsGrids->addTopLevelItem( gridItem );
+  twWmtsGrids->blockSignals( false );
 }
 
 void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )

@@ -1,4 +1,4 @@
-Content-Length: 45681
+Content-Length: 45435
 Content-Type: text/xml; charset=utf-8
 
 <Capabilities xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns="http://www.opengis.net/wmts/1.0" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -20,21 +20,21 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetCapabilities">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_groups.qgs"/>
+     <ows:Get xlink:href="https://www.qgis.org/"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
   <ows:Operation name="GetTile">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_groups.qgs"/>
+     <ows:Get xlink:href="https://www.qgis.org/"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
   <ows:Operation name="GetFeatureInfo">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/project_groups.qgs"/>
+     <ows:Get xlink:href="https://www.qgis.org/"/>
     </ows:HTTP>
    </ows:DCP>
   </ows:Operation>
