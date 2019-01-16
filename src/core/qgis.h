@@ -440,7 +440,7 @@ template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
-  return metaEnum.valueToKey( value );
+  return QString::fromUtf8( metaEnum.valueToKey( value ) );
 }
 
 /**
