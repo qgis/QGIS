@@ -3206,6 +3206,10 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
       {
         escape = element.attribute( QStringLiteral( "escape" ) );
       }
+      if ( element.hasAttribute( QStringLiteral( "escapeChar" ) ) )
+      {
+        escape = element.attribute( QStringLiteral( "escapeChar" ) );
+      }
       // replace
       QString oprValue = static_cast<const QgsExpressionNodeLiteral *>( opRight.get() )->value().toString();
       if ( !wildCard.isEmpty() && wildCard != QLatin1String( "%" ) )
