@@ -831,12 +831,12 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
 
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ), title(), true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_column_count" ), columnCount(), true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_split_layers" ), splitLayer(), true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_wrap_string" ), wrapString(), true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_map" ), legendFilterByMapEnabled(), true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_atlas" ), legendFilterOutAtlas(), true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ), title(), true );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_column_count" ), columnCount(), true );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_split_layers" ), splitLayer(), true );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_wrap_string" ), wrapString(), true );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_map" ), legendFilterByMapEnabled(), true );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_atlas" ), legendFilterOutAtlas(), true );
 
   context.appendScope( scope );
 
