@@ -822,23 +822,19 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 {
   QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
 
-  //Can't utilize QgsExpressionContextUtils::mapSettingsScope as we don't always
-  //have a QgsMapSettings object available when the context is required, so we manually
-  //add the same variables here
+  // We only want the last scope from the map's expression context, as this contains
+  // the map specific variables. We don't want the rest of the map's context, because that
+  // will contain duplicate global, project, layout, etc scopes.
 
-  // add the existing context of the linked map
-  if (mMap)
-  {
-    context.appendScope( mMap.createExpressionContext() );
-  }
+  context.appendScope( mMap->createExpressionContext().popScope() );
+
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ),title(),true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_settings" ),legendSettings(),true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "column_count" ),columnCount(),true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "split_layers" ),splitLayer(),true);
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "warp_string" ),warpString(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_column_count" ),columnCount(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_split_layers" ),splitLayer(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_warp_string" ),warpString(),true);
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_map" ),legendFilterByMapEnabled(),true);
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_atlas" ),legendFilterOutAtlas(),true);
 
