@@ -436,6 +436,13 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    /**
+     * Returns an expression context containing information about the legend and layout map
+     * 
+     * \since 3.6
+    */  
+    QgsExpressionContext createExpressionContext() const override;
+
 
   public slots:
 
