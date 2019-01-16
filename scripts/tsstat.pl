@@ -106,9 +106,11 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	my $charset = "";
 	my $lc = $langcode;
+	my $svg = $langcode;
 	if( $langcode =~ /(.*)\@latin/ ) {
 		$charset = " (latin)";
 		$langcode = $1;
+		$svg = $1;
 	}
 	if( $langcode =~ /(.*)\-Hans/ ) {
                 $charset = " simplified";
@@ -156,6 +158,7 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	push @lang, {
 		code=>$langcode,
+		svg=>$svg,
 		origcode=>$lc,
 		name=>$name, n=>$n,
 		translations=>$translations,
@@ -188,7 +191,7 @@ for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 		. '<td>%s</td>'
 		. '</tr>',
-		$l->{code}, $l->{name},
+		$l->{svg}, $l->{name},
 		$l->{finished}, $l->{unfinished}, $l->{untranslated},
 		$l->{percentage}, $l->{percentage},
 		$l->{translator};

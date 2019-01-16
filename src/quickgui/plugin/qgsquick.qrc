@@ -1,11 +1,11 @@
 <RCC>
     <qresource prefix="/QgsQuick">
         <file>qmldir</file>
-        <file>qgsquickcheckbox.qml</file>
-        <file>qgsquickdatetime.qml</file>
-        <file>qgsquickexternalresource.qml</file>
-        <file>qgsquicktextedit.qml</file>
-        <file>qgsquickvaluemap.qml</file>
+        <file>editor/qgsquickcheckbox.qml</file>
+        <file>editor/qgsquickdatetime.qml</file>
+        <file>editor/qgsquickexternalresource.qml</file>
+        <file>editor/qgsquicktextedit.qml</file>
+        <file>editor/qgsquickvaluemap.qml</file>
         <file>qgsquickfeatureform.qml</file>
         <file>qgsquickfeatureformstyling.qml</file>
         <file>qgsquickmapcanvas.qml</file>
