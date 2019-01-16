@@ -2430,6 +2430,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - select() replaced by selectByRect()
 - selectedFeaturesIds() replaced by selectedFeatureIds()
 - selectedFeaturesIterator() was replaced by getSelectedFeatures()
+- setDisplayField() replaced by setMapTipTemplate()
 - setSelectedFeatures() replaced by selectByIds()
 - applyNamedStyle() replaced by importNamedStyle()
 - isReadOnly() use readOnly()
