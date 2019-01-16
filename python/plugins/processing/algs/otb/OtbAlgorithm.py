@@ -33,15 +33,16 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (Qgis,
                        QgsMessageLog,
-                       QgsRasterLayer,
                        QgsMapLayer,
                        QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputLayerDefinition,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterString,
-                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterEnum)
 
 from processing.core.parameters import getParameterFromString
@@ -188,49 +189,54 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
         return valid_params
 
-    def otbParameterValue(self, v):
-        if isinstance(v, QgsMapLayer):
-            return v.source()
-        elif isinstance(v, QgsProcessingOutputLayerDefinition):
-            return v.sink.staticValue()
-        else:
-            return str(v)
-
-    def outputParameterName(self):
-        with open(self._descriptionfile) as df:
-            first_line = df.readline().strip()
-            tokens = first_line.split("|")
-            #params = [t if str(t) != str(None) else None for t in tokens[1:]]
-            if len(tokens) == 2:
-                return tokens[1]
-            else:
-                return ''
-
     def processAlgorithm(self, parameters, context, feedback):
-        output_key = self.outputParameterName()
+
         otb_cli_file = OtbUtils.cliPath()
         command = '"{}" {} {}'.format(otb_cli_file, self.name(), OtbUtils.appFolder())
+        outputPixelType = None
         for k, v in parameters.items():
-            if k == 'outputpixeltype' or not v:
+            # if value is None for a parameter we don't have any businees with this key
+            if v is None:
                 continue
 
-            if 'epsg' in k and v.startswith('EPSG:'):
-                v = v.split('EPSG:')[1]
+            # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
+            if k == 'outputpixeltype':
+                outputPixelType = self.pixelTypes[int(parameters['outputpixeltype'])]
+                continue
 
-            if isinstance(v, str) and '\n' in v:
-                v = v.split('\n')
-            if isinstance(v, list):
+            param = self.parameterDefinition(k)
+            if param.isDestination():
+                continue
+
+            if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer)):
+                if isinstance(v, QgsMapLayer):
+                    value = v.source()
+                else:
+                    value = v
+            elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 value = ''
-                for i in list(filter(None, v)):
-                    value += '"{}" '.format(self.otbParameterValue(i))
-            else:
-                value = '"{}"'.format(self.otbParameterValue(v))
+                for item in v:
+                    value += '"{}" '.format(item)
+            elif isinstance(param, QgsProcessingParameterCrs):
+                crs = self.parameterAsCrs(parameters, param.name(), context)
+                value = crs.authid().split('EPSG:')[1]
 
-            if k == output_key and 'outputpixeltype' in parameters:
-                output_pixel_type = self.pixelTypes[int(parameters['outputpixeltype'])]
-                value = '"{}" "{}"'.format(value, output_pixel_type)
+            elif isinstance(param, QgsProcessingParameterEnum):
+                value = self.parameterAsEnum(parameters, param.name(), context)
+            else:
+                value = self.parameterAsString(parameters, param.name(), context)
 
             command += ' -{} {}'.format(k, value)
+
+        output_files = {}
+        for out in self.destinationParameterDefinitions():
+            filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
+
+            output_files[out.name()] = filePath
+            if outputPixelType is not None:
+                command += ' -{} "{}" {}'.format(out.name(), filePath, outputPixelType)
+            else:
+                command += ' -{} "{}"'.format(out.name(), filePath)
 
         QgsMessageLog.logMessage(self.tr('cmd={}'.format(command)), self.tr('Processing'), Qgis.Info)
         if not os.path.exists(otb_cli_file) or not os.path.isfile(otb_cli_file):
@@ -240,7 +246,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         OtbUtils.executeOtb(command, feedback)
 
         result = {}
-        for out in self.destinationParameterDefinitions():
-            filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
-            result[out.name()] = filePath
+        for o in self.outputDefinitions():
+            if o.name() in output_files:
+                result[o.name()] = output_files[o.name()]
         return result
