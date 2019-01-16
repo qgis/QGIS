@@ -2012,6 +2012,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-l polys2 -a id -ts 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+            # with "0" INIT value
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'INIT': 0,
+                                        'FIELD': 'id',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -ts 0.0 0.0 -init 0.0 -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
             # with "0" NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
