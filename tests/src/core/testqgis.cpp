@@ -20,7 +20,8 @@
 #include <memory>
 
 //qgis includes...
-#include <qgis.h>
+#include "qgis.h"
+#include "qgsmaplayermodel.h"
 
 /**
  * \ingroup UnitTests
@@ -46,6 +47,8 @@ class TestQgis : public QObject
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
+    void testQgsEnumValueToKey();
+    void testQgsEnumKeyToValue();
 
   private:
     QString mReport;
@@ -388,9 +391,18 @@ void TestQgis::testQgsVariantEqual()
   // NULL identities
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
   QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
-
-
 }
+
+void TestQgis::testQgsEnumValueToKey()
+{
+  QCOMPARE( qgsEnumValueToKey<QgsMapLayerModel::ItemDataRole>( QgsMapLayerModel::LayerRole ), "LayerRole" );
+}
+void TestQgis::testQgsEnumKeyToValue()
+{
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( "LayerRole", QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( "UnknownKey", QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+}
+
 
 
 QGSTEST_MAIN( TestQgis )
