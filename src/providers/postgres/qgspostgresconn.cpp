@@ -211,6 +211,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mNextCursorId( 0 )
   , mShared( shared )
   , mTransaction( transaction )
+  , mLock( QMutex::Recursive )
 {
   QgsDebugMsg( QStringLiteral( "New PostgreSQL connection for " ) + conninfo );
 
@@ -1065,33 +1066,37 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
-  PGresult *res = ::PQexec( mConn, query.toUtf8() );
-
-  if ( res )
+  PGresult *res = nullptr;
   {
-    int errorStatus = PQresultStatus( res );
-    if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
+    QMutexLocker locker( &mLock );
+    res = ::PQexec( mConn, query.toUtf8() );
+
+    if ( res )
     {
-      if ( logError )
+      int errorStatus = PQresultStatus( res );
+      if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
       {
-        QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
-                                   .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
-                                   tr( "PostGIS" ) );
-      }
-      else
-      {
-        QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
-                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
+        if ( logError )
+        {
+          QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
+                                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
+                                     tr( "PostGIS" ) );
+        }
+        else
+        {
+          QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
+                       .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
+        }
       }
     }
-  }
-  else if ( logError )
-  {
-    QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ), tr( "PostGIS" ) );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
+    else if ( logError )
+    {
+      QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ), tr( "PostGIS" ) );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
+    }
   }
 
   return res;
@@ -1099,6 +1104,8 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
 
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
 {
+  QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
     QgsDebugMsgLevel( QStringLiteral( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ), 4 );
@@ -1114,6 +1121,8 @@ bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql 
 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
 {
+  QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+
   if ( !PQexecNR( QStringLiteral( "CLOSE %1" ).arg( cursorName ) ) )
     return false;
 
@@ -1128,11 +1137,14 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
 
 QString QgsPostgresConn::uniqueCursorName()
 {
+  QMutexLocker locker( &mLock ); // to protect access to mNextCursorId
   return QStringLiteral( "qgis_%1" ).arg( ++mNextCursorId );
 }
 
 bool QgsPostgresConn::PQexecNR( const QString &query, bool retry )
 {
+  QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+
   QgsPostgresResult res( PQexec( query, false ) );
 
   ExecStatusType errorStatus = res.PQresultStatus();
@@ -1194,11 +1206,15 @@ PGresult *QgsPostgresConn::PQgetResult()
 
 PGresult *QgsPostgresConn::PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes )
 {
+  QMutexLocker locker( &mLock );
+
   return ::PQprepare( mConn, stmtName.toUtf8(), query.toUtf8(), nParams, paramTypes );
 }
 
 PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStringList &params )
 {
+  QMutexLocker locker( &mLock );
+
   const char **param = new const char *[ params.size()];
   QList<QByteArray> qparam;
 
@@ -1222,6 +1238,8 @@ PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStrin
 
 void QgsPostgresConn::PQfinish()
 {
+  QMutexLocker locker( &mLock );
+
   Q_ASSERT( mConn );
   ::PQfinish( mConn );
   mConn = nullptr;
@@ -1229,12 +1247,16 @@ void QgsPostgresConn::PQfinish()
 
 int QgsPostgresConn::PQstatus() const
 {
+  QMutexLocker locker( &mLock );
+
   Q_ASSERT( mConn );
   return ::PQstatus( mConn );
 }
 
 QString QgsPostgresConn::PQerrorMessage() const
 {
+  QMutexLocker locker( &mLock );
+
   Q_ASSERT( mConn );
   return QString::fromUtf8( ::PQerrorMessage( mConn ) );
 }

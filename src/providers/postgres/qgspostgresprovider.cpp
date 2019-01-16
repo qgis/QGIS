@@ -4095,9 +4095,7 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
     else
     {
       QgsPostgresConn *conn = connectionRO();
-      conn->lock();
       QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
-      conn->unlock();
       if ( result.PQresultStatus() == PGRES_TUPLES_OK )
       {
         srs = QgsCoordinateReferenceSystem::fromProj4( result.PQgetvalue( 0, 0 ) );
