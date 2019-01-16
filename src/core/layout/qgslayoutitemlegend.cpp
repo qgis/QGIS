@@ -818,6 +818,35 @@ void QgsLayoutItemLegend::onAtlasEnded()
   updateFilterByMap();
 }
 
+QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
+
+  //Can't utilize QgsExpressionContextUtils::mapSettingsScope as we don't always
+  //have a QgsMapSettings object available when the context is required, so we manually
+  //add the same variables here
+
+  // add the existing context of the linked map
+  if (mMap)
+  {
+    context.appendScope( mMap.createExpressionContext() );
+  }
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ),title(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_settings" ),legendSettings(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "column_count" ),columnCount(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "split_layers" ),splitLayer(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "warp_string" ),warpString(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_map" ),legendFilterByMapEnabled(),true);
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_atlas" ),legendFilterOutAtlas(),true);
+
+  context.appendScope( scope );
+
+  return context;
+}
+
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
