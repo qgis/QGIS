@@ -1116,7 +1116,8 @@ void QgsGraduatedSymbolRendererWidget::changeSelectedSymbols()
 
 void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
 {
-  std::unique_ptr< QgsSymbol > newSymbol( mRenderer->ranges()[rangeIdx].symbol()->clone() );
+  const QgsRendererRange &range = mRenderer->ranges()[rangeIdx];
+  std::unique_ptr< QgsSymbol > newSymbol( range.symbol()->clone() );
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
@@ -1124,6 +1125,7 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
     // panel's existence. Accordingly, just kinda give it ownership here, and clean up in cleanUpSymbolSelector
     QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
+    dlg->setPanelTitle( range.label() );
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
     connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
     openPanel( dlg );
