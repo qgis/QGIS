@@ -61,7 +61,7 @@ void QgsMeshLayer3DRendererWidget::setRenderer( const QgsMeshLayer3DRenderer *re
 
   whileBlocking( chkEnabled )->setChecked( ( bool )mRenderer );
 
-  if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == QLatin1String( "polygon" ) )
+  if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == QLatin1String( "mesh" ) )
   {
     whileBlocking( widgetMesh )->setSymbol( *static_cast<const QgsMesh3DSymbol *>( mRenderer->symbol() ), nullptr );
   }
