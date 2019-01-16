@@ -758,12 +758,12 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
 
   // legend canvas item variables
-    sVariableHelpTexts.insert( QStringLiteral(  "legend_title" ), QCoreApplication::translate( "variable_help", "Title of the legend." ) );
-  sVariableHelpTexts.insert( QStringLiteral(  "legend_column_count" ), QCoreApplication::translate( "variable_help", "Number of column in the legend." ) );
-  sVariableHelpTexts.insert( QStringLiteral(  "legend_split_layers" ), QCoreApplication::translate( "variable_help", "Boolean indicating if layers can be split in the legend." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "legend_title" ), QCoreApplication::translate( "variable_help", "Title of the legend." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "legend_column_count" ), QCoreApplication::translate( "variable_help", "Number of column in the legend." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "legend_split_layers" ), QCoreApplication::translate( "variable_help", "Boolean indicating if layers can be split in the legend." ) );
   sVariableHelpTexts.insert( QStringLiteral( "legend_wrap_string" ), QCoreApplication::translate( "variable_help", "Characters used to wrap the legend text." ) );
-  sVariableHelpTexts.insert( QStringLiteral(  "legend_filter_by_map" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the content of the legend is filtered by the map." ) );
-  sVariableHelpTexts.insert( QStringLiteral(  "legend_filter_by_atlas" ), QCoreApplication::translate( "variable_help", "Boolean indicationg if the content of the legend is filtered by the Atlas." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "legend_filter_by_map" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the content of the legend is filtered by the map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "legend_filter_by_atlas" ), QCoreApplication::translate( "variable_help", "Boolean indicationg if the content of the legend is filtered by the Atlas." ) );
 
 
   // map tool capture variables
