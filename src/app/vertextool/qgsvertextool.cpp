@@ -980,14 +980,17 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
 
 QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  if ( !mCache.contains( layer ) )
+  const bool layerWasNotInCache = !mCache.contains( layer );
+  // insert if it was not in cache
+  QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
+  if ( layerWasNotInCache )
   {
     connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVertexTool::onCachedGeometryChanged );
     connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::onCachedGeometryDeleted );
-    // TODO: also clear cache when layer is deleted
+    connect( layer, &QgsVectorLayer::willBeDeleted, this, &QgsVertexTool::clearGeometryCache );
+    connect( layer, &QgsVectorLayer::dataChanged, this, &QgsVertexTool::clearGeometryCache );
   }
 
-  QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
   if ( !layerCache.contains( fid ) )
   {
     QgsFeature f;
@@ -1001,6 +1004,16 @@ QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatu
 QgsGeometry QgsVertexTool::cachedGeometryForVertex( const Vertex &vertex )
 {
   return cachedGeometry( vertex.layer, vertex.fid );
+}
+
+void QgsVertexTool::clearGeometryCache()
+{
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( sender() );
+  mCache.remove( layer );
+  disconnect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVertexTool::onCachedGeometryChanged );
+  disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::onCachedGeometryDeleted );
+  disconnect( layer, &QgsVectorLayer::willBeDeleted, this, &QgsVertexTool::clearGeometryCache );
+  disconnect( layer, &QgsVectorLayer::dataChanged, this, &QgsVertexTool::clearGeometryCache );
 }
 
 void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
