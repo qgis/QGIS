@@ -19,6 +19,7 @@
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include <climits>
 
@@ -101,17 +102,20 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
 
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
-    pkItem->setData( "", Qt::UserRole + 2 );
 
-    if ( !layerProperty.pkCols.isEmpty() )
+    QStringList defPk( QgsSettings().value( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, layerProperty.schemaName, layerProperty.tableName ), QStringList() ).toStringList() );
+
+    if ( !layerProperty.pkCols.isEmpty() && defPk.isEmpty() )
     {
       // If we have a view with multiple possible columns to be used as the primary key, for convenience
       // let's select the first one - this is what the browser dock already does. We risk that a wrong column
       // will be used, but most of the time we should be fine.
-      QString firstCol = layerProperty.pkCols[0];
-      pkItem->setText( firstCol );
-      pkItem->setData( QStringList( firstCol ), Qt::UserRole + 2 );
+      defPk = QStringList( layerProperty.pkCols[0] );
     }
+
+    pkItem->setData( defPk, Qt::UserRole + 2 );
+    if ( !defPk.isEmpty() )
+      pkItem->setText( defPk.join( ',' ) );
 
     QStandardItem *selItem = new QStandardItem( QString() );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
@@ -379,7 +383,9 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( QStringLiteral( "," ) ) );
+  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( s1.toList() ) );
+
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( ',' ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );

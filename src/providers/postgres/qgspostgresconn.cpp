@@ -1878,6 +1878,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
   settings.remove( key + "/authcfg" );
+  settings.remove( key + "/keys" );
   settings.remove( key );
 }
 

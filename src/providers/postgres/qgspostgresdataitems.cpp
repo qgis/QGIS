@@ -24,6 +24,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #ifdef HAVE_GUI
 #include "qgspgnewconnection.h"
@@ -54,7 +55,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   QVector<QgsDataItem *>items;
 
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
-  // TODO: wee need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
+  // TODO: we need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !conn )
   {
@@ -492,7 +493,6 @@ void QgsPGLayerItem::refreshMaterializedView()
 
 QString QgsPGLayerItem::createUri()
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
@@ -502,7 +502,19 @@ QString QgsPGLayerItem::createUri()
   }
 
   QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
-  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
+
+  QStringList defPk( QgsSettings().value(
+                       QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( connItem->name(), mLayerProperty.schemaName, mLayerProperty.tableName ),
+                       QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
+                     ).toStringList() );
+
+  QStringList cols;
+  for ( const auto &col : defPk )
+  {
+    cols << QgsPostgresConn::quotedIdentifier( col );
+  }
+
+  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, cols.join( ',' ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
