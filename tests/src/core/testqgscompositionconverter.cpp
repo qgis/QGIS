@@ -558,6 +558,11 @@ void TestQgsCompositionConverter::convertComposition()
   QCOMPARE( layout->name(), QStringLiteral( "composer title" ) );
   QCOMPARE( layout->renderContext().dpi(), 305.0 );
 
+  QStringList variableNames = layout->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  QStringList variableValues = layout->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+  QCOMPARE( variableNames, QStringList() << QStringLiteral( "variable1" ) << QStringLiteral( "variable2" ) );
+  QCOMPARE( variableValues, QStringList() << QStringLiteral( "100" ) << QStringLiteral( "200" ) );
+
   // Check guides
   QCOMPARE( layout->guides().rowCount( QModelIndex() ), 8 );
 

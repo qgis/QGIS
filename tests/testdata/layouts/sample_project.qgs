@@ -583,7 +583,16 @@
         </ComposerFrame>
         <customproperties/>
       </ComposerAttributeTableV2>
-      <customproperties/>
+      <customproperties>
+        <property key="variableNames">
+          <value>variable1</value>
+          <value>variable2</value>
+        </property>
+        <property key="variableValues">
+          <value>100</value>
+          <value>200</value>
+        </property>
+      </customproperties>
     </Composition>
   </Composer>
   <Composer title="composer atlas" visible="0">
