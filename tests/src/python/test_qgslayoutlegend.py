@@ -281,7 +281,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setWrapString('d')
         legend.setLegendFilterOutAtlas(True)
 
-        expc=legend.createExpressionContext()
+        expc = legend.createExpressionContext()
 
         exp1 = QgsExpression("@legend_title")
         self.assertEqual(exp1.evaluate(expc), "Legend")
