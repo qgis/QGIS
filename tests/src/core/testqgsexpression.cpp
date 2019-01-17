@@ -2962,7 +2962,11 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "map_concat(map('1', 'one', '2', 'overridden by next map'), map('2', 'two', '3', 'three'))" ).evaluate( &context ), QVariant( concatExpected ) );
 
       QCOMPARE( QgsExpression( "json_to_map('{\"1\":\"one\",\"2\":\"two\",\"3\":\"three\"}')" ).evaluate( &context ), QVariant( concatExpected ) );
+      QCOMPARE( QgsExpression( "load_json('{\"1\":\"one\",\"2\":\"two\",\"3\":\"three\"}')" ).evaluate( &context ), QVariant( concatExpected ) );
+      QCOMPARE( QgsExpression( "load_json('[1,2,3]')" ).evaluate( &context ), QVariant( QVariantList() << 1 << 2 << 3 ) );
       QCOMPARE( QgsExpression( "map_to_json(map('1','one','2','two','3','three'))" ).evaluate( &context ), QVariant( "{\"1\":\"one\",\"2\":\"two\",\"3\":\"three\"}" ) );
+      QCOMPARE( QgsExpression( "write_json(map('1','one','2','two','3','three'))" ).evaluate( &context ), QVariant( "{\"1\":\"one\",\"2\":\"two\",\"3\":\"three\"}" ) );
+      QCOMPARE( QgsExpression( "write_json(array(1,2,3))" ).evaluate( &context ), QVariant( QStringLiteral( "[1,2,3]" ) ) );
 
       QCOMPARE( QgsExpression( "hstore_to_map('1=>one,2=>two,3=>three')" ).evaluate( &context ), QVariant( concatExpected ) );
       QCOMPARE( QgsExpression( "map_to_hstore(map('1','one','2','two','3','three'))" ).evaluate( &context ), QVariant( "\"1\"=>\"one\",\"2\"=>\"two\",\"3\"=>\"three\"" ) );
