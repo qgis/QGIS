@@ -65,7 +65,7 @@ COPY .docker/qgis_resources/supervisor/supervisor.xvfb.conf /etc/supervisor/supe
 # - deb installed
 # - built from git
 # needed to find PyQt wrapper provided by QGIS
-ENV PYTHONPATH=/usr/share/qgis/python/:/usr/lib/python3/dist-packages/qgis:/usr/share/qgis/python/qgis
+ENV PYTHONPATH=/usr/share/qgis/python/:/usr/share/qgis/python/plugins:/usr/lib/python3/dist-packages/qgis:/usr/share/qgis/python/qgis
 
 
 WORKDIR /
