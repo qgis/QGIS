@@ -200,12 +200,20 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   : QgsRasterDataProvider( other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
   , mUpdate( false )
 {
+  QString driverShortName;
+  if ( other.mGdalBaseDataset )
+  {
+    driverShortName = GDALGetDriverShortName( GDALGetDatasetDriver( other.mGdalBaseDataset ) );
+  }
+
+
   // The JP2OPENJPEG driver might consume too much memory on large datasets
   // so make sure to really use a single one.
-  bool forceUseSameDataset =
-    ( other.mGdalBaseDataset &&
-      GDALGetDatasetDriver( other.mGdalBaseDataset ) == GDALGetDriverByName( "JP2OPENJPEG" ) ) ||
-    CSLTestBoolean( CPLGetConfigOption( "QGIS_GDAL_FORCE_USE_SAME_DATASET", "FALSE" ) );
+  // The PostGISRaster driver internally uses a per-thread connection cache.
+  // This can lead to crashes if two datasets created by the same thread are used at the same time.
+  bool forceUseSameDataset = ( driverShortName.toUpper() == QStringLiteral( "JP2OPENJPEG" ) ||
+                               driverShortName == QStringLiteral( "PostGISRaster" ) ||
+                               CSLTestBoolean( CPLGetConfigOption( "QGIS_GDAL_FORCE_USE_SAME_DATASET", "FALSE" ) ) );
 
   if ( forceUseSameDataset )
   {
