@@ -511,6 +511,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     bool isLabelBlockingItem( QgsLayoutItem *item ) const;
 
+    /**
+     * @brief renderingErrors
+     * @return list of layer id / error message
+     */
+    const QList< QPair< QString, QString > > &renderingErrors() const SIP_SKIP { return mRenderingErrors; }
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -725,6 +731,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     QStringList mBlockingLabelItemUuids;
     QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
+
+    //!layer id / error message
+    QList< QPair< QString, QString > > mRenderingErrors;
 
     void init();
 
