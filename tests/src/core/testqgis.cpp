@@ -395,12 +395,12 @@ void TestQgis::testQgsVariantEqual()
 
 void TestQgis::testQgsEnumValueToKey()
 {
-  QCOMPARE( qgsEnumValueToKey<QgsMapLayerModel::ItemDataRole>( QgsMapLayerModel::LayerRole ), "LayerRole" );
+  QCOMPARE( qgsEnumValueToKey<QgsMapLayerModel::ItemDataRole>( QgsMapLayerModel::LayerRole ), QStringLiteral( "LayerRole" ) );
 }
 void TestQgis::testQgsEnumKeyToValue()
 {
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( "LayerRole", QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerRole );
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( "UnknownKey", QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "LayerRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
 }
 
 
