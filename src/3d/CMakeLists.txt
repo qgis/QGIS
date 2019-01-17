@@ -15,6 +15,7 @@ SET(QGIS_3D_SRCS
   qgsphongmaterialsettings.cpp
   qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
+  qgsrulebased3drenderer.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
@@ -101,6 +102,7 @@ SET(QGIS_3D_HDRS
   qgsphongmaterialsettings.h
   qgspointlightsettings.h
   qgsraycastingutils_p.h
+  qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h

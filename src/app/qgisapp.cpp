@@ -96,6 +96,7 @@
 #include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
+#include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
 #endif
@@ -11170,6 +11171,7 @@ void QgisApp::init3D()
 #ifdef HAVE_3D
   // register 3D renderers
   QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
+  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif
