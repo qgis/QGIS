@@ -826,7 +826,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   // the map specific variables. We don't want the rest of the map's context, because that
   // will contain duplicate global, project, layout, etc scopes.
 
-  context.appendScope( mMap->createExpressionContext().popScope() );
+  // context.appendScope( mMap->createExpressionContext().popScope() );
 
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
