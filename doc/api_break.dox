@@ -230,12 +230,20 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>vertexData<td>QgsInterpolatorVertexData
 </table>
 
+
+Renamed Enum Values        {#qgis_api_break_3_0_renamed_enum_values}
+-------------------
+
 <table>
 <caption id="renamed_enum_values">Renamed enum values</caption>
 <tr><th>class</th><th>API 2.x<th>API 3.X
 <tr><td>QgsLayerTreeModelLegendNode<td>SymbolV2LegacyRuleKeyRole<td>SymbolLegacyRuleKeyRole
 <tr><td>QgsVectorLayer<td>EditorWidgetV2<td>EditorWidget
 </table>
+
+
+Renamed Methods        {#qgis_api_break_3_0_renamed_methods}
+---------------
 
 <table>
 <caption id="renamed_methods">Renamed method names</caption>
