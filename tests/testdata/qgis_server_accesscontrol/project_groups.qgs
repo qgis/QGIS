@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="QGIS Server Hello World" version="3.3.0-Master">
+<qgis projectname="QGIS Server Hello World" version="3.5.0-Master">
   <homePath path=""/>
   <title>QGIS Server Hello World</title>
   <autotransaction active="0"/>
@@ -80,19 +80,19 @@
       <item>Country_Diagrams_208edc6e_7828_426b_a7d8_c2383f10761d</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings intersection-snapping="0" tolerance="40" unit="1" type="1" mode="3" enabled="1">
+  <snapping-settings enabled="1" intersection-snapping="0" mode="3" unit="1" tolerance="40" type="1">
     <individual-layer-settings>
-      <layer-setting id="Hello_SubsetString_copy20160222085231770" tolerance="0" type="1" enabled="1" units="2"/>
-      <layer-setting id="hello20131022151106574" tolerance="40" type="1" enabled="1" units="1"/>
-      <layer-setting id="Hello_copy20150804164427541" tolerance="0" type="1" enabled="1" units="2"/>
-      <layer-setting id="points20150803121107046" tolerance="0" type="1" enabled="1" units="2"/>
-      <layer-setting id="Country_Diagrams_208edc6e_7828_426b_a7d8_c2383f10761d" tolerance="12" type="1" enabled="1" units="1"/>
-      <layer-setting id="Hello_Project_SubsetString_copy20160223113949592" tolerance="0" type="1" enabled="1" units="2"/>
-      <layer-setting id="Country_copy20161127151800736" tolerance="0" type="1" enabled="1" units="2"/>
-      <layer-setting id="Country_Labels_67649087_4e95_4483_9c32_a9e14b8360db" tolerance="12" type="1" enabled="1" units="1"/>
-      <layer-setting id="Country_07a7a712_8bf3_4cb0_abde_58338f73a4b2" tolerance="12" type="1" enabled="1" units="1"/>
-      <layer-setting id="country20131022151106556" tolerance="40" type="1" enabled="1" units="1"/>
-      <layer-setting id="country20170328164317226" tolerance="0" type="1" enabled="0" units="2"/>
+      <layer-setting enabled="1" units="2" id="Hello_Project_SubsetString_copy20160223113949592" tolerance="0" type="1"/>
+      <layer-setting enabled="1" units="1" id="Country_Diagrams_208edc6e_7828_426b_a7d8_c2383f10761d" tolerance="12" type="1"/>
+      <layer-setting enabled="1" units="1" id="country20131022151106556" tolerance="40" type="1"/>
+      <layer-setting enabled="1" units="1" id="Country_Labels_67649087_4e95_4483_9c32_a9e14b8360db" tolerance="12" type="1"/>
+      <layer-setting enabled="0" units="2" id="country20170328164317226" tolerance="0" type="1"/>
+      <layer-setting enabled="1" units="2" id="points20150803121107046" tolerance="0" type="1"/>
+      <layer-setting enabled="1" units="2" id="Hello_SubsetString_copy20160222085231770" tolerance="0" type="1"/>
+      <layer-setting enabled="1" units="1" id="hello20131022151106574" tolerance="40" type="1"/>
+      <layer-setting enabled="1" units="2" id="Hello_copy20150804164427541" tolerance="0" type="1"/>
+      <layer-setting enabled="1" units="2" id="Country_copy20161127151800736" tolerance="0" type="1"/>
+      <layer-setting enabled="1" units="1" id="Country_07a7a712_8bf3_4cb0_abde_58338f73a4b2" tolerance="12" type="1"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
@@ -119,6 +119,7 @@
     </destinationsrs>
     <rendermaptile>0</rendermaptile>
   </mapcanvas>
+  <projectModels/>
   <legend updateDrawingOrder="true">
     <legendlayer name="db_point" showFeatureCount="0" drawingOrder="-1" open="true" checked="Qt::Checked">
       <filegroup open="true" hidden="false">
@@ -732,7 +733,12 @@
         </map-layer-style>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 symbollevels="0" forceraster="0" enableorderby="0" type="singleSymbol">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
             <layer locked="0" class="SimpleFill" enabled="1" pass="0">
@@ -819,6 +825,10 @@
           </Option>
         </properties>
       </DiagramLayerSettings>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
       <fieldConfiguration>
         <field name="pk">
           <editWidget type="">
@@ -939,7 +949,12 @@
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 symbollevels="0" forceraster="0" enableorderby="0" type="singleSymbol">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
             <layer locked="0" class="SimpleFill" enabled="1" pass="0">
@@ -991,6 +1006,10 @@
           </Option>
         </properties>
       </DiagramLayerSettings>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
       <fieldConfiguration>
         <field name="pk">
           <editWidget type="TextEdit">
@@ -1053,8 +1072,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -1415,8 +1434,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
             <featformsuppress>0</featformsuppress>
             <editorlayout>generatedlayout</editorlayout>
@@ -1437,6 +1456,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -1590,8 +1614,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -1955,8 +1979,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
             <featformsuppress>0</featformsuppress>
             <editorlayout>generatedlayout</editorlayout>
@@ -1977,6 +2001,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -2130,8 +2159,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -2208,6 +2237,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -2352,8 +2386,8 @@ An example follows:
 from PyQt4.QtGui import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -2437,6 +2471,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -2576,8 +2615,8 @@ An example follows:
 from PyQt4.QtGui import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -2661,6 +2700,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -2800,8 +2844,8 @@ An example follows:
 from PyQt4.QtGui import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -3370,6 +3414,11 @@ def my_form_open(dialog, layer, feature):
         </map-layer-style>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -3577,7 +3626,12 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 symbollevels="0" forceraster="0" enableorderby="0" type="singleSymbol">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
             <layer locked="0" class="SimpleFill" enabled="1" pass="0">
@@ -3691,8 +3745,8 @@ An example follows:
 from qgis.PyQt.QtWidgets import QWidget
 
 def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
+    geom = feature.geometry()
+    control = dialog.findChild(QWidget, "MyLineEdit")
 ]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -3848,6 +3902,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="fill" clip_to_extent="1">
@@ -4053,6 +4112,11 @@ def my_form_open(dialog, layer, feature):
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
       <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
           <symbol name="0" alpha="1" type="marker" clip_to_extent="1">
@@ -4385,6 +4449,16 @@ def my_form_open(dialog, layer, feature):
       <Group type="QStringList"/>
       <Layer type="QStringList"/>
     </WMTSJpegLayers>
+    <WMTSGrids>
+      <Config type="QStringList">
+        <value>EPSG:3857,20037508.342789248,-20037508.342789248,559082264.0287179,20</value>
+        <value>EPSG:4326,90,-180,279541132.0143589,19</value>
+      </Config>
+      <CRS type="QStringList">
+        <value>EPSG:3857</value>
+        <value>EPSG:4326</value>
+      </CRS>
+    </WMTSGrids>
   </properties>
   <visibility-presets/>
   <transformContext/>
@@ -4510,6 +4584,7 @@ def my_form_open(dialog, layer, feature):
                 <prop k="offset" v="0"/>
                 <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
                 <prop k="offset_unit" v="MM"/>
+                <prop k="ring_filter" v="0"/>
                 <prop k="use_custom_dash" v="0"/>
                 <prop k="width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
                 <data_defined_properties>

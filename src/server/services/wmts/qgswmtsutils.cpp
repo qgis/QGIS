@@ -30,17 +30,16 @@ namespace QgsWmts
 {
   namespace
   {
-    QMap< QgsUnitTypes::DistanceUnit, double> populateInchesPerUnit();
-    QMap< QString, tileMatrixInfo> populateTileMatrixInfoMap();
+    QMap< QString, tileMatrixInfo> populateFixedTileMatrixInfoMap();
 
     QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
-    double METERS_PER_INCH = 0.02540005080010160020;
-    QMap< QgsUnitTypes::DistanceUnit, double> INCHES_PER_UNIT = populateInchesPerUnit();
-    int tileWidth = 256;
-    int tileHeight = 256;
+    // Constant
+    int tileSize = 256;
+    double POINTS_TO_M = 2.83464567 / 10000.0;
 
-    QMap< QString, tileMatrixInfo> tileMatrixInfoMap = populateTileMatrixInfoMap();
+    QMap< QString, tileMatrixInfo> fixedTileMatrixInfoMap = populateFixedTileMatrixInfoMap();
+    QMap< QString, tileMatrixInfo> calculatedTileMatrixInfoMap; // for project without WMTSGrids configuration
   }
 
   QString implementationVersion()
@@ -75,10 +74,15 @@ namespace QgsWmts
     return  href;
   }
 
-  tileMatrixInfo getTileMatrixInfo( const QString &crsStr, const QgsProject *project )
+  tileMatrixInfo calculateTileMatrixInfo( const QString &crsStr, const QgsProject *project )
   {
-    if ( tileMatrixInfoMap.contains( crsStr ) )
-      return tileMatrixInfoMap[crsStr];
+    // Does the CRS have fixed tile matrices
+    if ( fixedTileMatrixInfoMap.contains( crsStr ) )
+      return fixedTileMatrixInfoMap[crsStr];
+
+    // Does the CRS have already calculated tile matrices
+    if ( calculatedTileMatrixInfoMap.contains( crsStr ) )
+      return calculatedTileMatrixInfoMap[crsStr];
 
     tileMatrixInfo tmi;
     tmi.ref = crsStr;
@@ -98,18 +102,19 @@ namespace QgsWmts
 
     // calculate tile matrix scale denominator
     double scaleDenominator = 0.0;
-    int colRes = ( tmi.extent.xMaximum() - tmi.extent.xMinimum() ) / tileWidth;
-    int rowRes = ( tmi.extent.yMaximum() - tmi.extent.yMinimum() ) / tileHeight;
+    int colRes = ( tmi.extent.xMaximum() - tmi.extent.xMinimum() ) / tileSize;
+    int rowRes = ( tmi.extent.yMaximum() - tmi.extent.yMinimum() ) / tileSize;
+    double UNIT_TO_M = QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
     if ( colRes > rowRes )
-      scaleDenominator = std::ceil( colRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028 );
+      scaleDenominator = std::ceil( colRes * UNIT_TO_M / POINTS_TO_M );
     else
-      scaleDenominator = std::ceil( rowRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028 );
+      scaleDenominator = std::ceil( rowRes * UNIT_TO_M / POINTS_TO_M );
 
     // Update extent to get a square one
     QgsRectangle extent = tmi.extent;
-    double res = 0.00028 * scaleDenominator / METERS_PER_INCH / INCHES_PER_UNIT[ tmi.unit ];
-    int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileWidth * res ) );
-    int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileHeight * res ) );
+    double res = POINTS_TO_M * scaleDenominator / UNIT_TO_M;
+    int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * res ) );
+    int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * res ) );
     if ( col > 1 || row > 1 )
     {
       // Update scale
@@ -128,45 +133,53 @@ namespace QgsWmts
       row = 1;
     }
     // Calculate extent
-    double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileWidth * res );
-    double bottom = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) - ( row / 2.0 ) * ( tileHeight * res );
-    double right = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) + ( col / 2.0 ) * ( tileWidth * res );
-    double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileHeight * res );
+    double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileSize * res );
+    double bottom = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) - ( row / 2.0 ) * ( tileSize * res );
+    double right = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) + ( col / 2.0 ) * ( tileSize * res );
+    double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileSize * res );
     tmi.extent = QgsRectangle( left, bottom, right, top );
 
     tmi.scaleDenominator = scaleDenominator;
 
-    tileMatrixInfoMap[crsStr] = tmi;
+    calculatedTileMatrixInfoMap[crsStr] = tmi;
 
     return tmi;
   }
 
-  tileMatrixSetDef getTileMatrixSet( tileMatrixInfo tmi, double minScale )
+  tileMatrixSetDef calculateTileMatrixSet( tileMatrixInfo tmi, double minScale )
   {
     QList< tileMatrixDef > tileMatrixList;
     double scaleDenominator = tmi.scaleDenominator;
     QgsRectangle extent = tmi.extent;
     QgsUnitTypes::DistanceUnit unit = tmi.unit;
 
+    // constant
+    double UNIT_TO_M = QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
+    double resolution = POINTS_TO_M * scaleDenominator / UNIT_TO_M;
+    int column = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * resolution ) );
+    int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * resolution ) );
+
     while ( scaleDenominator >= minScale )
     {
       double scale = scaleDenominator;
-      double res = 0.00028 * scale / METERS_PER_INCH / INCHES_PER_UNIT[ unit ];
-      int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileWidth * res ) );
-      int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileHeight * res ) );
-      double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileWidth * res );
-      double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileHeight * res );
+      // Calculate resolution based on scale denominator
+      double res = resolution;
+      int col = column;
+      int r = row;
 
       tileMatrixDef tm;
       tm.resolution = res;
       tm.scaleDenominator = scale;
       tm.col = col;
-      tm.row = row;
-      tm.left = std::max( left, extent.xMinimum() );
-      tm.top = std::min( top, extent.yMaximum() );
+      tm.row = r;
+      tm.left = extent.xMinimum();
+      tm.top = extent.yMaximum();
       tileMatrixList.append( tm );
 
       scaleDenominator = scale / 2;
+      resolution = res / 2;
+      column = col * 2;
+      row = r * 2;
     }
 
     tileMatrixSetDef tms;
@@ -214,9 +227,112 @@ namespace QgsWmts
     return scale;
   }
 
-  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project )
+  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project, const QString &tms_ref )
   {
     QList< tileMatrixSetDef > tmsList;
+
+    bool gridsDefined = false;
+    QStringList wmtsGridList = project->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "CRS" ), QStringList(), &gridsDefined );
+    if ( gridsDefined )
+    {
+      if ( !tms_ref.isEmpty() && !wmtsGridList.contains( tms_ref ) )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+      }
+
+      QStringList wmtsGridConfigList = project->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "Config" ) );
+      for ( const QString &c : wmtsGridConfigList )
+      {
+        QStringList config = c.split( ',' );
+        QString crsStr = config[0];
+        if ( !tms_ref.isEmpty() && tms_ref != crsStr )
+        {
+          continue;
+        }
+
+        tileMatrixInfo tmi;
+        double fixedTop = 0.0;
+        double fixedLeft = 0.0;
+        double resolution = -1.0;
+        int col = -1;
+        int row = -1;
+        // Does the CRS have fixed tile matrices
+        if ( fixedTileMatrixInfoMap.contains( crsStr ) )
+        {
+          tmi = fixedTileMatrixInfoMap[crsStr];
+          // Calculate resolution based on scale denominator
+          resolution = POINTS_TO_M * tmi.scaleDenominator / QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
+          // Get fixed corner
+          QgsRectangle extent = tmi.extent;
+          fixedTop = extent.yMaximum();
+          fixedLeft = extent.xMinimum();
+          // Get numbers of column and row for the resolution to cover the extent
+          col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * resolution ) );
+          row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * resolution ) );
+        }
+        else
+        {
+          tmi.ref = crsStr;
+
+          fixedTop = QVariant( config[1] ).toDouble();
+          fixedLeft = QVariant( config[2] ).toDouble();
+          double minScale = QVariant( config[3] ).toDouble();
+
+          tmi.scaleDenominator = minScale;
+
+          QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
+          tmi.unit = crs.mapUnits();
+
+          QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ), crs, project );
+          try
+          {
+            // firstly transform CRS bounds expressed in WGS84 to CRS
+            QgsRectangle extent = crsTransform.transformBoundingBox( crs.bounds() );
+            // Calculate resolution based on scale denominator
+            resolution = POINTS_TO_M * minScale / QgsUnitTypes::fromUnitToUnitFactor( tmi.unit, QgsUnitTypes::DistanceMeters );
+            // Get numbers of column and row for the resolution to cover the extent
+            col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * resolution ) );
+            row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * resolution ) );
+            // Calculate extent
+            double bottom =  fixedTop - row * tileSize * resolution;
+            double right =  fixedLeft + col * tileSize * resolution;
+            tmi.extent = QgsRectangle( fixedLeft, bottom, right, fixedTop );
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse );
+            continue;
+          }
+        }
+        // get lastLevel
+        tmi.lastLevel = QVariant( config[4] ).toInt();
+
+        QList< tileMatrixDef > tileMatrixList;
+        for ( int i = 0; i <= tmi.lastLevel; ++i )
+        {
+          double scale = tmi.scaleDenominator / std::pow( 2, i );
+          double res = resolution / std::pow( 2, i );
+
+          tileMatrixDef tm;
+          tm.resolution = res;
+          tm.scaleDenominator = scale;
+          tm.col = col * std::pow( 2, i );
+          tm.row = row * std::pow( 2, i );
+          tm.left = fixedLeft;
+          tm.top = fixedTop;
+          tileMatrixList.append( tm );
+        }
+
+        tileMatrixSetDef tms;
+        tms.ref = tmi.ref;
+        tms.extent = tmi.extent;
+        tms.unit = tmi.unit;
+        tms.tileMatrixList = tileMatrixList;
+
+        tmsList.append( tms );
+      }
+      return tmsList;
+    }
 
     double minScale = project->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), -1.0 );
     if ( minScale == -1.0 )
@@ -225,12 +341,20 @@ namespace QgsWmts
     }
 
     QStringList crsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
+    if ( !tms_ref.isEmpty() && !crsList.contains( tms_ref ) )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+    }
     for ( const QString &crsStr : crsList )
     {
-      tileMatrixInfo tmi = getTileMatrixInfo( crsStr, project );
+      if ( !tms_ref.isEmpty() && tms_ref != crsStr )
+      {
+        continue;
+      }
+      tileMatrixInfo tmi = calculateTileMatrixInfo( crsStr, project );
       if ( tmi.scaleDenominator > 0.0 )
       {
-        tmsList.append( getTileMatrixSet( tmi, minScale ) );
+        tmsList.append( calculateTileMatrixSet( tmi, minScale ) );
       }
     }
 
@@ -243,7 +367,6 @@ namespace QgsWmts
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
-    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
     // WMTS Project configuration
     bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
@@ -348,15 +471,18 @@ namespace QgsWmts
             queryable = true;
           }
 
-          double lMaxScale = l->maximumScale();
-          if ( lMaxScale > 0.0 && lMaxScale > maxScale )
+          if ( l->hasScaleBasedVisibility() )
           {
-            maxScale = lMaxScale;
-          }
-          double lMinScale = l->minimumScale();
-          if ( lMinScale > 0.0 && ( minScale == 0.0 || lMinScale < minScale ) )
-          {
-            minScale = lMinScale;
+            double lMaxScale = l->maximumScale();
+            if ( lMaxScale > 0.0 && lMaxScale > maxScale )
+            {
+              maxScale = lMaxScale;
+            }
+            double lMinScale = l->minimumScale();
+            if ( lMinScale > 0.0 && ( minScale == 0.0 || lMinScale < minScale ) )
+            {
+              minScale = lMinScale;
+            }
           }
         }
         pLayer.wgs84BoundingRect = wgs84BoundingRect;
@@ -421,8 +547,16 @@ namespace QgsWmts
 
       pLayer.queryable = ( l->flags().testFlag( QgsMapLayer::Identifiable ) );
 
-      pLayer.maxScale = l->maximumScale();
-      pLayer.minScale = l->minimumScale();
+      if ( l->hasScaleBasedVisibility() )
+      {
+        pLayer.maxScale = l->maximumScale();
+        pLayer.minScale = l->minimumScale();
+      }
+      else
+      {
+        pLayer.maxScale = 0.0;
+        pLayer.minScale = 0.0;
+      }
 
       wmtsLayers.append( pLayer );
     }
@@ -439,7 +573,6 @@ namespace QgsWmts
     if ( tms.ref != QLatin1String( "EPSG:4326" ) )
     {
       QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
       QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
       try
       {
@@ -471,10 +604,10 @@ namespace QgsWmts
       double res = tm.resolution;
 
       tileMatrixLimitDef tml;
-      tml.minCol = std::floor( ( rect.xMinimum() - tm.left ) / ( tileWidth * res ) );
-      tml.maxCol = std::ceil( ( rect.xMaximum() - tm.left ) / ( tileWidth * res ) ) - 1;
-      tml.minRow = std::floor( ( tm.top - rect.yMaximum() ) / ( tileHeight * res ) );
-      tml.maxRow = std::ceil( ( tm.top - rect.yMinimum() ) / ( tileHeight * res ) ) - 1;
+      tml.minCol = std::floor( ( rect.xMinimum() - tm.left ) / ( tileSize * res ) );
+      tml.maxCol = std::ceil( ( rect.xMaximum() - tm.left ) / ( tileSize * res ) ) - 1;
+      tml.minRow = std::floor( ( tm.top - rect.yMaximum() ) / ( tileSize * res ) );
+      tml.maxRow = std::ceil( ( tm.top - rect.yMinimum() ) / ( tileSize * res ) ) - 1;
 
       tileMatrixLimits[tmIdx] = tml;
     }
@@ -577,21 +710,19 @@ namespace QgsWmts
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is mandatory" ) );
     }
 
-    // verifying TileMatricSet value
-    QStringList crsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
-    if ( !crsList.contains( tms_ref ) )
+    // verifying TileMatrixSet value
+    QList< tileMatrixSetDef > tmsList = getTileMatrixSetList( project, tms_ref );
+    if ( tmsList.isEmpty() )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+    }
+    tileMatrixSetDef tms = tmsList[0];
+    if ( tms.ref != tms_ref )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
     }
 
-    tileMatrixInfo tmi = getTileMatrixInfo( tms_ref, project );
-    if ( tmi.scaleDenominator == 0.0 )
-    {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
-    }
-    tileMatrixSetDef tms = getTileMatrixSet( tmi, getProjectMinScale( project ) );
-
-    //difining TileMatrix idx
+    //defining TileMatrix idx
     int tm_idx = params.tileMatrixAsInt();
     //read TileMatrix
     if ( tm_idx < 0 || tms.tileMatrixList.count() < tm_idx )
@@ -616,13 +747,11 @@ namespace QgsWmts
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileCol is unknown" ) );
     }
 
-    int tileWidth = 256;
-    int tileHeight = 256;
     double res = tm.resolution;
-    double minx = tm.left + tc * ( tileWidth * res );
-    double miny = tm.top - ( tr + 1 ) * ( tileHeight * res );
-    double maxx = tm.left + ( tc + 1 ) * ( tileWidth * res );
-    double maxy = tm.top - tr * ( tileHeight * res );
+    double minx = tm.left + tc * ( tileSize * res );
+    double miny = tm.top - ( tr + 1 ) * ( tileSize * res );
+    double maxx = tm.left + ( tc + 1 ) * ( tileSize * res );
+    double maxy = tm.top - tr * ( tileSize * res );
     QString bbox;
     if ( tms.ref == "EPSG:4326" )
     {
@@ -666,22 +795,7 @@ namespace QgsWmts
   namespace
   {
 
-    QMap< QgsUnitTypes::DistanceUnit, double> populateInchesPerUnit()
-    {
-      QMap< QgsUnitTypes::DistanceUnit, double>  m;
-      m[ QgsUnitTypes::DistanceMeters ] = 39.37;
-      m[ QgsUnitTypes::DistanceFeet ] = 12.0;
-      m[ QgsUnitTypes::DistanceYards ] = 36.0;
-      m[ QgsUnitTypes::DistanceMiles ] = 63360.0;
-      m[ QgsUnitTypes::DistanceDegrees ] = 4374754.0;
-      m[ QgsUnitTypes::DistanceKilometers ] = m[ QgsUnitTypes::DistanceMeters ] * 1000.0;
-      m[ QgsUnitTypes::DistanceNauticalMiles ] = m[ QgsUnitTypes::DistanceMeters ] * 1852.0;
-      m[ QgsUnitTypes::DistanceCentimeters ] = m[ QgsUnitTypes::DistanceMeters ] / 100.0;
-      m[ QgsUnitTypes::DistanceMillimeters ] = m[ QgsUnitTypes::DistanceMeters ] / 1000.0;
-      return m;
-    }
-
-    QMap< QString, tileMatrixInfo> populateTileMatrixInfoMap()
+    QMap< QString, tileMatrixInfo> populateFixedTileMatrixInfoMap()
     {
       QMap< QString, tileMatrixInfo> m;
 

@@ -41,9 +41,11 @@ namespace QgsWmts
 
     QgsRectangle extent;
 
+    QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::DistanceMeters;
+
     double scaleDenominator = 0.0;
 
-    QgsUnitTypes::DistanceUnit unit;
+    int lastLevel = -1;
   };
 
   struct tileMatrixDef
@@ -124,10 +126,10 @@ namespace QgsWmts
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OWS_NAMESPACE = QStringLiteral( "http://www.opengis.net/ows/1.1" );
 
-  tileMatrixInfo getTileMatrixInfo( const QString &crsStr, const QgsProject *project );
-  tileMatrixSetDef getTileMatrixSet( tileMatrixInfo tmi, double minScale );
+  tileMatrixInfo calculateTileMatrixInfo( const QString &crsStr, const QgsProject *project );
+  tileMatrixSetDef calculateTileMatrixSet( tileMatrixInfo tmi, double minScale );
   double getProjectMinScale( const QgsProject *project );
-  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project );
+  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project, const QString &tms_ref = QString() );
 
   QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project );
   tileMatrixSetLinkDef getLayerTileMatrixSetLink( const layerDef layer, const tileMatrixSetDef tms, const QgsProject *project );
