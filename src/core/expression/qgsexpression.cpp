@@ -747,10 +747,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "map_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the Coordinate reference system of the map." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "map_ellipsoid_acr" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of theCoordinate reference system of the map." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "map_crs_Proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "map_crs_Wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (full definition)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_ellipsoid_acr" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_layer_ids" ), QCoreApplication::translate( "variable_help", "List of map layer IDs visible in the map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_layers" ), QCoreApplication::translate( "variable_help", "List of map layers visible in the map." ) );
 
