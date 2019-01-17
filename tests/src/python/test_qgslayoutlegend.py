@@ -269,6 +269,30 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(legend.columnCount(), 2)
         self.assertEqual(legend.legendSettings().columnCount(), 5)
 
+    def testLegendScopeVariables(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        layout.addLayoutItem(legend)
+
+        legend.setColumnCount(2)
+        legend.setWrapString('d')
+        legend.setLegendFilterOutAtlas(True)
+
+        expc=legend.createExpressionContext()
+
+        exp1=QgsExpression("@legend_title")
+        self.assertEqual(exp1.evaluate(expc), "Legend")
+        exp2=QgsExpression("@legend_column_count")
+        self.assertEqual(exp2.evaluate(expc), 2)
+        exp3=QgsExpression("@legend_wrap_string")
+        self.assertEqual(exp3.evaluate(expc), 'd')
+        exp4=QgsExpression("@legend_split_layers")
+        self.assertEqual(exp4.evaluate(expc), False)
+        exp5=QgsExpression("@legend_filter_out_atlas")
+        self.assertEqual(exp5.evaluate(expc), True)
 
 if __name__ == '__main__':
     unittest.main()
