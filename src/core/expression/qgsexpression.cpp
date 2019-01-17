@@ -763,7 +763,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "legend_split_layers" ), QCoreApplication::translate( "variable_help", "Boolean indicating if layers can be split in the legend." ) );
   sVariableHelpTexts.insert( QStringLiteral( "legend_wrap_string" ), QCoreApplication::translate( "variable_help", "Characters used to wrap the legend text." ) );
   sVariableHelpTexts.insert( QStringLiteral( "legend_filter_by_map" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the content of the legend is filtered by the map." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "legend_filter_by_atlas" ), QCoreApplication::translate( "variable_help", "Boolean indicationg if the content of the legend is filtered by the Atlas." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "legend_filter_out_atlas" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the Atlas is filtered out of the legend." ) );
 
 
   // map tool capture variables
