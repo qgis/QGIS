@@ -34,6 +34,7 @@
 #include "qgslayoutreportcontext.h"
 #include "qgsexpressionutils.h"
 #include "qgslayoutrendercontext.h"
+#include "qgsxmlutils.h"
 
 #include <QSettings>
 #include <QDir>
@@ -220,6 +221,31 @@ void QgsExpressionContextScope::addFunction( const QString &name, QgsScopedExpre
 void QgsExpressionContextScope::setFields( const QgsFields &fields )
 {
   addVariable( StaticVariable( QgsExpressionContext::EXPR_FIELDS, QVariant::fromValue( fields ), true ) );
+}
+
+void QgsExpressionContextScope::readXml( const QDomElement &element, const QgsReadWriteContext & )
+{
+  const QDomNodeList variablesNodeList = element.childNodes();
+  for ( int i = 0; i < variablesNodeList.size(); ++i )
+  {
+    const QDomElement variableElement = variablesNodeList.at( i ).toElement();
+    const QString key = variableElement.attribute( QStringLiteral( "name" ) );
+    const QVariant value = QgsXmlUtils::readVariant( variableElement.firstChildElement( QStringLiteral( "Option" ) ) );
+    setVariable( key, value );
+  }
+}
+
+bool QgsExpressionContextScope::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  for ( auto it = mVariables.constBegin(); it != mVariables.constEnd(); ++it )
+  {
+    QDomElement varElem = document.createElement( QStringLiteral( "Variable" ) );
+    varElem.setAttribute( QStringLiteral( "name" ), it.key() );
+    QDomElement valueElem = QgsXmlUtils::writeVariant( it.value().value, document );
+    varElem.appendChild( valueElem );
+    element.appendChild( varElem );
+  }
+  return true;
 }
 
 

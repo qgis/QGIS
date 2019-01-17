@@ -349,6 +349,20 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     void setFields( const QgsFields &fields );
 
+    /**
+     * Reads scope variables from an XML element.
+     * \see writeXml()
+     * \since QGIS 3.6
+     */
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Writes scope variables to an XML \a element.
+     * \see readXml()
+     * \since QGIS 3.6
+     */
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
   private:
     QString mName;
     QHash<QString, StaticVariable> mVariables;
