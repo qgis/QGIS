@@ -4569,21 +4569,19 @@ static QVariant fcnStringToArray( const QVariantList &values, const QgsExpressio
   return array;
 }
 
-static QVariant fcnJsonToMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnLoadJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QJsonDocument document = QJsonDocument::fromJson( str.toUtf8() );
-  if ( document.isNull() || !document.isObject() )
-    return QVariantMap();
+  if ( document.isNull() )
+    return QVariant();
 
-  return document.object().toVariantMap();
+  return document.toVariant();
 }
 
-static QVariant fcnMapToJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnWriteJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
-  QJsonObject object = QJsonObject::fromVariantMap( map );
-  QJsonDocument document( object );
+  QJsonDocument document = QJsonDocument::fromVariant( values.at( 0 ) );
   return document.toJson( QJsonDocument::Compact );
 }
 
@@ -5300,8 +5298,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "generate_series" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "start" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "stop" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "step" ), true, 1.0 ), fcnGenerateSeries, QStringLiteral( "Arrays" ) )
 
         //functions for maps
-        << new QgsStaticExpressionFunction( QStringLiteral( "json_to_map" ), 1, fcnJsonToMap, QStringLiteral( "Maps" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_json" ), 1, fcnMapToJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "json_to_map" ), 1, fcnLoadJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "load_json" ), 1, fcnLoadJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_json" ), 1, fcnWriteJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "write_json" ), 1, fcnWriteJson, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "hstore_to_map" ), 1, fcnHstoreToMap, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_to_hstore" ), 1, fcnMapToHstore, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map" ), -1, fcnMap, QStringLiteral( "Maps" ) )
