@@ -610,7 +610,7 @@ void TestQgsLayoutMap::expressionContext()
   r = e2.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
 
-  QgsExpression e3( QStringLiteral( "@map_crs_definition" ) );
+  QgsExpression e3( QStringLiteral( "@map_crs_Proj4" ) );
   r = e3.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
