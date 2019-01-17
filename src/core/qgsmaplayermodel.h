@@ -52,6 +52,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
       EmptyRole, //!< True if index corresponds to the empty (not set) value
       AdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
+    Q_ENUM( ItemDataRole )
 
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
