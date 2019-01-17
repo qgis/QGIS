@@ -283,15 +283,15 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         expc=legend.createExpressionContext()
 
-        exp1=QgsExpression("@legend_title")
+        exp1 = QgsExpression("@legend_title")
         self.assertEqual(exp1.evaluate(expc), "Legend")
-        exp2=QgsExpression("@legend_column_count")
+        exp2 = QgsExpression("@legend_column_count")
         self.assertEqual(exp2.evaluate(expc), 2)
-        exp3=QgsExpression("@legend_wrap_string")
+        exp3 = QgsExpression("@legend_wrap_string")
         self.assertEqual(exp3.evaluate(expc), 'd')
-        exp4=QgsExpression("@legend_split_layers")
+        exp4 = QgsExpression("@legend_split_layers")
         self.assertEqual(exp4.evaluate(expc), False)
-        exp5=QgsExpression("@legend_filter_out_atlas")
+        exp5 = QgsExpression("@legend_filter_out_atlas")
         self.assertEqual(exp5.evaluate(expc), True)
 
         map = QgsLayoutItemMap(layout)
@@ -300,10 +300,10 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.addLayoutItem(map)
         map.setScale(15.2)
         legend.setLinkedMap(map)
-        expc2=legend.createExpressionContext()
+        expc2 = legend.createExpressionContext()
 
-        exp6=QgsExpression("@map_scale")
-        self.assertEqual(exp6.evaluate(expc2),15.2)
+        exp6 = QgsExpression("@map_scale")
+        self.assertEqual(exp6.evaluate(expc2), 15.2)
 
 
 
