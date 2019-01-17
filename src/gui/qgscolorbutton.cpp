@@ -495,7 +495,7 @@ QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChec
 
 void QgsColorButton::buttonClicked()
 {
-  if ( !mLinkedColorName.isEmpty() )
+  if ( linkedProjectColor().isValid() )
   {
     QToolButton::showMenu();
   }
