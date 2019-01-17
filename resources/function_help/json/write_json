@@ -1,0 +1,11 @@
+{
+  "name": "write_json",
+  "type": "function",
+  "description": "Create a JSON formatted string from a map, array or other value.",
+  "arguments": [
+    {"arg":"value", "description":"The input value"}],
+  "examples": [
+    { "expression":"write_json(map('qgis','rocks'))", "returns":"{\"qgis\":\"rocks\"}"},
+    { "expression":"write_json(array(1,2,3))", "returns":"[1,2,3]"}
+  ]
+}
