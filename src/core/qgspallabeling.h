@@ -793,6 +793,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
+     * \see Property
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
@@ -802,6 +803,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * Sets the label's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
+     * \see Property
      * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
