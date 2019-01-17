@@ -468,6 +468,15 @@ namespace QgsWms
                                     QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( formatString ) );
     }
 
+    if ( atlas )
+    {
+      handlePrintErrors( atlas->layout() );
+    }
+    else
+    {
+      handlePrintErrors( layout.get() );
+    }
+
     return tempOutputFile.readAll();
   }
 
@@ -3267,4 +3276,24 @@ namespace QgsWms
       return mWmsParameters.srcWidthAsInt();
     return mWmsParameters.widthAsInt();
   }
+
+  void QgsRenderer::handlePrintErrors( const QgsLayout *layout )
+  {
+    if ( !layout )
+    {
+      return;
+    }
+    QList< QgsLayoutItemMap * > mapList;
+    layout->layoutItems( mapList );
+
+    QList< QgsLayoutItemMap * >::const_iterator mapIt = mapList.constBegin();
+    for ( ; mapIt != mapList.constEnd(); ++mapIt )
+    {
+      if ( !( *mapIt )->renderingErrors().isEmpty() )
+      {
+        throw QgsServerException( QStringLiteral( "Print error" ) );
+      }
+    }
+  }
+
 } // namespace QgsWms

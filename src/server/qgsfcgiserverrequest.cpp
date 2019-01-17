@@ -70,7 +70,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
     : url.setScheme( QStringLiteral( "http" ) );
   }
 
-  // Store the URL before the server rewrite that could have been set in QUERY_STRING
+  // Store the URL before the server rewrite that could have been set in QUERY_STRINGs
   setOriginalUrl( url );
 
   // OGC parameters are passed with the query string, which is normally part of

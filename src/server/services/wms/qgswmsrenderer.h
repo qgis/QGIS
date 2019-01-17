@@ -35,6 +35,7 @@ class QgsPrintLayout;
 class QgsConfigParser;
 class QgsFeature;
 class QgsFeatureRenderer;
+class QgsLayout;
 class QgsMapLayer;
 class QgsMapSettings;
 class QgsPointXY;
@@ -290,6 +291,8 @@ namespace QgsWms
       QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;
 
       void removeTemporaryLayers();
+
+      void handlePrintErrors( const QgsLayout *layout );
 
     private:
 

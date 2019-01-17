@@ -424,6 +424,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
 
+    /**
+     * @brief renderingErrors
+     * @return list of layer id / error message
+     */
+    const QList< QPair< QString, QString > > &renderingErrors() const SIP_SKIP { return mRenderingErrors; }
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -621,6 +627,18 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
 
+    <<< <<< < HEAD
+    == == == =
+      QgsLayoutMeasurement mLabelMargin{ 0 };
+    QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
+
+    QStringList mBlockingLabelItemUuids;
+    QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
+
+    //!layer id / error message
+    QList< QPair< QString, QString > > mRenderingErrors;
+
+  >>> >>> > 0f3c39deb7... Server: throw exception in GetMap if DB connection is not ok
     void init();
 
     //! Resets the item tooltip to reflect current map id
