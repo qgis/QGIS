@@ -745,7 +745,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "map_extent_width" ), QCoreApplication::translate( "variable_help", "Width of map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_extent_height" ), QCoreApplication::translate( "variable_help", "Height of map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "map_crs_description" ), QCoreApplication::translate( "variable_help", "Name of theCoordinate reference system of the map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the Coordinate reference system of the map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_ellipsoid_acr" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of theCoordinate reference system of the map." ) );
