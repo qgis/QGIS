@@ -181,6 +181,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
+     * \see Property
      * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
@@ -189,6 +190,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * Sets the editor widget's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
+     * \see Property
      * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }

@@ -274,6 +274,14 @@ class CORE_EXPORT QgsAbstractPropertyCollection
  * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
  * string creation and comparisons which would be required by a string key. The intended use case is that
  * a context specific enum is cast to int and used for the key value.
+ * Examples of such enums are :
+ * \see QgsLayoutObject::DataDefinedProperty
+ * \see QgsSymbolLayer::Property
+ * \see QgsPalLabeling::Property
+ * \see QgsAbstract3DSymbol::Property
+ * \see QgsDiagramLayerSettings::Property
+ * \see QgsPalLayerSettings::Property
+ * \see QgsWidgetWrapper::Property
  * \since QGIS 3.0
  */
 
