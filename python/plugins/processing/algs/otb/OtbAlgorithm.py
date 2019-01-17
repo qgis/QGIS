@@ -210,9 +210,9 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
             if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer)):
                 if isinstance(v, QgsMapLayer):
-                    value = v.source()
+                    value = '"{}"'.format(v.source())
                 else:
-                    value = v
+                    value = '"{}"'.format(v)
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 value = ''
                 for item in v:
