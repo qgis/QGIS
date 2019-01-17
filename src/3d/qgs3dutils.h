@@ -22,6 +22,7 @@ class QgsLineString;
 class QgsPolygon;
 
 class QgsAbstract3DEngine;
+class QgsAbstract3DSymbol;
 class Qgs3DMapScene;
 
 #include "qgs3dmapsettings.h"
@@ -99,6 +100,8 @@ class _3D_EXPORT Qgs3DUtils
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
+
+    static QgsAbstract3DSymbol *symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
 };
 
 #endif

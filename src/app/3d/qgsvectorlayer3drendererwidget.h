@@ -21,15 +21,38 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsvectorlayer3drenderer.h"
 
+class QComboBox;
 class QCheckBox;
 class QLabel;
 class QStackedWidget;
 
-class QgsLine3DSymbolWidget;
-class QgsPoint3DSymbolWidget;
-class QgsPolygon3DSymbolWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
+
+class QgsRuleBased3DRendererWidget;
+class QgsSymbol3DWidget;
+
+
+class QgsSingleSymbol3DRendererWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsSingleSymbol3DRendererWidget( QWidget *parent = nullptr );
+
+    //! no transfer of ownership
+    void setLayer( QgsVectorLayer *layer );
+
+    //! cloned symbol or null
+    QgsAbstract3DSymbol *symbol();
+
+  signals:
+    void widgetChanged();
+
+  private:
+    QgsSymbol3DWidget *widgetSymbol = nullptr;
+
+};
+
 
 
 //! Widget for configuration of 3D renderer of a vector layer
@@ -41,26 +64,20 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
 
     void setLayer( QgsVectorLayer *layer );
 
-    //! no transfer of ownership
-    void setRenderer( const QgsVectorLayer3DRenderer *renderer );
-    //! no transfer of ownership
-    QgsVectorLayer3DRenderer *renderer();
-
   public slots:
     void apply() override;
 
   private slots:
-    void onEnabledClicked();
+    void onRendererTypeChanged( int index );
 
   private:
-    QCheckBox *chkEnabled = nullptr;
-    QStackedWidget *widgetStack = nullptr;
-    QgsLine3DSymbolWidget *widgetLine = nullptr;
-    QgsPoint3DSymbolWidget *widgetPoint = nullptr;
-    QgsPolygon3DSymbolWidget *widgetPolygon = nullptr;
-    QLabel *widgetUnsupported = nullptr;
+    QComboBox *cboRendererType = nullptr;
+    QStackedWidget *widgetRendererStack = nullptr;
 
-    std::unique_ptr<QgsVectorLayer3DRenderer> mRenderer;
+    QLabel *widgetNoRenderer = nullptr;
+    QgsSingleSymbol3DRendererWidget *widgetSingleSymbolRenderer = nullptr;
+    QgsRuleBased3DRendererWidget *widgetRuleBasedRenderer = nullptr;
 };
+
 
 #endif // QGSVECTORLAYER3DRENDERERWIDGET_H
