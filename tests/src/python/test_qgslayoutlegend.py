@@ -294,5 +294,20 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         exp5=QgsExpression("@legend_filter_out_atlas")
         self.assertEqual(exp5.evaluate(expc), True)
 
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        layout.addLayoutItem(map)
+        map.setScale(15.2)
+        legend.setLinkedMap(map)
+        expc2=legend.createExpressionContext()
+
+        exp6=QgsExpression("@map_scale")
+        self.assertEqual(exp6.evaluate(expc2),15.2)
+
+
+
+
+
 if __name__ == '__main__':
     unittest.main()
