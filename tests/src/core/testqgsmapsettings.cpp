@@ -380,10 +380,10 @@ void TestQgsMapSettings::testLabelBoundary()
 void TestQgsMapSettings::testExpressionContext()
 {
   QgsMapSettings ms;
-  QgsExpressionContext context;
+  QgsExpressionContext c;
 
   ms->setcrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
-  context << QgsExpressionContextUtils::mapSettingsScope( ms );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
 
   QgsExpression e2( QStringLiteral( "@map_crs" ) );
   r = e2.evaluate( &c );
