@@ -2281,8 +2281,7 @@ namespace QgsWms
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
   {
     QString json;
-    json.append( QStringLiteral( "{" ) );
-    json.append( QStringLiteral( "\"layers\":[" ) );
+    json.append( QStringLiteral( "{\n\"layers\":[" ) );
 
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
 
@@ -2318,7 +2317,7 @@ namespace QgsWms
         for ( int j = 0; j < featuresNode.size(); ++j )
         {
           const QDomElement featureNode = featuresNode.at( j ).toElement();
-          const qint64 fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
+          const QgsFeatureId fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
           const QgsFeature feature = vl->getFeature( fid );
           features << feature;
 

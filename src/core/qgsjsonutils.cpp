@@ -239,7 +239,7 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
 
   QString layerName;
   if ( mIncludeName )
-    layerName.append( QStringLiteral( "\n \"name\": \"%1\",\n" ).arg( mLayer->name() ) );
+    layerName = QStringLiteral( "\n \"name\": \"%1\",\n" ).arg( mLayer->name() );
 
   return QStringLiteral( "{%1 \"type\": \"FeatureCollection\",\n    \"features\":[\n%2\n]}" ).arg( layerName, featureJSON.join( QStringLiteral( ",\n" ) ) );
 }
