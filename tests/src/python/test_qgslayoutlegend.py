@@ -340,8 +340,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
         legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
-        # disable auto resizing
-        legend.setResizeToContents(False)
         legend.setAutoUpdateModel(False)
 
         QgsProject.instance().addMapLayers([point_layer])

@@ -77,7 +77,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
   if ( symbolIcon.isNull() )
     return QSizeF();
 
-  if ( ctx )
+  if ( ctx && ctx->painter )
     symbolIcon.paint( ctx->painter, ctx->point.x(), ctx->point.y() + ( itemHeight - settings.symbolSize().height() ) / 2,
                       settings.symbolSize().width(), settings.symbolSize().height() );
   return settings.symbolSize();
@@ -99,7 +99,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * ( settings.lineSpacing() + textDescent );
 
   double labelX = 0.0, labelY = 0.0;
-  if ( ctx )
+  if ( ctx && ctx->painter )
   {
     ctx->painter->setPen( settings.fontColor() );
 
@@ -117,7 +117,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   {
     labelSize.rwidth() = std::max( settings.textWidthMillimeters( symbolLabelFont, *itemPart ), double( labelSize.width() ) );
 
-    if ( ctx )
+    if ( ctx && ctx->painter )
     {
       settings.drawText( ctx->painter, labelX, labelY, *itemPart, symbolLabelFont );
       if ( itemPart != ( lines.end() - 1 ) )
@@ -424,7 +424,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     }
   }
 
-  if ( ctx )
+  if ( ctx && ctx->painter )
   {
     double currentXPosition = ctx->point.x();
     double currentYCoord = ctx->point.y() + ( itemHeight - settings.symbolSize().height() ) / 2;
@@ -579,7 +579,7 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCo
 {
   Q_UNUSED( itemHeight );
 
-  if ( ctx )
+  if ( ctx && ctx->painter )
   {
     ctx->painter->drawImage( QRectF( ctx->point.x(), ctx->point.y(), settings.wmsLegendSize().width(), settings.wmsLegendSize().height() ),
                              mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
@@ -614,7 +614,7 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
 
 QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
-  if ( ctx )
+  if ( ctx && ctx->painter )
   {
     QColor itemColor = mColor;
     if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( layerNode()->layer() ) )
@@ -702,7 +702,7 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
 {
   Q_UNUSED( itemHeight );
 
-  if ( ctx )
+  if ( ctx && ctx->painter )
   {
     ctx->painter->drawImage( QRectF( ctx->point, settings.wmsLegendSize() ),
                              mImage,
@@ -819,7 +819,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
 
-  if ( ctx )
+  if ( ctx && ctx->painter )
   {
     context.setPainter( ctx->painter );
     ctx->painter->save();
@@ -836,7 +836,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   int labelXOffset;
   ddsLegend.drawCollapsedLegend( context, &contentSize, &labelXOffset );
 
-  if ( ctx )
+  if ( ctx && ctx->painter )
     ctx->painter->restore();
 
   ItemMetrics im;
