@@ -2334,6 +2334,7 @@ namespace QgsWms
 
         // export
         QgsJsonExporter exporter( vl );
+        exporter.setAttributes( attributes );
         json.append( exporter.exportFeatures( features ) );
       }
       else // raster layer
