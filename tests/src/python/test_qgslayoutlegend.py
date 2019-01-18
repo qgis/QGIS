@@ -29,7 +29,8 @@ from qgis.core import (QgsLayoutItemLegend,
                        QgsLayoutMeasurement,
                        QgsLayoutItem,
                        QgsLayoutPoint,
-                       QgsLayoutSize)
+                       QgsLayoutSize,
+                       QgsExpression)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -268,6 +269,41 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.refreshDataDefinedProperty()
         self.assertEqual(legend.columnCount(), 2)
         self.assertEqual(legend.legendSettings().columnCount(), 5)
+
+    def testLegendScopeVariables(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        layout.addLayoutItem(legend)
+
+        legend.setColumnCount(2)
+        legend.setWrapString('d')
+        legend.setLegendFilterOutAtlas(True)
+
+        expc = legend.createExpressionContext()
+        exp1 = QgsExpression("@legend_title")
+        self.assertEqual(exp1.evaluate(expc), "Legend")
+        exp2 = QgsExpression("@legend_column_count")
+        self.assertEqual(exp2.evaluate(expc), 2)
+        exp3 = QgsExpression("@legend_wrap_string")
+        self.assertEqual(exp3.evaluate(expc), 'd')
+        exp4 = QgsExpression("@legend_split_layers")
+        self.assertEqual(exp4.evaluate(expc), False)
+        exp5 = QgsExpression("@legend_filter_out_atlas")
+        self.assertEqual(exp5.evaluate(expc), True)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setExtent(QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125))
+        layout.addLayoutItem(map)
+        map.setScale(15000)
+        legend.setLinkedMap(map)
+        expc2 = legend.createExpressionContext()
+        exp6 = QgsExpression("@map_scale")
+        self.assertAlmostEqual(exp6.evaluate(expc2), 15000, 2)
 
 
 if __name__ == '__main__':

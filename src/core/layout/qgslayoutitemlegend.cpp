@@ -818,6 +818,34 @@ void QgsLayoutItemLegend::onAtlasEnded()
   updateFilterByMap();
 }
 
+QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
+
+  // We only want the last scope from the map's expression context, as this contains
+  // the map specific variables. We don't want the rest of the map's context, because that
+  // will contain duplicate global, project, layout, etc scopes.
+
+  if ( mMap )
+  {
+    context.appendScope( mMap->createExpressionContext().popScope() );
+  }
+
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ), title(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_column_count" ), columnCount(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_split_layers" ), splitLayer(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_wrap_string" ), wrapString(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_map" ), legendFilterByMapEnabled(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_out_atlas" ), legendFilterOutAtlas(), true ) );
+
+  context.appendScope( scope );
+
+  return context;
+}
+
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
