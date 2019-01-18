@@ -2340,7 +2340,7 @@ namespace QgsWms
         QgsJsonExporter exporter( vl );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
-        exporter.setIncludeLayerName( true );
+        exporter.setIncludeName( true );
 
         if ( i > 0 )
           json.append( QStringLiteral( "," ) );
