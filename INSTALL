@@ -268,7 +268,7 @@ After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
 /!\ Warning: Make sure that your build directory is completely empty when you
-enter the command. Do never try to "re-use" an existing Qt4 build directory.
+enter the command. Never try to "re-use" an existing Qt4 build directory.
 If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
 
