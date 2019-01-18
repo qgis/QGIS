@@ -610,13 +610,33 @@ void TestQgsLayoutMap::expressionContext()
   r = e2.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
 
-  QgsExpression e3( QStringLiteral( "@map_crs_Proj4" ) );
+  QgsExpression e3( QStringLiteral( "@map_crs_definition" ) );
   r = e3.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
   QgsExpression e4( QStringLiteral( "@map_units" ) );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  QgsExpression e5( QStringLiteral( "@map_crs_description" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS 84" ) );
+
+  QgsExpression e6( QStringLiteral( "@map_crs_acronym" ) );
+  r = e6.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "longlat" ) );
+
+  QgsExpression e7( QStringLiteral( "@map_crs_pro4" ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
+  r = e8.evaluate( &c );
+  QVERIFY( r.toString().lenght() ­> 15 );
+
+  QgsExpression e9( QStringLiteral( "@map_ellipsoid_acr" ) );
+  r = e9.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS84" ) );
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
