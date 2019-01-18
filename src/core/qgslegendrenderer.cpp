@@ -566,7 +566,8 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   QModelIndex idx = mLegendModel->node2index( nodeLayer );
 
   //Let the user omit the layer title item by having an empty layer title string
-  if ( mLegendModel->data( idx, Qt::DisplayRole ).toString().isEmpty() ) return size;
+  if ( mLegendModel->data( idx, Qt::DisplayRole ).toString().isEmpty() )
+    return size;
 
   double y = point.y();
 
@@ -577,8 +578,11 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
-  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
-  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
+  QgsExpressionContext tempContext;
+
+  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
+                            context ? context->expressionContext() : tempContext );
+  for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( context && context->painter() )
@@ -617,8 +621,11 @@ QSizeF QgsLegendRenderer::drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, 
 
   QFont groupFont = mSettings.style( nodeLegendStyle( nodeGroup ) ).font();
 
-  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
-  for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
+  QgsExpressionContext tempContext;
+
+  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
+                            context ? context->expressionContext() : tempContext );
+  for ( QStringList::ConstIterator groupPart = lines.constBegin(); groupPart != lines.constEnd(); ++groupPart )
   {
     y += mSettings.fontAscentMillimeters( groupFont );
     if ( context && context->painter() )

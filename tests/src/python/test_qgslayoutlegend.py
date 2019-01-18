@@ -15,7 +15,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QColor
 
-from qgis.core import (QgsLayoutItemLegend,
+from qgis.core import (QgsPrintLayout,
+                       QgsLayoutItemLegend,
                        QgsLayoutItemMap,
                        QgsLayout,
                        QgsMapSettings,
@@ -30,7 +31,10 @@ from qgis.core import (QgsLayoutItemLegend,
                        QgsLayoutItem,
                        QgsLayoutPoint,
                        QgsLayoutSize,
-                       QgsExpression)
+                       QgsExpression,
+                       QgsMapLayerLegendUtils,
+                       QgsLegendStyle,
+                       QgsFontUtils)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -305,6 +309,64 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         exp6 = QgsExpression("@map_scale")
         self.assertAlmostEqual(exp6.evaluate(expc2), 15000, 2)
 
+    def testExpressionInText(self):
+        """Test expressions embedded in legend node text"""
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.setName('LAYOUT')
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(point_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 100, 100))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(False)
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        # disable auto resizing
+        legend.setResizeToContents(False)
+        legend.setAutoUpdateModel(False)
+
+        QgsProject.instance().addMapLayers([point_layer])
+        s = QgsMapSettings()
+        s.setLayers([point_layer])
+
+        group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
+        layer_tree_layer = group.addLayer(point_layer)
+        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %]')
+        QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
+        legend.model().refreshLayerLegend(layer_tree_layer)
+        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel('bbbb [% 1+2 %] xx [% @layout_name %]')
+
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsLayoutChecker(
+            'composer_legend_expressions', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        self.assertTrue(result, message)
+
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
 if __name__ == '__main__':
     unittest.main()

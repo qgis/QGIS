@@ -198,6 +198,16 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
     void setDpi( int dpi );
 
 
+
+    QStringList evaluateItemText( const QString &stringToSplt, const QgsExpressionContext &context ) const;
+%Docstring
+Returns the actual text to render for a legend item, split into separate lines.
+
+:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+
+.. versionadded:: 3.6
+%End
+
     QStringList splitStringForWrapping( const QString &stringToSplt ) const;
 %Docstring
 Splits a string using the wrap char taking into account handling empty

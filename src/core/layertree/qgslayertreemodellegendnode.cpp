@@ -92,7 +92,9 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
   double textDescent = settings.fontDescentMillimeters( symbolLabelFont );
 
-  const QStringList lines = settings.splitStringForWrapping( data( Qt::DisplayRole ).toString() );
+  QgsExpressionContext tempContext;
+
+  const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx && ctx->context ? ctx->context->expressionContext() : tempContext );
 
   labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * ( settings.lineSpacing() + textDescent );
 

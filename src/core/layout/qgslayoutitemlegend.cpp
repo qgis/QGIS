@@ -831,7 +831,6 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
     context.appendScope( mMap->createExpressionContext().popScope() );
   }
 
-
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ), title(), true ) );
