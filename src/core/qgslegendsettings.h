@@ -191,11 +191,12 @@ class CORE_EXPORT QgsLegendSettings
     /**
      * Returns the actual text to render for a legend item, split into separate lines.
      *
-     * \param ctx Context for rendering - may be null if only doing layout without actual rendering
+     * The expression \a context argument is used to correctly evaluated expressions contained
+     * within legend item text.
      *
      * \since QGIS 3.6
      */
-    QStringList evaluateItemText( const QString &stringToSplt, const QgsExpressionContext &context ) const;
+    QStringList evaluateItemText( const QString &text, const QgsExpressionContext &context ) const;
 
     /**
      * Splits a string using the wrap char taking into account handling empty

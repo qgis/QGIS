@@ -37,9 +37,9 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
-QStringList QgsLegendSettings::evaluateItemText( const QString &stringToSplt, const QgsExpressionContext &context ) const
+QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsExpressionContext &context ) const
 {
-  const QString textToRender = QgsExpression::replaceExpressionText( stringToSplt, &context );
+  const QString textToRender = QgsExpression::replaceExpressionText( text, &context );
   return splitStringForWrapping( textToRender );
 }
 
