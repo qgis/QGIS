@@ -424,7 +424,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_project_values.qgz')
 
     def testGetFeatureInfoJSON(self):
-        # simple test
+        # simple test without geometry
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=application%2Fjson&transparent=true&' +
@@ -432,6 +432,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo_json')
+
+        # simple test with geometry
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_json')
 
         # test with alias
         self.wms_request_compare('GetFeatureInfo',
