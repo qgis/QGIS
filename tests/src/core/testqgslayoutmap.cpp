@@ -632,7 +632,7 @@ void TestQgsLayoutMap::expressionContext()
 
   QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
   r = e8.evaluate( &c );
-  QVERIFY( r.toString().lenght() >= 15 );
+  QVERIFY( r.toString().length() >= 15 );
 
   QgsExpression e9( QStringLiteral( "@map_ellipsoid_acr" ) );
   r = e9.evaluate( &c );
