@@ -27,6 +27,7 @@
 #include <qgslayertreemodel.h>
 #include <qgslayertreemodellegendnode.h>
 #include <qgslayertreeutils.h>
+#include "qgslegendsettings.h"
 
 class TestQgsLayerTree : public QObject
 {
@@ -53,6 +54,7 @@ class TestQgsLayerTree : public QObject
     void testFindGroups();
     void testUtilsCollectMapLayers();
     void testUtilsCountMapLayers();
+    void testSymbolText();
 
   private:
 
@@ -705,6 +707,62 @@ void TestQgsLayerTree::testUtilsCountMapLayers()
 
   nodeGrp->addLayer( vl );
   QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, vl ), 2 );
+}
+
+void TestQgsLayerTree::testSymbolText()
+{
+  //new memory layer
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QgsProject project;
+  project.addMapLayer( vl );
+
+  //create a categorized renderer for layer
+  QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
+  renderer->setClassAttribute( QStringLiteral( "col1" ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "a [% 1 + 2 %]" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "b,c" ) ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ), QStringLiteral( "c" ) ) );
+  vl->setRenderer( renderer );
+
+  //create legend with symbology nodes for categorized renderer
+  QgsLayerTree *root = new QgsLayerTree();
+  QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
+  root->addChildNode( n );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
+  m->refreshLayerLegend( n );
+
+  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  QCOMPARE( nodes.length(), 3 );
+
+  QgsLegendSettings settings;
+  settings.setWrapChar( QStringLiteral( "," ) );
+  QCOMPARE( nodes.at( 0 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "a [% 1 + 2 %]" ) );
+  QCOMPARE( nodes.at( 1 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "b,c" ) );
+  QCOMPARE( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "c" ) );
+  nodes.at( 2 )->setUserLabel( QStringLiteral( "[% 2+3 %] x [% 3+4 %]" ) );
+  QCOMPARE( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "[% 2+3 %] x [% 3+4 %]" ) );
+
+  QgsExpressionContext context;
+  QCOMPARE( settings.evaluateItemText( nodes.at( 0 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "a 3" ) );
+  QCOMPARE( settings.evaluateItemText( nodes.at( 1 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+  QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "5 x 7" ) );
+
+  // split string should happen after expression evaluation
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( QStringLiteral( "bbbb" ), QStringLiteral( "aaaa,bbbb,cccc" ) );
+  context.appendScope( scope );
+  nodes.at( 2 )->setUserLabel( QStringLiteral( "[% @bbbb %],[% 3+4 %]" ) );
+  QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "aaaa" )
+            << QStringLiteral( "bbbb" )
+            << QStringLiteral( "cccc" )
+            << QStringLiteral( "7" ) );
+
+  //cleanup
+  delete m;
+  delete root;
 }
 
 
