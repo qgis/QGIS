@@ -2487,7 +2487,7 @@
                    </layout>
                   </item>
                   <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_17">
+                   <layout class="QHBoxLayout" name="horizontalLayout_17a">
                     <item>
                      <layout class="QVBoxLayout" name="vlWmtsLayers">
                       <item>
