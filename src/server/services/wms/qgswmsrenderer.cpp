@@ -2343,12 +2343,29 @@ namespace QgsWms
         exporter.setIncludeLayerName( true );
 
         if ( i > 0 )
-          json.append( "," );
+          json.append( QStringLiteral( "," ) );
 
         json.append( exporter.exportFeatures( features ) );
       }
       else // raster layer
       {
+        json.append( QStringLiteral( "{" ) );
+        json.append( QStringLiteral( "\n \"name\": \"%1\",\n" ).arg( layer->name() ) );
+
+        const QDomNodeList attributesNode = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
+        for ( int j = 0; j < attributesNode.size(); ++j )
+        {
+          const QDomElement attrElmt = attributesNode.at( j ).toElement();
+          const QString name = attrElmt.attribute( QStringLiteral( "name" ) );
+          const QString value = attrElmt.attribute( QStringLiteral( "value" ) );
+
+          if ( j > 0 )
+            json.append( QStringLiteral( ",\n" ) );
+
+          json.append( QStringLiteral( "\"%1\": \"%2\"" ).arg( name, value ) );
+        }
+
+        json.append( QStringLiteral( "\n}" ) );
       }
     }
 
