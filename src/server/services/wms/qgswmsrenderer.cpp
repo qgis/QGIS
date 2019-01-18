@@ -2281,6 +2281,8 @@ namespace QgsWms
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
   {
     QString json;
+    json.append( "{" );
+    json.append( ( "\"layers\":[" ) );
 
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
 
@@ -2338,12 +2340,19 @@ namespace QgsWms
         QgsJsonExporter exporter( vl );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
+        exporter.setIncludeLayerName( true );
+
+        if ( i > 0 )
+          json.append( "," );
+
         json.append( exporter.exportFeatures( features ) );
       }
       else // raster layer
       {
       }
     }
+
+    json.append( ( "]}" ) );
 
     return json.toUtf8();
   }

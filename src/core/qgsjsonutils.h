@@ -75,6 +75,10 @@ class CORE_EXPORT QgsJsonExporter
      */
     bool includeGeometry() const { return mIncludeGeometry; }
 
+    void setIncludeLayerName( bool includeLayerName ) { mIncludeLayerName = includeLayerName; }
+
+    bool includeLayerName() const { return mIncludeLayerName; }
+
     /**
      * Sets whether to include attributes in the JSON exports.
      * \param includeAttributes set to false to prevent attribute inclusion
@@ -223,6 +227,7 @@ class CORE_EXPORT QgsJsonExporter
 
     QgsCoordinateTransform mTransform;
 
+    bool mIncludeLayerName = false;
 };
 
 /**
