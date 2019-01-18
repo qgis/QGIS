@@ -213,6 +213,15 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values0-text-xml',
                                  'test_project_values.qgz')
 
+        # Test GetFeatureInfo on raster layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250',
+                                 'wms_getfeatureinfo-raster-text-xml')
+
     def testGetFeatureInfoValueRelation(self):
         """Test GetFeatureInfo resolves "value relation" widget values. regression 18518"""
         mypath = self.testdata_path + "test_project_values.qgz"
