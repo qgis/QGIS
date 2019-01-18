@@ -366,5 +366,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
+
 if __name__ == '__main__':
     unittest.main()
