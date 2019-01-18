@@ -10,23 +10,29 @@
  */
 class QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
 {
-    public:
-        QgsStoreBadLayerInfo();
-        ~QgsStoreBadLayerInfo();
-        /**
-         * @brief handleBadLayers
-         * @param layers layer nodes
-         */
-        void handleBadLayers( const QList<QDomNode> &layers );
+  public:
+    /*Default constructor
+     */
+    QgsStoreBadLayerInfo();
 
-        /**
-         * @brief badLayers
-         * @return ids of bad layers
-         */
-        QStringList badLayers() const { return mBadLayerIds; }
+    /*Destructor
+     */
+    ~QgsStoreBadLayerInfo();
 
-    private:
-        QStringList mBadLayerIds;
+    /**
+     * @brief handleBadLayers
+     * @param layers layer nodes
+     */
+    void handleBadLayers( const QList<QDomNode> &layers );
+
+    /**
+     * @brief badLayers
+     * @return ids of bad layers
+     */
+    QStringList badLayers() const { return mBadLayerIds; }
+
+  private:
+    QStringList mBadLayerIds;
 };
 
 #endif // QGSSTOREBADLAYERINFO_H

@@ -1021,13 +1021,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   // Raster images were not displayed - see #10599
   job.renderSynchronously();
 
-  mRenderingErrors.clear();
-  QgsMapRendererJob::Errors e = job.errors();
-  QgsMapRendererJob::Errors::const_iterator eIt = e.constBegin();
-  for ( ; eIt != e.constEnd(); ++eIt )
-  {
-    mRenderingErrors.append( qMakePair( eIt->layerID, eIt->message ) );
-  }
+  mRenderingErrors = job.errors();
 }
 
 void QgsLayoutItemMap::recreateCachedImageInBackground()

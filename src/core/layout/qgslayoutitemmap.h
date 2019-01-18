@@ -515,7 +515,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * @brief renderingErrors
      * @return list of layer id / error message
      */
-    const QList< QPair< QString, QString > > &renderingErrors() const SIP_SKIP { return mRenderingErrors; }
+    QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
 
   protected:
 
@@ -733,7 +733,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
 
     //!layer id / error message
-    QList< QPair< QString, QString > > mRenderingErrors;
+    QgsMapRendererJob::Errors mRenderingErrors;
 
     void init();
 

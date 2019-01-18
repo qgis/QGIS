@@ -2930,7 +2930,7 @@ namespace QgsWms
       if ( !renderJob.errors().isEmpty() )
       {
         QString layerWMSName;
-        QgsMapLayer *errorLayer = mProject->mapLayer( renderJob.errors().at( 0 ).first );
+        QgsMapLayer *errorLayer = mProject->mapLayer( renderJob.errors().at( 0 ).layerID );
         if ( errorLayer )
         {
           layerWMSName = layerNickname( *errorLayer );

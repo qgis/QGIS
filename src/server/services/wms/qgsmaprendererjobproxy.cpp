@@ -67,7 +67,7 @@ namespace QgsWms
       *image = renderJob.renderedImage();
       mPainter.reset( new QPainter( image ) );
 
-      getRenderErrors( &renderJob );
+      mErrors = renderJob.errors();
     }
     else
     {
@@ -77,7 +77,7 @@ namespace QgsWms
       renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.renderSynchronously();
-      getRenderErrors( &renderJob );
+      mErrors = renderJob.errors();
     }
   }
 
@@ -85,21 +85,4 @@ namespace QgsWms
   {
     return mPainter.release();
   }
-
-  void QgsMapRendererJobProxy::getRenderErrors( const QgsMapRendererJob *job )
-  {
-    if ( !job )
-    {
-      return;
-    }
-
-    mErrors.clear();
-    QgsMapRendererJob::Errors e = job->errors();
-    QgsMapRendererJob::Errors::const_iterator eIt = e.constBegin();
-    for ( ; eIt != e.constEnd(); ++eIt )
-    {
-      mErrors.append( qMakePair( eIt->layerID, eIt->message ) );
-    }
-  }
-
 } // namespace qgsws
