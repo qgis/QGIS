@@ -982,7 +982,7 @@ QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatu
 {
   const bool layerWasNotInCache = !mCache.contains( layer );
   // insert if it was not in cache
-  QHash<QgsFeatureId, QgsGeometry>& layerCache = mCache[layer];
+  QHash<QgsFeatureId, QgsGeometry> &layerCache = mCache[layer];
   if ( layerWasNotInCache )
   {
     connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVertexTool::onCachedGeometryChanged );
