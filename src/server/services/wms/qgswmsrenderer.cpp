@@ -19,6 +19,7 @@
 
 
 #include "qgswmsutils.h"
+#include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
 #include "qgsfilterrestorer.h"
 #include "qgsexception.h"
@@ -1119,6 +1120,8 @@ namespace QgsWms
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
+    else if ( infoFormat == QgsWmsParameters::Format::JSON )
+      ba = convertFeatureInfoToJson( layers, result );
     else
       ba = result.toByteArray();
 
@@ -2273,6 +2276,72 @@ namespace QgsWms
     }
 
     return featureInfoString.toUtf8();
+  }
+
+  QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
+  {
+    QString json;
+
+    const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
+    for ( int i = 0; i < layerList.size(); ++i )
+    {
+      const QDomElement layerElem = layerList.at( i ).toElement();
+      const QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
+
+      QgsMapLayer *layer;
+      for ( QgsMapLayer *l : layers )
+      {
+        if ( layerNickname( *l ).compare( layerName ) == 0 )
+        {
+          layer = l;
+        }
+      }
+
+      if ( ! layer )
+        continue;
+
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+
+        // search features to export
+        QgsFeatureList features;
+        QgsAttributeList attributes;
+        const QDomNodeList featuresNode = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
+        if ( !featuresNode.isEmpty() )
+        {
+          for ( int j = 0; j < featuresNode.size(); ++j )
+          {
+            const QDomElement featureNode = featuresNode.at( j ).toElement();
+            const qint64 fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
+            const QgsFeature feature = vl->getFeature( fid );
+            features.append( feature );
+
+            // search attributes to export
+            if ( not attributes.isEmpty() )
+              continue;
+
+            const QDomNodeList attributesNode = featureNode.elementsByTagName( QStringLiteral( "Attribute" ) );
+            for ( int k = 0; k < attributesNode.size(); ++k )
+            {
+              const QDomElement attributeElement = attributesNode.at( k ).toElement();
+              const QString fieldName = attributeElement.attribute( QStringLiteral( "name" ) );
+
+              attributes << feature.fieldNameIndex( fieldName );
+            }
+          }
+        }
+
+        // export
+        QgsJsonExporter exporter( vl );
+        json.append( exporter.exportFeatures( features ) );
+      }
+      else // raster layer
+      {
+      }
+    }
+
+    return json.toUtf8();
   }
 
   QDomElement QgsRenderer::createFeatureGML(
