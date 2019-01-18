@@ -9,11 +9,13 @@ SET(QGIS_3D_SRCS
   qgs3dutils.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
+  qgsfeature3dhandler_p.cpp
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
   qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
+  qgsrulebased3drenderer.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
@@ -94,11 +96,13 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsfeature3dhandler_p.h
   qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
   qgspointlightsettings.h
   qgsraycastingutils_p.h
+  qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
