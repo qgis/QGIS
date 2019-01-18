@@ -47,6 +47,7 @@ class TestQgsMapSettings: public QObject
     void testXmlReadWrite();
     void testSetLayers();
     void testLabelBoundary();
+    void testExpressionContext();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -382,7 +383,7 @@ void TestQgsMapSettings::testExpressionContext()
   QgsMapSettings ms;
   QgsExpressionContext c;
   QVariant r;
-  
+
   ms.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   c << QgsExpressionContextUtils::mapSettingsScope( ms );
 
