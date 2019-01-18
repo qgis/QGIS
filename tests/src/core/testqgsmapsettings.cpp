@@ -27,6 +27,7 @@
 #include "qgsapplication.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 class TestQgsMapSettings: public QObject
 {
@@ -374,6 +375,48 @@ void TestQgsMapSettings::testLabelBoundary()
   QVERIFY( ms.labelBoundaryGeometry().isNull() );
   ms.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1, 0 1, 0 0 ))" ) ) );
   QCOMPARE( ms.labelBoundaryGeometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
+}
+
+void TestQgsMapSettings::testExpressionContext()
+{
+  QgsMapSettings ms;
+  QgsExpressionContext context;
+
+  ms->setcrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  context << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  QgsExpression e2( QStringLiteral( "@map_crs" ) );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( QStringLiteral( "@map_crs_definition" ) );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( QStringLiteral( "@map_units" ) );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  QgsExpression e5( QStringLiteral( "@map_crs_description" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS 84" ) );
+
+  QgsExpression e6( QStringLiteral( "@map_crs_acronym" ) );
+  r = e6.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "longlat" ) );
+
+  QgsExpression e7( QStringLiteral( "@map_crs_pro4" ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
+  r = e8.evaluate( &c );
+  QVERIFY( r.toString().lenght() > 15 );
+
+  QgsExpression e9( QStringLiteral( "@map_ellipsoid_acr" ) );
+  r = e9.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS84" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
