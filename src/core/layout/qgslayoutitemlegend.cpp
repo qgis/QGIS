@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayertreeutils.h"
+#include "qgslayoututils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -114,7 +115,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   //adjust box if width or height is too small
   if ( mSizeToContents )
   {
-    QSizeF size = legendRenderer.minimumSize();
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+    QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
     {
       mForceResize = false;
@@ -193,8 +195,9 @@ void QgsLayoutItemLegend::adjustBoxSize()
     return;
   }
 
+  QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
-  QSizeF size = legendRenderer.minimumSize();
+  QSizeF size = legendRenderer.minimumSize( &context );
   QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {

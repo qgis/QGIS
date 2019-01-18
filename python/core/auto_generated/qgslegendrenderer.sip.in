@@ -34,7 +34,7 @@ Constructor for QgsLegendRenderer. The ownership of the legend model is not chan
 and the model must exist for the lifetime of this renderer.
 %End
 
-    QSizeF minimumSize();
+    QSizeF minimumSize( QgsRenderContext *renderContext = 0 );
 %Docstring
 Runs the layout algorithm and returns the minimum size required for the legend.
 

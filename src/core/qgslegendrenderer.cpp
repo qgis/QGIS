@@ -34,9 +34,9 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsL
 {
 }
 
-QSizeF QgsLegendRenderer::minimumSize()
+QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 {
-  return paintAndDetermineSize();
+  return paintAndDetermineSize( renderContext );
 }
 
 void QgsLegendRenderer::drawLegend( QPainter *painter )

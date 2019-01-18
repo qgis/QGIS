@@ -57,7 +57,7 @@ class CORE_EXPORT QgsLegendRenderer
      * \see setLegendSize()
      * \see legendSize()
      */
-    QSizeF minimumSize();
+    QSizeF minimumSize( QgsRenderContext *renderContext = nullptr );
 
     /**
      * Sets the preferred resulting legend size.
