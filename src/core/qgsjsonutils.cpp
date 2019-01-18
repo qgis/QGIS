@@ -145,7 +145,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
             val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
         }
 
-        properties += QStringLiteral( "      \"%1\":%2" ).arg( fields.at( i ).name(), QgsJsonUtils::encodeValue( val ) );
+        properties += QStringLiteral( "      \"%1\":%2" ).arg( mLayer->attributeDisplayName( i ), QgsJsonUtils::encodeValue( val ) );
 
         ++attributeCounter;
       }
