@@ -480,7 +480,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=exclude_attribute&X=190&Y=320',
                                  'wms_getfeatureinfo_exclude_attribute_json')
 
-        # simple test without geometry
+        # test with raster layer
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=landsat&styles=&' +
                                  'info_format=application%2Fjson&transparent=true&' +
