@@ -107,6 +107,7 @@ class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
     Q_PROPERTY( bool isNull READ isNull )
+    Q_PROPERTY( QgsWkbTypes::GeometryType type READ type )
 
   public:
 
