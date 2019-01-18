@@ -381,8 +381,9 @@ void TestQgsMapSettings::testExpressionContext()
 {
   QgsMapSettings ms;
   QgsExpressionContext c;
-
-  ms->setcrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QVariant r;
+  
+  ms.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   c << QgsExpressionContextUtils::mapSettingsScope( ms );
 
   QgsExpression e2( QStringLiteral( "@map_crs" ) );
