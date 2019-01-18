@@ -1104,6 +1104,8 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
 
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
 {
+  QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
     QgsDebugMsgLevel( QStringLiteral( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ), 4 );
@@ -1119,6 +1121,8 @@ bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql 
 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
 {
+  QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
+
   if ( !PQexecNR( QStringLiteral( "CLOSE %1" ).arg( cursorName ) ) )
     return false;
 
@@ -1133,6 +1137,7 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
 
 QString QgsPostgresConn::uniqueCursorName()
 {
+  QMutexLocker locker( &mLock ); // to protect access to mNextCursorId
   return QStringLiteral( "qgis_%1" ).arg( ++mNextCursorId );
 }
 
