@@ -758,6 +758,8 @@ namespace QgsWms
       f = Format::TEXT;
     else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
       f = Format::GML;
+    else if ( fStr.startsWith( QLatin1String( "application/json" ), Qt::CaseInsensitive ) )
+      f = Format::JSON;
     else
       f = Format::NONE;
 

@@ -309,7 +309,8 @@ namespace QgsWms
         TEXT,
         XML,
         HTML,
-        GML
+        GML,
+        JSON
       };
 
       /**
