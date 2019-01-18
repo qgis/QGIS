@@ -480,6 +480,15 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=exclude_attribute&X=190&Y=320',
                                  'wms_getfeatureinfo_exclude_attribute_json')
 
+        # simple test without geometry
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250',
+                                 'wms_getfeatureinfo_raster_json')
+
     def testGetFeatureInfoPostgresTypes(self):
         # compare json list output with file
         self.wms_request_compare('GetFeatureInfo',
