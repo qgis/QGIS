@@ -632,7 +632,7 @@ void TestQgsLayoutMap::expressionContext()
 
   QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
   r = e8.evaluate( &c );
-  QVERIFY( r.toString().lenght() ­> 15 );
+  QVERIFY( r.toString().lenght() >= 15 );
 
   QgsExpression e9( QStringLiteral( "@map_ellipsoid_acr" ) );
   r = e9.evaluate( &c );
@@ -643,19 +643,19 @@ void TestQgsLayoutMap::expressionContext()
   map->setLayers( QList<QgsMapLayer *>() << layer << layer2 );
   QgsProject::instance()->addMapLayers( map->layers() );
   c = map->createExpressionContext();
-  QgsExpression e5( QStringLiteral( "@map_layer_ids" ) );
-  r = e5.evaluate( &c );
+  QgsExpression e10( QStringLiteral( "@map_layer_ids" ) );
+  r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
-  e5 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
-  r = e5.evaluate( &c );
+  e10 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
+  r = e10.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
 
-  QgsExpression e6( QStringLiteral( "is_layer_visible( '%1' )" ).arg( layer->id() ) );
-  r = e6.evaluate( &c );
+  QgsExpression e11( QStringLiteral( "is_layer_visible( '%1' )" ).arg( layer->id() ) );
+  r = e11.evaluate( &c );
   QCOMPARE( r.toBool(), true );
 
-  QgsExpression e7( QStringLiteral( "is_layer_visible( 'aaaaaa' )" ) );
-  r = e7.evaluate( &c );
+  QgsExpression e12( QStringLiteral( "is_layer_visible( 'aaaaaa' )" ) );
+  r = e12.evaluate( &c );
   QCOMPARE( r.toBool(), false );
 }
 
