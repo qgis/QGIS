@@ -537,12 +537,24 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItemInternal( QgsLayerTr
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
   ctx.context = context;
+
+  // add a layer expression context scope
+  QgsExpressionContextScope *layerScope = nullptr;
+  if ( context && symbolItem->layerNode()->layer() )
+  {
+    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
+    context->expressionContext().appendScope( layerScope );
+  }
+
   ctx.painter = context ? context->painter() : painter;
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
+
+  if ( layerScope )
+    delete context->expressionContext().popScope();
 
   Nucleon nucleon;
   nucleon.item = symbolItem;
@@ -578,6 +590,13 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
+  QgsExpressionContextScope *layerScope = nullptr;
+  if ( context && nodeLayer->layer() )
+  {
+    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
+    context->expressionContext().appendScope( layerScope );
+  }
+
   QgsExpressionContext tempContext;
 
   const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
@@ -598,6 +617,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   }
   size.rheight() = y - point.y();
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
+
+  if ( layerScope )
+    delete context->expressionContext().popScope();
 
   return size;
 }

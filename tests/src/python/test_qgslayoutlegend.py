@@ -348,10 +348,10 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
         layer_tree_layer = group.addLayer(point_layer)
-        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %]')
+        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
-        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel('bbbb [% 1+2 %] xx [% @layout_name %]')
+        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel('bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
 
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
