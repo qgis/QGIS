@@ -395,10 +395,17 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   context.setForceVectorOutput( true );
   context.setPainter( ctx ? ctx->painter : nullptr );
 
-  // use a minimal expression context for now
-  QgsExpressionContext expContext;
-  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
-  context.setExpressionContext( expContext );
+  if ( ctx && ctx->context )
+  {
+    context.setExpressionContext( ctx->context->expressionContext() );
+  }
+  else
+  {
+    // setup a minimal expression context
+    QgsExpressionContext expContext;
+    expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+    context.setExpressionContext( expContext );
+  }
 
   //Consider symbol size for point markers
   double height = settings.symbolSize().height();
