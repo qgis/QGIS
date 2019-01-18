@@ -2282,6 +2282,8 @@ namespace QgsWms
   {
     QString json;
 
+    const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
+
     const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
     for ( int i = 0; i < layerList.size(); ++i )
     {
@@ -2317,7 +2319,7 @@ namespace QgsWms
             const QgsFeature feature = vl->getFeature( fid );
             features.append( feature );
 
-            // search attributes to export
+            // search attributes to export (one time only)
             if ( not attributes.isEmpty() )
               continue;
 
@@ -2335,6 +2337,7 @@ namespace QgsWms
         // export
         QgsJsonExporter exporter( vl );
         exporter.setAttributes( attributes );
+        exporter.setIncludeGeometry( withGeometry );
         json.append( exporter.exportFeatures( features ) );
       }
       else // raster layer
