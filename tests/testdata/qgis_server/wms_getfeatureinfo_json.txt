@@ -1,7 +1,9 @@
 *****
 Content-Type: application/json; charset=utf-8
 
-{ "type": "FeatureCollection",
+{"layers":[{
+ "name": "testlayer èé",
+ "type": "FeatureCollection",
     "features":[
 {
    "type":"Feature",
@@ -13,4 +15,4 @@ Content-Type: application/json; charset=utf-8
       "utf8nameè":"three èé↓"
    }
 }
-]}
+]}]}
