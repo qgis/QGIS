@@ -19,6 +19,7 @@
 #include "qgsxmlutils.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
@@ -415,7 +416,10 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
     return nullptr;
 
   Qgs3DRenderContext context( map );
-  // TODO: add expr. context
+
+  QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( vl ) );
+  exprContext.setFields( vl->fields() );
+  context.setExpressionContext( exprContext );
 
   RuleToHandlerMap handlers;
   mRootRule->createHandlers( vl, handlers );
@@ -431,7 +435,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   QgsFeatureIterator fi = vl->getFeatures( req );
   while ( fi.nextFeature( f ) )
   {
-    // TODO: set feature in expr context?
+    context.expressionContext().setFeature( f );
     mRootRule->registerFeature( f, context, handlers );
   }
 

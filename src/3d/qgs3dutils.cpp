@@ -378,18 +378,26 @@ QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint
   return mapToWorldCoordinates( mapPoint2, origin2 );
 }
 
-QgsAbstract3DSymbol *Qgs3DUtils::symbolForGeometryType( QgsWkbTypes::GeometryType geomType )
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DUtils::symbolForGeometryType( QgsWkbTypes::GeometryType geomType )
 {
   switch ( geomType )
   {
     case QgsWkbTypes::PointGeometry:
-      return new QgsPoint3DSymbol;
+      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPoint3DSymbol );
     case QgsWkbTypes::LineGeometry:
-      return new QgsLine3DSymbol;
+      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsLine3DSymbol );
     case QgsWkbTypes::PolygonGeometry:
-      return new QgsPolygon3DSymbol;
+      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPolygon3DSymbol );
     default:
       return nullptr;
   }
 }
 
+QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorLayer *layer )
+{
+  QgsExpressionContext exprContext;
+  exprContext << QgsExpressionContextUtils::globalScope()
+              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+              << QgsExpressionContextUtils::layerScope( layer );
+  return exprContext;
+}

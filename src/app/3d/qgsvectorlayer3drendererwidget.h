@@ -64,6 +64,8 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
 
     void setLayer( QgsVectorLayer *layer );
 
+    void setDockMode( bool dockMode ) override;
+
   public slots:
     void apply() override;
 

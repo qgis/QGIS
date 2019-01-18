@@ -29,6 +29,7 @@ class Qgs3DMapScene;
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 
+#include <memory>
 
 #ifndef SIP_RUN
 
@@ -101,7 +102,11 @@ class _3D_EXPORT Qgs3DUtils
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
 
-    static QgsAbstract3DSymbol *symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
+    //! Returns a new 3D symbol based on given geometry type (or null pointer if geometry type is not supported)
+    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
+
+    //! Returns expression context for use in preparation of 3D data of a layer
+    static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
 };
 
 #endif

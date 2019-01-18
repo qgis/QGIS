@@ -26,18 +26,6 @@
 #include <QMessageBox>
 
 
-static QList<QgsExpressionContextScope *> _globalProjectLayerScopes( const QgsMapLayer *layer )
-{
-  QList<QgsExpressionContextScope *> scopes;
-  scopes << QgsExpressionContextUtils::globalScope()
-         << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-         << QgsExpressionContextUtils::layerScope( layer );
-  return scopes;
-}
-
-
-// --------
-
 QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
@@ -101,7 +89,7 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
-  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( Qgs3DUtils::symbolForGeometryType( mLayer->geometryType() ) );
+  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( Qgs3DUtils::symbolForGeometryType( mLayer->geometryType() ).release() );
 
   QgsRuleBased3DRenderer::Rule *current = currentRule();
   if ( current )
@@ -543,7 +531,6 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mSymbol( nullptr )
 {
   setupUi( this );
 
@@ -557,7 +544,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   if ( mRule->symbol() )
   {
     groupSymbol->setChecked( true );
-    mSymbol = mRule->symbol()->clone(); // use a clone!
+    mSymbol.reset( mRule->symbol()->clone() ); // use a clone!
   }
   else
   {
@@ -566,7 +553,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   }
 
   mSymbolWidget = new QgsSymbol3DWidget( this );
-  mSymbolWidget->setSymbol( mSymbol, layer );
+  mSymbolWidget->setSymbol( mSymbol.get(), layer );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mSymbolWidget );
   groupSymbol->setLayout( l );
@@ -581,16 +568,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
 }
 
-Qgs3DRendererRulePropsWidget::~Qgs3DRendererRulePropsWidget()
-{
-  delete mSymbol;
-}
-
-void Qgs3DRendererRulePropsWidget::setDockMode( bool dockMode )
-{
-  QgsPanelWidget::setDockMode( dockMode );
-  // TODO mLabelingGui->setDockMode( dockMode );
-}
+Qgs3DRendererRulePropsWidget::~Qgs3DRendererRulePropsWidget() = default;
 
 void Qgs3DRendererRulePropsWidget::testFilter()
 {
@@ -604,7 +582,7 @@ void Qgs3DRendererRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context( _globalProjectLayerScopes( mLayer ) );
+  QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
 
   if ( !filter.prepare( &context ) )
   {
@@ -637,7 +615,7 @@ void Qgs3DRendererRulePropsWidget::testFilter()
 
 void Qgs3DRendererRulePropsWidget::buildExpression()
 {
-  QgsExpressionContext context( _globalProjectLayerScopes( mLayer ) );
+  QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 

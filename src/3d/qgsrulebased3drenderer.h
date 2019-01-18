@@ -28,6 +28,15 @@ class Qgs3DRenderContext;
 class QgsFeature3DHandler;
 
 
+/**
+ * \ingroup 3d
+ * Metadata for rule-based 3D renderer to allow creation of its instances from XML
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.6
+ */
 class _3D_EXPORT QgsRuleBased3DRendererMetadata : public Qgs3DRendererAbstractMetadata
 {
   public:
@@ -43,6 +52,10 @@ class _3D_EXPORT QgsRuleBased3DRendererMetadata : public Qgs3DRendererAbstractMe
  * Rule-based 3D renderer.
  *
  * Similar to rule-based 2D renderer and rule-based labeling, it allows specification of rules for 3D symbols.
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
  * \since QGIS 3.6
  */
 class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
@@ -279,6 +292,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
     };
 
 
+    //! Construct renderer with the given root rule (takes ownership)
     QgsRuleBased3DRenderer( QgsRuleBased3DRenderer::Rule *root SIP_TRANSFER );
     ~QgsRuleBased3DRenderer() override;
 
@@ -287,7 +301,9 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
     //! Returns vector layer associated with the renderer
     QgsVectorLayer *layer() const;
 
+    //! Returns pointer to the root rule
     QgsRuleBased3DRenderer::Rule *rootRule() { return mRootRule; }
+    //! Returns pointer to the root rule
     const Rule *rootRule() const SIP_SKIP { return mRootRule; }
 
     QString type() const override { return "rulebased"; }

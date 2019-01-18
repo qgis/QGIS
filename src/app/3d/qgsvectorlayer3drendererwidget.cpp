@@ -72,9 +72,9 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   QVBoxLayout *layout = new QVBoxLayout( this );
 
   cboRendererType = new QComboBox( this );
-  cboRendererType->addItem( tr( "No renderer" ) );
-  cboRendererType->addItem( tr( "Single symbol renderer" ) );
-  cboRendererType->addItem( tr( "Rule-based renderer" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No symbols" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single symbol" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
 
   widgetRendererStack = new QStackedWidget( this );
   layout->addWidget( cboRendererType );
@@ -91,7 +91,10 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   connect( cboRendererType, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+
+  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
 }
+
 
 void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
@@ -115,6 +118,12 @@ void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   widgetRendererStack->setCurrentIndex( pageIndex );
   whileBlocking( cboRendererType )->setCurrentIndex( pageIndex );
+}
+
+void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  widgetRuleBasedRenderer->setDockMode( dockMode );
 }
 
 

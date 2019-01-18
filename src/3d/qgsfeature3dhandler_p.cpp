@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 
 /// @cond PRIVATE
 
@@ -31,9 +32,7 @@ namespace Qgs3DSymbolImpl
   {
     Qgs3DRenderContext context( map );
 
-    QgsExpressionContext exprContext;
-    exprContext << QgsExpressionContextUtils::globalScope()
-                << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+    QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
     exprContext.setFields( layer->fields() );
     context.setExpressionContext( exprContext );
 

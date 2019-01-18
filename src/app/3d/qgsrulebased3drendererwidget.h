@@ -148,8 +148,6 @@ class Qgs3DRendererRulePropsWidget : public QgsPanelWidget, private Ui::Qgs3DRen
 
     QgsRuleBased3DRenderer::Rule *rule() { return mRule; }
 
-    void setDockMode( bool dockMode ) override;
-
   public slots:
     void testFilter();
     void buildExpression();
@@ -164,7 +162,7 @@ class Qgs3DRendererRulePropsWidget : public QgsPanelWidget, private Ui::Qgs3DRen
     QgsVectorLayer *mLayer = nullptr;
 
     QgsSymbol3DWidget *mSymbolWidget = nullptr;
-    QgsAbstract3DSymbol *mSymbol; // a clone of original symbol
+    std::unique_ptr<QgsAbstract3DSymbol> mSymbol; // a clone of original symbol
 
 };
 
