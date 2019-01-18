@@ -306,8 +306,5 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(exp6.evaluate(expc2), 15.2)
 
 
-
-
-
 if __name__ == '__main__':
     unittest.main()
