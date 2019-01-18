@@ -29,7 +29,8 @@ from qgis.core import (QgsLayoutItemLegend,
                        QgsLayoutMeasurement,
                        QgsLayoutItem,
                        QgsLayoutPoint,
-                       QgsLayoutSize)
+                       QgsLayoutSize,
+                       QgsExpression)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -282,7 +283,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setLegendFilterOutAtlas(True)
 
         expc = legend.createExpressionContext()
-
         exp1 = QgsExpression("@legend_title")
         self.assertEqual(exp1.evaluate(expc), "Legend")
         exp2 = QgsExpression("@legend_column_count")
@@ -297,13 +297,13 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
         map.setFrameEnabled(True)
+        map.setExtent(QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125))
         layout.addLayoutItem(map)
-        map.setScale(15.2)
+        map.setScale(15000)
         legend.setLinkedMap(map)
         expc2 = legend.createExpressionContext()
-
         exp6 = QgsExpression("@map_scale")
-        self.assertEqual(exp6.evaluate(expc2), 15.2)
+        self.assertAlmostEqual(exp6.evaluate(expc2), 15000, 2)
 
 
 if __name__ == '__main__':
