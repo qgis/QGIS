@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbol3dwidget.h"
 
+#include <QAction>
 #include <QClipboard>
 #include <QMessageBox>
 
