@@ -2312,27 +2312,27 @@ namespace QgsWms
         QgsFeatureList features;
         QgsAttributeList attributes;
         const QDomNodeList featuresNode = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
-        if ( !featuresNode.isEmpty() )
+        if ( featuresNode.isEmpty() )
+          continue;
+
+        for ( int j = 0; j < featuresNode.size(); ++j )
         {
-          for ( int j = 0; j < featuresNode.size(); ++j )
+          const QDomElement featureNode = featuresNode.at( j ).toElement();
+          const qint64 fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
+          const QgsFeature feature = vl->getFeature( fid );
+          features << feature;
+
+          // search attributes to export (one time only)
+          if ( not attributes.isEmpty() )
+            continue;
+
+          const QDomNodeList attributesNode = featureNode.elementsByTagName( QStringLiteral( "Attribute" ) );
+          for ( int k = 0; k < attributesNode.size(); ++k )
           {
-            const QDomElement featureNode = featuresNode.at( j ).toElement();
-            const qint64 fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
-            const QgsFeature feature = vl->getFeature( fid );
-            features.append( feature );
+            const QDomElement attributeElement = attributesNode.at( k ).toElement();
+            const QString fieldName = attributeElement.attribute( QStringLiteral( "name" ) );
 
-            // search attributes to export (one time only)
-            if ( not attributes.isEmpty() )
-              continue;
-
-            const QDomNodeList attributesNode = featureNode.elementsByTagName( QStringLiteral( "Attribute" ) );
-            for ( int k = 0; k < attributesNode.size(); ++k )
-            {
-              const QDomElement attributeElement = attributesNode.at( k ).toElement();
-              const QString fieldName = attributeElement.attribute( QStringLiteral( "name" ) );
-
-              attributes << feature.fieldNameIndex( fieldName );
-            }
+            attributes << feature.fieldNameIndex( fieldName );
           }
         }
 
@@ -2369,7 +2369,7 @@ namespace QgsWms
       }
     }
 
-    json.append( ( "]}" ) );
+    json.append( QStringLiteral( "]}" ) );
 
     return json.toUtf8();
   }
