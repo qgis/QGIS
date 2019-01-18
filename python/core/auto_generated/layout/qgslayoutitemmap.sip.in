@@ -478,6 +478,12 @@ Returns a list of the layers which will be rendered within this map item, consid
 any locked layers, linked map theme, and data defined settings.
 %End
 
+    QgsMapRendererJob::Errors renderingErrors() const;
+%Docstring
+renderingErrors
+@return list of layer id / error message
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );

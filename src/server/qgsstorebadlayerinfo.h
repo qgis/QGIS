@@ -11,7 +11,12 @@
 class QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
 {
   public:
+    /*Default constructor
+     */
     QgsStoreBadLayerInfo();
+
+    /*Destructor
+     */
     ~QgsStoreBadLayerInfo();
 
     /**

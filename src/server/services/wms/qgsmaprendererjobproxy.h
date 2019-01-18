@@ -19,6 +19,7 @@
 #define QGSMAPRENDERERJOBPROXY_H
 
 #include "qgsmapsettings.h"
+#include "qgsmaprendererjob.h"
 
 class QgsFeatureFilterProvider;
 
@@ -61,7 +62,11 @@ namespace QgsWms
        */
       QPainter *takePainter();
 
-      const QList< QPair< QString, QString > > &errors() const { return mErrors; }
+      /**
+       * @brief Returns reported errors
+       * @return error list
+       */
+      QgsMapRendererJob::Errors errors() const { return mErrors; }
 
     private:
       bool mParallelRendering;
@@ -71,7 +76,7 @@ namespace QgsWms
       void getRenderErrors( const QgsMapRendererJob *job );
 
       //! Layer id / error message
-      QList< QPair< QString, QString > > mErrors;
+      QgsMapRendererJob::Errors mErrors;
   };
 
 
