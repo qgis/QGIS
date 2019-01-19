@@ -84,7 +84,7 @@ class Grass7Utils:
         if Grass7Utils.grassPath() is None:
             return None
 
-        for command in ["grass74", "grass72", "grass71", "grass70", "grass"]:
+        for command in ["grass76", "grass74", "grass72", "grass70", "grass"]:
             proc = subprocess.Popen(
                 ["{} -v".format(command)],
                 shell=True,
@@ -138,7 +138,7 @@ class Grass7Utils:
             else:
                 folder = os.path.join(unicode(QgsApplication.prefixPath()), 'grass7')
                 if not os.path.isdir(folder):
-                    folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
+                    folder = '/Applications/GRASS-7.4.app/Contents/MacOS'
 
         return folder or ''
 
@@ -448,7 +448,7 @@ class Grass7Utils:
                 if os.path.exists(localPath):
                     helpPath = os.path.abspath(localPath)
             elif isMac():
-                localPath = '/Applications/GRASS-7.0.app/Contents/MacOS/docs/html'
+                localPath = '/Applications/GRASS-7.4.app/Contents/MacOS/docs/html'
                 if os.path.exists(localPath):
                     helpPath = os.path.abspath(localPath)
             else:
@@ -460,4 +460,4 @@ class Grass7Utils:
                         helpPath = os.path.abspath(path)
                         break
 
-        return helpPath if helpPath is not None else 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        return helpPath if helpPath is not None else 'https://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
