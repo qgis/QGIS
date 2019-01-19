@@ -48,6 +48,8 @@ const QgsProject *QgsConfigCache::project( const QString &path )
     {
       if ( badLayerHandler->badLayers().size() > 0 )
       {
+        QString errorMsg = QString( "Layer(s) %1 not valid" ).arg( badLayerHandler->badLayers().join( ',' ) );
+        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
         throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
       }
       mProjectCache.insert( path, prj.release() );

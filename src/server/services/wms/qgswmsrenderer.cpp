@@ -2930,11 +2930,16 @@ namespace QgsWms
       if ( !renderJob.errors().isEmpty() )
       {
         QString layerWMSName;
-        QgsMapLayer *errorLayer = mProject->mapLayer( renderJob.errors().at( 0 ).layerID );
+        QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
+        QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
         if ( errorLayer )
         {
           layerWMSName = layerNickname( *errorLayer );
         }
+
+        //Log first error
+        QString errorMsg = QString( "Map rendering error in layer '%1'" ).arg( firstErrorLayerId );
+        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Critical );
         throw QgsServerException( QString( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
       }
     }
@@ -3274,6 +3279,11 @@ namespace QgsWms
     {
       if ( !( *mapIt )->renderingErrors().isEmpty() )
       {
+        //Log first error
+        QgsMapRendererJob::Error e = ( *mapIt )->renderingErrors().at( 0 );
+        QString errorMsg = QString( "Rendering error : '%1' in layer %2" ).arg( e.message ).arg( e.layerID );
+        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Critical );
+
         throw QgsServerException( QStringLiteral( "Print error" ) );
       }
     }

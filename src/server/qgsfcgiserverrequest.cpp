@@ -68,7 +68,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   }
 
   // Store the URL before the server rewrite that could have been set in QUERY_STRING
-  //mOriginalUrl = url;
+  mOriginalUrl = url;
 
   // OGC parameters are passed with the query string, which is normally part of
   // the REQUEST_URI, we override the query string url in case it is defined
