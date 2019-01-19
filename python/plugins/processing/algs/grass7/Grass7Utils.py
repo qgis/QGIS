@@ -132,8 +132,8 @@ class Grass7Utils:
         Find GRASS binary path on the operating system.
         Sets global variable Grass7Utils.command
         """
-        cmdList = ["grass74", "grass72", "grass71", "grass70", "grass",
-                   "grass74.sh", "grass72.sh", "grass71.sh", "grass70.sh", "grass.sh"]
+        cmdList = ["grass76", "grass74", "grass72", "grass70", "grass",
+                   "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"]
 
         def searchFolder(folder):
             """
@@ -215,7 +215,7 @@ class Grass7Utils:
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
-                for version in ['', '7', '70', '71', '72', '74']:
+                for version in ['', '7', '76', '74', '72', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -544,7 +544,7 @@ class Grass7Utils:
             return 'https://grass.osgeo.org/grass{}/manuals/'.format(version)
         else:
             # GRASS not available!
-            return 'https://grass.osgeo.org/grass72/manuals/'
+            return 'https://grass.osgeo.org/grass76/manuals/'
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
