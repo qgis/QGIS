@@ -72,6 +72,7 @@
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
+#include "qgsalgorithmrastersurfacevolume.h"
 #include "qgsalgorithmrasterzonalstats.h"
 #include "qgsalgorithmreclassifybylayer.h"
 #include "qgsalgorithmremoveduplicatesbyattribute.h"
@@ -209,6 +210,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
+  addAlgorithm( new QgsRasterSurfaceVolumeAlgorithm() );
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsReclassifyByLayerAlgorithm() );
   addAlgorithm( new QgsReclassifyByTableAlgorithm() );
