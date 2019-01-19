@@ -286,6 +286,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   mInitialized = true;
   mUseSystemProxy = false;
 
+  qRegisterMetaType<QNetworkAccessManager::Operation>( "QNetworkAccessManager::Operation" );
+
   Q_ASSERT( sMainNAM );
 
   if ( sMainNAM != this )
@@ -300,6 +302,9 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
     connect( this, &QgsNetworkAccessManager::requestTimedOut,
              sMainNAM, &QgsNetworkAccessManager::requestTimedOut );
+
+    connect( this, &QgsNetworkAccessManager::requestAboutToBeCreated,
+             sMainNAM, &QgsNetworkAccessManager::requestAboutToBeCreated );
 
 #ifndef QT_NO_SSL
     connect( this, &QNetworkAccessManager::sslErrors,
