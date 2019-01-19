@@ -75,6 +75,8 @@ QList<int> QgsPolygonsToLinesAlgorithm::inputLayerTypes() const
 
 QgsFeatureList QgsPolygonsToLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  Q_UNUSED( context )
+
   QgsFeatureList result;
   QgsFeature feat = feature;
   if ( feat.hasGeometry() )
@@ -126,10 +128,9 @@ QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGe
 
   if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
   {
-    for ( int i = 0; i < collection->numGeometries(); ++i )
-    {
-      rings.append( extractRings( collection->geometryN( i ) ) );
-    }
+    QgsGeometryPartIterator parts = collection->parts();
+    while ( parts.hasNext() )
+      rings.append( extractRings( parts.next() ) );
   }
   else if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
   {
