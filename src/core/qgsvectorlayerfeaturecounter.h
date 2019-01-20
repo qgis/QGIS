@@ -62,7 +62,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      * Get the feature Ids for a particular \a legendKey.
      * If run() has not yet been executed, it will be.
      * If the key has not been found an empty QSet will be returned.
-     * 
+     *
      * \since:3.8
      */
     QgsFeatureIds getFeatureIds( const QString symbolkey ) const;
