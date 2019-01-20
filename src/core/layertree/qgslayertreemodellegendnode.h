@@ -248,6 +248,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
 
+    /**
+     * create an expression context containing symbol elements
+     * 
+     * \since: 3.8
+     */
+    QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const;
+
   public slots:
 
     /**
