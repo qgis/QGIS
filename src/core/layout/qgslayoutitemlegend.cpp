@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayertreeutils.h"
+#include "qgslayoututils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -114,7 +115,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   //adjust box if width or height is too small
   if ( mSizeToContents )
   {
-    QSizeF size = legendRenderer.minimumSize();
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+    QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
     {
       mForceResize = false;
@@ -193,8 +195,9 @@ void QgsLayoutItemLegend::adjustBoxSize()
     return;
   }
 
+  QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
-  QSizeF size = legendRenderer.minimumSize();
+  QSizeF size = legendRenderer.minimumSize( &context );
   QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
@@ -816,6 +819,33 @@ void QgsLayoutItemLegend::onAtlasEnded()
 {
   mInAtlas = false;
   updateFilterByMap();
+}
+
+QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
+
+  // We only want the last scope from the map's expression context, as this contains
+  // the map specific variables. We don't want the rest of the map's context, because that
+  // will contain duplicate global, project, layout, etc scopes.
+
+  if ( mMap )
+  {
+    context.appendScope( mMap->createExpressionContext().popScope() );
+  }
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Legend Settings" ) );
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_title" ), title(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_column_count" ), columnCount(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_split_layers" ), splitLayer(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_wrap_string" ), wrapString(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_by_map" ), legendFilterByMapEnabled(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_out_atlas" ), legendFilterOutAtlas(), true ) );
+
+  context.appendScope( scope );
+
+  return context;
 }
 
 // -------------------------------------------------------------------------

@@ -2087,6 +2087,14 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
       }
     }
     setAnnotationsVisible( elem.attribute( QStringLiteral( "annotationsVisible" ), QStringLiteral( "1" ) ).toInt() );
+
+    // restore canvas expression context
+    const QDomNodeList scopeElements = elem.elementsByTagName( QStringLiteral( "expressionContextScope" ) );
+    if ( scopeElements.size() > 0 )
+    {
+      const QDomElement scopeElement = scopeElements.at( 0 ).toElement();
+      mExpressionContextScope.readXml( scopeElement, QgsReadWriteContext() );
+    }
   }
   else
   {
@@ -2114,6 +2122,12 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );
+
+  // store canvas expression context
+  QDomElement scopeElement = doc.createElement( QStringLiteral( "expressionContextScope" ) );
+  mExpressionContextScope.writeXml( scopeElement, doc, QgsReadWriteContext() );
+  mapcanvasNode.appendChild( scopeElement );
+
   // TODO: store only units, extent, projections, dest CRS
 }
 

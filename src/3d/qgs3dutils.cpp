@@ -27,6 +27,10 @@
 #include "qgsabstract3dengine.h"
 #include "qgsterraingenerator.h"
 
+#include "qgsline3dsymbol.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
+
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
 {
@@ -374,3 +378,26 @@ QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint
   return mapToWorldCoordinates( mapPoint2, origin2 );
 }
 
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DUtils::symbolForGeometryType( QgsWkbTypes::GeometryType geomType )
+{
+  switch ( geomType )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPoint3DSymbol );
+    case QgsWkbTypes::LineGeometry:
+      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsLine3DSymbol );
+    case QgsWkbTypes::PolygonGeometry:
+      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPolygon3DSymbol );
+    default:
+      return nullptr;
+  }
+}
+
+QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorLayer *layer )
+{
+  QgsExpressionContext exprContext;
+  exprContext << QgsExpressionContextUtils::globalScope()
+              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+              << QgsExpressionContextUtils::layerScope( layer );
+  return exprContext;
+}

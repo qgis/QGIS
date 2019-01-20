@@ -236,7 +236,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>8</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -265,8 +265,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>680</width>
-                <height>883</height>
+                <width>590</width>
+                <height>782</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -281,7 +281,7 @@
                  <property name="title">
                   <string>General Settings</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
@@ -546,7 +546,7 @@
                  <property name="title">
                   <string>Measurements</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
@@ -615,7 +615,7 @@
                  <property name="title">
                   <string>Coordinate Display</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
@@ -705,7 +705,7 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -863,8 +863,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>778</height>
+                <width>603</width>
+                <height>161</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -938,8 +938,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>291</width>
-                <height>615</height>
+                <width>290</width>
+                <height>552</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -948,7 +948,7 @@
                  <property name="title">
                   <string>Default Symbols</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1175,7 +1175,7 @@
                  <property name="title">
                   <string>Options</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1189,7 +1189,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget">
                       <property name="focusPolicy">
                        <enum>Qt::StrongFocus</enum>
                       </property>
@@ -1514,8 +1514,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>159</width>
-                <height>49</height>
+                <width>168</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1575,9 +1575,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>632</width>
-                <height>2867</height>
+                <y>-1198</y>
+                <width>671</width>
+                <height>2647</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1598,13 +1598,13 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="collapsed" stdset="0">
+                 <property name="collapsed">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projowsserver</string>
                  </property>
-                 <property name="saveCollapsedState" stdset="0">
+                 <property name="saveCollapsedState">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
@@ -1841,7 +1841,7 @@
                  <property name="title">
                   <string>WMS capabilities</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -1856,10 +1856,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_4">
@@ -1965,10 +1965,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_5">
@@ -2021,10 +2021,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_10">
@@ -2086,10 +2086,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout">
@@ -2448,37 +2448,7 @@
                   <string>WMTS capabilities</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="0" column="0">
-                   <widget class="QTreeWidget" name="twWmtsLayers">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Published</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>PNG</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>JPEG</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
+                  <item row="3" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <widget class="QLabel" name="mWMTSMinScaleLabel">
@@ -2502,7 +2472,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0">
+                  <item row="4" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
                     <item>
                      <widget class="QLabel" name="mWMTSUrlLabel">
@@ -2513,6 +2483,101 @@
                     </item>
                     <item>
                      <widget class="QLineEdit" name="mWMTSUrlLineEdit"/>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_17a">
+                    <item>
+                     <layout class="QVBoxLayout" name="vlWmtsLayers">
+                      <item>
+                       <widget class="QLabel" name="label_31">
+                        <property name="text">
+                         <string>Published layers</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QTreeWidget" name="twWmtsLayers">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <column>
+                         <property name="text">
+                          <string>Layer</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Published</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>PNG</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>JPEG</string>
+                         </property>
+                        </column>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QVBoxLayout" name="vlWmtsGrids">
+                      <item>
+                       <widget class="QLabel" name="label_32">
+                        <property name="text">
+                         <string>Grids</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QTreeWidget" name="twWmtsGrids">
+                        <column>
+                         <property name="text">
+                          <string>CRS</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Published</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Top</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Left</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Min. scale</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Last level</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Max. scale</string>
+                         </property>
+                        </column>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
                   </item>
@@ -2530,7 +2595,7 @@
                  <property name="title">
                   <string>WFS capabilities (also influences DXF export)</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -2616,7 +2681,7 @@
                  <property name="title">
                   <string>WCS capabilities</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2810,6 +2875,23 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -2819,23 +2901,6 @@
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2966,7 +3031,6 @@
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
-  <tabstop>twWmtsLayers</tabstop>
   <tabstop>mWMTSMinScaleLineEdit</tabstop>
   <tabstop>mWMTSUrlLineEdit</tabstop>
   <tabstop>twWFSLayers</tabstop>

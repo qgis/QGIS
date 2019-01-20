@@ -305,6 +305,32 @@ that are shown in the button's drop-down menu.
 .. seealso:: :py:func:`setColorSchemeRegistry`
 %End
 
+    void linkToProjectColor( const QString &name );
+%Docstring
+Sets the button to link to an existing project color, by color ``name``.
+
+This changes the behavior of the button to a "linked" mode. Specifically,
+the button will show the linked color and respond to changes in the project
+color scheme by refreshing the displayed color automatically. Additionally,
+the button's menu will show items specific to linked color mode, including
+an option to "unlink" from the project color.
+
+.. seealso:: :py:func:`linkedProjectColorName`
+
+.. seealso:: :py:func:`unlink`
+
+.. versionadded:: 3.6
+%End
+
+    QString linkedProjectColorName() const;
+%Docstring
+Returns the linked project color name, if set.
+
+.. seealso:: :py:func:`linkToProjectColor`
+
+.. versionadded:: 3.6
+%End
+
     static QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
 %Docstring
 Creates an icon for displaying a ``color`` in a drop-down menu.
@@ -392,6 +418,17 @@ Sets color to null.
 .. versionadded:: 2.16
 %End
 
+    void unlink();
+%Docstring
+Unlinks the button from a project color.
+
+.. seealso:: :py:func:`unlinked`
+
+.. seealso:: :py:func:`linkToProjectColor`
+
+.. versionadded:: 3.6
+%End
+
   signals:
 
     void colorChanged( const QColor &color );
@@ -411,6 +448,18 @@ Emitted when the button is clicked, if the button's behavior is set to SignalOnl
 .. seealso:: :py:func:`setBehavior`
 
 .. seealso:: :py:func:`behavior`
+%End
+
+    void unlinked();
+%Docstring
+Emitted when the color is unlinked, e.g. when it was previously set to link
+to a project color and is now no longer linked.
+
+.. seealso:: :py:func:`unlink`
+
+.. seealso:: :py:func:`linkToProjectColor`
+
+.. versionadded:: 3.6
 %End
 
   protected:

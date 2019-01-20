@@ -355,10 +355,14 @@ class TestQgsMapCanvas(unittest.TestCase):
         c1.setObjectName('c1')
         c1.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         c1.setRotation(45)
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
         c2 = QgsMapCanvas()
         c2.setObjectName('c2')
         c2.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         c2.setRotation(65)
+        c2.expressionContextScope().setVariable('vara', 2222)
+        c2.expressionContextScope().setVariable('varc', 'cc')
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("qgis")
@@ -375,8 +379,14 @@ class TestQgsMapCanvas(unittest.TestCase):
 
         self.assertEqual(c3.mapSettings().destinationCrs().authid(), 'EPSG:3111')
         self.assertEqual(c3.rotation(), 45)
+        self.assertEqual(set(c3.expressionContextScope().variableNames()), {'vara', 'varb'})
+        self.assertEqual(c3.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c3.expressionContextScope().variable('varb'), 'bb')
         self.assertEqual(c4.mapSettings().destinationCrs().authid(), 'EPSG:4326')
         self.assertEqual(c4.rotation(), 65)
+        self.assertEqual(set(c4.expressionContextScope().variableNames()), {'vara', 'varc'})
+        self.assertEqual(c4.expressionContextScope().variable('vara'), 2222)
+        self.assertEqual(c4.expressionContextScope().variable('varc'), 'cc')
 
 
 if __name__ == '__main__':

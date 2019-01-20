@@ -96,7 +96,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
 
   mBrowserTreeView->setExpandsOnDoubleClick( false );
 
-  connect( mActionRefresh, &QAction::triggered, [ = ] { refreshModel( QModelIndex() ); } );
+  connect( mActionRefresh, &QAction::triggered, this, [ = ] { refreshModel( QModelIndex() ); } );
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectDialog::onLayerSelected );
   connect( mActionCollapse, &QAction::triggered, mBrowserTreeView, &QgsBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsDataSourceSelectDialog::showFilterWidget );

@@ -430,7 +430,36 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
     enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
   }
   return enumMap;
-};
+}
+
+/**
+ * Returns the value for the given key of an enum.
+ * \since QGIS 3.6
+ */
+template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  return QString::fromUtf8( metaEnum.valueToKey( value ) );
+}
+
+/**
+ * Returns the value corresponding to the given \a key of an enum.
+ * If the key is invalid, it will return the \a defaultValue.
+ * \since QGIS 3.6
+ */
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  bool ok = false;
+  T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
+  if ( ok )
+    return v;
+  else
+    return defaultValue;
+}
+
 
 /**
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect

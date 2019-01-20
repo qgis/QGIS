@@ -488,6 +488,9 @@ Returns the legend's renderer settings object.
     virtual void finalizeRestoreFromXml();
 
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
 
   public slots:
 

@@ -736,6 +736,11 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUni
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
+  // build a minimal expression context
+  QgsExpressionContext expContext;
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  renderContext.setExpressionContext( expContext );
+
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, nullptr, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();

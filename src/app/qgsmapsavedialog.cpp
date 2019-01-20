@@ -291,7 +291,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
   mapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   mapSettings.setFlag( QgsMapSettings::DrawSelection, true );
-
+  mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );
   mapSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
   mapSettings.setExtent( extent() );
   mapSettings.setOutputSize( size() );
