@@ -46,12 +46,13 @@ class QgsPolygonsToLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
   protected:
     QString outputName() const override;
+    QgsProcessing::SourceType outputLayerType() const override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsGeometry convertToLines( const QgsGeometry &geometry ) const;
     QList<QgsCurve *> extractRings( const QgsAbstractGeometry *geom ) const;
-    QgsWkbTypes::Type outWkbType( QgsWkbTypes::Type polygonWkbType ) const;
 
     friend class TestQgsProcessingAlgs;
 };

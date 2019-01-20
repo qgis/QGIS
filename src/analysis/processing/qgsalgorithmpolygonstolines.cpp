@@ -53,6 +53,28 @@ QString QgsPolygonsToLinesAlgorithm::outputName() const
   return QObject::tr( "Lines" );
 }
 
+QgsProcessing::SourceType QgsPolygonsToLinesAlgorithm::outputLayerType() const
+{
+  return QgsProcessing::TypeVectorLine;
+}
+
+QgsWkbTypes::Type QgsPolygonsToLinesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+
+  if ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( inputWkbType ) ) == QgsWkbTypes::Polygon )
+    wkbType = QgsWkbTypes::MultiLineString;
+  else if ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( inputWkbType ) ) == QgsWkbTypes::CurvePolygon )
+    wkbType = QgsWkbTypes::MultiCurve;
+
+  if ( QgsWkbTypes::hasM( inputWkbType ) )
+    wkbType = QgsWkbTypes::addM( wkbType );
+  if ( QgsWkbTypes::hasZ( inputWkbType ) )
+    wkbType = QgsWkbTypes::addZ( wkbType );
+
+  return wkbType;
+}
+
 QString QgsPolygonsToLinesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Converts polygons to lines" );
@@ -70,7 +92,7 @@ QgsPolygonsToLinesAlgorithm *QgsPolygonsToLinesAlgorithm::createInstance() const
 
 QList<int> QgsPolygonsToLinesAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << QgsProcessing::TypeVectorPolygon;
 }
 
 QgsFeatureList QgsPolygonsToLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -90,7 +112,7 @@ QgsGeometry QgsPolygonsToLinesAlgorithm::convertToLines( const QgsGeometry &geom
 {
   auto rings = extractRings( geometry.constGet() );
 
-  QgsWkbTypes::Type resultType = outWkbType( geometry.wkbType() );
+  QgsWkbTypes::Type resultType = outputWkbType( geometry.wkbType() );
 
   std::unique_ptr<QgsMultiCurve> lineGeometry;
 
@@ -103,23 +125,6 @@ QgsGeometry QgsPolygonsToLinesAlgorithm::convertToLines( const QgsGeometry &geom
     lineGeometry->addGeometry( ring );
 
   return QgsGeometry( lineGeometry.release() );
-}
-
-QgsWkbTypes::Type QgsPolygonsToLinesAlgorithm::outWkbType( QgsWkbTypes::Type polygonWkbType ) const
-{
-  QgsWkbTypes::Type wkbType = QgsWkbTypes::NoGeometry;
-
-  if ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( polygonWkbType ) ) == QgsWkbTypes::Polygon )
-    wkbType = QgsWkbTypes::MultiLineString;
-  else if ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( polygonWkbType ) ) == QgsWkbTypes::CurvePolygon )
-    wkbType = QgsWkbTypes::MultiCurve;
-
-  if ( QgsWkbTypes::hasM( polygonWkbType ) )
-    wkbType = QgsWkbTypes::addM( wkbType );
-  if ( QgsWkbTypes::hasZ( polygonWkbType ) )
-    wkbType = QgsWkbTypes::addZ( wkbType );
-
-  return wkbType;
 }
 
 QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGeometry *geom ) const
