@@ -26,6 +26,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
+#include "qgsexpression.h"
+
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 
 class QgsLayerTreeLayer;
@@ -250,7 +252,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * create an expression context containing symbol elements
-     * 
+     *
      * \since: 3.8
      */
     QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const;
