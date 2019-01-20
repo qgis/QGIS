@@ -78,7 +78,8 @@ bool QgsGeometryCollection::operator==( const QgsAbstractGeometry &other ) const
 
   for ( int i = 0; i < mGeometries.count(); ++i )
   {
-    if ( mGeometries.at( i ) != otherCollection->mGeometries.at( i ) )
+    if ( mGeometries.at( i ) != otherCollection->mGeometries.at( i )
+         && mGeometries.at( i )->operator!=( *otherCollection->mGeometries.at( i ) ) )
       return false;
   }
 
