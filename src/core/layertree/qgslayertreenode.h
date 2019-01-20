@@ -226,7 +226,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * 
      * \since: 3.8
      */
-    void setExpression(const QString &expression);
+    void setExpression( const QString &expression );
 
   signals:
 
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
     //! Expression to evaluate in the legend
-    QSttring mExpression;
+    QString mExpression;
 };
 
 
