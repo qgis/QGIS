@@ -260,7 +260,7 @@ bool QgsLayerTreeNode::takeChild( QgsLayerTreeNode *node )
   return mChildren.size() < n;
 }
 
-void QgsLayerTreeNode::setExpression( QString &expression)
+void QgsLayerTreeNode::setExpression( QString &expression )
 {
-  mExpression = expression
+  mExpression = expression;
 }
