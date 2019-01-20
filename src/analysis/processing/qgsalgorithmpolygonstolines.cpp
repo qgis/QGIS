@@ -134,7 +134,8 @@ QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGe
   }
   else if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
   {
-    rings.append( polygon->exteriorRing()->clone() );
+    if ( auto exteriorRing = polygon->exteriorRing() )
+      rings.append( exteriorRing->clone() );
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
       rings.append( polygon->interiorRing( i )->clone() );
