@@ -53,8 +53,6 @@ class QgsPolygonsToLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   private:
     QgsGeometry convertToLines( const QgsGeometry &geometry ) const;
     QList<QgsCurve *> extractRings( const QgsAbstractGeometry *geom ) const;
-
-    friend class TestQgsProcessingAlgs;
 };
 
 ///@endcond PRIVATE
