@@ -18,6 +18,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrenderer.h"
 #include "qgstaskmanager.h"
+#include "qgsfeature.h"
 
 /**
  * \ingroup core
@@ -56,6 +57,16 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      */
     long featureCount( const QString &legendKey ) const;
 
+
+    /**
+     * Get the feature Ids for a particular \a legendKey.
+     * If run() has not yet been executed, it will be.
+     * If the key has not been found an empty QSet will be returned.
+     * 
+     * \since:3.8
+     */
+    QgsFeatureIds getFeatureIds( const QString symbolkey ) const;
+
   signals:
 
     /**
@@ -68,6 +79,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
     QgsExpressionContext mExpressionContext;
     QHash<QString, long> mSymbolFeatureCountMap;
+    QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
     int mFeatureCount;
 
 };
