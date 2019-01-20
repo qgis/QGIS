@@ -223,7 +223,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     /**
      * set the expression to evaluate
-     * 
+     *
      * \since: 3.8
      */
     void setExpression( const QString &expression );
