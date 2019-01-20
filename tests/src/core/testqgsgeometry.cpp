@@ -15023,17 +15023,21 @@ void TestQgsGeometry::geometryCollection()
   QgsMultiPoint mp;
   QgsMultiLineString ml;
   QVERIFY( mp != ml );
-  QgsMultiLineString ml2;
   part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
                   << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
   ml.addGeometry( part.clone() );
+  QgsMultiLineString ml2;
   QVERIFY( ml != ml2 );
   part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
                   << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
                   << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
   ml2.addGeometry( part.clone() );
   QVERIFY( ml != ml2 );
+
+  QgsMultiLineString ml3;
+  ml3.addGeometry( part.clone() );
+  QVERIFY( ml2 == ml3 );
 
   //toCurveType
   std::unique_ptr< QgsGeometryCollection > curveType( c12.toCurveType() );
