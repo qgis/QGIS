@@ -31,6 +31,8 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 
+#include <Qt3DExtras/QPhongMaterial>
+
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
 {
@@ -247,46 +249,35 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request, Qgs3DTypes::AltitudeClamping altClamp )
+void Qgs3DUtils::extractPointPositions( QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
-  QList<QVector3D> positions;
-  QgsFeature f;
-  QgsFeatureIterator fi = layer->getFeatures( request );
-  while ( fi.nextFeature( f ) )
+  const QgsAbstractGeometry *g = f.geometry().constGet();
+  for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
   {
-    if ( f.geometry().isNull() )
-      continue;
-
-    const QgsAbstractGeometry *g = f.geometry().constGet();
-    for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
+    QgsPoint pt = *it;
+    float geomZ = 0;
+    if ( pt.is3D() )
     {
-      QgsPoint pt = *it;
-      float geomZ = 0;
-      if ( pt.is3D() )
-      {
-        geomZ = pt.z();
-      }
-      float terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale();
-      float h;
-      switch ( altClamp )
-      {
-        case Qgs3DTypes::AltClampAbsolute:
-        default:
-          h = geomZ;
-          break;
-        case Qgs3DTypes::AltClampTerrain:
-          h = terrainZ;
-          break;
-        case Qgs3DTypes::AltClampRelative:
-          h = terrainZ + geomZ;
-          break;
-      }
-      positions.append( QVector3D( pt.x() - map.origin().x(), h, -( pt.y() - map.origin().y() ) ) );
-      //qDebug() << positions.last();
+      geomZ = pt.z();
     }
+    float terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale();
+    float h;
+    switch ( altClamp )
+    {
+      case Qgs3DTypes::AltClampAbsolute:
+      default:
+        h = geomZ;
+        break;
+      case Qgs3DTypes::AltClampTerrain:
+        h = terrainZ;
+        break;
+      case Qgs3DTypes::AltClampRelative:
+        h = terrainZ + geomZ;
+        break;
+    }
+    positions.append( QVector3D( pt.x() - map.origin().x(), h, -( pt.y() - map.origin().y() ) ) );
+    //qDebug() << positions.last();
   }
-
-  return positions;
 }
 
 /**
@@ -400,4 +391,14 @@ QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorL
               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
               << QgsExpressionContextUtils::layerScope( layer );
   return exprContext;
+}
+
+Qt3DExtras::QPhongMaterial *Qgs3DUtils::phongMaterial( const QgsPhongMaterialSettings &settings )
+{
+  Qt3DExtras::QPhongMaterial *phong = new Qt3DExtras::QPhongMaterial;
+  phong->setAmbient( settings.ambient() );
+  phong->setDiffuse( settings.diffuse() );
+  phong->setSpecular( settings.specular() );
+  phong->setShininess( settings.shininess() );
+  return phong;
 }

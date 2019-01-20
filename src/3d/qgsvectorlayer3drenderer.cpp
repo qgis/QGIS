@@ -84,7 +84,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   if ( mSymbol->type() == QLatin1String( "polygon" ) )
     return Qgs3DSymbolImpl::entityForPolygon3DSymbol( map, vl, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
   else if ( mSymbol->type() == QLatin1String( "point" ) )
-    return new QgsPoint3DSymbolEntity( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
+    return Qgs3DSymbolImpl::entityForPoint3DSymbol( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
   else if ( mSymbol->type() == QLatin1String( "line" ) )
     return Qgs3DSymbolImpl::entityForLine3DSymbol( map, vl, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
   else

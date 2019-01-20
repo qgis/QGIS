@@ -264,8 +264,7 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
     }
     else if ( mSymbol->type() == QLatin1String( "point" ) )
     {
-      // TODO: point symbol
-      //handler = Qgs3DSymbolImpl::handlerForPoint3DSymbol( context, layer, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
+      handler = Qgs3DSymbolImpl::handlerForPoint3DSymbol( layer, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
     }
     else if ( mSymbol->type() == QLatin1String( "line" ) )
     {

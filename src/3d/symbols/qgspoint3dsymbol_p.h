@@ -27,59 +27,19 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DCore/QTransform>
 
-#include "qgspoint3dsymbol.h"
+#include "qgsfeature3dhandler_p.h"
 
-class Qgs3DMapSettings;
 class QgsPoint3DSymbol;
 
-class QgsVectorLayer;
-class QgsFeatureRequest;
-
-
-//! Entity that handles rendering of points as 3D objects
-class QgsPoint3DSymbolEntity : public Qt3DCore::QEntity
+namespace Qgs3DSymbolImpl
 {
-  public:
-    QgsPoint3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
-};
+  //! factory method for QgsLine3DSymbol
+  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol );
 
-class QgsPoint3DSymbolInstancedEntityFactory
-{
-  public:
-    static void addEntityForSelectedPoints( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent );
-    static void addEntityForNotSelectedPoints( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent );
-
-  private:
-    static Qt3DRender::QMaterial *material( const QgsPoint3DSymbol &symbol );
-};
-
-class QgsPoint3DSymbolInstancedEntityNode : public Qt3DCore::QEntity
-{
-  public:
-    QgsPoint3DSymbolInstancedEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
-
-  private:
-    Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol &symbol, const QList<QVector3D> &positions ) const;
-    Qt3DRender::QGeometry *symbolGeometry( QgsPoint3DSymbol::Shape shape, const QVariantMap &shapeProperties ) const;
-};
-
-class QgsPoint3DSymbolModelEntityFactory
-{
-  public:
-    static void addEntitiesForSelectedPoints( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent );
-    static void addEntitiesForNotSelectedPoints( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent );
-
-  private:
-    static void addSceneEntities( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent );
-    static void addMeshEntities( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent, bool are_selected );
-
-    static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol &symbol );
-};
+  //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
+  Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol );
+}
 
 /// @endcond
 
