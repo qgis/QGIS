@@ -31,6 +31,7 @@
 
 // Unsure if needed
 #include "qgsvectorlayerfeaturecounter.h"
+#include "qgsexpression.h"
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )
@@ -524,6 +525,11 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
+    else
+    {
+      context = createExpressionContext();
+      mLabel = QgsExpression().replaceExpressionText( mLabel + vl->mExpression , context );
+    }
   }
   else
   {
@@ -532,6 +538,11 @@ void QgsSymbolLegendNode::updateLabel()
     {
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+    }
+    else
+    {
+      context = createExpressionContext();
+      mLabel = QgsExpression().replaceExpressionText( mLabel + vl->mExpression , context );
     }
   }
 
@@ -555,8 +566,8 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), textOnSymbolLabel(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   QgsVectorLayerFeatureCounter *counter = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() )->countSymbolFeatures() ;
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), counter->featureCount(mItem.ruleKey()), true );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), counter->getFeatureIds(mItem.ruleKey()), true );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), counter->featureCount(mItem.ruleKey()), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), counter->getFeatureIds(mItem.ruleKey()), true ) );
 
   context.appendScope( scope );
 
