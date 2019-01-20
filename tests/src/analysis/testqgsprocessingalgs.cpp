@@ -29,10 +29,20 @@
 #include "qgsvectorlayer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsmultipolygon.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
     Q_OBJECT
+
+  private:
+
+    /**
+     * Helper function to get a feature based algorithm.
+     */
+    std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> featureBasedAlg( const QString &id );
+
+    QgsFeature runForFeature( const std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> &alg, QgsFeature feature, const QString &layerType );
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -48,6 +58,8 @@ class TestQgsProcessingAlgs: public QObject
     void kmeansCluster();
     void categorizeByStyle();
     void extractBinary();
+    void polygonsToLines_data();
+    void polygonsToLines();
 
   private:
 
@@ -56,6 +68,39 @@ class TestQgsProcessingAlgs: public QObject
     QgsVectorLayer *mPolygonLayer = nullptr;
 
 };
+
+std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> TestQgsProcessingAlgs::featureBasedAlg( const QString &id )
+{
+  return std::unique_ptr<QgsProcessingFeatureBasedAlgorithm>( static_cast<QgsProcessingFeatureBasedAlgorithm *>( QgsApplication::processingRegistry()->createAlgorithmById( id ) ) );
+}
+
+QgsFeature TestQgsProcessingAlgs::runForFeature( const std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > &alg, QgsFeature feature, const QString &layerType )
+{
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QgsProcessingFeedback feedback;
+  context->setFeedback( &feedback );
+
+  QVariantMap parameters;
+
+  std::unique_ptr<QgsVectorLayer> inputLayer( qgis::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  inputLayer->dataProvider()->addFeature( feature );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+
+  bool ok = false;
+  auto res = alg->run( parameters, *context, &feedback, &ok );
+  QgsFeature result;
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( res.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  outputLayer->getFeatures().nextFeature( result );
+
+  return result;
+}
 
 void TestQgsProcessingAlgs::initTestCase()
 {
@@ -667,6 +712,46 @@ void TestQgsProcessingAlgs::extractBinary()
   QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
 }
 
+
+void TestQgsProcessingAlgs::polygonsToLines_data()
+{
+  QTest::addColumn<QgsGeometry>( "sourceGeometry" );
+  QTest::addColumn<QgsGeometry>( "expectedGeometry" );
+
+  QTest::newRow( "Simple Polygon" )
+      << QgsGeometry::fromWkt( "Polygon((1 1, 2 2, 1 3, 1 1))" )
+      << QgsGeometry::fromWkt( "MultiLineString ((1 1, 2 2, 1 3, 1 1))" );
+
+  QgsGeometry geomNoRing( qgis::make_unique<QgsMultiPolygon>() );
+
+  QTest::newRow( "Polygon without exterior ring" )
+      << geomNoRing
+      << QgsGeometry::fromWkt( "MultiLineString ()" );
+
+  QTest::newRow( "MultiPolygon" )
+      << QgsGeometry::fromWkt( "MultiPolygon(((1 1, 2 2, 1 3, 1 1)), ((0 0, 0 10, 10 10, 10 0, 0 0), (3 3, 3 6, 6 6, 6 3, 3 3)))" )
+      << QgsGeometry::fromWkt( "MultiLineString ((1 1, 2 2, 1 3, 1 1),(0 0, 0 10, 10 10, 10 0, 0 0),(3 3, 3 6, 6 6, 6 3, 3 3))" );
+
+  QTest::newRow( "Polygon with inner ring" )
+      << QgsGeometry::fromWkt( "Polygon((0 0, 0 10, 10 10, 10 0, 0 0), (3 3, 3 6, 6 6, 6 3, 3 3))" )
+      << QgsGeometry::fromWkt( "MultiLineString ((0 0, 0 10, 10 10, 10 0, 0 0),(3 3, 3 6, 6 6, 6 3, 3 3))" );
+}
+
+
+void TestQgsProcessingAlgs::polygonsToLines()
+{
+  QFETCH( QgsGeometry, sourceGeometry );
+  QFETCH( QgsGeometry, expectedGeometry );
+
+  std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > alg( featureBasedAlg( "native:polygonstolines" ) );
+
+  QgsFeature feature;
+  feature.setGeometry( sourceGeometry );
+
+  QgsFeature result = runForFeature( alg, feature, QStringLiteral( "Polygon" ) );
+
+  QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+}
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
 #include "testqgsprocessingalgs.moc"
