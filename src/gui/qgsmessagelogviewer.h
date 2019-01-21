@@ -53,9 +53,14 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
   protected:
     void closeEvent( QCloseEvent *e ) override;
     void reject() override;
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private slots:
     void closeTab( int index );
+
+  private:
+
+    QString mClickedAnchor;
 };
 
 #endif
