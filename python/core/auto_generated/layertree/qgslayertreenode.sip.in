@@ -245,9 +245,9 @@ set the expression to evaluate
 \since: 3.8
 %End
 
-    QString Expression() const;
+    QString expression() const;
 %Docstring
-Return the expression
+Returns the expression member of the LayerTreeNode
 
 \since: 3.8
 %End
