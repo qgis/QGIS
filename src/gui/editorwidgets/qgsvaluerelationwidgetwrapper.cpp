@@ -218,6 +218,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
       }
     }
     mComboBox->setCurrentIndex( idx );
+    mComboBox->setEnabled( mEnabled );
   }
   else if ( mLineEdit )
   {
@@ -229,6 +230,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         break;
       }
     }
+    mLineEdit->setEnabled( mEnabled );
   }
 }
 
@@ -387,27 +389,4 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
     return;
 
   mEnabled = enabled;
-
-  if ( mTableWidget )
-  {
-    auto signalBlockedTableWidget = whileBlocking( mTableWidget );
-    Q_UNUSED( signalBlockedTableWidget )
-
-    for ( int j = 0; j < mTableWidget->rowCount(); j++ )
-    {
-      for ( int i = 0; i < mTableWidget->columnCount(); ++i )
-      {
-        QTableWidgetItem *item = mTableWidget->item( j, i );
-        if ( item )
-        {
-          if ( enabled )
-            item->setFlags( item->flags() | Qt::ItemIsEnabled );
-          else
-            item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
-        }
-      }
-    }
-  }
-  else
-    QgsEditorWidgetWrapper::setEnabled( enabled );
 }
