@@ -1104,6 +1104,51 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertIn('-input_file_list', commands[1])
             self.assertIn(outdir + '/test.vrt', commands[1])
 
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '-9999',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertIn('-srcnodata "-9999"', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '-9999 9999',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertIn('-srcnodata "-9999 9999"', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertNotIn('-srcnodata', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
     def testGdalInfo(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
