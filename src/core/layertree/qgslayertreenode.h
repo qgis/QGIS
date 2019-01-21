@@ -229,11 +229,11 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void setExpression( const QString &expression );
 
     /**
-     * Return the expression
+     * Returns the expression member of the LayerTreeNode
      *
      * \since: 3.8
      */
-    QString Expression() const;
+    QString expression() const;
 
   signals:
 
