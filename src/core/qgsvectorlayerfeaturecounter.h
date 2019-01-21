@@ -41,6 +41,10 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      */
     QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
 
+
+    /**
+     * Calculate the feature count and Ids per symbol
+     */
     bool run() override;
 
     /**
