@@ -50,6 +50,27 @@ class CORE_EXPORT QgsRasterIterator
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
+     * Fetches details of the next part of the raster data. This method does NOT actually fetch the raster
+     * data itself, rather it calculates and iterates over the details of the raster alone.
+     *
+     * It's useful for iterating over several layers using a target "reference" layer. E.g. summing
+     * the pixels in n rasters whilst aligning the result to a reference layer which is not being summed.
+     *
+     * Note that calling this method also advances the iterator, just like calling readNextRasterPart().
+     *
+     * \param bandNumber band to read
+     * \param columns number of columns on output device
+     * \param rows number of rows on output device
+     * \param topLeftColumn top left column
+     * \param topLeftRow top left row
+     * \param blockExtent exact extent of returned raster block
+     * \returns false if the last part was already returned
+     *
+     * \since QGIS 3.6
+    */
+    bool next( int bandNumber, int &columns SIP_OUT, int &rows SIP_OUT, int &topLeftColumn SIP_OUT, int &topLeftRow SIP_OUT, QgsRectangle &blockExtent SIP_OUT );
+
+    /**
      * Fetches next part of raster data, caller takes ownership of the block and
      * caller should delete the block.
      * \param bandNumber band to read
@@ -148,6 +169,7 @@ class CORE_EXPORT QgsRasterIterator
 
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );
+    bool readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent );
 };
 
 #endif // QGSRASTERITERATOR_H
