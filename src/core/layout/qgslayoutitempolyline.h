@@ -64,6 +64,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     int type() const override;
     QIcon icon() const override;
     QString displayName() const override;
+    QPainterPath shape() const override;
 
     /**
      * Returns the line symbol used to draw the shape.
@@ -188,20 +189,6 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
-    /**
-     * Returns a path representing the outline of the stroked polyline.
-     */
-    QPainterPath shape() const override; /*{
-        QPainterPath path;
-        path.addPolygon( mPolygon );
-
-        QPainterPathStroker ps;
-
-        ps.setWidth( mPolylineStyleSymbol->width() );
-        QPainterPath strokedOutline = ps.createStroke(path);
-
-        return strokedOutline;
-    }*/
 
   protected:
 
