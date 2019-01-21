@@ -330,6 +330,8 @@ Sets the diagram's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
+.. seealso:: Property
+
 .. versionadded:: 3.0
 %End
 
