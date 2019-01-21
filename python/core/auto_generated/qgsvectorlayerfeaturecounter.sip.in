@@ -40,7 +40,7 @@ If the key has not been found, -1 will be returned.
 %End
 
 
-    QgsFeatureIds getFeatureIds( const QString symbolkey ) const;
+    QgsFeatureIds featureIds( const QString symbolkey ) const;
 %Docstring
 Get the feature Ids for a particular ``legendKey``.
 If run() has not yet been executed, it will be.
