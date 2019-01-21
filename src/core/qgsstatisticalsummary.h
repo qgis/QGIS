@@ -319,6 +319,8 @@ class CORE_EXPORT QgsStatisticalSummary
     double mLast;
     QMap< double, int > mValueCount;
     QList< double > mValues;
+    bool mRequiresAllValueStorage = false;
+    bool mRequiresHisto = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsStatisticalSummary::Statistics )
