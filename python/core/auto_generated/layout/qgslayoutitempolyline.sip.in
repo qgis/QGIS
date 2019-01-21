@@ -209,6 +209,22 @@ Returns the pen width in millimeters for the stroke of the arrow head.
 .. seealso:: :py:func:`arrowHeadStrokeColor`
 %End
 
+    virtual QPainterPath shape() const; /*{
+
+%Docstring
+Returns a path representing the outline of the stroked polyline.
+%End
+        QPainterPath path;
+        path.addPolygon( mPolygon );
+
+        QPainterPathStroker ps;
+
+        ps.setWidth( mPolylineStyleSymbol->width() );
+        QPainterPath strokedOutline;
+
+        return strokedOutline;
+    }*/
+
   protected:
 
     virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );

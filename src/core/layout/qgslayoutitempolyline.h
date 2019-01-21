@@ -20,6 +20,9 @@
 #include "qgis_core.h"
 #include "qgslayoutitemnodeitem.h"
 #include "qgssymbol.h"
+#include <QGraphicsPathItem>
+#include "qgslogger.h"
+#include "qgslayout.h"
 
 /**
  * \ingroup core
@@ -184,6 +187,21 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
      * \see arrowHeadStrokeColor()
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
+
+    /**
+     * Returns a path representing the outline of the stroked polyline.
+     */
+    QPainterPath shape() const override; /*{
+        QPainterPath path;
+        path.addPolygon( mPolygon );
+
+        QPainterPathStroker ps;
+
+        ps.setWidth( mPolylineStyleSymbol->width() );
+        QPainterPath strokedOutline = ps.createStroke(path);
+
+        return strokedOutline;
+    }*/
 
   protected:
 
