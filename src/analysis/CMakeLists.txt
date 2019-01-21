@@ -73,6 +73,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmorientedminimumboundingbox.cpp
   processing/qgsalgorithmpackage.cpp
   processing/qgsalgorithmarrayoffsetlines.cpp
+  processing/qgsalgorithmpolygonstolines.cpp
   processing/qgsalgorithmpointonsurface.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp

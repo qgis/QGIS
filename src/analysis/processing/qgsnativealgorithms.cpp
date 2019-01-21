@@ -106,7 +106,7 @@
 #include "qgsalgorithmvectorize.h"
 #include "qgsalgorithmwedgebuffers.h"
 #include "qgsalgorithmzonalhistogram.h"
-
+#include "qgsalgorithmpolygonstolines.h"
 
 ///@cond PRIVATE
 
@@ -245,6 +245,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
+  addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
 }
 
 
