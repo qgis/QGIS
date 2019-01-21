@@ -2213,6 +2213,43 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            # with additional command-line parameter
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG -dstalpha ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha -srcnodata -9999',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG -dstalpha -srcnodata -9999 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha -srcnodata "-9999 -8888"',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG -dstalpha -srcnodata "-9999 -8888" ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
     def testRearrangeBands(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
