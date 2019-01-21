@@ -84,10 +84,13 @@ namespace QgsMeshUtils
   /**
    * Exports mesh layer's dataset values as raster block
    *
+   * The function always fetches native mesh and dataset data
+   * from data provider and calculates triangular mesh
+   *
    * \param layer mesh layer
    * \param datasetIndex index from layer defining group and dataset (time) to export
-   * \param destination destination/map CRS. Used to create triangular mesh from native mesh
-   * \param context Transform context to transform layer CRS to destination CRS
+   * \param destinationCrs destination/map CRS. Used to create triangular mesh from native mesh
+   * \param transformContext Transform context to transform layer CRS to destination CRS
    * \param mapUnitsPerPixel map units per pixel for block
    * \param extent extent of block in destination CRS
    * \param feedback optional raster feedback object for cancelation/preview
@@ -98,8 +101,8 @@ namespace QgsMeshUtils
   CORE_EXPORT QgsRasterBlock *exportRasterBlock(
     const QgsMeshLayer &layer,
     const QgsMeshDatasetIndex &datasetIndex,
-    const QgsCoordinateReferenceSystem &destination,
-    const QgsCoordinateTransformContext &context,
+    const QgsCoordinateReferenceSystem &destinationCrs,
+    const QgsCoordinateTransformContext &transformContext,
     double mapUnitsPerPixel,
     const QgsRectangle &extent,
     QgsRasterBlockFeedback *feedback = nullptr
