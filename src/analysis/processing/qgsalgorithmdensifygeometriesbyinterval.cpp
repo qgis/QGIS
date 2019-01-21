@@ -18,6 +18,8 @@
 
 #include "qgsalgorithmdensifygeometriesbyinterval.h"
 
+///@cond PRIVATE
+
 QString QgsDensifyGeometriesByIntervalAlgorithm::name() const
 {
   return QStringLiteral( "densifygeometriesgivenaninterval" );
@@ -110,3 +112,5 @@ bool QgsDensifyGeometriesByIntervalAlgorithm::prepareAlgorithm( const QVariantMa
 
   return true;
 }
+
+///@endcond PRIVATE
