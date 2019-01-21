@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    OtbAlgorithmsTests.py
+    OtbAlgorithmsTest.py
     ---------------------
     Date                 : January 2019
     Copyright            : (C) 2019 by CNES
@@ -31,17 +31,19 @@ import unittest
 import hashlib
 import shutil
 import nose2
-
 from qgis.core import (QgsProcessingParameterNumber,
                        QgsApplication,
                        QgsProcessingParameterDefinition)
 from qgis.testing import start_app, unittest
-#from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
+from processing.gui.wrappers import *
+from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
 from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider
 from processing.algs.otb.OtbSettings import OtbSettings
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.tools import dataobjects
+from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice, OtbChoiceWidgetWrapper
 import AlgorithmsTestBase
 
 OTB_INSTALL_DIR = os.environ.get('OTB_INSTALL_DIR')
@@ -67,7 +69,7 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 self.assertEqual(ret, True)
                 line = lines.readline().strip('\n').strip()
 
-    def test_choice_parameter_smoothing(self):
+    def test_OTBParameterChoice(self):
         alg_smoothing = OtbAlgorithm('Image Filtering', 'Smoothing', os.path.join(self.descrFolder, 'Smoothing.txt'))
         found = False
         for param in alg_smoothing.parameterDefinitions():
@@ -77,21 +79,51 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 break
         self.assertEqual(found, True)
 
+    def test_OTBParameterChoice_Gui(self):
+        param = OtbParameterChoice('test')
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('otb:Smoothing')
+        # algorithm dialog
+        dlg = AlgorithmDialog(alg)
+        wrapper = WidgetWrapperFactory.create_wrapper_from_metadata(param, dlg)
+        self.assertIsNotNone(wrapper)
+        self.assertIsInstance(wrapper, OtbChoiceWidgetWrapper)
+        self.assertEqual(wrapper.dialog, dlg)
+        self.assertIsNotNone(wrapper.widget)
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('otb:Smoothing')
+        # batch dialog
+        dlg = BatchAlgorithmDialog(alg)
+        wrapper = WidgetWrapperFactory.create_wrapper_from_metadata(param, dlg)
+        self.assertIsNotNone(wrapper)
+        self.assertIsInstance(wrapper, OtbChoiceWidgetWrapper)
+        self.assertEqual(wrapper.dialog, dlg)
+        self.assertIsNotNone(wrapper.widget)
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('otb:Smoothing')
+        # modeler dialog
+        model = QgsProcessingModelAlgorithm()
+        dlg = ModelerParametersDialog(alg, model)
+        wrapper = WidgetWrapperFactory.create_wrapper_from_metadata(param, dlg)
+        self.assertIsNotNone(wrapper)
+        self.assertIsInstance(wrapper, OtbChoiceWidgetWrapper)
+        self.assertEqual(wrapper.dialog, dlg)
+        self.assertIsNotNone(wrapper.widget)
+
     @classmethod
     def setUpClass(cls):
         start_app()
-        cls.descrFolder = os.path.join(OTB_INSTALL_DIR, 'share', 'otb', 'description')
         from processing.core.Processing import Processing
         Processing.initialize()
         ProcessingConfig.setSettingValue("OTB_ACTIVATE", True)
         ProcessingConfig.setSettingValue(OtbSettings.FOLDER, OTB_INSTALL_DIR)
         ProcessingConfig.setSettingValue(OtbSettings.APP_FOLDER, os.path.join(OTB_INSTALL_DIR, 'lib', 'otb', 'applications'))
         ProcessingConfig.readSettings()
-        #refresh OTB Algorithms after settings are changed.
+        # Refresh OTB Algorithms after settings are changed.
         for p in QgsApplication.processingRegistry().providers():
             if p.id() == "otb":
                 p.refreshAlgorithms()
-
+        cls.descrFolder = os.path.join(OTB_INSTALL_DIR, 'share', 'otb', 'description')
         cls.cleanup_paths = []
 
     @classmethod
