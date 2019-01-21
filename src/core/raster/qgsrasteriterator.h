@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+#include "qgis_sip.h"
 #include <QMap>
 
 class QgsMapToPixel;
