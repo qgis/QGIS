@@ -29,8 +29,12 @@ QgsVectorLayer.countSymbolFeatures() and connect to the signal
 Create a new feature counter for ``layer``.
 %End
 
+
     virtual bool run();
 
+%Docstring
+Calculate the feature count and Ids per symbol
+%End
 
 
     long featureCount( const QString &legendKey ) const;
