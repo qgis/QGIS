@@ -68,7 +68,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         if not groupId:
             self._groupId = ''.join(c for c in self._group if c in validChars)
 
-        self.pixelTypes = ['uint8', 'int', 'float', 'double']
+        self.pixelTypes = ['uint8', 'uint16', 'int16', 'uint32', 'int32',
+                           'float', 'double', 'cint16', 'cint32', 'cfloat', 'cdouble']
         self._descriptionfile = descriptionfile
         self.defineCharacteristicsFromFile()
 
@@ -160,6 +161,11 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                     if name in ["elev.dem.geoid", "elev.geoid"]:
                         param.setDefaultValue(OtbUtils.geoidFile())
 
+                    # outputpixeltype is a special parameter associated with raster output
+                    # reset list of options to 'self.pixelTypes'.
+                    if name == 'outputpixeltype':
+                        param.setOptions(self.pixelTypes)
+
                     self.addParameter(param)
                     #parameter is added now and we must move to next line
                     line = lines.readline().strip('\n').strip()
@@ -248,7 +254,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
             output_files[out.name()] = filePath
             if outputPixelType is not None:
-                command += ' -{} "{}" {}'.format(out.name(), filePath, outputPixelType)
+                command += ' -{} "{}" "{}"'.format(out.name(), filePath, outputPixelType)
             else:
                 command += ' -{} "{}"'.format(out.name(), filePath)
 
