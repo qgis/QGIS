@@ -193,6 +193,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         if ( item )
         {
           item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
+          item->setFlags( mEnabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
           lastChangedItem = item;
         }
       }
