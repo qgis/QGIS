@@ -100,13 +100,13 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
     outputBlock->setNoDataValue( noDataValue );
   }
 
+  bool isNoData = false;
   for ( int i = 0; i < height; i++ )
   {
     for ( int j = 0; j < width; j++ )
     {
-      double value = inputBlock->value( i, j );
+      double value = inputBlock->valueAndNoData( i, j, isNoData );
 
-      bool isNoData = inputBlock->isNoData( i, j );
       if ( QgsRasterRange::contains( value, mNoData.value( bandNo - 1 ) ) )
       {
         isNoData = true;

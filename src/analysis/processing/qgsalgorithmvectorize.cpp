@@ -93,6 +93,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
   int iterRows = 0;
   std::unique_ptr< QgsRasterBlock > rasterBlock;
   QgsRectangle blockExtent;
+  bool isNoData = false;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop, &blockExtent ) )
   {
     if ( feedback )
@@ -111,10 +112,10 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
 
       for ( int column = 0; column < iterCols; column++ )
       {
-        if ( !rasterBlock->isNoData( row, column ) )
+        const double value = rasterBlock->valueAndNoData( row, column, isNoData );
+        if ( !isNoData )
         {
           QgsGeometry pixelRectGeometry = createGeometryForPixel( currentX, currentY, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY );
-          double value = rasterBlock->value( row, column );
 
           QgsFeature f;
           f.setGeometry( pixelRectGeometry );

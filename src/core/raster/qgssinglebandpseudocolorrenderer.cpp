@@ -238,14 +238,16 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 
   qgssize count = ( qgssize )width * height;
+  bool isNoData = false;
   for ( qgssize i = 0; i < count; i++ )
   {
-    if ( inputBlock->isNoData( i ) )
+    double val = inputBlock->valueAndNoData( i, isNoData );
+    if ( isNoData )
     {
       outputBlockData[i] = myDefaultColor;
       continue;
     }
-    double val = inputBlock->value( i );
+
     int red, green, blue, alpha;
     if ( !fcn->shade( val, &red, &green, &blue, &alpha ) )
     {

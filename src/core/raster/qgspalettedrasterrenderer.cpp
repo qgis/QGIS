@@ -167,14 +167,16 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
   unsigned int *outputData = ( unsigned int * )( outputBlock->bits() );
 
   qgssize rasterSize = ( qgssize )width * height;
+  bool isNoData = false;
   for ( qgssize i = 0; i < rasterSize; ++i )
   {
-    if ( inputBlock->isNoData( i ) )
+    const double value = inputBlock->valueAndNoData( i, isNoData );
+    if ( isNoData )
     {
       outputData[i] = myDefaultColor;
       continue;
     }
-    int val = ( int ) inputBlock->value( i );
+    int val = static_cast< int >( value );
     if ( !mColors.contains( val ) )
     {
       outputData[i] = myDefaultColor;
