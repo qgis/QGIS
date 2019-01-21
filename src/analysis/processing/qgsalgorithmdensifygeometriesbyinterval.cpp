@@ -16,57 +16,57 @@
  ***************************************************************************/
 
 
-#include "qgsalgorithmdensifygeometries.h"
+#include "qgsalgorithmdensifygeometriesbyinterval.h"
 
-QString QgsDensifyGeometriesAlgorithm::name() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::name() const
 {
   return QStringLiteral( "densifygeometriesgivenaninterval" );
 }
 
-QString QgsDensifyGeometriesAlgorithm::displayName() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::displayName() const
 {
   return QObject::tr( "Densify by interval" );
 }
 
-QStringList QgsDensifyGeometriesAlgorithm::tags() const
+QStringList QgsDensifyGeometriesByIntervalAlgorithm::tags() const
 {
   return QObject::tr( "add,vertex,vertices,points,nodes" ).split( ',' );
 }
 
-QString QgsDensifyGeometriesAlgorithm::group() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsDensifyGeometriesAlgorithm::groupId() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-QString QgsDensifyGeometriesAlgorithm::shortHelpString() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Geometries are densified by adding additional vertices on "
                       "edges that have a maximum distance of the interval parameter "
                       "in map units." );
 }
 
-QString QgsDensifyGeometriesAlgorithm::shortDescription() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::shortDescription() const
 {
   return QObject::tr( "Creates a densified version of geometries." );
 }
 
-QgsDensifyGeometriesAlgorithm *QgsDensifyGeometriesAlgorithm::createInstance() const
+QgsDensifyGeometriesByIntervalAlgorithm *QgsDensifyGeometriesByIntervalAlgorithm::createInstance() const
 {
-  return new QgsDensifyGeometriesAlgorithm;
+  return new QgsDensifyGeometriesByIntervalAlgorithm;
 
 }
 
-QList<int> QgsDensifyGeometriesAlgorithm::inputLayerTypes() const
+QList<int> QgsDensifyGeometriesByIntervalAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
 }
 
-void QgsDensifyGeometriesAlgorithm::initParameters( const QVariantMap &configuration )
+void QgsDensifyGeometriesByIntervalAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ),
@@ -74,12 +74,12 @@ void QgsDensifyGeometriesAlgorithm::initParameters( const QVariantMap &configura
                 1, QStringLiteral( "INPUT" ), false, 0, 10000000 ) );
 }
 
-QString QgsDensifyGeometriesAlgorithm::outputName() const
+QString QgsDensifyGeometriesByIntervalAlgorithm::outputName() const
 {
   return QObject::tr( "Densified" );
 }
 
-QgsFeatureList QgsDensifyGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( context );
   Q_UNUSED( feedback );
@@ -90,7 +90,7 @@ QgsFeatureList QgsDensifyGeometriesAlgorithm::processFeature( const QgsFeature &
   return QgsFeatureList() << modifiedFeature;
 }
 
-bool QgsDensifyGeometriesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsDensifyGeometriesByIntervalAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
   mInterval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );

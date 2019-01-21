@@ -26,11 +26,11 @@
 ///@cond PRIVATE
 
 
-class QgsDensifyGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+class QgsDensifyGeometriesByIntervalAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
 
-    QgsDensifyGeometriesAlgorithm() = default;
+    QgsDensifyGeometriesByIntervalAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -38,7 +38,7 @@ class QgsDensifyGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    QgsDensifyGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsDensifyGeometriesByIntervalAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
 
   protected:
