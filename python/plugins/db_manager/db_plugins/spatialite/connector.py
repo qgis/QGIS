@@ -587,8 +587,6 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def deleteTableColumn(self, table, column):
         """ delete column from a table """
-
-        print("test")
         if not self.isGeometryColumn(table, column):
             return False  # column editing not supported
 
