@@ -527,7 +527,7 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( vl->mExpression && vl )
+    else if ( vl->mExpression != "" && vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vl->mExpression, context );
@@ -541,7 +541,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( vl->mExpression && vl )
+    else if ( vl->mExpression != "" && vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vl->mExpression, context );
@@ -568,7 +568,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), textOnSymbolLabel(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
   QgsVectorLayerFeatureCounter *counter = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() )->countSymbolFeatures() ;
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant( counter->featureCount( mItem.ruleKey() ) ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), counter->featureCount( mItem.ruleKey() ), true ) );
 
 
   QVariantList featureIds;
@@ -576,7 +576,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 
   context.appendScope( scope );
 
-  QgsFeatureIds fids = counter->featureCount( mItem.ruleKey() )
+  QgsFeatureIds fids = counter->featureId( mItem.ruleKey() );
 
   featureIds.reserve( fids.count() );
   for ( QgsFeatureId *fid : fids )
