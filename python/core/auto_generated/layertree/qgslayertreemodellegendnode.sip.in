@@ -265,7 +265,7 @@ Sets format of text to be shown on top of the symbol.
 
     QgsExpressionContext createExpressionContext() const;
 %Docstring
-create an expression context containing symbol elements
+Create an expression context containing symbol elements
 
 \since: 3.8
 %End
