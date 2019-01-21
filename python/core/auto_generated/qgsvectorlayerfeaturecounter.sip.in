@@ -39,14 +39,14 @@ Calculate the feature count and Ids per symbol
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
-Gets the feature count for a particular ``legendKey``.
+Returns the feature count for a particular ``legendKey``.
 If the key has not been found, -1 will be returned.
 %End
 
 
     QgsFeatureIds featureIds( const QString symbolkey ) const;
 %Docstring
-Get the feature Ids for a particular ``legendKey``.
+Returns the feature Ids for a particular ``legendKey``.
 If run() has not yet been executed, it will be.
 If the key has not been found an empty QSet will be returned.
 
