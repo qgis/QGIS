@@ -217,6 +217,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   QgsRectangle blockExtent;
   std::unique_ptr< QgsRasterBlock > rasterBlock;
   std::unique_ptr< QgsRasterBlock > zonesRasterBlock;
+  bool isNoData = false;
   while ( true )
   {
     if ( mRefLayer == Source )
@@ -249,17 +250,19 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
 
       for ( int column = 0; column < iterCols; column++ )
       {
-        if ( ( mHasNoDataValue && rasterBlock->isNoData( row, column ) ) ||
-             ( mZonesHasNoDataValue && zonesRasterBlock->isNoData( row, column ) ) )
+        double value = rasterBlock->valueAndNoData( row, column, isNoData );
+        if ( mHasNoDataValue && isNoData )
         {
           noDataCount += 1;
+          continue;
         }
-        else
+        double zone = zonesRasterBlock->valueAndNoData( row, column, isNoData );
+        if ( mZonesHasNoDataValue && isNoData )
         {
-          double value = rasterBlock->value( row, column );
-          double zone = zonesRasterBlock->value( row, column );
-          zoneStats[ zone ].s.addValue( value );
+          noDataCount += 1;
+          continue;
         }
+        zoneStats[ zone ].s.addValue( value );
       }
     }
   }
