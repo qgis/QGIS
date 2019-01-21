@@ -228,6 +228,13 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      */
     void setExpression( const QString &expression );
 
+    /**
+     * Return the expression
+     *
+     * \since: 3.8
+     */
+    QString Expression() const;
+
   signals:
 
     //! Emitted when one or more nodes will be added to a node within the tree
@@ -282,7 +289,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
     //! Expression to evaluate in the legend
-    QString mExpression;
+    QString mExpression = "";
 };
 
 
