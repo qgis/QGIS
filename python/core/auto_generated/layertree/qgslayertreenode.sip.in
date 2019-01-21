@@ -245,6 +245,13 @@ set the expression to evaluate
 \since: 3.8
 %End
 
+    QString Expression() const;
+%Docstring
+Return the expression
+
+\since: 3.8
+%End
+
   signals:
 
     void willAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
