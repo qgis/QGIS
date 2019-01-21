@@ -255,7 +255,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      *
      * \since: 3.8
      */
-    QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 
