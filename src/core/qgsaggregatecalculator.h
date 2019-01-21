@@ -23,6 +23,7 @@
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
 #include <QVariant>
+#include "qgsfeatureid.h"
 
 
 class QgsFeatureIterator;
@@ -157,7 +158,8 @@ class CORE_EXPORT QgsAggregateCalculator
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = nullptr, bool *ok = nullptr ) const;
+                        QgsExpressionContext *context = nullptr, bool *ok = nullptr,
+                        QgsFeatureIds *ids = nullptr ) const;
 
     /**
      * Converts a string to a aggregate type.
