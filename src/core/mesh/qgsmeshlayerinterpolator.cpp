@@ -154,8 +154,8 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   const QgsMeshLayer &layer,
   const QgsMeshDatasetIndex &datasetIndex,
-  const QgsCoordinateReferenceSystem &destination,
-  const QgsCoordinateTransformContext &context,
+  const QgsCoordinateReferenceSystem &destinationCrs,
+  const QgsCoordinateTransformContext &transformContext,
   double mapUnitsPerPixel,
   const QgsRectangle &extent,
   QgsRasterBlockFeedback *feedback )
@@ -176,7 +176,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
                             widthPixel,
                             heightPixel,
                             0 );
-  QgsCoordinateTransform transform( layer.crs(), destination, context );
+  QgsCoordinateTransform transform( layer.crs(), destinationCrs, transformContext );
 
   QgsRenderContext renderContext;
   renderContext.setCoordinateTransform( transform );
