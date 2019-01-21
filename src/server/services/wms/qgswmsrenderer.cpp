@@ -2337,6 +2337,7 @@ namespace QgsWms
 
         // export
         QgsJsonExporter exporter( vl );
+        exporter.setAttributeDisplayName( true );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
         exporter.setIncludeName( true );

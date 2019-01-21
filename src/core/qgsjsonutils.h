@@ -119,6 +119,20 @@ class CORE_EXPORT QgsJsonExporter
     bool includeRelated() const { return mIncludeRelatedAttributes; }
 
     /**
+     * Sets whether to print original names of attributes or aliases if
+     * defined.
+     * \since QGIS 3.6
+     */
+    void setAttributeDisplayName( bool displayName ) { mAttributeDisplayName = displayName; };
+
+    /**
+     * Returns whether original names of attributes or aliases are printed.
+     * \since QGIS 3.6
+     */
+
+    bool attributeDisplayName() const { return mAttributeDisplayName; }
+
+    /**
      * Sets the associated vector layer (required for related attribute export). This will automatically
      * update the sourceCrs() to match.
      * \param vectorLayer vector layer
@@ -239,6 +253,8 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateTransform mTransform;
 
     bool mIncludeName = false;
+
+    bool mAttributeDisplayName = false;
 };
 
 /**
