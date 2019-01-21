@@ -19,7 +19,6 @@
 #include "qgsstringutils.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsrasterprojector.h"
-#include <unordered_map>
 
 ///@cond PRIVATE
 
@@ -196,7 +195,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     // up trying to store EVERY pixel value from the input in memory
     QgsStatisticalSummary s{ QgsStatisticalSummary::Count | QgsStatisticalSummary::Sum | QgsStatisticalSummary::Min | QgsStatisticalSummary::Max | QgsStatisticalSummary::Mean };
   };
-  std::unordered_map<double, StatCalculator, std::hash<double>, std::equal_to<double> > zoneStats;
+  QHash<double, StatCalculator > zoneStats;
   qgssize noDataCount = 0;
 
   qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
@@ -277,9 +276,9 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   for ( auto it = zoneStats.begin(); it != zoneStats.end(); ++it )
   {
     QgsFeature f;
-    it->second.s.finalize();
-    f.setAttributes( QgsAttributes() << it->first << it->second.s.count() * pixelArea << it->second.s.sum() << it->second.s.count() <<
-                     it->second.s.min() << it->second.s.max() << it->second.s.mean() );
+    it->s.finalize();
+    f.setAttributes( QgsAttributes() << it.key() << it->s.count() * pixelArea << it->s.sum() << it->s.count() <<
+                     it->s.min() << it->s.max() << it->s.mean() );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   }
   outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );

@@ -6706,6 +6706,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, reprojected
@@ -6722,6 +6724,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats_reproj.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, zones ref
@@ -6739,6 +6743,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats_zone_ref.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats reprojected, zones ref
@@ -6756,6 +6762,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats_zone_crs_ref.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
