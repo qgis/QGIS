@@ -238,7 +238,7 @@ Returns list of keys stored in custom properties
 Remove a child from a node
 %End
 
-    void setExpression(const QString &expression);
+    void setExpression( const QString &expression );
 %Docstring
 set the expression to evaluate
 
@@ -311,6 +311,10 @@ Low-level removal of children from the node.
 %End
 
   protected:
+    QString mExpression = "";
+%Docstring
+Expression to evaluate in the legend
+%End
 };
 
 
