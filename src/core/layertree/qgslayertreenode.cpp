@@ -264,3 +264,9 @@ void QgsLayerTreeNode::setExpression( const QString &expression )
 {
   mExpression = expression;
 }
+
+QString QgsLayerTreeNode::Expression() const
+{
+  return mExpression;
+}
+
