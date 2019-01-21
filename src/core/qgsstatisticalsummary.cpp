@@ -47,6 +47,12 @@ void QgsStatisticalSummary::reset()
   mThirdQuartile = 0;
   mValueCount.clear();
   mValues.clear();
+
+  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety;
+
+  mRequiresAllValueStorage = mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
+                             mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
+                             mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange;
 }
 
 /***************************************************************************
@@ -74,12 +80,10 @@ void QgsStatisticalSummary::addValue( double value )
   mMin = std::min( mMin, value );
   mMax = std::max( mMax, value );
 
-  if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
+  if ( mRequiresHisto )
     mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );
 
-  if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
-       mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
-       mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  if ( mRequiresAllValueStorage )
     mValues << value;
 }
 
