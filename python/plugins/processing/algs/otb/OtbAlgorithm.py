@@ -35,6 +35,7 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsMapLayer,
                        QgsApplication,
+                       QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
@@ -43,6 +44,11 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterString,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterEnum)
 
 from processing.core.parameters import getParameterFromString
@@ -190,7 +196,6 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         return valid_params
 
     def processAlgorithm(self, parameters, context, feedback):
-
         otb_cli_file = OtbUtils.cliPath()
         command = '"{}" {} {}'.format(otb_cli_file, self.name(), OtbUtils.appFolder())
         outputPixelType = None
@@ -198,7 +203,6 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             # if value is None for a parameter we don't have any businees with this key
             if v is None:
                 continue
-
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':
                 outputPixelType = self.pixelTypes[int(parameters['outputpixeltype'])]
@@ -207,31 +211,41 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             param = self.parameterDefinition(k)
             if param.isDestination():
                 continue
-
-            if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer)):
-                if isinstance(v, QgsMapLayer):
-                    value = '"{}"'.format(v.source())
-                else:
-                    value = '"{}"'.format(v)
-            elif isinstance(param, QgsProcessingParameterMultipleLayers):
-                value = ''
-                for item in v:
-                    value += '"{}" '.format(item)
-            elif isinstance(param, QgsProcessingParameterCrs):
-                crs = self.parameterAsCrs(parameters, param.name(), context)
-                value = crs.authid().split('EPSG:')[1]
-
-            elif isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(param, QgsProcessingParameterEnum):
                 value = self.parameterAsEnum(parameters, param.name(), context)
+            elif isinstance(param, QgsProcessingParameterBoolean):
+                value = self.parameterAsBool(parameters, param.name(), context)
+            elif isinstance(param, QgsProcessingParameterCrs):
+                crsValue = self.parameterAsCrs(parameters, param.name(), context)
+                value = crsValue.authid().split('EPSG:')[1]
+            elif isinstance(param, QgsProcessingParameterFile):
+                value = self.parameterAsFile(parameters, param.name(), context)
+            elif isinstance(param, QgsProcessingParameterMultipleLayers):
+                layers = self.parameterAsLayerList(parameters, param.name(), context)
+                if layers is None or len(layers) == 0:
+                    continue
+                value = ' '.join(['"{}"'.format(layer.source()) for layer in layers])
+            elif isinstance(param, QgsProcessingParameterNumber):
+                if param.dataType() == QgsProcessingParameterNumber.Integer:
+                    value = self.parameterAsInt(parameters, param.name(), context)
+                else:
+                    value = self.parameterAsDouble(parameters, param.name(), context)
+            elif isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer)):
+                value = '"{}"'.format(self.parameterAsLayer(parameters, param.name(), context).source())
+            elif isinstance(param, QgsProcessingParameterString):
+                value = '"{}"'.format(parameters[param.name()])
             else:
-                value = self.parameterAsString(parameters, param.name(), context)
+                # Use whatever is given
+                value = '"{}"'.format(parameters[param.name()])
 
-            command += ' -{} {}'.format(k, value)
+            # Check if value is set in above if elif ladder and update command string
+            if value and value is not None:
+                command += ' -{} {}'.format(k, value)
 
         output_files = {}
+
         for out in self.destinationParameterDefinitions():
             filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
-
             output_files[out.name()] = filePath
             if outputPixelType is not None:
                 command += ' -{} "{}" {}'.format(out.name(), filePath, outputPixelType)
