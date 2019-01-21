@@ -518,7 +518,7 @@ void QgsSymbolLegendNode::updateLabel()
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  QString vlexp = vl->expression();
+  QString vlexp = mLayerNode->expression();
 
   if ( mEmbeddedInParent )
   {
@@ -532,7 +532,7 @@ void QgsSymbolLegendNode::updateLabel()
     else if ( vlexp != "" && vl )
     {
       QgsExpressionContext context = createExpressionContext();
-      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, context );
+      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, *context );
     }
   }
   else
@@ -546,7 +546,7 @@ void QgsSymbolLegendNode::updateLabel()
     else if ( vlexp != "" && vl )
     {
       QgsExpressionContext context = createExpressionContext();
-      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, context );
+      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, *context );
     }
   }
 
