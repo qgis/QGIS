@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     bool run() override;
 
     /**
-     * Gets the count for each symbol. Only valid after the symbolsCounted()
+     * Returns the count for each symbol. Only valid after the symbolsCounted()
      * signal has been emitted.
      *
      * \note Not available in Python bindings.
@@ -56,14 +56,14 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     QHash<QString, long> symbolFeatureCountMap() const SIP_SKIP;
 
     /**
-     * Gets the feature count for a particular \a legendKey.
+     * Returns the feature count for a particular \a legendKey.
      * If the key has not been found, -1 will be returned.
      */
     long featureCount( const QString &legendKey ) const;
 
 
     /**
-     * Get the feature Ids for a particular \a legendKey.
+     * Returns the feature Ids for a particular \a legendKey.
      * If run() has not yet been executed, it will be.
      * If the key has not been found an empty QSet will be returned.
      *
