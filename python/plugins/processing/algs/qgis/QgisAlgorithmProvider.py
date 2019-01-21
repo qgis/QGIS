@@ -61,7 +61,6 @@ from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
-from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -172,7 +171,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
-                DensifyGeometriesInterval(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
