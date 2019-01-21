@@ -69,9 +69,13 @@ QList<int> QgsDensifyGeometriesByIntervalAlgorithm::inputLayerTypes() const
 void QgsDensifyGeometriesByIntervalAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ),
-                QObject::tr( "Interval between vertices to add" ),
-                1, QStringLiteral( "INPUT" ), false, 0, 10000000 ) );
+  std::unique_ptr<QgsProcessingParameterDistance> interval = qgis::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "INTERVAL" ),
+      QObject::tr( "Interval between vertices to add" ),
+      1, QStringLiteral( "INPUT" ), false, 0, 10000000 );
+  interval->setIsDynamic( true );
+  interval->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Interval" ), QObject::tr( "Interval" ), QgsPropertyDefinition::DoublePositive ) );
+  interval->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( interval.release() );
 }
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::outputName() const
@@ -84,6 +88,11 @@ QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const Qg
   Q_UNUSED( context );
   Q_UNUSED( feedback );
   QgsFeature modifiedFeature = feature;
+
+  double interval = mInterval;
+  if ( mDynamicInterval )
+    interval = mIntervalProperty.valueAsDouble( context.expressionContext(), interval );
+
   if ( feature.hasGeometry() )
     modifiedFeature.setGeometry( feature.geometry().densifyByDistance( mInterval ) );
 
@@ -94,5 +103,10 @@ bool QgsDensifyGeometriesByIntervalAlgorithm::prepareAlgorithm( const QVariantMa
 {
   Q_UNUSED( feedback );
   mInterval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
+
+  mDynamicInterval = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "INTERVAL" ) );
+  if ( mDynamicInterval )
+    mIntervalProperty = parameters.value( QStringLiteral( "INTERVAL" ) ).value< QgsProperty >();
+
   return true;
 }

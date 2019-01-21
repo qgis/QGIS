@@ -49,6 +49,8 @@ class QgsDensifyGeometriesByIntervalAlgorithm : public QgsProcessingFeatureBased
 
   private:
     double mInterval = 0.0;
+    bool mDynamicInterval = false;
+    QgsProperty mIntervalProperty;
 };
 
 ///@endcond PRIVATE
