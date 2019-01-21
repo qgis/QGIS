@@ -263,8 +263,7 @@ Sets format of text to be shown on top of the symbol.
 .. versionadded:: 3.2
 %End
 
-    virtual QgsExpressionContext createExpressionContext() const;
-
+    QgsExpressionContext createExpressionContext() const;
 %Docstring
 create an expression context containing symbol elements
 
