@@ -31,8 +31,14 @@ import unittest
 import hashlib
 import shutil
 import nose2
+import tempfile
 from qgis.core import (QgsProcessingParameterNumber,
                        QgsApplication,
+                       QgsMapLayer,
+                       QgsProject,
+                       QgsProcessingContext,
+                       QgsProcessingUtils,
+                       QgsProcessingFeedback,
                        QgsProcessingParameterDefinition)
 from qgis.testing import start_app, unittest
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -46,12 +52,18 @@ from processing.algs.otb.OtbSettings import OtbSettings
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice, OtbChoiceWidgetWrapper
 import AlgorithmsTestBase
 
+import processing
 OTB_INSTALL_DIR = os.environ.get('OTB_INSTALL_DIR')
 
 
 class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     def test_init_algorithms(self):
+        """
+        This test will read each otb algorithm in 'algs.txt'
+        and creates an instance of OtbAlgorithm and check if it can be executed
+        This is done in :class: `OtbAlgorithmProvider` load() method
+        """
         algs_txt = os.path.join(self.descrFolder, 'algs.txt')
         with open(algs_txt) as lines:
             line = lines.readline().strip('\n').strip()
@@ -69,7 +81,35 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 self.assertEqual(ret, True)
                 line = lines.readline().strip('\n').strip()
 
-    def test_OTBParameterChoice(self):
+    def test_parameterAs_ScriptMode(self):
+        """
+        This test will pass an instance of QgsCoordinateReferenceSystem for 'epsg' parameter
+        of otb::Rasterization. There is same test in otb_algorithm_tests.yaml which passes
+        an instance of str for epsg parameter.
+        """
+        outdir = tempfile.mkdtemp()
+        self.cleanup_paths.append(outdir)
+        parameters = {
+            'in': os.path.join(AlgorithmsTestBase.processingTestDataPath(), 'polys.gml'),
+            'epsg': QgsCoordinateReferenceSystem('EPSG:4326'),
+            'spx': 1.0,
+            'spy': 1.0,
+            'outputpixeltype': 1,
+            'out': os.path.join(outdir, 'raster.tif')
+        }
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = QgsProcessingFeedback()
+        results = processing.run('otb:Rasterization', parameters, None, feedback)
+        result_lyr = QgsProcessingUtils.mapLayerFromString(results['out'], context)
+        self.assertTrue(result_lyr.isValid())
+
+    def test_OTBParameterChoiceExists(self):
+        """
+        This test is here to know if we have change `type()` method of :class: `OtbParameterChoice`
+        That value is used by Otb when it creates descriptor files. So changes to this string must be test
+        in a unit-test.
+        """
         alg_smoothing = OtbAlgorithm('Image Filtering', 'Smoothing', os.path.join(self.descrFolder, 'Smoothing.txt'))
         found = False
         for param in alg_smoothing.parameterDefinitions():
@@ -80,6 +120,11 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(found, True)
 
     def test_OTBParameterChoice_Gui(self):
+        """
+        This test is similar to GuiTests in processing that is done on other parameter widget in processing
+        Main difference is this test uses create_wrapper_from_metadata() rather than create_wrapper_from_class()
+        like rest of processing widgets.
+        """
         param = OtbParameterChoice('test')
 
         alg = QgsApplication.processingRegistry().createAlgorithmById('otb:Smoothing')
@@ -134,6 +179,9 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             shutil.rmtree(path)
 
     def test_definition_file(self):
+        """
+        return name of yaml file containing test definitions
+        """
         print("OTB_INSTALL_DIR = '{}'".format(OTB_INSTALL_DIR))
         return 'otb_algorithm_tests.yaml'
 
