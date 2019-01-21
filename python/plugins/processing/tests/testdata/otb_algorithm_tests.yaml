@@ -62,5 +62,5 @@ tests:
       outputpixeltype: 3
     results:
       out:
-        hash: 1f48ca4c1bce526086ed3b9a54c7d15cfc33ade657f1189c29d4e563
+        hash: 987b1488daaa16d09ad6f40039ee85101c557354a4d821d3f31ad235
         type: rasterhash
