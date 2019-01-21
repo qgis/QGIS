@@ -203,6 +203,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   }
 #endif
 
+  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req ) );
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
 
@@ -301,6 +302,9 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     connect( this, &QgsNetworkAccessManager::requestTimedOut,
              sMainNAM, &QgsNetworkAccessManager::requestTimedOut );
 
+    connect( this, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ),
+             sMainNAM, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ) );
+
 #ifndef QT_NO_SSL
     connect( this, &QNetworkAccessManager::sslErrors,
              sMainNAM, &QNetworkAccessManager::sslErrors,
@@ -394,3 +398,13 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     setCache( newcache );
 }
 
+//
+// QgsNetworkRequestParameters
+//
+
+QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation, const QNetworkRequest &request )
+  : mOperation( operation )
+  , mRequest( request )
+  , mOriginatingThreadId( QStringLiteral( "0x%2" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+{
+}

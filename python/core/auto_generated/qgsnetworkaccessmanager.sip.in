@@ -10,6 +10,51 @@
 
 
 
+class QgsNetworkRequestParameters
+{
+%Docstring
+Encapsulates parameters and properties of a network request.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkaccessmanager.h"
+%End
+  public:
+
+    QgsNetworkRequestParameters();
+%Docstring
+Default constructor.
+%End
+
+    QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
+                                 const QNetworkRequest &request );
+%Docstring
+Constructor for QgsNetworkRequestParameters, with the specified network
+``operation`` and original ``request``.
+%End
+
+    QNetworkAccessManager::Operation operation() const;
+%Docstring
+Returns the request operation, e.g. GET or POST.
+%End
+
+    QNetworkRequest request() const;
+%Docstring
+Returns the network request.
+
+This is the original network request sent to :py:class:`QgsNetworkAccessManager`, but with QGIS specific
+configuration options such as proxy handling and SSL exceptions applied.
+%End
+
+    QString originatingThreadId() const;
+%Docstring
+Returns a string identifying the thread which the request originated from.
+%End
+
+};
+
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
 %Docstring
@@ -111,6 +156,18 @@ Returns whether the system proxy should be used
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
+
+    void requestAboutToBeCreated( QgsNetworkRequestParameters request );
+%Docstring
+Emitted when a network request is about to be created.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. versionadded:: 3.6
+%End
+
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
 

@@ -28,6 +28,54 @@
 #include "qgis_core.h"
 
 /**
+ * \class QgsNetworkRequestParameters
+ * \ingroup core
+ * Encapsulates parameters and properties of a network request.
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsNetworkRequestParameters
+{
+  public:
+
+    /**
+     * Default constructor.
+     */
+    QgsNetworkRequestParameters() = default;
+
+    /**
+     * Constructor for QgsNetworkRequestParameters, with the specified network
+     * \a operation and original \a request.
+     */
+    QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
+                                 const QNetworkRequest &request );
+
+    /**
+     * Returns the request operation, e.g. GET or POST.
+     */
+    QNetworkAccessManager::Operation operation() const { return mOperation; }
+
+    /**
+     * Returns the network request.
+     *
+     * This is the original network request sent to QgsNetworkAccessManager, but with QGIS specific
+     * configuration options such as proxy handling and SSL exceptions applied.
+     */
+    QNetworkRequest request() const { return mRequest; }
+
+    /**
+     * Returns a string identifying the thread which the request originated from.
+     */
+    QString originatingThreadId() const { return mOriginatingThreadId; }
+
+  private:
+
+    QNetworkAccessManager::Operation mOperation;
+    QNetworkRequest mRequest;
+    QString mOriginatingThreadId;
+
+};
+
+/**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core
@@ -110,6 +158,18 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
+
+    /**
+     * Emitted when a network request is about to be created.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about requests
+     * created in any thread.
+     *
+     * \since QGIS 3.6
+     */
+    void requestAboutToBeCreated( QgsNetworkRequestParameters request );
+
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
 
