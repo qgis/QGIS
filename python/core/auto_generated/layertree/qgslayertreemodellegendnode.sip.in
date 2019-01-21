@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
@@ -262,7 +263,8 @@ Sets format of text to be shown on top of the symbol.
 .. versionadded:: 3.2
 %End
 
-    QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const;
+
 %Docstring
 create an expression context containing symbol elements
 
