@@ -508,7 +508,6 @@ namespace QgsWms
 
       /**
        * Returns format parameter as a string.
-       * \returns format parameter as a string.
        * \since QGIS 3.6
        */
       static QString formatAsString( Format format );
