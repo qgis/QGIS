@@ -298,6 +298,8 @@ will be overwritten.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
+.. seealso:: Property
+
 .. versionadded:: 3.0
 %End
 
@@ -383,6 +385,8 @@ be called prior to evaluating data defined properties.
 Returns a reference to the symbol layer's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
+
+.. seealso:: Property
 
 .. versionadded:: 3.0
 %End
