@@ -251,7 +251,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
 
     /**
-     * create an expression context containing symbol elements
+     * Create an expression context containing symbol elements
      *
      * \since: 3.8
      */
