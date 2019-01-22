@@ -576,7 +576,6 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   QVariantList featureIds;
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
 
-  context.appendScope( scope );
 
   QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
 
