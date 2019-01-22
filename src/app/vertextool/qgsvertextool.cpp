@@ -282,6 +282,15 @@ QgsVertexTool::~QgsVertexTool()
   delete mEndpointMarker;
 }
 
+void QgsVertexTool::activate()
+{
+  if ( QgisApp::instance() )
+  {
+    showVertexEditor();
+  }
+  QgsMapToolAdvancedDigitizing::activate();
+}
+
 void QgsVertexTool::deactivate()
 {
   setHighlightedVertices( QList<Vertex>() );
@@ -1047,20 +1056,20 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 void QgsVertexTool::showVertexEditor()  //#spellok
 {
   QgsPointLocator::Match m = mLastMouseMoveMatch;
-  if ( !m.isValid() || !m.layer() )
-    return;
-
-  mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
-  for ( int i = 0; i < mSelectedVertices.length(); ++i )
+  if ( m.isValid() || m.layer() )
   {
-    if ( mSelectedVertices.at( i ).layer == m.layer() && mSelectedVertices.at( i ).fid == m.featureId() )
+    mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
+    for ( int i = 0; i < mSelectedVertices.length(); ++i )
     {
-      mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+      if ( mSelectedVertices.at( i ).layer == m.layer() && mSelectedVertices.at( i ).fid == m.featureId() )
+      {
+        mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+      }
     }
   }
   if ( !mVertexEditor )
   {
-    mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
+    mVertexEditor.reset( new QgsVertexEditor( m.layer() ? m.layer() : currentVectorLayer(), mSelectedFeature ? mSelectedFeature.get() : nullptr, mCanvas ) );
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
     connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
@@ -1070,7 +1079,10 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
   }
 
-  connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
+  if ( mSelectedFeature )
+  {
+    connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
+  }
 }
 
 void QgsVertexTool::cleanupVertexEditor()
