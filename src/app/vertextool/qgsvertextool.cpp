@@ -41,7 +41,7 @@
 
 #include <QMenu>
 #include <QRubberBand>
-
+#include <QTimer>
 
 uint qHash( const Vertex &v )
 {
@@ -1096,8 +1096,7 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
 
-    mVertexEditor->show();
-    mVertexEditor->raise();
+    QTimer::singleShot( 100, this, [ = ] { mVertexEditor->show(); mVertexEditor->raise(); } );
   }
   else
   {
