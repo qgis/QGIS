@@ -133,6 +133,11 @@ class CORE_EXPORT QgsNetworkReplyContent
      */
     int requestId() const { return mRequestId; }
 
+    /**
+     * Returns the original network request.
+     */
+    QNetworkRequest request() const { return mRequest; }
+
   private:
 
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
@@ -140,6 +145,7 @@ class CORE_EXPORT QgsNetworkReplyContent
     QList<RawHeaderPair> mRawHeaderPairs;
     QMap< QNetworkRequest::Attribute, QVariant > mAttributes;
     int mRequestId = -1;
+    QNetworkRequest mRequest;
 };
 
 #endif // QGSNETWORKREPLY_H

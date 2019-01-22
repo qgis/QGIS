@@ -65,7 +65,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
   bool loaded = false;
   bool gotRequestAboutToBeCreatedSignal = false;
   int requestId = -1;
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( QgsNetworkRequestParameters params )
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
@@ -73,10 +73,11 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), QUrl() );
   } );
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( QgsNetworkReplyContent reply )
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
     QCOMPARE( reply.errorString(), QStringLiteral( "Protocol \"\" is unknown" ) );
     QCOMPARE( reply.requestId(), requestId );
+    QCOMPARE( reply.request().url(), QUrl() );
     loaded = true;
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl() ) );
@@ -96,7 +97,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   bool loaded = false;
   bool gotRequestAboutToBeCreatedSignal = false;
   int requestId = -1;
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( QgsNetworkRequestParameters params )
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
@@ -104,10 +105,12 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), QUrl( QStringLiteral( "http://x" ) ) );
   } );
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( QgsNetworkReplyContent reply )
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
     QCOMPARE( reply.errorString(), QStringLiteral( "Host x not found" ) );
     QCOMPARE( reply.requestId(), requestId );
+    QCOMPARE( reply.request().url(), QUrl( QStringLiteral( "http://x" ) ) );
+
     loaded = true;
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ) );
@@ -129,7 +132,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   bool gotRequestAboutToBeCreatedSignal = false;
   int requestId = -1;
   QUrl u =  QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" );
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( QgsNetworkRequestParameters params )
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
@@ -137,11 +140,12 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), u );
   } );
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( QgsNetworkReplyContent reply )
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
     QCOMPARE( reply.error(), QNetworkReply::NoError );
     QCOMPARE( reply.requestId(), requestId );
     QVERIFY( reply.rawHeaderList().contains( "Content-Length" ) );
+    QCOMPARE( reply.request().url(), u );
     loaded = true;
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
