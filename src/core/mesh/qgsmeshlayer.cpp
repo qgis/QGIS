@@ -49,15 +49,24 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   }
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-
-  // show at least the mesh by default so we render something
-  QgsMeshRendererMeshSettings meshSettings;
-  meshSettings.setEnabled( true );
-  mRendererSettings.setNativeMeshSettings( meshSettings );
-
+  setDefaultRendererSettings();
 } // QgsMeshLayer ctor
 
-
+void QgsMeshLayer::setDefaultRendererSettings()
+{
+  if ( mDataProvider && mDataProvider->datasetGroupCount() > 0 )
+  {
+    // show data from the first dataset group
+    mRendererSettings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+  }
+  else
+  {
+    // show at least the mesh by default
+    QgsMeshRendererMeshSettings meshSettings;
+    meshSettings.setEnabled( true );
+    mRendererSettings.setNativeMeshSettings( meshSettings );
+  }
+}
 
 QgsMeshLayer::~QgsMeshLayer()
 {
