@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsexternalresourcewidget.h"
 #include "qgsfilterlineedit.h"
+#include "qgsapplication.h"
 
 
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )

@@ -18,6 +18,7 @@
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
+#include "qgsapplication.h"
 
 #include <QSettings>
 

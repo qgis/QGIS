@@ -503,7 +503,6 @@ Gets application icon
 Returns whether this machine uses big or little endian
 %End
 
-
     static QString reportStyleSheet();
 %Docstring
 Returns a standard css style sheet for reports.

@@ -22,6 +22,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgswkbptr.h"
 #include "qgsogrutils.h"
+#include "qgsapplication.h"
 #include <QBuffer>
 #include <QList>
 #include <QNetworkRequest>

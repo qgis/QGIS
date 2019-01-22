@@ -30,6 +30,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
+#include "qgsapplication.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>

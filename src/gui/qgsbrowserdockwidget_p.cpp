@@ -44,6 +44,7 @@
 #include "qgsvectorlayercache.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsapplication.h"
 #include <QDesktopServices>
 
 #include <QDragEnterEvent>

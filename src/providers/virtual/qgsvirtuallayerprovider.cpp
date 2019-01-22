@@ -31,6 +31,7 @@ extern "C"
 #include "qgsproject.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"

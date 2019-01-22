@@ -47,6 +47,7 @@
 #include "qgsclipper.h"
 #include "qgsproperty.h"
 #include "qgscolorschemeregistry.h"
+#include "qgsapplication.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )

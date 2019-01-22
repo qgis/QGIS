@@ -17,6 +17,7 @@
 #include "qgssourcefieldsproperties.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

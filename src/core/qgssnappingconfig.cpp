@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )

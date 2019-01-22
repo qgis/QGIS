@@ -23,6 +23,7 @@
 #include <QUrl>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QEventLoop>
 
 //
 // QgsServerParameterDefinition

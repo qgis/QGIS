@@ -20,6 +20,7 @@
 #include "qgisapp.h"
 #include "qgsfieldcombobox.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgsapplication.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

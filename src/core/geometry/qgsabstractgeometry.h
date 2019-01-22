@@ -30,7 +30,7 @@ class QgsMapToPixel;
 class QgsCurve;
 class QgsMultiCurve;
 class QgsMultiPoint;
-class QgsPoint;
+
 struct QgsVertexId;
 class QgsVertexIterator;
 class QPainter;
@@ -38,6 +38,7 @@ class QDomDocument;
 class QDomElement;
 class QgsGeometryPartIterator;
 class QgsGeometryConstPartIterator;
+class QgsConstWkbPtr;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN

@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsspatialitedataitems.h"
 
+#include "qgsapplication.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
 

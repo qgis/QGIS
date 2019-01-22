@@ -41,6 +41,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsapplication.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>

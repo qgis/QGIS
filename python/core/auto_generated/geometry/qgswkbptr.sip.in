@@ -38,6 +38,7 @@ class QgsConstWkbPtr
 
 
 
+
   public:
     QgsConstWkbPtr( const unsigned char *p /Array/, int size /ArraySize/ );
 

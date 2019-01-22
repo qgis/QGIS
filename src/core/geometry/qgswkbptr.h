@@ -17,7 +17,6 @@
 
 #include "qgis_core.h"
 #include "qgswkbtypes.h"
-#include "qgsapplication.h"
 #include "qgis.h"
 #include "qgsexception.h"
 #include "qpolygon.h"
@@ -133,6 +132,19 @@ class CORE_EXPORT QgsConstWkbPtr
     mutable bool mEndianSwap;
     mutable QgsWkbTypes::Type mWkbType;
 
+#ifndef SIP_RUN
+    template<typename T>
+    void endian_swap( T &value ) const
+    {
+      char *data = reinterpret_cast<char *>( &value );
+      std::size_t n = sizeof( value );
+      for ( std::size_t i = 0, m = n / 2; i < m; ++i )
+      {
+        std::swap( data[i], data[n - 1 - i] );
+      }
+    }
+#endif
+
     /**
      * \brief Verify bounds
      * \note note available in Python bindings
@@ -149,7 +161,7 @@ class CORE_EXPORT QgsConstWkbPtr
       memcpy( &v, mP, sizeof( v ) );
       mP += sizeof( v );
       if ( mEndianSwap )
-        QgsApplication::endian_swap( v );
+        endian_swap( v );
     }
 
   public:

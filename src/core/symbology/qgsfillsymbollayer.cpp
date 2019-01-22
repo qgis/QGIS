@@ -29,6 +29,7 @@
 #include "qgscolorramp.h"
 #include "qgsunittypes.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
 
 #include <QPainter>
 #include <QFile>

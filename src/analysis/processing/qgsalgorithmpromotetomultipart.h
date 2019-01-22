@@ -22,6 +22,7 @@
 
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 

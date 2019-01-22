@@ -24,6 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
+#include "qgsapplication.h"
 #include <QGraphicsRectItem>
 #include <QIcon>
 #include <QPainter>

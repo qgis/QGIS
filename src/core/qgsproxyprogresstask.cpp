@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsproxyprogresstask.h"
+#include "qgsapplication.h"
 
 QgsProxyProgressTask::QgsProxyProgressTask( const QString &description )
   : QgsTask( description, QgsTask::Flags() )

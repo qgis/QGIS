@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
+#include "qgsapplication.h"
 #include <QIcon>
 #include <QObject>
 #include <QSizeF>
