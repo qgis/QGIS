@@ -329,7 +329,13 @@ void TestQgsAttributeTable::testOrderColumn()
   QVector<QgsAttributeTableConfig::ColumnConfig> columns = config.columns();
 
   // move last column in first position
-  columns.move( 2, 0 );
+  // columns.move( 2, 0 ); // not available on QT 5.5
+  auto col0 = columns[0];
+  auto col1 = columns[1];
+  auto col2 = columns[2];
+  columns[0] = col2;
+  columns[1] = col0;
+  columns[2] = col1;
   config.setColumns( columns );
 
   dlg->mMainView->setAttributeTableConfig( config );
