@@ -139,7 +139,10 @@ void QgsFcgiServerRequest::readData()
   {
     bool success = false;
     int length = QString( lengthstr ).toInt( &success );
-#ifdef QGISDEBUG
+    // Note: REQUEST_BODY is not part of CGI standard, and it is not
+    // normally passed by any CGI web server and it is implemented only
+    // to allow unit tests to inject a request body and simulate a POST
+    // request
     const char *request_body  = getenv( "REQUEST_BODY" );
     if ( success && request_body )
     {
@@ -148,6 +151,7 @@ void QgsFcgiServerRequest::readData()
       mData.append( body.toUtf8() );
       length = 0;
     }
+#ifdef QGISDEBUG
     qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( request_body ? "REQUEST_BODY" : "stdin" );
 #endif
     if ( success )
