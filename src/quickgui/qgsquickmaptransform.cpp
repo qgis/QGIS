@@ -40,6 +40,8 @@ void QgsQuickMapTransform::setMapSettings( QgsQuickMapSettings *mapSettings )
   if ( mMapSettings )
     connect( mMapSettings, &QgsQuickMapSettings::visibleExtentChanged, this, &QgsQuickMapTransform::updateMatrix );
 
+  updateMatrix();
+
   emit mapSettingsChanged();
 }
 
