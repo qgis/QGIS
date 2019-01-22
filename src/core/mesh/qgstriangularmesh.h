@@ -129,6 +129,19 @@ class CORE_EXPORT QgsTriangularMesh
     QList<int> faceIndexesForRectangle( const QgsRectangle &rectangle ) const ;
 
   private:
+
+    /**
+     * Triangulates native face to triangles
+     *
+     * Triangulation does not create any new vertices and uses
+     * "Ear clipping method". Number of vertices in face is usually
+     * less than 10 and the faces are usually convex and without holes
+     *
+     * Skips the input face if it is not possible to triangulate
+     * with the given algorithm (e.g. only 2 vertices, polygon with holes)
+     */
+    void triangulate( const QgsMeshFace &face, int nativeIndex );
+
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices
     // faces are derived triangles
     QgsMesh mTriangularMesh;
@@ -139,6 +152,8 @@ class CORE_EXPORT QgsTriangularMesh
 
     QgsSpatialIndex mSpatialIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
+
+    friend class TestQgsTriangularMesh;
 };
 
 namespace QgsMeshUtils
