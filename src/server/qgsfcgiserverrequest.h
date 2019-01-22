@@ -51,8 +51,6 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 
     QByteArray mData;
     bool       mHasError = false;
-    //! Url before the server rewrite
-    QUrl       mOriginalUrl;
 };
 
 #endif
