@@ -24,6 +24,7 @@
 /**
  * \ingroup server
  * Stores layer ids of bad layers
+ * \since QGIS 3.6
  */
 class QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
 {
