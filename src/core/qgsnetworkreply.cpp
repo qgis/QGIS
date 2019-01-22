@@ -30,6 +30,11 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
     if ( reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) ).isValid() )
       mAttributes[ static_cast< QNetworkRequest::Attribute>( i ) ] = reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) );
   }
+
+  bool ok = false;
+  int requestId = reply->property( "requestId" ).toInt( &ok );
+  if ( ok )
+    mRequestId = requestId;
 }
 
 void QgsNetworkReplyContent::clear()

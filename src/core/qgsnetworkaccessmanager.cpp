@@ -204,9 +204,13 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   }
 #endif
 
-  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req ) );
+  static QAtomicInt sRequestId = 0;
+  const int requestId = ++sRequestId;
+
+  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId ) );
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
+  reply->setProperty( "requestId", requestId );
 
   emit requestCreated( reply );
 
@@ -412,9 +416,10 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 // QgsNetworkRequestParameters
 //
 
-QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation, const QNetworkRequest &request )
+QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, int requestId )
   : mOperation( operation )
   , mRequest( request )
   , mOriginatingThreadId( QStringLiteral( "0x%2" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+  , mRequestId( requestId )
 {
 }

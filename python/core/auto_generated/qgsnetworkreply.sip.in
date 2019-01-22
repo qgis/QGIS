@@ -99,6 +99,11 @@ empty QByteArray if the specified header was not found in the reply.
 .. seealso:: :py:func:`rawHeaderList`
 %End
 
+    int requestId() const;
+%Docstring
+Returns the unique ID identifying the original request which this response was formed from.
+%End
+
 };
 
 /************************************************************************
