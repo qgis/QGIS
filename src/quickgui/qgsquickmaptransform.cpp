@@ -41,7 +41,7 @@ void QgsQuickMapTransform::setMapSettings( QgsQuickMapSettings *mapSettings )
     connect( mMapSettings, &QgsQuickMapSettings::visibleExtentChanged, this, &QgsQuickMapTransform::updateMatrix );
 
   updateMatrix();
-  
+
   emit mapSettingsChanged();
 }
 
