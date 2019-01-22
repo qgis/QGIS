@@ -32,20 +32,6 @@ Class defining fcgi request
 Returns true if an error occurred during initialization
 %End
 
-    virtual QUrl url() const;
-
-%Docstring
-
-:return: the request url
-
-Overrides base implementation because FCGI is typically behind
-a proxy server and QGIS Server will see a rewritten QUERY_STRING.
-FCGI implementation stores the REQUEST_URI (which is the URL seen
-by the proxy before it gets rewritten) and returns it instead of
-the rewritten one.
-%End
-
-
 };
 
 /************************************************************************

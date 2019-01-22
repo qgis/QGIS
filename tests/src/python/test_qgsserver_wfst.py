@@ -4,10 +4,10 @@
 Tests for WFS-T provider using QGIS Server through qgis_wrapped_server.py.
 
 This is an integration test for QGIS Desktop WFS-T provider and QGIS Server
-WFS-T that check if QGIS can talk to and uderstand itself.
+WFS-T that check if QGIS can talk to and understand itself.
 
 The test uses testdata/wfs_transactional/wfs_transactional.qgs and three
-initially empty shapefiles layrs with points, lines and polygons.
+initially empty shapefiles layers with points, lines and polygons.
 
 All WFS-T calls are executed through the QGIS WFS data provider.
 

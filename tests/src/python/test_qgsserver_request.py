@@ -9,9 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-import unittest
-import os
-from urllib.parse import parse_qs, urlparse
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '29/04/2017'
@@ -20,16 +17,37 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 
+import os
+import re
+import unittest
+from urllib.parse import parse_qs, urlencode, urlparse
+
 from qgis.PyQt.QtCore import QUrl
-from qgis.server import QgsServerRequest, QgsFcgiServerRequest
+from qgis.server import (QgsBufferServerResponse, QgsFcgiServerRequest,
+                         QgsServerRequest)
+from test_qgsserver import QgsServerTestBase
 
 
-class QgsServerRequestTest(unittest.TestCase):
+class QgsServerRequestTest(QgsServerTestBase):
+
+    @staticmethod
+    def _set_env(env={}):
+        for k in ('QUERY_STRING', 'REQUEST_URI', 'SERVER_NAME', 'CONTENT_LENGTH', 'SERVER_PORT', 'SCRIPT_NAME', 'REQUEST_BODY', 'REQUEST_METHOD'):
+            try:
+                del os.environ[k]
+            except KeyError:
+                pass
+            try:
+                os.environ[k] = env[k]
+            except KeyError:
+                pass
 
     def test_requestHeaders(self):
         """Test request headers"""
-        headers = {'header-key-1': 'header-value-1', 'header-key-2': 'header-value-2'}
-        request = QgsServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
+        headers = {'header-key-1': 'header-value-1',
+                   'header-key-2': 'header-value-2'}
+        request = QgsServerRequest(
+            'http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         for k, v in request.headers().items():
             self.assertEqual(headers[k], v)
         request.removeHeader('header-key-1')
@@ -40,7 +58,8 @@ class QgsServerRequestTest(unittest.TestCase):
 
     def test_requestParameters(self):
         """Test request parameters"""
-        request = QgsServerRequest('http://somesite.com/somepath?parm1=val1&parm2=val2', QgsServerRequest.GetMethod)
+        request = QgsServerRequest(
+            'http://somesite.com/somepath?parm1=val1&parm2=val2', QgsServerRequest.GetMethod)
         parameters = {'PARM1': 'val1', 'PARM2': 'val2'}
         for k, v in request.parameters().items():
             self.assertEqual(parameters[k], v)
@@ -52,18 +71,23 @@ class QgsServerRequestTest(unittest.TestCase):
 
     def test_requestParametersDecoding(self):
         """Test request parameters decoding"""
-        request = QgsServerRequest('http://somesite.com/somepath?parm1=val1%20%2B+val2', QgsServerRequest.GetMethod)
+        request = QgsServerRequest(
+            'http://somesite.com/somepath?parm1=val1%20%2B+val2', QgsServerRequest.GetMethod)
         self.assertEqual(request.parameters()['PARM1'], 'val1 + val2')
 
     def test_requestUrl(self):
         """Test url"""
-        request = QgsServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod)
-        self.assertEqual(request.url().toString(), 'http://somesite.com/somepath')
+        request = QgsServerRequest(
+            'http://somesite.com/somepath', QgsServerRequest.GetMethod)
+        self.assertEqual(request.url().toString(),
+                         'http://somesite.com/somepath')
         request.setUrl(QUrl('http://someother.com/someotherpath'))
-        self.assertEqual(request.url().toString(), 'http://someother.com/someotherpath')
+        self.assertEqual(request.url().toString(),
+                         'http://someother.com/someotherpath')
 
     def test_requestMethod(self):
-        request = QgsServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod)
+        request = QgsServerRequest(
+            'http://somesite.com/somepath', QgsServerRequest.GetMethod)
         self.assertEqual(request.method(), QgsServerRequest.GetMethod)
         request.setMethod(QgsServerRequest.PostMethod)
         self.assertEqual(request.method(), QgsServerRequest.PostMethod)
@@ -71,43 +95,106 @@ class QgsServerRequestTest(unittest.TestCase):
     def test_fcgiRequest(self):
         """Test various combinations of FCGI env parameters with rewritten urls"""
 
-        def _test_url(url, env={}):
-            for k in ('QUERY_STRING', 'REQUEST_URI', 'SERVER_NAME', 'SERVER_PORT', 'SCRIPT_NAME'):
-                try:
-                    del os.environ[k]
-                except KeyError:
-                    pass
-                try:
-                    os.environ[k] = env[k]
-                except KeyError:
-                    pass
+        def _test_url(original_url, rewritten_url, env={}):
+            self._set_env(env)
             request = QgsFcgiServerRequest()
-            self.assertEqual(request.url().toString(), url)
+            self.assertEqual(request.originalUrl().toString(), original_url)
+            self.assertEqual(request.url().toString(), rewritten_url)
             # Check MAP
             if 'QUERY_STRING' in env:
-                map = {k.upper(): v[0] for k, v in parse_qs(env['QUERY_STRING']).items()}['MAP']
+                map = {k.upper(): v[0] for k, v in parse_qs(
+                    env['QUERY_STRING']).items()}['MAP']
             else:
-                map = {k.upper(): v[0] for k, v in parse_qs(urlparse(env['REQUEST_URI']).query).items()}['MAP']
+                map = {k.upper(): v[0] for k, v in parse_qs(
+                    urlparse(env['REQUEST_URI']).query).items()}['MAP']
             self.assertEqual(request.parameter('MAP'), map)
 
-        _test_url('http://somesite.com/somepath/index.html?map=/my/path.qgs', {
-            'REQUEST_URI': '/somepath/index.html?map=/my/path.qgs',
-            'SERVER_NAME': 'somesite.com',
-        })
-        _test_url('http://somesite.com/somepath?map=/my/path.qgs', {
-            'REQUEST_URI': '/somepath?map=/my/path.qgs',
-            'SERVER_NAME': 'somesite.com',
-        })
-        _test_url('http://somesite.com/somepath/path', {
-            'REQUEST_URI': '/somepath/path',
-            'SERVER_NAME': 'somesite.com',
-            'QUERY_STRING': 'map=/my/path.qgs'
-        })
-        _test_url('http://somesite.com/somepath/path/?token=QGIS2019', {
-            'REQUEST_URI': '/somepath/path/?token=QGIS2019',
-            'SERVER_NAME': 'somesite.com',
-            'QUERY_STRING': 'map=/my/path.qgs',
-        })
+        _test_url('http://somesite.com/somepath/project1/',
+                  'http://somesite.com/somepath/project1/?map=/my/project1.qgs', {
+                      'REQUEST_URI': '/somepath/project1/',
+                      'SERVER_NAME': 'somesite.com',
+                      'QUERY_STRING': 'map=/my/project1.qgs'
+                  })
+
+        _test_url('http://somesite.com/somepath/path/?token=QGIS2019',
+                  'http://somesite.com/somepath/path/?map=/my/path.qgs', {
+                      'REQUEST_URI': '/somepath/path/?token=QGIS2019',
+                      'SERVER_NAME': 'somesite.com',
+                      'QUERY_STRING': 'map=/my/path.qgs',
+                  })
+
+        _test_url('http://somesite.com/somepath/index.html?map=/my/path.qgs',
+                  'http://somesite.com/somepath/index.html?map=/my/path.qgs',
+                  {
+                      'REQUEST_URI': '/somepath/index.html?map=/my/path.qgs',
+                      'SERVER_NAME': 'somesite.com',
+                  })
+
+        _test_url('http://somesite.com/somepath?map=/my/path.qgs',
+                  'http://somesite.com/somepath?map=/my/path.qgs',
+                  {
+                      'REQUEST_URI': '/somepath?map=/my/path.qgs',
+                      'SERVER_NAME': 'somesite.com',
+                  })
+
+    def test_fcgiRequestPOST(self):
+        """Test various combinations of FCGI POST parameters with rewritten urls"""
+
+        def _check_links(params, method='GET'):
+            data = urlencode(params)
+            if method == 'GET':
+                env = {
+                    'SERVER_NAME': 'www.myserver.com',
+                    'REQUEST_URI': '/aproject/',
+                    'QUERY_STRING': data,
+                    'REQUEST_METHOD': 'GET',
+                }
+            else:
+                env = {
+                    'SERVER_NAME': 'www.myserver.com',
+                    'REQUEST_URI': '/aproject/',
+                    'REQUEST_BODY': data,
+                    'CONTENT_LENGTH': str(len(data)),
+                    'REQUEST_METHOD': 'POST',
+                }
+
+            self._set_env(env)
+            request = QgsFcgiServerRequest()
+            response = QgsBufferServerResponse()
+            self.server.handleRequest(request, response)
+            self.assertFalse(b'ServiceExceptionReport' in response.body())
+
+            if method == 'POST':
+                self.assertEqual(request.data(), data.encode('utf8'))
+            else:
+                original_url = request.originalUrl().toString()
+                self.assertTrue(original_url.startswith('http://www.myserver.com/aproject/'))
+                self.assertEqual(original_url.find(urlencode({'MAP': params['map']})), -1)
+
+            exp = re.compile(r'href="([^"]+)"', re.DOTALL | re.MULTILINE)
+            elems = exp.findall(bytes(response.body()).decode('utf8'))
+            self.assertTrue(len(elems) > 0)
+            for href in elems:
+                self.assertTrue(href.startswith('http://www.myserver.com/aproject/'))
+                self.assertEqual(href.find(urlencode({'MAP': params['map']})), -1)
+
+        # Test post request handler
+        params = {
+            'map': os.path.join(self.testdata_path, 'test_project_wfs.qgs'),
+            'REQUEST': 'GetCapabilities',
+            'SERVICE': 'WFS',
+        }
+        _check_links(params)
+        _check_links(params, 'POST')
+        params['SERVICE'] = 'WMS'
+        _check_links(params)
+        _check_links(params, 'POST')
+        params['SERVICE'] = 'WCS'
+        _check_links(params)
+        _check_links(params, 'POST')
+        params['SERVICE'] = 'WMTS'
+        _check_links(params)
+        _check_links(params, 'POST')
 
 
 if __name__ == '__main__':

@@ -41,18 +41,6 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
      */
     bool hasError() const { return mHasError; }
 
-    /**
-     * \returns  the request url
-     *
-     * Overrides base implementation because FCGI is typically behind
-     * a proxy server and QGIS Server will see a rewritten QUERY_STRING.
-     * FCGI implementation stores the REQUEST_URI (which is the URL seen
-     * by the proxy before it gets rewritten) and returns it instead of
-     * the rewritten one.
-     */
-    QUrl url() const override;
-
-
   private:
     void readData();
 
@@ -63,8 +51,6 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 
     QByteArray mData;
     bool       mHasError = false;
-    //! Url before the server rewrite
-    QUrl       mOriginalUrl;
 };
 
 #endif
