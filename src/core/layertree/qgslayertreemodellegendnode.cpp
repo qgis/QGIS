@@ -546,7 +546,7 @@ void QgsSymbolLegendNode::updateLabel()
     else if ( vlexp != "" && vl )
     {
       QgsExpressionContext context = createExpressionContext();
-      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, *context );
+      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
     }
   }
 
