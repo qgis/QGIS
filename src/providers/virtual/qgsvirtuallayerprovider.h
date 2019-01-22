@@ -111,7 +111,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool openIt();
     bool createIt();
     bool loadSourceLayers();
-    void createVirtualTable( QgsVectorLayer *vlayer );
+    void createVirtualTable( QgsVectorLayer *vlayer, const QString &name );
 
     friend class QgsVirtualLayerFeatureSource;
 

@@ -1009,7 +1009,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(point.x(), 2)
         self.assertEqual(point.y(), 3)
 
-        QgsProject.instance().read()
+        QgsProject.instance().removeMapLayer(ml)
 
 
 if __name__ == '__main__':
