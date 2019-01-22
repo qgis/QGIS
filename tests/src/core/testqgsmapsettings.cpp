@@ -46,6 +46,7 @@ class TestQgsMapSettings: public QObject
     void testXmlReadWrite();
     void testSetLayers();
     void testLabelBoundary();
+    void testExpressionContext();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -374,6 +375,72 @@ void TestQgsMapSettings::testLabelBoundary()
   QVERIFY( ms.labelBoundaryGeometry().isNull() );
   ms.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1, 0 1, 0 0 ))" ) ) );
   QCOMPARE( ms.labelBoundaryGeometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
+}
+
+void TestQgsMapSettings::testExpressionContext()
+{
+  QgsMapSettings ms;
+  QgsExpressionContext c;
+  QVariant r;
+
+  ms.setOutputSize( QSize( 5000, 5000 ) );
+  ms.setExtent( QgsRectangle( -1, 0, 2, 2 ) );
+  ms.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  ms.setRotation( -32 );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  QgsExpression e( QStringLiteral( "@map_scale" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10 );
+
+  // The old $scale function should silently map to @map_scale, so that older projects work without change
+  e = QgsExpression( QStringLiteral( "$scale" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10 );
+
+  // no map settings scope -- $scale is meaningless
+  e = QgsExpression( QStringLiteral( "$scale" ) );
+  r = e.evaluate( nullptr );
+  QVERIFY( !r.isValid() );
+
+  e = QgsExpression( QStringLiteral( "@map_id" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "canvas" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_rotation" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), -32.0 );
+
+  ms.setRotation( 0 );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent )" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "Polygon ((-1 -0.5, 2 -0.5, 2 2.5, -1 2.5, -1 -0.5))" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_extent_width" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 3 );
+
+  e = QgsExpression( QStringLiteral( "@map_extent_height" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 3 );
+
+  e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent_center )" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "Point (0.5 1)" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "EPSG:4326" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_definition" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_units" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "degrees" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
