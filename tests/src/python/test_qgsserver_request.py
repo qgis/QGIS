@@ -18,10 +18,9 @@ __revision__ = '$Format:%H$'
 
 
 import os
+import re
 import unittest
 from urllib.parse import parse_qs, urlencode, urlparse
-
-from lxml import etree as ET
 
 from qgis.PyQt.QtCore import QUrl
 from qgis.server import (QgsBufferServerResponse, QgsFcgiServerRequest,
@@ -172,18 +171,10 @@ class QgsServerRequestTest(QgsServerTestBase):
                 self.assertTrue(original_url.startswith('http://www.myserver.com/aproject/'))
                 self.assertEqual(original_url.find(urlencode({'MAP': params['map']})), -1)
 
-            e = ET.fromstring(bytes(response.body()))
-            elems = []
-            for ns in ('wms', 'wfs', 'wcs'):
-                elems += e.xpath('//xxx:OnlineResource', namespaces={'xxx': 'http://www.opengis.net/%s' % ns})
-                elems += e.xpath('//ows:Get/ows:OnlineResource', namespaces={'ows': 'http://www.opengis.net/ows'})
-                elems += e.xpath('//ows:Post', namespaces={'ows': 'http://www.opengis.net/ows'})
-                elems += e.xpath('//ows:Get', namespaces={'ows': 'http://www.opengis.net/ows'})
-                elems += e.xpath('//ows:Get', namespaces={'ows': 'http://www.opengis.net/ows/1.1'})
+            exp = re.compile(r'href="([^"]+)"', re.DOTALL | re.MULTILINE)
+            elems = exp.findall(bytes(response.body()).decode('utf8'))
             self.assertTrue(len(elems) > 0)
-            for _e in elems:
-                attrs = _e.attrib
-                href = attrs['{http://www.w3.org/1999/xlink}href']
+            for href in elems:
                 self.assertTrue(href.startswith('http://www.myserver.com/aproject/'))
                 self.assertEqual(href.find(urlencode({'MAP': params['map']})), -1)
 
