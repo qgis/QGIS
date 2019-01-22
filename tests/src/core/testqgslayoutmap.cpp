@@ -626,15 +626,15 @@ void TestQgsLayoutMap::expressionContext()
   r = e6.evaluate( &c );
   QCOMPARE( r.toString(), QString( "longlat" ) );
 
-  //QgsExpression e7( QStringLiteral( "@map_crs_pro4" ) );
-  //r = e7.evaluate( &c );
-  //QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+  QgsExpression e7( QStringLiteral( "@map_crs_proj4" ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
-  //QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
-  //r = e8.evaluate( &c );
-  //QVERIFY( r.toString().length() >= 15 );
+  QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
+  r = e8.evaluate( &c );
+  QVERIFY( r.toString().length() >= 15 );
 
-  QgsExpression e9( QStringLiteral( "@map_ellipsoid_acr" ) );
+  QgsExpression e9( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e9.evaluate( &c );
   QCOMPARE( r.toString(), QString( "WGS84" ) );
 
