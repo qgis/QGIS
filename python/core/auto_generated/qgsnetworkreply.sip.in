@@ -104,6 +104,11 @@ empty QByteArray if the specified header was not found in the reply.
 Returns the unique ID identifying the original request which this response was formed from.
 %End
 
+    QNetworkRequest request() const;
+%Docstring
+Returns the original network request.
+%End
+
 };
 
 /************************************************************************

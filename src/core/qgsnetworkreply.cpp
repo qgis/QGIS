@@ -20,6 +20,7 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   : mError( reply->error() )
   , mErrorString( reply->errorString() )
   , mRawHeaderPairs( reply->rawHeaderPairs() )
+  , mRequest( reply->request() )
 {
   int maxAttribute = static_cast< int >( QNetworkRequest::RedirectPolicyAttribute );
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
