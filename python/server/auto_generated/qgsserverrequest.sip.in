@@ -159,7 +159,7 @@ Set the request method
 
     void setOriginalUrl( const QUrl &url );
 %Docstring
-Set the request original \url (the request url as seen by the web server)
+Set the request original ``url`` (the request url as seen by the web server)
 
 .. seealso:: :py:func:`setUrl`
 

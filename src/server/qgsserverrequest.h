@@ -175,7 +175,7 @@ class SERVER_EXPORT QgsServerRequest
   protected:
 
     /**
-     * Set the request original \url (the request url as seen by the web server)
+     * Set the request original \a url (the request url as seen by the web server)
      *
      * \see setUrl() for the rewritten url
      * \since QGIS 3.6
