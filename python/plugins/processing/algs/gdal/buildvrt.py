@@ -117,7 +117,7 @@ class buildvrt(GdalAlgorithm):
         self.addParameter(resampling)
 
         src_nodata_param = QgsProcessingParameterString(self.SRC_NODATA,
-                                                        self.tr('Nodata value(s) for input bands'),
+                                                        self.tr('Nodata value(s) for input bands (space separated)'),
                                                         defaultValue=None,
                                                         optional=True)
         src_nodata_param.setFlags(src_nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
