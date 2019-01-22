@@ -80,6 +80,7 @@
 %Include auto_generated/qgsmargins.sip
 %Include auto_generated/qgsmimedatautils.sip
 %Include auto_generated/qgsmultirenderchecker.sip
+%Include auto_generated/qgsnetworkreply.sip
 %Include auto_generated/qgsobjectcustomproperties.sip
 %Include auto_generated/qgsogcutils.sip
 %Include auto_generated/qgsoptional.sip

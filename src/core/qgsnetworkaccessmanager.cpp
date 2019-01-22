@@ -28,6 +28,7 @@
 #include "qgssettings.h"
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
+#include "qgsnetworkreply.h"
 
 #include <QUrl>
 #include <QTimer>
@@ -242,6 +243,10 @@ void QgsNetworkAccessManager::abortRequest()
 
 }
 
+void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply )
+{
+  emit finished( QgsNetworkReplyContent( reply ) );
+}
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
 {
@@ -305,12 +310,17 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     connect( this, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ),
              sMainNAM, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ) );
 
+    connect( this, qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ),
+             sMainNAM, qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ) );
+
 #ifndef QT_NO_SSL
     connect( this, &QNetworkAccessManager::sslErrors,
              sMainNAM, &QNetworkAccessManager::sslErrors,
              connectionType );
 #endif
   }
+
+  connect( this, &QNetworkAccessManager::finished, this, &QgsNetworkAccessManager::onReplyFinished );
 
   // check if proxy is enabled
   QgsSettings settings;

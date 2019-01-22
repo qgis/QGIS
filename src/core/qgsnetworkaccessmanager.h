@@ -20,6 +20,7 @@
 
 #include <QList>
 #include "qgis.h"
+#include "qgsnetworkreply.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
@@ -166,15 +167,33 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * only to connect to the main thread's signal in order to receive notifications about requests
      * created in any thread.
      *
+     * \see finished( QgsNetworkReplyContent )
      * \since QGIS 3.6
      */
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
+
+    /**
+     * This signal is emitted whenever a pending network reply is finished.
+     *
+     * The \a reply parameter will contain a QgsNetworkReplyContent object, containing all the useful
+     * information relating to the reply, including headers and reply content.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about requests
+     * created in any thread.
+     *
+     * \see requestAboutToBeCreated( QgsNetworkRequestParameters )
+     * \since QGIS 3.6
+     */
+    void finished( QgsNetworkReplyContent reply );
 
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
 
   private slots:
     void abortRequest();
+
+    void onReplyFinished( QNetworkReply *reply );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
