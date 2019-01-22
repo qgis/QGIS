@@ -392,12 +392,12 @@ void TestQgsMapSettings::testExpressionContext()
 
   QgsExpression e( QStringLiteral( "@map_scale" ) );
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 247990, 10 );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
 
   // The old $scale function should silently map to @map_scale, so that older projects work without change
   e = QgsExpression( QStringLiteral( "$scale" ) );
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 247990, 10 );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
 
   // no map settings scope -- $scale is meaningless
   e = QgsExpression( QStringLiteral( "$scale" ) );
@@ -421,11 +421,11 @@ void TestQgsMapSettings::testExpressionContext()
 
   e = QgsExpression( QStringLiteral( "@map_extent_width" ) );
   r = e.evaluate( &c );
-  QCOMPARE( r.toDouble(), 3 );
+  QCOMPARE( r.toDouble(), 3.0 );
 
   e = QgsExpression( QStringLiteral( "@map_extent_height" ) );
   r = e.evaluate( &c );
-  QCOMPARE( r.toDouble(), 3 );
+  QCOMPARE( r.toDouble(), 3.0 );
 
   e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent_center )" ) );
   r = e.evaluate( &c );
