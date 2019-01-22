@@ -1047,6 +1047,9 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
 
   // re-run validation for the feature
   validateGeometry( layer, fid );
+
+  if ( mVertexEditor && mSelectedFeature && mSelectedFeature->featureId() == fid && mSelectedFeature->layer() == layer )
+    mVertexEditor->updateEditor( mSelectedFeature->layer(), mSelectedFeature.get() );
 }
 
 void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
