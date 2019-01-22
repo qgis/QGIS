@@ -35,7 +35,7 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsMapLayer,
                        QgsApplication,
-                       QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
@@ -165,6 +165,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                     # reset list of options to 'self.pixelTypes'.
                     if name == 'outputpixeltype':
                         param.setOptions(self.pixelTypes)
+                        param.setDefaultValue(self.pixelTypes.index('float'))
 
                     self.addParameter(param)
                     #parameter is added now and we must move to next line
@@ -185,10 +186,6 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             if param is None:
                 continue
 
-            #if name of parameter is 'pixtype',
-            #it is considered valid if it has value other than float
-            if k == 'outputpixeltype' and self.pixelTypes[int(v)] == 'float':
-                continue
             # Any other valid parameters have:
             #- empty or no metadata
             #- metadata without a 'group_key'
@@ -211,7 +208,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 continue
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':
-                outputPixelType = self.pixelTypes[int(parameters['outputpixeltype'])]
+                pixel_type = self.pixelTypes[int(parameters['outputpixeltype'])]
+                outputPixelType = None if pixel_type == 'float' else pixel_type
                 continue
 
             param = self.parameterDefinition(k)
@@ -223,23 +221,30 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 value = self.parameterAsBool(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterCrs):
                 crsValue = self.parameterAsCrs(parameters, param.name(), context)
-                value = crsValue.authid().split('EPSG:')[1]
+                authid = crsValue.authid()
+                if authid.startswith('EPSG:'):
+                    value = authid.split('EPSG:')[1]
+                else:
+                    raise QgsProcessingException(
+                        self.tr("Incorrect value for parameter '{}'. No EPSG code found in '{}'".format(
+                            param.name(),
+                            authid)))
             elif isinstance(param, QgsProcessingParameterFile):
                 value = self.parameterAsFile(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 layers = self.parameterAsLayerList(parameters, param.name(), context)
                 if layers is None or len(layers) == 0:
                     continue
-                value = ' '.join(['"{}"'.format(layer.source()) for layer in layers])
+                value = ' '.join(['"{}"'.format(self.getLayerSource(param.name(), layer)) for layer in layers])
             elif isinstance(param, QgsProcessingParameterNumber):
                 if param.dataType() == QgsProcessingParameterNumber.Integer:
                     value = self.parameterAsInt(parameters, param.name(), context)
                 else:
                     value = self.parameterAsDouble(parameters, param.name(), context)
             elif isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer)):
-                value = '"{}"'.format(self.parameterAsLayer(parameters, param.name(), context).source())
+                value = '"{}"'.format(self.getLayerSource(param.name(), self.parameterAsLayer(parameters, param.name(), context)))
             elif isinstance(param, QgsProcessingParameterString):
-                value = '"{}"'.format(parameters[param.name()])
+                value = '"{}"'.format(self.parameterAsString(parameters, param.name(), context))
             else:
                 # Use whatever is given
                 value = '"{}"'.format(parameters[param.name()])
@@ -270,3 +275,12 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             if o.name() in output_files:
                 result[o.name()] = output_files[o.name()]
         return result
+
+    def getLayerSource(self, name, layer):
+        providerName = layer.dataProvider().name()
+        #TODO: add other provider support in OTB, eg: memory
+        if providerName in ['ogr', 'gdal']:
+            return layer.source()
+        else:
+            raise QgsProcessingException(
+                self.tr("OTB currently support only gdal and ogr provider. Parameter '{}' uses '{}' provider".format(name, providerName)))
