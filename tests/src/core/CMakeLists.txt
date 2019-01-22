@@ -200,6 +200,7 @@ SET(TESTS
  testqgssymbol.cpp
  testqgstaskmanager.cpp
  testqgstracer.cpp
+ testqgstriangularmesh.cpp
  testqgsfontutils.cpp
  testqgsvector.cpp
  testqgsvectordataprovider.cpp
