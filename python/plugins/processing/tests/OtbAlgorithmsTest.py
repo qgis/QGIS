@@ -89,17 +89,21 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         """
         outdir = tempfile.mkdtemp()
         self.cleanup_paths.append(outdir)
+
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = QgsProcessingFeedback()
+
+        vectorFile = os.path.join(AlgorithmsTestBase.processingTestDataPath(), 'polys.gml')
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(vectorFile, context)
         parameters = {
-            'in': os.path.join(AlgorithmsTestBase.processingTestDataPath(), 'polys.gml'),
+            'in': vectorLayer,
             'epsg': QgsCoordinateReferenceSystem('EPSG:4326'),
             'spx': 1.0,
             'spy': 1.0,
             'outputpixeltype': 1,
             'out': os.path.join(outdir, 'raster.tif')
         }
-        context = QgsProcessingContext()
-        context.setProject(QgsProject.instance())
-        feedback = QgsProcessingFeedback()
         results = processing.run('otb:Rasterization', parameters, None, feedback)
         result_lyr = QgsProcessingUtils.mapLayerFromString(results['out'], context)
         self.assertTrue(result_lyr.isValid())
