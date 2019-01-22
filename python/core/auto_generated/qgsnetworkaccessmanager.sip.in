@@ -165,6 +165,24 @@ This signal is propagated to the main thread QgsNetworkAccessManager instance, s
 only to connect to the main thread's signal in order to receive notifications about requests
 created in any thread.
 
+.. seealso:: :py:func:`finished`
+
+.. versionadded:: 3.6
+%End
+
+    void finished( QgsNetworkReplyContent reply );
+%Docstring
+This signal is emitted whenever a pending network reply is finished.
+
+The ``reply`` parameter will contain a QgsNetworkReplyContent object, containing all the useful
+information relating to the reply, including headers and reply content.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`requestAboutToBeCreated`
+
 .. versionadded:: 3.6
 %End
 
