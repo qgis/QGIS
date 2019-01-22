@@ -46,9 +46,9 @@ const QgsProject *QgsConfigCache::project( const QString &path )
     prj->setBadLayerHandler( badLayerHandler );
     if ( prj->read( path ) )
     {
-      if ( badLayerHandler->badLayers().size() > 0 )
+      if ( !badLayerHandler->badLayers().isEmpty() )
       {
-        QString errorMsg = QString( "Layer(s) %1 not valid" ).arg( badLayerHandler->badLayers().join( ',' ) );
+        QString errorMsg = QStringLiteral( "Layer(s) %1 not valid" ).arg( badLayerHandler->badLayers().join( ',' ) );
         QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
         throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
       }

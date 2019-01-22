@@ -571,8 +571,9 @@ in the area of the map item covered by the item.
 
     QgsMapRendererJob::Errors renderingErrors() const;
 %Docstring
-renderingErrors
-@return list of layer id / error message
+Returns map rendering errors
+
+:return: list of errors
 %End
 
   protected:

@@ -285,7 +285,7 @@ namespace QgsWms
 
       void removeTemporaryLayers();
 
-      void handlePrintErrors( const QgsLayout *layout );
+      void handlePrintErrors( const QgsLayout *layout ) const;
 
     private:
 

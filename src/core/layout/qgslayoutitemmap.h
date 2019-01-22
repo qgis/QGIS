@@ -512,8 +512,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     bool isLabelBlockingItem( QgsLayoutItem *item ) const;
 
     /**
-     * @brief renderingErrors
-     * @return list of layer id / error message
+     * \brief Returns map rendering errors
+     * \returns list of errors
      */
     QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
 

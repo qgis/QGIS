@@ -1,3 +1,20 @@
+/***************************************************************************
+                              qgsstorebadlayerinfo.h
+                              ----------------------
+  begin                : Jan 2019
+  copyright            : (C) 2019 by Marco Hugentobler
+  email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSSTOREBADLAYERINFO_H
 #define QGSSTOREBADLAYERINFO_H
 
@@ -13,21 +30,17 @@ class QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
   public:
     /*Default constructor
      */
-    QgsStoreBadLayerInfo();
-
-    /*Destructor
-     */
-    ~QgsStoreBadLayerInfo();
+    QgsStoreBadLayerInfo() = default;
 
     /**
-     * @brief handleBadLayers
-     * @param layers layer nodes
+     * \brief handleBadLayers
+     * \param layers layer nodes
      */
     void handleBadLayers( const QList<QDomNode> &layers );
 
     /**
-     * @brief badLayers
-     * @return ids of bad layers
+     * \brief badLayers
+     * \returns ids of bad layers
      */
     QStringList badLayers() const { return mBadLayerIds; }
 

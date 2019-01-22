@@ -2938,9 +2938,9 @@ namespace QgsWms
         }
 
         //Log first error
-        QString errorMsg = QString( "Map rendering error in layer '%1'" ).arg( firstErrorLayerId );
-        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Critical );
-        throw QgsServerException( QString( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+        QString errorMsg = QStringLiteral( "Map rendering error in layer '%1'" ).arg( firstErrorLayerId );
+        QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
+        throw QgsServerException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
       }
     }
 
@@ -3265,7 +3265,7 @@ namespace QgsWms
     return tmpImage->dotsPerMeterX() / 1000.0;
   }
 
-  void QgsRenderer::handlePrintErrors( const QgsLayout *layout )
+  void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
   {
     if ( !layout )
     {

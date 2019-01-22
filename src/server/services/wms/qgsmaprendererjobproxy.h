@@ -63,8 +63,8 @@ namespace QgsWms
       QPainter *takePainter();
 
       /**
-       * @brief Returns reported errors
-       * @return error list
+       * \brief Returns map rendering errors
+       * \returns error list
        */
       QgsMapRendererJob::Errors errors() const { return mErrors; }
 
