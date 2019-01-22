@@ -161,7 +161,12 @@ Returns whether the system proxy should be used
 %End
 
   signals:
-    void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
+
+ void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
+%Docstring
+
+.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+%End
 
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
 %Docstring
@@ -211,7 +216,12 @@ created in any thread.
 .. versionadded:: 3.6
 %End
 
-    void requestCreated( QNetworkReply * );
+ void requestCreated( QNetworkReply * ) /Deprecated/;
+%Docstring
+
+.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+%End
+
     void requestTimedOut( QNetworkReply * );
 
   protected:
