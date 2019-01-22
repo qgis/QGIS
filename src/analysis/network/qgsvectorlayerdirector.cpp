@@ -254,7 +254,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             else
             {
               thisSegmentClosestDist = additionalPoint.sqrDistToSegment( pt1.x(), pt1.y(),
-                                       pt2.x(), pt2.y(), snappedPoint );
+                                       pt2.x(), pt2.y(), snappedPoint, 0 );
             }
 
             if ( thisSegmentClosestDist < additionalTiePoints[ i ].mLength )
