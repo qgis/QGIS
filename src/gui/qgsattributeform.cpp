@@ -478,8 +478,7 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   if ( count > 0 )
   {
     mMessageBar->pushMessage( QString(),
-                              tr( "%1 matching %2 selected" ).arg( count )
-                              .arg( count == 1 ? tr( "feature" ) : tr( "features" ) ),
+                              tr( "%n matching feature(s) selected", "matching features", count ),
                               Qgis::Info,
                               messageTimeout() );
   }
