@@ -173,6 +173,8 @@ created in any thread.
 
 .. seealso:: :py:func:`finished`
 
+.. seealso:: :py:func:`requestTimedOut`
+
 .. versionadded:: 3.6
 %End
 
@@ -188,6 +190,23 @@ only to connect to the main thread's signal in order to receive notifications ab
 created in any thread.
 
 .. seealso:: :py:func:`requestAboutToBeCreated`
+
+.. seealso:: :py:func:`requestTimedOut`
+
+.. versionadded:: 3.6
+%End
+
+    void requestTimedOut( QgsNetworkRequestParameters request );
+%Docstring
+Emitted when a network request has timed out.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`requestAboutToBeCreated`
+
+.. seealso:: :py:func:`finished`
 
 .. versionadded:: 3.6
 %End

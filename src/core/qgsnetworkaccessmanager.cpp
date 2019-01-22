@@ -243,8 +243,8 @@ void QgsNetworkAccessManager::abortRequest()
   QgsDebugMsgLevel( QStringLiteral( "Abort [reply:%1] %2" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ).arg( reply->url().toString() ), 3 );
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
   // Notify the application
+  emit requestTimedOut( QgsNetworkRequestParameters( reply->operation(), reply->request(), reply->property( "requestId" ).toInt() ) );
   emit requestTimedOut( reply );
-
 }
 
 void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply )
@@ -308,8 +308,11 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
              sMainNAM, &QNetworkAccessManager::proxyAuthenticationRequired,
              connectionType );
 
-    connect( this, &QgsNetworkAccessManager::requestTimedOut,
-             sMainNAM, &QgsNetworkAccessManager::requestTimedOut );
+    connect( this, qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ),
+             sMainNAM, qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ) );
+
+    connect( this, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ),
+             sMainNAM, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ) );
 
     connect( this, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ),
              sMainNAM, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ) );
