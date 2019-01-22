@@ -88,7 +88,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   if ( context )
     request.setExpressionContext( *context );
   if ( ids )
-    request.setFilterFids ( ids );
+    request.setFilterFids( ids );
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )
