@@ -1968,6 +1968,9 @@ void QgsVertexTool::deleteVertex()
       setHighlightedVertices( vertices_new );
     }
   }
+
+  if ( mVertexEditor && mSelectedFeature )
+    mVertexEditor->updateEditor( mSelectedFeature->layer(), mSelectedFeature.get() );
 }
 
 void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode )
