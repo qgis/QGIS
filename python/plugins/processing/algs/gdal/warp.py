@@ -38,6 +38,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterExtent,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -59,6 +60,7 @@ class warp(GdalAlgorithm):
     TARGET_EXTENT = 'TARGET_EXTENT'
     TARGET_EXTENT_CRS = 'TARGET_EXTENT_CRS'
     MULTITHREADING = 'MULTITHREADING'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
@@ -138,6 +140,13 @@ class warp(GdalAlgorithm):
                                                              defaultValue=False)
         multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(multithreading_param)
+
+        extra_param = QgsProcessingParameterBoolean(self.EXTRA,
+                                                    self.tr('Additional command-line parameters'),
+                                                    defaultValue=None,
+                                                    optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Reprojected')))
@@ -227,6 +236,10 @@ class warp(GdalAlgorithm):
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
 
         arguments.append(inLayer.source())
         arguments.append(out)
