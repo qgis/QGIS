@@ -1,7 +1,8 @@
 *****
 Content-Type: application/json; charset=utf-8
 
-{"layers":[{
+{
+"layers":[{
  "name": "testlayer èé",
  "type": "FeatureCollection",
     "features":[
