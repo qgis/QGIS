@@ -260,10 +260,14 @@ class TileSet():
         self.settings.setFlag(QgsMapSettings.RenderMapTile, True)
         self.settings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
 
+        r = QgsProject.instance().readNumEntry('Gui', '/CanvasColorRedPart', 255)[0]
+        g = QgsProject.instance().readNumEntry('Gui', '/CanvasColorGreenPart', 255)[0]
+        b = QgsProject.instance().readNumEntry('Gui', '/CanvasColorBluePart', 255)[0]
         if make_trans:
-            self.settings.setBackgroundColor(QColor(255, 255, 255, 0))
+            self.bgColor = QColor(r, g, b, 0)
         else:
-            self.settings.setBackgroundColor(QColor(255, 255, 255))
+            self.bgColor = QColor(r, g, b)
+        self.settings.setBackgroundColor(self.bgColor)
 
         if QgsProject.instance().mapThemeCollection().hasMapTheme(map_theme):
             self.settings.setLayers(
@@ -300,11 +304,9 @@ class TileSet():
         """
 
         if make_trans:
-            background_color = QColor(255, 255, 255, 0)
-            self.image.fill(background_color.rgba())
+            self.image.fill(self.bgColor.rgba())
         else:
-            background_color = QColor(255, 255, 255)
-            self.image.fill(background_color.rgb())
+            self.image.fill(self.bgColor.rgb())
 
         painter = QPainter(self.image)
 
