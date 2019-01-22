@@ -22,6 +22,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgsziputils.h"
+#include "qgslogger.h"
 
 #include <iostream>
 
@@ -66,7 +67,8 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
   }
 
   int rc = 0;
-  struct zip *z = zip_open( zipFilename.toStdString().c_str(), ZIP_CHECKCONS, &rc );
+  const QByteArray fileNamePtr = zipFilename.toUtf8();
+  struct zip *z = zip_open( fileNamePtr.constData(), ZIP_CHECKCONS, &rc );
 
   if ( rc == ZIP_ER_OK && z )
   {
@@ -84,8 +86,25 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         char *buf = new char[len];
         if ( zip_fread( file, buf, len ) != -1 )
         {
-          QFileInfo newFile( QDir( dir ), QString( stat.name ) );
-          std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
+          QString fileName( stat.name );
+          QFileInfo newFile( QDir( dir ), fileName );
+
+          // Create path for a new file if it does not exist.
+          if ( !newFile.absoluteDir().exists() )
+          {
+            if ( !QDir( dir ).mkpath( newFile.absolutePath() ) )
+              QgsMessageLog::logMessage( QStringLiteral( "Failed to create a subdirectory %1/%2" ).arg( dir ).arg( fileName ) );
+          }
+
+          QFile outFile( newFile.absoluteFilePath() );
+          if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Could not write to %1" ).arg( newFile.absoluteFilePath() ) );
+          }
+          else
+          {
+            outFile.write( buf, len );
+          }
           zip_fclose( file );
           files.append( newFile.absoluteFilePath() );
         }
@@ -128,7 +147,8 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
   }
 
   int rc = 0;
-  struct zip *z = zip_open( zipFilename.toStdString().c_str(), ZIP_CREATE, &rc );
+  const QByteArray fileNamePtr = zipFilename.toUtf8();
+  struct zip *z = zip_open( fileNamePtr.constData(), ZIP_CREATE, &rc );
 
   if ( rc == ZIP_ER_OK && z )
   {
@@ -143,17 +163,19 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
         return false;
       }
 
-      zip_source *src = zip_source_file( z, file.toStdString().c_str(), 0, 0 );
+      const QByteArray fileNamePtr = file.toUtf8();
+      zip_source *src = zip_source_file( z, fileNamePtr.constData(), 0, 0 );
       if ( src )
       {
+        const QByteArray fileInfoPtr = fileInfo.fileName().toUtf8();
 #if LIBZIP_VERSION_MAJOR < 1
-        int rc = ( int ) zip_add( z, fileInfo.fileName().toStdString().c_str(), src );
+        int rc = ( int ) zip_add( z, fileInfoPtr.constData(), src );
 #else
-        int rc = ( int ) zip_file_add( z, fileInfo.fileName().toStdString().c_str(), src, 0 );
+        int rc = ( int ) zip_file_add( z, fileInfoPtr.constData(), src, 0 );
 #endif
         if ( rc == -1 )
         {
-          QString err = QObject::tr( "Error adding file: '%1'" ).arg( zip_strerror( z ) );
+          QString err = QObject::tr( "Error adding file '%1': %2" ).arg( file, zip_strerror( z ) );
           QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
           zip_close( z );
           return false;
@@ -161,7 +183,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
       }
       else
       {
-        QString err = QObject::tr( "Error creating data source: '%1'" ).arg( zip_strerror( z ) );
+        QString err = QObject::tr( "Error creating data source '%1': %2" ).arg( file, zip_strerror( z ) );
         QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
         zip_close( z );
         return false;
@@ -172,7 +194,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
   }
   else
   {
-    QString err = QObject::tr( "Error creating zip archive: '%1'" ).arg( zip_strerror( z ) );
+    QString err = QObject::tr( "Error creating zip archive '%1': %2" ).arg( zipFilename, zip_strerror( z ) );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
     return false;
   }
