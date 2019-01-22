@@ -22,6 +22,8 @@
 #include "qgis_core.h"
 #include "qgsabstractmetadatabase.h"
 
+#include <QDateTime>
+
 /**
  * \ingroup core
  * \class QgsProjectMetadata

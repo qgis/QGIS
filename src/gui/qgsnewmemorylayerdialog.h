@@ -19,7 +19,7 @@
 
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgis.h"
+#include "qgswkbtypes.h"
 #include "qgshelp.h"
 #include "qgis_gui.h"
 

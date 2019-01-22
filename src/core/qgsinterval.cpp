@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QObject>
 #include <QDebug>
+#include <QDateTime>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

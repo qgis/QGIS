@@ -21,7 +21,7 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 
-#include "qgis.h"
+#include "qgswkbtypes.h"
 #include "qgis_gui.h"
 
 /**

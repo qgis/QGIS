@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsdatumtransform.h"
 
+#include <QExplicitlySharedDataPointer>
 class QgsCoordinateReferenceSystem;
 class QgsReadWriteContext;
 class QgsCoordinateTransformContextPrivate;
