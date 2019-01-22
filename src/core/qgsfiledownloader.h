@@ -94,7 +94,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     //! Called on data ready to be processed
     void onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
     //! Called when a network request times out
-    void onRequestTimedOut();
+    void onRequestTimedOut( QNetworkReply *reply );
 
 #ifndef QT_NO_SSL
 
