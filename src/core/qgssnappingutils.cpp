@@ -373,7 +373,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
 
       if ( mStrategy == IndexExtent )
       {
-        QgsRectangle rect( mMapSettings.extent() );
+        QgsRectangle rect( mMapSettings.visibleExtent() );
         loc->setExtent( &rect );
         loc->init();
       }
