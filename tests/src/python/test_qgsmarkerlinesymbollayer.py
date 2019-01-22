@@ -42,7 +42,14 @@ from qgis.core import (QgsGeometry,
                        QgsSimpleMarkerSymbolLayer,
                        QgsLineSymbolLayer,
                        QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol
+                       QgsMarkerSymbol,
+                       QgsGeometryGeneratorSymbolLayer,
+                       QgsSymbol,
+                       QgsFontMarkerSymbolLayer,
+                       QgsFontUtils,
+                       QgsLineSymbol,
+                       QgsSymbolLayer,
+                       QgsProperty
                        )
 
 from qgis.testing import unittest, start_app
@@ -63,7 +70,6 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
 
     def testRingFilter(self):
         # test filtering rings during rendering
-
         s = QgsFillSymbol()
         s.deleteSymbolLayer(0)
 
@@ -107,7 +113,41 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('markerline_interioronly', 'markerline_interioronly', rendered_image)
 
-    def renderGeometry(self, symbol, geom):
+    def testPartNum(self):
+        # test geometry_part_num variable
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'segments_to_lines($geometry)'})
+        sym_layer.setSymbolType(QgsSymbol.Line)
+        s.appendSymbolLayer(sym_layer)
+
+        marker_line = QgsMarkerLineSymbolLayer(False)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
+        f = QgsFontUtils.getStandardTestFont('Bold', 24)
+        marker = QgsFontMarkerSymbolLayer(f.family(), 'x', 24, QColor(255, 255, 0))
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+        sym_layer.setSubSymbol(line_symbol)
+
+        # rendering test
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g, buffer=4)
+        assert self.imageCheck('part_num_variable', 'part_num_variable', rendered_image)
+
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter,
+                                      QgsProperty.fromExpression('@geometry_part_count'))
+
+        # rendering test
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g, buffer=4)
+        assert self.imageCheck('part_count_variable', 'part_count_variable', rendered_image)
+
+    def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)
 
@@ -118,15 +158,16 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         extent = geom.get().boundingBox()
         # buffer extent by 10%
         if extent.width() > 0:
-            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+            extent = extent.buffered((extent.height() + extent.width()) / buffer)
         else:
-            extent = extent.buffered(10)
+            extent = extent.buffered(buffer / 2)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())
         context = QgsRenderContext.fromMapSettings(ms)
         context.setPainter(painter)
         context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.expressionContext().setFeature(f)
 
         painter.begin(image)
         try:

@@ -1645,6 +1645,15 @@ QSet<QString> QgsFilledMarkerSymbolLayer::usedAttributes( const QgsRenderContext
   return attr;
 }
 
+bool QgsFilledMarkerSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mFill && mFill->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
+
 void QgsFilledMarkerSymbolLayer::setColor( const QColor &c )
 {
   mColor = c;
