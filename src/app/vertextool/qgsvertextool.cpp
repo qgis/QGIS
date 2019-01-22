@@ -1078,13 +1078,21 @@ void QgsVertexTool::showVertexEditor()  //#spellok
   if ( !mVertexEditor )
   {
     mVertexEditor.reset( new QgsVertexEditor( m.layer() ? m.layer() : currentVectorLayer(), mSelectedFeature ? mSelectedFeature.get() : nullptr, mCanvas ) );
-    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+    if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor.get() ) )
+      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+
     connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
+
+    mVertexEditor->show();
+    mVertexEditor->raise();
   }
   else
   {
     mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
+
+    mVertexEditor->show();
+    mVertexEditor->raise();
   }
 
   if ( mSelectedFeature )
