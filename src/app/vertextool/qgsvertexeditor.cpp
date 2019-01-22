@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgscoordinatetransform.h"
 
+#include <QLabel>
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QVBoxLayout>
@@ -301,8 +302,18 @@ QgsVertexEditor::QgsVertexEditor(
 {
   setWindowTitle( tr( "Vertex Editor" ) );
   setObjectName( QStringLiteral( "VertexEditor" ) );
-  mTableView = new QTableView( this );
 
+  QWidget *content = new QWidget( this );
+  content->setMinimumHeight( 160 );
+  QVBoxLayout *layout = new QVBoxLayout( content );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+
+  mHintLabel = new QLabel( this );
+  mHintLabel->setText( tr( "Right click on the edge of an editable feature to show its table of vertices" ) );
+  mHintLabel->setWordWrap( true );
+  mHintLabel->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+
+  mTableView = new QTableView( this );
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
   mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( this ) );
@@ -310,8 +321,12 @@ QgsVertexEditor::QgsVertexEditor(
   mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( this ) );
   mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( this ) );
   mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( this ) );
+  mTableView->setVisible( false );
 
-  setWidget( mTableView );
+  layout->addWidget( mTableView );
+  layout->addWidget( mHintLabel );
+
+  setWidget( content );
 
   updateEditor( layer, selectedFeature );
 }
@@ -323,12 +338,23 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
   mLayer = layer;
   mSelectedFeature = selectedFeature;
 
-  // TODO We really should just update the model itself.
-  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
-  mTableView->setModel( mVertexModel );
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+  if ( mLayer && mSelectedFeature )
+  {
+    // TODO We really should just update the model itself.
+    mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+    mTableView->setModel( mVertexModel );
 
-  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+    mHintLabel->setVisible( false );
+    mTableView->setVisible( true );
+
+    connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+    connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+  }
+  else
+  {
+    mHintLabel->setVisible( true );
+    mTableView->setVisible( false );
+  }
 }
 
 void QgsVertexEditor::updateTableSelection()
