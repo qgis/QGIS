@@ -405,6 +405,13 @@ Sets the symbol layer's property collection, used for data defined overrides.
 .. versionadded:: 3.0
 %End
 
+    virtual bool hasDataDefinedProperties() const;
+%Docstring
+Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+
+.. versionadded:: 3.4.5
+%End
+
   protected:
 
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );

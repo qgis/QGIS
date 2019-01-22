@@ -398,6 +398,13 @@ class CORE_EXPORT QgsSymbolLayer
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
+    /**
+     * Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+     *
+     * \since QGIS 3.4.5
+     */
+    virtual bool hasDataDefinedProperties() const;
+
   protected:
 
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
