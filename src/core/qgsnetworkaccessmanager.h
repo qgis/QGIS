@@ -48,7 +48,8 @@ class CORE_EXPORT QgsNetworkRequestParameters
      * \a operation and original \a request.
      */
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
-                                 const QNetworkRequest &request );
+                                 const QNetworkRequest &request,
+                                 int requestId );
 
     /**
      * Returns the request operation, e.g. GET or POST.
@@ -68,12 +69,17 @@ class CORE_EXPORT QgsNetworkRequestParameters
      */
     QString originatingThreadId() const { return mOriginatingThreadId; }
 
+    /**
+     * Returns a unique ID identifying the request.
+     */
+    int requestId() const { return mRequestId; }
+
   private:
 
     QNetworkAccessManager::Operation mOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
-
+    int mRequestId = 0;
 };
 
 /**

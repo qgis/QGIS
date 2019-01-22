@@ -128,12 +128,18 @@ class CORE_EXPORT QgsNetworkReplyContent
      */
     QByteArray rawHeader( const QByteArray &headerName ) const;
 
+    /**
+     * Returns the unique ID identifying the original request which this response was formed from.
+     */
+    int requestId() const { return mRequestId; }
+
   private:
 
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
     QList<RawHeaderPair> mRawHeaderPairs;
     QMap< QNetworkRequest::Attribute, QVariant > mAttributes;
+    int mRequestId = -1;
 };
 
 #endif // QGSNETWORKREPLY_H

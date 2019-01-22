@@ -29,7 +29,8 @@ Default constructor.
 %End
 
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
-                                 const QNetworkRequest &request );
+                                 const QNetworkRequest &request,
+                                 int requestId );
 %Docstring
 Constructor for QgsNetworkRequestParameters, with the specified network
 ``operation`` and original ``request``.
@@ -51,6 +52,11 @@ configuration options such as proxy handling and SSL exceptions applied.
     QString originatingThreadId() const;
 %Docstring
 Returns a string identifying the thread which the request originated from.
+%End
+
+    int requestId() const;
+%Docstring
+Returns a unique ID identifying the request.
 %End
 
 };
