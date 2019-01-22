@@ -678,16 +678,13 @@ namespace QgsWfs
           {
             if ( filter->hasParserError() )
             {
-              QgsMessageLog::logMessage( filter->parserErrorString() );
+              throw QgsRequestNotWellFormedException( QStringLiteral( "The EXP_FILTER expression has errors: %1" ).arg( filter->parserErrorString() ) );
             }
-            else
+            if ( filter->needsGeometry() )
             {
-              if ( filter->needsGeometry() )
-              {
-                query.featureRequest.setFlags( QgsFeatureRequest::NoFlags );
-              }
-              query.featureRequest.setFilterExpression( filter->expression() );
+              query.featureRequest.setFlags( QgsFeatureRequest::NoFlags );
             }
+            query.featureRequest.setFilterExpression( filter->expression() );
           }
         }
       }
