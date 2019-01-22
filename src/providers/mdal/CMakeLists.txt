@@ -88,6 +88,7 @@ IF (WITH_INTERNAL_MDAL)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}

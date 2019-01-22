@@ -67,29 +67,20 @@ namespace MDAL
   std::vector<std::string> split( const std::string &str, const std::string &delimiter, SplitBehaviour behaviour );
   std::string join( const std::vector<std::string> parts, const std::string &delimiter );
 
-  // http://www.cplusplus.com/faq/sequences/strings/trim/
-  inline std::string rtrim(
+  //! Right trim
+  std::string rtrim(
     const std::string &s,
-    const std::string &delimiters = " \f\n\r\t\v" )
-  {
-    return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
-  }
+    const std::string &delimiters = " \f\n\r\t\v" );
 
-  // http://www.cplusplus.com/faq/sequences/strings/trim/
-  inline std::string ltrim(
+  //! Left trim
+  std::string ltrim(
     const std::string &s,
-    const std::string &delimiters = " \f\n\r\t\v" )
-  {
-    return s.substr( s.find_first_not_of( delimiters ) );
-  }
+    const std::string &delimiters = " \f\n\r\t\v" );
 
-  // http://www.cplusplus.com/faq/sequences/strings/trim/
-  inline std::string trim(
+  //! Right and left trim
+  std::string trim(
     const std::string &s,
-    const std::string &delimiters = " \f\n\r\t\v" )
-  {
-    return ltrim( rtrim( s, delimiters ), delimiters );
-  }
+    const std::string &delimiters = " \f\n\r\t\v" );
 
   // extent
   BBox computeExtent( const Vertices &vertices );
