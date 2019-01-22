@@ -4253,7 +4253,7 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer *sl, const Qgs
     return true;
   }
 
-  return sl->dataDefinedProperties().hasActiveProperties();
+  return sl->hasDataDefinedProperties();
 }
 
 double QgsDxfExport::dashSize() const
