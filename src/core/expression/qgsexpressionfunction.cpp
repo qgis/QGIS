@@ -568,7 +568,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     if ( context && context->hasCachedValue( cacheKey ) )
       return context->cachedValue( cacheKey );
 
-    if ( context-­>name() == "Symbol scope")
+    if ( context->name() == "Symbol scope")
     {
       //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
       result = vl->aggregate( aggregate, subExpression, parameters, &Context, &ok, context->variable( "symbol_feature_ids" ) );
@@ -743,7 +743,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.filter = node->dump();
   }
 
-  if ( context-­>name() == "Symbol scope")
+  if ( context->name() == "Symbol scope")
   {
     //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
     result = vl->aggregate( aggregate, subExpression, parameters, &Context, &ok, context->variable( "symbol_feature_ids" ) );
@@ -767,15 +767,15 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
     }
 
     QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4" ).arg( vl->id(),
-                      QString::number( static_cast< int >( aggregate ) ),
-                      subExpression,
-                      parameters.filter );
+                       QString::number( static_cast< int >( aggregate ) ),
+                       subExpression,
+                       parameters.filter );
     if ( context && context->hasCachedValue( cacheKey ) )
       return context->cachedValue( cacheKey );
 
     QVariant result;
     bool ok = false;
-    
+
     QgsExpressionContext subContext( *context );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
