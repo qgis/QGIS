@@ -121,7 +121,7 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
 
 bool QgsMacNative::hasDarkTheme()
 {
-#if __MAC_OS_X_VERSION_MAX_ALLOWED >= __MAC_10_14
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 101400
   if ( [NSApp respondsToSelector:@selector( effectiveAppearance )] )
   {
     // compiled on macos 10.14+ AND running on macos 10.14+
