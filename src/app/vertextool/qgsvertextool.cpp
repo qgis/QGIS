@@ -286,7 +286,7 @@ void QgsVertexTool::activate()
 {
   if ( QgisApp::instance() )
   {
-    showVertexEditor();
+    showVertexEditor();  //#spellok
   }
   QgsMapToolAdvancedDigitizing::activate();
 }
@@ -445,10 +445,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       // show popup menu - if we are on top of a feature
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
-        QMenu menu;
-        QAction *actionVertexEditor = menu.addAction( tr( "Vertex Editor" ) );
-        connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );  //#spellok
-        menu.exec( mCanvas->mapToGlobal( e->pos() ) );
+        showVertexEditor();  //#spellok
       }
     }
   }
@@ -1058,6 +1055,17 @@ void QgsVertexTool::showVertexEditor()  //#spellok
   QgsPointLocator::Match m = mLastMouseMoveMatch;
   if ( m.isValid() || m.layer() )
   {
+    if ( mSelectedFeature && mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() )
+    {
+      // if show feature is called on a feature that's already binded to the vertex editor, toggle it off
+      mSelectedFeature.reset();
+      if ( mVertexEditor )
+      {
+        mVertexEditor->updateEditor( nullptr, nullptr );
+      }
+      return;
+    }
+
     mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
     for ( int i = 0; i < mSelectedVertices.length(); ++i )
     {
