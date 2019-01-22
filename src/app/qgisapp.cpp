@@ -13817,7 +13817,7 @@ void QgisApp::namSetup()
   connect( nam, &QNetworkAccessManager::proxyAuthenticationRequired,
            this, &QgisApp::namProxyAuthenticationRequired );
 
-  connect( nam, &QgsNetworkAccessManager::requestTimedOut,
+  connect( nam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ),
            this, &QgisApp::namRequestTimedOut );
 
 #ifndef QT_NO_SSL
@@ -14025,10 +14025,9 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 }
 #endif
 
-void QgisApp::namRequestTimedOut( QNetworkReply *reply )
+void QgisApp::namRequestTimedOut( const QgsNetworkRequestParameters &request )
 {
-  Q_UNUSED( reply );
-  QLabel *msgLabel = new QLabel( tr( "A network request timed out, any data received is likely incomplete." ) +
+  QLabel *msgLabel = new QLabel( tr( "Network request to %1 timed out, any data received is likely incomplete." ).arg( request.request().url().toString() ) +
                                  tr( " Please check the <a href=\"#messageLog\">message log</a> for further info." ), messageBar() );
   msgLabel->setWordWrap( true );
   connect( msgLabel, &QLabel::linkActivated, mLogDock, &QWidget::show );
