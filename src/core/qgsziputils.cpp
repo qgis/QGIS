@@ -94,8 +94,16 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
             if ( !QDir( dir ).mkpath( newFile.absolutePath() ) )
               QgsMessageLog::logMessage( QString( "Failed to create a subdirectory %1/%2" ).arg( dir ).arg( fileName ) );
           }
-          std::ofstream( newFile.absoluteFilePath().toStdString() ).write( buf, len );
 
+          QFile outFile( newFile.absoluteFilePath() );
+          if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Could not write to %1" ).arg( newFile.absoluteFilePath() ) );
+          }
+          else
+          {
+            outFile.write( buf, len );
+          }
           zip_fclose( file );
           files.append( newFile.absoluteFilePath() );
         }
