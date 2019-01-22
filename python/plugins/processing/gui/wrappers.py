@@ -846,6 +846,11 @@ class RangeWidgetWrapper(WidgetWrapper):
     def value(self):
         return self.widget.getValue()
 
+def hasDependencies(wrappers, name):
+    for wrapper in wrappers:
+        if (hasattr(wrapper.parameterDefinition(), "parentLayerParameterName") and
+                    wrapper.parameterDefinition().parentLayerParameterName() == name):
+            return True
 
 class MapLayerWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
@@ -858,12 +863,12 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
-            layout.addWidget(self.combo)
-            btn = QToolButton()
-            btn.setText('…')
-            btn.setToolTip(self.tr("Select file"))
-            btn.clicked.connect(self.selectFile)
-            layout.addWidget(btn)
+            layout.addWidget(self.combo)            
+            self.btn = QToolButton()
+            self.btn.setText('…')
+            self.btn.setToolTip(self.tr("Select file"))
+            self.btn.clicked.connect(self.selectFile)
+            layout.addWidget(self.btn)           
 
             widget.setLayout(layout)
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
@@ -912,6 +917,9 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
     def setComboBoxFilters(self, combo):
         pass
+
+    def postInitialize(self, wrappers):
+        self.btn.setVisible(not hasDependencies(wrappers, self.parameterDefinition().name()))
 
     def getAvailableLayers(self):
         return self.dialog.getAvailableValuesOfType(
@@ -1097,12 +1105,12 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             layout.setAlignment(self.combo, Qt.AlignTop)
-            btn = QToolButton()
-            btn.setText('…')
-            btn.setToolTip(self.tr("Select file"))
-            btn.clicked.connect(self.selectFile)
-            layout.addWidget(btn)
-            layout.setAlignment(btn, Qt.AlignTop)
+            self.btn = QToolButton()
+            self.btn.setText('…')
+            self.btn.setToolTip(self.tr("Select file"))
+            self.btn.clicked.connect(self.selectFile)
+            layout.addWidget(self.btn)
+            layout.setAlignment(self.btn, Qt.AlignTop)
 
             vl = QVBoxLayout()
             vl.setMargin(0)
@@ -1133,7 +1141,6 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
                     self.combo.setLayer(iface.activeLayer())
                     self.use_selection_checkbox.setEnabled(iface.activeLayer().selectedFeatureCount() > 0)
-
             except:
                 pass
 
@@ -1179,6 +1186,9 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             layout.addWidget(btn)
             widget.setLayout(layout)
             return widget
+
+    def postInitialize(self, wrappers):
+        self.btn.setVisible(not hasDependencies(wrappers, self.parameterDefinition().name()))        
 
     def layerChanged(self, layer):
         if layer is None or layer.type() != QgsMapLayer.VectorLayer or layer.selectedFeatureCount() == 0:
@@ -1438,11 +1448,11 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
-            btn = QToolButton()
-            btn.setText('…')
-            btn.setToolTip(self.tr("Select file"))
-            btn.clicked.connect(self.selectFile)
-            layout.addWidget(btn)
+            self.btn = QToolButton()
+            self.btn.setText('…')
+            self.btn.setToolTip(self.tr("Select file"))
+            self.btn.clicked.connect(self.selectFile)
+            layout.addWidget(self.btn)
 
             widget.setLayout(layout)
 
@@ -1506,6 +1516,9 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             layout.addWidget(btn)
             widget.setLayout(layout)
             return widget
+
+    def postInitialize(self, wrappers):
+        self.btn.setVisible(not hasDependencies(wrappers, self.parameterDefinition().name()))
 
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
