@@ -477,6 +477,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsRectangle map_rect( pt0, pt1 );
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
+    QList<Vertex> editorVertices;
 
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
@@ -499,17 +500,28 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           if ( layerRect.contains( pt ) )
           {
             vertices << Vertex( vlayer, f.id(), i );
+
             if ( isFeatureSelected )
               selectedVertices << Vertex( vlayer, f.id(), i );
+
+            if ( mSelectedFeature && mSelectedFeature->featureId() == f.id() && mSelectedFeature->layer() == vlayer )
+              editorVertices << Vertex( vlayer, f.id(), i );
           }
         }
       }
     }
 
-    // If there were any vertices that come from selected features, use just vertices from selected features.
+    // If there were any vertices that come from a feature currently binded to the node editor, use just verices from
+    // that feature, otherwise if there were any vertices from selected features, use just vertices from those selected features.
     // This allows user to select a bunch of features in complex situations to constrain the selection.
-    if ( !selectedVertices.isEmpty() )
+    if ( !editorVertices.isEmpty() )
+    {
+      vertices = editorVertices;
+    }
+    else if ( !selectedVertices.isEmpty() )
+    {
       vertices = selectedVertices;
+    }
 
     HighlightMode mode = ModeReset;
     if ( e->modifiers() & Qt::ShiftModifier )
