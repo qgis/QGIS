@@ -134,6 +134,7 @@ class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
 class QgsLayoutQptDropHandler;
 class QgsProxyProgressTask;
+class QgsNetworkRequestParameters;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -882,7 +883,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #ifndef QT_NO_SSL
     void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
-    void namRequestTimedOut( QNetworkReply *reply );
+    void namRequestTimedOut( const QgsNetworkRequestParameters &request );
 
     //! Schedule and erase of the authentication database upon confirmation
     void eraseAuthenticationDatabase();
