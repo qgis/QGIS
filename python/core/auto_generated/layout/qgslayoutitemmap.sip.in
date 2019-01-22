@@ -480,8 +480,9 @@ any locked layers, linked map theme, and data defined settings.
 
     QgsMapRendererJob::Errors renderingErrors() const;
 %Docstring
-renderingErrors
-@return list of layer id / error message
+Returns map rendering errors
+
+:return: list of errors
 %End
 
   protected:

@@ -425,8 +425,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
 
     /**
-     * @brief renderingErrors
-     * @return list of layer id / error message
+     * \brief Returns map rendering errors
+     * \returns list of errors
      */
     QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
 
