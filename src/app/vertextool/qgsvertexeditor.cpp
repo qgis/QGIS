@@ -74,7 +74,7 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsVectorLayer *layer, QgsSelectedFe
 
 int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 {
-  if ( parent.isValid() )
+  if ( parent.isValid() || !mSelectedFeature )
     return 0;
 
   return mSelectedFeature->vertexMap().count();
@@ -88,7 +88,7 @@ int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() ||
+  if ( !index.isValid() || !mSelectedFeature ||
        ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
@@ -206,7 +206,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   {
     return false;
   }
-  if ( index.row() >= mSelectedFeature->vertexMap().count() )
+  if ( !mSelectedFeature || index.row() >= mSelectedFeature->vertexMap().count() )
   {
     return false;
   }
@@ -270,7 +270,7 @@ Qt::ItemFlags QgsVertexEditorModel::flags( const QModelIndex &index ) const
 
 bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 {
-  if ( row <= 0 || row >= mSelectedFeature->vertexMap().count() - 1 )
+  if ( row <= 0 || !mSelectedFeature || row >= mSelectedFeature->vertexMap().count() - 1 )
     return false;
 
   const QgsVertexEntry *entry = mSelectedFeature->vertexMap().at( row );
@@ -333,7 +333,7 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
 
 void QgsVertexEditor::updateTableSelection()
 {
-  if ( mUpdatingVertexSelection )
+  if ( !mSelectedFeature || mUpdatingVertexSelection )
     return;
 
   mUpdatingTableSelection = true;
@@ -360,7 +360,7 @@ void QgsVertexEditor::updateTableSelection()
 
 void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
 {
-  if ( mUpdatingTableSelection )
+  if ( !mSelectedFeature || mUpdatingTableSelection )
     return;
 
   mUpdatingVertexSelection = true;
