@@ -7,14 +7,11 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <netcdf.h>
+#include <set>
 
-#include "mdal_netcdf.hpp"
 #include "mdal_sww.hpp"
-
-// threshold for determining whether an element is active (wet)
-// the format does not explicitly store that information so we
-// determine that when loading data
-#define DEPTH_THRESHOLD   0.0001   // in meters
+#include "mdal_utils.hpp"
 
 MDAL::DriverSWW::DriverSWW()
   : Driver( "SWW",
@@ -29,350 +26,442 @@ MDAL::DriverSWW *MDAL::DriverSWW::create()
   return new DriverSWW();
 }
 
-bool MDAL::DriverSWW::canRead( const std::string &uri )
+size_t MDAL::DriverSWW::getVertexCount( const NetCDFFile &ncFile ) const
 {
-  int ncid;
-  int res;
-
-  // open
-  res = nc_open( uri.c_str(), NC_NOWRITE, &ncid );
-  if ( res != NC_NOERR )
-  {
-    MDAL::debug( nc_strerror( res ) );
-    nc_close( ncid );
-    return false;
-  }
-
-  // get dimensions
-  int nVolumesId, nVerticesId, nPointsId, nTimestepsId;
-  if ( nc_inq_dimid( ncid, "number_of_volumes", &nVolumesId ) != NC_NOERR ||
-       nc_inq_dimid( ncid, "number_of_vertices", &nVerticesId ) != NC_NOERR ||
-       nc_inq_dimid( ncid, "number_of_points", &nPointsId ) != NC_NOERR ||
-       nc_inq_dimid( ncid, "number_of_timesteps", &nTimestepsId ) != NC_NOERR )
-  {
-    nc_close( ncid );
-    return false;
-  }
-
-  return true;
+  int nPointsId;
+  size_t res;
+  ncFile.getDimension( "number_of_points", &res, &nPointsId );
+  return res;
 }
 
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load( const std::string &resultsFile,
-    MDAL_Status *status )
+bool MDAL::DriverSWW::canRead( const std::string &uri )
+{
+  NetCDFFile ncFile;
+
+  try
+  {
+    ncFile.openFile( uri );
+    getVertexCount( ncFile );
+  }
+  catch ( MDAL_Status )
+  {
+    return false;
+  }
+  return true;
+}
+
+std::vector<double> MDAL::DriverSWW::readZCoords( const NetCDFFile &ncFile ) const
+{
+  size_t nPoints = getVertexCount( ncFile );
+
+  std::vector<double> pz;
+  // newer sww files does have elevation array that is time-dependent
+  if ( ncFile.hasArr( "z" ) )
+  {
+    pz = ncFile.readDoubleArr( "z", nPoints );
+  }
+  else if ( ncFile.hasArr( "elevation" ) )
+  {
+    int zDims = 0;
+    int zid;
+    if ( nc_inq_varid( ncFile.handle(), "elevation", &zid ) == NC_NOERR &&
+         nc_inq_varndims( ncFile.handle(), zid, &zDims ) == NC_NOERR )
+    {
+      if ( zDims == 1 )
+      {
+        // just one elevation for all times, treat as z coord
+        pz = ncFile.readDoubleArr( "elevation", nPoints );
+      }
+      else
+      {
+        pz.resize( nPoints );
+        // fetching "elevation" data for the first timestep,
+        // and threat it as z coord
+        size_t start[2], count[2];
+        const ptrdiff_t stride[2] = {1, 1};
+        start[0] = 0; // t = 0
+        start[1] = 0;
+        count[0] = 1;
+        count[1] = nPoints;
+        nc_get_vars_double( ncFile.handle(), zid, start, count, stride, pz.data() );
+      }
+    }
+  }
+
+  return pz;
+}
+
+void MDAL::DriverSWW::addBedElevation( const NetCDFFile &ncFile,
+                                       MDAL::MemoryMesh *mesh,
+                                       const std::vector<double> &times
+                                     ) const
+{
+  if ( ncFile.hasArr( "elevation" ) )
+  {
+    std::shared_ptr<MDAL::DatasetGroup> grp = readScalarGroup( ncFile,
+        mesh,
+        times,
+        "Bed Elevation",
+        "elevation" );
+    mesh->datasetGroups.push_back( grp );
+  }
+  else
+  {
+    MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices );
+  }
+}
+
+MDAL::Vertices MDAL::DriverSWW::readVertices( const NetCDFFile &ncFile ) const
+{
+  size_t nPoints = getVertexCount( ncFile );
+
+  // load mesh data
+  std::vector<double> px = ncFile.readDoubleArr( "x", nPoints );
+  std::vector<double> py = ncFile.readDoubleArr( "y", nPoints );
+  std::vector<double> pz = readZCoords( ncFile );
+
+  // we may need to apply a shift to the X,Y coordinates
+  double xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
+  double yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
+
+  MDAL::Vertices vertices( nPoints );
+  Vertex *vertexPtr = vertices.data();
+  for ( size_t i = 0; i < nPoints; ++i, ++vertexPtr )
+  {
+    vertexPtr->x = px[i] + xLLcorner ;
+    vertexPtr->y = py[i] + yLLcorner ;
+    if ( !pz.empty() ) // missing both "z" and "elevation"
+      vertexPtr->z = pz[i];
+  }
+  return vertices;
+}
+
+MDAL::Faces MDAL::DriverSWW::readFaces( const NetCDFFile &ncFile ) const
+{
+  // get dimensions
+  int nVolumesId, nVerticesId;
+  size_t nVolumes, nVertices;
+  ncFile.getDimension( "number_of_volumes", &nVolumes, &nVolumesId );
+  ncFile.getDimension( "number_of_vertices", &nVertices, &nVerticesId );
+  if ( nVertices != 3 )
+    throw MDAL_Status::Err_UnknownFormat;
+
+  std::vector<int> pvolumes = ncFile.readIntArr( "volumes", nVertices * nVolumes );
+
+  MDAL::Faces faces( nVolumes );
+  for ( size_t i = 0; i < nVolumes; ++i )
+  {
+    faces[i].resize( 3 );
+    faces[i][0] = static_cast<size_t>( pvolumes[3 * i + 0] );
+    faces[i][1] = static_cast<size_t>( pvolumes[3 * i + 1] );
+    faces[i][2] = static_cast<size_t>( pvolumes[3 * i + 2] );
+  }
+  return faces;
+}
+
+std::vector<double> MDAL::DriverSWW::readTimes( const NetCDFFile &ncFile ) const
+{
+  size_t nTimesteps;
+  int nTimestepsId;
+  ncFile.getDimension( "number_of_timesteps", &nTimesteps, &nTimestepsId );
+  std::vector<double> times = ncFile.readDoubleArr( "time", nTimesteps );
+  return times;
+}
+
+void MDAL::DriverSWW::readDatasetGroups(
+  const NetCDFFile &ncFile,
+  MDAL::MemoryMesh *mesh,
+  const std::vector<double> &times
+) const
+{
+  std::set<std::string> parsedVariableNames; // already parsed arrays somewhere else
+  parsedVariableNames.insert( "x" );
+  parsedVariableNames.insert( "y" );
+  parsedVariableNames.insert( "z" );
+  parsedVariableNames.insert( "volumes" );
+  parsedVariableNames.insert( "time" );
+
+  std::vector<std::string> names = ncFile.readArrNames();
+  std::set<std::string> namesSet( names.begin(), names.end() );
+
+  // Add bed elevation group
+  parsedVariableNames.insert( "elevations" );
+  addBedElevation( ncFile, mesh, times );
+
+  for ( const std::string &name : names )
+  {
+    // skip already parsed variables
+    if ( parsedVariableNames.find( name ) == parsedVariableNames.cend() )
+    {
+      std::string xName, yName, groupName( name );
+      bool isVector = parseGroupName( groupName, xName, yName );
+
+      std::shared_ptr<MDAL::DatasetGroup> grp;
+      if ( isVector && ncFile.hasArr( xName ) && ncFile.hasArr( yName ) )
+      {
+        // vector dataset group
+        grp = readVectorGroup(
+                ncFile,
+                mesh,
+                times,
+                groupName,
+                xName,
+                yName );
+        parsedVariableNames.insert( xName );
+        parsedVariableNames.insert( yName );
+
+      }
+      else
+      {
+        // scalar dataset group
+        grp = readScalarGroup(
+                ncFile,
+                mesh,
+                times,
+                groupName,
+                name );
+        parsedVariableNames.insert( name );
+      }
+      if ( grp )
+        mesh->datasetGroups.push_back( grp );
+    }
+  }
+}
+
+bool MDAL::DriverSWW::parseGroupName( std::string &groupName,
+                                      std::string &xName,
+                                      std::string &yName ) const
+{
+  bool isVector = false;
+  std::string baseName( groupName );
+
+  // X and Y variables
+  if ( groupName.size() > 1 )
+  {
+    if ( MDAL::startsWith( groupName, "x" ) )
+    {
+      baseName = groupName.substr( 1, groupName.size() - 1 );
+      xName = groupName;
+      yName = "y" + baseName;
+      isVector = true;
+    }
+    else if ( MDAL::startsWith( groupName, "y" ) )
+    {
+      baseName = groupName.substr( 1, groupName.size() - 1 );
+      xName = "x" + baseName;
+      yName = groupName;
+      isVector = true;
+    }
+  }
+
+  // Maximums
+  groupName = baseName;
+  if ( MDAL::endsWith( baseName, "_range" ) )
+  {
+    groupName = groupName.substr( 0, baseName.size() - 6 ) + "/Maximums";
+  }
+
+  return isVector;
+}
+
+std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
+  const NetCDFFile &ncFile,
+  MDAL::MemoryMesh *mesh,
+  const std::vector<double> &times,
+  const std::string groupName,
+  const std::string arrName
+) const
+{
+  size_t nPoints = getVertexCount( ncFile );
+  std::shared_ptr<MDAL::DatasetGroup> mds;
+
+  int varxid;
+  if ( nc_inq_varid( ncFile.handle(), arrName.c_str(), &varxid ) == NC_NOERR )
+  {
+    mds = std::make_shared<MDAL::DatasetGroup> (
+            name(),
+            mesh,
+            mFileName,
+            groupName );
+    mds->setIsOnVertices( true );
+    mds->setIsScalar( true );
+
+    int zDimsX = 0;
+    if ( nc_inq_varndims( ncFile.handle(), varxid, &zDimsX ) != NC_NOERR )
+      throw MDAL_Status::Err_UnknownFormat;
+
+    if ( zDimsX == 1 )
+    {
+      // TIME INDEPENDENT
+      std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+      o->setTime( 0.0 );
+      double *values = o->values();
+      std::vector<double> valuesX = ncFile.readDoubleArr( arrName, nPoints );
+      for ( size_t i = 0; i < nPoints; ++i )
+      {
+        values[i] = valuesX[i];
+      }
+      o->setStatistics( MDAL::calculateStatistics( o ) );
+      mds->datasets.push_back( o );
+    }
+    else
+    {
+      // TIME DEPENDENT
+      for ( size_t t = 0; t < times.size(); ++t )
+      {
+        std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+        mto->setTime( static_cast<double>( times[t] ) / 3600. );
+        double *values = mto->values();
+
+        // fetching data for one timestep
+        size_t start[2], count[2];
+        const ptrdiff_t stride[2] = {1, 1};
+        start[0] = t;
+        start[1] = 0;
+        count[0] = 1;
+        count[1] = nPoints;
+        nc_get_vars_double( ncFile.handle(), varxid, start, count, stride, values );
+        mto->setStatistics( MDAL::calculateStatistics( mto ) );
+        mds->datasets.push_back( mto );
+      }
+    }
+    mds->setStatistics( MDAL::calculateStatistics( mds ) );
+  }
+
+  return mds;
+}
+
+std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
+  const NetCDFFile &ncFile,
+  MDAL::MemoryMesh *mesh,
+  const std::vector<double> &times,
+  const std::string groupName,
+  const std::string arrXName,
+  const std::string arrYName
+) const
+{
+  size_t nPoints = getVertexCount( ncFile );
+  std::shared_ptr<MDAL::DatasetGroup> mds;
+
+  int varxid, varyid;
+  if ( nc_inq_varid( ncFile.handle(), arrXName.c_str(), &varxid ) == NC_NOERR &&
+       nc_inq_varid( ncFile.handle(), arrYName.c_str(), &varyid ) == NC_NOERR )
+  {
+    mds = std::make_shared<MDAL::DatasetGroup> (
+            name(),
+            mesh,
+            mFileName,
+            groupName );
+    mds->setIsOnVertices( true );
+    mds->setIsScalar( false );
+
+    int zDimsX = 0;
+    int zDimsY = 0;
+    if ( nc_inq_varndims( ncFile.handle(), varxid, &zDimsX ) != NC_NOERR )
+      throw MDAL_Status::Err_UnknownFormat;
+
+    if ( nc_inq_varndims( ncFile.handle(), varyid, &zDimsY ) != NC_NOERR )
+      throw MDAL_Status::Err_UnknownFormat;
+
+    if ( zDimsX != zDimsY )
+      throw MDAL_Status::Err_UnknownFormat;
+
+    std::vector<double> valuesX( nPoints ), valuesY( nPoints );
+
+    if ( zDimsX == 1 )
+    {
+      // TIME INDEPENDENT
+      std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+      o->setTime( 0.0 );
+      double *values = o->values();
+      std::vector<double> valuesX = ncFile.readDoubleArr( arrXName, nPoints );
+      std::vector<double> valuesY = ncFile.readDoubleArr( arrYName, nPoints );
+      for ( size_t i = 0; i < nPoints; ++i )
+      {
+        values[2 * i] = valuesX[i];
+        values[2 * i + 1] = valuesY[i];
+      }
+      o->setStatistics( MDAL::calculateStatistics( o ) );
+      mds->datasets.push_back( o );
+    }
+    else
+    {
+      // TIME DEPENDENT
+      for ( size_t t = 0; t < times.size(); ++t )
+      {
+        std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+        mto->setTime( static_cast<double>( times[t] ) / 3600. );
+        double *values = mto->values();
+
+        // fetching data for one timestep
+        size_t start[2], count[2];
+        const ptrdiff_t stride[2] = {1, 1};
+        start[0] = t;
+        start[1] = 0;
+        count[0] = 1;
+        count[1] = nPoints;
+        nc_get_vars_double( ncFile.handle(), varxid, start, count, stride, valuesX.data() );
+        nc_get_vars_double( ncFile.handle(), varyid, start, count, stride, valuesY.data() );
+
+        for ( size_t i = 0; i < nPoints; ++i )
+        {
+          values[2 * i] = static_cast<double>( valuesX[i] );
+          values[2 * i + 1] = static_cast<double>( valuesY[i] );
+        }
+
+        mto->setStatistics( MDAL::calculateStatistics( mto ) );
+        mds->datasets.push_back( mto );
+      }
+    }
+    mds->setStatistics( MDAL::calculateStatistics( mds ) );
+  }
+
+  return mds;
+}
+
+std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
+  const std::string &resultsFile,
+  MDAL_Status *status )
 {
   mFileName = resultsFile;
   if ( status ) *status = MDAL_Status::None;
 
-  int ncid;
-  int res;
+  NetCDFFile ncFile;
 
-  res = nc_open( mFileName.c_str(), NC_NOWRITE, &ncid );
-  if ( res != NC_NOERR )
+  try
   {
-    MDAL::debug( nc_strerror( res ) );
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
+    // Open file for reading
+    ncFile.openFile( mFileName );
 
-  // get dimensions
-  int nVolumesId, nVerticesId, nPointsId, nTimestepsId;
-  size_t nVolumes, nVertices, nPoints, nTimesteps;
-  if ( nc_inq_dimid( ncid, "number_of_volumes", &nVolumesId ) != NC_NOERR ||
-       nc_inq_dimid( ncid, "number_of_vertices", &nVerticesId ) != NC_NOERR ||
-       nc_inq_dimid( ncid, "number_of_points", &nPointsId ) != NC_NOERR ||
-       nc_inq_dimid( ncid, "number_of_timesteps", &nTimestepsId ) != NC_NOERR )
-  {
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
-  if ( nc_inq_dimlen( ncid, nVolumesId, &nVolumes ) != NC_NOERR ||
-       nc_inq_dimlen( ncid, nVerticesId, &nVertices ) != NC_NOERR ||
-       nc_inq_dimlen( ncid, nPointsId, &nPoints ) != NC_NOERR ||
-       nc_inq_dimlen( ncid, nTimestepsId, &nTimesteps ) != NC_NOERR )
-  {
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
-
-  if ( nVertices != 3 )
-  {
-    MDAL::debug( "Expecting triangular elements!" );
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
-
-  int xid, yid, zid, volumesid, timeid, stageid;
-  if ( nc_inq_varid( ncid, "x", &xid ) != NC_NOERR ||
-       nc_inq_varid( ncid, "y", &yid ) != NC_NOERR ||
-       nc_inq_varid( ncid, "volumes", &volumesid ) != NC_NOERR ||
-       nc_inq_varid( ncid, "time", &timeid ) != NC_NOERR ||
-       nc_inq_varid( ncid, "stage", &stageid ) != NC_NOERR )
-  {
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
-
-  // load mesh data
-  std::vector<float> px( nPoints ), py( nPoints ), pz( nPoints );
-  std::vector<int> pvolumes( nVertices * nVolumes );
-  if ( nc_get_var_float( ncid, xid, px.data() ) != NC_NOERR ||
-       nc_get_var_float( ncid, yid, py.data() ) != NC_NOERR ||
-       nc_get_var_int( ncid, volumesid, pvolumes.data() ) != NC_NOERR )
-  {
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
-
-  // we may need to apply a shift to the X,Y coordinates
-  float xLLcorner = 0, yLLcorner = 0;
-  nc_get_att_float( ncid, NC_GLOBAL, "xllcorner", &xLLcorner );
-  nc_get_att_float( ncid, NC_GLOBAL, "yllcorner", &yLLcorner );
-
-  MDAL::Vertices nodes( nPoints );
-  Vertex *nodesPtr = nodes.data();
-  for ( size_t i = 0; i < nPoints; ++i, ++nodesPtr )
-  {
-    nodesPtr->x = static_cast<double>( px[i] + xLLcorner );
-    nodesPtr->y = static_cast<double>( py[i] + yLLcorner );
-  }
-
-  std::vector<float> times( nTimesteps );
-  nc_get_var_float( ncid, timeid, times.data() );
-
-  int zDims = 0;
-  if ( nc_inq_varid( ncid, "z", &zid ) == NC_NOERR &&
-       nc_get_var_float( ncid, zid, pz.data() ) == NC_NOERR )
-  {
-    // older SWW format: elevation is constant over time
-
-    zDims = 1;
-  }
-  else if ( nc_inq_varid( ncid, "elevation", &zid ) == NC_NOERR &&
-            nc_inq_varndims( ncid, zid, &zDims ) == NC_NOERR &&
-            ( ( zDims == 1 && nc_get_var_float( ncid, zid, pz.data() ) == NC_NOERR ) || zDims == 2 ) )
-  {
-    // we're good
-  }
-  else
-  {
-    // neither "z" nor "elevation" are present -> something is going wrong
-    nc_close( ncid );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
-    return std::unique_ptr< MDAL::Mesh >();
-  }
-
-  MDAL::Faces elements( nVolumes );
-  for ( size_t i = 0; i < nVolumes; ++i )
-  {
-    elements[i].resize( 3 );
-    elements[i][0] = static_cast<size_t>( pvolumes[3 * i + 0] );
-    elements[i][1] = static_cast<size_t>( pvolumes[3 * i + 1] );
-    elements[i][2] = static_cast<size_t>( pvolumes[3 * i + 2] );
-  }
-  std::unique_ptr< MDAL::MemoryMesh > mesh(
-    new MemoryMesh(
-      name(),
-      nodes.size(),
-      elements.size(),
-      3, // triangles
-      computeExtent( nodes ),
-      mFileName
-    )
-  );
-  mesh->faces = elements;
-  mesh->vertices = nodes;
-
-  // Create a dataset for the bed elevation
-  std::shared_ptr<MDAL::DatasetGroup> bedDs = std::make_shared<MDAL::DatasetGroup> (
+    // Read mesh
+    MDAL::Vertices vertices = readVertices( ncFile );
+    MDAL::Faces faces = readFaces( ncFile );
+    std::unique_ptr< MDAL::MemoryMesh > mesh(
+      new MemoryMesh(
         name(),
-        mesh.get(),
-        mFileName,
-        "Bed Elevation" );
-  bedDs->setIsOnVertices( true );
-  bedDs->setIsScalar( true );
+        vertices.size(),
+        faces.size(),
+        3, // triangles
+        computeExtent( vertices ),
+        mFileName
+      )
+    );
+    mesh->faces = faces;
+    mesh->vertices = vertices;
 
-  // read bed elevations
-  std::vector<std::shared_ptr<MDAL::MemoryDataset>> elevationOutputs;
-  if ( zDims == 1 )
-  {
-    // either "z" or "elevation" with 1 dimension
-    std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( bedDs.get() );
-    o->setTime( 0.0 );
-    double *values = o->values();
-    for ( size_t i = 0; i < nPoints; ++i )
-    {
-      double z = static_cast<double>( pz[i] );
-      values[i] = z;
-      mesh->vertices[i].z = z;
-    }
-    o->setStatistics( MDAL::calculateStatistics( o ) );
-    bedDs->datasets.push_back( o );
-    elevationOutputs.push_back( o );
+    // Read times
+    std::vector<double> times = readTimes( ncFile );
+
+    // Create a dataset(s)
+    readDatasetGroups( ncFile, mesh.get(), times );
+
+    // Success!
+    return std::unique_ptr<Mesh>( mesh.release() );
   }
-  else if ( zDims == 2 )
+  catch ( MDAL_Status err )
   {
-    // newer SWW format: elevation may change over time
-    for ( size_t t = 0; t < nTimesteps; ++t )
-    {
-      std::shared_ptr<MDAL::MemoryDataset> toe = std::make_shared<MDAL::MemoryDataset>( bedDs.get() );
-      toe->setTime( static_cast<double>( times[t] ) / 3600. );
-      double *elev = toe->values();
-
-      // fetching "elevation" data for one timestep
-      size_t start[2], count[2];
-      const ptrdiff_t stride[2] = {1, 1};
-      start[0] = t;
-      start[1] = 0;
-      count[0] = 1;
-      count[1] = nPoints;
-      std::vector<float> buffer( nPoints );
-      nc_get_vars_float( ncid, zid, start, count, stride, buffer.data() );
-      for ( size_t i = 0; i < nPoints; ++i )
-      {
-        double val = static_cast<double>( buffer[i] );
-        elev[i] = val;
-      }
-
-      toe->setStatistics( MDAL::calculateStatistics( toe ) );
-      bedDs->datasets.push_back( toe );
-      elevationOutputs.push_back( toe );
-    }
+    if ( status ) *status = err;
+    return std::unique_ptr< MDAL::Mesh >();
   }
-
-  bedDs->setStatistics( MDAL::calculateStatistics( bedDs ) );
-  mesh->datasetGroups.push_back( bedDs );
-
-  // load results
-  std::shared_ptr<MDAL::DatasetGroup> dss = std::make_shared<MDAL::DatasetGroup> (
-        name(),
-        mesh.get(),
-        mFileName,
-        "Stage" );
-  dss->setIsOnVertices( true );
-  dss->setIsScalar( true );
-
-  std::shared_ptr<MDAL::DatasetGroup> dsd = std::make_shared<MDAL::DatasetGroup> (
-        name(),
-        mesh.get(),
-        mFileName,
-        "Depth" );
-  dsd->setIsOnVertices( true );
-  dsd->setIsScalar( true );
-
-  for ( size_t t = 0; t < nTimesteps; ++t )
-  {
-    const std::shared_ptr<MDAL::MemoryDataset> elevO = elevationOutputs.size() > 1 ? elevationOutputs[t] : elevationOutputs[0];
-    const double *elev = elevO->constValues();
-
-    std::shared_ptr<MDAL::MemoryDataset> tos = std::make_shared<MDAL::MemoryDataset>( dss.get() );
-    tos->setTime( static_cast<double>( times[t] ) / 3600. );
-    double *values = tos->values();
-
-    // fetching "stage" data for one timestep
-    size_t start[2], count[2];
-    const ptrdiff_t stride[2] = {1, 1};
-    start[0] = t;
-    start[1] = 0;
-    count[0] = 1;
-    count[1] = nPoints;
-    std::vector<float> buffer( nPoints );
-    nc_get_vars_float( ncid, stageid, start, count, stride, buffer.data() );
-    for ( size_t i = 0; i < nPoints; ++i )
-    {
-      double val = static_cast<double>( buffer[i] );
-      values[i] = val;
-    }
-
-    // derived data: depth = stage - elevation
-    std::shared_ptr<MDAL::MemoryDataset> tod = std::make_shared<MDAL::MemoryDataset>( dsd.get() );
-    tod->setTime( tos->time() );
-    double *depths = tod->values();
-    int *activeTos = tos->active();
-    int *activeTod = tod->active();
-
-    for ( size_t j = 0; j < nPoints; ++j )
-      depths[j] = values[j] - elev[j];
-
-    // determine which elements are active (wet)
-    for ( size_t elemidx = 0; elemidx < nVolumes; ++elemidx )
-    {
-      const Face &elem = mesh->faces[elemidx];
-      double v0 = depths[elem[0]];
-      double v1 = depths[elem[1]];
-      double v2 = depths[elem[2]];
-      activeTos[elemidx] = v0 > DEPTH_THRESHOLD && v1 > DEPTH_THRESHOLD && v2 > DEPTH_THRESHOLD;
-      activeTod[elemidx] = activeTos[elemidx];
-    }
-
-    tos->setStatistics( MDAL::calculateStatistics( tos ) );
-    dss->datasets.push_back( tos );
-
-    tod->setStatistics( MDAL::calculateStatistics( tod ) );
-    dsd->datasets.push_back( tod );
-  }
-
-  dss->setStatistics( MDAL::calculateStatistics( dss ) );
-  mesh->datasetGroups.push_back( dss );
-
-  dsd->setStatistics( MDAL::calculateStatistics( dsd ) );
-  mesh->datasetGroups.push_back( dsd );
-
-
-  int momentumxid, momentumyid;
-  if ( nc_inq_varid( ncid, "xmomentum", &momentumxid ) == NC_NOERR &&
-       nc_inq_varid( ncid, "ymomentum", &momentumyid ) == NC_NOERR )
-  {
-    std::shared_ptr<MDAL::DatasetGroup> mds = std::make_shared<MDAL::DatasetGroup> (
-          name(),
-          mesh.get(),
-          mFileName,
-          "Momentum" );
-    mds->setIsOnVertices( true );
-    mds->setIsScalar( false );
-
-    std::vector<float> valuesX( nPoints ), valuesY( nPoints );
-    for ( size_t t = 0; t < nTimesteps; ++t )
-    {
-      std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
-      mto->setTime( static_cast<double>( times[t] ) / 3600. );
-      double *values = mto->values();
-
-      std::shared_ptr<MDAL::MemoryDataset> mto0 = std::static_pointer_cast<MDAL::MemoryDataset>( dsd->datasets[t] );
-      memcpy( mto->active(), mto0->active(), mesh->facesCount() * sizeof( int ) );
-
-      // fetching "stage" data for one timestep
-      size_t start[2], count[2];
-      const ptrdiff_t stride[2] = {1, 1};
-      start[0] = t;
-      start[1] = 0;
-      count[0] = 1;
-      count[1] = nPoints;
-      nc_get_vars_float( ncid, momentumxid, start, count, stride, valuesX.data() );
-      nc_get_vars_float( ncid, momentumyid, start, count, stride, valuesY.data() );
-
-      for ( size_t i = 0; i < nPoints; ++i )
-      {
-        values[2 * i] = static_cast<double>( valuesX[i] );
-        values[2 * i + 1] = static_cast<double>( valuesY[i] );
-      }
-
-      mto->setStatistics( MDAL::calculateStatistics( mto ) );
-      mds->datasets.push_back( mto );
-    }
-
-
-    mds->setStatistics( MDAL::calculateStatistics( mds ) );
-    mesh->datasetGroups.push_back( mds );
-  }
-
-  nc_close( ncid );
-
-  return std::unique_ptr<Mesh>( mesh.release() );
 }

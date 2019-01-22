@@ -94,6 +94,7 @@ namespace MDAL
       void addDatasetGroups();
       void createMesh();
       void parseRasterBands( const GdalDataset *cfGDALDataset );
+      void fixRasterBands();
 
       std::string mFileName;
       const std::string mGdalDriverName; /* GDAL driver name */

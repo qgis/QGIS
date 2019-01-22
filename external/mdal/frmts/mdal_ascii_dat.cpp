@@ -49,15 +49,203 @@ bool MDAL::DriverAsciiDat::canRead( const std::string &uri )
   }
   line = trim( line );
 
-  if ( line != "DATASET" &&
-       line != "SCALAR" &&
-       line != "VECTOR" )
-  {
-    return false;
-  }
-  return true;
+  return canReadNewFormat( line ) || canReadOldFormat( line );
 }
 
+bool MDAL::DriverAsciiDat::canReadOldFormat( const std::string &line ) const
+{
+  return MDAL::contains( line, "SCALAR" ) ||
+         MDAL::contains( line, "VECTOR" ) ||
+         MDAL::contains( line, "TS" );
+}
+
+bool MDAL::DriverAsciiDat::canReadNewFormat( const std::string &line ) const
+{
+  return line == "DATASET";
+}
+
+
+void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
+    Mesh *mesh,
+    MDAL_Status *status ) const
+{
+  std::shared_ptr<DatasetGroup> group; // DAT outputs data
+  std::string groupName( MDAL::baseName( mDatFile ) );
+  std::string line;
+  std::getline( in, line );
+
+// Read the first line
+  bool isVector = MDAL::contains( line, "VECTOR" );
+  group = std::make_shared< DatasetGroup >(
+            name(),
+            mesh,
+            mDatFile,
+            groupName
+          );
+  group->setIsScalar( !isVector );
+  group->setIsOnVertices( true );
+
+  do
+  {
+    // Replace tabs by spaces,
+    // since basement v.2.8 uses tabs instead of spaces (e.g. 'TS 0\t0.0')
+    line = replace( line, "\t", " " );
+
+    // Trim string for cases when file has inconsistent new line symbols
+    line = MDAL::trim( line );
+
+    // Split to tokens
+    std::vector<std::string> items = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+    if ( items.size() < 1 )
+      continue; // empty line?? let's skip it
+
+    std::string cardType = items[0];
+    if ( cardType == "ND" && items.size() >= 2 )
+    {
+      size_t fileNodeCount = toSizeT( items[1] );
+      if ( mesh->verticesCount() != fileNodeCount )
+        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
+    }
+    else if ( cardType == "SCALAR" || cardType == "VECTOR" )
+    {
+      // just ignore - we know the type from earlier...
+    }
+    else if ( cardType == "TS" && items.size() >=  2 )
+    {
+      double t = toDouble( items[ 1 ] );
+      readVertexTimestep( mesh, group, t, isVector, false, in );
+    }
+    else
+    {
+      std::stringstream str;
+      str << " Unknown card:" << line;
+      debug( str.str() );
+    }
+  }
+  while ( std::getline( in, line ) );
+
+  if ( !group || group->datasets.size() == 0 )
+    EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+
+  group->setStatistics( MDAL::calculateStatistics( group ) );
+  mesh->datasetGroups.push_back( group );
+  group.reset();
+}
+
+void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
+    Mesh *mesh,
+    MDAL_Status *status ) const
+{
+  bool isVector = false;
+  std::shared_ptr<DatasetGroup> group; // DAT outputs data
+  std::string groupName( MDAL::baseName( mDatFile ) );
+  std::string line;
+
+  // see if it contains face-centered results - supported by BASEMENT
+  bool faceCentered = false;
+  if ( contains( groupName, "_els_" ) )
+    faceCentered = true;
+
+  if ( group )
+    group->setIsOnVertices( !faceCentered );
+
+  while ( std::getline( in, line ) )
+  {
+    // Replace tabs by spaces,
+    // since basement v.2.8 uses tabs instead of spaces (e.g. 'TS 0\t0.0')
+    line = replace( line, "\t", " " );
+
+    // Trim string for cases when file has inconsistent new line symbols
+    line = MDAL::trim( line );
+
+    // Split to tokens
+    std::vector<std::string> items = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+    if ( items.size() < 1 )
+      continue; // empty line?? let's skip it
+
+    std::string cardType = items[0];
+    if ( cardType == "ND" && items.size() >= 2 )
+    {
+      size_t fileNodeCount = toSizeT( items[1] );
+      if ( mesh->verticesCount() != fileNodeCount )
+        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
+    }
+    else if ( cardType == "NC" && items.size() >= 2 )
+    {
+      size_t fileElemCount = toSizeT( items[1] );
+      if ( mesh->facesCount() != fileElemCount )
+        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
+    }
+    else if ( cardType == "OBJTYPE" )
+    {
+      if ( items[1] != "mesh2d" && items[1] != "\"mesh2d\"" )
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+    }
+    else if ( cardType == "BEGSCL" || cardType == "BEGVEC" )
+    {
+      if ( group )
+      {
+        debug( "New dataset while previous one is still active!" );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+      }
+      isVector = cardType == "BEGVEC";
+
+      group = std::make_shared< DatasetGroup >(
+                name(),
+                mesh,
+                mDatFile,
+                groupName
+              );
+      group->setIsScalar( !isVector );
+      group->setIsOnVertices( !faceCentered );
+    }
+    else if ( cardType == "ENDDS" )
+    {
+      if ( !group )
+      {
+        debug( "ENDDS card for no active dataset!" );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+      }
+      group->setStatistics( MDAL::calculateStatistics( group ) );
+      mesh->datasetGroups.push_back( group );
+      group.reset();
+    }
+    else if ( cardType == "NAME" && items.size() >= 2 )
+    {
+      if ( !group )
+      {
+        debug( "NAME card for no active dataset!" );
+        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
+      }
+
+      size_t quoteIdx1 = line.find( '\"' );
+      size_t quoteIdx2 = line.find( '\"', quoteIdx1 + 1 );
+      if ( quoteIdx1 != std::string::npos && quoteIdx2 != std::string::npos )
+        group->setName( line.substr( quoteIdx1 + 1, quoteIdx2 - quoteIdx1 - 1 ) );
+    }
+    else if ( cardType == "TS" && items.size() >= 3 )
+    {
+      double t = toDouble( items[2] );
+
+      if ( faceCentered )
+      {
+        readFaceTimestep( mesh, group, t, isVector, in );
+      }
+      else
+      {
+        bool hasStatus = ( toBool( items[1] ) );
+        readVertexTimestep( mesh, group, t, isVector, hasStatus, in );
+      }
+
+    }
+    else
+    {
+      std::stringstream str;
+      str << " Unknown card:" << line;
+      debug( str.str() );
+    }
+  }
+}
 
 /**
  * The DAT format contains "datasets" and each dataset has N-outputs. One output
@@ -85,147 +273,18 @@ void MDAL::DriverAsciiDat::load( const std::string &datFile, MDAL::Mesh *mesh, M
     return;
   }
   line = trim( line );
-
-  // http://www.xmswiki.com/xms/SMS:ASCII_Dataset_Files_*.dat
-  // Apart from the format specified above, there is an older supported format used in BASEMENT (and SMS?)
-  // which is simpler (has only one dataset in one file, no status flags etc)
-  bool oldFormat;
-  bool isVector = false;
-
-  std::shared_ptr<DatasetGroup> group; // DAT outputs data
-  std::string groupName( MDAL::baseName( mDatFile ) );
-
-  if ( line == "DATASET" )
-    oldFormat = false;
-  else if ( line == "SCALAR" || line == "VECTOR" )
+  if ( canReadNewFormat( line ) )
   {
-    oldFormat = true;
-    isVector = ( line == "VECTOR" );
-
-    group = std::make_shared< DatasetGroup >(
-              name(),
-              mesh,
-              mDatFile,
-              groupName
-            );
-    group->setIsScalar( !isVector );
+    // we do not need to parse first line again
+    loadNewFormat( in, mesh, status );
   }
   else
-    EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-
-  // see if it contains face-centered results - supported by BASEMENT
-  bool faceCentered = false;
-  if ( !oldFormat && contains( groupName, "_els_" ) )
-    faceCentered = true;
-
-  if ( group )
-    group->setIsOnVertices( !faceCentered );
-
-  while ( std::getline( in, line ) )
   {
-    // Replace tabs by spaces,
-    // since basement v.2.8 uses tabs instead of spaces (e.g. 'TS 0\t0.0')
-    line = replace( line, "\t", " " );
-
-    std::vector<std::string> items = split( line,  " ", SplitBehaviour::SkipEmptyParts );
-    if ( items.size() < 1 )
-      continue; // empty line?? let's skip it
-
-    std::string cardType = items[0];
-    if ( cardType == "ND" && items.size() >= 2 )
-    {
-      size_t fileNodeCount = toSizeT( items[1] );
-      if ( mesh->verticesCount() != fileNodeCount )
-        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
-    }
-    else if ( !oldFormat && cardType == "NC" && items.size() >= 2 )
-    {
-      size_t fileElemCount = toSizeT( items[1] );
-      if ( mesh->facesCount() != fileElemCount )
-        EXIT_WITH_ERROR( MDAL_Status::Err_IncompatibleMesh );
-    }
-    else if ( !oldFormat && cardType == "OBJTYPE" )
-    {
-      if ( items[1] != "mesh2d" && items[1] != "\"mesh2d\"" )
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-    }
-    else if ( !oldFormat && ( cardType == "BEGSCL" || cardType == "BEGVEC" ) )
-    {
-      if ( group )
-      {
-        debug( "New dataset while previous one is still active!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-      }
-      isVector = cardType == "BEGVEC";
-
-      group = std::make_shared< DatasetGroup >(
-                name(),
-                mesh,
-                mDatFile,
-                groupName
-              );
-      group->setIsScalar( !isVector );
-      group->setIsOnVertices( !faceCentered );
-    }
-    else if ( !oldFormat && cardType == "ENDDS" )
-    {
-      if ( !group )
-      {
-        debug( "ENDDS card for no active dataset!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-      }
-      group->setStatistics( MDAL::calculateStatistics( group ) );
-      mesh->datasetGroups.push_back( group );
-      group.reset();
-    }
-    else if ( !oldFormat && cardType == "NAME" && items.size() >= 2 )
-    {
-      if ( !group )
-      {
-        debug( "NAME card for no active dataset!" );
-        EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-      }
-
-      size_t quoteIdx1 = line.find( '\"' );
-      size_t quoteIdx2 = line.find( '\"', quoteIdx1 + 1 );
-      if ( quoteIdx1 != std::string::npos && quoteIdx2 != std::string::npos )
-        group->setName( line.substr( quoteIdx1 + 1, quoteIdx2 - quoteIdx1 - 1 ) );
-    }
-    else if ( oldFormat && ( cardType == "SCALAR" || cardType == "VECTOR" ) )
-    {
-      // just ignore - we know the type from earlier...
-    }
-    else if ( cardType == "TS" && items.size() >= ( oldFormat ? 2 : 3 ) )
-    {
-      double t = toDouble( items[oldFormat ? 1 : 2] );
-
-      if ( faceCentered )
-      {
-        readFaceTimestep( mesh, group, t, isVector, in );
-      }
-      else
-      {
-        bool hasStatus = ( oldFormat ? false : toBool( items[1] ) );
-        readVertexTimestep( mesh, group, t, isVector, hasStatus, in );
-      }
-
-    }
-    else
-    {
-      std::stringstream str;
-      str << " Unknown card:" << line;
-      debug( str.str() );
-    }
-  }
-
-  if ( oldFormat )
-  {
-    if ( !group || group->datasets.size() == 0 )
-      EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
-
-    group->setStatistics( MDAL::calculateStatistics( group ) );
-    mesh->datasetGroups.push_back( group );
-    group.reset();
+    // we need to parse first line again to see
+    // scalar/vector flag or timestep flag
+    in.clear();
+    in.seekg( 0 );
+    loadOldFormat( in, mesh, status );
   }
 }
 
@@ -235,7 +294,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
   double t,
   bool isVector,
   bool hasStatus,
-  std::ifstream &stream )
+  std::ifstream &stream ) const
 {
   assert( group );
   size_t faceCount = mesh->facesCount();
@@ -301,7 +360,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
   std::shared_ptr<DatasetGroup> group,
   double t,
   bool isVector,
-  std::ifstream &stream )
+  std::ifstream &stream ) const
 {
   assert( group );
 
