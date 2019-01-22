@@ -441,27 +441,27 @@ void TestQgsMapSettings::testExpressionContext()
 
   e = QgsExpression( QStringLiteral( "@map_units" ) );
   r = e.evaluate( &c );
-  QCOMPARE( r.toString(), QStringLiteral( "degrees" ) );\
+  QCOMPARE( r.toString(), QStringLiteral( "degrees" ) );
 
-  QgsExpression e5( QStringLiteral( "@map_crs_description" ) );
-  r = e5.evaluate( &c );
-  QCOMPARE( r.toString(), QString( "WGS 84" ) );
+  e = QgsExpression( QStringLiteral( "@map_crs_description" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "WGS 84" ) );
 
-  QgsExpression e6( QStringLiteral( "@map_crs_acronym" ) );
-  r = e6.evaluate( &c );
-  QCOMPARE( r.toString(), QString( "longlat" ) );
+  e = QgsExpression( QStringLiteral( "@map_crs_acronym" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "longlat" ) );
 
-  //QgsExpression e7( QStringLiteral( "@map_crs_pro4" ) );
-  //r = e7.evaluate( &c );
-  //QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+  e = QgsExpression( QStringLiteral( "@map_crs_proj4" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
-  //QgsExpression e8( QStringLiteral( "@map_crs_wkt" ) );
-  //r = e8.evaluate( &c );
-  //QVERIFY( r.toString().length() > 15 );
+  e = QgsExpression( QStringLiteral( "@map_crs_wkt" ) );
+  r = e.evaluate( &c );
+  QVERIFY( r.toString().length() > 15 );
 
-  QgsExpression e9( QStringLiteral( "@map_ellipsoid_acr" ) );
-  r = e9.evaluate( &c );
-  QCOMPARE( r.toString(), QString( "WGS84" ) );
+  e = QgsExpression( QStringLiteral( "@map_crs_ellipsoid" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
