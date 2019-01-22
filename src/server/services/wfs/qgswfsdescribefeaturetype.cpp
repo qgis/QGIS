@@ -130,19 +130,7 @@ namespace QgsWfs
     }
     else
     {
-      QString typeNames = request.parameter( QStringLiteral( "TYPENAME" ) );
-      if ( !typeNames.isEmpty() )
-      {
-        QStringList typeNameSplit = typeNames.split( ',' );
-        for ( int i = 0; i < typeNameSplit.size(); ++i )
-        {
-          QString typeName = typeNameSplit.at( i ).trimmed();
-          if ( typeName.contains( ':' ) )
-            typeNameList << typeName.section( ':', 1, 1 );
-          else
-            typeNameList << typeName;
-        }
-      }
+      typeNameList = wfsParameters.typeNames();
     }
 
     QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );

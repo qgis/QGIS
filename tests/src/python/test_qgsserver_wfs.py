@@ -44,10 +44,10 @@ class TestQgsServerWFS(QgsServerTestBase):
     """QGIS Server WFS Tests"""
 
     # Set to True in child classes to re-generate reference files for this class
-    #regenerate_reference = True
+    regenerate_reference = False
 
-    def wfs_request_compare(self, request, version='', extra_query_string='', reference_base_name=None):
-        project = self.testdata_path + "test_project_wfs.qgs"
+    def wfs_request_compare(self, request, version='', extra_query_string='', reference_base_name=None, project_file="test_project_wfs.qgs"):
+        project = self.testdata_path + project_file
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WFS&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -384,6 +384,17 @@ class TestQgsServerWFS(QgsServerTestBase):
         # BBOX gml expressions
         self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&EXP_FILTER=intersects($geometry, geom_from_gml('<gml:Box> <gml:coordinates cs=\",\" ts=\" \">8.20344750430995617,44.9013881888184514 8.20347909100379269,44.90140004005827024</gml:coordinates></gml:Box>'))", 'wfs_getFeature_1_0_0_EXP_FILTER_gml_bbox_three')
         self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&EXP_FILTER=intersects($geometry, geom_from_gml('<gml:Box> <gml:coordinates cs=\",\" ts=\" \">8.20348458304175665,44.90147459621791626 8.20351616973559317,44.9014864474577351</gml:coordinates></gml:Box>'))", 'wfs_getFeature_1_0_0_EXP_FILTER_gml_bbox_one')
+
+    def test_describeFeatureType(self):
+        """Test DescribeFeatureType with TYPENAME filters"""
+
+        project_file = "test_project_wms_grouped_layers.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=as_areas&", 'wfs_describeFeatureType_1_0_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&", 'wfs_describeFeatureType_1_1_0_typename_as_areas', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "", 'wfs_describeFeatureType_1_0_0_typename_empty', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "", 'wfs_describeFeatureType_1_1_0_typename_empty', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=does_not_exist&", 'wfs_describeFeatureType_1_0_0_typename_wrong', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&", 'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
 
 
 if __name__ == '__main__':
