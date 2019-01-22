@@ -208,11 +208,15 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   const int requestId = ++sRequestId;
 
   emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId ) );
+  Q_NOWARN_DEPRECATED_PUSH
   emit requestAboutToBeCreated( op, req, outgoingData );
+  Q_NOWARN_DEPRECATED_POP
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
   reply->setProperty( "requestId", requestId );
 
+  Q_NOWARN_DEPRECATED_PUSH
   emit requestCreated( reply );
+  Q_NOWARN_DEPRECATED_POP
 
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and

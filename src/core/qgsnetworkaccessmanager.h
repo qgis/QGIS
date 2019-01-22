@@ -27,6 +27,7 @@
 #include <QNetworkRequest>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \class QgsNetworkRequestParameters
@@ -164,7 +165,11 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:
-    void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
+
+    /**
+     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     */
+    Q_DECL_DEPRECATED void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) SIP_DEPRECATED;
 
     /**
      * Emitted when a network request is about to be created.
@@ -208,7 +213,11 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void requestTimedOut( QgsNetworkRequestParameters request );
 
-    void requestCreated( QNetworkReply * );
+    /**
+     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     */
+    Q_DECL_DEPRECATED void requestCreated( QNetworkReply * ) SIP_DEPRECATED;
+
     void requestTimedOut( QNetworkReply * );
 
   private slots:
