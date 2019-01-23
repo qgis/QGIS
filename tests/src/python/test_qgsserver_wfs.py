@@ -446,19 +446,19 @@ class TestQgsServerWFS(QgsServerTestBase):
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
 
     def test_getFeatureFeature_0_nulls(self):
-        """Test that 0 and null in integer columns are reported correctly: note that WFS does not support NULL but QGIS Server does"""
+        """Test that 0 and null in integer columns are reported correctly"""
 
         # Test transactions with 0 and nulls
 
-        post_data = b"""<?xml version="1.0" ?>
-<wfs:Transaction service="WFS" version="1.1.0"
+        post_data = """<?xml version="1.0" ?>
+<wfs:Transaction service="WFS" version="{version}"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"
   xmlns:gml="http://www.opengis.net/gml">
    <wfs:Update typeName="cdb_lines">
       <wfs:Property>
-         <wfs:Name>id_long</wfs:Name>
-         <wfs:Value>%s</wfs:Value>
+         <wfs:Name>{field}</wfs:Name>
+         <wfs:Value>{value}</wfs:Value>
       </wfs:Property>
       <fes:Filter>
          <fes:FeatureId fid="cdb_lines.22"/>
@@ -467,37 +467,55 @@ class TestQgsServerWFS(QgsServerTestBase):
 </wfs:Transaction>
             """
 
-        def _round_trip(value):
-            """Set a value on fid 22 and long_id field and check it back"""
+        def _round_trip(value, field, version='1.1.0'):
+            """Set a value on fid 22 and field and check it back"""
 
-            header, body = self._execute_request("?MAP=%s&SERVICE=WFS" % (
-                self.testdata_path + 'test_project_wms_grouped_layers.qgs'), QgsServerRequest.PostMethod, post_data % value)
-            self.assertTrue(b'<TotalUpdated>1</TotalUpdated>' in body)
+            encoded_data = post_data.format(field=field, value=value, version=version).encode('utf8')
+            # Strip the field if NULL
+            if value is None:
+                encoded_data = encoded_data.replace(b'<wfs:Value>None</wfs:Value>', b'')
+
+            header, body = self._execute_request("?MAP=%s&SERVICE=WFS&VERSION=%s" % (
+                self.testdata_path + 'test_project_wms_grouped_layers.qgs', version), QgsServerRequest.PostMethod, encoded_data)
+            if version == '1.0.0':
+                self.assertTrue(b'<SUCCESS/>' in body, body)
+            else:
+                self.assertTrue(b'<TotalUpdated>1</TotalUpdated>' in body, body)
             header, body = self._execute_request("?MAP=%s&SERVICE=WFS&REQUEST=GetFeature&TYPENAME=cdb_lines&FEATUREID=cdb_lines.22" % (
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs'))
-            self.assertTrue(b'<qgs:id_long>%s</qgs:id_long>' % value in body)
+            if value is not None:
+                xml_value = '<qgs:{0}>{1}</qgs:{0}>'.format(field, value).encode('utf8')
+                self.assertTrue(xml_value in body, "%s not found in body" % xml_value)
+            else:
+                xml_value = '<qgs:{0}>'.format(field).encode('utf8')
+                self.assertFalse(xml_value in body)
             # Check the backend
             vl = QgsVectorLayer(
                 self.testdata_path + 'test_project_wms_grouped_layers.gpkg|layername=cdb_lines', 'vl', 'ogr')
             self.assertTrue(vl.isValid())
-            self.assertEqual(str(vl.getFeature(22)['id_long']).encode(
-                'utf8'), value if value != b'' else b'NULL')
+            self.assertEqual(
+                str(vl.getFeature(22)[field]), value if value is not None else 'NULL')
 
-        _round_trip(b'0')
-        _round_trip(b'12345')
+        for version in ('1.0.0', '1.1.0'):
+            _round_trip('0', 'id_long', version)
+            _round_trip('12345', 'id_long', version)
+            _round_trip('0', 'id', version)
+            _round_trip('12345', 'id', version)
+            _round_trip(None, 'id', version)
+            _round_trip(None, 'id_long', version)
 
-        # Now check NULL
-        header, body = self._execute_request("?MAP=%s&SERVICE=WFS" % (self.testdata_path + 'test_project_wms_grouped_layers.qgs'),
-                                             QgsServerRequest.PostMethod, (post_data % b'').replace(b'<wfs:Value></wfs:Value>', b''))
-        self.assertTrue(b'<TotalUpdated>1</TotalUpdated>' in body)
-        vl = QgsVectorLayer(
-            self.testdata_path + 'test_project_wms_grouped_layers.gpkg|layername=cdb_lines', 'vl', 'ogr')
-        self.assertTrue(vl.isValid())
-        self.assertTrue(vl.getFeature(22)['id_long'].isNull())
-        del(vl)
-        header, body = self._execute_request("?MAP=%s&SERVICE=WFS&REQUEST=GetFeature&TYPENAME=cdb_lines&FEATUREID=cdb_lines.22" % (
-            self.testdata_path + 'test_project_wms_grouped_layers.qgs'))
-        self.assertFalse(b'<qgs:id_long></qgs:id_long>' in body)
+            # "name" is NOT NULL: try to set it to empty string
+            _round_trip('', 'name', version)
+            # Then NULL
+            data = post_data.format(field='name', value='', version=version).encode('utf8')
+            encoded_data = data.replace(b'<wfs:Value></wfs:Value>', b'')
+            header, body = self._execute_request("?MAP=%s&SERVICE=WFS" % (
+                self.testdata_path + 'test_project_wms_grouped_layers.qgs'), QgsServerRequest.PostMethod, encoded_data)
+            if version == '1.0.0':
+                self.assertTrue(b'<ERROR/>' in body, body)
+            else:
+                self.assertTrue(b'<TotalUpdated>0</TotalUpdated>' in body)
+            self.assertTrue(b'<Message>NOT NULL constraint error error on layer \'cdb_lines\', field \'name\'</Message>' in body)
 
 
 if __name__ == '__main__':

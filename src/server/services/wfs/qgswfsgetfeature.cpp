@@ -1334,16 +1334,16 @@ namespace QgsWfs
         {
           continue;
         }
-        if ( featureAttributes[idx].isNull() )
-        {
-          continue;
-        }
         const QgsField field = fields.at( idx );
         const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
         QString attributeName = field.name();
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx], setup ) );
+        if ( featureAttributes[idx].isNull() )
+        {
+          fieldElem.setAttribute( QStringLiteral( "xsi:nil" ), QStringLiteral( "true" ) );
+        }
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
       }
@@ -1435,16 +1435,18 @@ namespace QgsWfs
         {
           continue;
         }
-        if ( featureAttributes[idx].isNull() )
-        {
-          continue;
-        }
+
         const QgsField field = fields.at( idx );
         const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+
         QString attributeName = field.name();
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx], setup ) );
+        if ( featureAttributes[idx].isNull() )
+        {
+          fieldElem.setAttribute( QStringLiteral( "xsi:nil" ), QStringLiteral( "true" ) );
+        }
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
       }
