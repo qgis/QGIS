@@ -26,7 +26,7 @@
 #include <fcgi_stdio.h>
 #include <cstdlib>
 
-#include <QStringLiteral>
+#include <QString>
 
 int fcgi_accept()
 {
