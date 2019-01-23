@@ -248,7 +248,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,
                                 bool &ok,
-                                const QgsFeatureIds fids = QSet<long>() ) const;
+                                const QgsFeatureIds fids = QgsFeatureIds() ) const;
 
     /**
      * Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
