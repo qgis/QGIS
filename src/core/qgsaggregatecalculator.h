@@ -155,12 +155,11 @@ class CORE_EXPORT QgsAggregateCalculator
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
      * \param ok if specified, will be set to true if aggregate calculation was successful
-     * \param ids List of feature id to perform the aggregation on.
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = nullptr, bool *ok = nullptr,
-                        QgsFeatureIds *ids = nullptr ) const;
+                        const QgsFeatureIds ids = QSet<long,long>() ) const;
 
     /**
      * Converts a string to a aggregate type.
