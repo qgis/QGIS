@@ -120,7 +120,7 @@ void TestQgsGML::testFromURL()
   QCOMPARE( featureMaps.size(), 1 );
   QCOMPARE( gmlParser.idsMap().size(), 1 );
   QCOMPARE( gmlParser.crs().authid(), QString( "EPSG:27700" ) );
-  QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "intfield" ) ), 1 );
+  QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "intfield" ) ).toInt(), 1 );
   QVERIFY( featureMaps[0]->attribute( QStringLiteral( "nillablefield" ) ).isNull( ) );
   delete featureMaps[ 0 ];
 }
@@ -140,7 +140,7 @@ void TestQgsGML::testFromByteArray()
   QMap<QgsFeatureId, QString > idsMap = gmlParser.idsMap();
   QVERIFY( idsMap.constFind( 0 ) != idsMap.constEnd() );
   QCOMPARE( idsMap[ 0 ], QString( "mytypename.1" ) );
-  QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "intfield" ) ), 1 );
+  QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "intfield" ) ).toInt(), 1 );
   QVERIFY( featureMaps[0]->attribute( QStringLiteral( "nillablefield" ) ).isNull( ) );
   delete featureMaps[ 0 ];
 }
