@@ -20,7 +20,29 @@
 #include "qgsapplication.h"
 #include <QObject>
 #include "qgstest.h"
+#include "qgssettings.h"
 #include <QNetworkReply>
+
+
+class BackgroundRequest : public QThread
+{
+    Q_OBJECT
+
+  public:
+    BackgroundRequest( const QNetworkRequest &request )
+      : mRequest( request )
+    {
+      moveToThread( this );
+      connect( this, &QThread::started, this, [ = ]
+      {
+        QVERIFY( QThread::currentThread() != QCoreApplication::instance()->thread() );
+        QgsNetworkAccessManager::instance()->get( mRequest );
+      } );
+    }
+
+  private:
+    QNetworkRequest mRequest;
+};
 
 class TestQgsNetworkAccessManager : public QObject
 {
@@ -36,11 +58,18 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
+    void fetchBadSsl();
+    void fetchTimeout();
 
 };
 
 void TestQgsNetworkAccessManager::initTestCase()
 {
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
   QgsApplication::init();
   QgsApplication::initQgis();
 }
@@ -52,6 +81,7 @@ void TestQgsNetworkAccessManager::cleanupTestCase()
 
 void TestQgsNetworkAccessManager::init()
 {
+
 }
 
 void TestQgsNetworkAccessManager::cleanup()
@@ -88,6 +118,21 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( QUrl() ) );
+
+  thread->start();
+
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
 }
 
 void TestQgsNetworkAccessManager::fetchBadUrl()
@@ -121,6 +166,21 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ) );
+
+  thread->start();
+
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
 }
 
 
@@ -156,6 +216,128 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
+
+  thread->start();
+
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
+}
+
+void TestQgsNetworkAccessManager::fetchBadSsl()
+{
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  QObject context;
+  //test fetching from a blank url
+  bool loaded = false;
+  bool gotRequestAboutToBeCreatedSignal = false;
+  bool gotSslError = false;
+  int requestId = -1;
+  QUrl u =  QUrl( QStringLiteral( "https://expired.badssl.com" ) );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
+  {
+    gotRequestAboutToBeCreatedSignal = true;
+    requestId = params.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( params.request().url(), u );
+  } );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
+  {
+    QCOMPARE( reply.error(), QNetworkReply::SslHandshakeFailedError );
+    QCOMPARE( reply.requestId(), requestId );
+    QCOMPARE( reply.request().url(), u );
+    loaded = true;
+  } );
+  connect( QgsNetworkAccessManager::instance(), &QNetworkAccessManager::sslErrors, &context, [&]( QNetworkReply *, const QList<QSslError> &errors )
+  {
+    QCOMPARE( errors.at( 0 ).error(), QSslError::CertificateExpired );
+    gotSslError = true;
+  } );
+  QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
+
+  while ( !loaded && !gotSslError )
+  {
+    qApp->processEvents();
+  }
+
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  // we don't test for background thread ssl error yet -- that signal isn't thread safe
+}
+
+void TestQgsNetworkAccessManager::fetchTimeout()
+{
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 5000 );
+
+  QObject context;
+  //test fetching from a blank url
+  bool gotRequestAboutToBeCreatedSignal = false;
+  bool gotTimeoutError = false;
+  bool finished = false;
+  int requestId = -1;
+  QUrl u =  QUrl( QStringLiteral( "http://10.255.255.1" ) );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
+  {
+    gotRequestAboutToBeCreatedSignal = true;
+    requestId = params.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( params.request().url(), u );
+  } );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ), &context, [&]( const QgsNetworkRequestParameters & request )
+  {
+    QCOMPARE( request.requestId(), requestId );
+    gotTimeoutError = true;
+  } );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
+  {
+    finished = reply.error() != QNetworkReply::OperationCanceledError; // should not happen!
+  } );
+  QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
+
+  while ( !gotTimeoutError && !finished )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotTimeoutError );
+  QVERIFY( !finished );
+
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  gotRequestAboutToBeCreatedSignal = false;
+  gotTimeoutError = false;
+  finished = false;
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
+
+  thread->start();
+
+  while ( !gotTimeoutError && !finished )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotTimeoutError );
+  QVERIFY( !finished );
+
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
 }
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )
