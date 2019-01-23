@@ -51,6 +51,8 @@
 #include "sqlite3.h"
 #include "qgstransaction.h"
 #include "qgsthreadingutils.h"
+#include "qgsvectorlayerfeaturecounter.h"
+#include "qgsfeatureid.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
