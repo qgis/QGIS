@@ -38,6 +38,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgsapplication.h"
 
 #include <QDir>
 #include <QTextStream>

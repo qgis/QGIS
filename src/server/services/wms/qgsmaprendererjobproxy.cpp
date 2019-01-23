@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgsapplication.h"
 
 namespace QgsWms
 {

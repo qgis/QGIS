@@ -53,6 +53,7 @@
 #include "qgsziputils.h"
 #include "qgsauxiliarystorage.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
 
 #include <QApplication>
 #include <QFileInfo>

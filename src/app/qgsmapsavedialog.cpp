@@ -40,6 +40,7 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
 
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();

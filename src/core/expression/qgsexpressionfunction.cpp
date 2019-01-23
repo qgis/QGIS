@@ -51,6 +51,7 @@
 #include "sqlite3.h"
 #include "qgstransaction.h"
 #include "qgsthreadingutils.h"
+#include "qgsapplication.h"
 
 const QString QgsExpressionFunction::helpText() const
 {

@@ -20,6 +20,7 @@
 #include "qgsdatetimeedit.h"
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimefieldformatter.h"
+#include "qgsapplication.h"
 
 #include <QDateTimeEdit>
 #include <QDateEdit>

@@ -22,7 +22,6 @@
 
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
-#include "qgsrendercontext.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 
@@ -30,6 +29,7 @@ class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
 class QgsSymbol;
 class QgsTriangularMesh;
+class QgsRenderContext;
 struct QgsMesh;
 
 /**

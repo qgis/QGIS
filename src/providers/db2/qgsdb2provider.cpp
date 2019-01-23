@@ -24,6 +24,7 @@
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgscredentials.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsdb2sourceselect.h"

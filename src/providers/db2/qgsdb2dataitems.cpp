@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsdb2newconnection.h"

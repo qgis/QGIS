@@ -23,7 +23,6 @@
 #include <QColor>
 #include <memory>
 
-#include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"

@@ -29,11 +29,12 @@ class QgsMeshDatasetIndex;
 
 #include <QSize>
 #include "qgsmaplayerrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsrasterinterface.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
+
+class QgsRenderContext;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

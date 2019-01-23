@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsapplication.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>

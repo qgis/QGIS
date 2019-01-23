@@ -28,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {

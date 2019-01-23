@@ -27,6 +27,7 @@
 #include <QMap>
 #include <QHash>
 #include <QReadWriteLock>
+#include <QExplicitlySharedDataPointer>
 
 //qgis includes
 #include "qgis.h"

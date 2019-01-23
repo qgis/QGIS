@@ -80,12 +80,10 @@ ENDIF(ENABLE_MODELTEST)
 #  ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/bin/qgis_quickprinttest)
 #ENDIF (APPLE)
 
-SET(IMAGE_RCCS ../../../images/images.qrc)
-
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS} ${IMAGE_RCCS})
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTORCC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}

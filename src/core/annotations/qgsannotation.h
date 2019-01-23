@@ -22,10 +22,11 @@
 #include "qgis.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrendercontext.h"
 #include "qgssymbol.h"
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
+
+class QgsRenderContext;
 
 /**
  * \ingroup core

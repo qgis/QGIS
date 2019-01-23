@@ -28,6 +28,9 @@ If the ``initialPath`` argument is specified, then the dialog will default to th
 %End
 
     QgsNewVectorLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+New dialog constructor.
+%End
     ~QgsNewVectorLayerDialog();
     QgsWkbTypes::Type selectedType() const;
 %Docstring

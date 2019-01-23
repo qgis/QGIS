@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 

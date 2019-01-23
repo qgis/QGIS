@@ -21,6 +21,7 @@
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
+#include "qgsapplication.h"
 
 //#include "qgseditorwidgetregistry.h"
 

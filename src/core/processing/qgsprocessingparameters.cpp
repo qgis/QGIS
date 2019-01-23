@@ -30,6 +30,7 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsapplication.h"
 
 #include <functional>
 

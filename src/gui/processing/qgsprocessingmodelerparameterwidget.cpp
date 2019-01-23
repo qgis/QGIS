@@ -24,6 +24,7 @@
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"
+#include "qgsapplication.h"
 #include <QHBoxLayout>
 #include <QToolButton>
 #include <QStackedWidget>

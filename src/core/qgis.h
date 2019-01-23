@@ -18,25 +18,12 @@
 #ifndef QGIS_H
 #define QGIS_H
 
-#include <QEvent>
-#include <QString>
-#include <QMetaType>
-#include <QMap>
 #include <QMetaEnum>
-#include <QVariant>
-#include <QDateTime>
-#include <QDate>
-#include <QTime>
-#include <QHash>
-#include <cstdlib>
 #include <cfloat>
 #include <memory>
-#include <type_traits>
 #include <cmath>
-#include <qnumeric.h>
 
 #include "qgstolerance.h"
-#include "qgswkbtypes.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
