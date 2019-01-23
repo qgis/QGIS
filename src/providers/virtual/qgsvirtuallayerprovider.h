@@ -111,11 +111,13 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool openIt();
     bool createIt();
     bool loadSourceLayers();
+    void createVirtualTable( QgsVectorLayer *vlayer, const QString &name );
 
     friend class QgsVirtualLayerFeatureSource;
 
   private slots:
     void invalidateStatistics();
+
 };
 
 // clazy:excludeall=qstring-allocations
