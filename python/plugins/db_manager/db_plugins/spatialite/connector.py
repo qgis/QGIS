@@ -595,9 +595,7 @@ class SpatiaLiteDBConnector(DBConnector):
         sql = u"SELECT DiscardGeometryColumn(%s, %s)" % (self.quoteString(tablename), self.quoteString(column))
         self._execute_and_commit(sql)
 
-        return True
-
-    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None):
+    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None, new_comment=None):
         return False  # column editing not supported
 
     def renameTableColumn(self, table, column, new_name):

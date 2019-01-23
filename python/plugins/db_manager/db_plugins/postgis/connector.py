@@ -857,8 +857,8 @@ class PostGisDBConnector(DBConnector):
             sql = u"ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
-    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None):
-        if new_name is None and data_type is None and not_null is None and default is None:
+    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None):
+        if new_name is None and data_type is None and not_null is None and default is None and comment is None:
             return
 
         c = self._get_cursor()
@@ -894,6 +894,12 @@ class PostGisDBConnector(DBConnector):
                 sql = u"UPDATE geometry_columns SET f_geometry_column=%s WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
                     self.quoteString(new_name), schema_where, self.quoteString(tablename), self.quoteString(column))
                 self._execute(c, sql)
+
+        # comment the column
+        if comment is not None:
+            schema, tablename = self.getSchemaTableName(table)
+            sql = u"COMMENT ON COLUMN %s.%s.%s is '%s'" % (schema, tablename, column, comment)
+            self._execute(c, sql)
 
         self._commit()
 

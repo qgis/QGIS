@@ -644,7 +644,7 @@ class GPKGDBConnector(DBConnector):
             return lyr.DeleteField(idx) == 0
         return False
 
-    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None):
+    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None, new_comment=None):
         if self.isGeometryColumn(table, column):
             return False
 

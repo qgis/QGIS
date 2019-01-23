@@ -432,16 +432,17 @@
   <connection>
    <sender>chkCom</sender>
    <signal>toggled(bool)</signal>
-   <receiver>editComment</receiver>
+   <receiver>editCom</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>64</x>
-     <y>549</y>
+     <x>105</x>
+     <y>557</y>
     </hint>
     <hint type="destinationlabel">
-     <x>215</x>
-     <y>552</y>
+     <x>211</x>
+     <y>553</y>
+
     </hint>
    </hints>
   </connection>

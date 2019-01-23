@@ -162,7 +162,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         with OverrideCursor(Qt.WaitCursor):
             self.aboutToChangeTable.emit()
             try:
-                fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String())
+                fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String(), new_fld.comment)
                 self.refresh()
             except BaseError as e:
                 DlgDbError.showError(e, self)
