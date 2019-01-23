@@ -1336,7 +1336,7 @@ class OracleDBConnector(DBConnector):
 
     def updateTableColumn(self, table, column, new_name=None,
                           data_type=None, not_null=None,
-                          default=None):
+                          default=None,  comment=None):
         """Update properties of a column in a table."""
 
         schema, tablename = self.getSchemaTableName(table)

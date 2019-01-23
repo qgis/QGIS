@@ -349,7 +349,7 @@ class VLayerConnector(DBConnector):
     def deleteTableColumn(self, table, column):
         print("**unimplemented** deleteTableColumn")
 
-    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None):
+    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None, new_comment=None):
         print("**unimplemented** updateTableColumn")
 
     def renameTableColumn(self, table, column, new_name):
