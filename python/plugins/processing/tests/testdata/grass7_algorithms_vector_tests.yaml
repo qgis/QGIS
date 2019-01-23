@@ -331,3 +331,76 @@ tests:
         name: expected/grass7/buffer_polys_layer2.shp
         type: vector
 
+  - algorithm: grass7:v.surf.rst.cvdev
+    name: v.surf.rst - cross-validation errors
+    params:
+      -c: true
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      input:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      npmin: 300
+      segmax: 40
+      tension: 40.0
+      where: ''
+      zscale: 1.0
+    results:
+      cvdev:
+        name: expected/grass7/v_surf_svdev.shp
+        type: vector
+
+  - algorithm: grass7:v.surf.rst
+    name: v.surf.rst - topographic parameters
+    params:
+      -d: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      input:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      npmin: 300
+      segmax: 40
+      tension: 40.0
+      where: ''
+      zscale: 1.0
+    results:
+      aspect:
+        hash: 98016f6edabbb205fc75f48b3c48528ced79ec95cffd769398db46b7
+        type: rasterhash
+      deviations:
+        name: expected/grass7/v_surf_rst_deviations.shp
+        type: vector
+      elevation:
+        hash: d87fc419a0b9cd73a5c9ac7df4148eca3b5bee5094d7e19035bf8b72
+        type: rasterhash
+      mcurvature:
+        hash: 3f6836ee9fcf5523380be97b1753f49ede33058583979cad5c47c316
+        type: rasterhash
+      overwin:
+        name: expected/grass7/v_surf_rst_overlap.shp
+        type: vector
+      pcurvature:
+        hash: b654f95d858bc3e2f49ef34dc9ef1918b3f2dc41212d60a7bfc28972
+        type: rasterhash
+      slope:
+        hash: e3eb66180533f3ac9b44d825f173d1a477849ec3f4fb745d912bd4e8
+        type: rasterhash
+      tcurvature:
+        hash: b9201776ec61df5c197f335ab60f878cc394394cfa40272728283459
+        type: rasterhash
+      treeseg:
+        name: expected/grass7/v_surf_rst_quadtree.shp
+        type: vector
