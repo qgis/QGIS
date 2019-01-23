@@ -857,7 +857,7 @@ class PostGisDBConnector(DBConnector):
             sql = u"ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
-    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None, other=None):
+    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None):
         if new_name is None and data_type is None and not_null is None and default is None and comment is None:
             return
 
