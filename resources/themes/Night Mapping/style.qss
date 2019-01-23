@@ -697,6 +697,8 @@ QTreeView#viewRules::indicator:checked
 
 QTableView {
     color: @text;
+    selection-background-color: @selection;
+    selection-color: @text;
 }
 
 QHeaderView::section {
