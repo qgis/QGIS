@@ -159,7 +159,7 @@ class CORE_EXPORT QgsAggregateCalculator
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = nullptr, bool *ok = nullptr,
-                        const QgsFeatureIds ids = QSet<long>() ) const;
+                        const QgsFeatureIds ids = QgsFeatureIds() ) const;
 
     /**
      * Converts a string to a aggregate type.
