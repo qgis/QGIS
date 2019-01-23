@@ -308,7 +308,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsVector> mDragPointMarkersOffset;
 
-    //! structure to keep information about a rubber band user for dragging of a straight line segment
+    //! structure to keep information about a rubber band used for dragging of a straight line segment
     struct StraightBand
     {
       QgsRubberBand *band = nullptr;       //!< Pointer to the actual rubber band
