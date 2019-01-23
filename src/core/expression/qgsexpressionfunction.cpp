@@ -572,7 +572,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     {
       //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
       QgsExpressionContext context_copy = *context;
-      QgsFeatureIds fids = vl->countSymbolFeatures().featureIds( context_copy.variable "symbol_id" );
+      QgsFeatureIds fids = vl->countSymbolFeatures()->featureIds( context_copy.variable "symbol_id" );
       result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, &fids );
     }
     else
@@ -752,7 +752,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   {
     //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
     QgsExpressionContext context_copy = *context;
-    QgsFeatureIds fids = vl->countSymbolFeatures().featureIds( context_copy.variable "symbol_id" );
+    QgsFeatureIds fids = vl->countSymbolFeatures()->featureIds( context_copy.variable "symbol_id" );
     result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, &fids );
   }
   else
