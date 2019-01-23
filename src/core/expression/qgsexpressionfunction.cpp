@@ -571,7 +571,8 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     if ( context->indexOfScope( "Symbol scope" ) != -1 )
     {
       //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
-      result = vl->aggregate( aggregate, subExpression, parameters, context, &ok, context->variable( "symbol_feature_ids" ) );
+      QgsExpressionContext context_copy = *context;
+      result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, context->variable( "symbol_feature_ids" ) );
     }
     else
     {
@@ -749,7 +750,8 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   if ( context->indexOfScope( "Symbol scope" ) != -1 )
   {
     //QgsFeatureIds *fids = context->variable( "symbol_feature_ids" )
-    result = vl->aggregate( aggregate, subExpression, parameters, context, &ok, context->variable( "symbol_feature_ids" ) );
+    QgsExpressionContext context_copy = *context;
+    result = vl->aggregate( aggregate, subExpression, parameters, &context_copy, &ok, context->variable( "symbol_feature_ids" ) );
   }
   else
   {
