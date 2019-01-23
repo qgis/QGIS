@@ -19,6 +19,7 @@
 #define QGSSTOREBADLAYERINFO_H
 
 #include "qgsprojectbadlayerhandler.h"
+#include "qgis_server.h"
 #include <QStringList>
 
 /**
@@ -26,12 +27,12 @@
  * Stores layer ids of bad layers
  * \since QGIS 3.6
  */
-class QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
+class SERVER_EXPORT QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
 {
   public:
     /*Default constructor
      */
-    QgsStoreBadLayerInfo() = default;
+    QgsStoreBadLayerInfo(){}
 
     /**
      * \brief handleBadLayers
