@@ -442,7 +442,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
   {
     if ( !mSelectionRect && !mDraggingVertex && !mDraggingEdge )
     {
-      // show popup menu - if we are on top of a feature
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         showVertexEditor();  //#spellok
@@ -462,6 +461,9 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( mNewVertexFromDoubleClick )
   {
     QgsPointLocator::Match m( *mNewVertexFromDoubleClick );
+    if ( mSelectedFeature && ( mSelectedFeature->featureId() != m.featureId() || mSelectedFeature->layer() != m.layer() ) )
+      return;  // when a feature is bound to the vector editor, only process actions on that feature
+
     mNewVertexFromDoubleClick.reset();
 
     // dragging of edges and double clicking on edges to add vertex are slightly overlapping
@@ -822,11 +824,12 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
 
   // do not use snap from mouse event, use our own with any editable layer
   QgsPointLocator::Match m = snapToEditableLayer( e );
+  bool targetIsAllowed = ( !mSelectedFeature || ( mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() ) );
 
   mLastMouseMoveMatch = m;
 
   // possibility to move a vertex
-  if ( m.type() == QgsPointLocator::Vertex )
+  if ( m.type() == QgsPointLocator::Vertex && targetIsAllowed )
   {
     updateVertexBand( m );
 
@@ -857,7 +860,7 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
   }
 
   // possibility to create new vertex here - or to move the edge
-  if ( m.type() == QgsPointLocator::Edge )
+  if ( m.type() == QgsPointLocator::Edge && targetIsAllowed )
   {
     QgsPointXY mapPoint = toMapCoordinates( e->pos() );
     bool isCircularEdge = false;
@@ -941,6 +944,7 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
   {
     if ( mFeatureBandLayer == m.layer() && mFeatureBandFid == m.featureId() )
       return;  // skip regeneration of rubber band if not needed
+
     QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
     mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
     mFeatureBandMarkers->setVisible( true );
@@ -1197,6 +1201,8 @@ void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
   QgsPointLocator::Match m = snapToEditableLayer( e );
   if ( !m.isValid() )
     return;
+  if ( mSelectedFeature && ( mSelectedFeature->featureId() != m.featureId() || mSelectedFeature->layer() != m.layer() ) )
+    return; // when a feature is bound to the vertex editor, only process actions for that feature
 
   // activate advanced digitizing dock
   setAdvancedDigitizingAllowed( true );
@@ -1636,6 +1642,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   QgsVectorLayer *dragLayer = mDraggingVertex->layer;
   QgsFeatureId dragFid = mDraggingVertex->fid;
+
   int dragVertexId = mDraggingVertex->vertexId;
   bool addingVertex = mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint;
   bool addingAtEndpoint = mDraggingVertexType == AddingEndpoint;
