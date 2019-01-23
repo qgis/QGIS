@@ -63,7 +63,6 @@
         <file>flags/sr.svg</file>
         <file>flags/te.svg</file>
         <file>flags/tl.svg</file>
-        <file>flags/zh.svg</file>
         <file>flags/zh-Hans.svg</file>
         <file>flags/zh-Hant.svg</file>
         <file>flags/ky.svg</file>
@@ -379,6 +378,7 @@
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
+        <file>themes/default/mActionShowMeshCalculator.svg</file>
         <file>themes/default/mActionShowSelectedLayers.svg</file>
         <file>themes/default/mActionSimplify.svg</file>
         <file>themes/default/mActionSplitFeatures.svg</file>
@@ -742,6 +742,8 @@
         <file>themes/default/mIconFolder24.svg</file>
         <file>themes/default/mActionNewFolder.svg</file>
         <file>themes/default/mIconFieldBool.svg</file>
+        <file>themes/default/mIconDataDefineColor.svg</file>
+        <file>themes/default/mIconDataDefineColorOn.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

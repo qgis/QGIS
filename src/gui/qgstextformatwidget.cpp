@@ -80,6 +80,9 @@ void QgsTextFormatWidget::initWidget()
   connect( chkLineOrientationDependent, &QCheckBox::toggled, this, &QgsTextFormatWidget::chkLineOrientationDependent_toggled );
   connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
 
+  const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
+  mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
+
   mPreviewScaleComboBox->setMapCanvas( mMapCanvas );
   mPreviewScaleComboBox->setShowCurrentScaleButton( true );
   connect( mPreviewScaleComboBox, &QgsScaleWidget::scaleChanged, this, &QgsTextFormatWidget::previewScaleChanged );
@@ -163,6 +166,12 @@ void QgsTextFormatWidget::initWidget()
   mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setDefaultColor( Qt::black );
+
+  mFontColorDDBtn->registerLinkedWidget( btnTextColor );
+  mBufferColorDDBtn->registerLinkedWidget( btnBufferColor );
+  mShapeStrokeColorDDBtn->registerLinkedWidget( mShapeStrokeColorBtn );
+  mShapeFillColorDDBtn->registerLinkedWidget( mShapeFillColorBtn );
+  mShadowColorDDBtn->registerLinkedWidget( mShadowColorBtn );
 
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );

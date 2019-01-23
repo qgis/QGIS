@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsstylemodel.h"
+#include "qgsstylemanagerdialog.h"
 
 #include <QInputDialog>
 #include <QCloseEvent>
@@ -104,7 +105,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     mFavorite->setHidden( true );
     mIgnoreXMLTags->setHidden( true );
 
-    pb = new QPushButton( tr( "Select by Group" ) );
+    pb = new QPushButton( tr( "Select by Group…" ) );
     buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
     connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::selectByGroup );
     tagLabel->setHidden( true );
@@ -210,158 +211,22 @@ bool QgsStyleExportImportDialog::populateStyles()
 
 void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst )
 {
-  QString symbolName;
-  QStringList symbolTags;
-  bool symbolFavorite;
-  QModelIndex index;
-  bool isSymbol = true;
-  bool prompt = true;
-  bool overwrite = true;
-
-  QStringList importTags = mSymbolTags->text().split( ',' );
-
-  QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
-  QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
-
+  QList< QgsStyleManagerDialog::ItemDetails > items;
+  items.reserve( selection->size() );
   for ( int i = 0; i < selection->size(); ++i )
   {
-    index = selection->at( i );
-    symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ), Qt::DisplayRole ).toString();
-    std::unique_ptr< QgsSymbol > symbol( src->symbol( symbolName ) );
-    std::unique_ptr< QgsColorRamp > ramp;
+    QModelIndex index = selection->at( i );
 
-    if ( !mIgnoreXMLTags->isChecked() )
-    {
-      symbolTags = src->tagsOfSymbol( !symbol ? QgsStyle::ColorrampEntity : QgsStyle::SymbolEntity, symbolName );
-    }
-    else
-    {
-      symbolTags.clear();
-    }
+    QgsStyleManagerDialog::ItemDetails details;
+    details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+    if ( details.entityType == QgsStyle::SymbolEntity )
+      details.symbolType = static_cast< QgsSymbol::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+    details.name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
 
-    if ( mDialogMode == Import )
-    {
-      symbolTags << importTags;
-      symbolFavorite = mFavorite->isChecked();
-    }
-    else
-    {
-      symbolFavorite = !symbol ? favoriteColorramps.contains( symbolName ) : favoriteSymbols.contains( symbolName );
-    }
-
-    if ( !symbol )
-    {
-      isSymbol = false;
-      ramp.reset( src->colorRamp( symbolName ) );
-    }
-
-    if ( isSymbol )
-    {
-      if ( dst->symbolNames().contains( symbolName ) && prompt )
-      {
-        mCursorOverride.reset();
-        int res = QMessageBox::warning( this, tr( "Export/import Symbols" ),
-                                        tr( "Symbol with name '%1' already exists.\nOverwrite?" )
-                                        .arg( symbolName ),
-                                        QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-        mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-        switch ( res )
-        {
-          case QMessageBox::Cancel:
-            return;
-          case QMessageBox::No:
-            continue;
-          case QMessageBox::Yes:
-          {
-            QgsSymbol *newSymbol = symbol.get();
-            dst->addSymbol( symbolName, symbol.release() );
-            dst->saveSymbol( symbolName, newSymbol, symbolFavorite, symbolTags );
-            continue;
-          }
-          case QMessageBox::YesToAll:
-            prompt = false;
-            overwrite = true;
-            break;
-          case QMessageBox::NoToAll:
-            prompt = false;
-            overwrite = false;
-            break;
-        }
-      }
-
-      if ( dst->symbolNames().contains( symbolName ) && overwrite )
-      {
-        QgsSymbol *newSymbol = symbol.get();
-        dst->addSymbol( symbolName, symbol.release() );
-        dst->saveSymbol( symbolName, newSymbol, symbolFavorite, symbolTags );
-        continue;
-      }
-      else if ( dst->symbolNames().contains( symbolName ) && !overwrite )
-      {
-        continue;
-      }
-      else
-      {
-        QgsSymbol *newSymbol = symbol.get();
-        dst->addSymbol( symbolName, symbol.release() );
-        dst->saveSymbol( symbolName, newSymbol, symbolFavorite, symbolTags );
-        continue;
-      }
-    }
-    else
-    {
-      if ( dst->colorRampNames().contains( symbolName ) && prompt )
-      {
-        mCursorOverride.reset();
-        int res = QMessageBox::warning( this, tr( "Export/import Color Ramps" ),
-                                        tr( "Color ramp with name '%1' already exists.\nOverwrite?" )
-                                        .arg( symbolName ),
-                                        QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-        mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-        switch ( res )
-        {
-          case QMessageBox::Cancel:
-            return;
-          case QMessageBox::No:
-            continue;
-          case QMessageBox::Yes:
-          {
-            QgsColorRamp *newRamp = ramp.get();
-            dst->addColorRamp( symbolName, ramp.release() );
-            dst->saveColorRamp( symbolName, newRamp, symbolFavorite, symbolTags );
-            continue;
-          }
-          case QMessageBox::YesToAll:
-            prompt = false;
-            overwrite = true;
-            break;
-          case QMessageBox::NoToAll:
-            prompt = false;
-            overwrite = false;
-            break;
-        }
-      }
-
-      if ( dst->colorRampNames().contains( symbolName ) && overwrite )
-      {
-        QgsColorRamp *newRamp = ramp.get();
-        dst->addColorRamp( symbolName, ramp.release() );
-        dst->saveColorRamp( symbolName, newRamp, symbolFavorite, symbolTags );
-        continue;
-      }
-      else if ( dst->colorRampNames().contains( symbolName ) && !overwrite )
-      {
-        continue;
-      }
-      else
-      {
-        QgsColorRamp *newRamp = ramp.get();
-        dst->addColorRamp( symbolName, ramp.release() );
-        dst->saveColorRamp( symbolName, newRamp, symbolFavorite, symbolTags );
-        continue;
-      }
-    }
+    items << details;
   }
+  QgsStyleManagerDialog::copyItems( items, src, dst, this, mCursorOverride, mDialogMode == Import,
+                                    mSymbolTags->text().split( ',' ), mFavorite->isChecked(), mIgnoreXMLTags->isChecked() );
 }
 
 QgsStyleExportImportDialog::~QgsStyleExportImportDialog()

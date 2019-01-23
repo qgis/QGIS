@@ -22,6 +22,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "models/qgsprocessingmodelalgorithm.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -43,7 +44,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   setFocusPolicy( Qt::StrongFocus );
 
   // icon size is a bit bigger than text, but minimum size of 24 so that we get pixel-aligned rendering on low-dpi screens
-  int iconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1, 24.0 ) ) );
+  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
 
   QHBoxLayout *hLayout = new QHBoxLayout();
 

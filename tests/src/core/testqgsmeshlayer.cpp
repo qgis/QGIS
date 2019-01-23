@@ -52,6 +52,7 @@ class TestQgsMeshLayer : public QObject
 
     void test_write_read_project();
     void test_read_mesh();
+    void test_read_flower_mesh();
     void test_read_bed_elevation_dataset();
     void test_read_vertex_scalar_dataset();
     void test_read_vertex_vector_dataset();
@@ -114,6 +115,17 @@ void TestQgsMeshLayer::initTestCase()
 void TestQgsMeshLayer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsMeshLayer::test_read_flower_mesh()
+{
+  QString uri( mDataDir + "/quad_flower.2dm" );
+  QgsMeshLayer layer( uri, "Quad Flower MDAL", "mdal" );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
+  QVERIFY( layer.dataProvider() != nullptr );
+  QVERIFY( layer.dataProvider()->isValid() );
+  QCOMPARE( 8, layer.dataProvider()->vertexCount() );
+  QCOMPARE( 5, layer.dataProvider()->faceCount() );
 }
 
 void TestQgsMeshLayer::test_read_mesh()

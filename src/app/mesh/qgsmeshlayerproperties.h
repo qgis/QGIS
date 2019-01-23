@@ -65,6 +65,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
 
     //! \brief Pointer to the mesh layer that this property dilog changes the behavior of.
     QgsMeshLayer *mMeshLayer = nullptr;
+
+    friend class TestQgsMeshLayerPropertiesDialog;
 };
 
 

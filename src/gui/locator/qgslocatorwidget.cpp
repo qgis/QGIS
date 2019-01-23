@@ -23,6 +23,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsguiutils.h"
 #include <QLayout>
 #include <QCompleter>
 #include <QMenu>
@@ -72,7 +73,9 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 
   mResultsView->setModel( mModelBridge->proxyModel() );
   mResultsView->setUniformRowHeights( true );
-  mResultsView->setIconSize( QSize( 16, 16 ) );
+
+  int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  mResultsView->setIconSize( QSize( iconSize, iconSize ) );
   mResultsView->recalculateSize();
   mResultsView->setContextMenuPolicy( Qt::CustomContextMenu );
 

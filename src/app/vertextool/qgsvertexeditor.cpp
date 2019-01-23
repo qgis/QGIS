@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgscoordinatetransform.h"
 
+#include <QLabel>
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QVBoxLayout>
@@ -74,7 +75,7 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsVectorLayer *layer, QgsSelectedFe
 
 int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 {
-  if ( parent.isValid() )
+  if ( parent.isValid() || !mSelectedFeature )
     return 0;
 
   return mSelectedFeature->vertexMap().count();
@@ -88,7 +89,7 @@ int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() ||
+  if ( !index.isValid() || !mSelectedFeature ||
        ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
@@ -206,7 +207,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   {
     return false;
   }
-  if ( index.row() >= mSelectedFeature->vertexMap().count() )
+  if ( !mSelectedFeature || index.row() >= mSelectedFeature->vertexMap().count() )
   {
     return false;
   }
@@ -270,7 +271,7 @@ Qt::ItemFlags QgsVertexEditorModel::flags( const QModelIndex &index ) const
 
 bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 {
-  if ( row <= 0 || row >= mSelectedFeature->vertexMap().count() - 1 )
+  if ( row <= 0 || !mSelectedFeature || row >= mSelectedFeature->vertexMap().count() - 1 )
     return false;
 
   const QgsVertexEntry *entry = mSelectedFeature->vertexMap().at( row );
@@ -301,8 +302,19 @@ QgsVertexEditor::QgsVertexEditor(
 {
   setWindowTitle( tr( "Vertex Editor" ) );
   setObjectName( QStringLiteral( "VertexEditor" ) );
-  mTableView = new QTableView( this );
 
+  QWidget *content = new QWidget( this );
+  content->setMinimumHeight( 160 );
+  QVBoxLayout *layout = new QVBoxLayout( content );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+
+  mHintLabel = new QLabel( this );
+  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on the edge of an editable feature to show its table of vertices." ),
+                       tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
+  mHintLabel->setWordWrap( true );
+  mHintLabel->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+
+  mTableView = new QTableView( this );
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
   mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( this ) );
@@ -310,30 +322,49 @@ QgsVertexEditor::QgsVertexEditor(
   mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( this ) );
   mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( this ) );
   mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( this ) );
+  mTableView->setVisible( false );
 
-  setWidget( mTableView );
+  layout->addWidget( mTableView );
+  layout->addWidget( mHintLabel );
+
+  setWidget( content );
 
   updateEditor( layer, selectedFeature );
 }
 
 void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature )
 {
-  delete mVertexModel;
+  if ( mSelectedFeature )
+  {
+    delete mVertexModel;
+    mVertexModel = nullptr;
+  }
 
   mLayer = layer;
   mSelectedFeature = selectedFeature;
 
-  // TODO We really should just update the model itself.
-  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
-  mTableView->setModel( mVertexModel );
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+  if ( mLayer && mSelectedFeature )
+  {
+    // TODO We really should just update the model itself.
+    mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+    mTableView->setModel( mVertexModel );
 
-  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+    mHintLabel->setVisible( false );
+    mTableView->setVisible( true );
+
+    connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+    connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+  }
+  else
+  {
+    mHintLabel->setVisible( true );
+    mTableView->setVisible( false );
+  }
 }
 
 void QgsVertexEditor::updateTableSelection()
 {
-  if ( mUpdatingVertexSelection )
+  if ( !mSelectedFeature || mUpdatingVertexSelection )
     return;
 
   mUpdatingTableSelection = true;
@@ -360,7 +391,7 @@ void QgsVertexEditor::updateTableSelection()
 
 void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
 {
-  if ( mUpdatingTableSelection )
+  if ( !mSelectedFeature || mUpdatingTableSelection )
     return;
 
   mUpdatingVertexSelection = true;

@@ -191,6 +191,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     Q_GADGET
 
     Q_PROPERTY( QgsUnitTypes::DistanceUnit mapUnits READ mapUnits )
+    Q_PROPERTY( bool isGeographic READ isGeographic )
 
   public:
 

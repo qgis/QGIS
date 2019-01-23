@@ -720,6 +720,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   {
     QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
+    dlg->setPanelTitle( category.label() );
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
     connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
     openPanel( dlg );

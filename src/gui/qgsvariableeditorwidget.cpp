@@ -263,7 +263,6 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setIconSize( QSize( 18, 18 ) );
   setColumnCount( 2 );
   setHeaderLabels( QStringList() << tr( "Variable" ) << tr( "Value" ) );
-  setAlternatingRowColors( true );
   setEditTriggers( QAbstractItemView::AllEditTriggers );
   setRootIsDecorated( false );
   header()->setSectionsMovable( false );
@@ -478,9 +477,19 @@ void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewIt
   if ( index.parent().isValid() )
   {
     //not a top-level item, so shade row background by context
-    const QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
+    QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
+    if ( index.row() % 2 == 1 )
+    {
+      baseColor = baseColor.lighter( 110 );
+    }
     painter->fillRect( option.rect, baseColor );
-    opt.palette.setColor( QPalette::AlternateBase, baseColor.lighter( 110 ) );
+
+    //declare custom text color since we've overwritten default background color
+    QPalette pal = opt.palette;
+    pal.setColor( QPalette::Active, QPalette::Text, Qt::black );
+    pal.setColor( QPalette::Inactive, QPalette::Text, Qt::black );
+    pal.setColor( QPalette::Disabled, QPalette::Text, Qt::gray );
+    opt.palette = pal;
   }
   QTreeWidget::drawRow( painter, opt, index );
   QColor color = static_cast<QRgb>( QApplication::style()->styleHint( QStyle::SH_Table_GridLineColor, &opt ) );

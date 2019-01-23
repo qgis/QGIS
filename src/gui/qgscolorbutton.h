@@ -271,6 +271,40 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     QgsColorSchemeRegistry *colorSchemeRegistry() { return mColorSchemeRegistry; }
 
+    /**
+     * Sets the button to link to an existing project color, by color \a name.
+     *
+     * This changes the behavior of the button to a "linked" mode. Specifically,
+     * the button will show the linked color and respond to changes in the project
+     * color scheme by refreshing the displayed color automatically. Additionally,
+     * the button's menu will show items specific to linked color mode, including
+     * an option to "unlink" from the project color.
+     *
+     * \see linkedProjectColorName()
+     * \see unlink()
+     *
+     * \since QGIS 3.6
+     */
+    void linkToProjectColor( const QString &name );
+
+    /**
+     * Returns the linked project color name, if set.
+     *
+     * \see linkToProjectColor()
+     * \since QGIS 3.6
+     */
+    QString linkedProjectColorName() const { return mLinkedColorName; }
+
+    /**
+     * Creates an icon for displaying a \a color in a drop-down menu.
+     *
+     * If \a showChecks set to true, then a checkboard pattern will be shown behind
+     * semi-transparent colors.
+     *
+     * \since QGIS 3.6
+     */
+    static QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
+
   public slots:
 
     /**
@@ -333,6 +367,16 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setToNull();
 
+    /**
+     * Unlinks the button from a project color.
+     *
+     * \see unlinked()
+     * \see linkToProjectColor()
+     *
+     * \since QGIS 3.6
+     */
+    void unlink();
+
   signals:
 
     /**
@@ -349,6 +393,17 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see behavior
      */
     void colorClicked( const QColor &color );
+
+    /**
+     * Emitted when the color is unlinked, e.g. when it was previously set to link
+     * to a project color and is now no longer linked.
+     *
+     * \see unlink()
+     * \see linkToProjectColor()
+     *
+     * \since QGIS 3.6
+     */
+    void unlinked();
 
   protected:
 
@@ -429,6 +484,8 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QMenu *mMenu = nullptr;
 
     QSize mIconSize;
+    QString mLinkedColorName;
+    bool mShowMenu = true;
 
     /**
      * Attempts to parse mimeData as a color, either via the mime data's color data or by
@@ -448,13 +505,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void stopPicking( QPoint eventPos, bool samplingColor = true );
 
-    /**
-     * Create a color icon for display in the drop-down menu
-     * \param color for icon
-     * \param showChecks set to true to display a checkboard pattern behind
-     * transparent colors
-     */
-    QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
+    QColor linkedProjectColor() const;
 
   private slots:
 

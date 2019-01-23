@@ -28,10 +28,10 @@ QgsValidityCheckRegistry::~QgsValidityCheckRegistry()
 QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks() const
 {
   QList<const QgsAbstractValidityCheck *> results;
-  for ( const QPointer< QgsAbstractValidityCheck > &check : mChecks )
+  for ( const QgsAbstractValidityCheck *check : mChecks )
   {
     if ( check )
-      results.append( check.data() );
+      results.append( check );
   }
   return results;
 }
@@ -39,10 +39,10 @@ QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks() const
 QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks( int type ) const
 {
   QList< const QgsAbstractValidityCheck * > results;
-  for ( const QPointer< QgsAbstractValidityCheck > &check : mChecks )
+  for ( const QgsAbstractValidityCheck *check : mChecks )
   {
     if ( check && check->checkType() == type )
-      results << check.data();
+      results << check;
   }
   return results;
 }

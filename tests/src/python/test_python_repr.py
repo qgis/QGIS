@@ -18,7 +18,7 @@ from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
-    QgsMimeDataUtils
+    QgsMimeDataUtils, QgsVector, QgsVector3D
 
 start_app()
 
@@ -123,6 +123,13 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsRectangleRepr(self):
         r = QgsRectangle(1, 2, 3, 4)
         self.assertEqual(r.__repr__(), '<QgsRectangle: 1 2, 3 4>')
+
+    def testQgsVector(self):
+        v = QgsVector(1, 2)
+        self.assertEqual(v.__repr__(), '<QgsVector: Vector (1, 2)>')
+
+        v = QgsVector3D(1, 2, 3)
+        self.assertEqual(v.__repr__(), '<QgsVector3D: Vector3D (1, 2, 3)>')
 
     def testQgsExpressionRepr(self):
         e = QgsExpression('my expression')

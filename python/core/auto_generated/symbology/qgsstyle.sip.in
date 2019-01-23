@@ -461,6 +461,16 @@ Exports the style as a XML file
 Imports the symbols and colorramps into the default style database from the given XML file
 %End
 
+    static bool isXmlStyleFile( const QString &path );
+%Docstring
+Tests if the file at ``path`` is a QGIS style XML file.
+
+This method samples only the first line in the file, so is safe to call on
+large xml files.
+
+.. versionadded:: 3.6
+%End
+
   signals:
 
     void symbolSaved( const QString &name, QgsSymbol *symbol );

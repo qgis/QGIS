@@ -319,6 +319,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets a data defined property for the layer. Any existing property with the same key
      * will be overwritten.
      * \see dataDefinedProperties()
+     * \see Property
      * \since QGIS 3.0
      */
     virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
@@ -377,6 +378,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
+     * \see Property
      * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
@@ -395,6 +397,13 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
+     * Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+     *
+     * \since QGIS 3.4.5
+     */
+    virtual bool hasDataDefinedProperties() const;
 
   protected:
 

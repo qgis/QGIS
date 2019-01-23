@@ -106,6 +106,9 @@ struct QgsGeometryPrivate;
 class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
+    Q_PROPERTY( bool isNull READ isNull )
+    Q_PROPERTY( QgsWkbTypes::GeometryType type READ type )
+
   public:
 
     /**
@@ -207,7 +210,7 @@ class CORE_EXPORT QgsGeometry
      * \see isEmpty()
      * \since QGIS 2.10
      */
-    Q_INVOKABLE bool isNull() const;
+    bool isNull() const;
 
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString &wkt );
@@ -1552,23 +1555,135 @@ class CORE_EXPORT QgsGeometry
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
-     * Returns contents of the geometry as a multi point
-     * if wkbType is WKBMultiPoint, otherwise an empty list
+     * Returns the contents of the geometry as a multi-point.
+     *
+     * Any z or m values present in the geometry will be discarded.
+     *
+     * \warning If the geometry is not a multi-point type, an empty list will be returned.
      */
     QgsMultiPointXY asMultiPoint() const;
+#else
 
     /**
-     * Returns contents of the geometry as a multi linestring
-     * if wkbType is WKBMultiLineString, otherwise an empty list
+     * Returns the contents of the geometry as a multi-point.
+     *
+     * Any z or m values present in the geometry will be discarded.
+     *
+     * This method works only with multi-point geometry types. If the geometry
+     * is not a multi-point type, a TypeError will be raised. If the geometry is null, a ValueError
+     * will be raised.
+     */
+    SIP_PYOBJECT asMultiPoint() const SIP_TYPEHINT( QgsMultiPointXY );
+    % MethodCode
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipoint." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::PointGeometry || !QgsWkbTypes::isMultiType( type ) )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector< QgsPointXY >" );
+      sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asMultiPoint() ), qvector_type, Py_None );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the contents of the geometry as a multi-linestring.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
+     * (such as a MultiCurve), it will be automatically segmentized.
+     *
+     * \warning If the geometry is not a multi-linestring (or multi-curve linestring) type, an empty list will be returned.
      */
     QgsMultiPolylineXY asMultiPolyline() const;
+#else
 
     /**
-     * Returns contents of the geometry as a multi polygon
-     * if wkbType is WKBMultiPolygon, otherwise an empty list
+     * Returns the contents of the geometry as a multi-linestring.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
+     * (such as a MultiCurve), it will be automatically segmentized.
+     *
+     * This method works only with multi-linestring (or multi-curve) geometry types. If the geometry
+     * is not a multi-linestring type, a TypeError will be raised. If the geometry is null, a ValueError
+     * will be raised.
+     */
+    SIP_PYOBJECT asMultiPolyline() const SIP_TYPEHINT( QgsMultiPolylineXY );
+    % MethodCode
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multilinestring." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::LineGeometry || !QgsWkbTypes::isMultiType( type ) )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QgsPointXY>>" );
+      sipRes = sipConvertFromNewType( new QgsMultiPolylineXY( sipCpp->asMultiPolyline() ), qvector_type, Py_None );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the contents of the geometry as a multi-polygon.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
+     * (such as a MultiSurface), it will be automatically segmentized.
+     *
+     * \warning If the geometry is not a multi-polygon (or multi-curve polygon) type, an empty list will be returned.
      */
     QgsMultiPolygonXY asMultiPolygon() const;
+#else
+
+    /**
+     * Returns the contents of the geometry as a multi-polygon.
+     *
+     * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
+     * (such as a MultiSurface), it will be automatically segmentized.
+     *
+     * This method works only with multi-polygon (or multi-curve polygon) geometry types. If the geometry
+     * is not a multi-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
+     * will be raised.
+     */
+    SIP_PYOBJECT asMultiPolygon() const SIP_TYPEHINT( QgsMultiPolygonXY );
+    % MethodCode
+    const QgsWkbTypes::Type type = sipCpp->wkbType();
+    if ( sipCpp->isNull() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipolygon." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsWkbTypes::geometryType( type ) != QgsWkbTypes::PolygonGeometry || !QgsWkbTypes::isMultiType( type ) )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QVector<QgsPointXY>>>" );
+      sipRes = sipConvertFromNewType( new QgsMultiPolygonXY( sipCpp->asMultiPolygon() ), qvector_type, Py_None );
+    }
+    % End
+#endif
 
     /**
      * Returns contents of the geometry as a list of geometries

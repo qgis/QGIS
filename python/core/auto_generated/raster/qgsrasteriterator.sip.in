@@ -35,6 +35,28 @@ Start reading of raster band. Raster data can then be retrieved by calling readN
 :param feedback: optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
 %End
 
+    bool next( int bandNumber, int &columns /Out/, int &rows /Out/, int &topLeftColumn /Out/, int &topLeftRow /Out/, QgsRectangle &blockExtent /Out/ );
+%Docstring
+Fetches details of the next part of the raster data. This method does NOT actually fetch the raster
+data itself, rather it calculates and iterates over the details of the raster alone.
+
+It's useful for iterating over several layers using a target "reference" layer. E.g. summing
+the pixels in n rasters whilst aligning the result to a reference layer which is not being summed.
+
+Note that calling this method also advances the iterator, just like calling readNextRasterPart().
+
+:param bandNumber: band to read
+:param rows: number of rows on output device
+:param topLeftColumn: top left column
+:param topLeftRow: top left row
+:param blockExtent: exact extent of returned raster block
+
+:return: - false if the last part was already returned
+         - columns:  number of columns on output device
+
+.. versionadded:: 3.6
+%End
+
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
                              QgsRasterBlock **block,

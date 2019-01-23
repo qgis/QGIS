@@ -33,6 +33,7 @@
 #include "qgssurface.h"
 #include "qgsunittypes.h"
 #include "qgsexception.h"
+#include "qgsmultilinestring.h"
 
 #include <geodesic.h>
 
@@ -456,7 +457,7 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
 
-double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, const QgsPointXY &pp2, double &fractionAlongLine ) const
+double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &pp1, const QgsPointXY &pp2, double &fractionAlongLine ) const
 {
   QgsPointXY p1 = pp1;
   QgsPointXY p2 = pp2;
@@ -475,6 +476,14 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
   double lat = p2y;
   double lon = p2x;
 
+  if ( mEllipsoid == GEO_NONE )
+  {
+    fractionAlongLine = ( 180 - p1x ) / ( p2x - p1x );
+    if ( p1.x() >= 180 )
+      fractionAlongLine = 1 - fractionAlongLine;
+    return p1y + ( 180 - p1x ) / ( p2x - p1x ) * ( p2y - p1y );
+  }
+
   geod_geodesic geod;
   geod_init( &geod, mSemiMajor, 1 / mInvFlattening );
 
@@ -486,7 +495,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
 
   int iterations = 0;
   double t = 0;
-  // iterate until our intersection candidate is within ~1 mm of the date line (or too many iterations happened)
+  // iterate until our intersection candidate is within ~1 mm of the antimeridian (or too many iterations happened)
   while ( std::fabs( lon - 180.0 ) > 0.00000001 && iterations < 100 )
   {
     if ( iterations > 0 && std::fabs( p2x - p1x ) > 5 )
@@ -515,7 +524,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
       intersectionDist *= ( 180.0 - p1x ) / ( lon - p1x );
     }
 
-    // now work out the point on the geodesic this far from p1 - this becomes our new candidate for crossing the date line
+    // now work out the point on the geodesic this far from p1 - this becomes our new candidate for crossing the antimeridian
 
     geod_position( &line, intersectionDist, &lat, &lon, &t );
     // we don't want to wrap longitudes > 180 around)
@@ -527,10 +536,139 @@ double QgsDistanceArea::latitudeGeodesicCrossesDateLine( const QgsPointXY &pp1, 
   }
 
   fractionAlongLine = intersectionDist / totalDist;
+  if ( p1.x() >= 180 )
+    fractionAlongLine = 1 - fractionAlongLine;
 
   // either converged on 180 longitude or hit too many iterations
   return lat;
 }
+
+QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const
+{
+  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != QgsWkbTypes::LineGeometry )
+    return geometry;
+
+  QgsGeometry g = geometry;
+  // TODO - avoid segmentization of curved geometries (if this is even possible!)
+  if ( QgsWkbTypes::isCurvedType( g.wkbType() ) )
+    g.convertToStraightSegment();
+
+  std::unique_ptr< QgsMultiLineString > res = qgis::make_unique< QgsMultiLineString >();
+  for ( auto part = g.const_parts_begin(); part != g.const_parts_end(); ++part )
+  {
+    const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *part );
+    if ( !line )
+      continue;
+    if ( line->isEmpty() )
+    {
+      continue;
+    }
+
+    std::unique_ptr< QgsLineString > l = qgis::make_unique< QgsLineString >();
+    try
+    {
+      double x = 0;
+      double y = 0;
+      double z = 0;
+      double m = 0;
+      QVector< QgsPoint > newPoints;
+      newPoints.reserve( line->numPoints() );
+      double prevLon = 0;
+      double prevLat = 0;
+      double lon = 0;
+      double lat = 0;
+      double prevZ = 0;
+      double prevM = 0;
+      for ( int i = 0; i < line->numPoints(); i++ )
+      {
+        QgsPoint p = line->pointN( i );
+        x = p.x();
+        if ( mCoordTransform.sourceCrs().isGeographic() )
+        {
+          x = std::fmod( x, 360.0 );
+          if ( x > 180 )
+            x -= 360;
+          p.setX( x );
+        }
+        y = p.y();
+        lon = x;
+        lat = y;
+        mCoordTransform.transformInPlace( lon, lat, z );
+
+        //test if we crossed the antimeridian in this segment
+        if ( i > 0 && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon  < -120 ) ) )
+        {
+          // we did!
+          // when crossing the antimeridian, we need to calculate the latitude
+          // at which the geodesic intersects the antimeridian
+          double fract = 0;
+          double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fract );
+          if ( line->is3D() )
+          {
+            z = prevZ + ( p.z() - prevZ ) * fract;
+          }
+          if ( line->isMeasure() )
+          {
+            m = prevM + ( p.m() - prevM ) * fract;
+          }
+
+          QgsPointXY antiMeridianPoint;
+          if ( prevLon < -120 )
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          else
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+
+          QgsPoint newPoint( antiMeridianPoint );
+          if ( line->is3D() )
+            newPoint.addZValue( z );
+          if ( line->isMeasure() )
+            newPoint.addMValue( m );
+
+          if ( std::isfinite( newPoint.x() ) && std::isfinite( newPoint.y() ) )
+          {
+            newPoints << newPoint;
+          }
+          res->addGeometry( new QgsLineString( newPoints ) );
+
+          newPoints.clear();
+          newPoints.reserve( line->numPoints() - i + 1 );
+
+          if ( lon < -120 )
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( -180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+          else
+            antiMeridianPoint = mCoordTransform.transform( QgsPointXY( 180, lat180 ), QgsCoordinateTransform::ReverseTransform );
+
+          if ( std::isfinite( antiMeridianPoint.x() ) && std::isfinite( antiMeridianPoint.y() ) )
+          {
+            // we want to keep the previously calculated z/m value for newPoint, if present. They're the same each
+            // of the antimeridian split
+            newPoint.setX( antiMeridianPoint.x() );
+            newPoint.setY( antiMeridianPoint.y() );
+            newPoints << newPoint;
+          }
+        }
+        newPoints << p;
+
+        prevLon = lon;
+        prevLat = lat;
+        if ( line->is3D() )
+          prevZ = p.z();
+        if ( line->isMeasure() )
+          prevM = p.m();
+      }
+      res->addGeometry( new QgsLineString( newPoints ) );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform linestring. Unable to calculate break point." ) );
+      res->addGeometry( line->clone() );
+      break;
+    }
+  }
+
+  return QgsGeometry( std::move( res ) );
+}
+
 
 QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
 {
@@ -562,8 +700,8 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
   QVector< QgsPointXY > currentPart;
   currentPart << p1;
   double d = interval;
-  double prevLon = p1.x();
-  double prevLat = p1.y();
+  double prevLon = pp1.x();
+  double prevLat = pp1.y();
   bool lastRun = false;
   double t = 0;
   while ( true )
@@ -583,11 +721,11 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
 
     if ( breakLine && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon < -120 ) ) )
     {
-      // when breaking the geodesic at the date line, we need to calculate the latitude
-      // at which the geodesic intersects the date line, and add points to both line segments at this latitude
-      // on the date line.
+      // when breaking the geodesic at the antimeridian, we need to calculate the latitude
+      // at which the geodesic intersects the antimeridian, and add points to both line segments at this latitude
+      // on the antimeridian.
       double fraction;
-      double lat180 = latitudeGeodesicCrossesDateLine( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
+      double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
 
       try
       {

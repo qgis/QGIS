@@ -67,7 +67,8 @@ typedef SInt32 SRefCon;
 #include <limits.h>
 #endif
 
-#if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+#if defined(__GLIBC__) || defined(__FreeBSD__)
+#define QGIS_CRASH
 #include <unistd.h>
 #include <execinfo.h>
 #include <csignal>
@@ -217,7 +218,7 @@ static void dumpBacktrace( unsigned int depth )
   if ( depth == 0 )
     depth = 20;
 
-#if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
   // Below there is a bunch of operations that are not safe in multi-threaded
   // environment (dup()+close() combo, wait(), juggling with file descriptors).
   // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
@@ -292,7 +293,7 @@ static void dumpBacktrace( unsigned int depth )
 #endif
 }
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
 void qgisCrash( int signal )
 {
   fprintf( stderr, "QGIS died on signal %d", signal );
@@ -403,7 +404,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       myPrint( "Fatal: %s\n", msg );
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
       qgisCrash( -1 );
 #else
       dumpBacktrace( 256 );
@@ -484,7 +485,7 @@ int main( int argc, char *argv[] )
   qInstallMsgHandler( myMessageOutput );
 #endif
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#ifdef QGIS_CRASH
   signal( SIGQUIT, qgisCrash );
   signal( SIGILL, qgisCrash );
   signal( SIGFPE, qgisCrash );

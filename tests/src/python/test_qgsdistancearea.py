@@ -627,90 +627,119 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceUnknownUnit, False), '1.0')
         QLocale.setDefault(QLocale.system())
 
-    def testGeodesicIntersectionAtDateLine(self):
+    def testGeodesicIntersectionAtAntimeridian(self):
         da = QgsDistanceArea()
         crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         da.setSourceCrs(crs, QgsProject.instance().transformContext())
         da.setEllipsoid("WGS84")
 
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(0, 0), QgsPointXY(-170, 0))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(0, 0), QgsPointXY(-170, 0))
         self.assertAlmostEqual(lat, 0, 5)
         self.assertAlmostEqual(fract, 0, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-170, 0), QgsPointXY(170, 0))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-170, 0), QgsPointXY(170, 0))
         self.assertAlmostEqual(lat, 0, 5)
         self.assertAlmostEqual(fract, 0.5, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(179, 0), QgsPointXY(181, 0))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(179, 0), QgsPointXY(181, 0))
         self.assertAlmostEqual(lat, 0, 5)
         self.assertAlmostEqual(fract, 0.5, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-170, 0), QgsPointXY(170, 0))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-170, 0), QgsPointXY(170, 0))
         self.assertAlmostEqual(lat, 0, 5)
         self.assertAlmostEqual(fract, 0.5, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(180, 0), QgsPointXY(180, 0))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(180, 0), QgsPointXY(180, 0))
         self.assertAlmostEqual(lat, 0, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(180, -10), QgsPointXY(180, -10))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(180, -10), QgsPointXY(180, -10))
         self.assertAlmostEqual(lat, -10, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(171, 0), QgsPointXY(181, 0))
+        self.assertAlmostEqual(lat, 0, 5)
+        self.assertAlmostEqual(fract, 0.9, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(181, 0), QgsPointXY(171, 0))
+        self.assertAlmostEqual(lat, 0, 5)
+        self.assertAlmostEqual(fract, 0.1, 5)
 
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(138.26237, -20.314687), QgsPointXY(-151.6, -77.8))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(138.26237, -20.314687), QgsPointXY(-151.6, -77.8))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
         self.assertAlmostEqual(fract, 0.007113545719515548, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(138.26237, -20.314687), QgsPointXY(-151.6 + 360, -77.8))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(138.26237, -20.314687), QgsPointXY(-151.6 + 360, -77.8))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
         self.assertAlmostEqual(fract, 0.007113545719515548, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-151.6, -77.8), QgsPointXY(138.26237, -20.314687))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-151.6, -77.8), QgsPointXY(138.26237, -20.314687))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.007113545719515548, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(170.60188754234980024, -70.81368329001529105),
-                                                        QgsPointXY(-164.61259948055175073, -76.66761193248410677))
+        self.assertAlmostEqual(fract, 0.9928864542804845, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(170.60188754234980024, -70.81368329001529105),
+                                                            QgsPointXY(-164.61259948055175073, -76.66761193248410677))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
         self.assertAlmostEqual(fract, 0.0879577697523441, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-164.61259948055175073, -76.66761193248410677),
-                                                        QgsPointXY(170.60188754234980024,
-                                                                   -70.81368329001529105))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-164.61259948055175073, -76.66761193248410677),
+                                                            QgsPointXY(170.60188754234980024,
+                                                                       -70.81368329001529105))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.0879577697523441, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(178.44469761238570982, -73.47820480021761114),
-                                                        QgsPointXY(-179.21026002627399976, -74.08952948682963324))
-        self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.6713541474159178, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-179.21026002627399976, -74.08952948682963324),
-                                                        QgsPointXY(178.44469761238570982,
-                                                                   -73.47820480021761114))
+        self.assertAlmostEqual(fract, 0.9120422302476558, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(178.44469761238570982, -73.47820480021761114),
+                                                            QgsPointXY(-179.21026002627399976, -74.08952948682963324))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
         self.assertAlmostEqual(fract, 0.6713541474159178, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(179.83103440731269984, -73.8481044794813215),
-                                                        QgsPointXY(-179.93191793815378787, -73.90885909527753483))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-179.21026002627399976, -74.08952948682963324),
+                                                            QgsPointXY(178.44469761238570982,
+                                                                       -73.47820480021761114))
+        self.assertAlmostEqual(lat, -73.89148222666744914, 5)
+        self.assertAlmostEqual(fract, 0.3286458525840822, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(179.83103440731269984, -73.8481044794813215),
+                                                            QgsPointXY(-179.93191793815378787, -73.90885909527753483))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
         self.assertAlmostEqual(fract, 0.7135414998986486, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-179.93191793815378787, -73.90885909527753483),
-                                                        QgsPointXY(179.83103440731269984, -73.8481044794813215))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-179.93191793815378787, -73.90885909527753483),
+                                                            QgsPointXY(179.83103440731269984, -73.8481044794813215))
         self.assertAlmostEqual(lat, -73.89148222666744914, 5)
-        self.assertAlmostEqual(fract, 0.7135414998986486, 5)
+        self.assertAlmostEqual(fract, 0.28645850010135143, 5)
 
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(179.92498611649580198, 7.24703528617311754),
-                                                        QgsPointXY(-178.20070563806575592, 16.09649962419504732))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(179.92498611649580198, 7.24703528617311754),
+                                                            QgsPointXY(-178.20070563806575592, 16.09649962419504732))
         self.assertAlmostEqual(lat, 7.6112109902580265, 5)
         self.assertAlmostEqual(fract, 0.04111771567489498, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-178.20070563806575592, 16.09649962419504732),
-                                                        QgsPointXY(179.92498611649580198, 7.24703528617311754))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-178.20070563806575592, 16.09649962419504732),
+                                                            QgsPointXY(179.92498611649580198, 7.24703528617311754))
         self.assertAlmostEqual(lat, 7.6112109902580265, 5)
-        self.assertAlmostEqual(fract, 0.04111771567489498, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(175.76717768974583578, 8.93749416467257873),
-                                                        QgsPointXY(-175.15030911497356669, 8.59851183021221033))
+        self.assertAlmostEqual(fract, 0.958882284325105, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(360 - 178.20070563806575592, 16.09649962419504732),
+                                                            QgsPointXY(179.92498611649580198, 7.24703528617311754))
+        self.assertAlmostEqual(lat, 7.6112109902580265, 5)
+        self.assertAlmostEqual(fract, 0.95888228432510, 5)
+
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(175.76717768974583578, 8.93749416467257873),
+                                                            QgsPointXY(-175.15030911497356669, 8.59851183021221033))
         self.assertAlmostEqual(lat, 8.80683758146703966, 5)
         self.assertAlmostEqual(fract, 0.46581637044475815, 5)
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-175.15030911497356669, 8.59851183021221033),
-                                                        QgsPointXY(175.76717768974583578,
-                                                                   8.93749416467257873))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175.15030911497356669, 8.59851183021221033),
+                                                            QgsPointXY(175.76717768974583578,
+                                                                       8.93749416467257873))
         self.assertAlmostEqual(lat, 8.80683758146703966, 5)
-        self.assertAlmostEqual(fract, 0.46581637044475815, 5)
+        self.assertAlmostEqual(fract, 0.5341836295552418, 5)
 
         # calculation should be ellipsoid dependent!
         da.setEllipsoid("Phobos2000")
-        lat, fract = da.latitudeGeodesicCrossesDateLine(QgsPointXY(-175.15030911497356669, 8.59851183021221033),
-                                                        QgsPointXY(175.76717768974583578,
-                                                                   8.93749416467257873))
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175.15030911497356669, 8.59851183021221033),
+                                                            QgsPointXY(175.76717768974583578,
+                                                                       8.93749416467257873))
         self.assertAlmostEqual(lat, 8.836479503936307, 5)
-        self.assertAlmostEqual(fract, 0.46593364650414865, 5)
+        self.assertAlmostEqual(fract, 0.5340663534958514, 5)
+
+        # no ellipsoid
+        da.setEllipsoid("NONE")
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175, 8),
+                                                            QgsPointXY(175,
+                                                                       9))
+        self.assertAlmostEqual(lat, 8.5, 5)
+        self.assertAlmostEqual(fract, 0.5, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(165, 8),
+                                                            QgsPointXY(-175,
+                                                                       9))
+        self.assertAlmostEqual(lat, 8.75, 5)
+        self.assertAlmostEqual(fract, 0.75, 5)
+        lat, fract = da.latitudeGeodesicCrossesAntimeridian(QgsPointXY(-175, 8),
+                                                            QgsPointXY(165,
+                                                                       9))
+        self.assertAlmostEqual(lat, 8.25, 5)
+        self.assertAlmostEqual(fract, 0.25, 5)
 
     def testGeodesicLine(self):
         da = QgsDistanceArea()
@@ -762,6 +791,77 @@ class TestQgsDistanceArea(unittest.TestCase):
                                                             1000000, True))
         self.assertEqual(g.asWkt(0),
                          'MultiLineString ((-13536427 14138932, -16514348 11691516, -17948849 9406595, -18744235 7552985, -19255354 6014890, -19622372 4688888, -19909239 3505045, -20037508 2933522),(20037508 2933522, 19925702 2415579, 19712755 1385803, 19513769 388441, 19318507 -600065, 19117459 -1602293, 18899973 -2642347, 18651869 -3748726, 18351356 -4958346, 17960498 -6322823, 17404561 -7918366, 16514601 -9855937, 14851845 -12232940, 13760912 -13248201))')
+        g = QgsGeometry.fromMultiPolylineXY(da.geodesicLine(QgsPointXY(18933544, -5448034), QgsPointXY(-11638480, 3962206),
+                                                            1000000, True))
+        self.assertEqual(g.asWkt(0),
+                         'MultiLineString ((18933544 -5448034, 20037508 -4772933),(-20037508 -4772933, -20002064 -4748323, -19015781 -3988451, -18153035 -3204936, -17383137 -2416816, -16678635 -1632067, -16015884 -852355, -15374147 -76043, -14734258 699941, -14077193 1478790, -13382634 2262546, -12627598 3050380, -11785404 3835868, -11638480 3962206))')
+
+    def testSplitGeometryAtAntimeridian(self):
+        da = QgsDistanceArea()
+        crs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        da.setSourceCrs(crs, QgsProject.instance().transformContext())
+        da.setEllipsoid("WGS84")
+
+        # noops
+        g = da.splitGeometryAtAntimeridian(QgsGeometry())
+        self.assertTrue(g.isNull())
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('Point(1 2)'))
+        self.assertEqual(g.asWkt(), 'Point (1 2)')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('MultiPoint(1 2, 3 4)'))
+        self.assertEqual(g.asWkt(), 'MultiPoint ((1 2),(3 4))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('PointZ(1 2 3)'))
+        self.assertEqual(g.asWkt(), 'PointZ (1 2 3)')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('PointM(1 2 3)'))
+        self.assertEqual(g.asWkt(), 'PointM (1 2 3)')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString()'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ()')
+
+        # lines
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(0 0, -170 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((0 0, -170 0))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(-170 0, 0 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((-170 0, 0 0))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(179 0, -179 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((179 0, 180 0),(-180 0, -179 0))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(179 0, 181 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((179 0, 180 0),(-180 0, -179 0))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(-179 0, 179 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((-179 0, -180 0),(180 0, 179 0))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(181 0, 179 0)'))
+        self.assertEqual(g.asWkt(), 'MultiLineString ((-179 0, -180 0),(180 0, 179 0))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(179 10, -179 -20)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 10, 180 -5.362),(-180 -5.362, -179 -20))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(179 -80, -179 70)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 -80, 180 -55.685),(-180 -55.685, -179 70))')
+
+        # multiline input
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('MultiLineString((1 10, 50 30),(179 -80, -179 70))'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((1 10, 50 30),(179 -80, 180 -55.685),(-180 -55.685, -179 70))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('MultiLineString((1 10, 50 30),(179 -80, 179.99 70))'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((1 10, 50 30),(179 -80, 179.99 70))')
+
+        # with z/m
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineStringZ(179 -80 1, -179 70 10)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineStringM(179 -80 1, -179 70 10)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringM ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineStringZM(179 -80 1 -4, -179 70 10 -30)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringZM ((179 -80 1 -4, 180 -55.685 2.466 -8.234),(-180 -55.685 2.466 -8.234, -179 70 10 -30))')
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('MultiLineStringZ((179 -80 1, -179 70 10),(-170 -5 1, -181 10 5))'))
+        self.assertEqual(g.asWkt(3), 'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10),(-170 -5 1, -181 10 5))')
+
+        # different ellipsoid - should change intersection latitude
+        da.setEllipsoid("Phobos2000")
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString(179 10, -179 -20)'))
+        self.assertEqual(g.asWkt(3), 'MultiLineString ((179 10, 180 -5.459),(-180 -5.459, -179 -20))')
+
+        # with reprojection
+        da.setEllipsoid("WGS84")
+        # with reprojection
+        da.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext())
+
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString( -13536427 14138932, 13760912 -13248201)'))
+        self.assertEqual(g.asWkt(1), 'MultiLineString ((-13536427 14138932, -20037508.3 2933521.7),(20037508.3 2933521.7, 13760912 -13248201))')
 
 
 if __name__ == '__main__':

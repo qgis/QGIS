@@ -32,6 +32,7 @@ matrix:
       # QGIS TESTS ON BIONIC
       ##########################################################
     - os: linux
+      name: building and testing on linux
       if: type != cron
       services: docker
       env:
@@ -44,6 +45,7 @@ matrix:
       # CODE LAYOUT
       ##########################################################
     - os: linux
+      name: code layout
       if: type != cron
       env:
         - TRAVIS_CONFIG=code_layout
@@ -93,6 +95,7 @@ matrix:
       # BIONIC DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
+      name: bionic docker build
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:
@@ -105,6 +108,7 @@ matrix:
       # COSMIC DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
+      name: cosmic docker build
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       env:

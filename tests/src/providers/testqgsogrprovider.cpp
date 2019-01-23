@@ -130,6 +130,5 @@ void TestQgsOgrProvider::decodeUri()
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
 
-
 QGSTEST_MAIN( TestQgsOgrProvider )
 #include "testqgsogrprovider.moc"

@@ -977,6 +977,40 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         QgsProject.instance().removeMapLayer(ml)
 
+    def testUpdatedFields(self):
+        """Test when referenced layer update its fields
+        https://issues.qgis.org/issues/20893
+        """
+
+        ml = QgsVectorLayer("Point?srid=EPSG:4326&field=a:int", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setGeometry(QgsGeometry.fromWkt('POINT(2 3)'))
+        ml.addFeatures([f1])
+        ml.commitChanges()
+
+        vl = QgsVectorLayer("?query=select a, geometry from mem", "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+
+        # add one more field
+        ml.dataProvider().addAttributes([QgsField('newfield', QVariant.Int)])
+        ml.updateFields()
+
+        self.assertEqual(ml.featureCount(), vl.featureCount())
+        self.assertEqual(vl.fields().count(), 1)
+
+        geometry = next(vl.getFeatures()).geometry()
+        self.assertTrue(geometry)
+
+        point = geometry.asPoint()
+        self.assertEqual(point.x(), 2)
+        self.assertEqual(point.y(), 3)
+
+        QgsProject.instance().removeMapLayer(ml)
+
 
 if __name__ == '__main__':
     unittest.main()

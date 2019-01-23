@@ -1104,6 +1104,51 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertIn('-input_file_list', commands[1])
             self.assertIn(outdir + '/test.vrt', commands[1])
 
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '-9999',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertIn('-srcnodata "-9999"', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '-9999 9999',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertIn('-srcnodata "-9999 9999"', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'SRC_NODATA': '',
+                                               'OUTPUT': outdir + '/test.vrt'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdalbuildvrt')
+            self.assertIn('-resolution average', commands[1])
+            self.assertIn('-separate', commands[1])
+            self.assertNotIn('-allow_projection_difference', commands[1])
+            self.assertNotIn('-add_alpha', commands[1])
+            self.assertNotIn('-a_srs', commands[1])
+            self.assertIn('-r nearest', commands[1])
+            self.assertNotIn('-srcnodata', commands[1])
+            self.assertIn('-input_file_list', commands[1])
+            self.assertIn(outdir + '/test.vrt', commands[1])
+
     def testGdalInfo(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -2012,6 +2057,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-l polys2 -a id -ts 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+            # with "0" INIT value
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'INIT': 0,
+                                        'FIELD': 'id',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -ts 0.0 0.0 -init 0.0 -ot Float32 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
             # with "0" NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
@@ -2200,6 +2255,43 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
                  '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # with additional command-line parameter
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG -dstalpha ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha -srcnodata -9999',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG -dstalpha -srcnodata -9999 ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '-dstalpha -srcnodata "-9999 -8888"',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG -dstalpha -srcnodata "-9999 -8888" ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTRA': '',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdalwarp',
+                 '-t_srs EPSG:4326 -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 

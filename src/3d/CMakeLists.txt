@@ -9,14 +9,17 @@ SET(QGIS_3D_SRCS
   qgs3dutils.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
+  qgsfeature3dhandler_p.cpp
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
   qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
+  qgsrulebased3drenderer.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
+  qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
 
   chunks/qgschunkboundsentity_p.cpp
@@ -31,6 +34,8 @@ SET(QGIS_3D_SRCS
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
   symbols/qgsline3dsymbol_p.cpp
+  symbols/qgsmesh3dsymbol.cpp
+  symbols/qgsmesh3dsymbol_p.cpp
   symbols/qgspoint3dsymbol.cpp
   symbols/qgspoint3dsymbol_p.cpp
   symbols/qgspolygon3dsymbol.cpp
@@ -91,14 +96,17 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsfeature3dhandler_p.h
   qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
   qgspointlightsettings.h
   qgsraycastingutils_p.h
+  qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
+  qgsmeshlayer3drenderer.h
   qgswindow3dengine.h
 
   chunks/qgschunkedentity_p.h
@@ -110,6 +118,8 @@ SET(QGIS_3D_HDRS
   symbols/qgsabstract3dsymbol.h
   symbols/qgsline3dsymbol.h
   symbols/qgsline3dsymbol_p.h
+  symbols/qgsmesh3dsymbol.h
+  symbols/qgsmesh3dsymbol_p.h
   symbols/qgspoint3dsymbol.h
   symbols/qgspoint3dsymbol_p.h
   symbols/qgspolygon3dsymbol.h
@@ -135,6 +145,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression

@@ -30,6 +30,7 @@
 #include "qgstriangle.h"
 #include "qgscurve.h"
 #include "qgsregularpolygon.h"
+#include "qgsquadrilateral.h"
 #include "qgsmultipolygon.h"
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
@@ -48,6 +49,8 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsproviderregistry.h"
 #include "sqlite3.h"
+#include "qgstransaction.h"
+#include "qgsthreadingutils.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -886,6 +889,22 @@ static QVariant fcnAggregateArray( const QVariantList &values, const QgsExpressi
   return fcnAggregateGeneric( QgsAggregateCalculator::ArrayAggregate, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
+static QVariant fcnMapScale( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  if ( !context )
+    return QVariant();
+
+  QVariant scale = context->variable( QStringLiteral( "map_scale" ) );
+  bool ok = false;
+  if ( !scale.isValid() || scale.isNull() )
+    return QVariant();
+
+  const double v = scale.toDouble( &ok );
+  if ( ok )
+    return v;
+  return QVariant();
+}
+
 static QVariant fcnClamp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   double minValue = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
@@ -1375,78 +1394,163 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString database = values.at( 0 ).toString();
-  const QString table = values.at( 1 ).toString();
-  const QString idColumn = values.at( 2 ).toString();
-  const QString filterAttribute = values.at( 3 ).toString();
-  const QVariant filterValue = values.at( 4 ).toString();
-  const QVariantMap defaultValues = values.at( 5 ).toMap();
+  static QMap<QString, qlonglong> counterCache;
+  QVariant functionResult;
 
-
-  // read from database
-  sqlite3_database_unique_ptr sqliteDb;
-  sqlite3_statement_unique_ptr sqliteStatement;
-
-  if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+  std::function<void()> fetchAndIncrementFunc = [ =, &functionResult ]()
   {
-    parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
-    return QVariant();
-  }
+    QString database;
+    const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
 
-  QString currentValSql;
-  currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
-  if ( !filterAttribute.isNull() )
-  {
-    currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
-  }
-
-  int result;
-  sqliteStatement = sqliteDb.prepare( currentValSql, result );
-  if ( result == SQLITE_OK )
-  {
-    qlonglong nextId = 0;
-    if ( sqliteStatement.step() == SQLITE_ROW )
+    if ( layer )
     {
-      nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
-    }
-
-    QString upsertSql;
-    upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
-    QStringList cols;
-    QStringList vals;
-    cols << QgsSqliteUtils::quotedIdentifier( idColumn );
-    vals << QgsSqliteUtils::quotedValue( nextId );
-
-    if ( !filterAttribute.isNull() )
-    {
-      cols << QgsSqliteUtils::quotedIdentifier( filterAttribute );
-      vals << QgsSqliteUtils::quotedValue( filterValue );
-    }
-
-    for ( QVariantMap::const_iterator iter = defaultValues.constBegin(); iter != defaultValues.constEnd(); ++iter )
-    {
-      cols << QgsSqliteUtils::quotedIdentifier( iter.key() );
-      vals << iter.value().toString();
-    }
-
-    upsertSql += QLatin1String( " (" ) + cols.join( ',' ) + ')';
-    upsertSql += QLatin1String( " VALUES " );
-    upsertSql += '(' + vals.join( ',' ) + ')';
-
-    QString errorMessage;
-    result = sqliteDb.exec( upsertSql, errorMessage );
-    if ( result == SQLITE_OK )
-    {
-      return nextId;
+      const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+      database = decodedUri.value( QStringLiteral( "path" ) ).toString();
+      if ( database.isEmpty() )
+      {
+        parent->setEvalErrorString( QObject::tr( "Could not extract file path from layer `%1`." ).arg( layer->name() ) );
+      }
     }
     else
     {
-      parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
-      return QVariant();
+      database = values.at( 0 ).toString();
     }
-  }
 
-  return QVariant(); // really?
+    const QString table = values.at( 1 ).toString();
+    const QString idColumn = values.at( 2 ).toString();
+    const QString filterAttribute = values.at( 3 ).toString();
+    const QVariant filterValue = values.at( 4 ).toString();
+    const QVariantMap defaultValues = values.at( 5 ).toMap();
+
+    // read from database
+    sqlite3_database_unique_ptr sqliteDb;
+    sqlite3_statement_unique_ptr sqliteStatement;
+
+    if ( sqliteDb.open_v2( database, SQLITE_OPEN_READWRITE, nullptr ) != SQLITE_OK )
+    {
+      parent->setEvalErrorString( QObject::tr( "Could not open sqlite database %1. Error %2. " ).arg( database, sqliteDb.errorMessage() ) );
+      functionResult = QVariant();
+      return;
+    }
+
+    QString errorMessage;
+    QString currentValSql;
+
+    qlonglong nextId;
+    bool cachedMode = false;
+    bool valueRetrieved = false;
+
+    QString cacheString = QStringLiteral( "%1:%2:%3:%4:%5" ).arg( database, table, idColumn, filterAttribute, filterValue.toString() );
+
+    // Running in transaction mode, check for cached value first
+    if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
+    {
+      cachedMode = true;
+
+      auto cachedCounter = counterCache.find( cacheString );
+
+      if ( cachedCounter != counterCache.end() )
+      {
+        qlonglong &cachedValue = cachedCounter.value();
+        nextId = cachedValue;
+        nextId += 1;
+        cachedValue = nextId;
+        valueRetrieved = true;
+      }
+    }
+
+    // Either not in cached mode or no cached value found, obtain from DB
+    if ( !cachedMode || !valueRetrieved )
+    {
+      int result = SQLITE_ERROR;
+
+      currentValSql = QStringLiteral( "SELECT %1 FROM %2" ).arg( QgsSqliteUtils::quotedIdentifier( idColumn ), QgsSqliteUtils::quotedIdentifier( table ) );
+      if ( !filterAttribute.isNull() )
+      {
+        currentValSql += QStringLiteral( " WHERE %1 = %2" ).arg( QgsSqliteUtils::quotedIdentifier( filterAttribute ), QgsSqliteUtils::quotedValue( filterValue ) );
+      }
+
+      sqliteStatement = sqliteDb.prepare( currentValSql, result );
+
+      if ( result == SQLITE_OK )
+      {
+        nextId = 0;
+        if ( sqliteStatement.step() == SQLITE_ROW )
+        {
+          nextId = sqliteStatement.columnAsInt64( 0 ) + 1;
+        }
+
+        // If in cached mode: add value to cache and connect to transaction
+        if ( cachedMode && result == SQLITE_OK )
+        {
+          counterCache.insert( cacheString, nextId );
+
+          QObject::connect( layer->dataProvider()->transaction(), &QgsTransaction::destroyed, [cacheString]()
+          {
+            counterCache.remove( cacheString );
+          } );
+        }
+        valueRetrieved = true;
+      }
+    }
+
+    if ( valueRetrieved )
+    {
+      QString upsertSql;
+      upsertSql = QStringLiteral( "INSERT OR REPLACE INTO %1" ).arg( QgsSqliteUtils::quotedIdentifier( table ) );
+      QStringList cols;
+      QStringList vals;
+      cols << QgsSqliteUtils::quotedIdentifier( idColumn );
+      vals << QgsSqliteUtils::quotedValue( nextId );
+
+      if ( !filterAttribute.isNull() )
+      {
+        cols << QgsSqliteUtils::quotedIdentifier( filterAttribute );
+        vals << QgsSqliteUtils::quotedValue( filterValue );
+      }
+
+      for ( QVariantMap::const_iterator iter = defaultValues.constBegin(); iter != defaultValues.constEnd(); ++iter )
+      {
+        cols << QgsSqliteUtils::quotedIdentifier( iter.key() );
+        vals << iter.value().toString();
+      }
+
+      upsertSql += QLatin1String( " (" ) + cols.join( ',' ) + ')';
+      upsertSql += QLatin1String( " VALUES " );
+      upsertSql += '(' + vals.join( ',' ) + ')';
+
+      int result = SQLITE_ERROR;
+      if ( layer && layer->dataProvider() && layer->dataProvider()->transaction() )
+      {
+        QgsTransaction *transaction = layer->dataProvider()->transaction();
+        if ( transaction->executeSql( upsertSql, errorMessage ) )
+        {
+          result = SQLITE_OK;
+        }
+      }
+      else
+      {
+        result = sqliteDb.exec( upsertSql, errorMessage );
+      }
+      if ( result == SQLITE_OK )
+      {
+        functionResult = QVariant( nextId );
+        return;
+      }
+      else
+      {
+        parent->setEvalErrorString( QStringLiteral( "Could not increment value: SQLite error: \"%1\" (%2)." ).arg( errorMessage, QString::number( result ) ) );
+        functionResult = QVariant();
+        return;
+      }
+    }
+
+    functionResult = QVariant();
+  };
+
+  QgsThreadingUtils::runOnMainThread( fetchAndIncrementFunc );
+
+  return functionResult;
 }
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -2398,6 +2502,60 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
 
   return QVariant::fromValue( QgsGeometry( rp.toPolygon() ) );
 
+}
+
+static QVariant fcnMakeSquare( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry pt1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( pt1.isNull() )
+    return QVariant();
+  if ( pt1.type() != QgsWkbTypes::PointGeometry || pt1.isMultipart() )
+    return QVariant();
+
+  QgsGeometry pt2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  if ( pt2.isNull() )
+    return QVariant();
+  if ( pt2.type() != QgsWkbTypes::PointGeometry || pt2.isMultipart() )
+    return QVariant();
+
+  const QgsPoint *point1 = qgsgeometry_cast< const QgsPoint *>( pt1.constGet() );
+  const QgsPoint *point2 = qgsgeometry_cast< const QgsPoint *>( pt2.constGet() );
+  QgsQuadrilateral square = QgsQuadrilateral::squareFromDiagonal( *point1, *point2 );
+
+  return QVariant::fromValue( QgsGeometry( square.toPolygon() ) );
+}
+
+static QVariant fcnMakeRectangleFrom3Points( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry pt1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( pt1.isNull() )
+    return QVariant();
+  if ( pt1.type() != QgsWkbTypes::PointGeometry || pt1.isMultipart() )
+    return QVariant();
+
+  QgsGeometry pt2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  if ( pt2.isNull() )
+    return QVariant();
+  if ( pt2.type() != QgsWkbTypes::PointGeometry || pt2.isMultipart() )
+    return QVariant();
+
+  QgsGeometry pt3 = QgsExpressionUtils::getGeometry( values.at( 2 ), parent );
+  if ( pt3.isNull() )
+    return QVariant();
+  if ( pt3.type() != QgsWkbTypes::PointGeometry || pt3.isMultipart() )
+    return QVariant();
+
+  QgsQuadrilateral::ConstructionOption option = static_cast< QgsQuadrilateral::ConstructionOption >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
+  if ( ( option < QgsQuadrilateral::Distance ) || ( option > QgsQuadrilateral::Projected ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Option can be 0 (distance) or 1 (projected)" ) );
+    return QVariant();
+  }
+  const QgsPoint *point1 = qgsgeometry_cast< const QgsPoint *>( pt1.constGet() );
+  const QgsPoint *point2 = qgsgeometry_cast< const QgsPoint *>( pt2.constGet() );
+  const QgsPoint *point3 = qgsgeometry_cast< const QgsPoint *>( pt3.constGet() );
+  QgsQuadrilateral rect = QgsQuadrilateral::rectangleFrom3Points( *point1, *point2, *point3, option );
+  return QVariant::fromValue( QgsGeometry( rect.toPolygon() ) );
 }
 
 static QVariant pointAt( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) // helper function
@@ -4427,21 +4585,20 @@ static QVariant fcnStringToArray( const QVariantList &values, const QgsExpressio
   return array;
 }
 
-static QVariant fcnJsonToMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnLoadJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QJsonDocument document = QJsonDocument::fromJson( str.toUtf8() );
-  if ( document.isNull() || !document.isObject() )
-    return QVariantMap();
+  if ( document.isNull() )
+    return QVariant();
 
-  return document.object().toVariantMap();
+  return document.toVariant();
 }
 
-static QVariant fcnMapToJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnWriteJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
-  QJsonObject object = QJsonObject::fromVariantMap( map );
-  QJsonDocument document( object );
+  Q_UNUSED( parent )
+  QJsonDocument document = QJsonDocument::fromVariant( values.at( 0 ) );
   return document.toJson( QJsonDocument::Compact );
 }
 
@@ -4736,7 +4893,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "color_part" ), 2, fncColorPart, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "darker" ), 2, fncDarker, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lighter" ), 2, fncLighter, QStringLiteral( "Color" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "set_color_part" ), 3, fncSetColorPart, QStringLiteral( "Color" ) );
+        << new QgsStaticExpressionFunction( QStringLiteral( "set_color_part" ), 3, fncSetColorPart, QStringLiteral( "Color" ) )
+
+        // deprecated stuff - hidden from users
+        << new QgsStaticExpressionFunction( QStringLiteral( "$scale" ), QgsExpressionFunction::ParameterList(), fcnMapScale, QStringLiteral( "deprecated" ) );
 
     QgsStaticExpressionFunction *geomFunc = new QgsStaticExpressionFunction( QStringLiteral( "$geometry" ), 0, fcnGeometry, QStringLiteral( "GeometryGroup" ), QString(), true );
     geomFunc->setIsStatic( false );
@@ -4801,8 +4961,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "number_sides" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "circle" ), true, 0 ),
-                                            fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) );
-
+                                            fcnMakeRegularPolygon, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_square" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point2" ) ),
+                                            fcnMakeSquare, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_rectangle_3points" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point1" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point2" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "point3" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "option" ), true, 0 ),
+                                            fcnMakeRectangleFrom3Points, QStringLiteral( "GeometryGroup" ) );
     QgsStaticExpressionFunction *xAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
     xAtFunc->setIsStatic( false );
     sFunctions << xAtFunc;
@@ -5149,8 +5318,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "generate_series" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "start" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "stop" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "step" ), true, 1.0 ), fcnGenerateSeries, QStringLiteral( "Arrays" ) )
 
         //functions for maps
-        << new QgsStaticExpressionFunction( QStringLiteral( "json_to_map" ), 1, fcnJsonToMap, QStringLiteral( "Maps" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_json" ), 1, fcnMapToJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "json_to_map" ), 1, fcnLoadJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "from_json" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnLoadJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_json" ), 1, fcnWriteJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_json" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "json_string" ) ), fcnWriteJson, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "hstore_to_map" ), 1, fcnHstoreToMap, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_to_hstore" ), 1, fcnMapToHstore, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map" ), -1, fcnMap, QStringLiteral( "Maps" ) )

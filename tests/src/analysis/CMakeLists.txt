@@ -23,6 +23,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/test
 
   ${CMAKE_BINARY_DIR}/src/core
@@ -81,8 +82,9 @@ SET(TESTS
  testqgsreclassifyutils.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
- testqgsninecellfilters.cpp
-    )
+ testqgsninecellfilters.cpp 
+ testqgsmeshcalculator.cpp
+)
 
 FOREACH(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})

@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgsproject.h"
 #include <QIcon>
 
 const double ICON_PADDING_FACTOR = 0.16;
@@ -49,6 +50,10 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   // svg
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsStyleModel::rebuildSymbolIcons );
   connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsStyleModel::rebuildSymbolIcons );
+
+  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+  // need updating to reflect the new colors
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsStyleModel::rebuildSymbolIcons );
 }
 
 QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
@@ -119,15 +124,18 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
 
             std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-            if ( mAdditionalSizes.isEmpty() )
-              icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
-
-            for ( const QVariant &size : mAdditionalSizes )
+            if ( symbol )
             {
-              QSize s = size.toSize();
-              icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
-            }
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
 
+              for ( const QVariant &size : mAdditionalSizes )
+              {
+                QSize s = size.toSize();
+                icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+              }
+
+            }
             mSymbolIconCache.insert( name, icon );
             return icon;
           }
@@ -139,14 +147,17 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
 
             std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-            if ( mAdditionalSizes.isEmpty() )
-              icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
-            for ( const QVariant &size : mAdditionalSizes )
+            if ( ramp )
             {
-              QSize s = size.toSize();
-              icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
-            }
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
+              for ( const QVariant &size : mAdditionalSizes )
+              {
+                QSize s = size.toSize();
+                icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+              }
 
+            }
             mColorRampIconCache.insert( name, icon );
             return icon;
           }

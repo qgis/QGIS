@@ -82,7 +82,10 @@ class SERVER_EXPORT QgsServerRequest
     virtual ~QgsServerRequest() = default;
 
     /**
-     * \returns  the request url
+     * \returns  the request url as seen by QGIS server
+     *
+     * \see originalUrl for the unrewritten url as seen by the web
+     *      server, by default the two are equal
      */
     QUrl url() const;
 
@@ -156,12 +159,35 @@ class SERVER_EXPORT QgsServerRequest
     void setUrl( const QUrl &url );
 
     /**
+     * Returns the request url as seen by the web server,
+     * by default this is equal to the url seen by QGIS server
+     *
+     * \see url() for the rewritten url
+     * \since QGIS 3.6
+     */
+    QUrl originalUrl() const;
+
+    /**
      * Set the request method
      */
     void setMethod( QgsServerRequest::Method method );
 
+  protected:
+
+    /**
+     * Set the request original \a url (the request url as seen by the web server)
+     *
+     * \see setUrl() for the rewritten url
+     * \since QGIS 3.6
+     */
+    void setOriginalUrl( const QUrl &url );
+
+
   private:
+    // Url as seen by QGIS server after web server rewrite
     QUrl       mUrl;
+    // Unrewritten url as seen by the web server
+    QUrl       mOriginalUrl;
     Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization

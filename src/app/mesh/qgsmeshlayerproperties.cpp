@@ -111,6 +111,7 @@ void QgsMeshLayerProperties::syncToLayer()
    */
   mLayerOrigNameLineEd->setText( mMeshLayer->name() );
   leDisplayName->setText( mMeshLayer->name() );
+  whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
   if ( mMeshLayer && mMeshLayer->dataProvider() )
   {
@@ -186,6 +187,7 @@ void QgsMeshLayerProperties::apply()
 
 void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
   mMeshLayer->setCrs( crs );
 }
 

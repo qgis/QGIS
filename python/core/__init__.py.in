@@ -37,6 +37,7 @@ from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
 from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
 from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
+from .additions.validitycheck import check
 
 # Injections into classes
 QgsFeature.__geo_interface__ = property(mapping_feature)

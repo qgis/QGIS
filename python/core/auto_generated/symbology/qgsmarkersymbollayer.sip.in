@@ -505,6 +505,8 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual bool hasDataDefinedProperties() const;
+
     virtual void setColor( const QColor &c );
 
     virtual QColor color() const;

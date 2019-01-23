@@ -239,6 +239,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrenderervectorsettingswidget.cpp
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
+  mesh/qgsmeshcalculatordialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -464,7 +465,8 @@ SET (QGIS_APP_MOC_HDRS
   mesh/qgsmeshrenderervectorsettingswidget.h
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
-  )
+  mesh/qgsmeshcalculatordialog.h
+)
 
 
 IF (WITH_3D)
@@ -479,10 +481,14 @@ IF (WITH_3D)
     3d/qgs3dmaptoolidentify.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
+    3d/qgsmesh3dsymbolwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
+    3d/qgsrulebased3drendererwidget.cpp
+    3d/qgssymbol3dwidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
+    3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
   )
 
@@ -496,10 +502,14 @@ IF (WITH_3D)
     3d/qgs3dmaptoolidentify.h
     3d/qgslightswidget.h
     3d/qgsline3dsymbolwidget.h
+    3d/qgsmesh3dsymbolwidget.h
     3d/qgspoint3dsymbolwidget.h
     3d/qgspolygon3dsymbolwidget.h
     3d/qgsphongmaterialwidget.h
+    3d/qgsrulebased3drendererwidget.h
+    3d/qgssymbol3dwidget.h
     3d/qgsvectorlayer3drendererwidget.h
+    3d/qgsmeshlayer3drendererwidget.h
     layout/qgslayout3dmapwidget.h
   )
 ENDIF (WITH_3D)
@@ -656,6 +666,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth

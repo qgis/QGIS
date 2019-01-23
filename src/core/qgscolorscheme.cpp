@@ -221,21 +221,7 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
 {
   Q_UNUSED( context );
   Q_UNUSED( baseColor );
-
-  // save colors to project
-  QStringList customColors;
-  QStringList customColorLabels;
-
-  QgsNamedColorList::const_iterator colorIt = colors.constBegin();
-  for ( ; colorIt != colors.constEnd(); ++colorIt )
-  {
-    QString color = QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first );
-    QString label = ( *colorIt ).second;
-    customColors.append( color );
-    customColorLabels.append( label );
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ), customColors );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
+  QgsProject::instance()->setProjectColors( colors );
   return true;
 }
 

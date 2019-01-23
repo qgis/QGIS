@@ -511,6 +511,30 @@ Returns whether the faces are active for particular dataset
 
 .. versionadded:: 3.6
 %End
+
+    virtual bool persistDatasetGroup( const QString &path,
+                                      const QgsMeshDatasetGroupMetadata &meta,
+                                      const QVector<QgsMeshDataBlock> &datasetValues,
+                                      const QVector<QgsMeshDataBlock> &datasetActive,
+                                      const QVector<double> &times
+                                    ) = 0;
+%Docstring
+Creates a new dataset group from a data and
+persists it into a destination path
+
+On success, the mesh's dataset group count is changed
+
+:param path: destination path of the stored file
+:param meta: new group's metadata
+:param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
+:param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
+                      when all faces are active
+:param times: times in hours for all datasets in the group
+
+:return: true on failure, false on success
+
+.. versionadded:: 3.6
+%End
 };
 
 

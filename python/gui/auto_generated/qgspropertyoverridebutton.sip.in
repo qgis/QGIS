@@ -40,7 +40,6 @@ Constructor for QgsPropertyOverrideButton.
 :param layer: associated vector layer
 %End
 
-
     void init( int propertyKey,
                const QgsProperty &property,
                const QgsPropertiesDefinition &definitions,
@@ -197,6 +196,17 @@ Register an expression context generator class that will be used to retrieve
 an expression context for the button when required.
 %End
 
+    void registerLinkedWidget( QWidget *widget );
+%Docstring
+Registers a ``widget`` which is linked to this button. The meaning of linked widgets
+depends on the property type, and the type of linked widget.
+
+For color properties, linking a QgsColorButton allows the color button to correctly
+reflect the status of the property when it's set to follow a project color.
+
+.. versionadded:: 3.6
+%End
+
     void updateFieldLists();
 %Docstring
 Updates list of fields.
@@ -211,6 +221,12 @@ Updates list of fields.
 %Docstring
 Set whether the current property override definition is to be used
 %End
+
+
+
+    void aboutToShowMenu();
+    void menuActionTriggered( QAction *action );
+
 
   signals:
 
@@ -234,7 +250,6 @@ Emitted when creating a new auxiliary field
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

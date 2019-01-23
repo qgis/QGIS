@@ -20,6 +20,7 @@
 #include "qgsdemterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "qgsmeshlayer3drenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -160,6 +161,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     if ( type == QLatin1String( "vector" ) )
     {
       renderer = new QgsVectorLayer3DRenderer;
+    }
+    else if ( type == QLatin1String( "mesh" ) )
+    {
+      renderer = new QgsMeshLayer3DRenderer;
     }
 
     if ( renderer )

@@ -25,6 +25,7 @@ class QRectF;
 
 #include "qgslegendstyle.h"
 
+class QgsExpressionContext;
 
 /**
  * \ingroup core
@@ -181,6 +182,21 @@ class CORE_EXPORT QgsLegendSettings
     void setDpi( int dpi ) { mDpi = dpi; }
 
     // utility functions
+
+    /**
+     * Splits a string using the wrap char taking into account handling empty
+     * wrap char which means no wrapping
+     */
+
+    /**
+     * Returns the actual text to render for a legend item, split into separate lines.
+     *
+     * The expression \a context argument is used to correctly evaluated expressions contained
+     * within legend item text.
+     *
+     * \since QGIS 3.6
+     */
+    QStringList evaluateItemText( const QString &text, const QgsExpressionContext &context ) const;
 
     /**
      * Splits a string using the wrap char taking into account handling empty

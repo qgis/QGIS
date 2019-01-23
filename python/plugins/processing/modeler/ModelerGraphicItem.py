@@ -30,8 +30,8 @@ import os
 import math
 
 from qgis.PyQt.QtCore import Qt, QPointF, QRectF
-from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter
-from qgis.PyQt.QtWidgets import QGraphicsItem, QMessageBox, QMenu
+from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter, QPalette
+from qgis.PyQt.QtWidgets import QApplication, QGraphicsItem, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelParameter,
@@ -328,7 +328,7 @@ class ModelerGraphicItem(QGraphicsItem):
         h = fm.ascent()
         pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, ModelerGraphicItem.BOX_HEIGHT / 2.0 - h + 1)
         painter.drawText(pt, text)
-        painter.setPen(QPen(Qt.black))
+        painter.setPen(QPen(QApplication.palette().color(QPalette.WindowText)))
         if isinstance(self.element, QgsProcessingModelChildAlgorithm):
             h = -(fm.height() * 1.2)
             h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5

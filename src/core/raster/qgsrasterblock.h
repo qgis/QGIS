@@ -179,22 +179,57 @@ class CORE_EXPORT QgsRasterBlock
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
 
     /**
-     * \brief Read a single value if type of block is numeric. If type is color,
-     *  returned value is undefined.
-     *  \param row row index
-     *  \param column column index
-     *  \returns value */
+     * Read a single value if type of block is numeric. If type is color,
+     * returned value is undefined.
+     * \param row row index
+     * \param column column index
+     * \returns value
+     * \see valueAndNoData()
+    */
     double value( int row, int column ) const
     {
       return value( static_cast< qgssize >( row ) * mWidth + column );
     }
 
     /**
-     * \brief Read a single value if type of block is numeric. If type is color,
-     *  returned value is undefined.
-     *  \param index data matrix index (long type in Python)
-     *  \returns value */
+     * Reads a single value from the pixel at \a row and \a column, if type of block is numeric. If type is color,
+     * returned value is undefined.
+     *
+     * Additionally, the \a isNoData argument will be set to true if the pixel represents a nodata value. This method
+     * is more efficient then calling isNoData() and value() separately.
+     *
+     * \note Not available in Python bindings
+     * \see value()
+     * \see isNoData()
+     * \since QGIS 3.6
+     */
+    double valueAndNoData( int row, int column, bool &isNoData ) const SIP_SKIP
+    {
+      return valueAndNoData( static_cast< qgssize >( row ) * mWidth + column, isNoData );
+    }
+
+    /**
+     * Reads a single value if type of block is numeric. If type is color,
+     * returned value is undefined.
+     * \param index data matrix index (long type in Python)
+     * \returns value
+     * \see valueAndNoData()
+    */
     double value( qgssize index ) const;
+
+    /**
+     * Reads a single value from the pixel at the specified data matrix \a index, if type of block is numeric. If type is color,
+     * returned value is undefined.
+     *
+     * Additionally, the \a isNoData argument will be set to true if the pixel represents a nodata value. This method
+     * is more efficient then calling isNoData() and value() separately.
+     *
+     * \note Not available in Python bindings
+     * \see value()
+     * \see isNoData()
+     * \since QGIS 3.6
+     */
+    double valueAndNoData( qgssize index, bool &isNoData ) const SIP_SKIP;
 
     /**
      * Gives direct access to the raster block data.
@@ -234,29 +269,35 @@ class CORE_EXPORT QgsRasterBlock
     }
 
     /**
-     * \brief Check if value at position is no data
-     *  \param row row index
-     *  \param column column index
-     *  \returns true if value is no data */
+     * Checks if value at position is no data
+     * \param row row index
+     * \param column column index
+     * \returns true if value is no data
+     * \see valueAndNoData()
+    */
     bool isNoData( int row, int column ) const
     {
       return isNoData( static_cast< qgssize >( row ) * mWidth + column );
     }
 
     /**
-     * \brief Check if value at position is no data
-     *  \param row row index
-     *  \param column column index
-     *  \returns true if value is no data */
+     * Check if value at position is no data
+     * \param row row index
+     * \param column column index
+     * \returns true if value is no data
+     * \see valueAndNoData()
+    */
     bool isNoData( qgssize row, qgssize column ) const
     {
       return isNoData( row * static_cast< qgssize >( mWidth ) + column );
     }
 
     /**
-     * \brief Check if value at position is no data
-     *  \param index data matrix index (long type in Python)
-     *  \returns true if value is no data */
+     * Check if value at position is no data
+     * \param index data matrix index (long type in Python)
+     * \returns true if value is no data
+     * \see valueAndNoData()
+    */
     bool isNoData( qgssize index ) const
     {
       if ( !mHasNoDataValue && !mNoDataBitmap )
@@ -683,25 +724,18 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
   {
     case Qgis::Byte:
       return static_cast< double >( ( static_cast< quint8 * >( data ) )[index] );
-      break;
     case Qgis::UInt16:
       return static_cast< double >( ( static_cast< quint16 * >( data ) )[index] );
-      break;
     case Qgis::Int16:
       return static_cast< double >( ( static_cast< qint16 * >( data ) )[index] );
-      break;
     case Qgis::UInt32:
       return static_cast< double >( ( static_cast< quint32 * >( data ) )[index] );
-      break;
     case Qgis::Int32:
       return static_cast< double >( ( static_cast< qint32 * >( data ) )[index] );
-      break;
     case Qgis::Float32:
       return static_cast< double >( ( static_cast< float * >( data ) )[index] );
-      break;
     case Qgis::Float64:
       return static_cast< double >( ( static_cast< double * >( data ) )[index] );
-      break;
     default:
       QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
       break;
@@ -751,6 +785,47 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
     return std::numeric_limits<double>::quiet_NaN();
   }
   return readValue( mData, mDataType, index );
+}
+
+inline double QgsRasterBlock::valueAndNoData( qgssize index, bool &isNoData ) const SIP_SKIP
+{
+  if ( !mData )
+  {
+    QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
+    isNoData = true;
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  if ( index >= static_cast< qgssize >( mWidth )*mHeight )
+  {
+    QgsDebugMsg( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+    isNoData = true; // we consider no data if outside
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  const double val = readValue( mData, mDataType, index );
+
+  if ( !mHasNoDataValue && !mNoDataBitmap )
+  {
+    isNoData = false;
+    return val;
+  }
+
+  if ( mHasNoDataValue )
+  {
+    isNoData = isNoDataValue( val );
+    return val;
+  }
+  // use no data bitmap
+  if ( !mNoDataBitmap )
+  {
+    // no data are not defined
+    isNoData = false;
+    return val;
+  }
+
+  // no data is a bitmap
+  isNoData = QgsRasterBlock::isNoData( index );
+  return val;
 }
 
 inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP

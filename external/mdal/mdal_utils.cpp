@@ -24,6 +24,9 @@ bool MDAL::fileExists( const std::string &filename )
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
+  if ( str.size() < substr.size() )
+    return false;
+
   if ( behaviour == ContainsBehaviour::CaseSensitive )
     return str.rfind( substr, 0 ) == 0;
   else
@@ -32,6 +35,9 @@ bool MDAL::startsWith( const std::string &str, const std::string &substr, Contai
 
 bool MDAL::endsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
+  if ( str.size() < substr.size() )
+    return false;
+
   if ( behaviour == ContainsBehaviour::CaseSensitive )
     return str.rfind( substr ) == ( str.size() - substr.size() );
   else
@@ -182,6 +188,21 @@ std::string MDAL::join( const std::vector<std::string> parts, const std::string 
   return res.str();
 }
 
+std::string MDAL::leftJustified( const std::string &str, size_t width, char fill )
+{
+  std::string ret( str );
+  if ( ret.size() > width )
+  {
+    ret = ret.substr( 0, width );
+  }
+  else
+  {
+    ret = ret + std::string( width - ret.size(), fill );
+  }
+  assert( ret.size() == width );
+  return ret;
+}
+
 std::string MDAL::toLower( const std::string &std )
 {
   std::string res( std );
@@ -222,11 +243,22 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
   return res;
 }
 
-std::string MDAL::removeLastChar( const std::string &str )
+// http://www.cplusplus.com/faq/sequences/strings/trim/
+std::string MDAL::trim( const std::string &s, const std::string &delimiters )
 {
-  std::string ret( str );
-  ret.pop_back();
-  return ret;
+  return ltrim( rtrim( s, delimiters ), delimiters );
+}
+
+// http://www.cplusplus.com/faq/sequences/strings/trim/
+std::string MDAL::ltrim( const std::string &s, const std::string &delimiters )
+{
+  return s.substr( s.find_first_not_of( delimiters ) );
+}
+
+// http://www.cplusplus.com/faq/sequences/strings/trim/
+std::string MDAL::rtrim( const std::string &s, const std::string &delimiters )
+{
+  return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
 }
 
 MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
@@ -348,7 +380,12 @@ MDAL::Statistics _calculateStatistics( const std::vector<double> &values, size_t
   return ret;
 }
 
-MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<DatasetGroup> grp )
+MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<MDAL::DatasetGroup> grp )
+{
+  return calculateStatistics( grp.get() );
+}
+
+MDAL::Statistics MDAL::calculateStatistics( DatasetGroup *grp )
 {
   Statistics ret;
   if ( !grp )
@@ -416,6 +453,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
     return;
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          mesh->driverName(),
                                           mesh,
                                           mesh->uri(),
                                           "Bed Elevation"

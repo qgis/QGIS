@@ -132,6 +132,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       connect( vl, &QgsVectorLayer::featureAdded, this, &QgsVirtualLayerProvider::invalidateStatistics );
       connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsVirtualLayerProvider::invalidateStatistics );
       connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsVirtualLayerProvider::invalidateStatistics );
+      connect( vl, &QgsVectorLayer::updatedFields, this, [ = ] { createVirtualTable( vl, layer.name() ); } );
     }
     else
     {
@@ -302,8 +303,7 @@ bool QgsVirtualLayerProvider::createIt()
     QString vname = mLayers.at( i ).name;
     if ( vlayer )
     {
-      QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
-      Sqlite::Query::exec( mSqlite.get(), createStr );
+      createVirtualTable( vlayer, vname );
     }
     else
     {
@@ -453,6 +453,12 @@ bool QgsVirtualLayerProvider::createIt()
   }
 
   return true;
+}
+
+void QgsVirtualLayerProvider::createVirtualTable( QgsVectorLayer *vlayer, const QString &vname )
+{
+  QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer(%2);" ).arg( vname, vlayer->id() );
+  Sqlite::Query::exec( mSqlite.get(), createStr );
 }
 
 bool QgsVirtualLayerProvider::cancelReload()

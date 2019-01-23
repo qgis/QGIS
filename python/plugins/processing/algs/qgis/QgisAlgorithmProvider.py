@@ -61,7 +61,6 @@ from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
-from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -98,7 +97,6 @@ from .PointsLayerFromTable import PointsLayerFromTable
 from .PointsToPaths import PointsToPaths
 from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
-from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtract import RandomExtract
@@ -173,7 +171,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
-                DensifyGeometriesInterval(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -210,7 +207,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsToPaths(),
                 PoleOfInaccessibility(),
                 Polygonize(),
-                PolygonsToLines(),
                 PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtract(),

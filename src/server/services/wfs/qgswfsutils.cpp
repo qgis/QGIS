@@ -36,28 +36,36 @@ namespace QgsWfs
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
-    QString href;
+    QUrl href;
     if ( project )
     {
-      href = QgsServerProjectUtils::wfsServiceUrl( *project );
+      href.setUrl( QgsServerProjectUtils::wfsServiceUrl( *project ) );
     }
 
     // Build default url
     if ( href.isEmpty() )
     {
-      QUrl url = request.url();
 
-      QgsWfsParameters params;
-      params.load( QUrlQuery( url ) );
-      params.remove( QgsServerParameter::REQUEST );
-      params.remove( QgsServerParameter::VERSION_SERVICE );
-      params.remove( QgsServerParameter::SERVICE );
+      static QSet<QString> sFilter
+      {
+        QStringLiteral( "REQUEST" ),
+        QStringLiteral( "VERSION" ),
+        QStringLiteral( "SERVICE" ),
+      };
 
-      url.setQuery( params.urlQuery() );
-      href = url.toString();
+      href = request.originalUrl();
+      QUrlQuery q( href );
+
+      for ( auto param : q.queryItems() )
+      {
+        if ( sFilter.contains( param.first.toUpper() ) )
+          q.removeAllQueryItems( param.first );
+      }
+
+      href.setQuery( q );
     }
 
-    return  href;
+    return  href.toString();
   }
 
   QString layerTypeName( const QgsMapLayer *layer )

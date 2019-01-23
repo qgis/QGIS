@@ -539,6 +539,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
 
   QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
+  mTableModel.setConnectionName( cmbConnections->currentText() );
 
   // populate the table list
   QgsDataSourceUri uri = QgsPostgresConn::connUri( cmbConnections->currentText() );

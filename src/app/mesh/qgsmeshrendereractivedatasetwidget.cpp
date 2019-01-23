@@ -102,7 +102,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
       QgsMeshDatasetIndex index( groupWithMaximumDatasets, i );
       QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( index );
       double time = meta.time();
-      mTimeComboBox->addItem( timeToString( time ), time );
+      mTimeComboBox->addItem( formatTime( time ), time );
     }
   }
   mTimeComboBox->blockSignals( false );
@@ -249,12 +249,20 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
   mActiveDatasetMetadata->setText( msg );
 }
 
-QString QgsMeshRendererActiveDatasetWidget::timeToString( double val )
+QString QgsMeshRendererActiveDatasetWidget::formatTime( double hours )
 {
-  // time val should be in hours
-  int seconds = static_cast<int>( qgsRound( val * 3600.0, 0 ) );
+  // time should be in hours
+  int seconds = static_cast<int>( qgsRound( hours * 3600.0, 0 ) );
+  int days = static_cast<int>( floor( hours / 24.0 ) );
   QTime t = QTime( 0, 0 ).addSecs( seconds );
-  return t.toString();  // the format is "HH:mm:ss"
+  if ( days > 0 )
+  {
+    return QStringLiteral( "%1 d %2" ).arg( days ).arg( t.toString() ); // the format is "d HH:mm:ss
+  }
+  else
+  {
+    return t.toString();  // the format is "HH:mm:ss"
+  }
 }
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )

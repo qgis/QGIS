@@ -41,12 +41,14 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunknode_p.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgsrulebased3drenderer.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -537,6 +539,14 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
     {
       static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+    }
+    else if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == QLatin1String( "rulebased" ) )
+    {
+      static_cast<QgsRuleBased3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+    }
+    else if ( layer->type() == QgsMapLayer::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
+    {
+      static_cast<QgsMeshLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsMeshLayer *>( layer ) );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );

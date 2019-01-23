@@ -1700,6 +1700,26 @@ bool QgsStyle::importXml( const QString &filename )
   return true;
 }
 
+bool QgsStyle::isXmlStyleFile( const QString &path )
+{
+  QFileInfo fileInfo( path );
+
+  if ( fileInfo.suffix().compare( QLatin1String( "xml" ), Qt::CaseInsensitive ) != 0 )
+    return false;
+
+  // sniff the first line of the file to see if it's a style file
+  if ( !QFile::exists( path ) )
+    return false;
+
+  QFile inputFile( path );
+  if ( !inputFile.open( QIODevice::ReadOnly ) )
+    return false;
+
+  QTextStream stream( &inputFile );
+  const QString line = stream.readLine();
+  return line == QLatin1String( "<!DOCTYPE qgis_style>" );
+}
+
 bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 {
   QDomDocument doc( QStringLiteral( "dummy" ) );

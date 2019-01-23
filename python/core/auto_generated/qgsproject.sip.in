@@ -1005,6 +1005,15 @@ in the project. The removeMapLayer(), removeMapLayers() calls do not block remov
 .. versionadded:: 3.2
 %End
 
+    void setProjectColors( const QgsNamedColorList &colors );
+%Docstring
+Sets the ``colors`` for the project's color scheme (see QgsProjectColorScheme).
+
+.. seealso:: :py:func:`projectColorsChanged`
+
+.. versionadded:: 3.6
+%End
+
     void generateTsFile( const QString &locale );
 %Docstring
 Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
@@ -1228,6 +1237,15 @@ Emitted when the project's metadata is changed.
 .. seealso:: :py:func:`metadata`
 
 .. versionadded:: 3.2
+%End
+
+    void projectColorsChanged();
+%Docstring
+Emitted whenever the project's color scheme has been changed.
+
+.. seealso:: :py:func:`setProjectColors`
+
+.. versionadded:: 3.6
 %End
 
 

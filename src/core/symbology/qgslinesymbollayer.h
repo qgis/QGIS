@@ -356,6 +356,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
 

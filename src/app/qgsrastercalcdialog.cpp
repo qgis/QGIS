@@ -35,6 +35,13 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  mXMaxSpinBox->setShowClearButton( false );
+  mXMinSpinBox->setShowClearButton( false );
+  mYMaxSpinBox->setShowClearButton( false );
+  mYMinSpinBox->setShowClearButton( false );
+  mNColumnsSpinBox->setShowClearButton( false );
+  mNRowsSpinBox->setShowClearButton( false );
+
   connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
   connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked );

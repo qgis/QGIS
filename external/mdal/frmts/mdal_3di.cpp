@@ -4,6 +4,8 @@
 */
 
 #include "mdal_3di.hpp"
+#include <netcdf.h>
+#include <assert.h>
 
 MDAL::Driver3Di::Driver3Di()
   : DriverCF(
@@ -126,6 +128,7 @@ void MDAL::Driver3Di::addBedElevation( MDAL::Mesh *mesh )
 
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
+                                          name(),
                                           mesh,
                                           mesh->uri(),
                                           "Bed Elevation"

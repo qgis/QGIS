@@ -145,7 +145,7 @@ class TinInterpolation(QgisAlgorithm):
         layerData = []
         layers = []
         crs = QgsCoordinateReferenceSystem()
-        for row in interpolationData.split(';'):
+        for row in interpolationData.split('::|::'):
             v = row.split('::~::')
             data = QgsInterpolator.LayerData()
 

@@ -30,6 +30,7 @@
 #include "qgsstyleexportimportdialog.h"
 #include "qgssmartgroupeditordialog.h"
 #include "qgssettings.h"
+#include "qgsstylemodel.h"
 
 #include <QAction>
 #include <QFile>
@@ -43,9 +44,111 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags )
+//
+// QgsCheckableStyleModel
+//
+
+///@cond PRIVATE
+QgsCheckableStyleModel::QgsCheckableStyleModel( QgsStyle *style, QObject *parent, bool readOnly )
+  : QgsStyleProxyModel( style, parent )
+  , mStyle( style )
+  , mReadOnly( readOnly )
+{
+
+}
+
+void QgsCheckableStyleModel::setCheckable( bool checkable )
+{
+  if ( checkable == mCheckable )
+    return;
+
+  mCheckable = checkable;
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ), QVector< int >() << Qt::CheckStateRole );
+}
+
+void QgsCheckableStyleModel::setCheckTag( const QString &tag )
+{
+  if ( tag == mCheckTag )
+    return;
+
+  mCheckTag = tag;
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ), QVector< int >() << Qt::CheckStateRole );
+}
+
+Qt::ItemFlags QgsCheckableStyleModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags f = QgsStyleProxyModel::flags( index );
+  if ( !mReadOnly && mCheckable && index.column() == 0 )
+    f |= Qt::ItemIsUserCheckable;
+
+  if ( mReadOnly )
+    f &= ~Qt::ItemIsEditable;
+
+  return f;
+}
+
+QVariant QgsCheckableStyleModel::data( const QModelIndex &index, int role ) const
+{
+  switch ( role )
+  {
+    case Qt::FontRole:
+    {
+      // drop font size to get reasonable amount of item name shown
+      QFont f = QgsStyleProxyModel::data( index, role ).value< QFont >();
+      f.setPointSize( 9 );
+      return f;
+    }
+
+    case Qt::CheckStateRole:
+    {
+      if ( !mCheckable || index.column() != 0 )
+        return QVariant();
+
+      const QStringList tags = data( index, QgsStyleModel::TagRole ).toStringList();
+      return tags.contains( mCheckTag ) ? Qt::Checked : Qt::Unchecked;
+    }
+
+    default:
+      break;
+
+  }
+  return QgsStyleProxyModel::data( index, role );
+}
+
+bool QgsCheckableStyleModel::setData( const QModelIndex &i, const QVariant &value, int role )
+{
+  if ( i.row() < 0 || i.row() >= rowCount( QModelIndex() ) ||
+       ( role != Qt::EditRole && role != Qt::CheckStateRole ) )
+    return false;
+
+  if ( mReadOnly )
+    return false;
+
+  if ( role == Qt::CheckStateRole )
+  {
+    if ( !mCheckable || mCheckTag.isEmpty() )
+      return false;
+
+    const QString name = data( index( i.row(), QgsStyleModel::Name ), Qt::DisplayRole ).toString();
+    const QgsStyle::StyleEntity entity = static_cast< QgsStyle::StyleEntity >( data( i, QgsStyleModel::TypeRole ).toInt() );
+
+    if ( value.toInt() == Qt::Checked )
+      return mStyle->tagSymbol( entity, name, QStringList() << mCheckTag );
+    else
+      return mStyle->detagSymbol( entity, name, QStringList() << mCheckTag );
+  }
+  return QgsStyleProxyModel::setData( i, value, role );
+}
+///@endcond
+
+//
+// QgsStyleManagerDialog
+//
+
+QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags, bool readOnly )
   : QDialog( parent, flags )
   , mStyle( style )
+  , mReadOnly( readOnly )
 {
   setupUi( this );
   connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
@@ -68,46 +171,79 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   connect( this, &QDialog::finished, this, &QgsStyleManagerDialog::onFinished );
 
-  connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
+  if ( !mReadOnly )
+  {
+    connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
 
-  connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
-         );
-  connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
-         );
-  connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
-         );
-  connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
-         );
-  connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
-         );
+    connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
+           );
+    connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
+           );
+    connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
+           );
+    connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
+           );
+    connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
+           );
+  }
+  else
+  {
+    btnAddTag->setEnabled( false );
+    btnAddSmartgroup->setEnabled( false );
+  }
 
   QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
   QAction *exportAction = new QAction( tr( "Export Item(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import Item(s)…" ), this );
-  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
-  shareMenu->addAction( importAction );
+  if ( !mReadOnly )
+  {
+    QAction *importAction = new QAction( tr( "Import Item(s)…" ), this );
+    importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
+    shareMenu->addAction( importAction );
+    connect( importAction, &QAction::triggered, this, &QgsStyleManagerDialog::importItems );
+  }
+  if ( mStyle != QgsStyle::defaultStyle() )
+  {
+    mActionCopyToDefault = new QAction( tr( "Copy Selection to Default Style…" ), this );
+    shareMenu->addAction( mActionCopyToDefault );
+    connect( mActionCopyToDefault, &QAction::triggered, this, &QgsStyleManagerDialog::copyItemsToDefault );
+    connect( mCopyToDefaultButton, &QPushButton::clicked, this, &QgsStyleManagerDialog::copyItemsToDefault );
+  }
+  else
+  {
+    mCopyToDefaultButton->hide();
+  }
+
   shareMenu->addSeparator();
   shareMenu->addAction( actnExportAsPNG );
   shareMenu->addAction( actnExportAsSVG );
+
   connect( actnExportAsPNG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsPNG );
   connect( actnExportAsSVG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsSVG );
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
-  connect( importAction, &QAction::triggered, this, &QgsStyleManagerDialog::importItems );
   btnShare->setMenu( shareMenu );
 
-  QStandardItemModel *model = new QStandardItemModel( listItems );
-  listItems->setModel( model );
-  listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
+  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
+  mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
-  connect( model, &QStandardItemModel::itemChanged, this, &QgsStyleManagerDialog::itemChanged );
+  mModel = new QgsCheckableStyleModel( mStyle, this, mReadOnly );
+  mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
+  listItems->setModel( mModel );
+  mSymbolTreeView->setModel( mModel );
+
+  listItems->setSelectionBehavior( QAbstractItemView::SelectRows );
+  listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mSymbolTreeView->setSelectionModel( listItems->selectionModel() );
+  mSymbolTreeView->setSelectionMode( listItems->selectionMode() );
+
   connect( listItems->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsStyleManagerDialog::symbolSelected );
   connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsStyleManagerDialog::selectedSymbolsChanged );
-
-  populateTypes();
 
   QStandardItemModel *groupModel = new QStandardItemModel( groupTree );
   groupTree->setModel( groupModel );
@@ -117,17 +253,27 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   connect( groupTree->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsStyleManagerDialog::groupChanged );
-  connect( groupModel, &QStandardItemModel::itemChanged,
-           this, &QgsStyleManagerDialog::groupRenamed );
+  if ( !mReadOnly )
+  {
+    connect( groupModel, &QStandardItemModel::itemChanged,
+             this, &QgsStyleManagerDialog::groupRenamed );
+  }
 
-  QMenu *groupMenu = new QMenu( tr( "Group Actions" ), this );
-  connect( actnTagSymbols, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
-  groupMenu->addAction( actnTagSymbols );
-  connect( actnFinishTagging, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
-  actnFinishTagging->setVisible( false );
-  groupMenu->addAction( actnFinishTagging );
-  groupMenu->addAction( actnEditSmartGroup );
-  btnManageGroups->setMenu( groupMenu );
+  if ( !mReadOnly )
+  {
+    QMenu *groupMenu = new QMenu( tr( "Group Actions" ), this );
+    connect( actnTagSymbols, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
+    groupMenu->addAction( actnTagSymbols );
+    connect( actnFinishTagging, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
+    actnFinishTagging->setVisible( false );
+    groupMenu->addAction( actnFinishTagging );
+    groupMenu->addAction( actnEditSmartGroup );
+    btnManageGroups->setMenu( groupMenu );
+  }
+  else
+  {
+    btnManageGroups->setEnabled( false );
+  }
 
   connect( searchBox, &QLineEdit::textChanged, this, &QgsStyleManagerDialog::filterSymbols );
 
@@ -140,60 +286,119 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   listItems->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( listItems, &QWidget::customContextMenuRequested,
            this, &QgsStyleManagerDialog::listitemsContextMenu );
+  mSymbolTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mSymbolTreeView, &QWidget::customContextMenuRequested,
+           this, &QgsStyleManagerDialog::listitemsContextMenu );
 
-  // Menu for the "Add item" toolbutton when in colorramp mode
-  QStringList rampTypes;
-  rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
-  rampTypes << tr( "Catalog: ColorBrewer" );
-  mMenuBtnAddItemColorRamp = new QMenu( this );
-  for ( const QString &rampType : qgis::as_const( rampTypes ) )
-    mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
-  connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
-           this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
+  if ( !mReadOnly )
+  {
+    // Menu for the "Add item" toolbutton when in colorramp mode
+    QStringList rampTypes;
+    rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
+    rampTypes << tr( "Catalog: ColorBrewer" );
+    mMenuBtnAddItemColorRamp = new QMenu( this );
+    for ( const QString &rampType : qgis::as_const( rampTypes ) )
+      mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
+    connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
+             this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
+  }
 
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
   mGroupMenu = new QMenu( this );
-  connect( actnAddFavorite, &QAction::triggered, this, &QgsStyleManagerDialog::addFavoriteSelectedSymbols );
-  mGroupMenu->addAction( actnAddFavorite );
-  connect( actnRemoveFavorite, &QAction::triggered, this, &QgsStyleManagerDialog::removeFavoriteSelectedSymbols );
-  mGroupMenu->addAction( actnRemoveFavorite );
-  mGroupMenu->addSeparator()->setParent( this );
   mGroupListMenu = new QMenu( mGroupMenu );
   mGroupListMenu->setTitle( tr( "Add to Tag" ) );
   mGroupListMenu->setEnabled( false );
-  mGroupMenu->addMenu( mGroupListMenu );
-  actnDetag->setData( 0 );
-  connect( actnDetag, &QAction::triggered, this, &QgsStyleManagerDialog::detagSelectedSymbols );
-  mGroupMenu->addAction( actnDetag );
-  mGroupMenu->addSeparator()->setParent( this );
-  mGroupMenu->addAction( actnRemoveItem );
-  mGroupMenu->addAction( actnEditItem );
-  mGroupMenu->addSeparator()->setParent( this );
+  if ( !mReadOnly )
+  {
+    connect( actnAddFavorite, &QAction::triggered, this, &QgsStyleManagerDialog::addFavoriteSelectedSymbols );
+    mGroupMenu->addAction( actnAddFavorite );
+    connect( actnRemoveFavorite, &QAction::triggered, this, &QgsStyleManagerDialog::removeFavoriteSelectedSymbols );
+    mGroupMenu->addAction( actnRemoveFavorite );
+    mGroupMenu->addSeparator()->setParent( this );
+    mGroupMenu->addMenu( mGroupListMenu );
+    actnDetag->setData( 0 );
+    connect( actnDetag, &QAction::triggered, this, &QgsStyleManagerDialog::detagSelectedSymbols );
+    mGroupMenu->addAction( actnDetag );
+    mGroupMenu->addSeparator()->setParent( this );
+    mGroupMenu->addAction( actnRemoveItem );
+    mGroupMenu->addAction( actnEditItem );
+    mGroupMenu->addSeparator()->setParent( this );
+  }
+  else
+  {
+    btnAddItem->setVisible( false );
+    btnRemoveItem->setVisible( false );
+    btnEditItem->setVisible( false );
+    btnAddSmartgroup->setVisible( false );
+    btnAddTag->setVisible( false );
+    btnManageGroups->setVisible( false );
+  }
+  if ( mActionCopyToDefault )
+  {
+    mGroupMenu->addAction( mActionCopyToDefault );
+  }
   mGroupMenu->addAction( actnExportAsPNG );
   mGroupMenu->addAction( actnExportAsSVG );
 
   // Context menu for the group tree
   mGroupTreeContextMenu = new QMenu( this );
-  connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
-  mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddTag, &QAction::triggered, this, [ = ]( bool ) { addTag(); }
-         );
-  mGroupTreeContextMenu->addAction( actnAddTag );
-  connect( actnAddSmartgroup, &QAction::triggered, this, [ = ]( bool ) { addSmartgroup(); }
-         );
-  mGroupTreeContextMenu->addAction( actnAddSmartgroup );
-  connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
-  mGroupTreeContextMenu->addAction( actnRemoveGroup );
+  if ( !mReadOnly )
+  {
+    connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
+    mGroupTreeContextMenu->addAction( actnEditSmartGroup );
+    connect( actnAddTag, &QAction::triggered, this, [ = ]( bool ) { addTag(); }
+           );
+    mGroupTreeContextMenu->addAction( actnAddTag );
+    connect( actnAddSmartgroup, &QAction::triggered, this, [ = ]( bool ) { addSmartgroup(); }
+           );
+    mGroupTreeContextMenu->addAction( actnAddSmartgroup );
+    connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
+    mGroupTreeContextMenu->addAction( actnRemoveGroup );
+  }
 
   tabItemType_currentChanged( 0 );
 
   connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
   connect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
+
+  connect( mButtonIconView, &QToolButton::toggled, this, [ = ]( bool active )
+  {
+    if ( active )
+    {
+      mSymbolViewStackedWidget->setCurrentIndex( 0 );
+      // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
+      QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 0, QgsSettings::Gui );
+    }
+  } );
+  connect( mButtonListView, &QToolButton::toggled, this, [ = ]( bool active )
+  {
+    if ( active )
+    {
+      QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 1, QgsSettings::Gui );
+      mSymbolViewStackedWidget->setCurrentIndex( 1 );
+    }
+  } );
+  // restore previous view
+  const int currentView = settings.value( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 0, QgsSettings::Gui ).toInt();
+  if ( currentView == 0 )
+    mButtonIconView->setChecked( true );
+  else
+    mButtonListView->setChecked( true );
+
+  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "Windows/StyleV2Manager/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  connect( mSymbolTreeView->header(), &QHeaderView::sectionResized, this, [this]
+  {
+    // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
+    QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
+  } );
+
+  // set initial disabled state for actions requiring a selection
+  selectedSymbolsChanged( QItemSelection(), QItemSelection() );
 }
 
 void QgsStyleManagerDialog::onFinished()
 {
-  if ( mModified )
+  if ( mModified && !mReadOnly )
   {
     mStyle->save();
   }
@@ -205,134 +410,260 @@ void QgsStyleManagerDialog::onFinished()
 
 void QgsStyleManagerDialog::populateTypes()
 {
-#if 0
-  // save current selection index in types combo
-  int current = ( tabItemType->count() > 0 ? tabItemType->currentIndex() : 0 );
-
-// no counting of style items
-  int markerCount = 0, lineCount = 0, fillCount = 0;
-
-  QStringList symbolNames = mStyle->symbolNames();
-  for ( int i = 0; i < symbolNames.count(); ++i )
-  {
-    switch ( mStyle->symbolRef( symbolNames[i] )->type() )
-    {
-      case QgsSymbol::Marker:
-        markerCount++;
-        break;
-      case QgsSymbol::Line:
-        lineCount++;
-        break;
-      case QgsSymbol::Fill:
-        fillCount++;
-        break;
-      default:
-        Q_ASSERT( 0 && "unknown symbol type" );
-        break;
-    }
-  }
-
-  cboItemType->clear();
-  cboItemType->addItem( tr( "Marker symbol (%1)" ).arg( markerCount ), QVariant( QgsSymbol::Marker ) );
-  cboItemType->addItem( tr( "Line symbol (%1)" ).arg( lineCount ), QVariant( QgsSymbol::Line ) );
-  cboItemType->addItem( tr( "Fill symbol (%1)" ).arg( fillCount ), QVariant( QgsSymbol::Fill ) );
-
-  cboItemType->addItem( tr( "Color ramp (%1)" ).arg( mStyle->colorRampCount() ), QVariant( 3 ) );
-
-  // update current index to previous selection
-  cboItemType->setCurrentIndex( current );
-#endif
 }
 
 void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
-  bool flag = currentItemType() != 3;
-  searchBox->setPlaceholderText( flag ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
-  btnAddItem->setMenu( flag ? nullptr : mMenuBtnAddItemColorRamp );
-  actnExportAsPNG->setVisible( flag );
-  actnExportAsSVG->setVisible( flag );
+  const bool isSymbol = currentItemType() != 3;
+  searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
+  btnAddItem->setMenu( isSymbol || mReadOnly ? nullptr : mMenuBtnAddItemColorRamp );
+  actnExportAsPNG->setVisible( isSymbol );
+  actnExportAsSVG->setVisible( isSymbol );
 
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
-  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  mModel->setEntityFilter( isSymbol  ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity );
+  mModel->setEntityFilterEnabled( !allTypesSelected() );
+  mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
+  if ( isSymbol && !allTypesSelected() )
+    mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
 
   populateList();
 }
 
+void QgsStyleManagerDialog::copyItemsToDefault()
+{
+  const QList< ItemDetails > items = selectedItems();
+  if ( !items.empty() )
+  {
+    bool ok = false;
+    const QString tags = QInputDialog::getText( this, tr( "Import Items" ),
+                         tr( "Additional tags to add (comma separated)" ), QLineEdit::Normal,
+                         mBaseName, &ok );
+    if ( !ok )
+      return;
+
+    const QStringList parts = tags.split( ',', QString::SkipEmptyParts );
+    QStringList additionalTags;
+    additionalTags.reserve( parts.count() );
+    for ( const QString &tag : parts )
+      additionalTags << tag.trimmed();
+
+    auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, additionalTags, false, false );
+    cursorOverride.reset();
+    if ( count > 0 )
+    {
+      QMessageBox::information( this, tr( "Import Items" ),
+                                count > 1 ? tr( "Successfully imported %1 items." ).arg( count )
+                                : tr( "Successfully imported item." ) );
+    }
+  }
+}
+
+int QgsStyleManagerDialog::selectedItemType()
+{
+  QModelIndex index = listItems->selectionModel()->currentIndex();
+  if ( !index.isValid() )
+    return 0;
+
+  const QgsStyle::StyleEntity entity = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+  if ( entity == QgsStyle::ColorrampEntity )
+    return 3;
+
+  return  mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt();
+}
+
+bool QgsStyleManagerDialog::allTypesSelected() const
+{
+  return tabItemType->currentIndex() == 0;
+}
+
+QList< QgsStyleManagerDialog::ItemDetails > QgsStyleManagerDialog::selectedItems()
+{
+  QList<QgsStyleManagerDialog::ItemDetails > res;
+  QModelIndexList indices = listItems->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indices )
+  {
+    if ( !index.isValid() )
+      continue;
+
+    ItemDetails details;
+    details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+    if ( details.entityType == QgsStyle::SymbolEntity )
+      details.symbolType = static_cast< QgsSymbol::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+    details.name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
+
+    res << details;
+  }
+  return res;
+}
+
+int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget,
+                                      std::unique_ptr< QgsTemporaryCursorOverride > &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags )
+{
+  bool prompt = true;
+  bool overwriteAll = true;
+  int count = 0;
+
+  const QStringList favoriteSymbols = src->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  const QStringList favoriteColorramps = src->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+
+  for ( auto &details : items )
+  {
+    QStringList symbolTags;
+    if ( !ignoreSourceTags )
+    {
+      symbolTags = src->tagsOfSymbol( details.entityType, details.name );
+    }
+
+    bool addItemToFavorites = false;
+    if ( isImport )
+    {
+      symbolTags << importTags;
+      addItemToFavorites = addToFavorites;
+    }
+
+    switch ( details.entityType )
+    {
+      case QgsStyle::SymbolEntity:
+      {
+        std::unique_ptr< QgsSymbol > symbol( src->symbol( details.name ) );
+        if ( !symbol )
+          continue;
+
+        const bool hasDuplicateName = dst->symbolNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favoriteSymbols.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning( parentWidget, isImport ? tr( "Import Symbol" ) : tr( "Export Symbol" ),
+                                          tr( "A symbol with the name “%1” already exists.\nOverwrite?" )
+                                          .arg( details.name ),
+                                          QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          QgsSymbol *newSymbol = symbol.get();
+          dst->addSymbol( details.name, symbol.release() );
+          dst->saveSymbol( details.name, newSymbol, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
+      case QgsStyle::ColorrampEntity:
+      {
+        std::unique_ptr< QgsColorRamp > ramp( src->colorRamp( details.name ) );
+        if ( !ramp )
+          continue;
+
+        const bool hasDuplicateName = dst->colorRampNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favoriteColorramps.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning( parentWidget, isImport ? tr( "Import Color Ramp" ) : tr( "Export Color Ramp" ),
+                                          tr( "A color ramp with the name “%1” already exists.\nOverwrite?" )
+                                          .arg( details.name ),
+                                          QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          QgsColorRamp *newRamp = ramp.get();
+          dst->addColorRamp( details.name, ramp.release() );
+          dst->saveColorRamp( details.name, newRamp, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
+      case QgsStyle::TagEntity:
+      case QgsStyle::SmartgroupEntity:
+        break;
+
+    }
+  }
+  return count;
+}
+
 void QgsStyleManagerDialog::populateList()
 {
-  if ( currentItemType() > 3 )
-  {
-    Q_ASSERT( false && "not implemented" );
-    return;
-  }
   groupChanged( groupTree->selectionModel()->currentIndex() );
 }
 
-void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, bool check )
+void QgsStyleManagerDialog::populateSymbols( const QStringList &, bool )
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
-  model->clear();
-
-  int type = currentItemType();
-  for ( int i = 0; i < symbolNames.count(); ++i )
-  {
-    QString name = symbolNames[i];
-    std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-    if ( symbol && symbol->type() == type )
-    {
-      QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, name );
-      QStandardItem *item = new QStandardItem( name );
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), listItems->iconSize(), static_cast< int >( listItems->iconSize().width() * 0.16 ) );
-      item->setIcon( icon );
-      item->setData( name ); // used to find out original name when user edited the name
-      QFont f = item->data( Qt::FontRole ).value< QFont >();
-      f.setPointSize( 9 );
-      item->setData( f, Qt::FontRole );
-      item->setCheckable( check );
-      item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
-      // add to model
-      model->appendRow( item );
-    }
-  }
-  selectedSymbolsChanged( QItemSelection(), QItemSelection() );
-  symbolSelected( listItems->currentIndex() );
 }
 
-
-void QgsStyleManagerDialog::populateColorRamps( const QStringList &colorRamps, bool check )
+void QgsStyleManagerDialog::populateColorRamps( const QStringList &, bool )
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
-  model->clear();
-
-  for ( int i = 0; i < colorRamps.count(); ++i )
-  {
-    QString name = colorRamps[i];
-    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-
-    QStandardItem *item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), static_cast< int >( listItems->iconSize().width() * 0.16 ) );
-    item->setIcon( icon );
-    item->setData( name ); // used to find out original name when user edited the name
-    item->setCheckable( check );
-    item->setToolTip( name );
-    model->appendRow( item );
-  }
-  selectedSymbolsChanged( QItemSelection(), QItemSelection() );
-  symbolSelected( listItems->currentIndex() );
 }
 
 int QgsStyleManagerDialog::currentItemType()
 {
   switch ( tabItemType->currentIndex() )
   {
-    case 0:
-      return QgsSymbol::Marker;
     case 1:
-      return QgsSymbol::Line;
+      return QgsSymbol::Marker;
     case 2:
-      return QgsSymbol::Fill;
+      return QgsSymbol::Line;
     case 3:
+      return QgsSymbol::Fill;
+    case 4:
       return 3;
     default:
       return 0;
@@ -344,7 +675,8 @@ QString QgsStyleManagerDialog::currentItemName()
   QModelIndex index = listItems->selectionModel()->currentIndex();
   if ( !index.isValid() )
     return QString();
-  return index.model()->data( index, 0 ).toString();
+
+  return mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
 }
 
 void QgsStyleManagerDialog::addItem()
@@ -366,7 +698,6 @@ void QgsStyleManagerDialog::addItem()
   if ( changed )
   {
     populateList();
-    populateTypes();
   }
 }
 
@@ -608,6 +939,23 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   return name;
 }
 
+void QgsStyleManagerDialog::setFavoritesGroupVisible( bool show )
+{
+  mFavoritesGroupVisible = show;
+  populateGroups();
+}
+
+void QgsStyleManagerDialog::setSmartGroupsVisible( bool show )
+{
+  mSmartGroupVisible = show;
+  populateGroups();
+}
+
+void QgsStyleManagerDialog::setBaseStyleName( const QString &name )
+{
+  mBaseName = name;
+}
+
 void QgsStyleManagerDialog::activate()
 {
   raise();
@@ -637,22 +985,18 @@ bool QgsStyleManagerDialog::addColorRamp( QAction *action )
 
 void QgsStyleManagerDialog::editItem()
 {
-  bool changed = false;
-  if ( currentItemType() < 3 )
+  if ( selectedItemType() < 3 )
   {
-    changed = editSymbol();
+    editSymbol();
   }
-  else if ( currentItemType() == 3 )
+  else if ( selectedItemType() == 3 )
   {
-    changed = editColorRamp();
+    editColorRamp();
   }
   else
   {
     Q_ASSERT( false && "not implemented" );
   }
-
-  if ( changed )
-    populateList();
 }
 
 bool QgsStyleManagerDialog::editSymbol()
@@ -754,97 +1098,64 @@ bool QgsStyleManagerDialog::editColorRamp()
 
 void QgsStyleManagerDialog::removeItem()
 {
-  bool changed = false;
-  if ( currentItemType() < 3 )
+  const QList< ItemDetails > items = selectedItems();
+
+  if ( allTypesSelected() )
   {
-    changed = removeSymbol();
-  }
-  else if ( currentItemType() == 3 )
-  {
-    changed = removeColorRamp();
+    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Items" ),
+         QString( tr( "Do you really want to remove %n item(s)?", nullptr, items.count() ) ),
+         QMessageBox::Yes,
+         QMessageBox::No ) )
+      return;
   }
   else
   {
-    Q_ASSERT( false && "not implemented" );
+    if ( currentItemType() < 3 )
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Symbol" ),
+           QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
+    else
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
+           QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
   }
 
-  if ( changed )
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
+
+  for ( const ItemDetails &details : items )
   {
-    populateList();
-    populateTypes();
+    if ( details.name.isEmpty() )
+      continue;
+
+    if ( details.entityType == QgsStyle::SymbolEntity )
+      mStyle->removeSymbol( details.name );
+    else if ( details.entityType == QgsStyle::ColorrampEntity )
+      mStyle->removeColorRamp( details.name );
   }
+
+  mModified = true;
 }
 
 bool QgsStyleManagerDialog::removeSymbol()
 {
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Symbol" ),
-       QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, indexes.count() ) ),
-       QMessageBox::Yes,
-       QMessageBox::No ) )
-    return false;
-
-  QgsTemporaryCursorOverride override( Qt::WaitCursor );
-
-  for ( const QModelIndex &index : indexes )
-  {
-    QString symbolName = index.data().toString();
-    // delete from style and update list
-    if ( !symbolName.isEmpty() )
-      mStyle->removeSymbol( symbolName );
-  }
-  mModified = true;
-  return true;
+  return false;
 }
 
 bool QgsStyleManagerDialog::removeColorRamp()
 {
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
-       QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
-       QMessageBox::Yes,
-       QMessageBox::No ) )
-    return false;
-
-  QgsTemporaryCursorOverride override( Qt::WaitCursor );
-
-  for ( const QModelIndex &index : indexes )
-  {
-    QString rampName = index.data().toString();
-    // delete from style and update list
-    if ( !rampName.isEmpty() )
-      mStyle->removeColorRamp( rampName );
-  }
-  mModified = true;
-  return true;
+  return false;
 }
 
-void QgsStyleManagerDialog::itemChanged( QStandardItem *item )
+void QgsStyleManagerDialog::itemChanged( QStandardItem * )
 {
-  // an item has been edited
-  QString oldName = item->data().toString();
-
-  bool changed = false;
-  if ( currentItemType() < 3 )
-  {
-    changed = mStyle->renameSymbol( oldName, item->text() );
-  }
-  else if ( currentItemType() == 3 )
-  {
-    changed = mStyle->renameColorRamp( oldName, item->text() );
-  }
-
-  if ( changed )
-  {
-    populateList();
-    mModified = true;
-  }
-  else
-  {
-    QMessageBox::critical( this, tr( "Save Item" ),
-                           tr( "Name is already taken by another item. Choose a different name." ) );
-    item->setText( oldName );
-  }
 }
 
 void QgsStyleManagerDialog::exportItemsPNG()
@@ -871,12 +1182,14 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  const QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
-  for ( const QModelIndex &index : indexes )
+  const QList< ItemDetails > items = selectedItems();
+  for ( const ItemDetails &details : items )
   {
-    QString name = index.data().toString();
-    QString path = dir + '/' + name + '.' + format;
-    std::unique_ptr< QgsSymbol > sym( mStyle->symbol( name ) );
+    if ( details.entityType != QgsStyle::SymbolEntity )
+      continue;
+
+    QString path = dir + '/' + details.name + '.' + format;
+    std::unique_ptr< QgsSymbol > sym( mStyle->symbol( details.name ) );
     if ( sym )
       sym->exportImage( path, format, size );
   }
@@ -911,11 +1224,14 @@ void QgsStyleManagerDialog::populateGroups()
   QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   model->clear();
 
-  QStandardItem *favoriteSymbols = new QStandardItem( tr( "Favorites" ) );
-  favoriteSymbols->setData( "favorite" );
-  favoriteSymbols->setEditable( false );
-  setBold( favoriteSymbols );
-  model->appendRow( favoriteSymbols );
+  if ( mFavoritesGroupVisible )
+  {
+    QStandardItem *favoriteSymbols = new QStandardItem( tr( "Favorites" ) );
+    favoriteSymbols->setData( "favorite" );
+    favoriteSymbols->setEditable( false );
+    setBold( favoriteSymbols );
+    model->appendRow( favoriteSymbols );
+  }
 
   QStandardItem *allSymbols = new QStandardItem( tr( "All" ) );
   allSymbols->setData( "all" );
@@ -932,26 +1248,31 @@ void QgsStyleManagerDialog::populateGroups()
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
+    item->setEditable( !mReadOnly );
     taggroup->appendRow( item );
   }
   taggroup->setText( tr( "Tags" ) );//set title later
   setBold( taggroup );
   model->appendRow( taggroup );
 
-  QStandardItem *smart = new QStandardItem( tr( "Smart Groups" ) );
-  smart->setData( "smartgroups" );
-  smart->setEditable( false );
-  setBold( smart );
-  QgsSymbolGroupMap sgMap = mStyle->smartgroupsListMap();
-  QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
-  while ( i != sgMap.constEnd() )
+  if ( mSmartGroupVisible )
   {
-    QStandardItem *item = new QStandardItem( i.value() );
-    item->setData( i.key() );
-    smart->appendRow( item );
-    ++i;
+    QStandardItem *smart = new QStandardItem( tr( "Smart Groups" ) );
+    smart->setData( "smartgroups" );
+    smart->setEditable( false );
+    setBold( smart );
+    QgsSymbolGroupMap sgMap = mStyle->smartgroupsListMap();
+    QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
+    while ( i != sgMap.constEnd() )
+    {
+      QStandardItem *item = new QStandardItem( i.value() );
+      item->setData( i.key() );
+      item->setEditable( !mReadOnly );
+      smart->appendRow( item );
+      ++i;
+    }
+    model->appendRow( smart );
   }
-  model->appendRow( smart );
 
   // expand things in the group tree
   int rows = model->rowCount( model->indexFromItem( model->invisibleRootItem() ) );
@@ -963,69 +1284,57 @@ void QgsStyleManagerDialog::populateGroups()
 
 void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
 {
-  QStringList symbolNames;
   QStringList groupSymbols;
 
-  QgsStyle::StyleEntity type = currentItemType() < 3 ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
+  const QString category = index.data( Qt::UserRole + 1 ).toString();
+  if ( mGroupingMode )
   {
-    QgsDebugMsg( QStringLiteral( "Entity not implemented" ) );
-    return;
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
+    mModel->setFavoritesOnly( false );
+    mModel->setCheckTag( index.data( Qt::DisplayRole ).toString() );
   }
-
-  QString category = index.data( Qt::UserRole + 1 ).toString();
-  if ( category == QLatin1String( "all" ) || category == QLatin1String( "tags" ) || category == QLatin1String( "smartgroups" ) )
+  else if ( category == QLatin1String( "all" ) || category == QLatin1String( "tags" ) || category == QLatin1String( "smartgroups" ) )
   {
     enableGroupInputs( false );
     if ( category == QLatin1String( "tags" ) )
     {
-      actnAddTag->setEnabled( true );
+      actnAddTag->setEnabled( !mReadOnly );
       actnAddSmartgroup->setEnabled( false );
     }
     else if ( category == QLatin1String( "smartgroups" ) )
     {
       actnAddTag->setEnabled( false );
-      actnAddSmartgroup->setEnabled( true );
+      actnAddSmartgroup->setEnabled( !mReadOnly );
     }
-    symbolNames = currentItemType() < 3 ? mStyle->symbolNames() : mStyle->colorRampNames();
+
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
+    mModel->setFavoritesOnly( false );
   }
   else if ( category == QLatin1String( "favorite" ) )
   {
     enableGroupInputs( false );
-    symbolNames = mStyle->symbolsOfFavorite( type );
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
+    mModel->setFavoritesOnly( true );
   }
   else if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    actnRemoveGroup->setEnabled( true );
-    btnManageGroups->setEnabled( true );
-    int groupId = index.data( Qt::UserRole + 1 ).toInt();
-    symbolNames = mStyle->symbolsOfSmartgroup( type, groupId );
+    actnRemoveGroup->setEnabled( !mReadOnly );
+    btnManageGroups->setEnabled( !mReadOnly );
+    const int groupId = index.data( Qt::UserRole + 1 ).toInt();
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( groupId );
+    mModel->setFavoritesOnly( false );
   }
   else // tags
   {
     enableGroupInputs( true );
     int tagId = index.data( Qt::UserRole + 1 ).toInt();
-    symbolNames = mStyle->symbolsWithTag( type, tagId );
-    if ( mGrouppingMode && tagId )
-    {
-      groupSymbols = symbolNames;
-      symbolNames = type == QgsStyle::SymbolEntity ? mStyle->symbolNames() : mStyle->colorRampNames();
-    }
-  }
-
-  symbolNames.sort();
-  if ( currentItemType() < 3 )
-  {
-    populateSymbols( symbolNames, mGrouppingMode );
-  }
-  else if ( currentItemType() == 3 )
-  {
-    populateColorRamps( symbolNames, mGrouppingMode );
-  }
-
-  if ( mGrouppingMode )
-  {
-    setSymbolsChecked( groupSymbols );
+    mModel->setTagId( tagId );
+    mModel->setSmartGroupId( -1 );
+    mModel->setFavoritesOnly( false );
   }
 
   actnEditSmartGroup->setVisible( false );
@@ -1039,23 +1348,23 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
     {
-      actnEditSmartGroup->setVisible( !mGrouppingMode );
+      actnEditSmartGroup->setVisible( !mGroupingMode && !mReadOnly );
     }
     else if ( index.parent().data( Qt::UserRole + 1 ).toString() == QLatin1String( "tags" ) )
     {
-      actnAddTag->setVisible( !mGrouppingMode );
-      actnTagSymbols->setVisible( !mGrouppingMode );
-      actnFinishTagging->setVisible( mGrouppingMode );
+      actnAddTag->setVisible( !mGroupingMode && !mReadOnly );
+      actnTagSymbols->setVisible( !mGroupingMode && !mReadOnly );
+      actnFinishTagging->setVisible( mGroupingMode && !mReadOnly );
     }
-    actnRemoveGroup->setVisible( true );
+    actnRemoveGroup->setVisible( !mReadOnly );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    actnAddSmartgroup->setVisible( !mGrouppingMode );
+    actnAddSmartgroup->setVisible( !mGroupingMode && !mReadOnly );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "tags" )
   {
-    actnAddTag->setVisible( !mGrouppingMode );
+    actnAddTag->setVisible( !mGroupingMode && !mReadOnly );
   }
 }
 
@@ -1203,30 +1512,27 @@ void QgsStyleManagerDialog::groupRenamed( QStandardItem *item )
 
 void QgsStyleManagerDialog::tagSymbolsAction()
 {
-
   QStandardItemModel *treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
 
-  if ( mGrouppingMode )
+  if ( mGroupingMode )
   {
-    mGrouppingMode = false;
+    mGroupingMode = false;
+    mModel->setCheckable( false );
     actnTagSymbols->setVisible( true );
     actnFinishTagging->setVisible( false );
     // disconnect slot which handles regrouping
-    disconnect( model, &QStandardItemModel::itemChanged,
-                this, &QgsStyleManagerDialog::regrouped );
 
-    // disabel all items except groups in groupTree
+    // disable all items except groups in groupTree
     enableItemsForGroupingMode( true );
     groupChanged( groupTree->currentIndex() );
 
     // Finally: Reconnect all Symbol editing functionalities
     connect( treeModel, &QStandardItemModel::itemChanged,
              this, &QgsStyleManagerDialog::groupRenamed );
-    connect( model, &QStandardItemModel::itemChanged,
-             this, &QgsStyleManagerDialog::itemChanged );
+
     // Reset the selection mode
     listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    mSymbolTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
   }
   else
   {
@@ -1245,88 +1551,43 @@ void QgsStyleManagerDialog::tagSymbolsAction()
     if ( !validGroup )
       return;
 
-    mGrouppingMode = true;
+    mGroupingMode = true;
     // Change visibility of actions
     actnTagSymbols->setVisible( false );
     actnFinishTagging->setVisible( true );
     // Remove all Symbol editing functionalities
     disconnect( treeModel, &QStandardItemModel::itemChanged,
                 this, &QgsStyleManagerDialog::groupRenamed );
-    disconnect( model, &QStandardItemModel::itemChanged,
-                this, &QgsStyleManagerDialog::itemChanged );
 
-    // disabel all items except groups in groupTree
+    // disable all items except groups in groupTree
     enableItemsForGroupingMode( false );
     groupChanged( groupTree->currentIndex() );
     btnManageGroups->setEnabled( true );
 
-
-    // Connect to slot which handles regrouping
-    connect( model, &QStandardItemModel::itemChanged,
-             this, &QgsStyleManagerDialog::regrouped );
+    mModel->setCheckable( true );
 
     // No selection should be possible
     listItems->setSelectionMode( QAbstractItemView::NoSelection );
+    mSymbolTreeView->setSelectionMode( QAbstractItemView::NoSelection );
   }
 }
 
-void QgsStyleManagerDialog::regrouped( QStandardItem *item )
+void QgsStyleManagerDialog::regrouped( QStandardItem * )
 {
-  QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
-  {
-    QgsDebugMsg( QStringLiteral( "Unknown style entity" ) );
-    return;
-  }
-
-  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel *>( groupTree->model() );
-  QString tag = treeModel->itemFromIndex( groupTree->currentIndex() )->text();
-
-  QString symbolName = item->text();
-  bool regrouped;
-  if ( item->checkState() == Qt::Checked )
-    regrouped = mStyle->tagSymbol( type, symbolName, QStringList( tag ) );
-  else
-    regrouped = mStyle->detagSymbol( type, symbolName, QStringList( tag ) );
-  if ( !regrouped )
-  {
-    int er = QMessageBox::critical( this, tr( "Group Items" ),
-                                    tr( "There was a problem with the symbols database while regrouping." ) );
-    // call the slot again to get back to normal
-    if ( er )
-      tagSymbolsAction();
-  }
 }
 
-void QgsStyleManagerDialog::setSymbolsChecked( const QStringList &symbols )
+void QgsStyleManagerDialog::setSymbolsChecked( const QStringList & )
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
-  for ( const QString &symbol : symbols )
-  {
-    const QList<QStandardItem *> items = model->findItems( symbol );
-    for ( QStandardItem *item : items )
-      item->setCheckState( Qt::Checked );
-  }
 }
 
 void QgsStyleManagerDialog::filterSymbols( const QString &qword )
 {
-  QStringList items;
-  items = mStyle->findSymbols( currentItemType() < 3 ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity, qword );
-  items.sort();
-  if ( currentItemType() == 3 )
-  {
-    populateColorRamps( items );
-  }
-  else
-  {
-    populateSymbols( items );
-  }
+  mModel->setFilterString( qword );
 }
 
 void QgsStyleManagerDialog::symbolSelected( const QModelIndex &index )
 {
-  actnEditItem->setEnabled( index.isValid() && !mGrouppingMode );
+  actnEditItem->setEnabled( index.isValid() && !mGroupingMode && !mReadOnly );
 }
 
 void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected )
@@ -1334,32 +1595,35 @@ void QgsStyleManagerDialog::selectedSymbolsChanged( const QItemSelection &select
   Q_UNUSED( selected );
   Q_UNUSED( deselected );
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
-  actnRemoveItem->setDisabled( nothingSelected );
-  actnAddFavorite->setDisabled( nothingSelected );
-  actnRemoveFavorite->setDisabled( nothingSelected );
-  mGroupListMenu->setDisabled( nothingSelected );
-  actnDetag->setDisabled( nothingSelected );
+  actnRemoveItem->setDisabled( nothingSelected || mReadOnly );
+  actnAddFavorite->setDisabled( nothingSelected || mReadOnly );
+  actnRemoveFavorite->setDisabled( nothingSelected || mReadOnly );
+  mGroupListMenu->setDisabled( nothingSelected || mReadOnly );
+  actnDetag->setDisabled( nothingSelected || mReadOnly );
   actnExportAsPNG->setDisabled( nothingSelected );
   actnExportAsSVG->setDisabled( nothingSelected );
-  actnEditItem->setDisabled( nothingSelected );
+  if ( mActionCopyToDefault )
+    mActionCopyToDefault->setDisabled( nothingSelected );
+  mCopyToDefaultButton->setDisabled( nothingSelected );
+  actnEditItem->setDisabled( nothingSelected || mReadOnly );
 }
 
 void QgsStyleManagerDialog::enableSymbolInputs( bool enable )
 {
   groupTree->setEnabled( enable );
-  btnAddTag->setEnabled( enable );
-  btnAddSmartgroup->setEnabled( enable );
-  actnAddTag->setEnabled( enable );
-  actnAddSmartgroup->setEnabled( enable );
-  actnRemoveGroup->setEnabled( enable );
-  btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
+  btnAddTag->setEnabled( enable && !mReadOnly );
+  btnAddSmartgroup->setEnabled( enable && !mReadOnly );
+  actnAddTag->setEnabled( enable && !mReadOnly );
+  actnAddSmartgroup->setEnabled( enable && !mReadOnly );
+  actnRemoveGroup->setEnabled( enable && !mReadOnly );
+  btnManageGroups->setEnabled( !mReadOnly && ( enable || mGroupingMode ) ); // always enabled in grouping mode, as it is the only way to leave grouping mode
   searchBox->setEnabled( enable );
 }
 
 void QgsStyleManagerDialog::enableGroupInputs( bool enable )
 {
-  actnRemoveGroup->setEnabled( enable );
-  btnManageGroups->setEnabled( enable || mGrouppingMode ); // always enabled in grouping mode, as it is the only way to leave grouping mode
+  actnRemoveGroup->setEnabled( enable && !mReadOnly );
+  btnManageGroups->setEnabled( !mReadOnly && ( enable || mGroupingMode ) ); // always enabled in grouping mode, as it is the only way to leave grouping mode
 }
 
 void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
@@ -1382,7 +1646,7 @@ void QgsStyleManagerDialog::enableItemsForGroupingMode( bool enable )
   // NOTE: if you ever change the layout name in the .ui file edit here too
   for ( int i = 0; i < symbolBtnsLayout->count(); i++ )
   {
-    QWidget *w = qobject_cast<QWidget *>( symbolBtnsLayout->itemAt( i )->widget() );
+    QWidget *w = symbolBtnsLayout->itemAt( i )->widget();
     if ( w )
       w->setEnabled( enable );
   }
@@ -1397,75 +1661,62 @@ void QgsStyleManagerDialog::grouptreeContextMenu( QPoint point )
   QPoint globalPos = groupTree->viewport()->mapToGlobal( point );
 
   QModelIndex index = groupTree->indexAt( point );
-  QgsDebugMsg( QStringLiteral( "Now you clicked: %1" ).arg( index.data().toString() ) );
-
-  if ( index.isValid() && !mGrouppingMode )
+  if ( index.isValid() && !mGroupingMode )
     mGroupTreeContextMenu->popup( globalPos );
 }
 
 void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
 {
-  QPoint globalPos = listItems->viewport()->mapToGlobal( point );
+  QPoint globalPos = mSymbolViewStackedWidget->currentIndex() == 0
+                     ? listItems->viewport()->mapToGlobal( point )
+                     : mSymbolTreeView->viewport()->mapToGlobal( point );
 
   // Clear all actions and create new actions for every group
   mGroupListMenu->clear();
 
-  QAction *a = nullptr;
-  QStringList tags = mStyle->tags();
-  tags.sort();
-  for ( const QString &tag : qgis::as_const( tags ) )
+  if ( !mReadOnly )
   {
-    a = new QAction( tag, mGroupListMenu );
-    a->setData( tag );
-    connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols(); }
+    QAction *a = nullptr;
+    QStringList tags = mStyle->tags();
+    tags.sort();
+    for ( const QString &tag : qgis::as_const( tags ) )
+    {
+      a = new QAction( tag, mGroupListMenu );
+      a->setData( tag );
+      connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols(); }
+             );
+      mGroupListMenu->addAction( a );
+    }
+
+    if ( tags.count() > 0 )
+    {
+      mGroupListMenu->addSeparator();
+    }
+    a = new QAction( tr( "Create New Tag…" ), mGroupListMenu );
+    connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols( true ); }
            );
     mGroupListMenu->addAction( a );
   }
-
-  if ( tags.count() > 0 )
-  {
-    mGroupListMenu->addSeparator();
-  }
-  a = new QAction( tr( "Create New Tag…" ), mGroupListMenu );
-  connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols( true ); }
-         );
-  mGroupListMenu->addAction( a );
 
   mGroupMenu->popup( globalPos );
 }
 
 void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
 {
-  QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
+  const QList< ItemDetails > items = selectedItems();
+  for ( const ItemDetails &details : items )
   {
-    QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-    return;
+    mStyle->addFavorite( details.entityType, details.name );
   }
-
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  for ( const QModelIndex &index : indexes )
-  {
-    mStyle->addFavorite( type, index.data().toString() );
-  }
-  populateList();
 }
 
 void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
 {
-  QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-  if ( currentItemType() > 3 )
+  const QList< ItemDetails > items = selectedItems();
+  for ( const ItemDetails &details : items )
   {
-    QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-    return;
+    mStyle->removeFavorite( details.entityType, details.name );
   }
-
-  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  for ( const QModelIndex &index : indexes )
-  {
-    mStyle->removeFavorite( type, index.data().toString() );
-  }
-  populateList();
 }
 
 void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
@@ -1473,13 +1724,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
   QAction *selectedItem = qobject_cast<QAction *>( sender() );
   if ( selectedItem )
   {
-    QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-    if ( currentItemType() > 3 )
-    {
-      QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-      return;
-    }
-
+    const QList< ItemDetails > items = selectedItems();
     QString tag;
     if ( newTag )
     {
@@ -1496,14 +1741,10 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-    for ( const QModelIndex &index : indexes )
+    for ( const ItemDetails &details : items )
     {
-      mStyle->tagSymbol( type, index.data().toString(), QStringList( tag ) );
+      mStyle->tagSymbol( details.entityType, details.name, QStringList( tag ) );
     }
-    populateList();
-
-    QgsDebugMsg( QStringLiteral( "Selected Action: %1" ).arg( selectedItem->text() ) );
   }
 }
 
@@ -1513,20 +1754,11 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
 
   if ( selectedItem )
   {
-    QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
-    if ( currentItemType() > 3 )
+    const QList< ItemDetails > items = selectedItems();
+    for ( const ItemDetails &details : items )
     {
-      QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
-      return;
+      mStyle->detagSymbol( details.entityType, details.name );
     }
-    const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-    for ( const QModelIndex &index : indexes )
-    {
-      mStyle->detagSymbol( type, index.data().toString() );
-    }
-    populateList();
-
-    QgsDebugMsg( QStringLiteral( "Selected Action: %1" ).arg( selectedItem->text() ) );
   }
 }
 
@@ -1578,3 +1810,4 @@ void QgsStyleManagerDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-style-manager" ) );
 }
+

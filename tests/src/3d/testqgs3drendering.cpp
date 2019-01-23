@@ -23,6 +23,7 @@
 #include "qgsrastershader.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -33,9 +34,10 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrulebased3drenderer.h"
 #include "qgsterrainentity_p.h"
 #include "qgsvectorlayer3drenderer.h"
-
+#include "qgsmeshlayer3drenderer.h"
 
 class TestQgs3DRendering : public QObject
 {
@@ -48,6 +50,8 @@ class TestQgs3DRendering : public QObject
     void testDemTerrain();
     void testExtrudedPolygons();
     void testMapTheme();
+    void testMesh();
+    void testRuleBasedRenderer();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -58,6 +62,7 @@ class TestQgs3DRendering : public QObject
     QgsRasterLayer *mLayerDtm;
     QgsRasterLayer *mLayerRgb;
     QgsVectorLayer *mLayerBuildings;
+    QgsMeshLayer *mLayerMesh;
 };
 
 //runs before all tests
@@ -84,6 +89,10 @@ void TestQgs3DRendering::initTestCase()
   QVERIFY( mLayerBuildings->isValid() );
   mProject->addMapLayer( mLayerBuildings );
 
+  // best to keep buildings without 2D renderer so it is not painted on the terrain
+  // so we do not get some possible artifacts
+  mLayerBuildings->setRenderer( nullptr );
+
   QgsPhongMaterialSettings material;
   material.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
@@ -91,6 +100,17 @@ void TestQgs3DRendering::initTestCase()
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
+
+  mLayerMesh = new QgsMeshLayer( dataDir + "/mesh/quad_flower.2dm", "mesh", "mdal" );
+  QVERIFY( mLayerMesh->isValid() );
+  mLayerMesh->setCrs( mLayerDtm->crs() );  // this testing mesh does not have any CRS defined originally
+  mProject->addMapLayer( mLayerMesh );
+
+  QgsPhongMaterialSettings meshMaterial;
+  QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
+  symbolMesh3d->setMaterial( meshMaterial );
+  QgsMeshLayer3DRenderer *meshRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMesh->setRenderer3D( meshRenderer3d );
 
   mProject->setCrs( mLayerDtm->crs() );
 
@@ -126,6 +146,7 @@ void TestQgs3DRendering::initTestCase()
   QgsMapThemeCollection::MapThemeRecord record;
   record.addLayerRecord( layerRecord );
   mProject->mapThemeCollection()->insert( "theme_dtm", record );
+
 }
 
 //runs after all tests
@@ -276,6 +297,80 @@ void TestQgs3DRendering::testMapTheme()
   QVERIFY( renderCheck( "terrain_theme", img, 40 ) );
 }
 
+void TestQgs3DRendering::testMesh()
+{
+  QgsRectangle fullExtent = mLayerMesh->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMesh );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QVERIFY( renderCheck( "mesh3d", img, 40 ) );
+}
+
+void TestQgs3DRendering::testRuleBasedRenderer()
+{
+  QgsPhongMaterialSettings material;
+  material.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterial( material );
+  symbol3d->setExtrusionHeight( 10.f );
+
+  QgsPhongMaterialSettings material2;
+  material2.setAmbient( Qt::red );
+  QgsPolygon3DSymbol *symbol3d2 = new QgsPolygon3DSymbol;
+  symbol3d2->setMaterial( material2 );
+  symbol3d2->setExtrusionHeight( 10.f );
+
+  QgsRuleBased3DRenderer::Rule *root = new QgsRuleBased3DRenderer::Rule( nullptr );
+  QgsRuleBased3DRenderer::Rule *rule1 = new QgsRuleBased3DRenderer::Rule( symbol3d, "ogc_fid < 29069", "rule 1" );
+  QgsRuleBased3DRenderer::Rule *rule2 = new QgsRuleBased3DRenderer::Rule( symbol3d2, "ogc_fid >= 29069", "rule 2" );
+  root->appendChild( rule1 );
+  root->appendChild( rule2 );
+  QgsRuleBased3DRenderer *renderer3d = new QgsRuleBased3DRenderer( root );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QVERIFY( renderCheck( "rulebased", img, 40 ) );
+}
 
 bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {

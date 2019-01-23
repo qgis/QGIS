@@ -311,9 +311,9 @@ class CORE_EXPORT QgsDistanceArea
      * This argument is always specified in meters. A shorter distance results in a denser line,
      * at the cost of extra computing time.
      *
-     * If the geodesic line crosses the international date line and \a breakLine is true, then
-     * the line will be split into two parts, broken at the date line. In this case the function
-     * will return two lines, corresponding to the portions at either side of the date line.
+     * If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and \a breakLine is true, then
+     * the line will be split into two parts, broken at the antimeridian. In this case the function
+     * will return two lines, corresponding to the portions at either side of the antimeridian.
      *
      * \since QGIS 3.6
      */
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsDistanceArea
 
     /**
      * Calculates the latitude at which the geodesic line joining \a p1 and \a p2 crosses
-     * the international date line (longitude +/- 180 degrees).
+     * the antimeridian (longitude +/- 180 degrees).
      *
      * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
      *
@@ -330,12 +330,37 @@ class CORE_EXPORT QgsDistanceArea
      *
      * \param p1 Starting point, in ellipsoidCrs()
      * \param p2 Ending point, in ellipsoidCrs()
-     * \param fractionAlongLine will be set to the fraction along the geodesic line joining \a p1 to \a p2 at which the date line crossing occurs.
+     * \param fractionAlongLine will be set to the fraction along the geodesic line joining \a p1 to \a p2 at which the antimeridian crossing occurs.
      *
-     * \returns the latitude at which the geodesic crosses the date line
+     * \returns the latitude at which the geodesic crosses the antimeridian
+     * \see splitGeometryAtAntimeridian()
+     *
      * \since QGIS 3.6
      */
-    double latitudeGeodesicCrossesDateLine( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine SIP_OUT ) const;
+    double latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine SIP_OUT ) const;
+
+    /**
+     * Splits a (Multi)LineString \a geometry at the antimeridian (longitude +/- 180 degrees).
+     * The returned geometry will always be a multi-part geometry.
+     *
+     * Whenever line segments in the input geometry cross the antimeridian, they will be
+     * split into two segments, with the latitude of the breakpoint being determined using a geodesic
+     * line connecting the points either side of this segment.
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a geometry must be in the sourceCrs() of this QgsDistanceArea object. The returned geometry
+     * will also be in this same CRS.
+     *
+     * If \a geometry contains M or Z values, these will be linearly interpolated for the new vertices
+     * created at the antimeridian.
+     *
+     * \note Non-(Multi)LineString geometries will be returned unchanged.
+     *
+     * \see latitudeGeodesicCrossesAntimeridian()
+     * \since QGIS 3.6
+     */
+    QgsGeometry splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const;
 
   private:
 

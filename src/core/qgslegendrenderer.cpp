@@ -34,9 +34,9 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsL
 {
 }
 
-QSizeF QgsLegendRenderer::minimumSize()
+QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 {
-  return paintAndDetermineSize();
+  return paintAndDetermineSize( renderContext );
 }
 
 void QgsLegendRenderer::drawLegend( QPainter *painter )
@@ -536,12 +536,25 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
 QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItemInternal( QgsLayerTreeModelLegendNode *symbolItem, QgsRenderContext *context, QPainter *painter, QPointF point, double labelXOffset )
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
+  ctx.context = context;
+
+  // add a layer expression context scope
+  QgsExpressionContextScope *layerScope = nullptr;
+  if ( context && symbolItem->layerNode()->layer() )
+  {
+    layerScope = QgsExpressionContextUtils::layerScope( symbolItem->layerNode()->layer() );
+    context->expressionContext().appendScope( layerScope );
+  }
+
   ctx.painter = context ? context->painter() : painter;
   ctx.point = point;
   ctx.labelXOffset = labelXOffset;
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
+
+  if ( layerScope )
+    delete context->expressionContext().popScope();
 
   Nucleon nucleon;
   nucleon.item = symbolItem;
@@ -565,7 +578,8 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   QModelIndex idx = mLegendModel->node2index( nodeLayer );
 
   //Let the user omit the layer title item by having an empty layer title string
-  if ( mLegendModel->data( idx, Qt::DisplayRole ).toString().isEmpty() ) return size;
+  if ( mLegendModel->data( idx, Qt::DisplayRole ).toString().isEmpty() )
+    return size;
 
   double y = point.y();
 
@@ -576,8 +590,18 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
-  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
-  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
+  QgsExpressionContextScope *layerScope = nullptr;
+  if ( context && nodeLayer->layer() )
+  {
+    layerScope = QgsExpressionContextUtils::layerScope( nodeLayer->layer() );
+    context->expressionContext().appendScope( layerScope );
+  }
+
+  QgsExpressionContext tempContext;
+
+  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
+                            context ? context->expressionContext() : tempContext );
+  for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( context && context->painter() )
@@ -593,6 +617,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   }
   size.rheight() = y - point.y();
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
+
+  if ( layerScope )
+    delete context->expressionContext().popScope();
 
   return size;
 }
@@ -616,8 +643,11 @@ QSizeF QgsLegendRenderer::drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, 
 
   QFont groupFont = mSettings.style( nodeLegendStyle( nodeGroup ) ).font();
 
-  QStringList lines = mSettings.splitStringForWrapping( mLegendModel->data( idx, Qt::DisplayRole ).toString() );
-  for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
+  QgsExpressionContext tempContext;
+
+  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
+                            context ? context->expressionContext() : tempContext );
+  for ( QStringList::ConstIterator groupPart = lines.constBegin(); groupPart != lines.constEnd(); ++groupPart )
   {
     y += mSettings.fontAscentMillimeters( groupFont );
     if ( context && context->painter() )

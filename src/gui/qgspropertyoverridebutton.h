@@ -62,7 +62,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QgsPropertyOverrideButton( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                const QgsVectorLayer *layer = nullptr );
 
-
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
      * \param propertyKey key for corresponding property
@@ -200,6 +199,17 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
+     * Registers a \a widget which is linked to this button. The meaning of linked widgets
+     * depends on the property type, and the type of linked widget.
+     *
+     * For color properties, linking a QgsColorButton allows the color button to correctly
+     * reflect the status of the property when it's set to follow a project color.
+     *
+     * \since QGIS 3.6
+     */
+    void registerLinkedWidget( QWidget *widget );
+
+    /**
      * Updates list of fields.
      *
      * \since QGIS 3.0
@@ -219,6 +229,15 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * Set whether the current property override definition is to be used
      */
     void setActive( bool active );
+
+
+    ///@cond PRIVATE
+
+    // exposed to Python for testing only
+    void aboutToShowMenu();
+    void menuActionTriggered( QAction *action );
+
+    ///@endcond
 
   signals:
 
@@ -263,6 +282,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QMenu *mFieldsMenu = nullptr;
     QMenu *mVariablesMenu = nullptr;
     QAction *mActionVariables = nullptr;
+    QMenu *mColorsMenu = nullptr;
+    QAction *mActionColors = nullptr;
 
     QAction *mActionActive = nullptr;
     QAction *mActionDescription = nullptr;
@@ -290,6 +311,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
       SiblingEnableState,
       SiblingVisibility,
       SiblingExpressionText,
+      SiblingLinkedWidget,
     };
     struct SiblingWidget
     {
@@ -312,11 +334,9 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     std::shared_ptr< QgsSymbol > mSymbol;
 
   private slots:
-    void aboutToShowMenu();
-    void menuActionTriggered( QAction *action );
+
     void showHelp();
     void updateSiblingWidgets( bool state );
 };
-
 
 #endif // QGSPROPERTYOVERRIDEBUTTON_H

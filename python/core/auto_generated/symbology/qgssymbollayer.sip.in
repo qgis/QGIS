@@ -300,6 +300,8 @@ will be overwritten.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
+.. seealso:: Property
+
 .. versionadded:: 3.0
 %End
 
@@ -386,6 +388,8 @@ Returns a reference to the symbol layer's property collection, used for data def
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
+.. seealso:: Property
+
 .. versionadded:: 3.0
 %End
 
@@ -399,6 +403,13 @@ Sets the symbol layer's property collection, used for data defined overrides.
 .. seealso:: :py:func:`properties`
 
 .. versionadded:: 3.0
+%End
+
+    virtual bool hasDataDefinedProperties() const;
+%Docstring
+Returns true if the symbol layer (or any of its sub-symbols) contains data defined properties.
+
+.. versionadded:: 3.4.5
 %End
 
   protected:

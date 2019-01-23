@@ -309,6 +309,21 @@ A grouped map of multiple QgsProperty objects, each referenced by a integer key 
 Properties within a collection are referenced by an integer key. This is done to avoid the cost of
 string creation and comparisons which would be required by a string key. The intended use case is that
 a context specific enum is cast to int and used for the key value.
+Examples of such enums are :
+
+.. seealso:: :py:func:`QgsLayoutObject.DataDefinedProperty`
+
+.. seealso:: :py:func:`QgsSymbolLayer.Property`
+
+.. seealso:: :py:func:`QgsPalLabeling.Property`
+
+.. seealso:: :py:func:`QgsAbstract3DSymbol.Property`
+
+.. seealso:: :py:func:`QgsDiagramLayerSettings.Property`
+
+.. seealso:: :py:func:`QgsPalLayerSettings.Property`
+
+.. seealso:: :py:func:`QgsWidgetWrapper.Property`
 
 .. versionadded:: 3.0
 %End

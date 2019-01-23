@@ -41,7 +41,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFi
 
   for ( const auto &driver : mDrivers )
   {
-    if ( ( driver->type() == DriverType::CanReadMeshAndDatasets ) &&
+    if ( ( driver->hasCapability( Capability::ReadMesh ) ) &&
          driver->canRead( meshFile ) )
     {
       std::unique_ptr<Driver> drv( driver->create() );
@@ -73,7 +73,7 @@ void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFi
 
   for ( const auto &driver : mDrivers )
   {
-    if ( ( driver->type() == DriverType::CanReadOnlyDatasets ) &&
+    if ( driver->hasCapability( Capability::ReadDatasets ) &&
          driver->canRead( datasetFile ) )
     {
       std::unique_ptr<Driver> drv( driver->create() );
@@ -93,7 +93,7 @@ size_t MDAL::DriverManager::driversCount() const
 
 std::shared_ptr<MDAL::Driver> MDAL::DriverManager::driver( size_t index ) const
 {
-  if ( mDrivers.size() < index )
+  if ( mDrivers.size() <= index )
   {
     return std::shared_ptr<MDAL::Driver>();
   }

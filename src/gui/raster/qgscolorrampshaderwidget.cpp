@@ -63,7 +63,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
 
   mSwatchDelegate = new QgsColorSwatchDelegate( this );
   mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, mSwatchDelegate );
-  mColormapTreeWidget->setColumnWidth( ColorColumn, 50 );
+  mColormapTreeWidget->setColumnWidth( ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
   connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { contextMenu->exec( QCursor::pos() ); }

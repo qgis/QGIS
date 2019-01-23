@@ -63,9 +63,13 @@ class QgsPgTableModel : public QStandardItemModel
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
+    void setConnectionName( const QString &connName ) { mConnName = connName;  }
+
   private:
     //! Number of tables in the model
     int mTableCount = 0;
+    //! connection name
+    QString mConnName;
 };
 
 #endif // QGSPGTABLEMODEL_H

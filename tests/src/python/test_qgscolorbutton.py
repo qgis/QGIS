@@ -15,9 +15,10 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.gui import QgsColorButton
+from qgis.core import QgsApplication, QgsProjectColorScheme
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
-
+from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 
@@ -39,6 +40,38 @@ class TestQgsColorButton(unittest.TestCase):
         button.setToNoColor()
         # ensure that only the alpha channel has changed - not the other color components
         self.assertEqual(button.color(), QColor(255, 100, 200, 0))
+
+    def testLinkProjectColor(self):
+        """
+        Test linking to a project color
+        """
+        project_scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
+        project_scheme.setColors([[QColor(255, 0, 0), 'col1'], [QColor(0, 255, 0), 'col2']])
+        button = QgsColorButton()
+        spy = QSignalSpy(button.unlinked)
+        button.setColor(QColor(0, 0, 255))
+        self.assertFalse(button.linkedProjectColorName())
+
+        button.linkToProjectColor('col1')
+        self.assertEqual(button.linkedProjectColorName(), 'col1')
+        self.assertEqual(button.color().name(), '#ff0000')
+        self.assertEqual(len(spy), 0)
+
+        button.unlink()
+        self.assertFalse(button.linkedProjectColorName())
+        self.assertEqual(button.color().name(), '#0000ff')
+        self.assertEqual(len(spy), 1)
+
+        button.linkToProjectColor('col2')
+        self.assertEqual(button.linkedProjectColorName(), 'col2')
+        self.assertEqual(button.color().name(), '#00ff00')
+        self.assertEqual(len(spy), 1)
+
+        project_scheme.setColors([[QColor(255, 0, 0), 'xcol1'], [QColor(0, 255, 0), 'xcol2']])
+        # linked color no longer exists
+        self.assertFalse(button.linkedProjectColorName())
+        self.assertEqual(button.color().name(), '#0000ff')
+        self.assertEqual(len(spy), 2)
 
 
 if __name__ == '__main__':

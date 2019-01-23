@@ -148,6 +148,7 @@ class Editor(QsciScintilla):
 
         self.SendScintilla(self.SCI_SETADDITIONALSELECTIONTYPING, 1)
         self.SendScintilla(self.SCI_SETMULTIPASTE, 1)
+        self.SendScintilla(self.SCI_SETVIRTUALSPACEOPTIONS, self.SCVS_RECTANGULARSELECTION)
 
         # self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)

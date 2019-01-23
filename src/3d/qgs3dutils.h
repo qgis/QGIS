@@ -22,12 +22,19 @@ class QgsLineString;
 class QgsPolygon;
 
 class QgsAbstract3DEngine;
+class QgsAbstract3DSymbol;
 class Qgs3DMapScene;
+
+namespace Qt3DExtras
+{
+  class QPhongMaterial;
+}
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 
+#include <memory>
 
 #ifndef SIP_RUN
 
@@ -80,10 +87,8 @@ class _3D_EXPORT Qgs3DUtils
     //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
-    /**
-     * Calculates (x,y,z) positions of a (multi)point in the Point vector layers
-     */
-    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, Qgs3DTypes::AltitudeClamping altClamp );
+    //! Calculates (x,y,z) positions of (multi)point from the given feature
+    static void extractPointPositions( QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.
@@ -99,6 +104,15 @@ class _3D_EXPORT Qgs3DUtils
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
+
+    //! Returns a new 3D symbol based on given geometry type (or null pointer if geometry type is not supported)
+    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
+
+    //! Returns expression context for use in preparation of 3D data of a layer
+    static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
+
+    //! Returns phong material object based on the material settings
+    static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
 };
 
 #endif

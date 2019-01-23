@@ -5,13 +5,14 @@
 
 #include <vector>
 #include <string>
+#include <netcdf.h>
+#include "math.h"
+#include <stdlib.h>
+#include <assert.h>
 
 #include "mdal_data_model.hpp"
 #include "mdal_cf.hpp"
 #include "mdal_utils.hpp"
-
-#include "math.h"
-#include <stdlib.h>
 
 #define CF_THROW_ERR throw MDAL_Status::Err_UnknownFormat
 
@@ -182,6 +183,7 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<doubl
     const CFDatasetGroupInfo dsi = it.second;
     // Create a dataset group
     std::shared_ptr<MDAL::DatasetGroup> group = std::make_shared<MDAL::DatasetGroup>(
+          name(),
           mesh,
           mFileName,
           dsi.name
@@ -245,7 +247,7 @@ void MDAL::DriverCF::parseTime( std::vector<double> &times )
 MDAL::DriverCF::DriverCF( const std::string &name,
                           const std::string &longName,
                           const std::string &filters ):
-  Driver( name, longName, filters, DriverType::CanReadMeshAndDatasets )
+  Driver( name, longName, filters, Capability::ReadMesh )
 {
 }
 
@@ -327,6 +329,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
     populateFacesAndVertices( vertices, faces );
     std::unique_ptr< MemoryMesh > mesh(
       new MemoryMesh(
+        name(),
         vertices.size(),
         faces.size(),
         mDimensions.MaxVerticesInFace,

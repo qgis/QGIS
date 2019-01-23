@@ -474,6 +474,14 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
   symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
 
+  if ( !customContext )
+  {
+    // if no render context was passed, build a minimal expression context
+    QgsExpressionContext expContext;
+    expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+    context.setExpressionContext( expContext );
+  }
+
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
     if ( !layer->enabled() )
@@ -669,12 +677,7 @@ bool QgsSymbol::hasDataDefinedProperties() const
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->dataDefinedProperties().hasActiveProperties() )
-      return true;
-    // we treat geometry generator layers like they have data defined properties,
-    // since the WHOLE layer is based on expressions and requires the full expression
-    // context
-    if ( layer->layerType() == QLatin1String( "GeometryGenerator" ) )
+    if ( layer->hasDataDefinedProperties() )
       return true;
   }
   return false;
