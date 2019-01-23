@@ -5,10 +5,10 @@ QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterEnum|SCALING|Scaling|[0] none;[1] normalize (0-1);[2] standardize|False|2
 QgsProcessingParameterBoolean|MESSAGE|Verbose Messages|False
 QgsProcessingParameterEnum|MODEL_SRC|Model Source|[0] create from training areas;[1] restore from file|False|0
-QgsProcessingParameterFile|MODEL_LOAD|Restore Model from File|QgsProcessingParameterFile.File|None|False
+QgsProcessingParameterFile|MODEL_LOAD|Restore Model from File|QgsProcessingParameterFile.File|None|None|True
 QgsProcessingParameterFeatureSource|ROI|Training Areas|-1|None|False
-QgsProcessingParameterFeatureSource|ROI_ID|Class Identifier|5|None|False
-QgsProcessingParameterFile|MODEL_SAVE|Store Model to File|QgsProcessingParameterFile.File|None|False
+QgsProcessingParameterField|ROI_ID|Class Identifier|None|ROI|-1|False|False
+QgsProcessingParameterFile|MODEL_SAVE|Store Model to File|QgsProcessingParameterFile.File|None|None|True
 QgsProcessingParameterEnum|SVM_TYPE|SVM Type|[0] C-SVC;[1] nu-SVC;[2] one-class SVM;[3] epsilon-SVR;[4] nu-SVR|False|0
 QgsProcessingParameterEnum|KERNEL_TYPE|Kernel Type|[0] linear;[1] polynomial;[2] radial basis function;[3] sigmoid|False|2
 QgsProcessingParameterNumber|DEGREE|Degree|QgsProcessingParameterNumber.Integer|3|False|None|None
