@@ -38,7 +38,7 @@ bool QgsVectorLayerFeatureCounter::run()
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
     mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
-    mSymbolFeatureIdMap.insert( symbolIt->label(), Qset<QgsFeatureId> )
+    mSymbolFeatureIdMap.insert( symbolIt->label(), QgsFeatureIds() )
   }
 
   // If there are no features to be counted, we can spare us the trouble
@@ -107,21 +107,21 @@ long QgsVectorLayerFeatureCounter::featureCount( const QString &legendKey ) cons
   return mSymbolFeatureCountMap.value( legendKey, -1 );
 }
 
-QHash<QString, Qset<QgsFeatureId>> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
+QHash<QString, QgsFeatureIds> QgsVectorLayerFeatureCounter::symbolFeatureIdMap() const
 {
   return mSymbolFeatureIdMap;
 }
 
-Qset<QgsFeatureId> QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
+QgsFeatureIds QgsVectorLayerFeatureCounter::featureIds( const QString symbolkey ) const
 {
-  if ( mSymbolFeatureCountMap )
+  if ( !mSymbolFeatureCountMap.empty() )
   {
     return mSymbolFeatureIdMap.value( symbolkey );
   }
   else
   {
-    run();
-    return mSymbolFeatureIdMap.value( symbolkey, QSet() );
+    const run();
+    return mSymbolFeatureIdMap.value( symbolkey, QgsFeatureIds() );
   }
 
 }

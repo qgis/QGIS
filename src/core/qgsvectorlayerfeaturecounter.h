@@ -18,7 +18,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrenderer.h"
 #include "qgstaskmanager.h"
-#include "qgsfeature.h"
+#include "qgsfeatureid.h"
 
 /**
  * \ingroup core
