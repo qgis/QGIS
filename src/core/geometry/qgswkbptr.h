@@ -132,19 +132,6 @@ class CORE_EXPORT QgsConstWkbPtr
     mutable bool mEndianSwap;
     mutable QgsWkbTypes::Type mWkbType;
 
-#ifndef SIP_RUN
-    template<typename T>
-    void endian_swap( T &value ) const
-    {
-      char *data = reinterpret_cast<char *>( &value );
-      std::size_t n = sizeof( value );
-      for ( std::size_t i = 0, m = n / 2; i < m; ++i )
-      {
-        std::swap( data[i], data[n - 1 - i] );
-      }
-    }
-#endif
-
     /**
      * \brief Verify bounds
      * \note note available in Python bindings
@@ -196,6 +183,17 @@ class CORE_EXPORT QgsConstWkbPtr
      * \note note available in Python bindings
      */
     inline int remaining() const { return mEnd - mP; } SIP_SKIP
+
+  private:
+    template<typename T> void endian_swap( T &value ) const SIP_SKIP
+    {
+      char *data = reinterpret_cast<char *>( &value );
+      std::size_t n = sizeof( value );
+      for ( std::size_t i = 0, m = n / 2; i < m; ++i )
+      {
+        std::swap( data[i], data[n - 1 - i] );
+      }
+    }
 };
 
 #endif // QGSWKBPTR_H

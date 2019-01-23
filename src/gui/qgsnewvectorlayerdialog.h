@@ -44,6 +44,9 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
                                       const QString &initialPath = QString() );
 
+    /**
+     * New dialog constructor.
+     */
     QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewVectorLayerDialog() override;
     //! Returns the selected geometry type
