@@ -72,10 +72,10 @@ echo "travis_fold:end:cmake"
 # The tests should be aborted before travis times out, in order to allow uploading
 # the ccache and therefore speedup subsequent e builds.
 #
-# Travis will kill the job after approx 120 minutes, we subtract 8 minutes for
+# Travis will kill the job after approx 150 minutes, we subtract 5 minutes for
 # uploading and subtract the bootstrapping time from that.
 # Hopefully clocks are in sync :)
-TRAVIS_TIME=120
+TRAVIS_TIME=150
 UPLOAD_TIME=5
 CURRENT_TIME=$(date +%s)
 TIMEOUT=$((( TRAVIS_TIME - UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
