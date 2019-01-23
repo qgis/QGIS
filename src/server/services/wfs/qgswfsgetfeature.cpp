@@ -1334,6 +1334,10 @@ namespace QgsWfs
         {
           continue;
         }
+        if ( featureAttributes[idx].isNull() )
+        {
+          continue;
+        }
         const QgsField field = fields.at( idx );
         const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
         QString attributeName = field.name();
@@ -1428,6 +1432,10 @@ namespace QgsWfs
       {
         int idx = params.attributeIndexes[i];
         if ( idx >= fields.count() )
+        {
+          continue;
+        }
+        if ( featureAttributes[idx].isNull() )
         {
           continue;
         }

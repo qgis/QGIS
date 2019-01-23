@@ -105,6 +105,7 @@ Content-Type: text/xml; charset=utf-8
      <element type="string" name="typ"/>
      <element type="string" name="name"/>
      <element type="string" name="ortsrat"/>
+     <element type="long" name="id_long"/>
     </sequence>
    </extension>
   </complexContent>
