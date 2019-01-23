@@ -51,6 +51,8 @@ QAbstractSpinBox {
     border-radius: 0.2em;
     background-color: @darkgradient;
     color:@itembackground;
+    selection-background-color: @selection;
+    selection-color: @itemdarkbackground;
 }
 
 QAbstractSpinBox::up-button {
@@ -125,6 +127,8 @@ QLineEdit, QTextEdit, QPlainTextEdit
     border-radius: 0.2em;
     background-color:@itembackground;
     color:@text;
+    selection-background-color: @selection;
+    selection-color: @itemdarkbackground;
 }
 
 QPushButton 
@@ -198,6 +202,7 @@ QPushButton:pressed, QToolButton:pressed {
 
 QComboBox {
     selection-background-color: @selection;
+    selection-color: @itemdarkbackground;
     background-color: @darkgradient;
     color:@itembackground;
     border-style: solid;
@@ -221,6 +226,7 @@ QComboBox:on {
         stop: 0.9   #414141,
         stop: 1     #444);
     selection-background-color: @selection;
+    selection-color: @itemdarkbackground;
 }
 
 QComboBox:editable {
@@ -603,8 +609,8 @@ QAbstractItemView, QListView
   border: none;
   border-radius: 0.15em;
   padding: 1px;
-  selection-color: @text;
   selection-background-color: @selection;
+  selection-color: @itemdarkbackground;
 }
 
 QAbstractItemView::selected, QListView::selected {
