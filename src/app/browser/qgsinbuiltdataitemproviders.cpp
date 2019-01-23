@@ -32,6 +32,7 @@
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsfileutils.h"
+#include "qgsapplication.h"
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>

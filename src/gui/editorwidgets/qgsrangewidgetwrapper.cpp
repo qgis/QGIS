@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsdial.h"
 #include "qgsslider.h"
+#include "qgsapplication.h"
 
 
 

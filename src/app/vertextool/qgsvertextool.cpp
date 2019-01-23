@@ -41,7 +41,7 @@
 
 #include <QMenu>
 #include <QRubberBand>
-
+#include <QTimer>
 
 uint qHash( const Vertex &v )
 {
@@ -282,6 +282,15 @@ QgsVertexTool::~QgsVertexTool()
   delete mEndpointMarker;
 }
 
+void QgsVertexTool::activate()
+{
+  if ( QgisApp::instance() )
+  {
+    showVertexEditor();  //#spellok
+  }
+  QgsMapToolAdvancedDigitizing::activate();
+}
+
 void QgsVertexTool::deactivate()
 {
   setHighlightedVertices( QList<Vertex>() );
@@ -433,13 +442,9 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
   {
     if ( !mSelectionRect && !mDraggingVertex && !mDraggingEdge )
     {
-      // show popup menu - if we are on top of a feature
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
-        QMenu menu;
-        QAction *actionVertexEditor = menu.addAction( tr( "Vertex Editor" ) );
-        connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );  //#spellok
-        menu.exec( mCanvas->mapToGlobal( e->pos() ) );
+        showVertexEditor();  //#spellok
       }
     }
   }
@@ -456,6 +461,9 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( mNewVertexFromDoubleClick )
   {
     QgsPointLocator::Match m( *mNewVertexFromDoubleClick );
+    if ( mSelectedFeature && ( mSelectedFeature->featureId() != m.featureId() || mSelectedFeature->layer() != m.layer() ) )
+      return;  // when a feature is bound to the vector editor, only process actions on that feature
+
     mNewVertexFromDoubleClick.reset();
 
     // dragging of edges and double clicking on edges to add vertex are slightly overlapping
@@ -471,6 +479,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsRectangle map_rect( pt0, pt1 );
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
+    QList<Vertex> editorVertices;
 
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
@@ -493,17 +502,28 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           if ( layerRect.contains( pt ) )
           {
             vertices << Vertex( vlayer, f.id(), i );
+
             if ( isFeatureSelected )
               selectedVertices << Vertex( vlayer, f.id(), i );
+
+            if ( mSelectedFeature && mSelectedFeature->featureId() == f.id() && mSelectedFeature->layer() == vlayer )
+              editorVertices << Vertex( vlayer, f.id(), i );
           }
         }
       }
     }
 
-    // If there were any vertices that come from selected features, use just vertices from selected features.
+    // If there were any vertices that come from a feature currently binded to the node editor, use just verices from
+    // that feature, otherwise if there were any vertices from selected features, use just vertices from those selected features.
     // This allows user to select a bunch of features in complex situations to constrain the selection.
-    if ( !selectedVertices.isEmpty() )
+    if ( !editorVertices.isEmpty() )
+    {
+      vertices = editorVertices;
+    }
+    else if ( !selectedVertices.isEmpty() )
+    {
       vertices = selectedVertices;
+    }
 
     HighlightMode mode = ModeReset;
     if ( e->modifiers() & Qt::ShiftModifier )
@@ -804,11 +824,12 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
 
   // do not use snap from mouse event, use our own with any editable layer
   QgsPointLocator::Match m = snapToEditableLayer( e );
+  bool targetIsAllowed = ( !mSelectedFeature || ( mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() ) );
 
   mLastMouseMoveMatch = m;
 
   // possibility to move a vertex
-  if ( m.type() == QgsPointLocator::Vertex )
+  if ( m.type() == QgsPointLocator::Vertex && targetIsAllowed )
   {
     updateVertexBand( m );
 
@@ -839,7 +860,7 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
   }
 
   // possibility to create new vertex here - or to move the edge
-  if ( m.type() == QgsPointLocator::Edge )
+  if ( m.type() == QgsPointLocator::Edge && targetIsAllowed )
   {
     QgsPointXY mapPoint = toMapCoordinates( e->pos() );
     bool isCircularEdge = false;
@@ -923,6 +944,7 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
   {
     if ( mFeatureBandLayer == m.layer() && mFeatureBandFid == m.featureId() )
       return;  // skip regeneration of rubber band if not needed
+
     QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
     mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
     mFeatureBandMarkers->setVisible( true );
@@ -1029,6 +1051,9 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
 
   // re-run validation for the feature
   validateGeometry( layer, fid );
+
+  if ( mVertexEditor && mSelectedFeature && mSelectedFeature->featureId() == fid && mSelectedFeature->layer() == layer )
+    mVertexEditor->updateEditor( mSelectedFeature->layer(), mSelectedFeature.get() );
 }
 
 void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
@@ -1047,30 +1072,52 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 void QgsVertexTool::showVertexEditor()  //#spellok
 {
   QgsPointLocator::Match m = mLastMouseMoveMatch;
-  if ( !m.isValid() || !m.layer() )
-    return;
-
-  mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
-  for ( int i = 0; i < mSelectedVertices.length(); ++i )
+  if ( m.isValid() && m.layer() )
   {
-    if ( mSelectedVertices.at( i ).layer == m.layer() && mSelectedVertices.at( i ).fid == m.featureId() )
+    if ( mSelectedFeature && mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() )
     {
-      mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+      // if show feature is called on a feature that's already binded to the vertex editor, toggle it off
+      mSelectedFeature.reset();
+      if ( mVertexEditor )
+      {
+        mVertexEditor->updateEditor( nullptr, nullptr );
+      }
+      return;
+    }
+
+    mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
+    for ( int i = 0; i < mSelectedVertices.length(); ++i )
+    {
+      if ( mSelectedVertices.at( i ).layer == m.layer() && mSelectedVertices.at( i ).fid == m.featureId() )
+      {
+        mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+      }
     }
   }
   if ( !mVertexEditor )
   {
-    mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
-    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+    mVertexEditor.reset( new QgsVertexEditor( m.layer() ? m.layer() : currentVectorLayer(), mSelectedFeature ? mSelectedFeature.get() : nullptr, mCanvas ) );
+    if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor.get() ) )
+      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+
     connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
+
+    // timer required as showing/raising the vertex editor in the same function following restoreDockWidget fails
+    QTimer::singleShot( 200, this, [ = ] { mVertexEditor->show(); mVertexEditor->raise(); } );
   }
   else
   {
     mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
+
+    mVertexEditor->show();
+    mVertexEditor->raise();
   }
 
-  connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
+  if ( mSelectedFeature )
+  {
+    connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
+  }
 }
 
 void QgsVertexTool::cleanupVertexEditor()
@@ -1154,6 +1201,8 @@ void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
   QgsPointLocator::Match m = snapToEditableLayer( e );
   if ( !m.isValid() )
     return;
+  if ( mSelectedFeature && ( mSelectedFeature->featureId() != m.featureId() || mSelectedFeature->layer() != m.layer() ) )
+    return; // when a feature is bound to the vertex editor, only process actions for that feature
 
   // activate advanced digitizing dock
   setAdvancedDigitizingAllowed( true );
@@ -1593,6 +1642,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   QgsVectorLayer *dragLayer = mDraggingVertex->layer;
   QgsFeatureId dragFid = mDraggingVertex->fid;
+
   int dragVertexId = mDraggingVertex->vertexId;
   bool addingVertex = mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint;
   bool addingAtEndpoint = mDraggingVertexType == AddingEndpoint;
@@ -1929,6 +1979,9 @@ void QgsVertexTool::deleteVertex()
       setHighlightedVertices( vertices_new );
     }
   }
+
+  if ( mVertexEditor && mSelectedFeature )
+    mVertexEditor->updateEditor( mSelectedFeature->layer(), mSelectedFeature.get() );
 }
 
 void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode )

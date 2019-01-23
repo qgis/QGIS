@@ -23,6 +23,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"

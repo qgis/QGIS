@@ -103,6 +103,7 @@ class QgsStatusBar;
 class QgsGeometryValidationService;
 class QgsGeometryValidationDock;
 class QgsGeometryValidationModel;
+class QgsUserProfileManager;
 class QgsUserProfileManagerWidgetFactory;
 class Qgs3DMapCanvasDockWidget;
 class QgsHandleBadLayersHandler;

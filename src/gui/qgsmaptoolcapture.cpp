@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QAction>
 #include <QCursor>

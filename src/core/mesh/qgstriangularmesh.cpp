@@ -108,6 +108,26 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
+void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
+{
+  int vertexCount = face.size();
+  if ( vertexCount < 3 )
+    return;
+
+  while ( vertexCount > 3 )
+  {
+    // clip one ear from last 2 and first vertex
+    const QgsMeshFace ear = { face[vertexCount - 2], face[vertexCount - 1], face[0] };
+    mTriangularMesh.faces.push_back( ear );
+    mTrianglesToNativeFaces.push_back( nativeIndex );
+    --vertexCount;
+  }
+
+  const QgsMeshFace triangle = { face[1], face[2], face[0] };
+  mTriangularMesh.faces.push_back( triangle );
+  mTrianglesToNativeFaces.push_back( nativeIndex );
+}
+
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
   Q_ASSERT( nativeMesh );
@@ -159,31 +179,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   for ( int i = 0; i < nativeMesh->faces.size(); ++i )
   {
     const QgsMeshFace &face = nativeMesh->faces.at( i ) ;
-    if ( face.size() == 3 )
-    {
-      // triangle
-      mTriangularMesh.faces.push_back( face );
-      mTrianglesToNativeFaces.push_back( i );
-    }
-    else if ( face.size() == 4 )
-    {
-      // quad
-      QgsMeshFace face1;
-      face1.push_back( face[0] );
-      face1.push_back( face[1] );
-      face1.push_back( face[2] );
-
-      mTriangularMesh.faces.push_back( face1 );
-      mTrianglesToNativeFaces.push_back( i );
-
-      QgsMeshFace face2;
-      face2.push_back( face[0] );
-      face2.push_back( face[2] );
-      face2.push_back( face[3] );
-
-      mTriangularMesh.faces.push_back( face2 );
-      mTrianglesToNativeFaces.push_back( i );
-    }
+    triangulate( face, i );
   }
 
   // CALCULATE CENTROIDS

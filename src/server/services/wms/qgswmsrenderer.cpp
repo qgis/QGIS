@@ -2548,8 +2548,9 @@ namespace QgsWms
     }
 
     // init groups
+    const QString rootName { QgsServerProjectUtils::wmsRootName( *mProject ) };
     const QgsLayerTreeGroup *root = mProject->layerTreeRoot();
-    initLayerGroupsRecursive( root, mProject->title() );
+    initLayerGroupsRecursive( root, rootName.isEmpty() ? mProject->title() : rootName );
   }
 
   void QgsRenderer::initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName )

@@ -21,6 +21,7 @@
 #include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsmeshmemorydataprovider.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"

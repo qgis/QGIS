@@ -29,6 +29,7 @@
 #include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"

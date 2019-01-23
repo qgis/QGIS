@@ -159,6 +159,9 @@ SET(TESTS
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerinterpolator.cpp
+ testqgsmeshlayerrenderer.cpp
  testqgsnetworkcontentfetcher.cpp
  testqgsogcutils.cpp
  testqgsogrutils.cpp
@@ -197,6 +200,7 @@ SET(TESTS
  testqgssymbol.cpp
  testqgstaskmanager.cpp
  testqgstracer.cpp
+ testqgstriangularmesh.cpp
  testqgsfontutils.cpp
  testqgsvector.cpp
  testqgsvectordataprovider.cpp
@@ -206,8 +210,6 @@ SET(TESTS
  testqgsvectorlayerutils.cpp
  testqgsziputils.cpp
  testziplayer.cpp
- testqgsmeshlayer.cpp
- testqgsmeshlayerrenderer.cpp
  testqgslayerdefinition.cpp
  testqgssqliteutils.cpp
  testqgsmimedatautils.cpp

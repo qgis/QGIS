@@ -29,6 +29,7 @@
 #include "qgsvertexmarker.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>

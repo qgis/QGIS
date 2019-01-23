@@ -18,6 +18,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
+#include "qgsapplication.h"
 
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QAbstractItemModel( parent )

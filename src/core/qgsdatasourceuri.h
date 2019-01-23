@@ -20,7 +20,8 @@
 #define QGSDATASOURCEURI_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
+#include "qgswkbtypes.h"
 
 #include <QMap>
 

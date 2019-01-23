@@ -29,10 +29,20 @@
 #include "qgsvectorlayer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsmultipolygon.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
     Q_OBJECT
+
+  private:
+
+    /**
+     * Helper function to get a feature based algorithm.
+     */
+    std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> featureBasedAlg( const QString &id );
+
+    QgsFeature runForFeature( const std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> &alg, QgsFeature feature, const QString &layerType, QVariantMap parameters = QVariantMap() );
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -49,6 +59,12 @@ class TestQgsProcessingAlgs: public QObject
     void categorizeByStyle();
     void extractBinary();
 
+    void polygonsToLines_data();
+    void polygonsToLines();
+
+    void densifyGeometries_data();
+    void densifyGeometries();
+
   private:
 
     QString mPointLayerPath;
@@ -56,6 +72,38 @@ class TestQgsProcessingAlgs: public QObject
     QgsVectorLayer *mPolygonLayer = nullptr;
 
 };
+
+std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> TestQgsProcessingAlgs::featureBasedAlg( const QString &id )
+{
+  return std::unique_ptr<QgsProcessingFeatureBasedAlgorithm>( static_cast<QgsProcessingFeatureBasedAlgorithm *>( QgsApplication::processingRegistry()->createAlgorithmById( id ) ) );
+}
+
+QgsFeature TestQgsProcessingAlgs::runForFeature( const std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > &alg, QgsFeature feature, const QString &layerType, QVariantMap parameters )
+{
+  Q_ASSERT( alg.get() );
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QgsProcessingFeedback feedback;
+  context->setFeedback( &feedback );
+
+  std::unique_ptr<QgsVectorLayer> inputLayer( qgis::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  inputLayer->dataProvider()->addFeature( feature );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+
+  bool ok = false;
+  auto res = alg->run( parameters, *context, &feedback, &ok );
+  QgsFeature result;
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( res.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  outputLayer->getFeatures().nextFeature( result );
+
+  return result;
+}
 
 void TestQgsProcessingAlgs::initTestCase()
 {
@@ -667,6 +715,131 @@ void TestQgsProcessingAlgs::extractBinary()
   QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
 }
 
+
+void TestQgsProcessingAlgs::polygonsToLines_data()
+{
+  QTest::addColumn<QgsGeometry>( "sourceGeometry" );
+  QTest::addColumn<QgsGeometry>( "expectedGeometry" );
+
+  QTest::newRow( "Simple Polygon" )
+      << QgsGeometry::fromWkt( "Polygon((1 1, 2 2, 1 3, 1 1))" )
+      << QgsGeometry::fromWkt( "MultiLineString ((1 1, 2 2, 1 3, 1 1))" );
+
+  QgsGeometry geomNoRing( qgis::make_unique<QgsMultiPolygon>() );
+
+  QTest::newRow( "Polygon without exterior ring" )
+      << geomNoRing
+      << QgsGeometry::fromWkt( "MultiLineString ()" );
+
+  QTest::newRow( "MultiPolygon" )
+      << QgsGeometry::fromWkt( "MultiPolygon(((1 1, 2 2, 1 3, 1 1)), ((0 0, 0 10, 10 10, 10 0, 0 0), (3 3, 3 6, 6 6, 6 3, 3 3)))" )
+      << QgsGeometry::fromWkt( "MultiLineString ((1 1, 2 2, 1 3, 1 1),(0 0, 0 10, 10 10, 10 0, 0 0),(3 3, 3 6, 6 6, 6 3, 3 3))" );
+
+  QTest::newRow( "Polygon with inner ring" )
+      << QgsGeometry::fromWkt( "Polygon((0 0, 0 10, 10 10, 10 0, 0 0), (3 3, 3 6, 6 6, 6 3, 3 3))" )
+      << QgsGeometry::fromWkt( "MultiLineString ((0 0, 0 10, 10 10, 10 0, 0 0),(3 3, 3 6, 6 6, 6 3, 3 3))" );
+}
+
+
+void TestQgsProcessingAlgs::polygonsToLines()
+{
+  QFETCH( QgsGeometry, sourceGeometry );
+  QFETCH( QgsGeometry, expectedGeometry );
+
+  std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > alg( featureBasedAlg( "native:polygonstolines" ) );
+
+  QgsFeature feature;
+  feature.setGeometry( sourceGeometry );
+
+  QgsFeature result = runForFeature( alg, feature, QStringLiteral( "Polygon" ) );
+
+  QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+}
+
+void TestQgsProcessingAlgs::densifyGeometries_data()
+{
+  QTest::addColumn<QgsGeometry>( "sourceGeometry" );
+  QTest::addColumn<QgsGeometry>( "expectedGeometry" );
+  QTest::addColumn<double>( "interval" );
+  QTest::addColumn<QString>( "geometryType" );
+
+  QTest::newRow( "Null geometry" )
+      << QgsGeometry()
+      << QgsGeometry()
+      << 0.1
+      << "Point";
+
+  QTest::newRow( "PointZ" )
+      << QgsGeometry::fromWkt( "PointZ( 1 2 3 )" )
+      << QgsGeometry::fromWkt( "PointZ( 1 2 3 )" )
+      << 0.1
+      << "Point";
+
+  QTest::newRow( "MultiPoint" )
+      << QgsGeometry::fromWkt( "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))" )
+      << QgsGeometry::fromWkt( "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))" )
+      << 0.1
+      << "Point";
+
+  QTest::newRow( "LineString big distance" )
+      << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" )
+      << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" )
+      << 100.
+      << "LineString";
+
+  QTest::newRow( "LineString small distance" )
+      << QgsGeometry::fromWkt( "LineString( 0 0, 10 0, 10 10 )" )
+      << QgsGeometry::fromWkt( "LineString (0 0, 2.5 0, 5 0, 7.5 0, 10 0, 10 2.5, 10 5, 10 7.5, 10 10)" )
+      << 3.
+      << "LineString";
+
+  QTest::newRow( "LineStringZ" )
+      << QgsGeometry::fromWkt( "LineStringZ( 0 0 1, 10 0 2, 10 10 0)" )
+      << QgsGeometry::fromWkt( "LineStringZ (0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0)" )
+      << 6.
+      << "LineString";
+
+  QTest::newRow( "LineStringM" )
+      << QgsGeometry::fromWkt( "LineStringM( 0 0 0, 10 0 2, 10 10 0)" )
+      << QgsGeometry::fromWkt( "LineStringM (0 0 0, 2.5 0 0.5, 5 0 1, 7.5 0 1.5, 10 0 2, 10 2.5 1.5, 10 5 1, 10 7.5 0.5, 10 10 0)" )
+      << 3.
+      << "LineString";
+
+  QTest::newRow( "LineStringZM" )
+      << QgsGeometry::fromWkt( "LineStringZM( 0 0 1 10, 10 0 2 8, 10 10 0 4)" )
+      << QgsGeometry::fromWkt( "LineStringZM (0 0 1 10, 5 0 1.5 9, 10 0 2 8, 10 5 1 6, 10 10 0 4)" )
+      << 6.
+      << "LineString";
+
+  QTest::newRow( "Polygon" )
+      << QgsGeometry::fromWkt( "Polygon(( 0 0, 20 0, 20 20, 0 0 ))" )
+      << QgsGeometry::fromWkt( "Polygon ((0 0, 5 0, 10 0, 15 0, 20 0, 20 5, 20 10, 20 15, 20 20, 16 16, 12 12, 7.99999999999999822 7.99999999999999822, 4 4, 0 0))" )
+      << 6.
+      << "Polygon";
+}
+
+void TestQgsProcessingAlgs::densifyGeometries()
+{
+  QFETCH( QgsGeometry, sourceGeometry );
+  QFETCH( QgsGeometry, expectedGeometry );
+  QFETCH( double, interval );
+  QFETCH( QString, geometryType );
+
+  std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > alg( featureBasedAlg( "native:densifygeometriesgivenaninterval" ) );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INTERVAL" ), interval );
+
+  QgsFeature feature;
+  feature.setGeometry( sourceGeometry );
+
+  QgsFeature result = runForFeature( alg, feature, geometryType, parameters );
+
+  if ( expectedGeometry.isNull() )
+    QVERIFY( result.geometry().isNull() );
+  else
+    QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+}
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
 #include "testqgsprocessingalgs.moc"

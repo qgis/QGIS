@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QMutex>
 #include <QCache>

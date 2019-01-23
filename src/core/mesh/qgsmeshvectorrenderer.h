@@ -26,10 +26,11 @@
 
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
-#include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgspointxy.h"
+
+class QgsRenderContext;
 
 ///@cond PRIVATE
 

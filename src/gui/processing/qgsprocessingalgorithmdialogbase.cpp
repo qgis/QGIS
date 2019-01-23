@@ -23,6 +23,7 @@
 #include "qgstaskmanager.h"
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "qgsstringutils.h"
+#include "qgsapplication.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>

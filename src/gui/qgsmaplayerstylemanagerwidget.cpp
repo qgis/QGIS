@@ -30,7 +30,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
-
+#include "qgsapplication.h"
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

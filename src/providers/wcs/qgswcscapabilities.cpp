@@ -32,6 +32,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>

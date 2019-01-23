@@ -85,11 +85,16 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Start addition of a new vertex on double-click
     void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
 
+    void activate() override;
+
     void deactivate() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
 
     QgsGeometry cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid );
+
+    //! Toggle the vertex editor
+    void showVertexEditor();  //#spellok
 
   private slots:
     //! update geometry of our feature
@@ -98,8 +103,6 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     void onCachedGeometryDeleted( QgsFeatureId fid );
 
     void clearGeometryCache();
-
-    void showVertexEditor();  //#spellok
 
     void deleteVertexEditorSelection();
 
@@ -305,7 +308,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsVector> mDragPointMarkersOffset;
 
-    //! structure to keep information about a rubber band user for dragging of a straight line segment
+    //! structure to keep information about a rubber band used for dragging of a straight line segment
     struct StraightBand
     {
       QgsRubberBand *band = nullptr;       //!< Pointer to the actual rubber band

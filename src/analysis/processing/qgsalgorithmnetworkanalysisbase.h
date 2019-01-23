@@ -26,6 +26,7 @@
 #include "qgsgraph.h"
 #include "qgsgraphbuilder.h"
 #include "qgsvectorlayerdirector.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 

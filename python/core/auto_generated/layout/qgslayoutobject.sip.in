@@ -198,6 +198,8 @@ Sets the objects's property collection, used for data defined overrides.
 :param collection: property collection. Existing properties will be replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: DataDefinedProperty
 %End
 
 

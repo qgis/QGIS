@@ -22,6 +22,7 @@
 #include "qgsrelationreferencewidget.h"
 #include "qgsrelationmanager.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QStringListModel>
 

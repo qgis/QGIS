@@ -68,7 +68,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   }
 
   // Store the URL before the server rewrite that could have been set in QUERY_STRING
-  mOriginalUrl = url;
+  setOriginalUrl( url );
 
   // OGC parameters are passed with the query string, which is normally part of
   // the REQUEST_URI, we override the query string url in case it is defined
@@ -130,11 +130,6 @@ QByteArray QgsFcgiServerRequest::data() const
   return mData;
 }
 
-QUrl QgsFcgiServerRequest::url() const
-{
-  return mOriginalUrl.isEmpty() ? QgsServerRequest::url() : mOriginalUrl;
-}
-
 // Read post put data
 void QgsFcgiServerRequest::readData()
 {
@@ -142,14 +137,26 @@ void QgsFcgiServerRequest::readData()
   const char *lengthstr = getenv( "CONTENT_LENGTH" );
   if ( lengthstr )
   {
-#ifdef QGISDEBUG
-    qDebug() << "fcgi: reading " << lengthstr << " bytes from stdin";
-#endif
     bool success = false;
     int length = QString( lengthstr ).toInt( &success );
+    // Note: REQUEST_BODY is not part of CGI standard, and it is not
+    // normally passed by any CGI web server and it is implemented only
+    // to allow unit tests to inject a request body and simulate a POST
+    // request
+    const char *request_body  = getenv( "REQUEST_BODY" );
+    if ( success && request_body )
+    {
+      QString body( request_body );
+      body.truncate( length );
+      mData.append( body.toUtf8() );
+      length = 0;
+    }
+#ifdef QGISDEBUG
+    qDebug() << "fcgi: reading " << lengthstr << " bytes from " << ( request_body ? "REQUEST_BODY" : "stdin" );
+#endif
     if ( success )
     {
-      // XXX This not efficiont at all  !!
+      // XXX This not efficient at all  !!
       for ( int i = 0; i < length; ++i )
       {
         mData.append( getchar() );

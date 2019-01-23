@@ -29,6 +29,7 @@ email                : matthias@opengis.ch
 #include "qgsgeometryoptions.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 
 
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent, Qt::WindowFlags flags )

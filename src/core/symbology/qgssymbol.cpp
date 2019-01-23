@@ -47,6 +47,7 @@
 #include "qgsclipper.h"
 #include "qgsproperty.h"
 #include "qgscolorschemeregistry.h"
+#include "qgsapplication.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -677,12 +678,7 @@ bool QgsSymbol::hasDataDefinedProperties() const
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
-    if ( layer->dataDefinedProperties().hasActiveProperties() )
-      return true;
-    // we treat geometry generator layers like they have data defined properties,
-    // since the WHOLE layer is based on expressions and requires the full expression
-    // context
-    if ( layer->layerType() == QLatin1String( "GeometryGenerator" ) )
+    if ( layer->hasDataDefinedProperties() )
       return true;
   }
   return false;

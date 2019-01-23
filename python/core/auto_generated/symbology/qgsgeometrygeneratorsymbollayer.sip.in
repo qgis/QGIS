@@ -70,6 +70,8 @@ Gets the expression to generate this geometry.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual bool hasDataDefinedProperties() const;
+
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 

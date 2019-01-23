@@ -21,6 +21,7 @@
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "qgsapplication.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>

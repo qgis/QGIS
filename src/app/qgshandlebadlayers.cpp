@@ -27,6 +27,7 @@
 #include "qgsmessagebar.h"
 #include "qgssettings.h"
 #include "qgslayertreeregistrybridge.h"
+#include "qgsapplication.h"
 
 #include <QDomDocument>
 #include <QDomElement>

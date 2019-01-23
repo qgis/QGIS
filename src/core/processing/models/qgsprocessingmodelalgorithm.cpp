@@ -22,6 +22,7 @@
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 
 #include <QFile>
 #include <QTextStream>

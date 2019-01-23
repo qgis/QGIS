@@ -165,6 +165,14 @@ QSet<QString> QgsArrowSymbolLayer::usedAttributes( const QgsRenderContext &conte
   return attributes;
 }
 
+bool QgsArrowSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mSymbol && mSymbol->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
 
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {

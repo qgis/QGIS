@@ -28,6 +28,8 @@ class QgsMapCanvas;
 class QgsRubberBand;
 class QgsSelectedFeature;
 class QgsVectorLayer;
+
+class QLabel;
 class QTableView;
 
 class QgsVertexEditorModel : public QAbstractTableModel
@@ -95,6 +97,8 @@ class QgsVertexEditor : public QgsDockWidget
     void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
+
+    QLabel *mHintLabel = nullptr;
 
     bool mUpdatingTableSelection = false;
     bool mUpdatingVertexSelection = false;

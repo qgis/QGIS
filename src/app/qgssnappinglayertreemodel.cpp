@@ -24,7 +24,7 @@
 #include "qgsproject.h"
 #include "qgssnappingconfig.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsapplication.h"
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )

@@ -20,6 +20,7 @@
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 
 QgsRendererWidget *QgsInvertedPolygonRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

@@ -20,6 +20,7 @@
 #include "qgisapp.h"
 #include "qgsfieldcombobox.h"
 #include "qgsqmlwidgetwrapper.h"
+#include "qgsapplication.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -1194,9 +1195,15 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
                                       "    height:400\n"
                                       "    legend.alignment: Qt.AlignBottom\n"
                                       "    antialiasing: true\n"
+                                      "    ValueAxis{\n"
+                                      "        id: valueAxisY\n"
+                                      "        min: 0\n"
+                                      "        max: 15\n"
+                                      "    }\n"
                                       "\n"
                                       "    BarSeries {\n"
                                       "        id: mySeries\n"
+                                      "        axisY: valueAxisY\n"
                                       "        axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
                                       "        BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
                                       "        BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"

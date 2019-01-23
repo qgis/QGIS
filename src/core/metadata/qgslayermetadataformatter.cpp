@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <QStringBuilder>
+#include <QDateTime>
 
 #include "qgslayermetadataformatter.h"
 #include "qgslayermetadata.h"

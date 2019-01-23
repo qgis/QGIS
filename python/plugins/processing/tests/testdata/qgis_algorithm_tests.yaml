@@ -6706,6 +6706,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, reprojected
@@ -6722,6 +6724,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats_reproj.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, zones ref
@@ -6739,6 +6743,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats_zone_ref.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats reprojected, zones ref
@@ -6756,6 +6762,8 @@ tests:
       OUTPUT_TABLE:
         name: expected/raster_zonal_stats_zone_crs_ref.csv
         type: vector
+        pk:
+        - zone
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
@@ -6792,5 +6800,187 @@ tests:
             precision: 4
         pk:
         - pk
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume above
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 0
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_above.html
+        type: regex
+        rules:
+          - 'Volume: 0.064805'
+          - 'Pixel count: 95901'
+          - 'Area: 0.000959'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_above.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume Below
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_below.html
+        type: regex
+        rules:
+          - 'Volume: -0.00322225'
+          - 'Pixel count: 34600'
+          - 'Area: 0.00034599'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_below.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume subtract below
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 2
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_subtract.html
+        type: regex
+        rules:
+          - 'Volume: 0.0615830'
+          - 'Pixel count: 130550'
+          - 'Area: 0.00130549'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_subtract.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume add below
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      LEVEL: 100.0
+      METHOD: 3
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_add.html
+        type: regex
+        rules:
+          - 'Volume: 0.06802752'
+          - 'Pixel count: 130550'
+          - 'Area: 0.00130549'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_add.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume above (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 0
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_above_crs.html
+        type: regex
+        rules:
+          - 'Volume: 413784918\.'
+          - 'Pixel count: 64692'
+          - 'Area: 11497732\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_above_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume below (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_below_crs.html
+        type: regex
+        rules:
+          - 'Volume: -479651884\.'
+          - 'Pixel count: 65660'
+          - 'Area: 11669775\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_below_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume subtract below (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 2
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_subtract_crs.html
+        type: regex
+        rules:
+          - 'Volume: -65866966\.'
+          - 'Pixel count: 130550'
+          - 'Area: 23202698\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_subtract_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume add below (meters)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      LEVEL: 150.0
+      METHOD: 3
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/surface_vol_add_crs.html
+        type: regex
+        rules:
+          - 'Volume: 893436802\.'
+          - 'Pixel count: 130550'
+          - 'Area: 23202698\.'
+      OUTPUT_TABLE:
+        name: expected/surface_vol_add_crs.gml
+        type: vector
+
+  - algorithm: native:rastersurfacevolume
+    name: Surface volume with gaps
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_gaps.tif
+        type: raster
+      LEVEL: 101.0
+      METHOD: 0
+    results:
+      OUTPUT_TABLE:
+        name: expected/surface_vol_gaps.gml
+        type: vector
 
 # See ../README.md for a description of the file format

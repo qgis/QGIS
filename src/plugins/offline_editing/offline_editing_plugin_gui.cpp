@@ -26,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QFileDialog>
 #include <QMessageBox>

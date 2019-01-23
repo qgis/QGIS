@@ -153,18 +153,24 @@ returned value is undefined.
 :param row: row index
 :param column: column index
 
-:return: value *
+:return: value
+
+.. seealso:: :py:func:`valueAndNoData`
 %End
+
 
     double value( qgssize index ) const;
 %Docstring
-Read a single value if type of block is numeric. If type is color,
+Reads a single value if type of block is numeric. If type is color,
 returned value is undefined.
 
 :param index: data matrix index (long type in Python)
 
-:return: value *
+:return: value
+
+.. seealso:: :py:func:`valueAndNoData`
 %End
+
 
 
     QRgb color( int row, int column ) const;
@@ -188,12 +194,14 @@ Read a single value
 
     bool isNoData( int row, int column ) const;
 %Docstring
-Check if value at position is no data
+Checks if value at position is no data
 
 :param row: row index
 :param column: column index
 
-:return: true if value is no data *
+:return: true if value is no data
+
+.. seealso:: :py:func:`valueAndNoData`
 %End
 
     bool isNoData( qgssize row, qgssize column ) const;
@@ -203,7 +211,9 @@ Check if value at position is no data
 :param row: row index
 :param column: column index
 
-:return: true if value is no data *
+:return: true if value is no data
+
+.. seealso:: :py:func:`valueAndNoData`
 %End
 
     bool isNoData( qgssize index ) const;
@@ -212,7 +222,9 @@ Check if value at position is no data
 
 :param index: data matrix index (long type in Python)
 
-:return: true if value is no data *
+:return: true if value is no data
+
+.. seealso:: :py:func:`valueAndNoData`
 %End
 
     bool setValue( int row, int column, double value );
@@ -434,6 +446,7 @@ Returns the height (number of rows) of the raster block.
 %End
 
 };
+
 
 
 

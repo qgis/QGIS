@@ -129,7 +129,7 @@ class IdwInterpolation(QgisAlgorithm):
 
         layerData = []
         layers = []
-        for row in interpolationData.split(';'):
+        for row in interpolationData.split('::|::'):
             v = row.split('::~::')
             data = QgsInterpolator.LayerData()
 

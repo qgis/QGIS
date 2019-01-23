@@ -144,6 +144,8 @@ Returns a reference to the editor widget's property collection, used for data de
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
+.. seealso:: Property
+
 .. versionadded:: 3.0
 %End
 
@@ -154,6 +156,8 @@ Sets the editor widget's property collection, used for data defined overrides.
 :param collection: property collection. Existing properties will be replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
 
 .. versionadded:: 3.0
 %End

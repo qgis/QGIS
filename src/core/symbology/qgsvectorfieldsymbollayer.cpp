@@ -284,6 +284,15 @@ QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes( const QgsRenderContext 
   return attributes;
 }
 
+bool QgsVectorFieldSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mLineSymbol && mLineSymbol->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
+
 void QgsVectorFieldSymbolLayer::convertPolarToCartesian( double length, double angle, double &x, double &y ) const
 {
   //convert angle to degree and to north orientation

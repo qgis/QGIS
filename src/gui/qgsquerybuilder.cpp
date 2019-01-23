@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsapplication.h"
 
 #include <QListView>
 #include <QMessageBox>

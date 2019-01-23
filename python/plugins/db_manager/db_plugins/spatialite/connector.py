@@ -465,6 +465,8 @@ class SpatiaLiteDBConnector(DBConnector):
         self._execute(c, sql)
         self._commit()
 
+        return True
+
     def emptyTable(self, table):
         """ delete all rows from table """
         if self.isRasterTable(table):
@@ -494,6 +496,7 @@ class SpatiaLiteDBConnector(DBConnector):
             self._execute(c, sql)
 
         self._commit()
+        return True
 
     def moveTable(self, table, new_table, new_schema=None):
         return self.renameTable(table, new_table)
@@ -571,7 +574,16 @@ class SpatiaLiteDBConnector(DBConnector):
     def addTableColumn(self, table, field_def):
         """ add a column to table """
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
-        self._execute_and_commit(sql)
+        self._execute(None, sql)
+
+        sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
+        self._execute(None, sql)
+
+        sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
+        self._execute(None, sql)
+
+        self._commit()
+        return True
 
     def deleteTableColumn(self, table, column):
         """ delete column from a table """
@@ -583,7 +595,7 @@ class SpatiaLiteDBConnector(DBConnector):
         sql = u"SELECT DiscardGeometryColumn(%s, %s)" % (self.quoteString(tablename), self.quoteString(column))
         self._execute_and_commit(sql)
 
-    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None):
+    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None, new_comment=None):
         return False  # column editing not supported
 
     def renameTableColumn(self, table, column, new_name):

@@ -56,6 +56,18 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.chkNull.setChecked(not fld.notNull)
         if fld.hasDefault:
             self.editDefault.setText(fld.default)
+        # Check with SQL query if a comment exists for the field
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (self.table.name, self.editName.text())
+        # Get the comment for the field with SQL Query
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (self.table.name, self.editName.text())
+        c = self.db.connector._execute(None, sql_cpt) # Execute check query
+        res = self.db.connector._fetchone(c)[0] # Fetch data
+        # Check if result is 1 then it's ok, else we don't want to get a value
+        if res == 1:
+            c = self.db.connector._execute(None, sql) # Execute query returning the comment value
+            res = self.db.connector._fetchone(c)[0] # Fetch the comment value
+            self.db.connector._close_cursor(c) # Close cursor
+            self.editCom.setText(res) # Set comment value
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld
@@ -64,6 +76,8 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         fld.notNull = not self.chkNull.isChecked()
         fld.default = self.editDefault.text()
         fld.hasDefault = fld.default != ""
+        # Get the comment from the LineEdit
+        fld.comment = self.editCom.text()
         try:
             modifier = int(self.editLength.text())
         except ValueError:

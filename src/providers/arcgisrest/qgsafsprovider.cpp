@@ -24,6 +24,7 @@
 #include "geometry/qgsgeometry.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsdataitemprovider.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsafssourceselect.h"

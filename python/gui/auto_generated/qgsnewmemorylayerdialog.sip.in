@@ -28,6 +28,9 @@ Runs the dialog and creates a new memory layer
 %End
 
     QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+New dialog constructor.
+%End
     ~QgsNewMemoryLayerDialog();
 
     QgsWkbTypes::Type selectedType() const;

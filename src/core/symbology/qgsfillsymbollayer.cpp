@@ -29,6 +29,7 @@
 #include "qgscolorramp.h"
 #include "qgsunittypes.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
 
 #include <QPainter>
 #include <QFile>
@@ -1707,6 +1708,15 @@ QSet<QString> QgsImageFillSymbolLayer::usedAttributes( const QgsRenderContext &c
   return attr;
 }
 
+bool QgsImageFillSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mStroke && mStroke->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
+
 
 //QgsSVGFillSymbolLayer
 
@@ -2324,6 +2334,15 @@ QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes( const QgsRenderCont
   if ( mFillLineSymbol )
     attr.unite( mFillLineSymbol->usedAttributes( context ) );
   return attr;
+}
+
+bool QgsLinePatternFillSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mFillLineSymbol && mFillLineSymbol->hasDataDefinedProperties() )
+    return true;
+  return false;
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
@@ -3337,6 +3356,15 @@ QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes( const QgsRenderCon
   return attributes;
 }
 
+bool QgsPointPatternFillSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mMarkerSymbol && mMarkerSymbol->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
+
 void QgsPointPatternFillSymbolLayer::setColor( const QColor &c )
 {
   mColor = c;
@@ -3514,6 +3542,15 @@ QSet<QString> QgsCentroidFillSymbolLayer::usedAttributes( const QgsRenderContext
     attributes.unite( mMarker->usedAttributes( context ) );
 
   return attributes;
+}
+
+bool QgsCentroidFillSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mMarker && mMarker->hasDataDefinedProperties() )
+    return true;
+  return false;
 }
 
 void QgsCentroidFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )

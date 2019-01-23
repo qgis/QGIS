@@ -58,6 +58,26 @@ namespace MDAL
   class DriverXmdf: public Driver
   {
     public:
+      /**
+       * Driver for XMDF Files
+       *
+       * Structure of the TUFLOW file. Groups are optional since it depends
+       * on tools which groups are created.
+       * - root
+       *   - Temporal
+       *     - Depth
+       *     - Velocity
+       *     - ..
+       *   - Maximums
+       *     - Depth
+       *     - Velocity
+       *     - ..
+       *   - Difference (res_to_res.exe TUFLOW utility tool)
+       *     - ..
+       *   - Times (e.g. time of peak velocity)
+       *     - ..
+       *   - ...
+       */
       DriverXmdf();
       ~DriverXmdf( ) override = default;
       DriverXmdf *create() override;
@@ -77,6 +97,7 @@ namespace MDAL
       void addDatasetGroupsFromXmdfGroup(
         DatasetGroups &groups,
         const HdfGroup &rootGroup,
+        const std::string &nameSuffix,
         size_t vertexCount,
         size_t faceCount );
   };

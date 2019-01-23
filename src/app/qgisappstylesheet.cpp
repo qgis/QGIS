@@ -152,19 +152,18 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
         style += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
       }
     }
-
     ss += style;
+
+    // Fix selection color on losing focus (Windows)
+    const QPalette palette = qApp->palette();
+
+    ss += QString( "QTableView {"
+                   "selection-background-color: %1;"
+                   "selection-color: %2;"
+                   "}" )
+          .arg( palette.highlight().color().name(),
+                palette.highlightedText().color().name() );
   }
-
-  // Fix selection color on losing focus (Windows)
-  const QPalette palette = qApp->palette();
-
-  ss += QString( "QTableView {"
-                 "selection-background-color: %1;"
-                 "selection-color: %2;"
-                 "}" )
-        .arg( palette.highlight().color().name(),
-              palette.highlightedText().color().name() );
 
   QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
 

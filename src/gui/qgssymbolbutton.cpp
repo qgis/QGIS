@@ -24,6 +24,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
 #include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>

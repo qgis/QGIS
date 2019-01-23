@@ -356,7 +356,7 @@ const char *QgsDxfExport::DXF_ENCODINGS[][2] =
   { "ANSI_874", "CP874" },
   { "ANSI_932", "Shift_JIS" },
   { "ANSI_936", "CP936" },
-  { "ANSI_949", "cp949" },
+  { "ANSI_949", "CP949" },
   { "ANSI_950", "CP950" },
 //  { "ANSI_1361", "" },
 //  { "ANSI_1200", "" },
@@ -4253,7 +4253,7 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer *sl, const Qgs
     return true;
   }
 
-  return sl->dataDefinedProperties().hasActiveProperties();
+  return sl->hasDataDefinedProperties();
 }
 
 double QgsDxfExport::dashSize() const

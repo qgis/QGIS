@@ -30,6 +30,7 @@
 #include <QPlainTextEdit>
 #include <QScrollBar>
 #include <QDebug>
+#include <QDesktopServices>
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -70,6 +71,7 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
+    w->viewport()->installEventFilter( this );
     tabWidget->addTab( w, cleanedTag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
   }
@@ -115,4 +117,44 @@ void QgsMessageLogViewer::closeTab( int index )
     qobject_cast<QPlainTextEdit *>( tabWidget->widget( 0 ) )->clear();
   else
     tabWidget->removeTab( index );
+}
+
+bool QgsMessageLogViewer::eventFilter( QObject *object, QEvent *event )
+{
+  switch ( event->type() )
+  {
+    case QEvent::MouseButtonPress:
+    {
+      if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
+      {
+        QMouseEvent *me = static_cast< QMouseEvent *>( event );
+        mClickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) :
+                         QString();
+        if ( !mClickedAnchor.isEmpty() )
+          return true;
+      }
+      break;
+    }
+
+    case QEvent::MouseButtonRelease:
+    {
+      if ( QPlainTextEdit *te = qobject_cast<QPlainTextEdit *>( object->parent() ) )
+      {
+        QMouseEvent *me = static_cast< QMouseEvent *>( event );
+        QString clickedAnchor = ( me->button() & Qt::LeftButton ) ? te->anchorAt( me->pos() ) :
+                                QString();
+        if ( !clickedAnchor.isEmpty() && clickedAnchor == mClickedAnchor )
+        {
+          QDesktopServices::openUrl( mClickedAnchor );
+          return true;
+        }
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return QDialog::eventFilter( object, event );
 }
