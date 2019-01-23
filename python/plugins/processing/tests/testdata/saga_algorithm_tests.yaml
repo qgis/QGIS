@@ -563,7 +563,7 @@ tests:
       OUTTAB:
         name: expected/saga/zonal_grid_stats.dbf
         type: vector
-  
+
   - algorithm: saga:resampling
     name: Resample down
     params:
@@ -668,3 +668,41 @@ tests:
         hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
         type: rasterhash
 
+  - algorithm: saga:svmclassification
+    name: SVM Classification
+    params:
+      CACHE_SIZE: 100.0
+      COEF0: 0.0
+      COST: 1.0
+      CROSSVAL: 1
+      DEGREE: 3
+      EPS: 0.001
+      EPS_SVR: 0.1
+      GAMMA: 0.0
+      GRIDS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      KERNEL_TYPE: 2
+      MESSAGE: false
+      MODEL_LOAD:
+        name: ''
+        type: file
+      MODEL_SAVE:
+        name: ''
+        type: file
+      MODEL_SRC: 0
+      NU: 0.5
+      PROBABILITY: false
+      ROI:
+        name: custom/saga/training_areas.shp
+        type: vector
+      ROI_ID: class
+      SCALING: 2
+      SHRINKING: false
+      SVM_TYPE: 0
+    results:
+      CLASSES:
+        hash: deeb8769979916ab544a824cd5400d4a4207e7df37fbeaaa6e4830af
+        type: rasterhash

@@ -3,7 +3,7 @@ imagery_opencv
 QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
 QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
 QgsProcessingParameterFeatureSource|TRAIN_AREAS|Training Areas|-1|None|False
-QgsProcessingParameterFeatureSource|TRAIN_CLASS|Class Identifier|5|None|False
+QgsProcessingParameterField|TRAIN_CLASS|Class Identifier|None|TRAIN_AREAS|-1|False|False
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterEnum|SVM_TYPE|SVM Type|[0] c-support vector classification;[1] nu support vector classification;[2] distribution estimation (one class);[3] epsilon support vector regression;[4] nu support vector regression|False|0
 QgsProcessingParameterNumber|C|C|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
