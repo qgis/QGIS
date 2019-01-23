@@ -202,7 +202,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   }
 
   // CALCULATE SPATIAL INDEX
-  mSpatialIndex = QgsSpatialIndex( new QgsMeshFeatureIterator( &mTriangularMesh ) );
+  mSpatialIndex = QgsMeshSpatialIndex( mTriangularMesh );
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -227,10 +227,9 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
 
 int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 {
-  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
-  for ( const QgsFeatureId fid : faceIndexes )
+  const QList<int> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  for ( const int faceIndex : faceIndexes )
   {
-    int faceIndex = static_cast<int>( fid );
     const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
     const QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
     if ( geom.contains( &point ) )
@@ -241,14 +240,7 @@ int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 
 QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
 {
-  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( rectangle );
-  QList<int> indexes;
-  for ( const QgsFeatureId fid : faceIndexes )
-  {
-    int faceIndex = static_cast<int>( fid );
-    indexes.append( faceIndex );
-  }
-  return indexes;
+  return mSpatialIndex.intersects( rectangle );
 }
 
 std::unique_ptr< QgsPolygon > QgsMeshUtils::toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
