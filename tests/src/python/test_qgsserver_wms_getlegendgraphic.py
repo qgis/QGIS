@@ -514,6 +514,47 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
+    def test_wms_GetLegendGraphic_wmsRootName(self):
+        """Test an unreported issue when a wmsRootName short name is set in the service capabilities"""
+
+        # First test with the project title itself:
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_wms_grouped_layers.qgs',
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "QGIS%20Server%20-%20Grouped%20Layer",
+            "FORMAT": "image/png",
+            "HEIGHT": "840",
+            "WIDTH": "1226",
+            "BBOX": "609152,5808188,625492,5814318",
+            "SRS": "EPSG:25832",
+            "SCALE": "38976"
+        }.items())])
+
+        h, r = self._execute_request(qs)
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
+
+        # Then test with the wmsRootName short name:
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_wms_grouped_layers_wmsroot.qgs',
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "All_grouped_layers",
+            "FORMAT": "image/png",
+            "HEIGHT": "840",
+            "WIDTH": "1226",
+            "BBOX": "609152,5808188,625492,5814318",
+            "SRS": "EPSG:25832",
+            "SCALE": "38976"
+        }.items())])
+
+        h, r = self._execute_request(qs)
+        self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
+
 
 if __name__ == '__main__':
     unittest.main()
