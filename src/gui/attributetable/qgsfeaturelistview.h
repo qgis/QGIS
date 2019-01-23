@@ -18,7 +18,6 @@
 
 #include <QListView>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <qdebug.h>
 #include "qgsactionmenu.h"
 

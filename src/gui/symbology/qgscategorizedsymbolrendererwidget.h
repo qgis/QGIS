@@ -16,7 +16,7 @@
 #define QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
 
 #include "qgscategorizedsymbolrenderer.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
 #include <QStandardItem>

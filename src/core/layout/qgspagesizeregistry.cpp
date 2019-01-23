@@ -16,6 +16,7 @@
 
 #include "qgspagesizeregistry.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgis.h"
 
 //
 // QgsPageSizeRegistry

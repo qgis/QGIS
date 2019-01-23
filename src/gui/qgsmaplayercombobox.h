@@ -21,7 +21,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgis_gui.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;

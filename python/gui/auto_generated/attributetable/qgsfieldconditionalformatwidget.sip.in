@@ -24,8 +24,6 @@ A widget for customizing conditional formatting options.
     explicit QgsFieldConditionalFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldConditionalFormatWidget.
-
-:param parent: parent widget
 %End
 
     void viewRules();

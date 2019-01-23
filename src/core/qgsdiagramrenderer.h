@@ -16,7 +16,7 @@
 #define QGSDIAGRAMRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QFont>
 #include <QList>

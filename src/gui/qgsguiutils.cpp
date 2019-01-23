@@ -18,6 +18,7 @@
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 #include <QImageWriter>
 #include <QFontDialog>

@@ -17,7 +17,7 @@
 #define QGSAUTHSETTINGSWIDGET_H
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsauthsettingswidget.h"
 

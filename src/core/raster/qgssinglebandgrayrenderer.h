@@ -19,7 +19,7 @@
 #define QGSSINGLEBANDGRAYRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
 #include <memory>
 

@@ -17,7 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgswkbtypes.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsexception.h"
 #include "qpolygon.h"
 

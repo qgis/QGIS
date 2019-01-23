@@ -19,7 +19,6 @@
 
 #include <QCoreApplication>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <QMetaType>
 #include <QStringList>
 #include <QVariant>

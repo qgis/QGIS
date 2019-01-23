@@ -19,7 +19,7 @@
 #define QGSRASTERMINMAXORIGIN_H
 
 #include <QDomDocument>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDomElement>
 
 #include "qgis_core.h"

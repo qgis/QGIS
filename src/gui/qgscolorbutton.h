@@ -19,7 +19,7 @@
 #include <QToolButton>
 #include <QTemporaryFile>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QMimeData;
 class QgsColorSchemeRegistry;

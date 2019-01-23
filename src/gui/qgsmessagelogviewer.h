@@ -23,7 +23,7 @@
 
 #include <QString>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QStatusBar;
 class QCloseEvent;

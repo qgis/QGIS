@@ -18,7 +18,7 @@
 #define QGSAUTHCONFIGEDITOR_H
 
 #include <QSqlTableModel>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QWidget>
 
 #include "ui_qgsauthconfigeditor.h"

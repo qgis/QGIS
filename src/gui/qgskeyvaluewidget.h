@@ -17,7 +17,7 @@
 #define QGSKEYVALUEWIDGET_H
 
 #include "qgstablewidgetbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QAbstractTableModel>
 #include <QMap>
 #include "qgis_gui.h"

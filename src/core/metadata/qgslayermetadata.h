@@ -18,7 +18,7 @@
 #ifndef QGSLAYERMETADATA_H
 #define QGSLAYERMETADATA_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsbox3d.h"

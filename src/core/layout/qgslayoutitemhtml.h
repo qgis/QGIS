@@ -17,7 +17,7 @@
 #define QGSLAYOUTITEMHTML_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutmultiframe.h"
 #include "qgsfeature.h"
 #include "qgsdistancearea.h"

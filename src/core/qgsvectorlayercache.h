@@ -21,7 +21,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsfield.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"

@@ -16,7 +16,7 @@
 #define QGSPYTHONRUNNER_H
 
 #include <QString>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 

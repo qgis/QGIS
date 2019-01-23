@@ -17,7 +17,6 @@
 #define QGSDUALVIEW_H
 
 #include <QStackedWidget>
-#include "qgis.h"
 
 #include "ui_qgsdualviewbase.h"
 

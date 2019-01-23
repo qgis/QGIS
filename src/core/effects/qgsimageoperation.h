@@ -19,10 +19,11 @@
 #define QGSIMAGEOPERATION_H
 
 #include <QImage>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QColor>
 
 #include "qgis_core.h"
+#include <cmath>
 
 class QgsColorRamp;
 

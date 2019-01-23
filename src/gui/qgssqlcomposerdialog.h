@@ -20,7 +20,7 @@ email                : even.rouault at spatialys.com
 #define QGSSQLCOMPOSERDIALOG_H
 
 #include "ui_qgssqlcomposerdialogbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 
 #include <QPair>

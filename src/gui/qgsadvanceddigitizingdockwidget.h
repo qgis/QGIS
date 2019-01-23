@@ -22,7 +22,7 @@
 
 #include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsdockwidget.h"
 #include "qgsmessagebaritem.h"
 #include "qgspointxy.h"

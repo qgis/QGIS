@@ -17,7 +17,7 @@
 #define QGSEXPRESSIONLINEEDIT_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgsdistancearea.h"
 #include "qgis_gui.h"

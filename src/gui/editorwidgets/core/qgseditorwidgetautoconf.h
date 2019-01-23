@@ -16,7 +16,7 @@
 #define QGSEDITORWIDGETAUTOCONF_H
 
 #include <QList>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include <memory>
 

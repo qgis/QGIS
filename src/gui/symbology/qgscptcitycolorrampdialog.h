@@ -18,7 +18,7 @@
 
 
 #include "ui_qgscptcitycolorrampdialogbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDialog>
 
 #include "qgscptcityarchive.h"

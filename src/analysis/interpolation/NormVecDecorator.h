@@ -19,7 +19,6 @@
 
 #include "TriDecorator.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "TriangleInterpolator.h"
 #include "MathUtils.h"
 #include "qgslogger.h"

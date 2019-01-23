@@ -19,6 +19,7 @@
 #define QGSRECTANGLE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <iosfwd>
 #include <QDomDocument>
 #include <QRectF>

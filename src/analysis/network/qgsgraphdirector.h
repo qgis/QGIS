@@ -20,7 +20,7 @@
 #include <QVector>
 #include <QList>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfeedback.h"
 #include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"

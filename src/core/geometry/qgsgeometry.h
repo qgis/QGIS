@@ -28,7 +28,7 @@ email                : morb at ozemail dot com dot au
 #include <memory>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgsabstractgeometry.h"
 #include "qgspointxy.h"

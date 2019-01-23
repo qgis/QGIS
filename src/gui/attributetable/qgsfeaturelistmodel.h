@@ -16,7 +16,6 @@
 #define QGSATTRIBUTEEDITORMODEL_H
 
 #include "qgsexpression.h"
-#include "qgis.h"
 
 #include <QSortFilterProxyModel>
 #include <QVariant>

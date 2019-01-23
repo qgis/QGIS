@@ -17,7 +17,7 @@
 #define QGSLAYOUTMANAGER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsmasterlayoutinterface.h"
 #include <QObject>
 

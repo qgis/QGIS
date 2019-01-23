@@ -19,7 +19,7 @@
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 
 #include "qgis_core.h"
-#include "qgis.h"
+// #include "qgis.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>

@@ -22,7 +22,7 @@
 
 #include <QToolButton>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsPanelWidget;
 

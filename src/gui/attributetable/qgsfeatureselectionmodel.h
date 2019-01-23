@@ -16,7 +16,6 @@
 #define QGSFEATURESELECTIONMODEL_H
 
 #include <QItemSelectionModel>
-#include "qgis.h"
 #include "qgsfeatureid.h"
 
 #include "qgis_gui.h"

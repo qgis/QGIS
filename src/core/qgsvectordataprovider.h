@@ -24,7 +24,7 @@ class QTextCodec;
 #include <QHash>
 
 //QGIS Includes
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsaggregatecalculator.h"

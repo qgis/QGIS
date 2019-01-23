@@ -17,7 +17,7 @@
 #define QGSFOCUSWATCHER_H
 
 #include <QObject>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /**

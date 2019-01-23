@@ -17,7 +17,7 @@ email                : sherman at mrcc.com
 #define QGSFEATURE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QExplicitlySharedDataPointer>
 #include <QList>

@@ -24,7 +24,7 @@
 #include "qgsfields.h"
 #include "qgsreadwritecontext.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsFeatureIterator;
 class QgsFeature;
