@@ -254,6 +254,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbolWidgetContext mContext;
     QgsFeature mPreviewFeature;
     QgsExpressionContext mPreviewExpressionContext;
+    bool mBlockModified = false;
 
 };
 
