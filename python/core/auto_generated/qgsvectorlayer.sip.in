@@ -2077,7 +2077,7 @@ been changed inside the edit buffer then the previous saved value may be returne
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = 0,
                         bool *ok = 0,
-                        const QgsFeatureIds *fids = 0 ) const;
+                        const QgsFeatureIds fids = QgsFeatureIds() ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
 
