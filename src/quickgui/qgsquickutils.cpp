@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
+#include "qgsapplication.h"
 
 #include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapsettings.h"
