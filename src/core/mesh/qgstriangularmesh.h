@@ -27,7 +27,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
-#include "qgsspatialindex.h"
+#include "qgsmeshspatialindex.h"
 #include "qgsfeatureiterator.h"
 
 class QgsRenderContext;
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsTriangularMesh
     // centroids of the native faces in map CRS
     QVector<QgsMeshVertex> mNativeMeshFaceCentroids;
 
-    QgsSpatialIndex mSpatialIndex;
+    QgsMeshSpatialIndex mSpatialIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
 
     friend class TestQgsTriangularMesh;
