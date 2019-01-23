@@ -584,7 +584,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
   }
 
   // assuming NULL
-  return QVariant( type );
+  return QVariant( );
 }
 
 void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature )

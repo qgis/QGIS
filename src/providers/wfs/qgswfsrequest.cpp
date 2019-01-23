@@ -243,8 +243,6 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
   mForceRefresh = true;
   mResponse.clear();
 
-  qDebug() << QString::fromUtf8( data );
-
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
     // Hack for testing purposes
