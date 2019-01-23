@@ -1886,7 +1886,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr,
-                        const QgsFeatureIds fids = QSet<long,long> ) const;
+                        const QgsFeatureIds fids = QSet<long,long>() ) const;
 
     //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
