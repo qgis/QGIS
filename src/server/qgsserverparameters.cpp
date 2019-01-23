@@ -398,6 +398,7 @@ QgsServerParameters::QgsServerParameters()
 QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
   : QgsServerParameters()
 {
+  mUrlQuery = query;
   load( query );
 }
 
@@ -415,14 +416,7 @@ void QgsServerParameters::add( const QString &key, const QString &value )
 
 QUrlQuery QgsServerParameters::urlQuery() const
 {
-  QUrlQuery query;
-
-  for ( auto param : toMap().toStdMap() )
-  {
-    query.addQueryItem( param.first, param.second );
-  }
-
-  return query;
+  return mUrlQuery;
 }
 
 void QgsServerParameters::remove( QgsServerParameter::Name name )
