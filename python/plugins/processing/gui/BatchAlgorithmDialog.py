@@ -168,7 +168,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 else:
                     break
 
-                handleAlgorithmResults(self.algorithm(), context, multi_feedback, False)
+                handleAlgorithmResults(self.algorithm(), context, multi_feedback, False, parameters)
 
         feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
         task = None

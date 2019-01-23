@@ -256,7 +256,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                     handleAlgorithmResults(self.alg,
                                            context,
                                            self.feedback,
-                                           not keepOpen)
+                                           not keepOpen,
+                                           parameters)
                 self._wasExecuted = self.executed or self._wasExecuted
                 if not keepOpen:
                     QDialog.reject(self)
