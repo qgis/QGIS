@@ -337,6 +337,7 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
   if ( mSelectedFeature )
   {
     delete mVertexModel;
+    mVertexModel = nullptr;
   }
 
   mLayer = layer;

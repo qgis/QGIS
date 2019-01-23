@@ -1068,7 +1068,7 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 void QgsVertexTool::showVertexEditor()  //#spellok
 {
   QgsPointLocator::Match m = mLastMouseMoveMatch;
-  if ( m.isValid() || m.layer() )
+  if ( m.isValid() && m.layer() )
   {
     if ( mSelectedFeature && mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() )
     {
@@ -1099,7 +1099,8 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
     connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
 
-    QTimer::singleShot( 100, this, [ = ] { mVertexEditor->show(); mVertexEditor->raise(); } );
+    // timer required as showing/raising the vertex editor in the same function following restoreDockWidget fails
+    QTimer::singleShot( 200, this, [ = ] { mVertexEditor->show(); mVertexEditor->raise(); } );
   }
   else
   {
