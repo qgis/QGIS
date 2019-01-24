@@ -289,7 +289,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
     //! Expression to evaluate in the legend
-    QString mExpression = "";
+    QString mExpression;
 };
 
 
