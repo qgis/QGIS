@@ -97,7 +97,7 @@ def sagaDescriptionPath():
 
 def createSagaBatchJobFileFromSagaCommands(commands):
 
-    with open(sagaBatchJobFilename(), 'w') as fout:
+    with open(sagaBatchJobFilename(), 'w', encoding="utf8") as fout:
         if isWindows():
             fout.write('set SAGA=' + sagaPath() + '\n')
             fout.write('set SAGA_MLB=' + os.path.join(sagaPath(), 'modules') + '\n')
@@ -108,12 +108,7 @@ def createSagaBatchJobFileFromSagaCommands(commands):
         else:
             pass
         for command in commands:
-            try:
-                # Python 2
-                fout.write('saga_cmd ' + command.encode('utf8') + '\n')
-            except TypeError:
-                # Python 3
-                fout.write('saga_cmd ' + command + '\n')
+            fout.write('saga_cmd ' + command + '\n')
 
         fout.write('exit')
 

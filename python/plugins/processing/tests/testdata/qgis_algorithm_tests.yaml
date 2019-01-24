@@ -16,6 +16,20 @@ tests:
           geometry:
             precision: 7
 
+  - name: Centroid with non-ascii input
+    algorithm: native:centroids
+    params:
+      INPUT:
+        type: vector
+        name: polys_non_ascii_ñññ.gml
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/polys_centroid.gml
+        compare:
+          geometry:
+            precision: 7
+
   - name: Aggregate all
     algorithm: qgis:aggregate
     params:
