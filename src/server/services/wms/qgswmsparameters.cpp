@@ -522,7 +522,7 @@ namespace QgsWms
   {
     bool loaded = false;
 
-    const QRegExp composerParamRegExp( QStringLiteral( "^MAP\\d+:" ) );
+    const QRegExp composerParamRegExp( QStringLiteral( "^MAP\\d+:" ), Qt::CaseInsensitive );
     if ( key.contains( composerParamRegExp ) )
     {
       const int mapId = key.midRef( 3, key.indexOf( ':' ) - 3 ).toInt();
