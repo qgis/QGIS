@@ -1429,7 +1429,9 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
     if ( idx >= 0 )
     {
       const QVariant &v = srcFeature.attributes().value( idx );
-      if ( v.type() == fields.at( i ).type() )
+      if ( v.isNull() )
+        dstFeature.setAttribute( i, QVariant( fields.at( i ).type() ) );
+      else if ( v.type() == fields.at( i ).type() )
         dstFeature.setAttribute( i, v );
       else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
         dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
