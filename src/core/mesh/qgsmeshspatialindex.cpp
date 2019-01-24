@@ -27,6 +27,8 @@
 
 using namespace SpatialIndex;
 
+///@cond PRIVATE
+
 static Region faceToRegion( const QgsMesh &mesh, int id )
 {
   const QgsMeshFace face = mesh.face( id );
@@ -288,7 +290,7 @@ class QgsMeshSpatialIndexData : public QSharedData
 
 };
 
-// -------------------------------------------------------------------------
+///@endcond
 
 QgsMeshSpatialIndex::QgsMeshSpatialIndex()
 {
