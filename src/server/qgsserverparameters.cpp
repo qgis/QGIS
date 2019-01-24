@@ -416,7 +416,19 @@ void QgsServerParameters::add( const QString &key, const QString &value )
 
 QUrlQuery QgsServerParameters::urlQuery() const
 {
-  return mUrlQuery;
+  QUrlQuery query = mUrlQuery;
+
+  if ( query.isEmpty() )
+  {
+    query.clear();
+
+    for ( auto param : toMap().toStdMap() )
+    {
+      query.addQueryItem( param.first, param.second );
+    }
+  }
+
+  return query;
 }
 
 void QgsServerParameters::remove( QgsServerParameter::Name name )
