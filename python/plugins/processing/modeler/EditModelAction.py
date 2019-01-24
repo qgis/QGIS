@@ -45,7 +45,7 @@ class EditModelAction(ContextAction):
         alg = self.itemData
         ok, msg = alg.canExecute()
         if not ok:
-            iface.messageBar().pushMessage("Cannot edit model:", msg, level=Qgis.Warning)
+            iface.messageBar().pushMessage(QCoreApplication.translate('EditModelAction', 'Cannot edit model: {}').format(msg), level=Qgis.Warning)
         else:
             dlg = ModelerDialog(alg)
             dlg.update_model.connect(self.updateModel)
