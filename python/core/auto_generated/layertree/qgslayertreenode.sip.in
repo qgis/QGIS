@@ -318,7 +318,7 @@ Low-level removal of children from the node.
 %End
 
   protected:
-    QString mExpression = "";
+    QString mExpression;
 %Docstring
 Expression to evaluate in the legend
 %End
