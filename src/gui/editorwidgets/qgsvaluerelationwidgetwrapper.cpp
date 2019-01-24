@@ -193,6 +193,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         if ( item )
         {
           item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
+          //re-set enabled state because it's lost after reloading items
           item->setFlags( mEnabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
           lastChangedItem = item;
         }
@@ -218,7 +219,6 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
       }
     }
     mComboBox->setCurrentIndex( idx );
-    mComboBox->setEnabled( mEnabled );
   }
   else if ( mLineEdit )
   {
@@ -230,7 +230,6 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         break;
       }
     }
-    mLineEdit->setEnabled( mEnabled );
   }
 }
 
@@ -389,4 +388,24 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
     return;
 
   mEnabled = enabled;
+
+  if ( mTableWidget )
+  {
+    auto signalBlockedTableWidget = whileBlocking( mTableWidget );
+    Q_UNUSED( signalBlockedTableWidget )
+
+    for ( int j = 0; j < mTableWidget->rowCount(); j++ )
+    {
+      for ( int i = 0; i < mTableWidget->columnCount(); ++i )
+      {
+        QTableWidgetItem *item = mTableWidget->item( j, i );
+        if ( item )
+        {
+          item->setFlags( enabled ? item->flags() | Qt::ItemIsEnabled : item->flags() & ~Qt::ItemIsEnabled );
+        }
+      }
+    }
+  }
+  else
+    QgsEditorWidgetWrapper::setEnabled( enabled );
 }
