@@ -32,6 +32,7 @@
 
 #include <QUrl>
 #include <QTimer>
+#include <QBuffer>
 #include <QNetworkReply>
 #include <QThreadStorage>
 #include <QAuthenticator>
@@ -206,8 +207,13 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   static QAtomicInt sRequestId = 0;
   const int requestId = ++sRequestId;
+  QByteArray content;
+  if ( QBuffer *buffer = qobject_cast<QBuffer *>( outgoingData ) )
+  {
+    content = buffer->buffer();
+  }
 
-  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId ) );
+  emit requestAboutToBeCreated( QgsNetworkRequestParameters( op, req, requestId, content ) );
   Q_NOWARN_DEPRECATED_PUSH
   emit requestAboutToBeCreated( op, req, outgoingData );
   Q_NOWARN_DEPRECATED_POP
@@ -423,10 +429,11 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 // QgsNetworkRequestParameters
 //
 
-QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, int requestId )
+QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, int requestId, const QByteArray &content )
   : mOperation( operation )
   , mRequest( request )
   , mOriginatingThreadId( QStringLiteral( "0x%2" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
   , mRequestId( requestId )
+  , mContent( content )
 {
 }

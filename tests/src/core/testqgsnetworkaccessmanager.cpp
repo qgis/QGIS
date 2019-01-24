@@ -59,6 +59,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
+    void fetchPost();
     void fetchBadSsl();
     void fetchTimeout();
 
@@ -233,6 +234,44 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+}
+
+void TestQgsNetworkAccessManager::fetchPost()
+{
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  QObject context;
+  //test fetching from a blank url
+  bool loaded = false;
+  bool gotRequestAboutToBeCreatedSignal = false;
+  int requestId = -1;
+  QUrl u =  QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
+  {
+    gotRequestAboutToBeCreatedSignal = true;
+    requestId = params.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( params.request().url(), u );
+    QCOMPARE( params.content(), QByteArray( "a=b&c=d" ) );
+  } );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
+  {
+    QCOMPARE( reply.error(), QNetworkReply::NoError );
+    QCOMPARE( reply.requestId(), requestId );
+    QVERIFY( reply.rawHeaderList().contains( "Content-Length" ) );
+    QCOMPARE( reply.request().url(), u );
+    loaded = true;
+  } );
+  QgsNetworkAccessManager::instance()->post( QNetworkRequest( u ), QByteArray( "a=b&c=d" ) );
+
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
