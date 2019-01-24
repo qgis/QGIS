@@ -528,7 +528,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
         mParameters[name].raiseError();
       }
     }
-    else if ( item.first.compare( QLatin1String( "VERSION" ) ) == 0 )
+    else if ( item.first.compare( QLatin1String( "VERSION" ),  Qt::CaseInsensitive ) == 0 )
     {
       const QgsServerParameter::Name name = QgsServerParameter::VERSION_SERVICE;
       mParameters[name].mValue = item.second;
