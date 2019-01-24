@@ -243,7 +243,7 @@ QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
     featureJSON << exportFeature( feature );
   }
 
-  return QStringLiteral( "{\"type\": \"FeatureCollection\",\n    \"features\":[\n%2\n]}" ).arg( featureJSON.join( QStringLiteral( ",\n" ) ) );
+  return QStringLiteral( "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n%1\n]}" ).arg( featureJSON.join( QStringLiteral( ",\n" ) ) );
 }
 
 
