@@ -159,7 +159,7 @@ Returns the size scaled in pixels according to the uom attribute.
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
-    static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0 );
 %Docstring
 Returns an icon preview for a color ramp.
 
@@ -170,7 +170,7 @@ Returns an icon preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
-    static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
 %Docstring
 Returns a pixmap preview for a color ramp.
 
@@ -186,7 +186,7 @@ Returns a pixmap preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 %Docstring
 Draws a symbol layer preview to a QPicture
 
@@ -202,7 +202,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 %Docstring
 Draws a symbol layer preview to an icon.
 
