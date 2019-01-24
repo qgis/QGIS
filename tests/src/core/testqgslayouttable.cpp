@@ -240,6 +240,30 @@ void TestQgsLayoutTable::attributeTableFilterFeatures()
 
   //retrieve rows and check
   compareTable( table, expectedRows );
+
+  table->setFeatureFilter( QStringLiteral( "\"Class\"=@airplane_class" ) );
+  table->setFilterFeatures( true );
+  expectedRows.clear();
+  compareTable( table, expectedRows );
+
+  QgsExpressionContextUtils::setLayoutVariable( &l, QStringLiteral( "airplane_class" ), QStringLiteral( "Biplane" ) );
+
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "0" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "300" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "2" ) << QStringLiteral( "5" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "270" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "4" ) << QStringLiteral( "7" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "240" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "2" ) << QStringLiteral( "5" );
+  expectedRows.append( row );
+  compareTable( table, expectedRows );
 }
 
 void TestQgsLayoutTable::attributeTableSetAttributes()
