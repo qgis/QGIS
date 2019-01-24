@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param padding space between icon edge and symbol
      * \see symbolPreviewPixmap()
      */
-    static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0 );
 
     /**
      * Returns a pixmap preview for a color ramp.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \note Parameter customContext added in QGIS 2.6
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
+    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
 
     /**
      * Draws a symbol layer preview to a QPicture
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolLayerPreviewIcon()
      * \since QGIS 2.9
      */
-    static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /**
      * Draws a symbol layer preview to an icon.
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
     /**
      * Returns an icon preview for a color ramp.
