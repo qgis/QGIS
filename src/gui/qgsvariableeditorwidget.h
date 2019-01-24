@@ -16,7 +16,7 @@
 #ifndef QGSVARIABLEEDITORWIDGET_H
 #define QGSVARIABLEEDITORWIDGET_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QWidget>
 #include <QTreeWidget>
 #include <QItemDelegate>

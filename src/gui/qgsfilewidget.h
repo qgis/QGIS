@@ -25,7 +25,7 @@ class QHBoxLayout;
 #include <QWidget>
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfilterlineedit.h"
 
 /**

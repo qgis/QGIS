@@ -19,7 +19,7 @@
 #define QGSIMAGECACHE_H
 
 #include "qgsabstractcontentcache.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 
 #include <QElapsedTimer>

@@ -148,7 +148,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   {
     if ( startsWith( line, "E4Q" ) )
     {
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       assert( faceIndex < faceCount );
 
       Face &face = faces[faceIndex];
@@ -161,7 +161,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     }
     else if ( startsWith( line, "E3T" ) )
     {
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       assert( faceIndex < faceCount );
 
       Face &face = faces[faceIndex];
@@ -181,7 +181,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
               startsWith( line, "E9Q" ) )
     {
       // We do not yet support these elements
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       assert( faceIndex < faceCount );
 
       //size_t elemID = toSizeT( chunks[1] );
@@ -191,7 +191,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     }
     else if ( startsWith( line, "ND" ) )
     {
-      chunks = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+      chunks = split( line,  ' ' );
       size_t nodeID = toSizeT( chunks[1] ) - 1; // 2dm is numbered from 1
       _parse_vertex_id_gaps( vertexIDtoIndex, vertexIndex, nodeID, status );
       assert( vertexIndex < vertexCount );

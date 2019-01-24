@@ -17,7 +17,7 @@
 #define QGSCOMPOUNDCOLORWIDGET_H
 
 #include "qgsguiutils.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
 #include "qgis_gui.h"

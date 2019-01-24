@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmenuheader.h"
+#include "qgis.h"
 #include <QPainter>
 #include <QApplication>
 

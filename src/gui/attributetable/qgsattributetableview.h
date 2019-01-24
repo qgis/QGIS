@@ -17,7 +17,6 @@
 #define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
-#include "qgis.h"
 #include <QAction>
 #include "qgsfeatureid.h"
 

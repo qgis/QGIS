@@ -1,0 +1,120 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkreply.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsNetworkReplyContent
+{
+%Docstring
+Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkreply.h"
+%End
+  public:
+
+    QgsNetworkReplyContent();
+%Docstring
+Default constructor for an empty reply.
+%End
+
+    explicit QgsNetworkReplyContent( QNetworkReply *reply );
+%Docstring
+Constructor for QgsNetworkReplyContent, populated from the specified ``reply``.
+%End
+
+    void clear();
+%Docstring
+Clears the reply, resetting it back to a default, empty reply.
+%End
+
+    QVariant attribute( QNetworkRequest::Attribute code ) const;
+%Docstring
+Returns the attribute associated with the ``code``. If the attribute has not been set, it returns an
+invalid QVariant.
+
+You can expect the default values listed in QNetworkRequest.Attribute to be
+applied to the values returned by this function.
+
+.. seealso:: :py:func:`attributes`
+%End
+
+
+    QNetworkReply::NetworkError error() const;
+%Docstring
+Returns the reply's error message, or QNetworkReply.NoError if no
+error was encountered.
+
+.. seealso:: :py:func:`errorString`
+%End
+
+    QString errorString() const;
+%Docstring
+Returns the error text for the reply, or an empty string if no
+error was encountered.
+
+.. seealso:: :py:func:`error`
+%End
+
+
+    bool hasRawHeader( const QByteArray &headerName ) const;
+%Docstring
+Returns true if the reply contains a header with the specified ``headerName``.
+
+.. seealso:: :py:func:`rawHeaderPairs`
+
+.. seealso:: :py:func:`rawHeaderList`
+
+.. seealso:: :py:func:`rawHeader`
+%End
+
+    QList<QByteArray> rawHeaderList() const;
+%Docstring
+Returns a list of raw header names contained within the reply.
+
+.. seealso:: :py:func:`rawHeaderPairs`
+
+.. seealso:: :py:func:`hasRawHeader`
+
+.. seealso:: :py:func:`rawHeader`
+%End
+
+    QByteArray rawHeader( const QByteArray &headerName ) const;
+%Docstring
+Returns the content of the header with the specified ``headerName``, or an
+empty QByteArray if the specified header was not found in the reply.
+
+.. seealso:: :py:func:`rawHeaderPairs`
+
+.. seealso:: :py:func:`hasRawHeader`
+
+.. seealso:: :py:func:`rawHeaderList`
+%End
+
+    int requestId() const;
+%Docstring
+Returns the unique ID identifying the original request which this response was formed from.
+%End
+
+    QNetworkRequest request() const;
+%Docstring
+Returns the original network request.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkreply.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

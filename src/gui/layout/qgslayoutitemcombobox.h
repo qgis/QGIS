@@ -17,7 +17,7 @@
 #define QGSLAYOUTITEMCOMBOBOX_H
 
 #include <QComboBox>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
 #include "qgis_gui.h"

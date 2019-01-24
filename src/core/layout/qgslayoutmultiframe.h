@@ -17,7 +17,7 @@
 #define QGSLAYOUTMULTIFRAME_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
 #include "qgsapplication.h"

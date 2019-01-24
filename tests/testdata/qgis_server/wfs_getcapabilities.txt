@@ -1,4 +1,4 @@
-Content-Length: 6031
+Content-Length: 5776
 Content-Type: text/xml; charset=utf-8
 
 <WFS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" xmlns:ogc="http://www.opengis.net/ogc" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" updateSequence="0">
@@ -21,8 +21,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetCapabilities">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="service">
@@ -39,8 +39,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="DescribeFeatureType">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="outputFormat">
@@ -52,8 +52,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetFeature">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="outputFormat">
@@ -69,8 +69,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="Transaction">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="inputFormat">

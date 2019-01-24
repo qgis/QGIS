@@ -16,7 +16,7 @@
 #ifndef QGSDATADEFINEDSIZELEGENDWIDGET_H
 #define QGSDATADEFINEDSIZELEGENDWIDGET_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 #include <memory>

@@ -18,7 +18,7 @@
 #define QGSDETAILEDITEMDELEGATE_H
 
 #include <QAbstractItemDelegate>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QString>
 #include "qgis_gui.h"
 

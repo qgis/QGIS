@@ -388,26 +388,50 @@ namespace QgsWfs
             }
             QgsField field = fields.at( fieldMapIt.value() );
             QVariant value = it.value();
-            if ( field.type() == 2 )
+            if ( value.isNull() )
             {
-              value = it.value().toInt( &conversionSuccess );
-              if ( !conversionSuccess )
+              if ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull )
               {
                 action.error = true;
-                action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                action.errorMsg = QStringLiteral( "NOT NULL constraint error on layer '%1', field '%2'" ).arg( typeName, field.name() );
                 vlayer->rollBack();
                 break;
               }
             }
-            else if ( field.type() == 6 )
+            else  // Not NULL
             {
-              value = it.value().toDouble( &conversionSuccess );
-              if ( !conversionSuccess )
+              if ( field.type() == QVariant::Type::Int )
               {
-                action.error = true;
-                action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
-                vlayer->rollBack();
-                break;
+                value = it.value().toInt( &conversionSuccess );
+                if ( !conversionSuccess )
+                {
+                  action.error = true;
+                  action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                  vlayer->rollBack();
+                  break;
+                }
+              }
+              else if ( field.type() == QVariant::Type::Double )
+              {
+                value = it.value().toDouble( &conversionSuccess );
+                if ( !conversionSuccess )
+                {
+                  action.error = true;
+                  action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                  vlayer->rollBack();
+                  break;
+                }
+              }
+              else if ( field.type() == QVariant::Type::LongLong )
+              {
+                value = it.value().toLongLong( &conversionSuccess );
+                if ( !conversionSuccess )
+                {
+                  action.error = true;
+                  action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                  vlayer->rollBack();
+                  break;
+                }
               }
             }
             vlayer->changeAttributeValue( feature.id(), fieldMapIt.value(), value );

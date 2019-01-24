@@ -15,7 +15,6 @@ QgsProcessingParameterNumber|dmax|Maximum distance between points on isoline (to
 QgsProcessingParameterNumber|zscale|Conversion factor for values used for approximation|QgsProcessingParameterNumber.Double|1.0|True|None|None
 QgsProcessingParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
 QgsProcessingParameterNumber|scalex|Anisotropy scaling factor|QgsProcessingParameterNumber.Double|None|True|None|None
-QgsProcessingParameterBoolean|-c|Perform cross-validation procedure without raster approximation|False
 QgsProcessingParameterBoolean|-t|Use scale dependent tension|False
 QgsProcessingParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False
 QgsProcessingParameterRasterDestination|elevation|Interpolated RST|None|True
@@ -25,6 +24,5 @@ QgsProcessingParameterRasterDestination|pcurvature|Profile curvature|None|True
 QgsProcessingParameterRasterDestination|tcurvature|Tangential curvature|None|True
 QgsProcessingParameterRasterDestination|mcurvature|Mean curvature|None|True
 QgsProcessingParameterVectorDestination|deviations|Deviations|QgsProcessing.TypeVectorAnyGeometry|None|True
-QgsProcessingParameterVectorDestination|cvdev|Cross Validation Errors|QgsProcessing.TypeVectorAnyGeometry|None|True
 QgsProcessingParameterVectorDestination|treeseg|Quadtree Segmentation|QgsProcessing.TypeVectorAnyGeometry|None|True
 QgsProcessingParameterVectorDestination|overwin|Overlapping Windows|QgsProcessing.TypeVectorAnyGeometry|None|True

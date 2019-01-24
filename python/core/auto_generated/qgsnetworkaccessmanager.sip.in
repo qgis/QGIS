@@ -29,7 +29,8 @@ Default constructor.
 %End
 
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
-                                 const QNetworkRequest &request );
+                                 const QNetworkRequest &request,
+                                 int requestId );
 %Docstring
 Constructor for QgsNetworkRequestParameters, with the specified network
 ``operation`` and original ``request``.
@@ -51,6 +52,11 @@ configuration options such as proxy handling and SSL exceptions applied.
     QString originatingThreadId() const;
 %Docstring
 Returns a string identifying the thread which the request originated from.
+%End
+
+    int requestId() const;
+%Docstring
+Returns a unique ID identifying the request.
 %End
 
 };
@@ -155,7 +161,12 @@ Returns whether the system proxy should be used
 %End
 
   signals:
-    void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
+
+ void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
+%Docstring
+
+.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+%End
 
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
 %Docstring
@@ -165,10 +176,52 @@ This signal is propagated to the main thread QgsNetworkAccessManager instance, s
 only to connect to the main thread's signal in order to receive notifications about requests
 created in any thread.
 
+.. seealso:: :py:func:`finished`
+
+.. seealso:: :py:func:`requestTimedOut`
+
 .. versionadded:: 3.6
 %End
 
-    void requestCreated( QNetworkReply * );
+    void finished( QgsNetworkReplyContent reply );
+%Docstring
+This signal is emitted whenever a pending network reply is finished.
+
+The ``reply`` parameter will contain a QgsNetworkReplyContent object, containing all the useful
+information relating to the reply, including headers and reply content.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`requestAboutToBeCreated`
+
+.. seealso:: :py:func:`requestTimedOut`
+
+.. versionadded:: 3.6
+%End
+
+    void requestTimedOut( QgsNetworkRequestParameters request );
+%Docstring
+Emitted when a network request has timed out.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`requestAboutToBeCreated`
+
+.. seealso:: :py:func:`finished`
+
+.. versionadded:: 3.6
+%End
+
+ void requestCreated( QNetworkReply * ) /Deprecated/;
+%Docstring
+
+.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+%End
+
     void requestTimedOut( QNetworkReply * );
 
   protected:

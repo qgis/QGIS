@@ -162,6 +162,7 @@ SET(TESTS
  testqgsmeshlayer.cpp
  testqgsmeshlayerinterpolator.cpp
  testqgsmeshlayerrenderer.cpp
+ testqgsnetworkaccessmanager.cpp
  testqgsnetworkcontentfetcher.cpp
  testqgsogcutils.cpp
  testqgsogrutils.cpp

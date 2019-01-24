@@ -20,7 +20,7 @@
 
 #include <QCoreApplication>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgslayermetadata.h"
 

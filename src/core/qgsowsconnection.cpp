@@ -65,6 +65,13 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
+  const QString referer = settings.value( key + "/referer" ).toString();
+  if ( !referer.isEmpty() )
+  {
+    mUri.setParam( QStringLiteral( "referer" ), referer );
+    mConnectionInfo.append( ",referer=" + referer );
+  }
+
   if ( mService.compare( QLatin1String( "WMS" ), Qt::CaseInsensitive ) == 0
        || mService.compare( QLatin1String( "WCS" ), Qt::CaseInsensitive ) == 0 )
   {

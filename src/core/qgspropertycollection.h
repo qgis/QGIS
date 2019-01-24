@@ -16,7 +16,7 @@
 #define QGSPROPERTYCOLLECTION_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QString>
 #include <QVariant>
 #include <QColor>

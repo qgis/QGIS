@@ -20,9 +20,10 @@ class QDomDocument;
 class QgsRectangle;
 
 #include <QDomElement>
+#include <QMetaEnum>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsunittypes.h"
 
 

@@ -18,8 +18,10 @@
 #ifndef QGSLAYERMETADATAVALIDATOR_H
 #define QGSLAYERMETADATAVALIDATOR_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
+#include <QString>
+#include <QVariant>
 
 class QgsAbstractMetadataBase;
 class QgsLayerMetadata;

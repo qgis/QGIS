@@ -20,7 +20,7 @@
 #define QGSPLUGINLAYERREGSITRY_H
 
 #include <QMap>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDomNode>
 
 #include "qgis_core.h"

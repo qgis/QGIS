@@ -17,7 +17,7 @@
 #define QGSSCROLLAREA_H
 
 #include <QScrollArea>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include <QTimer>
 class ScrollAreaFilter;

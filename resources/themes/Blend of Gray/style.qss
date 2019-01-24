@@ -717,6 +717,42 @@ QgsMessageBar QLabel, QgsMessageBar QTextEdit, QMessageBar QToolButton {
     padding: 0px;
 }
 
+QgsMessageBar QScrollBar:vertical {
+    border-left:1px solid #000000;
+    border-right:1px solid #000000;
+    background-color: rgba(0,0,0,0);
+    width: 0.7em;
+    margin: 0.7em 0px 0.7em 0px;
+}
+
+QgsMessageBar QScrollBar::add-line:vertical {
+    height: 0.7em;
+    border:1px solid #000000;
+    background-color: rgba(0,0,0,0);
+    color: #000000;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+} 
+
+QgsMessageBar QScrollBar::sub-line:vertical {
+    height: 0.7em;
+    border:1px solid #000000;
+    background-color: rgba(0,0,0,0);
+    color: #000000;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QgsMessageBar QScrollBar::up-arrow:vertical {
+    height: 0.7em;
+    image: url(@theme_path/icons/arrow-up.svg);
+}
+
+QgsMessageBar QScrollBar::down-arrow:vertical {
+    height: 0.7em;
+    image: url(@theme_path/icons/arrow-down.svg);
+}
+
 QgsPropertyOverrideButton {
     padding: 0px;
 }

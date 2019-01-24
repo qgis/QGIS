@@ -16,7 +16,7 @@
 #define QGSFIELDVALUESLINEEDIT_H
 
 #include "qgsfilterlineedit.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfeedback.h"
 
 #include <QStringListModel>

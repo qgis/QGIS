@@ -18,7 +18,7 @@
 #define QGSATTRIBUTEDIALOG_H
 
 #include "qgsattributeeditorcontext.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
 #include "qgsactionmenu.h"

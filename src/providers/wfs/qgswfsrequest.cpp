@@ -38,7 +38,7 @@ QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   , mGotNonEmptyResponse( false )
 {
   QgsDebugMsgLevel( QStringLiteral( "theUri = " ) + uri.uri( ), 4 );
-  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestTimedOut, this, &QgsWfsRequest::requestTimedOut );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsWfsRequest::requestTimedOut );
 }
 
 QgsWfsRequest::~QgsWfsRequest()

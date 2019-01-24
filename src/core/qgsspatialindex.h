@@ -39,7 +39,6 @@ class QgsRectangle;
 class QgsPointXY;
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgsfeaturesink.h"
 #include <QList>
 #include <QSharedDataPointer>
@@ -63,6 +62,7 @@ class QgsFeatureSource;
  * be used across multiple threads.
  *
  * \see QgsSpatialIndexKDBush, which is an optimised non-mutable index for point geometries only.
+ * \see QgsMeshSpatialIndex, which is for mesh faces
  */
 class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 {
@@ -214,5 +214,4 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 
 };
 
-#endif
-
+#endif //QGSSPATIALINDEX_H

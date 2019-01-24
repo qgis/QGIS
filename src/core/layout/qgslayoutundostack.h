@@ -18,7 +18,7 @@
 #ifndef QGSLAYOUTUNDOSTACK_H
 #define QGSLAYOUTUNDOSTACK_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgslayoutundocommand.h"
 #include "qgslayoutitem.h"

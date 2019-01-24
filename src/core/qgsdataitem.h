@@ -17,7 +17,7 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>

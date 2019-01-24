@@ -18,7 +18,6 @@
 
 #include <QDialog>
 #include "qgis_sip.h"
-#include "qgis.h"
 
 #include "ui_qgssymbolselectordialogbase.h"
 
@@ -254,6 +253,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbolWidgetContext mContext;
     QgsFeature mPreviewFeature;
     QgsExpressionContext mPreviewExpressionContext;
+    bool mBlockModified = false;
 
 };
 

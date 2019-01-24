@@ -19,7 +19,7 @@
 #define QGSTRIANGLE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspolygon.h"
 #include "qgscircle.h"
 #include "qgslinestring.h"

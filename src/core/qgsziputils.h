@@ -17,7 +17,7 @@
 #define QGSZIPUTILS_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QStringList>
 
 #ifdef SIP_RUN

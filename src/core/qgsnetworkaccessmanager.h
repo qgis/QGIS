@@ -19,13 +19,15 @@
 #define QGSNETWORKACCESSMANAGER_H
 
 #include <QList>
-#include "qgis.h"
+#include "qgsnetworkreply.h"
+#include "qgis_sip.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \class QgsNetworkRequestParameters
@@ -47,7 +49,8 @@ class CORE_EXPORT QgsNetworkRequestParameters
      * \a operation and original \a request.
      */
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
-                                 const QNetworkRequest &request );
+                                 const QNetworkRequest &request,
+                                 int requestId );
 
     /**
      * Returns the request operation, e.g. GET or POST.
@@ -67,12 +70,17 @@ class CORE_EXPORT QgsNetworkRequestParameters
      */
     QString originatingThreadId() const { return mOriginatingThreadId; }
 
+    /**
+     * Returns a unique ID identifying the request.
+     */
+    int requestId() const { return mRequestId; }
+
   private:
 
     QNetworkAccessManager::Operation mOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
-
+    int mRequestId = 0;
 };
 
 /**
@@ -157,7 +165,11 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:
-    void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
+
+    /**
+     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     */
+    Q_DECL_DEPRECATED void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) SIP_DEPRECATED;
 
     /**
      * Emitted when a network request is about to be created.
@@ -166,15 +178,52 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * only to connect to the main thread's signal in order to receive notifications about requests
      * created in any thread.
      *
+     * \see finished( QgsNetworkReplyContent )
+     * \see requestTimedOut( QgsNetworkRequestParameters )
      * \since QGIS 3.6
      */
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
 
-    void requestCreated( QNetworkReply * );
+    /**
+     * This signal is emitted whenever a pending network reply is finished.
+     *
+     * The \a reply parameter will contain a QgsNetworkReplyContent object, containing all the useful
+     * information relating to the reply, including headers and reply content.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about requests
+     * created in any thread.
+     *
+     * \see requestAboutToBeCreated( QgsNetworkRequestParameters )
+     * \see requestTimedOut( QgsNetworkRequestParameters )
+     * \since QGIS 3.6
+     */
+    void finished( QgsNetworkReplyContent reply );
+
+    /**
+     * Emitted when a network request has timed out.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about requests
+     * created in any thread.
+     *
+     * \see requestAboutToBeCreated( QgsNetworkRequestParameters )
+     * \see finished( QgsNetworkReplyContent )
+     * \since QGIS 3.6
+     */
+    void requestTimedOut( QgsNetworkRequestParameters request );
+
+    /**
+     * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+     */
+    Q_DECL_DEPRECATED void requestCreated( QNetworkReply * ) SIP_DEPRECATED;
+
     void requestTimedOut( QNetworkReply * );
 
   private slots:
     void abortRequest();
+
+    void onReplyFinished( QNetworkReply *reply );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;

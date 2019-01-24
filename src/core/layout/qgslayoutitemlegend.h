@@ -19,7 +19,7 @@
 #define QGSLAYOUTITEMLEGEND_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"

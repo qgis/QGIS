@@ -21,7 +21,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #ifndef SIP_RUN
 /// \cond PRIVATE

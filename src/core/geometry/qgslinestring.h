@@ -22,7 +22,7 @@
 #include <QPolygonF>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgscurve.h"
 #include "qgscompoundcurve.h"
 

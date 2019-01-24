@@ -17,7 +17,7 @@
 #define QGSLAYOUTITEMSCALEBAR_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "scalebar/qgsscalebarsettings.h"
 #include "scalebar/qgsscalebarrenderer.h"

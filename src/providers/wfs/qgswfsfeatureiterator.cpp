@@ -1423,38 +1423,35 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
   QgsFields &fields = mShared->mFields;
   dstFeature.initAttributes( fields.size() );
 
+  auto setAttr = [ & ]( const int i )
+  {
+    int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
+    if ( idx >= 0 )
+    {
+      const QVariant &v = srcFeature.attributes().value( idx );
+      if ( v.isNull() )
+        dstFeature.setAttribute( i, QVariant( fields.at( i ).type() ) );
+      else if ( v.type() == fields.at( i ).type() )
+        dstFeature.setAttribute( i, v );
+      else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
+        dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
+      else
+        dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ) );
+    }
+  };
+
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    Q_FOREACH ( int i, mSubSetAttributes )
+    for ( auto i : qgis::as_const( mSubSetAttributes ) )
     {
-      int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
-      if ( idx >= 0 )
-      {
-        const QVariant &v = srcFeature.attributes().value( idx );
-        if ( v.type() == fields.at( i ).type() )
-          dstFeature.setAttribute( i, v );
-        else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
-          dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
-        else
-          dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ) );
-      }
+      setAttr( i );
     }
   }
   else
   {
     for ( int i = 0; i < fields.size(); i++ )
     {
-      int idx = srcFeature.fields().indexFromName( fields.at( i ).name() );
-      if ( idx >= 0 )
-      {
-        const QVariant &v = srcFeature.attributes().value( idx );
-        if ( v.type() == fields.at( i ).type() )
-          dstFeature.setAttribute( i, v );
-        else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
-          dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
-        else
-          dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ) );
-      }
+      setAttr( i );
     }
   }
 

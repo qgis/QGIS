@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTPAGEPROPERTIESWIDGET_H
 #define QGSLAYOUTPAGEPROPERTIESWIDGET_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_qgslayoutpagepropertieswidget.h"
 
 #include "qgslayoutsize.h"

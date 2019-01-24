@@ -18,7 +18,7 @@
 #define TRIANGULATION_H
 
 #include <QList>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QPainter>
 #include "TriangleInterpolator.h"
 #include "qgis_analysis.h"

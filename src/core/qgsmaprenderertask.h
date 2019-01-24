@@ -18,7 +18,7 @@
 #ifndef QGSMAPRENDERERTASK_H
 #define QGSMAPRENDERERTASK_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"

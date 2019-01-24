@@ -24,6 +24,7 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshrenderersettings.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -104,6 +105,11 @@ void TestQgs3DRendering::initTestCase()
   mLayerMesh = new QgsMeshLayer( dataDir + "/mesh/quad_flower.2dm", "mesh", "mdal" );
   QVERIFY( mLayerMesh->isValid() );
   mLayerMesh->setCrs( mLayerDtm->crs() );  // this testing mesh does not have any CRS defined originally
+  // disable rendering of scalar 2d datasets for now
+  QgsMeshRendererSettings settings = mLayerMesh->rendererSettings();
+  settings.setActiveScalarDataset();
+  settings.setActiveVectorDataset();
+  mLayerMesh->setRendererSettings( settings );
   mProject->addMapLayer( mLayerMesh );
 
   QgsPhongMaterialSettings meshMaterial;

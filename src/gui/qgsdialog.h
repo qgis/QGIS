@@ -24,7 +24,7 @@
 #include <QDialogButtonBox>
 #include <QLayout>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup gui

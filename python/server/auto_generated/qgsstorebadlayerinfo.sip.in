@@ -1,0 +1,52 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsstorebadlayerinfo.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsStoreBadLayerInfo: QgsProjectBadLayerHandler
+{
+%Docstring
+Stores layer ids of bad layers
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsstorebadlayerinfo.h"
+%End
+  public:
+
+    QgsStoreBadLayerInfo();
+%Docstring
+Default constructor
+%End
+
+    void handleBadLayers( const QList<QDomNode> &layers );
+%Docstring
+handleBadLayers
+
+:param layers: layer nodes
+%End
+
+    QStringList badLayers() const;
+%Docstring
+badLayers
+
+:return: ids of bad layers
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsstorebadlayerinfo.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,7 +18,7 @@
 #include <QDial>
 #include <QVariant>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QPaintEvent;
 

@@ -30,6 +30,8 @@
 #include "qgis_sip.h"
 #include "qgshelp.h"
 
+#include <memory>
+
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
