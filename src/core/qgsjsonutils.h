@@ -237,8 +237,6 @@ class CORE_EXPORT QgsJsonExporter
 
     QgsCoordinateTransform mTransform;
 
-    bool mIncludeName = false;
-
     bool mAttributeDisplayName = false;
 };
 
