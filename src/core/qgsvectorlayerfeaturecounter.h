@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      * \note Not available in Python bindings.
      * \since: 3.8
      */
-    QHash<QString, QgsFeatureIds> symbolFeatureCountMap() const SIP_SKIP;
+    QHash<QString, QgsFeatureIds> symbolFeatureIdMap() const SIP_SKIP;
 
     /**
      * Returns the feature Ids for a particular \a legendKey.
