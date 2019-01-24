@@ -16,11 +16,7 @@
 #ifndef QGSMESHSPATIALINDEX_H
 #define QGSMESHSPATIALINDEX_H
 
-///@cond PRIVATE
-
 #include "qgis_sip.h"
-
-#define SIP_NO_FILE
 
 class QgsRectangle;
 class QgsPointXY;
@@ -45,13 +41,12 @@ class QgsMeshSpatialIndexData;
  * class implements its own locks and accordingly, a single QgsMeshSpatialIndex object can safely
  * be used across multiple threads
  *
- * \see QgsSpatialIndex
+ * \see QgsSpatialIndex, which is for vector features
  *
  * \since QGIS 3.6
  */
-class CORE_NO_EXPORT QgsMeshSpatialIndex
+class CORE_EXPORT QgsMeshSpatialIndex
 {
-
   public:
 
     /**
@@ -60,9 +55,9 @@ class CORE_NO_EXPORT QgsMeshSpatialIndex
     QgsMeshSpatialIndex();
 
     /**
-     * Constructor - creates R-tree and bulk loads it with features from the iterator.
+     * Constructor - creates R-tree and bulk loads faces from the specified mesh
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * The optional \a feedback object can be used to allow cancelation of bulk face loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      */
@@ -80,9 +75,8 @@ class CORE_NO_EXPORT QgsMeshSpatialIndex
     /**
      * Returns a list of face ids with a bounding box which intersects the specified \a rectangle.
      *
-     * \note The intersection test is performed based on the feature bounding boxes only, so for non-point
-     * geometry features it is necessary to manually test the returned features for exact geometry intersection
-     * when required.
+     * \note The intersection test is performed based on the face bounding boxes only, so it is necessary
+     * to manually test the returned faces for exact geometry intersection when required.
      */
     QList<int> intersects( const QgsRectangle &rectangle ) const;
 
@@ -90,15 +84,13 @@ class CORE_NO_EXPORT QgsMeshSpatialIndex
      * Returns nearest neighbors to a \a point. The number of neighbours returned is specified
      * by the \a neighbours argument.
      *
-     * \note The nearest neighbour test is performed based on the feature bounding boxes only, so for non-point
-     * geometry features this method is not guaranteed to return the actual closest neighbours.
+     * \note The nearest neighbour test is performed based on the face bounding boxes only,
+     * so this method is not guaranteed to return the actual closest neighbours.
      */
     QList<int> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 
   private:
     QSharedDataPointer<QgsMeshSpatialIndexData> d;
 };
-
-///@endcond
 
 #endif //QGSMESHSPATIALINDEX_H

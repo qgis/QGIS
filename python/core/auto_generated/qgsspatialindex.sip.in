@@ -29,6 +29,8 @@ QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
    be used across multiple threads.
 
 .. seealso:: :py:class:`QgsSpatialIndexKDBush`
+
+.. seealso:: :py:class:`QgsMeshSpatialIndex`
 %End
 
 %TypeHeaderCode
@@ -156,7 +158,6 @@ Gets reference count - just for debugging!
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

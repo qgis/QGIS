@@ -22,47 +22,10 @@
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
-#include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
-#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
-
-///@cond PRIVATE
-
-QgsMeshFeatureIterator::QgsMeshFeatureIterator( QgsMesh *mesh )
-  : QgsAbstractFeatureIterator( QgsFeatureRequest() )
-  , mMesh( mesh )
-{}
-
-QgsMeshFeatureIterator::~QgsMeshFeatureIterator() = default;
-
-bool QgsMeshFeatureIterator::rewind()
-{
-  it = 0;
-  return true;
-}
-bool QgsMeshFeatureIterator::close()
-{
-  mMesh = nullptr;
-  return true;
-}
-
-bool QgsMeshFeatureIterator::fetchFeature( QgsFeature &f )
-{
-  if ( !mMesh || mMesh->faces.size() <= it )
-    return false;
-
-  const QgsMeshFace &face = mMesh->faces.at( it ) ;
-  QgsGeometry geom = QgsMeshUtils::toGeometry( face, mMesh->vertices );
-  f.setGeometry( geom );
-  f.setId( it );
-  ++it;
-  return true;
-}
-
-
-///@endcond
+#include "qgsmeshspatialindex.h"
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
@@ -108,6 +71,7 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
+
 void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
 {
   int vertexCount = face.size();
@@ -127,6 +91,9 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   mTriangularMesh.faces.push_back( triangle );
   mTrianglesToNativeFaces.push_back( nativeIndex );
 }
+
+QgsTriangularMesh::~QgsTriangularMesh() = default;
+QgsTriangularMesh::QgsTriangularMesh() = default;
 
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
