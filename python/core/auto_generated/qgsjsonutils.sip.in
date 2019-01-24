@@ -69,26 +69,6 @@ Returns whether geometry will be included in the JSON exports.
 .. seealso:: :py:func:`setIncludeGeometry`
 %End
 
-    void setIncludeName( bool includeName );
-%Docstring
-Sets whether to include layer's name in the JSON exports.
-
-:param includeName: set to false to prevent name inclusion
-
-.. seealso:: :py:func:`includeName`
-
-.. versionadded:: 3.6
-%End
-
-    bool includeName() const;
-%Docstring
-Returns whether layer's name will be included in the JSON exports.
-
-.. seealso:: :py:func:`setIncludeName`
-
-.. versionadded:: 3.6
-%End
-
     void setIncludeAttributes( bool includeAttributes );
 %Docstring
 Sets whether to include attributes in the JSON exports.
