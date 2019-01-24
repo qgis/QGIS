@@ -21,7 +21,6 @@
 #define QGSOWSSOURCESELECT_H
 #include "ui_qgsowssourceselectbase.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"

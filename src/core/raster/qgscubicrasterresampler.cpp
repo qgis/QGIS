@@ -17,6 +17,7 @@
 
 #include "qgscubicrasterresampler.h"
 #include <QImage>
+#include <cmath>
 
 QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
 {

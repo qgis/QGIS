@@ -24,7 +24,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include "qgis_core.h"
 #include <limits>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsraster.h"
 #include <memory>
 

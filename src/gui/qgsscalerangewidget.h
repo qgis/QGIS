@@ -17,7 +17,7 @@
 #define QGSSCALERANGEWIDGET_H
 
 #include <QGridLayout>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QLabel>
 #include "qgis_gui.h"
 

@@ -17,7 +17,7 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /**

@@ -17,7 +17,7 @@
 
 #include "qgis_core.h"
 #include <expat.h>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgserror.h"
 #include "qgsfields.h"
 #include <list>

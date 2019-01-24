@@ -52,6 +52,7 @@
 #include "qgstransaction.h"
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
+#include "qgis.h"
 
 const QString QgsExpressionFunction::helpText() const
 {

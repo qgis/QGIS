@@ -19,8 +19,8 @@
 #define QGSNETWORKACCESSMANAGER_H
 
 #include <QList>
-#include "qgis.h"
 #include "qgsnetworkreply.h"
+#include "qgis_sip.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>

@@ -19,7 +19,6 @@
 #define QGSPROCESSING_H
 
 #include "qgis_core.h"
-#include "qgis.h"
 
 //
 // Output definitions

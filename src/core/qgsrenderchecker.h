@@ -17,7 +17,7 @@
 #define QGSRENDERCHECKER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDir>
 #include <QString>
 #include <QRegExp>

@@ -18,7 +18,7 @@
 
 #include <QListWidgetItem>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsoptionsdialoghighlightwidget.h"
 
 /**

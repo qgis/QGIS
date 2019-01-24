@@ -19,7 +19,8 @@
 #define QGSUNITTYPES_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
+#include <QObject>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

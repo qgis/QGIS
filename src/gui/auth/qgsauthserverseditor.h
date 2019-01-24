@@ -18,7 +18,7 @@
 #define QGSAUTHSERVERSEDITOR_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsauthserverseditor.h"
 #include "qgsauthmanager.h"

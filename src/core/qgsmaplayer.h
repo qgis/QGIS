@@ -28,7 +28,7 @@
 #include <QVariant>
 #include <QIcon>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgserror.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsrectangle.h"

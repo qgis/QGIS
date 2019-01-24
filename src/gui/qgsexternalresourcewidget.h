@@ -25,7 +25,7 @@ class QgsPixmapLabel;
 
 #include "qgsfilewidget.h"
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 
 #ifdef SIP_RUN

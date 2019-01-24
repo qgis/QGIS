@@ -19,7 +19,7 @@
 #define QGSSUBSTITUTIONLISTWIDGET_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "ui_qgssubstitutionlistwidgetbase.h"
 #include "qgsstringutils.h"

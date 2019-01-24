@@ -18,7 +18,7 @@
 #ifndef QGSPROJECTMETADATA_H
 #define QGSPROJECTMETADATA_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsabstractmetadatabase.h"
 

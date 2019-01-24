@@ -27,6 +27,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
+#include "qgis.h"
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;

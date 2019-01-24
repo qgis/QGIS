@@ -21,7 +21,7 @@
 
 
 #include <QString>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include <functional>

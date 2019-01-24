@@ -39,7 +39,6 @@ class QgsRectangle;
 class QgsPointXY;
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgsfeaturesink.h"
 #include <QList>
 #include <QSharedDataPointer>

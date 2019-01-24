@@ -21,7 +21,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"

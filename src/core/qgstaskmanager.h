@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <QMap>
 #include <QFuture>
 #include <QReadWriteLock>

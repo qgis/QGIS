@@ -20,7 +20,7 @@
 
 #include <QLineEdit>
 #include <QIcon>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QToolButton;

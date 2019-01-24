@@ -17,7 +17,7 @@
 #define QGSMAPCANVASITEM_H
 
 #include <QGraphicsItem>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 

@@ -28,9 +28,10 @@
 #include <QHash>
 #include <QReadWriteLock>
 #include <QExplicitlySharedDataPointer>
+#include <QObject>
 
 //qgis includes
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsunittypes.h"
 #include "qgsrectangle.h"
 #include "qgssqliteutils.h"

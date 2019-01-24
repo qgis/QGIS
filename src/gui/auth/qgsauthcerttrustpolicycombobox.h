@@ -18,7 +18,7 @@
 #define QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 
 #include <QComboBox>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsauthcertutils.h"
 #include "qgis_gui.h"
 

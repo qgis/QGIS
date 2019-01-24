@@ -19,7 +19,7 @@
 #include <QFileSystemWatcher>
 
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgserror.h"
 #include "qgsuserprofile.h"

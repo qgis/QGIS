@@ -18,8 +18,11 @@
 #ifndef QGSABSTRACTMETADATABASE_H
 #define QGSABSTRACTMETADATABASE_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
+#include <QMap>
+#include <QString>
+#include <QMetaType>
 
 class QDomElement;
 class QDomDocument;

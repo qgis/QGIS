@@ -19,7 +19,7 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgsmaptool.h"
 #include "qgsmaptoolextent.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsextentgroupboxwidget.h"
 

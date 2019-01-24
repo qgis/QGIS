@@ -20,7 +20,7 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_analysis.h"
 #include "qgsrasterrange.h"
 #include <QVector>

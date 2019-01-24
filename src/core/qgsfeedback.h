@@ -19,7 +19,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup core

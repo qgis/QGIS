@@ -17,7 +17,7 @@
 
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
 #include "qgsvectorlayer.h"

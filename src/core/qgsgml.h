@@ -17,7 +17,7 @@
 
 #include "qgis_core.h"
 #include <expat.h>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"

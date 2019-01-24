@@ -18,7 +18,7 @@
 
 #include <QVector>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_analysis.h"
 
 class QgsGraph;

@@ -19,7 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <limits>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspoint.h"
 #include "qgsabstractgeometry.h"
 #include "qgsvector3d.h"

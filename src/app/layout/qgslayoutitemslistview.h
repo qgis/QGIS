@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTITEMSLISTVIEW_H
 #define QGSLAYOUTITEMSLISTVIEW_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QTreeView>
 #include <QSortFilterProxyModel>
 

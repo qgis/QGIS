@@ -17,7 +17,7 @@
 #define QGSTESSELLATOR_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsPolygon;
 class QgsMultiPolygon;

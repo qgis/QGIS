@@ -18,6 +18,7 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
+#include "qgis.h"
 #include <QObject>
 #include "qgstest.h"
 #include "qgssettings.h"
