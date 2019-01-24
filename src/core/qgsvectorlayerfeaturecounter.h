@@ -18,6 +18,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrenderer.h"
 #include "qgstaskmanager.h"
+#include "qgsfeature.h"
 #include "qgsfeatureid.h"
 
 /**
@@ -61,6 +62,14 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      */
     long featureCount( const QString &legendKey ) const;
 
+    /**
+     * Returns the QgsFeatureIds for each symbol. Only valid after the symbolsCounted()
+     * signal has been emitted.
+     *
+     * \note Not available in Python bindings.
+     * \since: 3.8
+     */
+    QHash<QString, QgsFeatureIds> symbolFeatureCountMap() const SIP_SKIP;
 
     /**
      * Returns the feature Ids for a particular \a legendKey.
