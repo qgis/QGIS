@@ -2319,7 +2319,28 @@ namespace QgsWms
         {
           const QDomElement featureNode = featuresNode.at( j ).toElement();
           const QgsFeatureId fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
-          const QgsFeature feature = vl->getFeature( fid );
+          QgsFeature feature = QgsFeature( vl->getFeature( fid ) );
+
+          QString wkt;
+          if ( withGeometry )
+          {
+            const QDomNodeList attrs = featureNode.elementsByTagName( "Attribute" );
+            for ( int k = 0; k < attrs.count(); k++ )
+            {
+              const QDomElement elm = attrs.at( k ).toElement();
+              if ( elm.attribute( QStringLiteral( "name" ) ).compare( "geometry" ) == 0 )
+              {
+                wkt = elm.attribute( "value" );
+                break;
+              }
+            }
+
+            if ( ! wkt.isEmpty() )
+            {
+              // CRS in WMS parameters may be different from the layer
+              feature.setGeometry( QgsGeometry::fromWkt( wkt ) );
+            }
+          }
           features << feature;
 
           // search attributes to export (one time only)
