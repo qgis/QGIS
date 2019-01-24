@@ -194,9 +194,11 @@ class RasterizeAlgorithm(QgisAlgorithm):
             self.OUTPUT,
             context)
 
+        project = context.project()
+
         tile_set = TileSet(map_theme, layer, extent, tile_size, mupp,
                            output_layer, make_trans,
-                           qgis.utils.iface.mapCanvas().mapSettings())
+                           qgis.utils.iface.mapCanvas().mapSettings(), project)
         tile_set.render(feedback, make_trans)
 
         return {self.OUTPUT: output_layer}
@@ -209,7 +211,7 @@ class TileSet():
     """
 
     def __init__(self, map_theme, layer, extent, tile_size, mupp, output,
-                 make_trans, map_settings):
+                 make_trans, map_settings, project):
         """
         :param map_theme:
         :param extent:
@@ -260,9 +262,9 @@ class TileSet():
         self.settings.setFlag(QgsMapSettings.RenderMapTile, True)
         self.settings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
 
-        r = QgsProject.instance().readNumEntry('Gui', '/CanvasColorRedPart', 255)[0]
-        g = QgsProject.instance().readNumEntry('Gui', '/CanvasColorGreenPart', 255)[0]
-        b = QgsProject.instance().readNumEntry('Gui', '/CanvasColorBluePart', 255)[0]
+        r = project.readNumEntry('Gui', '/CanvasColorRedPart', 255)[0]
+        g = project.readNumEntry('Gui', '/CanvasColorGreenPart', 255)[0]
+        b = project.readNumEntry('Gui', '/CanvasColorBluePart', 255)[0]
         if make_trans:
             self.bgColor = QColor(r, g, b, 0)
         else:
