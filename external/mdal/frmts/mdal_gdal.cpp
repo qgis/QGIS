@@ -166,7 +166,7 @@ std::string MDAL::DriverGdal::GDALFileName( const std::string &fileName )
 double MDAL::DriverGdal::parseMetadataTime( const std::string &time_s )
 {
   std::string time_trimmed = MDAL::trim( time_s );
-  std::vector<std::string> times = MDAL::split( time_trimmed, " ", MDAL::SkipEmptyParts );
+  std::vector<std::string> times = MDAL::split( time_trimmed, ' ' );
   return MDAL::toDouble( times[0] );
 }
 
@@ -181,7 +181,7 @@ MDAL::DriverGdal::metadata_hash MDAL::DriverGdal::parseMetadata( GDALMajorObject
     for ( int j = 0; GDALmetadata[j]; ++j )
     {
       std::string metadata_pair = GDALmetadata[j]; //KEY = VALUE
-      std::vector<std::string> metadata = MDAL::split( metadata_pair, "=", MDAL::SkipEmptyParts );
+      std::vector<std::string> metadata = MDAL::split( metadata_pair, '=' );
       if ( metadata.size() > 1 )
       {
         std::string key = MDAL::toLower( metadata[0] );

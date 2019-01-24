@@ -95,7 +95,7 @@ void MDAL::DriverAsciiDat::loadOldFormat( std::ifstream &in,
     line = MDAL::trim( line );
 
     // Split to tokens
-    std::vector<std::string> items = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> items = split( line,  ' ' );
     if ( items.size() < 1 )
       continue; // empty line?? let's skip it
 
@@ -159,7 +159,7 @@ void MDAL::DriverAsciiDat::loadNewFormat( std::ifstream &in,
     line = MDAL::trim( line );
 
     // Split to tokens
-    std::vector<std::string> items = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> items = split( line,  ' ' );
     if ( items.size() < 1 )
       continue; // empty line?? let's skip it
 
@@ -320,7 +320,7 @@ void MDAL::DriverAsciiDat::readVertexTimestep(
   {
     std::string line;
     std::getline( stream, line );
-    std::vector<std::string> tsItems = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> tsItems = split( line,  ' ' );
 
     size_t index;
     if ( m2dm )
@@ -374,7 +374,7 @@ void MDAL::DriverAsciiDat::readFaceTimestep(
   {
     std::string line;
     std::getline( stream, line );
-    std::vector<std::string> tsItems = split( line,  " ", SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> tsItems = split( line, ' ' );
 
     if ( isVector )
     {

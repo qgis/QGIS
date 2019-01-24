@@ -109,7 +109,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
   // CADPTS.DAT - COORDINATES OF CELL CENTERS (ELEM NUM, X, Y)
   while ( std::getline( cadptsStream, line ) )
   {
-    std::vector<std::string> lineParts = MDAL::split( line, " ", MDAL::SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 3 )
     {
       throw MDAL_Status::Err_UnknownFormat;
@@ -140,7 +140,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
 
   while ( std::getline( fplainStream, line ) )
   {
-    std::vector<std::string> lineParts = MDAL::split( line, " ", MDAL::SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 7 )
     {
       throw MDAL_Status::Err_UnknownFormat;
@@ -220,7 +220,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
 
   while ( std::getline( inStream, line ) )
   {
-    std::vector<std::string> lineParts = MDAL::split( line, " ", MDAL::SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() == 1 )
     {
       time = MDAL::toDouble( line );
@@ -303,7 +303,7 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
   {
     if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
 
-    std::vector<std::string> lineParts = MDAL::split( line, " ", MDAL::SplitBehaviour::SkipEmptyParts );
+    std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 4 )
     {
       throw MDAL_Status::Err_UnknownFormat;
@@ -348,7 +348,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     {
       if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
 
-      std::vector<std::string> lineParts = MDAL::split( line, " ", MDAL::SplitBehaviour::SkipEmptyParts );
+      std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
         throw MDAL_Status::Err_UnknownFormat;
@@ -378,7 +378,7 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     {
       if ( vertex_idx == nVertices ) throw MDAL_Status::Err_IncompatibleMesh;
 
-      std::vector<std::string> lineParts = MDAL::split( line, " ", MDAL::SplitBehaviour::SkipEmptyParts );
+      std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
         throw MDAL_Status::Err_UnknownFormat;
