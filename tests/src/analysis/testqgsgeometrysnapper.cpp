@@ -50,6 +50,7 @@ class TestQgsGeometrySnapper : public QObject
     void internalSnapper();
     void insertExtra();
     void duplicateNodes();
+    void snapMultiPolygonToPolygon();
 };
 
 void  TestQgsGeometrySnapper::initTestCase()
@@ -609,6 +610,24 @@ void TestQgsGeometrySnapper::duplicateNodes()
 
   result = snapper.snapFeature( f2 );
   QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (10 10, 20 0)" ) );
+
+}
+
+void TestQgsGeometrySnapper::snapMultiPolygonToPolygon()
+{
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsFeature ff( 0 );
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
+  ff.setGeometry( refGeom );
+  QgsFeatureList flist;
+  flist << ff;
+  rl->dataProvider()->addFeatures( flist );
+
+  // test MultiPolygon that could be removed in the process https://issues.qgis.org/issues/18497
+  QgsGeometry polygonGeom = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon(((0.1 -0.1, 5 0.1, 9.9 0.1, 0.1 -0.1)))" ) );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( polygonGeom, 1 );
+  QCOMPARE( result.asWkt(), QStringLiteral( "MultiPolygon (((0 0, 5 0, 10 0, 0 0)))" ) );
 
 }
 
