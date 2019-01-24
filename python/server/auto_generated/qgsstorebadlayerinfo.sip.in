@@ -21,6 +21,7 @@ Stores layer ids of bad layers
 #include "qgsstorebadlayerinfo.h"
 %End
   public:
+
     QgsStoreBadLayerInfo();
 %Docstring
 Default constructor
