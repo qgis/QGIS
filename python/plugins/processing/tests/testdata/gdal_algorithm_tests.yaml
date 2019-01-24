@@ -694,3 +694,22 @@ tests:
       OUTPUT:
         name: expected/gdal/points_along_lines.gml
         type: vector
+
+  - algorithm: gdal:dissolve
+    name: Dissolve points (multipoint output)
+    params:
+      COMPUTE_AREA: false
+      COMPUTE_STATISTICS: false
+      COUNT_FEATURES: false
+      EXPLODE_COLLECTIONS: false
+      FIELD: TestField
+      GEOMETRY: geometry
+      INPUT:
+        name: custom/dissolve_points.shp
+        type: vector
+      KEEP_ATTRIBUTES: false
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/dissolved_points.gml
+        type: vector
