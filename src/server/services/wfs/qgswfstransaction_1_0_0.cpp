@@ -393,7 +393,7 @@ namespace QgsWfs
               if ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull )
               {
                 action.error = true;
-                action.errorMsg = QStringLiteral( "NOT NULL constraint error error on layer '%1', field '%2'" ).arg( typeName, field.name() );
+                action.errorMsg = QStringLiteral( "NOT NULL constraint error on layer '%1', field '%2'" ).arg( typeName, field.name() );
                 vlayer->rollBack();
                 break;
               }

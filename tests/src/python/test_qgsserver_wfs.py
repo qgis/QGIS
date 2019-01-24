@@ -515,7 +515,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 self.assertTrue(b'<ERROR/>' in body, body)
             else:
                 self.assertTrue(b'<TotalUpdated>0</TotalUpdated>' in body)
-            self.assertTrue(b'<Message>NOT NULL constraint error error on layer \'cdb_lines\', field \'name\'</Message>' in body)
+            self.assertTrue(b'<Message>NOT NULL constraint error on layer \'cdb_lines\', field \'name\'</Message>' in body, body)
 
 
 if __name__ == '__main__':
