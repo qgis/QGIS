@@ -142,6 +142,7 @@ class Dissolve(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append('-nlt PROMOTE_TO_MULTI')
         arguments.append('-dialect')
         arguments.append('sqlite')
         arguments.append('-sql')
