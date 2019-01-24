@@ -1,5 +1,5 @@
 v.buffer
-Creates a buffer around vector features of given type. 
+Creates a buffer around vector features of given type.
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
 QgsProcessingParameterString|cats|Category values|None|False|True
@@ -8,6 +8,7 @@ QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;
 QgsProcessingParameterNumber|distance|Buffer distance in map units|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|minordistance|Buffer distance along minor axis in map units|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|angle|Angle of major axis in degrees|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
+QgsProcessingParameterString|layer|Layer number or name ('-1' for all layers)|-1|False|False
 QgsProcessingParameterField|column|Name of column to use for buffer distances|None|input|-1|False|True
 QgsProcessingParameterNumber|scale|Scaling factor for attribute column values|QgsProcessingParameterNumber.Double|1.0|True|None|None
 QgsProcessingParameterNumber|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|QgsProcessingParameterNumber.Double|0.01|True|None|None
