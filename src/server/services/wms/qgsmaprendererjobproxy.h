@@ -19,6 +19,7 @@
 #define QGSMAPRENDERERJOBPROXY_H
 
 #include "qgsmapsettings.h"
+#include "qgsmaprendererjob.h"
 
 class QgsFeatureFilterProvider;
 
@@ -61,10 +62,21 @@ namespace QgsWms
        */
       QPainter *takePainter();
 
+      /**
+       * \brief Returns map rendering errors
+       * \returns error list
+       */
+      QgsMapRendererJob::Errors errors() const { return mErrors; }
+
     private:
       bool mParallelRendering;
       QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
       std::unique_ptr<QPainter> mPainter;
+
+      void getRenderErrors( const QgsMapRendererJob *job );
+
+      //! Layer id / error message
+      QgsMapRendererJob::Errors mErrors;
   };
 
 

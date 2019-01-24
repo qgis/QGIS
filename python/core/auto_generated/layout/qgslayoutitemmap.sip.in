@@ -569,6 +569,13 @@ in the area of the map item covered by the item.
 .. versionadded:: 3.6
 %End
 
+    QgsMapRendererJob::Errors renderingErrors() const;
+%Docstring
+Returns map rendering errors
+
+:return: list of errors
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );

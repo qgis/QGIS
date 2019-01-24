@@ -1021,6 +1021,8 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
   job.renderSynchronously();
+
+  mRenderingErrors = job.errors();
 }
 
 void QgsLayoutItemMap::recreateCachedImageInBackground()
