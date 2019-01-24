@@ -317,6 +317,7 @@ Low-level insertion of children to the node. The children must not have any pare
 Low-level removal of children from the node.
 %End
 
+  protected:
 };
 
 
