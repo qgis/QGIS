@@ -153,7 +153,10 @@ class RasterizeAlgorithm(QgisAlgorithm):
     def tags(self):
         return self.tr('layer,raster,convert,file,map themes,tiles,render').split(',')
 
-    # def processAlgorithm(self, progress):
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.mapSettings = qgis.utils.iface.mapCanvas().mapSettings()
+        return True
+
     def processAlgorithm(self, parameters, context, feedback):
         """Here is where the processing itself takes place."""
 
@@ -198,7 +201,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
 
         tile_set = TileSet(map_theme, layer, extent, tile_size, mupp,
                            output_layer, make_trans,
-                           qgis.utils.iface.mapCanvas().mapSettings(), project)
+                           self.mapSettings, project)
         tile_set.render(feedback, make_trans)
 
         return {self.OUTPUT: output_layer}
