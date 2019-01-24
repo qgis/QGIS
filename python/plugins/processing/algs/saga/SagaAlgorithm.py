@@ -27,6 +27,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import shutil
 import importlib
 from qgis.core import (Qgis,
                        QgsApplication,
@@ -305,14 +306,22 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
         output_layers = []
         output_files = {}
+        #If the user has entered an output file that has non-ascii chars, we use a different path with only ascii chars
+        output_files_nonascii = {}
         for out in self.destinationParameterDefinitions():
             filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
             if isinstance(out, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination)):
                 output_layers.append(filePath)
+                try:
+                    filePath.encode('ascii')
+                except UnicodeEncodeError:
+                    nonAsciiFilePath = filePath
+                    filePath = QgsProcessingUtils.generateTempFilename(out.name() + os.path.splitext(filePath)[1])
+                    output_files_nonascii[filePath] = nonAsciiFilePath
+
             output_files[out.name()] = filePath
             command += ' -{} "{}"'.format(out.name(), filePath)
-
-        commands.append(command)
+            commands.append(command)
 
         # special treatment for RGB algorithm
         # TODO: improve this and put this code somewhere else
@@ -340,6 +349,17 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 prjFile = os.path.splitext(out)[0] + '.prj'
                 with open(prjFile, 'w') as f:
                     f.write(crs.toWkt())
+
+        for old, new in output_files_nonascii.items():
+            oldFolder = os.path.dirname(old)
+            newFolder = os.path.dirname(new)
+            newName = os.path.splitext(os.path.basename(new))[0]
+            files = [f for f in os.listdir(oldFolder)]
+            for f in files:
+                ext = os.path.splitext(f)[1]
+                newPath = os.path.join(newFolder, newName + ext)
+                oldPath = os.path.join(oldFolder, f)
+                shutil.move(oldPath, newPath)
 
         result = {}
         for o in self.outputDefinitions():
@@ -421,8 +441,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
             if isinstance(param, QgsProcessingParameterRasterLayer):
                 raster_layer_params.append(param.name())
-            elif (isinstance(param, QgsProcessingParameterMultipleLayers) and
-                    param.layerType() == QgsProcessing.TypeRaster):
+            elif (isinstance(param, QgsProcessingParameterMultipleLayers)
+                    and param.layerType() == QgsProcessing.TypeRaster):
                 raster_layer_params.extend(param.name())
 
         for layer_param in raster_layer_params:
