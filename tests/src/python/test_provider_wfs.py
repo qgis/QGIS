@@ -3610,6 +3610,162 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
+    def test_NullValues_regression_20961(self):
+        """Test that provider handles null values, regression #20961"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_null_values'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.1.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>points</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:OGC:1.3:CRS84</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-98.6523 32.7233</LowerCorner>
+        <UpperCorner>23.2868 69.9882</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=points'), 'wb') as f:
+            f.write("""
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" version="1.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:qgs="http://www.qgis.org/gml" elementFormDefault="qualified" targetNamespace="http://www.qgis.org/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <import schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" namespace="http://www.opengis.net/gml"/>
+ <element type="qgs:pointsType" name="points" substitutionGroup="gml:_Feature"/>
+ <complexType name="pointsType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element type="gml:MultiPointPropertyType" name="geometry" minOccurs="0" maxOccurs="1"/>
+     <element type="int" name="id"/>
+     <element type="string" name="name"/>
+     <element type="int" name="type" nillable="true"/>
+     <element type="decimal" name="elevation" nillable="true"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+</schema>
+""".encode('UTF-8'))
+
+        get_feature_1 = """<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml http://localhost:8000/ows/bug_20961_server?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0&amp;SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=points&amp;OUTPUTFORMAT=text/xml; subtype%3Dgml/3.1.1">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:3857">
+  <gml:lowerCorner>-10981925.67093 3858635.0686243</gml:lowerCorner>
+  <gml:upperCorner>2592274.0488407 11064877.6393476</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:points gml:id="points.177">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>1544231.80343599 5930698.04174612</gml:lowerCorner>
+    <gml:upperCorner>1544231.80343599 5930698.04174612</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">1544231.80343599 5930698.04174612</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>177</qgs:id>
+  <qgs:name>Xxx</qgs:name>
+  <qgs:elevation_source></qgs:elevation_source>
+ </qgs:points>
+</gml:featureMember>
+</wfs:FeatureCollection>
+"""
+        get_features = """<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml http://localhost:8000/ows/bug_20961_server?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0&amp;SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=points&amp;OUTPUTFORMAT=text/xml; subtype%3Dgml/3.1.1">
+<gml:boundedBy>
+ <gml:Envelope srsName="EPSG:3857">
+  <gml:lowerCorner>-10981925.67093 3858635.0686243</gml:lowerCorner>
+  <gml:upperCorner>2592274.0488407 11064877.6393476</gml:upperCorner>
+ </gml:Envelope>
+</gml:boundedBy>
+<gml:featureMember>
+ <qgs:points gml:id="points.177">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>1544231.80343599 5930698.04174612</gml:lowerCorner>
+    <gml:upperCorner>1544231.80343599 5930698.04174612</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">1544231.80343599 5930698.04174612</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>177</qgs:id>
+  <qgs:name>Xxx</qgs:name>
+  <qgs:type xsi:nil="true"></qgs:type>
+  <qgs:elevation xsi:nil="true"></qgs:elevation>
+ </qgs:points>
+</gml:featureMember>
+<gml:featureMember>
+ <qgs:points gml:id="points.5">
+  <gml:boundedBy>
+   <gml:Envelope srsName="EPSG:3857">
+    <gml:lowerCorner>-10977033.701121 3897159.3308746</gml:lowerCorner>
+    <gml:upperCorner>-10977033.701121 3897159.3308746</gml:upperCorner>
+   </gml:Envelope>
+  </gml:boundedBy>
+  <qgs:geometry>
+   <MultiPoint xmlns="http://www.opengis.net/gml" srsName="EPSG:3857">
+    <pointMember xmlns="http://www.opengis.net/gml">
+     <Point xmlns="http://www.opengis.net/gml">
+      <pos xmlns="http://www.opengis.net/gml" srsDimension="2">-10977033.701121 3897159.3308746</pos>
+     </Point>
+    </pointMember>
+   </MultiPoint>
+  </qgs:geometry>
+  <qgs:id>5</qgs:id>
+  <qgs:name>sdf</qgs:name>
+  <qgs:type>0</qgs:type>
+  <qgs:elevation xsi:nil="true"></qgs:elevation>
+ </qgs:points>
+</gml:featureMember>
+</wfs:FeatureCollection>"""
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+            f.write(get_feature_1.encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=points&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+            f.write(get_features.encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='points' version='1.1.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+
+        got_f = [f for f in vl.getFeatures()]
+        self.assertEqual(str(got_f[0]['type']), 'NULL')
+        self.assertEqual(str(got_f[0]['elevation']), 'NULL')
+        self.assertEqual(str(got_f[0]['name']), 'Xxx')
+        self.assertEqual(str(got_f[1]['type']), '0')
+        self.assertEqual(str(got_f[1]['elevation']), 'NULL')
+        self.assertEqual(str(got_f[1]['name']), 'sdf')
+
+        # Now iterate ! Regression #20961
+        ids = [f.id() for f in got_f]
+        got_f2 = [vl.getFeature(id) for id in ids]
+        self.assertEqual(str(got_f2[0]['type']), 'NULL')
+        self.assertEqual(str(got_f2[0]['elevation']), 'NULL')
+        self.assertEqual(str(got_f2[0]['name']), 'Xxx')
+        self.assertEqual(str(got_f2[1]['type']), '0')
+        self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
+        self.assertEqual(str(got_f2[1]['name']), 'sdf')
+
 
 if __name__ == '__main__':
     unittest.main()

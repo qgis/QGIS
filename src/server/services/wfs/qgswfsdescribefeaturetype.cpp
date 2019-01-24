@@ -87,7 +87,7 @@ namespace QgsWfs
     // test oFormat
     if ( oFormat == QgsWfsParameters::Format::NONE )
       throw QgsBadRequestException( QStringLiteral( "Invalid WFS Parameter" ),
-                                    "OUTPUTFORMAT " + wfsParameters.outputFormatAsString() + "is not supported" );
+                                    QStringLiteral( "OUTPUTFORMAT %1 is not supported" ).arg( wfsParameters.outputFormatAsString() ) );
 
     QgsAccessControl *accessControl = serverIface->accessControls();
 
@@ -352,6 +352,11 @@ namespace QgsWfs
                 attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
             }
           }
+        }
+
+        if ( !( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+        {
+          attElem.setAttribute( QStringLiteral( "nillable" ), QStringLiteral( "true" ) );
         }
 
         sequenceElem.appendChild( attElem );
