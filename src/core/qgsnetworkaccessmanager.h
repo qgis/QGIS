@@ -50,7 +50,8 @@ class CORE_EXPORT QgsNetworkRequestParameters
      */
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
                                  const QNetworkRequest &request,
-                                 int requestId );
+                                 int requestId,
+                                 const QByteArray &content = QByteArray() );
 
     /**
      * Returns the request operation, e.g. GET or POST.
@@ -75,12 +76,19 @@ class CORE_EXPORT QgsNetworkRequestParameters
      */
     int requestId() const { return mRequestId; }
 
+    /**
+     * Returns the request's content. This is only used for POST or PUT operation
+     * requests.
+     */
+    QByteArray content() const { return mContent; }
+
   private:
 
     QNetworkAccessManager::Operation mOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
     int mRequestId = 0;
+    QByteArray mContent;
 };
 
 /**

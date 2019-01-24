@@ -30,7 +30,8 @@ Default constructor.
 
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
                                  const QNetworkRequest &request,
-                                 int requestId );
+                                 int requestId,
+                                 const QByteArray &content = QByteArray() );
 %Docstring
 Constructor for QgsNetworkRequestParameters, with the specified network
 ``operation`` and original ``request``.
@@ -57,6 +58,12 @@ Returns a string identifying the thread which the request originated from.
     int requestId() const;
 %Docstring
 Returns a unique ID identifying the request.
+%End
+
+    QByteArray content() const;
+%Docstring
+Returns the request's content. This is only used for POST or PUT operation
+requests.
 %End
 
 };
