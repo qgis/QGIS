@@ -40,11 +40,15 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
   const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
   const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
+  const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
+  QgsStringMap headers;
+  if ( ! referer.isEmpty() )
+    headers[ QStringLiteral( "Referer" )] = referer;
 
   std::function< bool( const QString &, QStandardItem * )> visitItemsRecursive;
-  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
+  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, headers, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
   {
-    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage );
+    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
 
     if ( serviceInfoMap.isEmpty() )
     {
