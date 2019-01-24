@@ -26,43 +26,11 @@
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsfeatureid.h"
 #include "qgsmeshspatialindex.h"
-#include "qgsfeatureiterator.h"
 
 class QgsRenderContext;
 class QgsCoordinateTransform;
 class QgsRectangle;
-
-///@cond PRIVATE
-
-/**
- * Delivers mesh faces as features
- */
-class CORE_NO_EXPORT QgsMeshFeatureIterator : public QgsAbstractFeatureIterator
-{
-  public:
-
-    /**
-     * This constructor creates a feature iterator, that delivers all features
-     *
-     * \param mesh The mesh to use
-     */
-    QgsMeshFeatureIterator( QgsMesh *mesh );
-    ~QgsMeshFeatureIterator() override;
-
-    bool rewind() override;
-    bool close() override;
-
-  protected:
-    bool fetchFeature( QgsFeature &f ) override;
-
-  private:
-    QgsMesh *mMesh = nullptr;
-    int it = 0;
-};
-
-///@endcond
 
 /**
  * \ingroup core
@@ -79,9 +47,9 @@ class CORE_EXPORT QgsTriangularMesh
 {
   public:
     //! Ctor
-    QgsTriangularMesh() = default;
+    QgsTriangularMesh();
     //! Dtor
-    ~QgsTriangularMesh() = default;
+    ~QgsTriangularMesh();
 
     /**
      * Constructs triangular mesh from layer's native mesh and context. Populates spatial index.

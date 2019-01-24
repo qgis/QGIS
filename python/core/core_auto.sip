@@ -239,6 +239,7 @@
 %Include auto_generated/raster/qgshillshaderenderer.sip
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip
 %Include auto_generated/mesh/qgsmeshrenderersettings.sip
+%Include auto_generated/mesh/qgsmeshspatialindex.sip
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip
