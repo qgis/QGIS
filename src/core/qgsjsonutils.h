@@ -76,21 +76,6 @@ class CORE_EXPORT QgsJsonExporter
     bool includeGeometry() const { return mIncludeGeometry; }
 
     /**
-     * Sets whether to include layer's name in the JSON exports.
-     * \param includeName set to false to prevent name inclusion
-     * \see includeName()
-     * \since QGIS 3.6
-     */
-    void setIncludeName( bool includeName ) { mIncludeName = includeName; }
-
-    /**
-     * Returns whether layer's name will be included in the JSON exports.
-     * \see setIncludeName()
-     * \since QGIS 3.6
-     */
-    bool includeName() const { return mIncludeName; }
-
-    /**
      * Sets whether to include attributes in the JSON exports.
      * \param includeAttributes set to false to prevent attribute inclusion
      * \see includeAttributes()

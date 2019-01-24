@@ -2281,7 +2281,8 @@ namespace QgsWms
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
   {
     QString json;
-    json.append( QStringLiteral( "{\n\"layers\":[" ) );
+    json.append( QStringLiteral( "{\"type\": \"FeatureCollection\",\n" ) );
+    json.append( QStringLiteral( "    \"features\":[\n" ) );
 
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
 
@@ -2340,17 +2341,24 @@ namespace QgsWms
         exporter.setAttributeDisplayName( true );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
-        exporter.setIncludeName( true );
 
-        if ( i > 0 )
-          json.append( QStringLiteral( "," ) );
+        for ( const auto feature : features )
+        {
+          if ( json.right( 1 ).compare( QStringLiteral( "}" ) ) == 0 )
+          {
+            json.append( QStringLiteral( "," ) );
+          }
 
-        json.append( exporter.exportFeatures( features ) );
+          const QString id = QStringLiteral( "%1.%2" ).arg( layer->name(), QgsJsonUtils::encodeValue( feature.id() ) );
+          json.append( exporter.exportFeature( feature, QVariantMap(), id ) );
+        }
       }
       else // raster layer
       {
         json.append( QStringLiteral( "{" ) );
-        json.append( QStringLiteral( "\n \"name\": \"%1\",\n" ).arg( layer->name() ) );
+        json.append( QStringLiteral( "\"type\":\"Feature\",\n" ) );
+        json.append( QStringLiteral( "\"id\":\"%1\",\n" ).arg( layer->name() ) );
+        json.append( QStringLiteral( "\"properties\":{\n" ) );
 
         const QDomNodeList attributesNode = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
         for ( int j = 0; j < attributesNode.size(); ++j )
@@ -2362,10 +2370,10 @@ namespace QgsWms
           if ( j > 0 )
             json.append( QStringLiteral( ",\n" ) );
 
-          json.append( QStringLiteral( "\"%1\": \"%2\"" ).arg( name, value ) );
+          json.append( QStringLiteral( "    \"%1\": \"%2\"" ).arg( name, value ) );
         }
 
-        json.append( QStringLiteral( "\n}" ) );
+        json.append( QStringLiteral( "\n}\n}" ) );
       }
     }
 
