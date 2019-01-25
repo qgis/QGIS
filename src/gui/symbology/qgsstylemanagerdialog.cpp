@@ -16,7 +16,6 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 
-#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -301,6 +300,17 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
       mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
     connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
              this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
+
+    mMenuBtnAddItemSymbol = new QMenu( this );
+    QAction *item = new QAction( tr( "Marker" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
+    mMenuBtnAddItemSymbol->addAction( item );
+    item = new QAction( tr( "Line" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
+    mMenuBtnAddItemSymbol->addAction( item );
+    item = new QAction( tr( "Fill" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
+    mMenuBtnAddItemSymbol->addAction( item );
   }
 
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
@@ -417,7 +427,20 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   const bool isSymbol = currentItemType() != 3;
   searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
-  btnAddItem->setMenu( isSymbol || mReadOnly ? nullptr : mMenuBtnAddItemColorRamp );
+
+  if ( !mReadOnly && !isSymbol ) // color ramp tab
+  {
+    btnAddItem->setMenu( mMenuBtnAddItemColorRamp );
+  }
+  else if ( !mReadOnly && tabItemType->currentIndex() == 0 ) // all symbols tab
+  {
+    btnAddItem->setMenu( mMenuBtnAddItemSymbol );
+  }
+  else
+  {
+    btnAddItem->setMenu( nullptr );
+  }
+
   actnExportAsPNG->setVisible( isSymbol );
   actnExportAsSVG->setVisible( isSymbol );
 
@@ -701,12 +724,12 @@ void QgsStyleManagerDialog::addItem()
   }
 }
 
-bool QgsStyleManagerDialog::addSymbol()
+bool QgsStyleManagerDialog::addSymbol( int symbolType )
 {
   // create new symbol with current type
   QgsSymbol *symbol = nullptr;
   QString name = tr( "new symbol" );
-  switch ( currentItemType() )
+  switch ( symbolType == -1 ? currentItemType() : symbolType )
   {
     case QgsSymbol::Marker:
       symbol = new QgsMarkerSymbol();

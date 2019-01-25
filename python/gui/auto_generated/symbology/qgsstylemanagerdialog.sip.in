@@ -279,7 +279,7 @@ Populates the list view with color ramps of the current type with the given name
     int currentItemType();
     QString currentItemName();
 
-    bool addSymbol();
+    bool addSymbol( int symbolType = -1 );
 %Docstring
 add a new symbol to style
 %End
