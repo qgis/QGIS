@@ -111,6 +111,7 @@ SET(QGIS_CORE_SRCS
   locator/qgslocatormodel.cpp
   locator/qgslocatormodelbridge.cpp
 
+  processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingcontext.cpp

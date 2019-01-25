@@ -5105,6 +5105,15 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, QStringLiteral( "x" ) );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::Vector );
 
+  QgsProcessingContext context3;
+  params.insert( QStringLiteral( "x" ), QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context3 ).right( 6 ), QStringLiteral( "/x.shp" ) );
+
+  QgsProcessingContext context4;
+  fs.sink = QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "x" ), QVariant::fromValue( fs ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context4 ).right( 6 ), QStringLiteral( "/x.shp" ) );
+
   // test supported output vector layer extensions
 
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
@@ -5290,6 +5299,14 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "test.txt" ) );
   params.insert( "non_optional", QgsProcessingOutputLayerDefinition( "test.txt" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "test.txt" ) );
+
+  params.insert( QStringLiteral( "non_optional" ), QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 7 ), QStringLiteral( "_OUTPUT" ) );
+
+  QgsProcessingOutputLayerDefinition fs;
+  fs.sink = QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "non_optional" ), QVariant::fromValue( fs ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 7 ), QStringLiteral( "_OUTPUT" ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
@@ -5673,7 +5690,7 @@ void TestQgsProcessing::processingFeatureSink()
   context.setProject( &p );
 
   // first using static string definition
-  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( "memory:test", nullptr ) );
   QString dest;
@@ -5691,6 +5708,22 @@ void TestQgsProcessing::processingFeatureSink()
   QVERIFY( layer2 );
   QCOMPARE( layer2->crs().authid(), QStringLiteral( "EPSG:3113" ) );
 
+  // temporary sink
+  params.insert( QStringLiteral( "layer" ), QgsProcessing::TEMPORARY_OUTPUT );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:28356" ), context, dest ) );
+  QVERIFY( sink.get() );
+  QgsVectorLayer *layer3 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
+  QVERIFY( layer3 );
+  QCOMPARE( layer3->crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QCOMPARE( layer3->dataProvider()->name(), QStringLiteral( "memory" ) );
+
+  params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT ), nullptr ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:28354" ), context, dest ) );
+  QVERIFY( sink.get() );
+  QgsVectorLayer *layer4 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
+  QVERIFY( layer4 );
+  QCOMPARE( layer4->crs().authid(), QStringLiteral( "EPSG:28354" ) );
+  QCOMPARE( layer4->dataProvider()->name(), QStringLiteral( "memory" ) );
 
   // non optional sink
   def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessing::TypeMapLayer, QVariant(), false ) );

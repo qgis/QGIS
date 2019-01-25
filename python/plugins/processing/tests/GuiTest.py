@@ -355,11 +355,17 @@ class WrappersTest(unittest.TestCase):
         alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
 
+        panel.setValue(QgsProcessing.TEMPORARY_OUTPUT)
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), QgsProcessing.TEMPORARY_OUTPUT)
+
         panel.setValue('memory:')
         v = panel.getValue()
         self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
         self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
-        self.assertEqual(v.sink.staticValue(), 'memory:')
+        self.assertEqual(v.sink.staticValue(), QgsProcessing.TEMPORARY_OUTPUT)
 
         panel.setValue('''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
         v = panel.getValue()
@@ -390,6 +396,11 @@ class WrappersTest(unittest.TestCase):
         param = QgsProcessingParameterVectorDestination('test')
         alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         panel = DestinationSelectionPanel(param, alg)
+
+        panel.setValue(QgsProcessing.TEMPORARY_OUTPUT)
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.sink.staticValue(), QgsProcessing.TEMPORARY_OUTPUT)
 
         panel.setValue('''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
         v = panel.getValue()
@@ -426,6 +437,11 @@ class WrappersTest(unittest.TestCase):
         self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
         self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
         self.assertEqual(v.sink.staticValue(), '/home/me/test.tif')
+
+        panel.setValue(QgsProcessing.TEMPORARY_OUTPUT)
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.sink.staticValue(), QgsProcessing.TEMPORARY_OUTPUT)
 
         ProcessingConfig.setSettingValue(ProcessingConfig.OUTPUT_FOLDER, testDataPath)
         panel.setValue('test.tif')
