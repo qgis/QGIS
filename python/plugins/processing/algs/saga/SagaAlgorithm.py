@@ -349,7 +349,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
             for out in output_layers:
                 prjFile = os.path.splitext(out)[0] + '.prj'
                 with open(prjFile, 'w') as f:
-                    f.write(crs.toWkt())                
+                    f.write(crs.toWkt())
 
         for old, new in output_files_nonascii.items():
             oldFolder = os.path.dirname(old)
