@@ -129,7 +129,7 @@ Calculates the value of an aggregate.
                           If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
 :param ok: if specified, will be set to true if aggregate calculation was successful
-:param ids List of feature ID to filter out unwanted features in the request
+:param ids: List of feature ID to filter out unwanted features in the request
 
 :return: calculated aggregate value
 %End
