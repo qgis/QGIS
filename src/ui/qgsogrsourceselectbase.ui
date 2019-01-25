@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>658</height>
+    <width>478</width>
+    <height>756</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -126,8 +126,31 @@
       <string>Protocol</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cmbProtocolTypes"/>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelBucket">
+        <property name="text">
+         <string>Bucket or container</string>
+        </property>
+        <property name="buddy">
+         <cstring>mBucket</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="mBucket"/>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QLabel" name="mAuthWarning">
+        <property name="text">
+         <string>…</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
@@ -146,49 +169,13 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="protocolURI"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelBucket">
-        <property name="text">
-         <string>Bucket or container</string>
-        </property>
-        <property name="buddy">
-         <cstring>mBucket</cstring>
-        </property>
-       </widget>       
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="mBucket"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelKey">
-        <property name="text">
-         <string>Object key</string>
-        </property>
-        <property name="buddy">
-         <cstring>mKey</cstring>
-        </property>
-       </widget>       
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cmbProtocolTypes"/>
       </item>
       <item row="3" column="1">
        <widget class="QLineEdit" name="mKey"/>
       </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QLabel" name="mAuthWarning">
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>…</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QGroupBox" name="mAuthGroupBox">
         <property name="title">
          <string>Authentication</string>
@@ -217,6 +204,29 @@
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="protocolURI"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelKey">
+        <property name="text">
+         <string>Object key</string>
+        </property>
+        <property name="buddy">
+         <cstring>mKey</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mDownloadCheckBox">
+        <property name="toolTip">
+         <string>This option is useful if the service is a streaming service.</string>
+        </property>
+        <property name="text">
+         <string>Download all data before opening</string>
+        </property>
        </widget>
       </item>
      </layout>

@@ -28,6 +28,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgsfiledownloader.h"
 #include "ogr/qgsnewogrconnection.h"
 #include "ogr/qgsogrhelperfunctions.h"
 
@@ -304,6 +305,7 @@ void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
     labelKey->show();
     mKey->show();
     mAuthWarning->show();
+    mDownloadCheckBox->hide();
   }
   else
   {
@@ -315,6 +317,7 @@ void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
     labelKey->hide();
     mKey->hide();
     mAuthWarning->hide();
+    mDownloadCheckBox->show();
   }
 }
 
@@ -397,12 +400,45 @@ void QgsOgrSourceSelect::addButtonClicked()
     {
       uri = protocolURI->text();
     }
+    if ( cloudType || ! mDownloadCheckBox->isChecked() )
+    {
 
-    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(),
-                                       uri,
-                                       mAuthSettingsProtocol->configId(),
-                                       mAuthSettingsProtocol->username(),
-                                       mAuthSettingsProtocol->password() );
+      mDataSources << createProtocolURI( cmbProtocolTypes->currentText(),
+                                         uri,
+                                         mAuthSettingsProtocol->configId(),
+                                         mAuthSettingsProtocol->username(),
+                                         mAuthSettingsProtocol->password() );
+    }
+    else
+    {
+      QTemporaryFile tempFile;
+      tempFile.setAutoRemove( false );
+      tempFile.open();
+      tempFile.close();
+      QString filePath { tempFile.fileName() };
+      QString fileEncoding { encoding() };
+      QString dsType { dataSourceType() };
+      QUrl url { uri };
+      url.setUserName( mAuthSettingsProtocol->username() );
+      url.setPassword( mAuthSettingsProtocol->password() );
+      // QgsFileDownloader will self destruct, no leaks here
+      // As long as the application keeps the data source select dialog
+      // alive for the whole application lifetime, the lambdas below are
+      // safe regarding to "this".
+      QgsFileDownloader *downloader = new QgsFileDownloader( url, filePath,  mAuthSettingsProtocol->configId() );
+      connect( downloader, &QgsFileDownloader::downloadCompleted, [ = ]
+      {
+        emit addVectorLayers( QStringList() << filePath, fileEncoding, dsType );
+      } );
+      connect( downloader, &QgsFileDownloader::downloadError, [ = ]( QStringList errorMessages )
+      {
+        QMessageBox::warning( this,
+                              tr( "Error downloading layer data" ),
+                              errorMessages.join( "<br/>" ) );
+      } );
+
+    }
+
   }
   else if ( radioSrcFile->isChecked() )
   {
