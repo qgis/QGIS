@@ -604,4 +604,22 @@ QGISEXTERN void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMe
   QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
 }
 
+/**
+  Returns whether MDAL can load this file as mesh
+
+  \since QGIS 3.6
+*/
+QGISEXTERN bool isValidMeshFileName( const QString &fileName )
+{
+  bool valid( false );
+  QByteArray curi = fileName.toAscii();
+  MeshH meshH = MDAL_LoadMesh( curi.constData() );
+  if ( meshH )
+  {
+    valid = true;
+    MDAL_CloseMesh( meshH );
+  }
+  return valid;
+}
+
 #endif

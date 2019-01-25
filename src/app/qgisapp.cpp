@@ -6419,6 +6419,10 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   // {
   //   ok  = true );
   // }
+  else if ( QgsMeshLayer::isValidMeshFileName( fileName ) )
+  {
+    ok = addMeshLayer( fileName, fileInfo.completeBaseName(), "mdal" );
+  }
   else // nope - try to load it as a shape/ogr
   {
     if ( allowInteractive )

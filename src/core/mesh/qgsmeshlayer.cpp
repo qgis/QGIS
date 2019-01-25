@@ -33,6 +33,9 @@
 #include "qgsstyle.h"
 #include "qgstriangularmesh.h"
 
+// typedefs for provider plugin functions of interest
+typedef bool isvalidmeshfilename_t( const QString &fileName );
+
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -459,4 +462,17 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   connect( mDataProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 
   return true;
+}
+
+bool QgsMeshLayer::isValidMeshFileName( const QString &fileName )
+{
+  isvalidmeshfilename_t *pValid = reinterpret_cast< isvalidmeshfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "mdal",  "isValidMeshFileName" ) ) );
+  if ( ! pValid )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not resolve isValidMeshFileName in mdal provider library" ) );
+    return false;
+  }
+
+  bool myIsValid = pValid( fileName );
+  return myIsValid;
 }
