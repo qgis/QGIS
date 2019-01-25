@@ -264,14 +264,14 @@ void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply )
   emit finished( QgsNetworkReplyContent( reply ) );
 }
 
-void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesRecevied, qint64 bytesTotal )
+void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   if ( QNetworkReply *reply = qobject_cast< QNetworkReply *>( sender() ) )
   {
     bool ok = false;
     int requestId = reply->property( "requestId" ).toInt( &ok );
     if ( ok )
-      emit downloadProgress( requestId, bytesRecevied, bytesTotal );
+      emit downloadProgress( requestId, bytesReceived, bytesTotal );
   }
 }
 

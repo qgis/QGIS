@@ -287,7 +287,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     void onReplyFinished( QNetworkReply *reply );
 
-    void onReplyDownloadProgress( qint64 bytesRecevied, qint64 bytesTotal );
+    void onReplyDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
