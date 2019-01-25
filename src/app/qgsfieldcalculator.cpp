@@ -348,7 +348,17 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   }
 
   mOutputFieldTypeComboBox->blockSignals( true );
-  const QList< QgsVectorDataProvider::NativeType > &typelist = provider->nativeTypes();
+
+  // Not all providers have a native types list (WFS), provide default
+  // Integer|Real|Character|Date|Boolean
+  const QList< QgsVectorDataProvider::NativeType > &typelist { provider->nativeTypes().isEmpty() ? ( QList< QgsVectorDataProvider::NativeType >()
+      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 10 )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "double precision" ), QVariant::Double, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String )
+      << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+      << QgsVectorDataProvider::NativeType( tr( "Boolean (bool)" ), QStringLiteral( "bool" ),  QVariant::Bool ) )
+      :  provider->nativeTypes() };
+
   for ( int i = 0; i < typelist.size(); i++ )
   {
     mOutputFieldTypeComboBox->addItem( typelist[i].mTypeDesc );
