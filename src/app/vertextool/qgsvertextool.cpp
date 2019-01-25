@@ -693,10 +693,11 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
-  QgsSnappingConfig config( QgsProject::instance() );
+  QgsSnappingConfig config;
   config.setEnabled( true );
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
+  Q_ASSERT( config.individualLayerSettings().isEmpty() );
 
   // if there is a current layer, it should have priority over other layers
   // because sometimes there may be match from multiple layers at one location
