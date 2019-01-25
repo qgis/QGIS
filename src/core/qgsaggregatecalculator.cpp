@@ -52,11 +52,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   if ( !mLayer )
     return QVariant();
 
-  if ( !context )
-  {
-    QgsExpressionContext defaultContext = mLayer->createExpressionContext();
-    context = &defaultContext;
-  }
+  QgsExpressionContext defaultContext = mLayer->createExpressionContext();
+  context = context ? context : &defaultContext;
 
   std::unique_ptr<QgsExpression> expression;
 
