@@ -34,7 +34,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   setWindowTitle( QStringLiteral( "Database styles manager" ) );
 
   mDeleteButton = mButtonBox->button( QDialogButtonBox::StandardButton::Close );
-  mDeleteButton->setText( tr( "Delete style" ) );
+  mDeleteButton->setText( tr( "Delete Style" ) );
   mDeleteButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
   mLoadButton = mButtonBox->button( QDialogButtonBox::StandardButton::Open );
   mLoadButton->setText( tr( "Load Style" ) );
