@@ -382,7 +382,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
 
     //! Menu for the "Add item" toolbutton when in all symbols mode
-    QMenu *mMenuBtnAddItemSymbol = nullptr;
+    QMenu *mMenuBtnAddItemAll = nullptr;
 
     QAction *mActionCopyToDefault = nullptr;
 

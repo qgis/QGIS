@@ -295,22 +295,30 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     QStringList rampTypes;
     rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
     rampTypes << tr( "Catalog: ColorBrewer" );
-    mMenuBtnAddItemColorRamp = new QMenu( this );
-    for ( const QString &rampType : qgis::as_const( rampTypes ) )
-      mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
-    connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
-             this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
 
-    mMenuBtnAddItemSymbol = new QMenu( this );
+    mMenuBtnAddItemAll = new QMenu( this );
+    mMenuBtnAddItemColorRamp = new QMenu( this );
+
     QAction *item = new QAction( tr( "Marker" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
-    mMenuBtnAddItemSymbol->addAction( item );
+    mMenuBtnAddItemAll->addAction( item );
     item = new QAction( tr( "Line" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
-    mMenuBtnAddItemSymbol->addAction( item );
+    mMenuBtnAddItemAll->addAction( item );
     item = new QAction( tr( "Fill" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
-    mMenuBtnAddItemSymbol->addAction( item );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemAll->addSeparator();
+    for ( const QString &rampType : qgis::as_const( rampTypes ) )
+    {
+      item = new QAction( rampType, this );
+      connect( item, &QAction::triggered, this, [ = ]( bool ) { addColorRamp( item ); } );
+      mMenuBtnAddItemAll->addAction( item );
+      mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
+    }
+
+    connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
+             this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
   }
 
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
@@ -434,7 +442,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   }
   else if ( !mReadOnly && tabItemType->currentIndex() == 0 ) // all symbols tab
   {
-    btnAddItem->setMenu( mMenuBtnAddItemSymbol );
+    btnAddItem->setMenu( mMenuBtnAddItemAll );
   }
   else
   {
