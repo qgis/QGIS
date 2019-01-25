@@ -23,6 +23,7 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
 
 
 QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent )
@@ -31,6 +32,13 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Database styles manager" ) );
+
+  mDeleteButton = mButtonBox->button( QDialogButtonBox::StandardButton::Close );
+  mDeleteButton->setText( tr( "Delete Style" ) );
+  mDeleteButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
+  mLoadButton = mButtonBox->button( QDialogButtonBox::StandardButton::Open );
+  mLoadButton->setText( tr( "Load Style" ) );
+  mCancelButton = mButtonBox->button( QDialogButtonBox::StandardButton::Cancel );
 
   QgsSettings settings;
 

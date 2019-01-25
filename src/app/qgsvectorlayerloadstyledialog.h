@@ -57,6 +57,9 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
     QString mSelectedStyleId;
     QString mSelectedStyleName;
     int mSectionLimit = 0;
+    QPushButton *mDeleteButton = nullptr;
+    QPushButton *mLoadButton = nullptr;
+    QPushButton *mCancelButton = nullptr;
 };
 
 #endif //QGSLOADFILEFROMDBDIALOG_H

@@ -4504,6 +4504,11 @@ bool QgsOgrProvider::isSaveAndLoadStyleToDatabaseSupported() const
          mGDALDriverName == QLatin1String( "SQLite" );
 }
 
+bool QgsOgrProvider::isDeleteStyleFromDatabaseSupported() const
+{
+  return isSaveAndLoadStyleToDatabaseSupported();
+}
+
 QString QgsOgrProviderUtils::DatasetIdentification::toString() const
 {
   return dsName +
@@ -5876,7 +5881,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   if ( !hLayer )
   {
     // if not create it
-    // Note: we use the same schema as in the SpatiaLite and postgre providers
+    // Note: we use the same schema as in the SpatiaLite and postgres providers
     //for cross interoperability
 
     char **options = nullptr;
@@ -6066,6 +6071,42 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   }
 
   return true;
+}
+
+
+QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+  bool deleted;
+
+  QgsOgrLayerUniquePtr userLayer = LoadDataSourceAndLayer( uri, errCause );
+  if ( !userLayer )
+    return false;
+
+  QMutex *mutex = nullptr;
+  GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
+  // check if layer_styles table already exist
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+  {
+    errCause = QObject::tr( "Connection to database failed: %1" ).arg( dsUri.uri() );
+    deleted = false;
+  }
+  else
+  {
+    if ( OGR_L_DeleteFeature( hLayer, styleId.toInt() ) != OGRERR_NONE )
+    {
+      errCause = QObject::tr( "Error executing the delete query." );
+      deleted = false;
+    }
+    else
+    {
+      deleted = true;
+    }
+  }
+  return deleted;
 }
 
 static
