@@ -331,6 +331,39 @@ tests:
         name: expected/grass7/buffer_polys_layer2.shp
         type: vector
 
+  - algorithm: grass7:v.buffer
+    name: Buffer using value from field
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      angle: 0.0
+      cats: ''
+      column: id2
+      input:
+        name: points.gml|layername=points
+        type: vector
+      layer: points
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_points_field.shp
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: grass7:v.surf.rst.cvdev
     name: v.surf.rst - cross-validation errors
     params:
