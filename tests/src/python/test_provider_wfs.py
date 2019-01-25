@@ -794,11 +794,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertEqual(vl.dataProvider().capabilities(),
-                         QgsVectorDataProvider.AddFeatures |
-                         QgsVectorDataProvider.ChangeAttributeValues |
-                         QgsVectorDataProvider.ChangeGeometries |
-                         QgsVectorDataProvider.DeleteFeatures |
-                         QgsVectorDataProvider.SelectAtId)
+                         QgsVectorDataProvider.AddFeatures
+                         | QgsVectorDataProvider.ChangeAttributeValues
+                         | QgsVectorDataProvider.ChangeGeometries
+                         | QgsVectorDataProvider.DeleteFeatures
+                         | QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -3739,7 +3739,6 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         self.assertEqual(str(got_f2[1]['type']), '0')
         self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
         self.assertEqual(str(got_f2[1]['name']), 'sdf')
-
 
     def testFilteredFeatureRequests(self):
         """Test https://issues.qgis.org/issues/21077 """
