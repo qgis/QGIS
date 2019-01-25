@@ -10,6 +10,7 @@
 
 
 
+
 class QgsNetworkRequestParameters
 {
 %Docstring
@@ -22,6 +23,12 @@ Encapsulates parameters and properties of a network request.
 #include "qgsnetworkaccessmanager.h"
 %End
   public:
+
+    enum RequestAttributes
+    {
+      AttributeInitiatorClass,
+      AttributeInitiatorRequestId,
+    };
 
     QgsNetworkRequestParameters();
 %Docstring
@@ -64,6 +71,27 @@ Returns a unique ID identifying the request.
 %Docstring
 Returns the request's content. This is only used for POST or PUT operation
 requests.
+%End
+
+    QString initiatorClassName() const;
+%Docstring
+Returns the class name of the object which initiated this request.
+
+This is only available for QNetworkRequests which have had the
+QgsNetworkRequestParameters.AttributeInitiatorClass attribute set.
+
+.. seealso:: :py:func:`initiatorRequestId`
+%End
+
+    QVariant initiatorRequestId() const;
+%Docstring
+Returns the internal ID used by the object which initiated this request to identify
+individual requests.
+
+This is only available for QNetworkRequests which have had the
+QgsNetworkRequestParameters.AttributeInitiatorRequestId attribute set.
+
+.. seealso:: :py:func:`initiatorClassName`
 %End
 
 };

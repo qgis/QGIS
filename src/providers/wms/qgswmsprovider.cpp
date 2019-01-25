@@ -2714,6 +2714,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
     QgsDebugMsg( QStringLiteral( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
     QNetworkRequest request( requestUrl );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsProvider" ) );
+    QgsSetRequestInitiatorId( request, QStringLiteral( "identify %1,%2" ).arg( point.x() ).arg( point.y() ) );
     mSettings.authorization().setAuthorization( request );
     mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
     connect( mIdentifyReply, &QNetworkReply::finished, this, &QgsWmsProvider::identifyReplyFinished );
@@ -3582,6 +3584,7 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerU
   }
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsImageDownloadHandler" ) );
   auth.setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mCacheReply = QgsNetworkAccessManager::instance()->get( request );
@@ -3753,6 +3756,7 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
   Q_FOREACH ( const QgsWmsProvider::TileRequest &r, requests )
   {
     QNetworkRequest request( r.url );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsTiledImageDownloadHandler" ) );
     auth.setAuthorization( request );
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -3849,6 +3853,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     if ( !redirect.isNull() )
     {
       QNetworkRequest request( redirect.toUrl() );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsTiledImageDownloadHandler" ) );
       mAuth.setAuthorization( request );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -4031,6 +4036,7 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   }
 
   QNetworkRequest request( oldRequest );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsTiledImageDownloadHandler" ) );
 
   QString url = request.url().toString();
   int tileReqNo = request.attribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ) ).toInt();
@@ -4141,6 +4147,7 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl &url )
   QgsDebugMsg( QStringLiteral( "legend url: %1" ).arg( url.toString() ) );
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsLegendDownloadHandler" ) );
   mSettings.authorization().setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );

@@ -32,7 +32,7 @@ from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame,
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
-from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins)
@@ -527,6 +527,8 @@ class QgsPluginInstaller(QObject):
         url = "http://plugins.qgis.org/plugins/RPC2/"
         params = {"id": "djangorpc", "method": "plugin.vote", "params": [str(plugin_id), str(vote)]}
         req = QNetworkRequest(QUrl(url))
+        req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstaller")
+        req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorRequestId), "sendVote")
         req.setRawHeader(b"Content-Type", b"application/json")
         QgsNetworkAccessManager.instance().post(req, bytes(json.dumps(params), "utf-8"))
         return True

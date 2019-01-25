@@ -51,6 +51,7 @@ void QgsFileDownloader::startDownload()
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsFileDownloader" ) );
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );

@@ -29,6 +29,14 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#ifndef SIP_RUN
+#include "qgsconfig.h"
+constexpr int sFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+
+#define QgsSetRequestInitiatorClass(request, _class) request.setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorClass ), _class ); request.setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), QString( __FILE__ ).mid( sFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" );
+#define QgsSetRequestInitiatorId(request, str) request.setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), QString( __FILE__ ).mid( sFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + "): " + str );
+#endif
+
 /**
  * \class QgsNetworkRequestParameters
  * \ingroup core
@@ -38,6 +46,13 @@
 class CORE_EXPORT QgsNetworkRequestParameters
 {
   public:
+
+    //! Custom request attributes
+    enum RequestAttributes
+    {
+      AttributeInitiatorClass = QNetworkRequest::User + 3000, //!< Class name of original object which created the request
+      AttributeInitiatorRequestId, //!< Internal ID used by originator object to identify requests
+    };
 
     /**
      * Default constructor.
@@ -82,6 +97,27 @@ class CORE_EXPORT QgsNetworkRequestParameters
      */
     QByteArray content() const { return mContent; }
 
+    /**
+     * Returns the class name of the object which initiated this request.
+     *
+     * This is only available for QNetworkRequests which have had the
+     * QgsNetworkRequestParameters::AttributeInitiatorClass attribute set.
+     *
+     * \see initiatorRequestId()
+     */
+    QString initiatorClassName() const { return mInitiatorClass; }
+
+    /**
+     * Returns the internal ID used by the object which initiated this request to identify
+     * individual requests.
+     *
+     * This is only available for QNetworkRequests which have had the
+     * QgsNetworkRequestParameters::AttributeInitiatorRequestId attribute set.
+     *
+     * \see initiatorClassName()
+     */
+    QVariant initiatorRequestId() const { return mInitiatorRequestId; }
+
   private:
 
     QNetworkAccessManager::Operation mOperation;
@@ -89,6 +125,8 @@ class CORE_EXPORT QgsNetworkRequestParameters
     QString mOriginatingThreadId;
     int mRequestId = 0;
     QByteArray mContent;
+    QString mInitiatorClass;
+    QVariant mInitiatorRequestId;
 };
 
 /**

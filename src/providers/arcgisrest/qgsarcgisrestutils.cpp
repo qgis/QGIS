@@ -476,6 +476,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authc
   QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
   for ( auto it = requestHeaders.constBegin(); it != requestHeaders.constEnd(); ++it )
   {
     request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
@@ -1136,6 +1137,7 @@ void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allow
 {
   mResult = result;
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
   if ( allowCache )
   {
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
@@ -1161,6 +1163,7 @@ void QgsArcGisAsyncQuery::handleReply()
   if ( !redirect.isNull() )
   {
     QNetworkRequest request = mReply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     mReply = QgsNetworkAccessManager::instance()->get( request );
@@ -1188,6 +1191,8 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
   for ( int i = 0, n = urls.size(); i < n; ++i )
   {
     QNetworkRequest request( urls[i] );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
+    QgsSetRequestInitiatorId( request, QString::number( i ) );
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
     if ( allowCache )
     {
@@ -1217,6 +1222,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   {
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     reply = QgsNetworkAccessManager::instance()->get( request );

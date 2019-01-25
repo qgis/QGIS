@@ -1177,7 +1177,9 @@ void QgsWMSSourceSelect::btnSearch_clicked()
   QUrl url( mySearchUrl.arg( leSearchTerm->text() ) );
   QgsDebugMsg( url.toString() );
 
-  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
+  QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWMSSourceSelect" ) );
+  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( request );
   connect( r, &QNetworkReply::finished, this, &QgsWMSSourceSelect::searchFinished );
 }
 
