@@ -37,7 +37,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   mDeleteButton->setText( tr( "Delete style" ) );
   mDeleteButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
   mLoadButton = mButtonBox->button( QDialogButtonBox::StandardButton::Open );
-  mLoadButton->setText( tr( "Load style" ) );
+  mLoadButton->setText( tr( "Load Style" ) );
   mCancelButton = mButtonBox->button( QDialogButtonBox::StandardButton::Cancel );
 
   QgsSettings settings;
