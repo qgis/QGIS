@@ -1002,7 +1002,15 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
   {
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
+      // Transfer and transform context
       requestCache.setFilterExpression( mRequest.filterExpression()->expression() );
+      QgsExpressionContext ctx { *mRequest.expressionContext( ) };
+      QgsExpressionContextScope *scope { ctx.activeScopeForVariable( QgsExpressionContext::EXPR_FIELDS ) };
+      if ( scope )
+      {
+        scope->setVariable( QgsExpressionContext::EXPR_FIELDS, mShared->mCacheDataProvider->fields() );
+      }
+      requestCache.setExpressionContext( ctx );
     }
     if ( genCounter >= 0 )
     {
