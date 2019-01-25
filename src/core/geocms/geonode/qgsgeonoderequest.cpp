@@ -185,7 +185,7 @@ void QgsGeoNodeRequest::replyFinished()
         else
         {
           QNetworkRequest request( toUrl );
-
+          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -519,6 +519,7 @@ bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
 {
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
   // Add authentication check here
 
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );

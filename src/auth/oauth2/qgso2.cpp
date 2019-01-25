@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QDir>
 #include <QSettings>
@@ -230,6 +231,7 @@ void QgsO2::link()
 
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
 
@@ -291,6 +293,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     if ( !apiKey_.isEmpty() )
       query = QStringLiteral( "?=%1" ).arg( QString( O2_OAUTH2_API_KEY ), apiKey_ );
     QNetworkRequest tokenRequest( QUrl( tokenUrl_.toString() + query ) );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );

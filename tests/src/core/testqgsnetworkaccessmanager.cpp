@@ -201,6 +201,8 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), u );
+    QCOMPARE( params.initiatorClassName(), QStringLiteral( "myTestClass" ) );
+    QCOMPARE( params.initiatorRequestId().toInt(), 55 );
   } );
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -210,7 +212,10 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
     QCOMPARE( reply.request().url(), u );
     loaded = true;
   } );
-  QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
+  QNetworkRequest r( u );
+  r.setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorClass ), QStringLiteral( "myTestClass" ) );
+  r.setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), 55 );
+  QgsNetworkAccessManager::instance()->get( r );
 
   while ( !loaded )
   {
@@ -222,7 +227,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
 
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
-  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
+  BackgroundRequest *thread = new BackgroundRequest( r );
 
   thread->start();
 

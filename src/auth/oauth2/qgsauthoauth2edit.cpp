@@ -1119,6 +1119,7 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
   bool res = false;
   QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
   QNetworkRequest registerRequest( regUrl );
+  QgsSetRequestInitiatorClass( registerRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
   registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/json" ) );
   QNetworkReply *registerReply;
   // For testability: use GET if protocol is file://
@@ -1142,6 +1143,7 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
     QString config = leSoftwareStatementConfigUrl->text();
     QUrl configUrl( config );
     QNetworkRequest configRequest( configUrl );
+    QgsSetRequestInitiatorClass( configRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
     QNetworkReply *configReply = QgsNetworkAccessManager::instance()->get( configRequest );
     mDownloading = true;
     connect( configReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::configReplyFinished, Qt::QueuedConnection );

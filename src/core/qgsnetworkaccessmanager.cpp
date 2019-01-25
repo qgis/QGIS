@@ -450,5 +450,7 @@ QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager:
   , mOriginatingThreadId( QStringLiteral( "0x%2" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
   , mRequestId( requestId )
   , mContent( content )
+  , mInitiatorClass( request.attribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorClass ) ).toString() )
+  , mInitiatorRequestId( request.attribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ) ) )
 {
 }

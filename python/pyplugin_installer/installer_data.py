@@ -28,7 +28,7 @@ from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.core import Qgis, QgsSettings
+from qgis.core import Qgis, QgsSettings, QgsNetworkRequestParameters
 import sys
 import os
 import codecs
@@ -322,6 +322,7 @@ class Repositories(QObject):
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
