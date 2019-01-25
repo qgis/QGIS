@@ -417,6 +417,12 @@ class SagaAlgorithm(SagaAlgorithmBase):
         else:
             filename = os.path.basename(layer.source())
 
+        validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+        filename = ''.join(c for c in filename if c in validChars)
+
+        if len(filename) == 0:
+            filename = 'layer'
+
         destFilename = QgsProcessingUtils.generateTempFilename(filename + '.sgrd')
         sessionExportedLayers[layer.source()] = destFilename
         self.exportedLayers[parameterName] = destFilename
