@@ -32,6 +32,9 @@
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#ifdef HAVE_3D
+#include "qgsmeshlayer3drendererwidget.h"
+#endif
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -61,6 +64,15 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsMeshLayerProperties::apply );
 
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
+
+#ifdef HAVE_3D
+  mVector3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, QgisApp::instance()->mapCanvas(), mOptsPage_3DView );
+
+  mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
+  mOptsPage_3DView->layout()->addWidget( mVector3DWidget );
+#else
+  delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
+#endif
 
   // update based on lyr's current state
   syncToLayer();
@@ -127,6 +139,13 @@ void QgsMeshLayerProperties::syncToLayer()
    * Styling Tab
    */
   mRendererMeshPropertiesWidget->syncToLayer();
+
+  /*
+   * 3D View Tab
+   */
+#ifdef HAVE_3D
+  mVector3DWidget->setLayer( mMeshLayer );
+#endif
 }
 
 void QgsMeshLayerProperties::addDataset()
@@ -177,6 +196,13 @@ void QgsMeshLayerProperties::apply()
    * Style Tab
    */
   mRendererMeshPropertiesWidget->apply();
+
+  /*
+   * 3D View Tab
+   */
+#ifdef HAVE_3D
+  mVector3DWidget->apply();
+#endif
 
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();
