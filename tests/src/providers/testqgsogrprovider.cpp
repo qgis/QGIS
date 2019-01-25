@@ -46,6 +46,7 @@ class TestQgsOgrProvider : public QObject
 
     void setupProxy();
     void decodeUri();
+    void testThread();
 
   private:
     QString mTestDataDir;
@@ -129,6 +130,56 @@ void TestQgsOgrProvider::decodeUri()
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
+
+void TestQgsOgrProvider::testThread()
+{
+  // After reading a QgsVectorLayer (getFeatures) from another thread the QgsOgrConnPoolGroup starts
+  // an expiration timer. The timer belongs to the main thread in order to listening the event
+  // loop and is parented to its QgsOgrConnPoolGroup. So when we delete the QgsVectorLayer, the
+  // QgsConnPoolGroup and the timer are subsequently deleted from another thread. This leads to
+  // segfault later when the expiration time reaches its timeout.
+
+  QMutex mutex;
+  QWaitCondition waitForVl2Creation;
+  QWaitCondition waitForProcessEvents;
+
+  QThread *thread = QThread::create( [&]
+  {
+    QgsVectorLayer *vl2 = new QgsVectorLayer( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
+    QgsFeature f;
+    QVERIFY( vl2->getFeatures().nextFeature( f ) );
+
+    mutex.lock();
+    waitForVl2Creation.wakeAll();
+    mutex.unlock();
+
+    mutex.lock();
+    waitForProcessEvents.wait( &mutex );
+    mutex.unlock();
+
+    delete vl2;
+  } );
+
+  thread->start();
+
+  mutex.lock();
+  waitForVl2Creation.wait( &mutex );
+  mutex.unlock();
+
+  // make sure timer as been started
+  QCoreApplication::processEvents();
+
+  mutex.lock();
+  waitForProcessEvents.wakeAll();
+  mutex.unlock();
+
+  thread->wait();
+
+  // make sure timer as timed out
+  QThread::sleep( 61 );
+  QCoreApplication::processEvents();
+}
+
 
 QGSTEST_MAIN( TestQgsOgrProvider )
 #include "testqgsogrprovider.moc"
