@@ -68,6 +68,30 @@ class CORE_EXPORT QgsProcessingParameterType
      */
     virtual QString name() const = 0;
 
+    // TODO QGIS 4.0 -- make pure virtual
+
+    /**
+     * Returns a valid Python import string for importing the corresponding parameter type,
+     * e.g. "from qgis.core import QgsProcessingParameterBoolean".
+     *
+     * \see className()
+     * \since QGIS 3.6
+     */
+    virtual QString pythonImportString() const { return QString(); }
+
+    // TODO QGIS 4.0 -- make pure virtual
+
+    /**
+     * Returns the corresponding class name for the parameter type.
+     *
+     * \see pythonImportString()
+     * \since QGIS 3.6
+     */
+    virtual QString className() const
+    {
+      return name(); // this is wrong, but it's better than nothing for subclasses which don't implement this method
+    }
+
     /**
      * A static id for this type which will be used for storing this parameter type.
      */
