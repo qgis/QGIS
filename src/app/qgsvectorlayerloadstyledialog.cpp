@@ -102,6 +102,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   connect( mRelatedTable, &QTableWidget::doubleClicked, this, &QDialog::accept );
   connect( mOthersTable, &QTableWidget::doubleClicked, this, &QDialog::accept );
   connect( mCancelButton, &QPushButton::clicked, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerLoadStyleDialog::showHelp );
   connect( mLoadButton, &QPushButton::clicked, this, &QDialog::accept );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsVectorLayerLoadStyleDialog::deleteStyleFromDB );
   setTabOrder( mRelatedTable, mOthersTable );
@@ -290,7 +291,9 @@ void QgsVectorLayerLoadStyleDialog::updateLoadButtonState()
                              && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
                                 ) ) ||
                            ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+}
 
-
-
+void QgsVectorLayerLoadStyleDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-and-share-layer-properties" ) );
 }
