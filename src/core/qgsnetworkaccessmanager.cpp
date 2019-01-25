@@ -224,6 +224,8 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   emit requestCreated( reply );
   Q_NOWARN_DEPRECATED_POP
 
+  connect( reply, &QNetworkReply::downloadProgress, this, &QgsNetworkAccessManager::onReplyDownloadProgress );
+
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
   // uploadProgress.
@@ -260,6 +262,17 @@ void QgsNetworkAccessManager::abortRequest()
 void QgsNetworkAccessManager::onReplyFinished( QNetworkReply *reply )
 {
   emit finished( QgsNetworkReplyContent( reply ) );
+}
+
+void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesRecevied, qint64 bytesTotal )
+{
+  if ( QNetworkReply *reply = qobject_cast< QNetworkReply *>( sender() ) )
+  {
+    bool ok = false;
+    int requestId = reply->property( "requestId" ).toInt( &ok );
+    if ( ok )
+      emit downloadProgress( requestId, bytesRecevied, bytesTotal );
+  }
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
@@ -329,6 +342,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
     connect( this, qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ),
              sMainNAM, qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ) );
+
+    connect( this, &QgsNetworkAccessManager::downloadProgress, sMainNAM, &QgsNetworkAccessManager::downloadProgress );
 
 #ifndef QT_NO_SSL
     connect( this, &QNetworkAccessManager::sslErrors,

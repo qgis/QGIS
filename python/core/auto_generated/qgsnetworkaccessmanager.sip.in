@@ -223,6 +223,22 @@ created in any thread.
 .. versionadded:: 3.6
 %End
 
+    void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );
+%Docstring
+Emitted when a network reply receives a progress report.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the progress report relates to.
+
+The ``bytesReceived`` parameter indicates the number of bytes received, while ``bytesTotal`` indicates the total number
+of bytes expected to be downloaded. If the number of bytes to be downloaded is not known, ``bytesTotal`` will be -1.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. versionadded:: 3.6
+%End
+
  void requestCreated( QNetworkReply * ) /Deprecated/;
 %Docstring
 
