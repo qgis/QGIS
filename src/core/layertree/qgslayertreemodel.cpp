@@ -199,6 +199,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       {
         return QgsLayerItem::iconRaster();
       }
+      else if ( layer->type() == QgsMapLayer::MeshLayer )
+      {
+        return QgsLayerItem::iconMesh();
+      }
 
       QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
       QIcon icon;
