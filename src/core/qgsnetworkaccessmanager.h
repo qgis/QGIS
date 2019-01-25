@@ -222,6 +222,22 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestTimedOut( QgsNetworkRequestParameters request );
 
     /**
+     * Emitted when a network reply receives a progress report.
+     *
+     * The \a requestId argument reflects the unique ID identifying the original request which the progress report relates to.
+     *
+     * The \a bytesReceived parameter indicates the number of bytes received, while \a bytesTotal indicates the total number
+     * of bytes expected to be downloaded. If the number of bytes to be downloaded is not known, \a bytesTotal will be -1.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about requests
+     * created in any thread.
+     *
+     * \since QGIS 3.6
+     */
+    void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );
+
+    /**
      * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
      */
     Q_DECL_DEPRECATED void requestCreated( QNetworkReply * ) SIP_DEPRECATED;
@@ -232,6 +248,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void abortRequest();
 
     void onReplyFinished( QNetworkReply *reply );
+
+    void onReplyDownloadProgress( qint64 bytesRecevied, qint64 bytesTotal );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
