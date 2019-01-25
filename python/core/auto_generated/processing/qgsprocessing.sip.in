@@ -39,6 +39,7 @@ and parameters.
       TypeMesh
     };
 
+    static const QString TEMPORARY_OUTPUT;
 };
 
 /************************************************************************

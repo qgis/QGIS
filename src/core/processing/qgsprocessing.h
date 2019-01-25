@@ -19,6 +19,7 @@
 #define QGSPROCESSING_H
 
 #include "qgis_core.h"
+#include <QString>
 
 //
 // Output definitions
@@ -53,6 +54,12 @@ class CORE_EXPORT QgsProcessing
       TypeMesh = 6 //!< Mesh layers \since QGIS 3.6
     };
 
+    /**
+     * Constant used to indicate that a Processing algorithm output should be a temporary layer/file.
+     *
+     * \since QGIS 3.6
+     */
+    static const QString TEMPORARY_OUTPUT;
 };
 
 #endif // QGSPROCESSING_H

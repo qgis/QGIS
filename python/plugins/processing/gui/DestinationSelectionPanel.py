@@ -34,7 +34,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingSelectionDialog
-from qgis.core import (QgsDataSourceUri,
+from qgis.core import (QgsProcessing,
+                       QgsDataSourceUri,
                        QgsCredentials,
                        QgsExpression,
                        QgsSettings,
@@ -302,7 +303,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             else:
                 self.saveToTemporary()
         else:
-            if value == 'memory:':
+            if value in ('memory:', QgsProcessing.TEMPORARY_OUTPUT):
                 self.saveToTemporary()
             elif isinstance(value, QgsProcessingOutputLayerDefinition):
                 if value.sink.staticValue() in ('memory:', ''):
@@ -322,16 +323,17 @@ class DestinationSelectionPanel(BASE, WIDGET):
     def getValue(self):
         key = None
         if self.use_temporary and isinstance(self.parameter, QgsProcessingParameterFeatureSink):
-            key = 'memory:'
+            key = QgsProcessing.TEMPORARY_OUTPUT
         elif self.use_temporary and not self.default_selection:
-            key = self.parameter.generateTemporaryDestination()
+            key = QgsProcessing.TEMPORARY_OUTPUT
         else:
             key = self.leText.text()
 
         if not key and self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
             return None
 
-        if key and not key.startswith('memory:') \
+        if key and not key == QgsProcessing.TEMPORARY_OUTPUT \
+                and not key.startswith('memory:') \
                 and not key.startswith('ogr:') \
                 and not key.startswith('postgres:') \
                 and not key.startswith('postgis:'):
