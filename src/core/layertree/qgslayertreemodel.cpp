@@ -227,10 +227,11 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
       if ( vlayer && vlayer->isEditable() )
       {
-        QPixmap pixmap( icon.pixmap( 16, 16 ) );
+        const int iconSize = scaleIconSize( 16 );
+        QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
         QPainter painter( &pixmap );
-        painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( vlayer->isModified() ? "/mIconEditableEdits.svg" : "/mActionToggleEditing.svg" ) );
+        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( vlayer->isModified() ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
         painter.end();
 
         icon = QIcon( pixmap );
@@ -689,6 +690,13 @@ QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const
 void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
 {
   mLayerStyleOverrides = overrides;
+}
+
+int QgsLayerTreeModel::scaleIconSize( int standardSize )
+{
+  QFontMetrics fm( ( QFont() ) );
+  const double scale = 1.1 * standardSize / 24;
+  return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
