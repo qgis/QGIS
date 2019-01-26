@@ -1980,6 +1980,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
 
+    //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
+    QgsMessageBar *visibleMessageBar();
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
