@@ -274,6 +274,17 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
+    /**
+     * Scales an layer tree model icon size to compensate for display pixel density, making the icon
+     * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+     * displays.
+     *
+     * \a standardSize should be set to a standard icon size, e.g. 16, 24, 48, etc.
+     *
+     * \since QGIS 3.6
+     */
+    static int scaleIconSize( int standardSize );
+
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
