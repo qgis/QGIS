@@ -203,7 +203,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         return QgsLayerItem::iconMesh();
       }
 
-      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QIcon icon;
 
       // if there's just on legend entry that should be embedded in layer - do that!
@@ -315,7 +315,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
         {
           parts << QString();
-          const QStringList abstractLines = layer->abstract().split( "\n" );
+          const QStringList abstractLines = layer->abstract().split( '\n' );
           for ( const auto &l : abstractLines )
           {
             parts << l.toHtmlEscaped();
@@ -1534,7 +1534,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
     QMap<QString, int> widthMax;
     Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, data.originalNodes )
     {
-      QgsSymbolLegendNode *n = dynamic_cast<QgsSymbolLegendNode *>( legendNode );
+      QgsSymbolLegendNode *n = qobject_cast<QgsSymbolLegendNode *>( legendNode );
       if ( n )
       {
         const QSize sz( n->minimumIconSize( context.get() ) );
