@@ -12318,6 +12318,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionEllipseFoci->setEnabled( false );
     mActionRectangleCenterPoint->setEnabled( false );
     mActionRectangleExtent->setEnabled( false );
+    mActionRectangle3Points->setEnabled( false );
     mActionRegularPolygon2Points->setEnabled( false );
     mActionRegularPolygonCenterPoint->setEnabled( false );
     mActionRegularPolygonCenterCorner->setEnabled( false );
