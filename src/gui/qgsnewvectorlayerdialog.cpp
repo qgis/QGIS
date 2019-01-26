@@ -267,12 +267,12 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
     geomDialog.setFilename( initialPath );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
-    return QString();
+    return QString( "" );
   }
 
   if ( QFile::exists( geomDialog.filename() ) && QMessageBox::warning( parent, tr( "New ShapeFile Layer" ), tr( "The layer already exists. Are you sure you want to overwrite the existing file?" ),
        QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Yes )
-    return QString();
+    return QString( "" );
 
   QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
