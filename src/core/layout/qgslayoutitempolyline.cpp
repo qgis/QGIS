@@ -320,7 +320,7 @@ QPainterPath QgsLayoutItemPolyline::shape() const
 
   QPainterPathStroker ps;
 
-  ps.setWidth( mPolylineStyleSymbol->width() );
+  ps.setWidth( 2 * mMaxSymbolBleed );
   QPainterPath strokedOutline = ps.createStroke( path );
 
   return strokedOutline;
