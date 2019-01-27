@@ -96,6 +96,9 @@ QgsNetworkRequestParameters.AttributeInitiatorRequestId attribute set.
 
 };
 
+
+
+
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
 %Docstring
@@ -140,6 +143,7 @@ need to be handled on the main thread. See in-depth discussion below.
 %End
 
     QgsNetworkAccessManager( QObject *parent = 0 );
+
 
     void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
 %Docstring
@@ -267,6 +271,22 @@ created in any thread.
 .. versionadded:: 3.6
 %End
 
+
+    void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
+%Docstring
+Emitted when a network request encounters SSL ``errors``.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the progress report relates to.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about SSL errors
+from any thread.
+
+.. versionadded:: 3.6
+%End
+
+
+
  void requestCreated( QNetworkReply * ) /Deprecated/;
 %Docstring
 
@@ -274,6 +294,7 @@ created in any thread.
 %End
 
     void requestTimedOut( QNetworkReply * );
+
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
