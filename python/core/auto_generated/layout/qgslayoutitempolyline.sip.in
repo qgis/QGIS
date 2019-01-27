@@ -211,7 +211,6 @@ Returns the pen width in millimeters for the stroke of the arrow head.
 .. seealso:: :py:func:`arrowHeadStrokeColor`
 %End
 
-
   protected:
 
     virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );
