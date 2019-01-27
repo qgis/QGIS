@@ -162,7 +162,8 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
   {
-    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( 16, 16 ) );
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( range.symbol(), QSize( iconSize, iconSize ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
