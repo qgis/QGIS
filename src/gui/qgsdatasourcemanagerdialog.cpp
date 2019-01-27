@@ -35,12 +35,13 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
   , mPreviousRow( -1 )
   , mMapCanvas( canvas )
 {
-  mMessageBar = new QgsMessageBar( this );
   ui->setupUi( this );
   ui->verticalLayout_2->setSpacing( 6 );
   ui->verticalLayout_2->setMargin( 0 );
   ui->verticalLayout_2->setContentsMargins( 0, 0, 0, 0 );
 
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   static_cast<QVBoxLayout *>( layout() )->insertWidget( 0, mMessageBar );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
