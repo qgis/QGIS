@@ -23,6 +23,7 @@
 #include "qgscolorwidgets.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgsguiutils.h"
 
 #include <QPainter>
 #include <QTemporaryFile>
@@ -467,8 +468,10 @@ void QgsColorButton::setValidTemporaryColor( const QColor &newColor )
 
 QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChecks )
 {
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+
   //create an icon pixmap
-  QPixmap pixmap( 16, 16 );
+  QPixmap pixmap( iconSize, iconSize );
   pixmap.fill( Qt::transparent );
 
   QPainter p;
@@ -480,7 +483,7 @@ QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChec
     QBrush checkBrush = QBrush( transparentBackground() );
     p.setPen( Qt::NoPen );
     p.setBrush( checkBrush );
-    p.drawRect( 0, 0, 15, 15 );
+    p.drawRect( 0, 0, iconSize - 1, iconSize - 1 );
   }
 
   //draw color over pattern
@@ -488,7 +491,7 @@ QPixmap QgsColorButton::createMenuIcon( const QColor &color, const bool showChec
 
   //draw border
   p.setPen( QColor( 197, 197, 197 ) );
-  p.drawRect( 0, 0, 15, 15 );
+  p.drawRect( 0, 0, iconSize - 1, iconSize - 1 );
   p.end();
   return pixmap;
 }

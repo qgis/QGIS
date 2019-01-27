@@ -18,6 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
+#include "qgsguiutils.h"
 
 #include <QResizeEvent>
 #include <QStyleOptionFrameV3>
@@ -53,18 +54,19 @@ int QgsColorWidget::componentValue() const
 QPixmap QgsColorWidget::createDragIcon( const QColor &color )
 {
   //craft a pixmap for the drag icon
-  QPixmap pixmap( 50, 50 );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 50 );
+  QPixmap pixmap( iconSize, iconSize );
   pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
   //start with a light gray background
-  painter.fillRect( QRect( 0, 0, 50, 50 ), QBrush( QColor( 200, 200, 200 ) ) );
+  painter.fillRect( QRect( 0, 0, iconSize, iconSize ), QBrush( QColor( 200, 200, 200 ) ) );
   //draw rect with white border, filled with current color
   QColor pixmapColor = color;
   pixmapColor.setAlpha( 255 );
   painter.setBrush( QBrush( pixmapColor ) );
   painter.setPen( QPen( Qt::white ) );
-  painter.drawRect( QRect( 1, 1, 47, 47 ) );
+  painter.drawRect( QRect( 1, 1, iconSize - 2, iconSize - 2 ) );
   painter.end();
   return pixmap;
 }
