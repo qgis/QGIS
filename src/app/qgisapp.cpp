@@ -4667,13 +4667,25 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
     QgsDebugMsgLevel( "completeBaseName: " + baseName, 2 );
 
-    // create the layer
+    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl", Qt::CaseInsensitive ) ) };
+    const auto scheme { QUrl( src ).scheme() };
+    const bool isRemoteUrl { scheme.startsWith( QStringLiteral( "http" ) ) || scheme == QStringLiteral( "ftp" ) };
 
+    // create the layer
     QgsVectorLayer::LayerOptions options;
     options.loadDefaultStyle = false;
+    if ( isVsiCurl || isRemoteUrl )
+    {
+      visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( src ) );
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      qApp->processEvents();
+    }
     QgsVectorLayer *layer = new QgsVectorLayer( src, baseName, QStringLiteral( "ogr" ), options );
     Q_CHECK_PTR( layer );
-
+    if ( isVsiCurl || isRemoteUrl )
+    {
+      QApplication::restoreOverrideCursor( );
+    }
     if ( ! layer )
     {
       freezeCanvases( false );
@@ -4723,9 +4735,9 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       delete layer;
       QString msg = tr( "%1 is not a valid or recognized data source." ).arg( src );
       // If the failed layer was a vsicurl type, give the user a chance to try the normal download.
-      if ( src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) &&
+      if ( isVsiCurl &&
            QMessageBox::question( this, tr( "Invalid Data Source" ),
-                                  tr( "The \"protocol\" source type failed, do you want to try the \"file\" type?" ) ) == QMessageBox::Yes )
+                                  tr( "Download with \"Protocol\" source type has failed, do you want to try the \"File\" source type?" ) ) == QMessageBox::Yes )
       {
         return addVectorLayers( QStringList() << src.replace( QLatin1String( "/vsicurl/" ), " " ), enc, dataSourceType );
       }
