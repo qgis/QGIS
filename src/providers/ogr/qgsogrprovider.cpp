@@ -2431,7 +2431,7 @@ void QgsOgrProvider::setupProxy()
       QNetworkProxy proxy( proxyes.first() );
       // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
       //QStringList excludes;
-      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toString().split( '|', QString::SkipEmptyParts );
+      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
 
       QString proxyHost( proxy.hostName() );
       qint16 proxyPort( proxy.port() );
