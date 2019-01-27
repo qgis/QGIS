@@ -82,6 +82,12 @@ QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameter
     val = definition->defaultValue();
   }
 
+  if ( val == QgsProcessing::TEMPORARY_OUTPUT )
+  {
+    if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
+      return destParam->generateTemporaryDestination();
+  }
+
   return val.toString();
 }
 
