@@ -1381,16 +1381,12 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024L ) );
 
   //url to exclude from proxys
-  QString proxyExcludeString;
+  QStringList excludedUrls;
   for ( int i = 0; i < mExcludeUrlListWidget->count(); ++i )
   {
-    if ( i != 0 )
-    {
-      proxyExcludeString += '|';
-    }
-    proxyExcludeString += mExcludeUrlListWidget->item( i )->text();
+    excludedUrls << mExcludeUrlListWidget->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), proxyExcludeString );
+  mSettings->setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), excludedUrls );
 
   QgisApp::instance()->namUpdate();
 

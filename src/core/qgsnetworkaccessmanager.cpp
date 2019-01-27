@@ -316,7 +316,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {
-    excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toString().split( '|', QString::SkipEmptyParts );
+    excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
 
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
