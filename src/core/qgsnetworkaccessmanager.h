@@ -25,6 +25,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
+#include <QMutex>
+#include <QWaitCondition>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -129,6 +132,77 @@ class CORE_EXPORT QgsNetworkRequestParameters
     QVariant mInitiatorRequestId;
 };
 
+class QgsNetworkAccessManager;
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsSslErrorHandler
+ * \brief SSL error handler, used for responding to SSL errors encountered during network requests.
+ * \ingroup core
+ *
+ * QgsSslErrorHandler responds to SSL errors encountered during network requests. The
+ * base QgsSslErrorHandler class responds to SSL errors only by logging the errors,
+ * and uses the default Qt response, which is to abort the request.
+ *
+ * Subclasses can override this behaviour by implementing their own handleSslErrors()
+ * method. QgsSslErrorHandlers are ONLY ever called from the main thread, so it
+ * is safe to utilise gui widgets and dialogs during handleSslErrors (e.g. to
+ * present prompts to users notifying them of the errors and asking them
+ * to choose the appropriate response.).
+ *
+ * If the errors should be ignored and the request allowed to proceed, the subclasses'
+ * handleSslErrors() method MUST call QNetworkReply::ignoreSslErrors() on the specified
+ * QNetworkReply object.
+ *
+ * An application instance can only have a single SSL error handler. The current
+ * SSL error handler is set by calling QgsNetworkAccessManager::setSslErrorHandler().
+ * By default an instance of the logging-only QgsSslErrorHandler base class is used.
+ *
+ * \since 3.6
+ */
+class CORE_EXPORT QgsSslErrorHandler : public QObject
+{
+    Q_OBJECT
+
+///@cond PRIVATE
+  public slots:
+
+    /**
+     * Called whenever SSL \a errors are encountered during a network \a reply.
+     */
+    void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
+///@endcond
+
+  protected:
+
+    /**
+     * Called whenever SSL \a errors are encountered during a network \a reply.
+     *
+     * Subclasses should reimplement this method to implement their own logic
+     * regarding whether or not these SSL errors should be ignored, and how
+     * to present them to users.
+     *
+     * The base class method just logs errors and leaves the default Qt response
+     * to SSL errors, which is to abort the network request on any errors.
+     */
+    virtual void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
+
+  signals:
+
+    /**
+     * Emitted when the SSL errors for a \a reply have been handled (i.e. the
+     * subclass' handleSslErrors() implementation has completed).
+     *
+     * It is not necessary for subclasses to emit this signal manually, it will
+     * automatically be emitted at the correct time.
+     */
+    void sslErrorsHandled( QNetworkReply *reply );
+
+};
+#endif
+
+
 /**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -173,6 +247,27 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
+
+#ifndef SIP_RUN
+
+    /**
+     * Sets the application SSL error \a handler, which is used to respond to SSL errors encountered
+     * during network requests.
+     *
+     * Ownership of \a handler is transferred to the main thread QgsNetworkAccessManager instance.
+     *
+     * This method must ONLY be called on the main thread QgsNetworkAccessManager. It is not
+     * necessary to set handlers for background threads -- the main thread QgsSslErrorHandler will
+     * automatically be used in a thread-safe manner for any SSL errors encountered on background threads.
+     *
+     * The default QgsSslErrorHandler responds to SSL errors only by logging the errors,
+     * and uses the default Qt response, which is to abort the request.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.6
+     */
+    void setSslErrorHandler( std::unique_ptr< QgsSslErrorHandler > handler );
+#endif
 
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFER );
@@ -275,6 +370,31 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );
 
+#ifndef QT_NO_SSL
+
+    /**
+     * Emitted when a network request encounters SSL \a errors.
+     *
+     * The \a requestId argument reflects the unique ID identifying the original request which the progress report relates to.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about SSL errors
+     * from any thread.
+     *
+     * \since QGIS 3.6
+     */
+    void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+    // these signals are for internal use only - it's not safe to connect by external code
+    void sslErrorsOccurred( QNetworkReply *, const QList<QSslError> &errors );
+    void sslErrorsHandled( QNetworkReply *reply );
+///@endconf
+#endif
+
+#endif
+
     /**
      * \deprecated Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
      */
@@ -282,23 +402,34 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     void requestTimedOut( QNetworkReply * );
 
+
   private slots:
     void abortRequest();
 
     void onReplyFinished( QNetworkReply *reply );
 
     void onReplyDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
+#ifndef QT_NO_SSL
+    void onReplySslErrors( const QList<QSslError> &errors );
+#endif
+
+    void afterSslErrorHandled( QNetworkReply *reply );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
+    void unlockAfterSslErrorHandled();
+
     QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy = false;
     bool mInitialized = false;
     static QgsNetworkAccessManager *sMainNAM;
+    std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;
+    QMutex mMutex;
+    QWaitCondition mSslWaitCondition;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

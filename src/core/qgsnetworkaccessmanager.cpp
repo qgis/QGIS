@@ -124,6 +124,15 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   setProxyFactory( new QgsNetworkProxyFactory() );
 }
 
+void QgsNetworkAccessManager::setSslErrorHandler( std::unique_ptr<QgsSslErrorHandler> handler )
+{
+  Q_ASSERT( sMainNAM == this );
+
+  mSslErrorHandler = std::move( handler );
+  connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, mSslErrorHandler.get(), &QgsSslErrorHandler::onSslErrors );
+  connect( mSslErrorHandler.get(), &QgsSslErrorHandler::sslErrorsHandled, this, &QgsNetworkAccessManager::afterSslErrorHandled );
+}
+
 void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
 {
   mProxyFactories.insert( 0, factory );
@@ -225,6 +234,9 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   Q_NOWARN_DEPRECATED_POP
 
   connect( reply, &QNetworkReply::downloadProgress, this, &QgsNetworkAccessManager::onReplyDownloadProgress );
+#ifndef QT_NO_SSL
+  connect( reply, &QNetworkReply::sslErrors, this, &QgsNetworkAccessManager::onReplySslErrors );
+#endif
 
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
@@ -233,7 +245,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
   connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
   timer->setSingleShot( true );
-  timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
+  timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QStringLiteral( "60000" ) ).toInt() );
 
   connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
   connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
@@ -241,6 +253,12 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   QgsDebugMsgLevel( QStringLiteral( "Created [reply:%1]" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ), 3 );
 
   return reply;
+}
+
+void QgsNetworkAccessManager::unlockAfterSslErrorHandled()
+{
+  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
+  mSslWaitCondition.wakeAll();
 }
 
 void QgsNetworkAccessManager::abortRequest()
@@ -275,6 +293,58 @@ void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qin
   }
 }
 
+#ifndef QT_NO_SSL
+void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
+{
+  QNetworkReply *reply = qobject_cast< QNetworkReply *>( sender() );
+  Q_ASSERT( reply );
+  Q_ASSERT( reply->manager() == this );
+
+  QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
+  if ( timer && timer->isActive() )
+  {
+    QgsDebugMsg( QStringLiteral( "Stopping network reply timeout whilst SSL error is handled" ) );
+    timer->stop();
+  }
+  bool ok = false;
+  int requestId = reply->property( "requestId" ).toInt( &ok );
+  if ( ok )
+    emit requestEncounteredSslErrors( requestId, errors );
+
+  emit sslErrorsOccurred( reply, errors );
+  if ( this != sMainNAM )
+  {
+    // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
+    // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
+    mMutex.lock();
+    mSslWaitCondition.wait( &mMutex );
+    mMutex.unlock();
+    afterSslErrorHandled( reply );
+  }
+}
+
+void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
+{
+  if ( reply->manager() == this )
+  {
+    // restart reply timeout
+    QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
+    if ( timer )
+    {
+      Q_ASSERT( !timer->isActive() );
+      QgsDebugMsg( QStringLiteral( "Restarting network reply timeout" ) );
+      timer->setSingleShot( true );
+      timer->start( QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QStringLiteral( "60000" ) ).toInt() );
+    }
+  }
+  else if ( this == sMainNAM )
+  {
+    // notify other threads to allow them to handle the reply
+    qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterSslErrorHandled(); // safe to call directly - the other thread will be stuck waiting for us
+  }
+}
+#endif
+
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
 {
   switch ( control )
@@ -287,8 +357,6 @@ QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoa
       return QStringLiteral( "PreferCache" );
     case QNetworkRequest::AlwaysCache:
       return QStringLiteral( "AlwaysCache" );
-    default:
-      break;
   }
   return QStringLiteral( "PreferNetwork" );
 }
@@ -349,7 +417,14 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     connect( this, &QNetworkAccessManager::sslErrors,
              sMainNAM, &QNetworkAccessManager::sslErrors,
              connectionType );
+
+    connect( this, &QgsNetworkAccessManager::requestEncounteredSslErrors, sMainNAM, &QgsNetworkAccessManager::requestEncounteredSslErrors );
+    connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, sMainNAM, &QgsNetworkAccessManager::sslErrorsOccurred );
 #endif
+  }
+  else
+  {
+    setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
   }
 
   connect( this, &QNetworkAccessManager::finished, this, &QgsNetworkAccessManager::onReplyFinished );
@@ -440,6 +515,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     setCache( newcache );
 }
 
+
 //
 // QgsNetworkRequestParameters
 //
@@ -453,4 +529,21 @@ QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager:
   , mInitiatorClass( request.attribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorClass ) ).toString() )
   , mInitiatorRequestId( request.attribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ) ) )
 {
+}
+
+
+//
+// QgsSslErrorHandler
+//
+
+void QgsSslErrorHandler::onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
+{
+  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
+  handleSslErrors( reply, errors );
+  emit sslErrorsHandled( reply );
+}
+
+void QgsSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSslError> & )
+{
+  QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 }
