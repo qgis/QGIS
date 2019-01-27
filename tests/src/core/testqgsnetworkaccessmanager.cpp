@@ -353,14 +353,28 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
-  while ( !loaded && !gotSslError )
+  while ( !loaded && !gotSslError && !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
-  // we don't test for background thread ssl error yet -- that signal isn't thread safe
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  gotSslError = false;
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
+
+  thread->start();
+
+  while ( !loaded && !gotSslError && !gotRequestAboutToBeCreatedSignal )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
 }
 
 void TestQgsNetworkAccessManager::fetchTimeout()
