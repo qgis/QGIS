@@ -67,7 +67,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
      */
     void openPage( const QString &pageName );
 
-    //! Return the dialog's message bar
+    //! Returns the dialog's message bar
     QgsMessageBar *messageBar() const;
 
   public slots:
