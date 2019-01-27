@@ -209,7 +209,7 @@ class Grass7Utils:
                     testfolder = str(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
-                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.')])
+                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
                     if grassfolders:
                         folder = os.path.join(testfolder, grassfolders[0])
             elif isMac():
