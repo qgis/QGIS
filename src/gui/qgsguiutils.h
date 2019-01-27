@@ -172,7 +172,7 @@ namespace QgsGuiUtils
    *
    * \since QGIS 3.6
    */
-  int scaleIconSize( int standardSize );
+  int GUI_EXPORT scaleIconSize( int standardSize );
 }
 
 /**
