@@ -30,17 +30,31 @@ class BackgroundRequest : public QThread
     Q_OBJECT
 
   public:
-    BackgroundRequest( const QNetworkRequest &request )
+    BackgroundRequest( const QNetworkRequest &request, QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation, const QByteArray &data = QByteArray() )
       : mRequest( request )
     {
       moveToThread( this );
       connect( this, &QThread::started, this, [ = ]
       {
         QVERIFY( QThread::currentThread() != QCoreApplication::instance()->thread() );
-        QgsNetworkAccessManager::instance()->get( mRequest );
+        switch ( op )
+        {
+          case QNetworkAccessManager::GetOperation:
+            mReply = QgsNetworkAccessManager::instance()->get( mRequest );
+            break;
+
+          case QNetworkAccessManager::PostOperation:
+            mReply = QgsNetworkAccessManager::instance()->post( mRequest, data );
+            break;
+
+          default:
+            break;
+        }
+
       } );
     }
 
+    QNetworkReply *mReply = nullptr;
   private:
     QNetworkRequest mRequest;
 };
@@ -72,6 +86,7 @@ void TestQgsNetworkAccessManager::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
+  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 1000 );
   QgsApplication::init();
   QgsApplication::initQgis();
 }
@@ -251,13 +266,13 @@ void TestQgsNetworkAccessManager::fetchPost()
   bool loaded = false;
   bool gotRequestAboutToBeCreatedSignal = false;
   int requestId = -1;
-  QUrl u =  QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" );
+  QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/post" ) );
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
-    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( params.operation(), QNetworkAccessManager::PostOperation );
     QCOMPARE( params.request().url(), u );
     QCOMPARE( params.content(), QByteArray( "a=b&c=d" ) );
   } );
@@ -269,7 +284,9 @@ void TestQgsNetworkAccessManager::fetchPost()
     QCOMPARE( reply.request().url(), u );
     loaded = true;
   } );
-  QgsNetworkAccessManager::instance()->post( QNetworkRequest( u ), QByteArray( "a=b&c=d" ) );
+  QNetworkRequest req( u );
+  req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, QByteArray( "a=b&c=d" ) );
 
   while ( !loaded )
   {
@@ -277,6 +294,29 @@ void TestQgsNetworkAccessManager::fetchPost()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QString replyContent = reply->readAll();
+  QVERIFY( replyContent.contains( QStringLiteral( "\"a\": \"b\"" ) ) );
+  QVERIFY( replyContent.contains( QStringLiteral( "\"c\": \"d\"" ) ) );
+
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  req = QNetworkRequest( u );
+  req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
+  BackgroundRequest *thread = new BackgroundRequest( req, QNetworkAccessManager::PostOperation, QByteArray( "a=b&c=d" ) );
+
+  thread->start();
+
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  replyContent = thread->mReply->readAll();
+  QVERIFY( replyContent.contains( QStringLiteral( "\"a\": \"b\"" ) ) );
+  QVERIFY( replyContent.contains( QStringLiteral( "\"c\": \"d\"" ) ) );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
@@ -328,15 +368,13 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   if ( QgsTest::isTravis() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 5000 );
-
   QObject context;
   //test fetching from a blank url
   bool gotRequestAboutToBeCreatedSignal = false;
   bool gotTimeoutError = false;
   bool finished = false;
   int requestId = -1;
-  QUrl u =  QUrl( QStringLiteral( "http://10.255.255.1" ) );
+  QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/delay/10" ) );
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
@@ -356,7 +394,7 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
-  while ( !gotTimeoutError && !finished )
+  while ( !gotTimeoutError )
   {
     qApp->processEvents();
   }
@@ -372,7 +410,7 @@ void TestQgsNetworkAccessManager::fetchTimeout()
 
   thread->start();
 
-  while ( !gotTimeoutError && !finished )
+  while ( !gotTimeoutError )
   {
     qApp->processEvents();
   }
