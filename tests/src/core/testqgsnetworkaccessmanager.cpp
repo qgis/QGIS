@@ -59,6 +59,20 @@ class BackgroundRequest : public QThread
     QNetworkRequest mRequest;
 };
 
+class TestSslErrorHandler : public QgsSslErrorHandler
+{
+    Q_OBJECT
+
+  protected:
+
+    void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors ) override
+    {
+      QCOMPARE( errors.at( 0 ).error(), QSslError::SelfSignedCertificate );
+      reply->ignoreSslErrors();
+    }
+
+};
+
 class TestQgsNetworkAccessManager : public QObject
 {
     Q_OBJECT
@@ -75,6 +89,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
     void fetchPost();
     void fetchBadSsl();
+    void testSslErrorHandler();
     void fetchTimeout();
 
 };
@@ -329,6 +344,7 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   bool loaded = false;
   bool gotRequestAboutToBeCreatedSignal = false;
   bool gotSslError = false;
+  bool gotRequestEncounteredSslError = false;
   int requestId = -1;
   QUrl u =  QUrl( QStringLiteral( "https://expired.badssl.com" ) );
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
@@ -351,9 +367,15 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
     QCOMPARE( errors.at( 0 ).error(), QSslError::CertificateExpired );
     gotSslError = true;
   } );
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestEncounteredSslErrors, &context, [&]( int errorRequestId, const QList<QSslError> &errors )
+  {
+    QCOMPARE( errors.at( 0 ).error(), QSslError::CertificateExpired );
+    QCOMPARE( errorRequestId, requestId );
+    gotRequestEncounteredSslError = true;
+  } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
-  while ( !loaded && !gotSslError && !gotRequestAboutToBeCreatedSignal )
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
   {
     qApp->processEvents();
   }
@@ -363,11 +385,12 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
   gotSslError = false;
+  gotRequestEncounteredSslError = false;
   BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
 
   thread->start();
 
-  while ( !loaded && !gotSslError && !gotRequestAboutToBeCreatedSignal )
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
   {
     qApp->processEvents();
   }
@@ -375,6 +398,76 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+}
+
+void TestQgsNetworkAccessManager::testSslErrorHandler()
+{
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< TestSslErrorHandler >() );
+
+  QObject context;
+  //test fetching from a blank url
+  bool loaded = false;
+  bool gotRequestAboutToBeCreatedSignal = false;
+  bool gotSslError = false;
+  int requestId = -1;
+  bool gotRequestEncounteredSslError = false;
+  QUrl u =  QUrl( QStringLiteral( "https://self-signed.badssl.com/" ) );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
+  {
+    gotRequestAboutToBeCreatedSignal = true;
+    requestId = params.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( params.request().url(), u );
+  } );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
+  {
+    QCOMPARE( reply.error(), QNetworkReply::NoError ); // because handler ignores error
+    QCOMPARE( reply.requestId(), requestId );
+    QCOMPARE( reply.request().url(), u );
+    loaded = true;
+  } );
+  connect( QgsNetworkAccessManager::instance(), &QNetworkAccessManager::sslErrors, &context, [&]( QNetworkReply *, const QList<QSslError> &errors )
+  {
+    QCOMPARE( errors.at( 0 ).error(), QSslError::SelfSignedCertificate );
+    gotSslError = true;
+  } );
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestEncounteredSslErrors, &context, [&]( int errorRequestId, const QList<QSslError> &errors )
+  {
+    QCOMPARE( errors.at( 0 ).error(), QSslError::SelfSignedCertificate );
+    QCOMPARE( errorRequestId, requestId );
+    gotRequestEncounteredSslError = true;
+  } );
+  QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
+
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
+  {
+    qApp->processEvents();
+  }
+
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  gotSslError = false;
+  gotRequestEncounteredSslError = false;
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
+
+  thread->start();
+
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
+
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
 }
 
 void TestQgsNetworkAccessManager::fetchTimeout()
