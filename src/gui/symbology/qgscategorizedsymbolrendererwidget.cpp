@@ -37,6 +37,7 @@
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -143,7 +144,8 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && category.symbol() )
   {
-    return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
