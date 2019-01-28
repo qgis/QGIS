@@ -242,7 +242,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
   connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
   timer->setSingleShot( true );
-  const int timeout = s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QStringLiteral( "60000" ) ).toInt();
+  const int timeout = s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt();
   timer->start( timeout );
 
   connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
@@ -336,7 +336,7 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
       Q_ASSERT( !timer->isActive() );
       QgsDebugMsg( QStringLiteral( "Restarting network reply timeout" ) );
       timer->setSingleShot( true );
-      timer->start( QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QStringLiteral( "60000" ) ).toInt() );
+      timer->start( QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt() );
     }
   }
   else if ( this == sMainNAM )
