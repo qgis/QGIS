@@ -1,0 +1,15 @@
+*****
+Content-Type: application/json; charset=utf-8
+
+{"type": "FeatureCollection",
+    "features":[
+{
+   "type":"Feature",
+   "id":"fields_alias.2",
+   "geometry":null,
+   "properties":{
+      "alias_id":3,
+      "alias_name":"three",
+      "utf8nameè":"three èé↓"
+   }
+}]}

@@ -1,4 +1,4 @@
-Content-Length: 6939
+*****
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -54,6 +54,8 @@ Content-Type: text/xml; charset=utf-8
     <Format>text/xml</Format>
     <Format>application/vnd.ogc.gml</Format>
     <Format>application/vnd.ogc.gml/3.1.1</Format>
+    <Format>application/json</Format>
+    <Format>application/geo+json</Format>
     <DCPType>
      <HTTP>
       <Get>
@@ -168,6 +170,30 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
+   <Layer queryable="1" visible="1">
+    <Name>landsat</Name>
+    <Title>landsat</Title>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>17.9243</westBoundLongitude>
+     <eastBoundLongitude>18.0457</eastBoundLongitude>
+     <southBoundLatitude>30.1519</southBoundLatitude>
+     <northBoundLatitude>30.2573</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="3.53666e+06" maxx="2.00883e+06" miny="3.52308e+06" CRS="EPSG:3857" minx="1.99532e+06"/>
+    <BoundingBox maxy="18.0457" maxx="30.2573" miny="17.9243" CRS="EPSG:4326" minx="30.1519"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <TreeName>landsat</TreeName>
+   </Layer>
    <Layer geometryType="Point" queryable="1" displayField="name" visible="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
@@ -195,6 +221,65 @@ Content-Type: text/xml; charset=utf-8
     <Attributes>
      <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" name="id" comment="" length="10"/>
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="name" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
+    </Attributes>
+   </Layer>
+   <Layer geometryType="Point" queryable="1" displayField="alias_name" visible="1">
+    <Name>fields_alias</Name>
+    <Title>A test vector layer</Title>
+    <Abstract>A test vector layer with unicode òà</Abstract>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>8.20346</westBoundLongitude>
+     <eastBoundLongitude>8.20355</eastBoundLongitude>
+     <southBoundLatitude>44.9014</southBoundLatitude>
+     <northBoundLatitude>44.9015</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="5.60603e+06" maxx="913215" miny="5.60601e+06" CRS="EPSG:3857" minx="913205"/>
+    <BoundingBox maxy="8.20355" maxx="44.9015" miny="8.20346" CRS="EPSG:4326" minx="44.9014"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <TreeName>fields_alias</TreeName>
+    <Attributes>
+     <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" alias="alias_id" name="id" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" alias="alias_name" name="name" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
+    </Attributes>
+   </Layer>
+   <Layer geometryType="Point" queryable="1" displayField="name" visible="1">
+    <Name>exclude_attribute</Name>
+    <Title>A test vector layer</Title>
+    <Abstract>A test vector layer with unicode òà</Abstract>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>8.20346</westBoundLongitude>
+     <eastBoundLongitude>8.20355</eastBoundLongitude>
+     <southBoundLatitude>44.9014</southBoundLatitude>
+     <northBoundLatitude>44.9015</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="5.60603e+06" maxx="913215" miny="5.60601e+06" CRS="EPSG:3857" minx="913205"/>
+    <BoundingBox maxy="8.20355" maxx="44.9015" miny="8.20346" CRS="EPSG:4326" minx="44.9014"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <TreeName>exclude_attribute</TreeName>
+    <Attributes>
+     <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" name="id" comment="" length="10"/>
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
@@ -290,6 +375,6 @@ Content-Type: text/xml; charset=utf-8
     </Layer>
    </Layer>
   </Layer>
-  <LayerDrawingOrder>testlayer3,testlayer2,testlayer èé,layer_with_short_name</LayerDrawingOrder>
+  <LayerDrawingOrder>testlayer3,testlayer2,exclude_attribute,fields_alias,testlayer èé,landsat,layer_with_short_name</LayerDrawingOrder>
  </Capability>
 </WMS_Capabilities>

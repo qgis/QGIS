@@ -522,7 +522,7 @@ namespace QgsWms
   {
     bool loaded = false;
 
-    const QRegExp composerParamRegExp( QStringLiteral( "^MAP\\d+:" ) );
+    const QRegExp composerParamRegExp( QStringLiteral( "^MAP\\d+:" ), Qt::CaseInsensitive );
     if ( key.contains( composerParamRegExp ) )
     {
       const int mapId = key.midRef( 3, key.indexOf( ':' ) - 3 ).toInt();
@@ -758,6 +758,9 @@ namespace QgsWms
       f = Format::TEXT;
     else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
       f = Format::GML;
+    else if ( fStr.startsWith( QLatin1String( "application/json" ), Qt::CaseInsensitive )
+              || fStr.startsWith( QLatin1String( "application/geo+json" ), Qt::CaseInsensitive ) )
+      f = Format::JSON;
     else
       f = Format::NONE;
 

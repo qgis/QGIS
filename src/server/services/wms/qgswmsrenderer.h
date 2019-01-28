@@ -255,6 +255,9 @@ namespace QgsWms
       //! Converts a feature info xml document to Text
       QByteArray convertFeatureInfoToText( const QDomDocument &doc ) const;
 
+      //! Converts a feature info xml document to json
+      QByteArray convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const;
+
       QDomElement createFeatureGML(
         QgsFeature *feat,
         QgsVectorLayer *layer,

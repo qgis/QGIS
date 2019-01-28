@@ -479,6 +479,8 @@ namespace QgsWms
     appendFormat( elem, QStringLiteral( "text/xml" ) );
     appendFormat( elem, QStringLiteral( "application/vnd.ogc.gml" ) );
     appendFormat( elem, QStringLiteral( "application/vnd.ogc.gml/3.1.1" ) );
+    appendFormat( elem, QStringLiteral( "application/json" ) );
+    appendFormat( elem, QStringLiteral( "application/geo+json" ) );
     elem.appendChild( dcpTypeElem.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
     requestElem.appendChild( elem );
 

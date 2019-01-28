@@ -1,0 +1,58 @@
+*****
+Content-Type: application/json; charset=utf-8
+
+{"type": "FeatureCollection",
+    "features":[
+{
+   "type":"Feature",
+   "id":"testlayer èé.0",
+   "geometry":null,
+   "properties":{
+      "id":1,
+      "name":"one",
+      "utf8nameè":"one èé"
+   }
+},{
+   "type":"Feature",
+   "id":"testlayer èé.1",
+   "geometry":null,
+   "properties":{
+      "id":2,
+      "name":"two",
+      "utf8nameè":"two àò"
+   }
+},{
+   "type":"Feature",
+   "id":"fields_alias.0",
+   "geometry":null,
+   "properties":{
+      "alias_id":1,
+      "alias_name":"one",
+      "utf8nameè":"one èé"
+   }
+},{
+   "type":"Feature",
+   "id":"fields_alias.1",
+   "geometry":null,
+   "properties":{
+      "alias_id":2,
+      "alias_name":"two",
+      "utf8nameè":"two àò"
+   }
+},{
+   "type":"Feature",
+   "id":"exclude_attribute.0",
+   "geometry":null,
+   "properties":{
+      "id":1,
+      "utf8nameè":"one èé"
+   }
+},{
+   "type":"Feature",
+   "id":"exclude_attribute.1",
+   "geometry":null,
+   "properties":{
+      "id":2,
+      "utf8nameè":"two àò"
+   }
+}]}
