@@ -162,22 +162,14 @@ class QgsNetworkAccessManager;
  * SSL error handler is set by calling QgsNetworkAccessManager::setSslErrorHandler().
  * By default an instance of the logging-only QgsSslErrorHandler base class is used.
  *
- * \since 3.6
+ * \since QGIS 3.6
  */
-class CORE_EXPORT QgsSslErrorHandler : public QObject
+class CORE_EXPORT QgsSslErrorHandler
 {
-    Q_OBJECT
 
-///@cond PRIVATE
-  public slots:
+  public:
 
-    /**
-     * Called whenever SSL \a errors are encountered during a network \a reply.
-     */
-    void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
-///@endcond
-
-  protected:
+    virtual ~QgsSslErrorHandler() = default;
 
     /**
      * Called whenever SSL \a errors are encountered during a network \a reply.
@@ -190,17 +182,6 @@ class CORE_EXPORT QgsSslErrorHandler : public QObject
      * to SSL errors, which is to abort the network request on any errors.
      */
     virtual void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
-
-  signals:
-
-    /**
-     * Emitted when the SSL errors for a \a reply have been handled (i.e. the
-     * subclass' handleSslErrors() implementation has completed).
-     *
-     * It is not necessary for subclasses to emit this signal manually, it will
-     * automatically be emitted at the correct time.
-     */
-    void sslErrorsHandled( QNetworkReply *reply );
 
 };
 #endif
@@ -414,16 +395,17 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void onReplyDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 #ifndef QT_NO_SSL
     void onReplySslErrors( const QList<QSslError> &errors );
+
+    void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
-
-    void afterSslErrorHandled( QNetworkReply *reply );
-
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
+#ifndef QT_NO_SSL
     void unlockAfterSslErrorHandled();
-
+    void afterSslErrorHandled( QNetworkReply *reply );
+#endif
     QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
