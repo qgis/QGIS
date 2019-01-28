@@ -611,6 +611,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsdatasourceuri.h
   qgsdbfilterproxymodel.h
+  qgsdefaultvalue.h
   qgsfeature.h
   qgsfeedback.h
   qgsfield.h
@@ -862,7 +863,6 @@ SET(QGIS_CORE_HDRS
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
   qgsdbfilterproxymodel.h
-  qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditformconfig.h
