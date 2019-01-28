@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 from pprint import pformat
 import time
 
@@ -154,7 +155,19 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     if self.mainWidget().checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
-                value = self.mainWidget().outputWidgets[param.name()].getValue()
+                widget = self.mainWidget().outputWidgets[param.name()]
+                value = widget.getValue()
+                outputPath, _ = value.sink.valueAsString(self.context.expressionContext())
+                if outputPath.split(":")[0] not in ["memory", "postgis", "ogr"]:
+                    ext = os.path.splitext(outputPath)[1][1:]
+                    supportedExtensions = []
+                    if isinstance(param, QgsProcessingParameterRasterDestination):
+                        supportedExtensions = self.algorithm().provider().supportedOutputRasterLayerExtensions()
+                    elif isinstance(param, (QgsProcessingParameterVectorDestination, QgsProcessingParameterFeatureSink)):
+                        supportedExtensions = self.algorithm().provider().supportedOutputVectorLayerExtensions()
+                    if supportedExtensions and ext not in supportedExtensions:
+                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, ext)
+
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
                 if value:
@@ -291,6 +304,19 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                           level=Qgis.Warning, duration=5)
+        except AlgorithmDialogBase.InvalidOutputExtension as e:
+            try:
+                self.buttonBox().accepted.connect(lambda e=e:
+                                                  e.widget.setPalette(QPalette()))
+                palette = e.widget.palette()
+                palette.setColor(QPalette.Base, QColor(255, 255, 0))
+                e.widget.setPalette(palette)
+            except:
+                pass
+            self.messageBar().clearWidgets()            
+            self.messageBar().pushMessage("", self.tr("Unsupported output file extension: {0}".format(e.ext)),
+                                          level=Qgis.Warning, duration=5)
+
 
     def finish(self, successful, result, context, feedback):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
