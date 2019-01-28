@@ -315,10 +315,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 try:
                     filePath.encode('ascii')
                 except UnicodeEncodeError:
-                    nonAsciiFilePath = filePath                    
+                    nonAsciiFilePath = filePath
                     filePath = QgsProcessingUtils.generateTempFilename(out.name() + os.path.splitext(filePath)[1])
                     output_files_nonascii[filePath] = nonAsciiFilePath
-                    
+
             output_files[out.name()] = filePath
             command += ' -{} "{}"'.format(out.name(), filePath)
 
@@ -442,8 +442,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
             if isinstance(param, QgsProcessingParameterRasterLayer):
                 raster_layer_params.append(param.name())
-            elif (isinstance(param, QgsProcessingParameterMultipleLayers) and
-                    param.layerType() == QgsProcessing.TypeRaster):
+            elif (isinstance(param, QgsProcessingParameterMultipleLayers)
+                    and param.layerType() == QgsProcessing.TypeRaster):
                 raster_layer_params.extend(param.name())
 
         for layer_param in raster_layer_params:
