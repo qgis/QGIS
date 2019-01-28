@@ -195,14 +195,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 
-    /**
-     * Returns whether the file name appears to be a
-     * valid mesh file name
-     *
-     * \since QGIS 3.6
-     */
-    static bool isValidMeshFileName( const QString &fileName );
-
   signals:
 
     /**

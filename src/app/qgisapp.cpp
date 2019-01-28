@@ -6419,10 +6419,6 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   // {
   //   ok  = true );
   // }
-  else if ( QgsMeshLayer::isValidMeshFileName( fileName ) )
-  {
-    ok = addMeshLayer( fileName, fileInfo.completeBaseName(), "mdal" );
-  }
   else // nope - try to load it as a shape/ogr
   {
     if ( allowInteractive )
@@ -6436,6 +6432,12 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   }
 
   CPLPopErrorHandler();
+
+  // Try to load as mesh layer after raster & vector
+  if ( !ok )
+  {
+    ok = addMeshLayer( fileName, fileInfo.completeBaseName(), "mdal" );
+  }
 
   if ( !ok )
   {

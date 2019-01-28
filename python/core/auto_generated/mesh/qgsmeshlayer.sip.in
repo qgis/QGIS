@@ -162,14 +162,6 @@ Interpolates the value on the given point from given dataset.
 .. versionadded:: 3.4
 %End
 
-    static bool isValidMeshFileName( const QString &fileName );
-%Docstring
-Returns whether the file name appears to be a
-valid mesh file name
-
-.. versionadded:: 3.6
-%End
-
   signals:
 
     void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );

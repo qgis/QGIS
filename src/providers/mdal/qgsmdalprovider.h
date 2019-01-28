@@ -99,13 +99,6 @@ class QgsMdalProvider : public QgsMeshDataProvider
      */
     static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
-    /**
-     * Returns whether MDAL can load this file as mesh
-     *
-     * \since QGIS 3.6
-    */
-    static bool isValidMeshFileName( const QString &fileName );
-
   private:
     QVector<QgsMeshVertex> vertices( ) const;
     QVector<QgsMeshFace> faces( ) const;
