@@ -3080,16 +3080,26 @@ namespace QgsWms
   {
     if ( opacity >= 0 && opacity <= 255 )
     {
-      if ( layer->type() == QgsMapLayer::LayerType::VectorLayer )
+      switch ( layer->type() )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        vl->setOpacity( opacity / 255. );
-      }
-      else if ( layer->type() == QgsMapLayer::LayerType::RasterLayer )
-      {
-        QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-        QgsRasterRenderer *rasterRenderer = rl->renderer();
-        rasterRenderer->setOpacity( opacity / 255. );
+        case QgsMapLayer::LayerType::VectorLayer:
+        {
+          QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+          vl->setOpacity( opacity / 255. );
+          break;
+        }
+
+        case QgsMapLayer::LayerType::RasterLayer:
+        {
+          QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+          QgsRasterRenderer *rasterRenderer = rl->renderer();
+          rasterRenderer->setOpacity( opacity / 255. );
+          break;
+        }
+
+        case QgsMapLayer::MeshLayer:
+        case QgsMapLayer::PluginLayer:
+          break;
       }
     }
   }

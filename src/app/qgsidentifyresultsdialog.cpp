@@ -465,13 +465,19 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
 
 void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyResult &result )
 {
-  if ( result.mLayer->type() == QgsMapLayer::VectorLayer )
+  switch ( result.mLayer->type() )
   {
-    addFeature( qobject_cast<QgsVectorLayer *>( result.mLayer ), result.mFeature, result.mDerivedAttributes );
-  }
-  else if ( result.mLayer->type() == QgsMapLayer::RasterLayer )
-  {
-    addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields, result.mFeature, result.mParams );
+    case QgsMapLayer::VectorLayer:
+      addFeature( qobject_cast<QgsVectorLayer *>( result.mLayer ), result.mFeature, result.mDerivedAttributes );
+      break;
+
+    case QgsMapLayer::RasterLayer:
+      addFeature( qobject_cast<QgsRasterLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes, result.mFields, result.mFeature, result.mParams );
+      break;
+
+    case QgsMapLayer::MeshLayer:
+    case QgsMapLayer::PluginLayer:
+      break;
   }
 }
 
