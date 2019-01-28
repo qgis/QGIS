@@ -40,6 +40,7 @@ class TestQgsField: public QObject
     void assignment();
     void gettersSetters(); //test getters and setters
     void isNumeric(); //test isNumeric
+    void isDateTime(); //test isNumeric
     void equality(); //test equality operators
     void asVariant(); //test conversion to and from a QVariant
     void displayString();
@@ -197,6 +198,33 @@ void TestQgsField::isNumeric()
   QVERIFY( !field.isNumeric() );
   field.setType( QVariant::Invalid );
   QVERIFY( !field.isNumeric() );
+}
+
+void TestQgsField::isDateTime()
+{
+  QgsField field;
+  field.setType( QVariant::Int );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::UInt );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::Double );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::LongLong );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::ULongLong );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::String );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::DateTime );
+  QVERIFY( field.isDateTime() );
+  field.setType( QVariant::Time );
+  QVERIFY( field.isDateTime() );
+  field.setType( QVariant::Date );
+  QVERIFY( field.isDateTime() );
+  field.setType( QVariant::Bool );
+  QVERIFY( !field.isDateTime() );
+  field.setType( QVariant::Invalid );
+  QVERIFY( !field.isDateTime() );
 }
 
 void TestQgsField::equality()

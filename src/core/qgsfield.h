@@ -50,6 +50,7 @@ class CORE_EXPORT QgsField
     Q_GADGET
 
     Q_PROPERTY( bool isNumeric READ isNumeric )
+    Q_PROPERTY( bool isDateTime READ isDateTime )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
     Q_PROPERTY( QVariant::Type type READ type WRITE setType )
@@ -158,6 +159,13 @@ class CORE_EXPORT QgsField
      * \since QGIS 2.18
      */
     bool isNumeric() const;
+
+    /**
+     * Returns if this field is a date and/or time type.
+     *
+     * \since QGIS 3.6
+     */
+    bool isDateTime() const;
 
     /**
      * Set the field name.
