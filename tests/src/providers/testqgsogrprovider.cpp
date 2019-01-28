@@ -131,6 +131,53 @@ void TestQgsOgrProvider::decodeUri()
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
 
+
+class ReadVectorLayer : public QThread
+{
+
+  public :
+    ReadVectorLayer( const QString &filePath, QMutex &mutex, QWaitCondition &waitForVlCreation, QWaitCondition &waitForProcessEvents )
+      : _filePath( filePath ), _mutex( mutex ), _waitForVlCreation( waitForVlCreation ), _waitForProcessEvents( waitForProcessEvents ) {}
+
+    void run() override
+    {
+
+      QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
+
+      QgsFeature f;
+      QVERIFY( vl2->getFeatures().nextFeature( f ) );
+
+      _mutex.lock();
+      _waitForVlCreation.wakeAll();
+      _mutex.unlock();
+
+      _mutex.lock();
+      _waitForProcessEvents.wait( &_mutex );
+      _mutex.unlock();
+
+      delete vl2;
+    }
+
+  private:
+    QString _filePath;
+    QMutex &_mutex;
+    QWaitCondition &_waitForVlCreation;
+    QWaitCondition &_waitForProcessEvents;
+
+};
+
+void failOnWarning( QtMsgType type, const QMessageLogContext &context, const QString &msg )
+{
+  Q_UNUSED( context );
+
+  switch ( type )
+  {
+    case QtWarningMsg:
+      QFAIL( QString( "No Qt warning message expect : %1" ).arg( msg ).toUtf8() );
+    default:;
+  }
+}
+
 void TestQgsOgrProvider::testThread()
 {
   // After reading a QgsVectorLayer (getFeatures) from another thread the QgsOgrConnPoolGroup starts
@@ -140,44 +187,30 @@ void TestQgsOgrProvider::testThread()
   // segfault later when the expiration time reaches its timeout.
 
   QMutex mutex;
-  QWaitCondition waitForVl2Creation;
+  QWaitCondition waitForVlCreation;
   QWaitCondition waitForProcessEvents;
 
-  QThread *thread = QThread::create( [&]
-  {
-    QgsVectorLayer *vl2 = new QgsVectorLayer( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
-    QgsFeature f;
-    QVERIFY( vl2->getFeatures().nextFeature( f ) );
-
-    mutex.lock();
-    waitForVl2Creation.wakeAll();
-    mutex.unlock();
-
-    mutex.lock();
-    waitForProcessEvents.wait( &mutex );
-    mutex.unlock();
-
-    delete vl2;
-  } );
+  QString filePath = mTestDataDir + '/' + QStringLiteral( "lines.shp" );
+  QThread *thread = new ReadVectorLayer( filePath, mutex, waitForVlCreation, waitForProcessEvents );
 
   thread->start();
 
   mutex.lock();
-  waitForVl2Creation.wait( &mutex );
+  waitForVlCreation.wait( &mutex );
   mutex.unlock();
 
   // make sure timer as been started
   QCoreApplication::processEvents();
+
+  qInstallMessageHandler( failOnWarning );
 
   mutex.lock();
   waitForProcessEvents.wakeAll();
   mutex.unlock();
 
   thread->wait();
+  qInstallMessageHandler( 0 );
 
-  // make sure timer as timed out
-  QThread::sleep( 61 );
-  QCoreApplication::processEvents();
 }
 
 
