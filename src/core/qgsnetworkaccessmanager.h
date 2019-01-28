@@ -374,7 +374,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     // these signals are for internal use only - it's not safe to connect by external code
     void sslErrorsOccurred( QNetworkReply *, const QList<QSslError> &errors );
     void sslErrorsHandled( QNetworkReply *reply );
-///@endconf
+///@endcond
 #endif
 
 #endif
