@@ -790,9 +790,16 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   QDomElement supportedCRSsElement = firstChild( coverageOfferingElement, QStringLiteral( "supportedCRSs" ) );
 
   // requestResponseCRSs and requestCRSs + responseCRSs are alternatives
+  // we try to parse one or the other
   coverage->supportedCrs = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestResponseCRSs" ) );
+  if ( coverage->supportedCrs.isEmpty() )
+  {
+    coverage->supportedCrs = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestCRSs" ) );
+    coverage->supportedCrs << domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.responseCRSs" ) );
+  }
+
   // TODO: requestCRSs, responseCRSs - must be then implemented also in provider
-  //QgsDebugMsg( "supportedCrs = " + coverage->supportedCrs.join( "," ) );
+  QgsDebugMsg( "supportedCrs = " + coverage->supportedCrs.join( "," ) );
 
   coverage->nativeCrs = domElementText( coverageOfferingElement, QStringLiteral( "supportedCRSs.nativeCRSs" ) );
 
