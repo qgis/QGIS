@@ -3301,9 +3301,11 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &encoding,
                                        QgsWkbTypes::Type vectortype,
                                        const QList< QPair<QString, QString> > &attributes,
-                                       const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem() )
+                                       const QgsCoordinateReferenceSystem &srs,
+                                       QString &errorMessage )
 {
   QgsDebugMsg( QStringLiteral( "Creating empty vector layer with format: %1" ).arg( format ) );
+  errorMessage.clear();
 
   QgsApplication::registerOgrDrivers();
   OGRSFDriverH driver = OGRGetDriverByName( format.toLatin1() );
@@ -3318,7 +3320,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   {
     if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     {
-      QgsDebugMsg( QStringLiteral( "uri %1 doesn't end with .shp" ).arg( uri ) );
+      errorMessage = QObject::tr( "URI %1 doesn't end with .shp" ).arg( uri );
+      QgsDebugMsg( errorMessage );
       return false;
     }
 
@@ -3330,7 +3333,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       QString name = fldIt->first.left( 10 );
       if ( fieldNames.contains( name ) )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Duplicate field (10 significant characters): %1" ).arg( name ), QObject::tr( "OGR" ) );
+        errorMessage = QObject::tr( "Duplicate field (10 significant characters): %1" ).arg( name );
+        QgsMessageLog::logMessage( errorMessage, QObject::tr( "OGR" ) );
         return false;
       }
       fieldNames << name;
@@ -3347,7 +3351,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   dataSource.reset( OGR_Dr_CreateDataSource( driver, uri.toUtf8().constData(), nullptr ) );
   if ( !dataSource )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
+    errorMessage = QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QgsMessageLog::logMessage( errorMessage, QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -3381,7 +3386,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     case QgsWkbTypes::GeometryCollectionZM:
     case QgsWkbTypes::Unknown:
     {
-      QgsMessageLog::logMessage( QObject::tr( "Unknown vector type of %1" ).arg( ( int )( vectortype ) ), QObject::tr( "OGR" ) );
+      errorMessage = QObject::tr( "Unknown vector type of %1" ).arg( static_cast< int >( vectortype ) );
+      QgsMessageLog::logMessage( errorMessage, QObject::tr( "OGR" ) );
       return false;
     }
 
@@ -3410,7 +3416,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
   if ( !layer )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
+    errorMessage = QString::fromUtf8( CPLGetLastErrorMsg() );
+    QgsMessageLog::logMessage( errorMessage, QObject::tr( "OGR" ) );
     return false;
   }
 

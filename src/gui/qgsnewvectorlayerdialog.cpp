@@ -261,6 +261,16 @@ void QgsNewVectorLayerDialog::checkOk()
 // this is static
 QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs, const QString &initialPath )
 {
+  QString error;
+  QString res = execAndCreateLayer( error, parent, initialPath, pEnc, crs );
+  if ( res.isEmpty() && error.isEmpty() )
+    res = QString( "" ); // maintain gross earlier API compatibility
+  return res;
+}
+
+QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWidget *parent, const QString &initialPath, QString *encoding, const QgsCoordinateReferenceSystem &crs )
+{
+  errorMessage.clear();
   QgsNewVectorLayerDialog geomDialog( parent );
   geomDialog.setCrs( crs );
   if ( !initialPath.isEmpty() )
@@ -301,33 +311,35 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
     QgsDebugMsg( QStringLiteral( "ogr provider loaded" ) );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type,
-        const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem & );
+        const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem &, QString & );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {
       if ( geometrytype != QgsWkbTypes::Unknown )
       {
         QgsCoordinateReferenceSystem srs = geomDialog.crs();
-        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
+        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage ) )
         {
           return QString();
         }
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "geometry type not recognised" ) );
+        errorMessage = QObject::tr( "Geometry type not recognised" );
+        QgsDebugMsg( errorMessage );
         return QString();
       }
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Resolving newEmptyDataSource(...) failed" ) );
+      errorMessage = QObject::tr( "Resolving newEmptyDataSource(...) failed" );
+      QgsDebugMsg( errorMessage );
       return QString();
     }
   }
 
-  if ( pEnc )
-    *pEnc = enc;
+  if ( encoding )
+    *encoding = enc;
 
   return fileName;
 }
