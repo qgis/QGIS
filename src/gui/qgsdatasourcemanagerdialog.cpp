@@ -26,6 +26,7 @@
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
+#include "qgsmessagebar.h"
 #include "qgsgui.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
@@ -34,11 +35,14 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
   , mPreviousRow( -1 )
   , mMapCanvas( canvas )
 {
-
   ui->setupUi( this );
   ui->verticalLayout_2->setSpacing( 6 );
   ui->verticalLayout_2->setMargin( 0 );
   ui->verticalLayout_2->setContentsMargins( 0, 0, 0, 0 );
+
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+  static_cast<QVBoxLayout *>( layout() )->insertWidget( 0, mMessageBar );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -87,6 +91,11 @@ void QgsDataSourceManagerDialog::openPage( const QString &pageName )
   {
     QTimer::singleShot( 0, this, [ = ] { setCurrentPage( pageIdx ); } );
   }
+}
+
+QgsMessageBar *QgsDataSourceManagerDialog::messageBar() const
+{
+  return mMessageBar;
 }
 
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
