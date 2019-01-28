@@ -23,6 +23,7 @@
 
 #include "qgswkbtypes.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup gui
@@ -40,9 +41,34 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      * If the \a initialPath argument is specified, then the dialog will default to the specified filename.
      *
      * \returns fileName on success, empty string use aborted, QString() if creation failed
+     *
+     * \deprecated in QGIS 3.4.5 - use execAndCreateLayer() instead.
      */
-    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      const QString &initialPath = QString() );
+    Q_DECL_DEPRECATED static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+        const QString &initialPath = QString() ) SIP_DEPRECATED;
+
+    /**
+     * Runs the dialog and creates a layer matching the dialog parameters.
+     *
+     * If the \a initialPath argument is specified, then the dialog will default to the specified filename.
+     *
+     * Returns a filename if the dialog was accepted, or an empty string if the dialog was canceled.
+     * If the dialog was accepted but an error occurred while creating the file, then the function will
+     * return an empty string and \a errorMessage will contain the error message.
+     *
+     * If \a encoding is specified, it will be set to the encoding of the created file.
+     *
+     * \param errorMessage will be set to any error message encountered during layer creation
+     * \param parent parent widget for dialog
+     * \param initialPath initial file path to show in dialog
+     * \param encoding if specified, will be set to file encoding of created layer
+     * \param crs default layer CRS to show in dialog
+     *
+     * \returns Newly created file name, or an empty string if user canceled or an error occurred.
+     *
+     * \since QGIS 3.4.5
+     */
+    static QString execAndCreateLayer( QString &errorMessage SIP_OUT, QWidget *parent = nullptr, const QString &initialPath = QString(), QString *encoding SIP_OUT = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * New dialog constructor.

@@ -261,13 +261,14 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type, const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem & );
+  typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type, const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem &, QString & );
   createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( ogrLib.resolve( "createEmptyDataSource" ) );
   if ( !createEmptyDataSource )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs() ) )
+  QString createError;
+  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs(), createError ) )
   {
     return false;
   }

@@ -5681,7 +5681,8 @@ void QgisApp::fileNewFromTemplateAction( QAction *qAction )
 void QgisApp::newVectorLayer()
 {
   QString enc;
-  QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this, &enc, QgsProject::instance()->defaultCrsForNewLayers() );
+  QString error;
+  QString fileName = QgsNewVectorLayerDialog::execAndCreateLayer( error, this, QString(), &enc, QgsProject::instance()->defaultCrsForNewLayers() );
 
   if ( !fileName.isEmpty() )
   {
@@ -5691,12 +5692,12 @@ void QgisApp::newVectorLayer()
     //todo: the last parameter will change accordingly to layer type
     addVectorLayers( fileNames, enc, QStringLiteral( "file" ) );
   }
-  else if ( fileName.isNull() )
+  else if ( !error.isEmpty() )
   {
-    QLabel *msgLabel = new QLabel( tr( "Layer creation failed. Please check the <a href=\"#messageLog\">message log</a> for further information." ), messageBar() );
+    QLabel *msgLabel = new QLabel( tr( "Layer creation failed: %1" ).arg( error ), messageBar() );
     msgLabel->setWordWrap( true );
     connect( msgLabel, &QLabel::linkActivated, mLogDock, &QWidget::show );
-    QgsMessageBarItem *item = new QgsMessageBarItem( msgLabel, Qgis::Warning );
+    QgsMessageBarItem *item = new QgsMessageBarItem( msgLabel, Qgis::Critical );
     messageBar()->pushItem( item );
   }
 }
