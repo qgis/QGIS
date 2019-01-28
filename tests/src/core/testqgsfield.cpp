@@ -204,27 +204,27 @@ void TestQgsField::isDateTime()
 {
   QgsField field;
   field.setType( QVariant::Int );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::UInt );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::Double );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::LongLong );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::ULongLong );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::String );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::DateTime );
-  QVERIFY( field.isDateTime() );
+  QVERIFY( field.isDateOrTime() );
   field.setType( QVariant::Time );
-  QVERIFY( field.isDateTime() );
+  QVERIFY( field.isDateOrTime() );
   field.setType( QVariant::Date );
-  QVERIFY( field.isDateTime() );
+  QVERIFY( field.isDateOrTime() );
   field.setType( QVariant::Bool );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
   field.setType( QVariant::Invalid );
-  QVERIFY( !field.isDateTime() );
+  QVERIFY( !field.isDateOrTime() );
 }
 
 void TestQgsField::equality()

@@ -127,7 +127,7 @@ bool QgsField::isNumeric() const
   return d->type == QVariant::Double || d->type == QVariant::Int || d->type == QVariant::UInt || d->type == QVariant::LongLong || d->type == QVariant::ULongLong;
 }
 
-bool QgsField::isDateTime() const
+bool QgsField::isDateOrTime() const
 {
   return d->type == QVariant::Date || d->type == QVariant::Time || d->type == QVariant::DateTime;
 }

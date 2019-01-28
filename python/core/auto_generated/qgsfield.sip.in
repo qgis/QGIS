@@ -138,7 +138,7 @@ will return true for this.
 .. versionadded:: 2.18
 %End
 
-    bool isDateTime() const;
+    bool isDateOrTime() const;
 %Docstring
 Returns if this field is a date and/or time type.
 
