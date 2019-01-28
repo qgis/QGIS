@@ -1579,7 +1579,6 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         super().__init__(param, dialog, row, col, **kwargs)
         self.context = dataobjects.createContext()
 
-
     def createWidget(self):
         self._layer = None
 
@@ -1635,10 +1634,10 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if not isinstance(layer, QgsVectorLayer) or not layer.isValid():
                 self.dialog.messageBar().clearWidgets()
                 self.dialog.messageBar().pushMessage("", self.tr("Could not load selected layer/table. Dependent field could not be populated"),
-                                          level=Qgis.Warning, duration=5)
+                                                     level=Qgis.Warning, duration=5)
                 return
 
-        self._layer = layer        
+        self._layer = layer
 
         self.refreshItems()
 
