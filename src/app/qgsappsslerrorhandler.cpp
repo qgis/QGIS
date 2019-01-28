@@ -72,11 +72,8 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
   dlg->resize( 580, 512 );
   if ( dlg->exec() )
   {
-    if ( reply )
-    {
-      QgsDebugMsg( QStringLiteral( "All SSL errors ignored for %1" ).arg( hostport ) );
-      reply->ignoreSslErrors();
-    }
+    QgsDebugMsg( QStringLiteral( "All SSL errors ignored for %1" ).arg( hostport ) );
+    reply->ignoreSslErrors();
   }
   dlg->deleteLater();
 }

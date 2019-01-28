@@ -17,7 +17,7 @@
 
 #include "qgsnetworkaccessmanager.h"
 
-class CORE_EXPORT QgsAppSslErrorHandler : public QgsSslErrorHandler
+class QgsAppSslErrorHandler : public QgsSslErrorHandler
 {
     Q_OBJECT
 
