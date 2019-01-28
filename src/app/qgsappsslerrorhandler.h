@@ -19,9 +19,8 @@
 
 class QgsAppSslErrorHandler : public QgsSslErrorHandler
 {
-    Q_OBJECT
 
-  public slots:
+  public:
 
     void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors ) override;
 

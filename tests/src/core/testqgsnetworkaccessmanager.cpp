@@ -61,9 +61,7 @@ class BackgroundRequest : public QThread
 
 class TestSslErrorHandler : public QgsSslErrorHandler
 {
-    Q_OBJECT
-
-  protected:
+  public:
 
     void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors ) override
     {

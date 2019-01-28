@@ -252,7 +252,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsalignrasterdialog.h
   qgsappbrowserproviders.h
   qgsappscreenshots.h
-  qgsappsslerrorhandler.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h

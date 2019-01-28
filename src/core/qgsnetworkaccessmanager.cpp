@@ -127,10 +127,7 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
 void QgsNetworkAccessManager::setSslErrorHandler( std::unique_ptr<QgsSslErrorHandler> handler )
 {
   Q_ASSERT( sMainNAM == this );
-
   mSslErrorHandler = std::move( handler );
-  connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, mSslErrorHandler.get(), &QgsSslErrorHandler::onSslErrors );
-  connect( mSslErrorHandler.get(), &QgsSslErrorHandler::sslErrorsHandled, this, &QgsNetworkAccessManager::afterSslErrorHandled );
 }
 
 void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
@@ -256,11 +253,13 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   return reply;
 }
 
+#ifndef QT_NO_SSL
 void QgsNetworkAccessManager::unlockAfterSslErrorHandled()
 {
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
   mSslErrorWaitCondition.wakeOne();
 }
+#endif
 
 void QgsNetworkAccessManager::abortRequest()
 {
@@ -346,6 +345,12 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
     qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterSslErrorHandled(); // safe to call directly - the other thread will be stuck waiting for us
   }
 }
+
+void QgsNetworkAccessManager::handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
+{
+  mSslErrorHandler->handleSslErrors( reply, errors );
+  afterSslErrorHandled( reply );
+}
 #endif
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
@@ -422,14 +427,17 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
              connectionType );
 
     connect( this, &QgsNetworkAccessManager::requestEncounteredSslErrors, sMainNAM, &QgsNetworkAccessManager::requestEncounteredSslErrors );
-    connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, sMainNAM, &QgsNetworkAccessManager::sslErrorsOccurred );
 #endif
   }
   else
   {
+#ifndef QT_NO_SSL
     setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
+#endif
   }
-
+#ifndef QT_NO_SSL
+  connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, sMainNAM, &QgsNetworkAccessManager::handleSslErrors );
+#endif
   connect( this, &QNetworkAccessManager::finished, this, &QgsNetworkAccessManager::onReplyFinished );
 
   // check if proxy is enabled
@@ -539,14 +547,8 @@ QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager:
 // QgsSslErrorHandler
 //
 
-void QgsSslErrorHandler::onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
-{
-  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
-  handleSslErrors( reply, errors );
-  emit sslErrorsHandled( reply );
-}
-
 void QgsSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSslError> & )
 {
+  Q_UNUSED( reply );
   QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 }
