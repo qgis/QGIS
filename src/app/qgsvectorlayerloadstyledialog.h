@@ -50,6 +50,7 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
     void onRelatedTableSelectionChanged();
     void onOthersTableSelectionChanged();
     void deleteStyleFromDB();
+    void showHelp();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
