@@ -138,6 +138,13 @@ will return true for this.
 .. versionadded:: 2.18
 %End
 
+    bool isDateOrTime() const;
+%Docstring
+Returns if this field is a date and/or time type.
+
+.. versionadded:: 3.6
+%End
+
     void setName( const QString &name );
 %Docstring
 Set the field name.
