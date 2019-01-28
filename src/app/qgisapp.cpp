@@ -12292,7 +12292,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionLabeling->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionSelectAll->setEnabled( false );
-    mActionDeselectAll->setEnabled( false );
     mActionInvertSelection->setEnabled( false );
     mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
@@ -12422,7 +12421,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSelectByForm->setEnabled( true );
     mActionOpenTable->setEnabled( true );
     mActionSelectAll->setEnabled( true );
-    mActionDeselectAll->setEnabled( true );
     mActionInvertSelection->setEnabled( true );
     mActionSaveLayerDefinition->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
@@ -12648,7 +12646,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionZoomToSelected->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionSelectAll->setEnabled( false );
-    mActionDeselectAll->setEnabled( false );
     mActionInvertSelection->setEnabled( false );
     mActionSelectByExpression->setEnabled( false );
     mActionSelectByForm->setEnabled( false );
