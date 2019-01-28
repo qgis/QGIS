@@ -152,8 +152,12 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   QVector<QgsMeshDataBlock> datasetValues;
   QVector<QgsMeshDataBlock> datasetActive;
   QVector<double> times;
+  
+  const auto datasize = outputGroup->datasets.size();
+  datasetValues.reserve( datasize );
+  times.reserve( datasize );
 
-  for ( int i = 0; i < outputGroup->datasets.size(); ++i )
+  for ( int i = 0; i < datasize; ++i )
   {
     const std::shared_ptr<QgsMeshMemoryDataset> dataset = outputGroup->datasets.at( i );
 
