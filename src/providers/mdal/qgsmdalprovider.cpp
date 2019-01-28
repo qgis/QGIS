@@ -54,7 +54,7 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
-  QByteArray curi = uri.toAscii();
+  QByteArray curi = uri.toUtf8();
   mMeshH = MDAL_LoadMesh( curi.constData() );
   if ( mMeshH )
   {
@@ -364,6 +364,19 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
   QgsDebugMsg( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QStringLiteral( ";;" ) ) );
 }
 
+bool QgsMdalProvider::isValidMeshFileName( const QString &fileName )
+{
+  bool valid( false );
+  QByteArray curi = fileName.toUtf8();
+  MeshH meshH = MDAL_LoadMesh( curi.constData() );
+  if ( meshH )
+  {
+    valid = true;
+    MDAL_CloseMesh( meshH );
+  }
+  return valid;
+}
+
 /*----------------------------------------------------------------------------------------------*/
 
 bool QgsMdalProvider::addDataset( const QString &uri )
@@ -611,15 +624,7 @@ QGISEXTERN void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMe
 */
 QGISEXTERN bool isValidMeshFileName( const QString &fileName )
 {
-  bool valid( false );
-  QByteArray curi = fileName.toAscii();
-  MeshH meshH = MDAL_LoadMesh( curi.constData() );
-  if ( meshH )
-  {
-    valid = true;
-    MDAL_CloseMesh( meshH );
-  }
-  return valid;
+  return QgsMdalProvider::isValidMeshFileName( fileName );
 }
 
 #endif
