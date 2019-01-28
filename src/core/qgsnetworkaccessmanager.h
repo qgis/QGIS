@@ -145,9 +145,9 @@ class QgsNetworkAccessManager;
  * base QgsSslErrorHandler class responds to SSL errors only by logging the errors,
  * and uses the default Qt response, which is to abort the request.
  *
- * Subclasses can override this behaviour by implementing their own handleSslErrors()
+ * Subclasses can override this behavior by implementing their own handleSslErrors()
  * method. QgsSslErrorHandlers are ONLY ever called from the main thread, so it
- * is safe to utilise gui widgets and dialogs during handleSslErrors (e.g. to
+ * is safe to utilize gui widgets and dialogs during handleSslErrors (e.g. to
  * present prompts to users notifying them of the errors and asking them
  * to choose the appropriate response.).
  *
