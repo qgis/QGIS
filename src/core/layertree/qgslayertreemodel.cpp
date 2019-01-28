@@ -195,13 +195,17 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
       // icons possibly overriding default icon
-      if ( layer->type() == QgsMapLayer::RasterLayer )
+      switch ( layer->type() )
       {
-        return QgsLayerItem::iconRaster();
-      }
-      else if ( layer->type() == QgsMapLayer::MeshLayer )
-      {
-        return QgsLayerItem::iconMesh();
+        case QgsMapLayer::RasterLayer:
+          return QgsLayerItem::iconRaster();
+
+        case QgsMapLayer::MeshLayer:
+          return QgsLayerItem::iconMesh();
+
+        case QgsMapLayer::VectorLayer:
+        case QgsMapLayer::PluginLayer:
+          break;
       }
 
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );

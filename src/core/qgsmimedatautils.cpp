@@ -171,25 +171,33 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
     uri.name = layer->name();
     uri.uri = layer->dataProvider()->dataSourceUri();
     uri.providerKey = layer->dataProvider()->name();
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+
+    switch ( layer->type() )
     {
-      uri.layerType = QStringLiteral( "vector" );
-      if ( uri.providerKey == QStringLiteral( "memory" ) )
+      case QgsMapLayer::VectorLayer:
       {
-        QUrl url = QUrl::fromEncoded( uri.uri.toUtf8() );
-        url.addQueryItem( QStringLiteral( "pid" ), QString::number( QCoreApplication::applicationPid() ) );
-        url.addQueryItem( QStringLiteral( "layerid" ), layer->id() );
-        uri.uri = QString( url.toEncoded() );
+        uri.layerType = QStringLiteral( "vector" );
+        if ( uri.providerKey == QStringLiteral( "memory" ) )
+        {
+          QUrl url = QUrl::fromEncoded( uri.uri.toUtf8() );
+          url.addQueryItem( QStringLiteral( "pid" ), QString::number( QCoreApplication::applicationPid() ) );
+          url.addQueryItem( QStringLiteral( "layerid" ), layer->id() );
+          uri.uri = QString( url.toEncoded() );
+        }
+        break;
       }
-    }
-    else if ( layer->type() == QgsMapLayer::RasterLayer )
-    {
-      uri.layerType = QStringLiteral( "raster" );
-    }
-    else
-    {
-      // plugin layers do not have a standard way of storing their URI...
-      return;
+      case QgsMapLayer::RasterLayer:
+      {
+        uri.layerType = QStringLiteral( "raster" );
+        break;
+      }
+
+      case QgsMapLayer::MeshLayer:
+      case QgsMapLayer::PluginLayer:
+      {
+        // plugin layers do not have a standard way of storing their URI...
+        return;
+      }
     }
     uris << uri;
   }
