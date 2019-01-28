@@ -943,8 +943,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     outFormat,
                     'layer={}'.format(layer) if layer else '',
                     ' dsco="{}"'.format(dsco) if dsco else '',
-                    ' lco="{}"'.format(lco) if lco else ''
-                    , ' -c' if exportnocat else ''
+                    ' lco="{}"'.format(lco) if lco else '',
+                    ' -c' if exportnocat else ''
                 )
             )
 
