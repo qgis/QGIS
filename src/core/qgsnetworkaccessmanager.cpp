@@ -259,7 +259,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 void QgsNetworkAccessManager::unlockAfterSslErrorHandled()
 {
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
-  mSslWaitCondition.wakeAll();
+  mSslErrorWaitCondition.wakeOne();
 }
 
 void QgsNetworkAccessManager::abortRequest()
@@ -312,14 +312,16 @@ void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
   if ( ok )
     emit requestEncounteredSslErrors( requestId, errors );
 
+  // in main thread this will trigger SSL error handler immediately and return once the errors are handled,
+  // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit sslErrorsOccurred( reply, errors );
   if ( this != sMainNAM )
   {
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
     // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
-    mMutex.lock();
-    mSslWaitCondition.wait( &mMutex );
-    mMutex.unlock();
+    mSslErrorHandlerMutex.lock();
+    mSslErrorWaitCondition.wait( &mSslErrorHandlerMutex );
+    mSslErrorHandlerMutex.unlock();
     afterSslErrorHandled( reply );
   }
 }

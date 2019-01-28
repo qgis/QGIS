@@ -151,6 +151,9 @@ class QgsNetworkAccessManager;
  * present prompts to users notifying them of the errors and asking them
  * to choose the appropriate response.).
  *
+ * If a reply is coming from background thread, that thread is blocked while handleSslErrors()
+ * is running.
+ *
  * If the errors should be ignored and the request allowed to proceed, the subclasses'
  * handleSslErrors() method MUST call QNetworkReply::ignoreSslErrors() on the specified
  * QNetworkReply object.
@@ -427,9 +430,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     bool mUseSystemProxy = false;
     bool mInitialized = false;
     static QgsNetworkAccessManager *sMainNAM;
+    // ssl error handler, will be set for main thread ONLY
     std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;
-    QMutex mMutex;
-    QWaitCondition mSslWaitCondition;
+    // only in use by work threads, unused in main thread
+    QMutex mSslErrorHandlerMutex;
+    // only in use by work threads, unused in main thread
+    QWaitCondition mSslErrorWaitCondition;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
