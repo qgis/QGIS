@@ -25,6 +25,7 @@
 #include "qgssvgcache.h"
 #include <QSvgRenderer>
 #include <limits>
+#include <QGraphicsPathItem>
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )
@@ -310,6 +311,19 @@ void QgsLayoutItemPolyline::setArrowHeadWidth( double width )
   mArrowHeadWidth = width;
   updateMarkerSvgSizes();
   update();
+}
+
+QPainterPath QgsLayoutItemPolyline::shape() const
+{
+  QPainterPath path;
+  path.addPolygon( mPolygon );
+
+  QPainterPathStroker ps;
+
+  ps.setWidth( 2 * mMaxSymbolBleed );
+  QPainterPath strokedOutline = ps.createStroke( path );
+
+  return strokedOutline;
 }
 
 void QgsLayoutItemPolyline::setStartSvgMarkerPath( const QString &path )
