@@ -134,7 +134,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     disconnect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
   }
 
-  if ( !layer || !layer->isSpatial() )
+  if ( !layer || !layer->isSpatial() || !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
     mLayerCombo->setLayer( nullptr );
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
