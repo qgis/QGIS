@@ -45,6 +45,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingAlgorithm,
+                       QgsProcessingParameters,
                        QgsProxyProgressTask,
                        QgsTaskManager)
 from qgis.gui import (QgsGui,
@@ -157,21 +158,22 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                 widget = self.mainWidget().outputWidgets[param.name()]
                 value = widget.getValue()
-                outputPath, _ = value.sink.valueAsString(self.context.expressionContext())
-                if outputPath.split(":")[0] not in ["memory", "postgis", "ogr"]:
-                    ext = os.path.splitext(outputPath)[1][1:]
-                    supportedExtensions = []
-                    if isinstance(param, QgsProcessingParameterRasterDestination):
-                        supportedExtensions = self.algorithm().provider().supportedOutputRasterLayerExtensions()
-                    elif isinstance(param, (QgsProcessingParameterVectorDestination, QgsProcessingParameterFeatureSink)):
-                        supportedExtensions = self.algorithm().provider().supportedOutputVectorLayerExtensions()
-                    if supportedExtensions and ext not in supportedExtensions:
-                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, ext)
 
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
                 if value:
                     parameters[param.name()] = value
+                    outputPath = QgsProcessingParameters.parameterAsOutputLayer(param, parameters, self.context)
+                    if outputPath.split(":")[0] not in ["memory", "postgis", "ogr"]:
+                        ext = os.path.splitext(outputPath)[1][1:].lower()
+                        supportedExtensions = []
+                        if isinstance(param, QgsProcessingParameterRasterDestination):
+                            supportedExtensions = self.algorithm().provider().supportedOutputRasterLayerExtensions()
+                        elif isinstance(param, (QgsProcessingParameterVectorDestination, QgsProcessingParameterFeatureSink)):
+                            supportedExtensions = self.algorithm().provider().supportedOutputVectorLayerExtensions()
+                        supportedExtensions = [e.lower() for e in supportedExtensions]
+                        if supportedExtensions and ext not in supportedExtensions:
+                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, ext)                    
 
         return self.algorithm().preprocessParameters(parameters)
 
@@ -313,10 +315,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 e.widget.setPalette(palette)
             except:
                 pass
-            self.messageBar().clearWidgets()            
+            self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Unsupported output file extension: {0}".format(e.ext)),
                                           level=Qgis.Warning, duration=5)
-
 
     def finish(self, successful, result, context, feedback):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
@@ -327,7 +328,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             for out in self.algorithm().outputDefinitions():
                 if isinstance(out, QgsProcessingOutputHtml) and out.name() in result and result[out.name()]:
                     resultsList.addResult(icon=self.algorithm().icon(), name=out.description(), timestamp=time.localtime(),
-                                          result=result[out.name()])          
+                                          result=result[out.name()])
             if not handleAlgorithmResults(self.algorithm(), context, feedback, not keepOpen, result):
                 self.resetGui()
                 return

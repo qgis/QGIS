@@ -33,7 +33,7 @@ class AlgorithmDialogBase:
         def __init__(self, param, widget):
             (self.parameter, self.widget) = (param, widget)
 
-    class  InvalidOutputExtension(Exception):
+    class InvalidOutputExtension(Exception):
 
         def __init__(self, widget, ext):
             self.widget = widget
