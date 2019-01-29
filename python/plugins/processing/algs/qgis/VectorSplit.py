@@ -108,7 +108,7 @@ class VectorSplit(QgisAlgorithm):
         for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():
                 break
-            fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
+            fName = '{0}_{1}.gpkg'.format(baseName, str(i).strip())
             feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
 
             sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)

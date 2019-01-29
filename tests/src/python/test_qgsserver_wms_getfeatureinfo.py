@@ -213,6 +213,15 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values0-text-xml',
                                  'test_project_values.qgz')
 
+        # Test GetFeatureInfo on raster layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250',
+                                 'wms_getfeatureinfo-raster-text-xml')
+
     def testGetFeatureInfoValueRelation(self):
         """Test GetFeatureInfo resolves "value relation" widget values. regression 18518"""
         mypath = self.testdata_path + "test_project_values.qgz"
@@ -422,6 +431,72 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FI_POLYGON_TOLERANCE=20',
                                  'wms_getfeatureinfo_polygon_tolerance_20_text_xml',
                                  'test_project_values.qgz')
+
+    def testGetFeatureInfoJSON(self):
+        # simple test without geometry and info_format=application/json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo_json')
+
+        # simple test without geometry and info_format=application/geo+json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fgeo%2Bjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo_geojson')
+
+        # test with several features and several layers
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9,fields_alias,exclude_attribute&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9,fields_alias,exclude_attribute&' +
+                                 'X=190&Y=320&FEATURE_COUNT=2&FI_POINT_TOLERANCE=200',
+                                 'wms_getfeatureinfo_multiple_json')
+
+        # simple test with geometry
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_geometry=true',
+                                 'wms_getfeatureinfo_geometry_json')
+
+        # test with alias
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=fields_alias&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=fields_alias&X=190&Y=320',
+                                 'wms_getfeatureinfo_alias_json')
+
+        # test with excluded attributes
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=exclude_attribute&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=exclude_attribute&X=190&Y=320',
+                                 'wms_getfeatureinfo_exclude_attribute_json')
+
+        # test with raster layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=application%2Fjson&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250',
+                                 'wms_getfeatureinfo_raster_json')
 
     def testGetFeatureInfoPostgresTypes(self):
         # compare json list output with file

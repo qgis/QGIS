@@ -726,6 +726,38 @@ class TestQgsJsonUtils(unittest.TestCase):
         exporter.setVectorLayer(source)
         self.assertEqual(exporter.exportFeatures([feature]), expected)
 
+    def testExportFieldAlias(self):
+        """ Test exporting a feature with fields' alias """
+
+        # source layer
+        source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "parent", "memory")
+        pr = source.dataProvider()
+        pf1 = QgsFeature()
+        pf1.setFields(source.fields())
+        pf1.setAttributes(["test1", 1])
+        pf2 = QgsFeature()
+        pf2.setFields(source.fields())
+        pf2.setAttributes(["test2", 2])
+        assert pr.addFeatures([pf1, pf2])
+
+        source.setFieldAlias(0, "alias_fldtxt")
+        source.setFieldAlias(1, "alias_fldint")
+
+        exporter = QgsJsonExporter()
+        exporter.setVectorLayer(source)
+
+        expected = """{
+   "type":"Feature",
+   "id":0,
+   "geometry":null,
+   "properties":{
+      "alias_fldtxt":"test1",
+      "alias_fldint":1
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(pf1), expected)
+
 
 if __name__ == "__main__":
     unittest.main()

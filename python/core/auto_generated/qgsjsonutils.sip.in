@@ -106,6 +106,21 @@ Returns whether attributes of related (child) features will be included in the J
 .. seealso:: :py:func:`setIncludeRelated`
 %End
 
+    void setAttributeDisplayName( bool displayName );
+%Docstring
+Sets whether to print original names of attributes or aliases if
+defined.
+
+.. versionadded:: 3.6
+%End
+
+    bool attributeDisplayName() const;
+%Docstring
+Returns whether original names of attributes or aliases are printed.
+
+.. versionadded:: 3.6
+%End
+
     void setVectorLayer( QgsVectorLayer *vectorLayer );
 %Docstring
 Sets the associated vector layer (required for related attribute export). This will automatically
