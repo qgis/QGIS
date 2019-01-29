@@ -520,6 +520,9 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   bool loaded = false;
   bool gotRequestAboutToBeCreatedSignal = false;
   bool gotAuthRequest = false;
+  bool gotAuthDetailsAdded = false;
+  QString expectedUser;
+  QString expectedPassword;
   int requestId = -1;
   QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/basic-auth/me/secret" ) );
   QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
@@ -546,10 +549,19 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
     gotAuthRequest = true;
   } );
 
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestAuthDetailsAdded, &context, [&]( int authRequestId, const QString & realm, const QString & user, const QString & password )
+  {
+    QCOMPARE( authRequestId, requestId );
+    QCOMPARE( realm, QStringLiteral( "Fake Realm" ) );
+    QCOMPARE( user, expectedUser );
+    QCOMPARE( password, expectedPassword );
+    gotAuthDetailsAdded = true;
+  } );
+
   expectedError = QNetworkReply::AuthenticationRequiredError;
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
-  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
@@ -560,13 +572,13 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
-
+  gotAuthDetailsAdded = false;
 
   BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
 
   thread->start();
 
-  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
@@ -580,10 +592,13 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
   expectedError = QNetworkReply::NoError;
+  expectedUser = QStringLiteral( "me" );
+  expectedPassword = QStringLiteral( "secret" );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
-  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal  || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
@@ -594,11 +609,14 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
   expectedError = QNetworkReply::NoError;
+  expectedUser = QStringLiteral( "me2" );
+  expectedPassword = QStringLiteral( "secret2" );
 
   thread = new BackgroundRequest( QNetworkRequest( u ) );
   thread->start();
-  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
