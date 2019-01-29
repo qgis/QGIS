@@ -5454,6 +5454,10 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // temporary directory
+  def.reset( new QgsProcessingParameterFolderDestination( "junkdir", QString(), QgsProcessing::TEMPORARY_OUTPUT ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ).right( 8 ), QStringLiteral( "/junkdir" ) );
 }
 
 void TestQgsProcessing::parameterBand()
