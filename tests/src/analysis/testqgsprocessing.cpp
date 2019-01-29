@@ -584,6 +584,8 @@ class TestQgsProcessing: public QObject
     void removeParameterType();
     void parameterTypes();
     void parameterType();
+    void sourceTypeToString_data();
+    void sourceTypeToString();
 
   private:
 
@@ -7401,6 +7403,31 @@ void TestQgsProcessing::parameterType()
 
   reg.addParameterType( paramType );
   QCOMPARE( reg.parameterType( QStringLiteral( "paramType" ) ), paramType );
+}
+
+void TestQgsProcessing::sourceTypeToString_data()
+{
+  QTest::addColumn<int>( "type" );
+  QTest::addColumn<QString>( "expected" );
+
+  // IMPORTANT -- these must match the original enum values!
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeMapLayer ) << QStringLiteral( "TypeMapLayer" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeVectorAnyGeometry ) << QStringLiteral( "TypeVectorAnyGeometry" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeVectorPoint ) << QStringLiteral( "TypeVectorPoint" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeVectorLine ) << QStringLiteral( "TypeVectorLine" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeVectorPolygon ) << QStringLiteral( "TypeVectorPolygon" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeRaster ) << QStringLiteral( "TypeRaster" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeFile ) << QStringLiteral( "TypeFile" );
+  QTest::newRow( "map layer" ) << static_cast< int >( QgsProcessing::TypeMesh ) << QStringLiteral( "TypeMesh" );
+}
+
+void TestQgsProcessing::sourceTypeToString()
+{
+  QFETCH( int, type );
+  QFETCH( QString, expected );
+
+  const QgsProcessing::SourceType sourceType = static_cast< QgsProcessing::SourceType >( type );
+  QCOMPARE( QgsProcessing::sourceTypeToString( sourceType ), expected );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

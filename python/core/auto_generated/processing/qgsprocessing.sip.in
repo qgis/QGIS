@@ -39,6 +39,13 @@ and parameters.
       TypeMesh
     };
 
+    static QString sourceTypeToString( SourceType type );
+%Docstring
+Converts a source ``type`` to a string representation.
+
+.. versionadded:: 3.6
+%End
+
     static const QString TEMPORARY_OUTPUT;
 };
 
