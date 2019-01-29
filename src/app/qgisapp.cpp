@@ -1589,6 +1589,10 @@ QgisApp::~QgisApp()
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
 
+  // replace gui based network access managers with failing only ones
+  QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< QgsNetworkAuthenticationHandler >() );
+
   const QList<QgsMapCanvas *> canvases = mapCanvases();
   for ( QgsMapCanvas *canvas : canvases )
   {

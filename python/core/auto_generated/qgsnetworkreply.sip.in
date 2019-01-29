@@ -109,6 +109,10 @@ Returns the unique ID identifying the original request which this response was f
 Returns the original network request.
 %End
 
+    void setContent( const QByteArray &content );
+
+    QByteArray content() const;
+
 };
 
 /************************************************************************

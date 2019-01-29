@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 
 #include <QNetworkReply>
+#include <QByteArray>
 
 /**
  * Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.
@@ -138,6 +139,10 @@ class CORE_EXPORT QgsNetworkReplyContent
      */
     QNetworkRequest request() const { return mRequest; }
 
+    void setContent( const QByteArray &content ) { mContent = content; }
+
+    QByteArray content() const { return mContent; }
+
   private:
 
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
@@ -146,6 +151,7 @@ class CORE_EXPORT QgsNetworkReplyContent
     QMap< QNetworkRequest::Attribute, QVariant > mAttributes;
     int mRequestId = -1;
     QNetworkRequest mRequest;
+    QByteArray mContent;
 };
 
 #endif // QGSNETWORKREPLY_H

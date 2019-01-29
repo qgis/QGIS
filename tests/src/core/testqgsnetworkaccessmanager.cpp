@@ -59,6 +59,48 @@ class BackgroundRequest : public QThread
     QNetworkRequest mRequest;
 };
 
+
+class BackgroundBlockingRequest : public QThread
+{
+    Q_OBJECT
+
+  public:
+    BackgroundBlockingRequest( const QNetworkRequest &request, QNetworkAccessManager::Operation op = QNetworkAccessManager::GetOperation,
+                               QNetworkReply::NetworkError expectedRes = QNetworkReply::NoError, const QByteArray &data = QByteArray(), const QByteArray &expectedData = QByteArray() )
+      : mRequest( request )
+      , mExpectedData( expectedData )
+    {
+      moveToThread( this );
+      connect( this, &QThread::started, this, [ = ]
+      {
+        QVERIFY( QThread::currentThread() != QCoreApplication::instance()->thread() );
+        switch ( op )
+        {
+          case QNetworkAccessManager::GetOperation:
+            mReply = QgsNetworkAccessManager::blockingGet( mRequest );
+            break;
+
+          case QNetworkAccessManager::PostOperation:
+            mReply = QgsNetworkAccessManager::blockingPost( mRequest, data );
+            break;
+
+          default:
+            break;
+        }
+
+        QCOMPARE( mReply.error(), expectedRes );
+        if ( !mExpectedData.isEmpty() )
+          QVERIFY( mReply.content().contains( mExpectedData ) );
+
+      } );
+    }
+
+    QgsNetworkReplyContent mReply;
+  private:
+    QNetworkRequest mRequest;
+    QByteArray mExpectedData;
+};
+
 class TestSslErrorHandler : public QgsSslErrorHandler
 {
   public:
@@ -132,7 +174,7 @@ void TestQgsNetworkAccessManager::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 1000 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 5000 );
 
   mHttpBinHost = QStringLiteral( "httpbin.org" );
   QString overrideHost = qgetenv( "QGIS_HTTPBIN_HOST" );
@@ -201,6 +243,21 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
 
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
+
+  // blocking request
+  QNetworkRequest req{ QUrl() };
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QCOMPARE( rep.errorString(), QStringLiteral( "Protocol \"\" is unknown" ) );
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
+
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
   BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( QUrl() ) );
 
   thread->start();
@@ -213,6 +270,22 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( QNetworkRequest( QUrl() ), QNetworkAccessManager::GetOperation, QNetworkReply::ProtocolUnknownError );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
 }
 
 void TestQgsNetworkAccessManager::fetchBadUrl()
@@ -246,9 +319,23 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
+  // blocking request
+  QNetworkRequest req{ QUrl( QStringLiteral( "http://x" ) ) };
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QCOMPARE( rep.errorString(), QStringLiteral( "Host x not found" ) );
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
 
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
+
   BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ) );
 
   thread->start();
@@ -261,6 +348,21 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ), QNetworkAccessManager::GetOperation, QNetworkReply::HostNotFoundError );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
 }
 
 
@@ -301,10 +403,22 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
 
+  // blocking request
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( r );
+  QVERIFY( rep.content().contains( "<title>test</title>" ) );
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
 
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
+
   BackgroundRequest *thread = new BackgroundRequest( r );
 
   thread->start();
@@ -317,6 +431,21 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( r, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(),  "<title>test</title>" );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
 }
 
 void TestQgsNetworkAccessManager::fetchPost()
@@ -360,10 +489,24 @@ void TestQgsNetworkAccessManager::fetchPost()
   QString replyContent = reply->readAll();
   QVERIFY( replyContent.contains( QStringLiteral( "\"a\": \"b\"" ) ) );
   QVERIFY( replyContent.contains( QStringLiteral( "\"c\": \"d\"" ) ) );
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
+  // blocking request
+  req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingPost( req, QByteArray( "a=b&c=d" ) );
+  QVERIFY( rep.content().contains( "\"a\": \"b\"" ) );
+  QVERIFY( rep.content().contains( "\"c\": \"d\"" ) );
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
 
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
-  req = QNetworkRequest( u );
+
   req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
   BackgroundRequest *thread = new BackgroundRequest( req, QNetworkAccessManager::PostOperation, QByteArray( "a=b&c=d" ) );
 
@@ -380,6 +523,22 @@ void TestQgsNetworkAccessManager::fetchPost()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+
+  req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::PostOperation, QNetworkReply::NoError, QByteArray( "a=b&c=d" ),  "\"a\": \"b\"" );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
 }
 
 void TestQgsNetworkAccessManager::fetchBadSsl()
@@ -430,6 +589,21 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
+  // blocking request
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  gotSslError = false;
+  gotRequestEncounteredSslError = false;
+  QNetworkRequest req{ u };
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QCOMPARE( rep.errorString(), QStringLiteral( "SSL handshake failed" ) );
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
+
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
   gotSslError = false;
@@ -446,6 +620,24 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  gotSslError = false;
+  gotRequestEncounteredSslError = false;
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::SslHandshakeFailedError );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
+
 }
 
 void TestQgsNetworkAccessManager::testSslErrorHandler()
@@ -498,6 +690,23 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
+  // blocking request
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  gotSslError = false;
+  gotRequestEncounteredSslError = false;
+  QNetworkRequest req{ u };
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QCOMPARE( rep.error(), QNetworkReply::NoError );
+  QVERIFY( rep.content().contains( "<!DOCTYPE html>" ) );
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
+
+
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
   gotSslError = false;
@@ -515,6 +724,22 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   thread->wait();
   thread->deleteLater();
 
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  loaded = false;
+  gotSslError = false;
+  gotRequestEncounteredSslError = false;
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(), "<!DOCTYPE html>" );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
+
   QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
 }
 
@@ -531,10 +756,11 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   bool gotRequestAboutToBeCreatedSignal = false;
   bool gotAuthRequest = false;
   bool gotAuthDetailsAdded = false;
+  QString hash = QUuid::createUuid().toString().mid( 1, 10 );
   QString expectedUser;
   QString expectedPassword;
   int requestId = -1;
-  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/secret" ) );
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
@@ -578,11 +804,31 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
+  // blocking request
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
+
+  QNetworkRequest req{ u };
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QVERIFY( rep.content().isEmpty() );
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
+
   // now try in a thread
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
   gotAuthDetailsAdded = false;
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
 
   BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
 
@@ -597,15 +843,37 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   thread->wait();
   thread->deleteLater();
 
+  // blocking request in a thread
+
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  req = QNetworkRequest( u );
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, expectedError );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
+
   // try with username and password specified
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), QStringLiteral( "secret" ) ) );
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
   gotAuthDetailsAdded = false;
   expectedError = QNetworkReply::NoError;
   expectedUser = QStringLiteral( "me" );
-  expectedPassword = QStringLiteral( "secret" );
+  expectedPassword = hash;
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
   while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal  || !gotAuthDetailsAdded )
@@ -613,16 +881,36 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
     qApp->processEvents();
   }
 
+  // blocking request
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  expectedPassword = hash;
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  req = QNetworkRequest{ u };
+  rep = QgsNetworkAccessManager::blockingGet( req );
+  QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
+
   // correct username and password, in a thread
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), QStringLiteral( "secret2" ) ) );
-  u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/secret2" ) );
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
+  u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/" ) + hash );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
   gotAuthDetailsAdded = false;
   expectedError = QNetworkReply::NoError;
   expectedUser = QStringLiteral( "me2" );
-  expectedPassword = QStringLiteral( "secret2" );
+  expectedPassword = hash;
 
   thread = new BackgroundRequest( QNetworkRequest( u ) );
   thread->start();
@@ -634,6 +922,30 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+
+  // blocking request in worker thread
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
+  u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/" ) + hash );
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
+  expectedError = QNetworkReply::NoError;
+  expectedUser = QStringLiteral( "me2" );
+  expectedPassword = hash;
+  req = QNetworkRequest{ u };
+  blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(),  "\"user\": \"me2\"" );
+  blockingThread->start();
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
 
   QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< QgsNetworkAuthenticationHandler >() );
 }
@@ -682,6 +994,22 @@ void TestQgsNetworkAccessManager::fetchTimeout()
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
+  // blocking request
+  gotRequestAboutToBeCreatedSignal = false;
+  gotTimeoutError = false;
+  finished = false;
+  QNetworkRequest req = QNetworkRequest{ u };
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QCOMPARE( rep.errorString(), QStringLiteral( "Operation canceled" ) );
+  while ( !gotTimeoutError )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), requestId );
+
+  // in a background thread
+
   gotRequestAboutToBeCreatedSignal = false;
   gotTimeoutError = false;
   finished = false;
@@ -700,6 +1028,23 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   thread->exit();
   thread->wait();
   thread->deleteLater();
+
+  // blocking request in worker thread
+  gotRequestAboutToBeCreatedSignal = false;
+  gotTimeoutError = false;
+  finished = false;
+  req = QNetworkRequest{ u };
+  BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::OperationCanceledError );
+  blockingThread->start();
+  while ( !gotTimeoutError )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  blockingThread->exit();
+  blockingThread->wait();
+  blockingThread->deleteLater();
 }
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )
