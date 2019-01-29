@@ -82,6 +82,12 @@ QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameter
     val = definition->defaultValue();
   }
 
+  if ( val == QgsProcessing::TEMPORARY_OUTPUT )
+  {
+    if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
+      return destParam->generateTemporaryDestination();
+  }
+
   return val.toString();
 }
 
@@ -695,7 +701,7 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
   if ( dest == QgsProcessing::TEMPORARY_OUTPUT )
   {
     if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( definition ) )
-      val = destParam->generateTemporaryDestination();
+      dest = destParam->generateTemporaryDestination();
   }
   return dest;
 }
