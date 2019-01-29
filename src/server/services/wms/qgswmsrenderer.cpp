@@ -2344,7 +2344,7 @@ namespace QgsWms
           features << feature;
 
           // search attributes to export (one time only)
-          if ( not attributes.isEmpty() )
+          if ( !attributes.isEmpty() )
             continue;
 
           const QDomNodeList attributesNode = featureNode.elementsByTagName( QStringLiteral( "Attribute" ) );
