@@ -634,6 +634,10 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   if ( QgsTest::isTravis() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
+  QgsNetworkAccessManager::setTimeout( 2000 );
+  QCOMPARE( QgsNetworkAccessManager::timeout(), 2000 );
+  QgsNetworkAccessManager::setTimeout( 1000 );
+
   QObject context;
   //test fetching from a blank url
   bool gotRequestAboutToBeCreatedSignal = false;
