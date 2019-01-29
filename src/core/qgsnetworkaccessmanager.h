@@ -184,6 +184,48 @@ class CORE_EXPORT QgsSslErrorHandler
     virtual void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 
 };
+
+/**
+ * \class QgsNetworkAuthenticationHandler
+ * \brief Network authentication handler, used for responding to network authentication requests during network requests.
+ * \ingroup core
+ *
+ * QgsNetworkAuthenticationHandler responds to authentication requests encountered during network requests. The
+ * base QgsNetworkAuthenticationHandler class responds to requests only by logging the request,
+ * but does not provide any username or password to allow the request to proceed.
+ *
+ * Subclasses can override this behavior by implementing their own handleAuthRequest()
+ * method. QgsNetworkAuthenticationHandler are ONLY ever called from the main thread, so it
+ * is safe to utilize gui widgets and dialogs during handleAuthRequest (e.g. to
+ * present prompts to users requesting the username and password).
+ *
+ * If a reply is coming from background thread, that thread is blocked while handleAuthRequest()
+ * is running.
+ *
+ * An application instance can only have a single network authentication handler. The current
+ * authentication handler is set by calling QgsNetworkAccessManager::setAuthHandler().
+ * By default an instance of the logging-only QgsNetworkAuthenticationHandler base class is used.
+ *
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsNetworkAuthenticationHandler
+{
+
+  public:
+
+    virtual ~QgsNetworkAuthenticationHandler() = default;
+
+    /**
+     * Called whenever network authentication requests are encountered during a network \a reply.
+     *
+     * Subclasses should reimplement this method to implement their own logic
+     * regarding how to handle the requests and whether they should be presented to users.
+     *
+     * The base class method just logs the request but does not provide any username/password resolution.
+     */
+    virtual void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth );
+
+};
 #endif
 
 
@@ -251,6 +293,24 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.6
      */
     void setSslErrorHandler( std::unique_ptr< QgsSslErrorHandler > handler );
+
+    /**
+     * Sets the application network authentication \a handler, which is used to respond to network
+     * authentication prompts during network requests.
+     *
+     * Ownership of \a handler is transferred to the main thread QgsNetworkAccessManager instance.
+     *
+     * This method must ONLY be called on the main thread QgsNetworkAccessManager. It is not
+     * necessary to set handlers for background threads -- the main thread QgsNetworkAuthenticationHandler will
+     * automatically be used in a thread-safe manner for any authentication requests encountered on background threads.
+     *
+     * The default QgsNetworkAuthenticationHandler responds to request only by logging the request,
+     * but does not provide any username or password resolution.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.6
+     */
+    void setAuthHandler( std::unique_ptr< QgsNetworkAuthenticationHandler > handler );
 #endif
 
     //! insert a factory into the proxy factories list
@@ -354,16 +414,35 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );
 
+    /**
+     * Emitted when a network request prompts an authentication request.
+     *
+     * The \a requestId argument reflects the unique ID identifying the original request which the authentication relates to.
+     *
+     * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about authentication requests
+     * from any thread.
+     *
+     * This signal is for debugging and logging purposes only, and cannot be used to respond to the
+     * requests. See QgsNetworkAuthenticationHandler for details on how to handle authentication requests.
+     *
+     * \since QGIS 3.6
+     */
+    void requestRequiresAuth( int requestId, const QString &realm );
+
 #ifndef QT_NO_SSL
 
     /**
      * Emitted when a network request encounters SSL \a errors.
      *
-     * The \a requestId argument reflects the unique ID identifying the original request which the progress report relates to.
+     * The \a requestId argument reflects the unique ID identifying the original request which the SSL error relates to.
      *
      * This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
      * only to connect to the main thread's signal in order to receive notifications about SSL errors
      * from any thread.
+     *
+     * This signal is for debugging and logging purposes only, and cannot be used to respond to the errors.
+     * See QgsSslErrorHandler for details on how to handle SSL errors and potentially ignore them.
      *
      * \since QGIS 3.6
      */
@@ -386,6 +465,14 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     void requestTimedOut( QNetworkReply * );
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+    // these signals are for internal use only - it's not safe to connect by external code
+    void authRequestOccurred( QNetworkReply *, QAuthenticator *auth );
+    void authRequestHandled( QNetworkReply *reply );
+///@endcond
+#endif
+
 
   private slots:
     void abortRequest();
@@ -398,6 +485,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
+
+    void onAuthRequired( QNetworkReply *reply, QAuthenticator *auth );
+    void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth );
+
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
@@ -406,6 +497,14 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void unlockAfterSslErrorHandled();
     void afterSslErrorHandled( QNetworkReply *reply );
 #endif
+
+    void unlockAfterAuthRequestHandled();
+    void afterAuthRequestHandled( QNetworkReply *reply );
+
+    void pauseTimeout( QNetworkReply *reply );
+    void restartTimeout( QNetworkReply *reply );
+    static int getRequestId( QNetworkReply *reply );
+
     QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
@@ -414,10 +513,18 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkAccessManager *sMainNAM;
     // ssl error handler, will be set for main thread ONLY
     std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;
-    // only in use by work threads, unused in main thread
+    // only in use by worker threads, unused in main thread
     QMutex mSslErrorHandlerMutex;
-    // only in use by work threads, unused in main thread
+    // only in use by worker threads, unused in main thread
     QWaitCondition mSslErrorWaitCondition;
+
+    // auth request handler, will be set for main thread ONLY
+    std::unique_ptr< QgsNetworkAuthenticationHandler > mAuthHandler;
+    // only in use by worker threads, unused in main thread
+    QMutex mAuthRequestHandlerMutex;
+    // only in use by worker threads, unused in main thread
+    QWaitCondition mAuthRequestWaitCondition;
+
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

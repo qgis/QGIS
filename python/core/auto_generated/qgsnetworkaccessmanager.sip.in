@@ -271,16 +271,35 @@ created in any thread.
 .. versionadded:: 3.6
 %End
 
+    void requestRequiresAuth( int requestId, const QString &realm );
+%Docstring
+Emitted when a network request prompts an authentication request.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the authentication relates to.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about authentication requests
+from any thread.
+
+This signal is for debugging and logging purposes only, and cannot be used to respond to the
+requests. See QgsNetworkAuthenticationHandler for details on how to handle authentication requests.
+
+.. versionadded:: 3.6
+%End
+
 
     void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
 %Docstring
 Emitted when a network request encounters SSL ``errors``.
 
-The ``requestId`` argument reflects the unique ID identifying the original request which the progress report relates to.
+The ``requestId`` argument reflects the unique ID identifying the original request which the SSL error relates to.
 
 This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
 only to connect to the main thread's signal in order to receive notifications about SSL errors
 from any thread.
+
+This signal is for debugging and logging purposes only, and cannot be used to respond to the errors.
+See QgsSslErrorHandler for details on how to handle SSL errors and potentially ignore them.
 
 .. versionadded:: 3.6
 %End
@@ -294,6 +313,7 @@ from any thread.
 %End
 
     void requestTimedOut( QNetworkReply * );
+
 
 
   protected:
