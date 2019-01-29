@@ -129,7 +129,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
 
     QString id() const override
     {
-      return QStringLiteral( "maplayer" );
+      return QStringLiteral( "layer" );
     }
 
     QStringList acceptedPythonTypes() const override
