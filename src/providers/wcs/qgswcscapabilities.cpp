@@ -804,7 +804,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   }
 
   // exclude invalid CRSs from the lists
-  for ( const QString &crsid : crsList )
+  for ( const QString &crsid : qgis::as_const( crsList ) )
   {
     if ( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsid ).isValid() )
     {
