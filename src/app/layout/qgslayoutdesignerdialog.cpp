@@ -4034,6 +4034,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   double bottomMargin = 0.0;
   double leftMargin = 0.0;
   bool includeMetadata = true;
+  bool disableRasterTiles = false;
   if ( mLayout )
   {
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
@@ -4044,6 +4045,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     bottomMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt();
     leftMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt();
     includeMetadata = mLayout->customProperty( QStringLiteral( "svgIncludeMetadata" ), 1 ).toBool();
+    disableRasterTiles = mLayout->customProperty( QStringLiteral( "svgDisableRasterTiles" ), 0 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "svgTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
     {
@@ -4069,6 +4071,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   options.mBottomMarginSpinBox->setValue( bottomMargin );
   options.mLeftMarginSpinBox->setValue( leftMargin );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
+  options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4081,6 +4084,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   marginLeft = options.mLeftMarginSpinBox->value();
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
   forceVector = options.mForceVectorCheckBox->isChecked();
+  disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
   QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
 
   if ( mLayout )
@@ -4095,6 +4099,7 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
     mLayout->setCustomProperty( QStringLiteral( "svgIncludeMetadata" ), includeMetadata ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "forceVector" ), forceVector ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "svgTextFormat" ), static_cast< int >( textRenderFormat ) );
+    mLayout->setCustomProperty( QStringLiteral( "svgDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
   }
 
   settings.cropToContents = clipToContent;
@@ -4104,6 +4109,11 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
 
+  if ( disableRasterTiles )
+    settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+  else
+    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
   return true;
 }
 
@@ -4112,10 +4122,12 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   QgsRenderContext::TextRenderFormat prevTextRenderFormat = mMasterLayout->layoutProject()->labelingEngineSettings().defaultTextRenderFormat();
   bool forceVector = false;
   bool includeMetadata = true;
+  bool disableRasterTiles = false;
   if ( mLayout )
   {
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
+    disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();
     if ( prevLayoutSettingLabelsAsOutlines >= 0 )
     {
@@ -4135,12 +4147,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   options.mTextRenderFormatComboBox->setCurrentIndex( options.mTextRenderFormatComboBox->findData( prevTextRenderFormat ) );
   options.mForceVectorCheckBox->setChecked( forceVector );
   options.mIncludeMetadataCheckbox->setChecked( includeMetadata );
+  options.mDisableRasterTilingCheckBox->setChecked( disableRasterTiles );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
 
   includeMetadata = options.mIncludeMetadataCheckbox->isChecked();
   forceVector = options.mForceVectorCheckBox->isChecked();
+  disableRasterTiles = options.mDisableRasterTilingCheckBox->isChecked();
   QgsRenderContext::TextRenderFormat textRenderFormat = static_cast< QgsRenderContext::TextRenderFormat >( options.mTextRenderFormatComboBox->currentData().toInt() );
 
   if ( mLayout )
@@ -4148,12 +4162,17 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     //save dialog settings
     mLayout->setCustomProperty( QStringLiteral( "forceVector" ), forceVector ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfIncludeMetadata" ), includeMetadata ? 1 : 0 );
+    mLayout->setCustomProperty( QStringLiteral( "pdfDisableRasterTiles" ), disableRasterTiles ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast< int >( textRenderFormat ) );
   }
 
   settings.forceVectorOutput = forceVector;
   settings.exportMetadata = includeMetadata;
   settings.textRenderFormat = textRenderFormat;
+  if ( disableRasterTiles )
+    settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+  else
+    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
 
   return true;
 }

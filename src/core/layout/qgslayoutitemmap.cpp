@@ -1182,6 +1182,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setSelectionColor( mLayout->renderContext().selectionColor() );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDrawSelection );
+  jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
