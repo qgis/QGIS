@@ -13834,7 +13834,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
       QgsVectorLayerProperties *vectorLayerPropertiesDialog = new QgsVectorLayerProperties( vlayer, this );
-      Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mMapLayerPanelFactories )
+      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
       {
         vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
