@@ -30,6 +30,8 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QDrag>
+#include <QRectF>
+#include <QLineF>
 
 #include <cmath>
 
@@ -1017,14 +1019,18 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     QColor color = QColor( mCurrentColor );
     color.setAlpha( 255 );
     QPen pen;
-    pen.setWidth( 0 );
+    // we need to set pen width to 1,
+    // since on retina displays
+    // pen.setWidth(0) <=> pen.width = 0.5
+    // see https://issues.qgis.org/issues/15984
+    pen.setWidth( 1 );
     painter.setPen( pen );
     painter.setBrush( Qt::NoBrush );
 
     //draw background ramp
     for ( int c = 0; c <= maxValue; ++c )
     {
-      int colorVal = componentRange() * static_cast<double>( c ) / maxValue;
+      int colorVal = static_cast<int>( componentRange() * static_cast<double>( c ) / maxValue );
       //vertical sliders are reversed
       if ( mOrientation == QgsColorRampWidget::Vertical )
       {
@@ -1040,12 +1046,12 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
       if ( mOrientation == QgsColorRampWidget::Horizontal )
       {
         //horizontal
-        painter.drawLine( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 );
+        painter.drawLine( QLineF( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 ) );
       }
       else
       {
         //vertical
-        painter.drawLine( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin );
+        painter.drawLine( QLineF( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin ) );
       }
     }
   }
@@ -1056,7 +1062,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     QBrush checkBrush = QBrush( transparentBackground() );
     painter.setBrush( checkBrush );
     painter.setPen( Qt::NoPen );
-    painter.drawRect( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 );
+    painter.drawRect( QRectF( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 ) );
     QLinearGradient colorGrad;
     if ( mOrientation == QgsColorRampWidget::Horizontal )
     {
@@ -1076,7 +1082,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     colorGrad.setColorAt( 1, opaque );
     QBrush colorBrush = QBrush( colorGrad );
     painter.setBrush( colorBrush );
-    painter.drawRect( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 );
+    painter.drawRect( QRectF( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 ) );
   }
 
   if ( mOrientation == QgsColorRampWidget::Horizontal )
@@ -1095,12 +1101,12 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
   else
   {
     //draw cross lines for vertical ramps
-    int ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * static_cast<double>( componentValue() ) / componentRange();
+    double ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * static_cast<double>( componentValue() ) / componentRange();
     painter.setBrush( Qt::white );
     painter.setPen( Qt::NoPen );
-    painter.drawRect( mMargin, ypos - 1, width() - 2 * mMargin - 1, 3 );
+    painter.drawRect( QRectF( mMargin, ypos - 1, width() - 2 * mMargin - 1, 3 ) );
     painter.setPen( Qt::black );
-    painter.drawLine( mMargin, ypos, width() - mMargin - 1, ypos );
+    painter.drawLine( QLineF( mMargin, ypos, width() - mMargin - 1, ypos ) );
   }
 }
 
