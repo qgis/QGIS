@@ -55,6 +55,37 @@ class CORE_EXPORT QgsProcessing
     };
 
     /**
+     * Converts a source \a type to a string representation.
+     *
+     * \since QGIS 3.6
+     */
+    static QString sourceTypeToString( SourceType type )
+    {
+      switch ( type )
+      {
+        case QgsProcessing::TypeMapLayer:
+          return QStringLiteral( "TypeMapLayer" );
+        case QgsProcessing::TypeVectorAnyGeometry:
+          return QStringLiteral( "TypeVectorAnyGeometry" );
+        case QgsProcessing::TypeVectorPoint:
+          return QStringLiteral( "TypeVectorPoint" );
+        case QgsProcessing::TypeVectorLine:
+          return QStringLiteral( "TypeVectorLine" );
+        case QgsProcessing::TypeVectorPolygon:
+          return QStringLiteral( "TypeVectorPolygon" );
+        case QgsProcessing::TypeRaster:
+          return QStringLiteral( "TypeRaster" );
+        case QgsProcessing::TypeFile:
+          return QStringLiteral( "TypeFile" );
+        case QgsProcessing::TypeVector:
+          return QStringLiteral( "TypeVector" );
+        case QgsProcessing::TypeMesh:
+          return QStringLiteral( "TypeMesh" );
+      }
+      return QString();
+    }
+
+    /**
      * Constant used to indicate that a Processing algorithm output should be a temporary layer/file.
      *
      * \since QGIS 3.6
