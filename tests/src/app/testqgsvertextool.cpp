@@ -67,6 +67,7 @@ class TestQgsVertexTool : public QObject
     void testDeleteVertexTopo();
     void testAddVertexTopo();
     void testMoveEdgeTopo();
+    void testAddVertexTopoFirstSegment();
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
 
@@ -634,6 +635,27 @@ void TestQgsVertexTool::testMoveEdgeTopo()
   mLayerPolygon->undoStack()->undo();
 
   //
+
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  QgsProject::instance()->setTopologicalEditing( false );
+}
+
+void TestQgsVertexTool::testAddVertexTopoFirstSegment()
+{
+  // check that when adding a vertex to the first segment of a polygon's ring with topo editing
+  // enabled, the geometry does not get corrupted (#20774)
+
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  mouseClick( 5.5, 1, Qt::LeftButton );
+  mouseClick( 5, 2, Qt::LeftButton );
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 5 2, 7 1, 7 4, 4 4, 4 1))" ) );
 
   mLayerPolygon->undoStack()->undo();
 
