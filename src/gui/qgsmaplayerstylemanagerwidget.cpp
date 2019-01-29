@@ -78,15 +78,18 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
 
   mModel->clear();
 
-  Q_FOREACH ( const QString name, mLayer->styleManager()->styles() )
+  const QStringList styles = mLayer->styleManager()->styles();
+  for ( const QString &styleName : styles )
   {
-    QString stylename = name;
-    QStandardItem *item = new QStandardItem( stylename );
+    QStandardItem *item = new QStandardItem( styleName );
+    item->setData( styleName );
     mModel->appendRow( item );
   }
 
   QString active = mLayer->styleManager()->currentStyle();
   currentStyleChanged( active );
+
+  connect( mModel, &QStandardItemModel::itemChanged, this, &QgsMapLayerStyleManagerWidget::renameStyle );
 }
 
 void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
@@ -113,6 +116,7 @@ void QgsMapLayerStyleManagerWidget::styleAdded( const QString &name )
 {
   QgsDebugMsg( QStringLiteral( "Style added" ) );
   QStandardItem *item = new QStandardItem( name );
+  item->setData( name );
   mModel->appendRow( item );
 }
 
@@ -134,6 +138,7 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 
   QStandardItem *item = items.at( 0 );
   item->setText( newname );
+  item->setData( newname );
 }
 
 void QgsMapLayerStyleManagerWidget::addStyle()
@@ -174,6 +179,14 @@ void QgsMapLayerStyleManagerWidget::removeStyle()
     QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
   }
 
+}
+
+void QgsMapLayerStyleManagerWidget::renameStyle( QStandardItem *item )
+{
+  const QString oldName = item->data().toString();
+  const QString newName = item->text();
+  item->setData( newName );
+  whileBlocking( this )->mLayer->styleManager()->renameStyle( oldName, newName );
 }
 
 void QgsMapLayerStyleManagerWidget::saveAsDefault()
