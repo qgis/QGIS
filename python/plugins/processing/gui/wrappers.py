@@ -45,6 +45,7 @@ from qgis.core import (
     QgsSettings,
     QgsProject,
     QgsMapLayer,
+    QgsVectorLayer,
     QgsProcessing,
     QgsProcessingUtils,
     QgsProcessingParameterDefinition,
@@ -79,7 +80,8 @@ from qgis.core import (
     QgsProcessingModelChildParameterSource,
     QgsProcessingModelAlgorithm,
     QgsRasterDataProvider,
-    NULL)
+    NULL,
+    Qgis)
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -1088,6 +1090,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
 
     def createWidget(self):
+        self.fileBasedLayers = {}
         if self.dialogType == DIALOG_STANDARD:
             widget = QWidget()
             layout = QHBoxLayout()
@@ -1430,6 +1433,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
 
     def createWidget(self):
+        self.fileBasedLayers = {}
         if self.dialogType == DIALOG_STANDARD:
             widget = QWidget()
             layout = QHBoxLayout()
@@ -1615,14 +1619,26 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 break
 
     def parentValueChanged(self, wrapper):
-        self.setLayer(wrapper.parameterValue())
+        value = wrapper.parameterValue()
+        if value in wrapper.fileBasedLayers:
+            self.setLayer(wrapper.fileBasedLayers[value])
+        else:
+            self.setLayer(value)
+            wrapper.fileBasedLayers[value] = self._layer
 
     def setLayer(self, layer):
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
             layer, ok = layer.source.valueAsString(self.context.expressionContext())
         if isinstance(layer, str):
             layer = QgsProcessingUtils.mapLayerFromString(layer, self.context)
+            if not isinstance(layer, QgsVectorLayer) or not layer.isValid():
+                self.dialog.messageBar().clearWidgets()
+                self.dialog.messageBar().pushMessage("", self.tr("Could not load selected layer/table. Dependent field could not be populated"),
+                                                     level=Qgis.Warning, duration=5)
+                return
+
         self._layer = layer
+
         self.refreshItems()
 
     def refreshItems(self):
