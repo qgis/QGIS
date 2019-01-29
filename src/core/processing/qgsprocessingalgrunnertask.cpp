@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-  : QgsTask( tr( "Executing “%1”" ).arg( algorithm->displayName() ), QgsTask::CanCancel )
+  : QgsTask( tr( "Executing “%1”" ).arg( algorithm->displayName() ), algorithm->flags() & QgsProcessingAlgorithm::FlagCanCancel ? QgsTask::CanCancel : QgsTask::Flag() )
   , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
