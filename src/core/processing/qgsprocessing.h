@@ -54,6 +54,12 @@ class CORE_EXPORT QgsProcessing
       TypeMesh = 6 //!< Mesh layers \since QGIS 3.6
     };
 
+    //! Available Python output types
+    enum PythonOutputType
+    {
+      PythonQgsProcessingAlgorithmSubclass, //!< Full Python QgsProcessingAlgorithm subclass
+    };
+
     /**
      * Converts a source \a type to a string representation.
      *
