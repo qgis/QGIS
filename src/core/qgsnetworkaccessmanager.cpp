@@ -76,7 +76,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       Q_FOREACH ( const QString &exclude, nam->excludeList() )
       {
-        if ( url.startsWith( exclude ) )
+        if ( !exclude.trimmed().isEmpty() && url.startsWith( exclude ) )
         {
           QgsDebugMsgLevel( QStringLiteral( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
           return QList<QNetworkProxy>() << QNetworkProxy();
@@ -172,6 +172,13 @@ void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &
 
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
+  // remove empty records from excludes list -- these would otherwise match ANY url, so the proxy would always be skipped!
+  mExcludedURLs.erase( std::remove_if( mExcludedURLs.begin(), mExcludedURLs.end(), // clazy:exclude=detaching-member
+                                       []( const QString & url )
+  {
+    return url.trimmed().isEmpty();
+  } ), mExcludedURLs.end() ); // clazy:exclude=detaching-member
+
 }
 
 QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
@@ -448,7 +455,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {
-    excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
+    excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), QStringList() ).toStringList();
 
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
