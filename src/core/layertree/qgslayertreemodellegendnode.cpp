@@ -509,7 +509,6 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
   }
 }
 
-//TODO: ADD EXPRESSION, CHECK FOR AGGREGATE AND ADD SYMBOL
 void QgsSymbolLegendNode::updateLabel()
 {
   if ( !mLayerNode )
@@ -529,7 +528,7 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( vlexp != "" && vl )
+    else if ( vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
@@ -543,7 +542,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( vlexp != "" && vl )
+    else if ( vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
