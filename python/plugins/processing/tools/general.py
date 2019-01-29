@@ -89,11 +89,28 @@ def algorithmHelp(id):
         print('Algorithm "{}" not found.'.format(id))
 
 
-def run(algOrName, parameters, onFinish=None, feedback=None, context=None):
-    """Executes given algorithm and returns its outputs as dictionary
-    object.
+def run(algOrName, parameters, onFinish=None, feedback=None, context=None, is_child_algorithm=False):
     """
-    return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
+    Executes given algorithm and returns its outputs as dictionary object.
+
+    :param algOrName: Either an instance of an algorithm, or an algorithm's ID
+    :param parameters: Algorithm parameters dictionary
+    :param onFinish: optional function to run after the algorithm has completed
+    :param feedback: Processing feedback object
+    :param context: Processing context object
+    :param is_child_algorithm: Set to True if this algorithm is being run as part of a larger algorithm,
+    i.e. it is a sub-part of an algorithm which calls other Processing algorithms.
+    """
+    if onFinish or not is_child_algorithm:
+        return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
+    else:
+        # for child algorithms, we disable to default post-processing step where layer ownership
+        # is transferred from the context to the caller. In this case, we NEED the ownership to remain
+        # with the context, so that further steps in the algorithm have guaranteed access to the layer.
+        def post_process(_alg, _context, _feedback):
+            return
+
+        return Processing.runAlgorithm(algOrName, parameters, onFinish=post_process, feedback=feedback, context=context)
 
 
 def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
