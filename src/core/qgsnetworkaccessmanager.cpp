@@ -29,6 +29,7 @@
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 #include "qgsnetworkreply.h"
+#include "qgsblockingnetworkrequest.h"
 
 #include <QUrl>
 #include <QTimer>
@@ -616,6 +617,22 @@ int QgsNetworkAccessManager::timeout()
 void QgsNetworkAccessManager::setTimeout( const int time )
 {
   QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), time );
+}
+
+QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
+{
+  QgsBlockingNetworkRequest br;
+  br.setAuthCfg( authCfg );
+  br.get( request, forceRefresh, feedback );
+  return br.reply();
+}
+
+QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
+{
+  QgsBlockingNetworkRequest br;
+  br.setAuthCfg( authCfg );
+  br.post( request, data, forceRefresh, feedback );
+  return br.reply();
 }
 
 

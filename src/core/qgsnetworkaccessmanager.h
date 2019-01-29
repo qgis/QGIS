@@ -32,6 +32,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+class QgsFeedback;
+
 #ifndef SIP_RUN
 #include "qgsconfig.h"
 constexpr int sFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
@@ -413,6 +415,50 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.6
      */
     static void setTimeout( int time );
+
+    /**
+     * Posts a GET request to obtain the contents of the target request and returns a new QgsNetworkReplyContent object for reading.
+     * The current thread will be blocked until the request is returned.
+     *
+     * This method is safe to call in either the main thread or a worker thread.
+     *
+     * If \a forceRefresh is false then previously cached replies may be used for the request. If
+     * it is set to true then a new query is always performed.
+     *
+     * If an \a authCfg has been specified, then that authentication configuration required will automatically be applied to
+     * \a request. There is no need to manually apply the authentication to the request prior to calling
+     * this method.
+     *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
+     * The contents of the reply will be returned after the request is completed or an error occurs.
+     *
+     * \see blockingPost()
+     * \since QGIS 3.6
+     */
+    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Posts a POST request to obtain the contents of the target \a request, using the given \a data, and returns a new
+     * QgsNetworkReplyContent object for reading. The current thread will be blocked until the request is returned.
+     *
+     * This method is safe to call in either the main thread or a worker thread.
+     *
+     * If \a forceRefresh is false then previously cached replies may be used for the request. If
+     * it is set to true then a new query is always performed.
+     *
+     * If an \a authCfg has been specified, then that authentication configuration required will automatically be applied to
+     * \a request. There is no need to manually apply the authentication to the request prior to calling
+     * this method.
+     *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
+     * The contents of the reply will be returned after the request is completed or an error occurs.
+     *
+     * \see blockingGet()
+     * \since QGIS 3.6
+     */
+    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
   signals:
 

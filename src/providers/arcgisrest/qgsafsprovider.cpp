@@ -21,8 +21,6 @@
 #include "qgsdatasourceuri.h"
 #include "qgsafsdataitems.h"
 #include "qgslogger.h"
-#include "geometry/qgsgeometry.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
 
@@ -30,12 +28,6 @@
 #include "qgsafssourceselect.h"
 #include "qgssourceselectprovider.h"
 #endif
-
-#include <QEventLoop>
-#include <QMessageBox>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );

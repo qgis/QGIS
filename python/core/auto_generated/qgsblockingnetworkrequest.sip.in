@@ -1,0 +1,146 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsblockingnetworkrequest.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsBlockingNetworkRequest : QObject
+{
+%Docstring
+A thread safe class for performing blocking (sync) network requests, with full support for QGIS proxy
+and authentication settings.
+
+This class should be used whenever a blocking network request is required. Unlike implementations
+which rely on QApplication.processEvents() or creation of a QEventLoop, this class is completely
+thread safe and can be used on either the main thread or background threads without issue.
+
+Redirects are automatically handled by the class.
+
+After completion of a request, the reply content should be retrieved by calling getReplyContent().
+This method returns a QgsNetworkReplyContent container, which is safe and cheap to copy and pass
+between threads without issue.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsblockingnetworkrequest.h"
+%End
+  public:
+
+    enum ErrorCode
+    {
+      NoError,
+      NetworkError,
+      TimeoutError,
+      ServerExceptionError,
+    };
+
+    explicit QgsBlockingNetworkRequest();
+%Docstring
+Constructor for QgsBlockingNetworkRequest
+%End
+
+    ~QgsBlockingNetworkRequest();
+
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Performs a "get" operation on the specified ``request``.
+
+If ``forceRefresh`` is false then previously cached replies may be used for the request. If
+it is set to true then a new query is always performed.
+
+If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+by calling reply().
+
+If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+can be retrieved by calling errorMessage().
+
+.. seealso:: :py:func:`post`
+%End
+
+    ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Performs a "post" operation on the specified ``request``, using the given ``data``.
+
+If ``forceRefresh`` is false then previously cached replies may be used for the request. If
+it is set to true then a new query is always performed.
+
+If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+by calling reply().
+
+If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+can be retrieved by calling errorMessage().
+
+.. seealso:: :py:func:`get`
+%End
+
+    QString errorMessage() const;
+%Docstring
+Returns the error message string, after a get() or post() request has been made.\
+%End
+
+    QgsNetworkReplyContent reply() const;
+%Docstring
+Returns the content of the network reply, after a get() or post() request has been made.
+%End
+
+    QString authCfg() const;
+%Docstring
+Returns the authentication config id which will be used during the request.
+
+.. seealso:: :py:func:`setAuthCfg`
+%End
+
+    void setAuthCfg( const QString &authCfg );
+%Docstring
+Sets the authentication config id which should be used during the request.
+
+.. seealso:: :py:func:`authCfg`
+%End
+
+  public slots:
+
+    void abort();
+%Docstring
+Aborts the network request immediately.
+%End
+
+  signals:
+
+    void downloadProgress( qint64, qint64 );
+%Docstring
+Emitted when when data arrives during a request.
+%End
+
+    void downloadFinished();
+%Docstring
+Emitted once a request has finished downloading.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsblockingnetworkrequest.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

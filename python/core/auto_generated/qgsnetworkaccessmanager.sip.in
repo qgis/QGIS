@@ -11,6 +11,7 @@
 
 
 
+
 class QgsNetworkRequestParameters
 {
 %Docstring
@@ -250,6 +251,52 @@ Returns the network timeout length, in milliseconds.
 Sets the maximum timeout ``time`` for network requests, in milliseconds.
 
 .. seealso:: :py:func:`timeout`
+
+.. versionadded:: 3.6
+%End
+
+    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Posts a GET request to obtain the contents of the target request and returns a new QgsNetworkReplyContent object for reading.
+The current thread will be blocked until the request is returned.
+
+This method is safe to call in either the main thread or a worker thread.
+
+If ``forceRefresh`` is false then previously cached replies may be used for the request. If
+it is set to true then a new query is always performed.
+
+If an ``authCfg`` has been specified, then that authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The contents of the reply will be returned after the request is completed or an error occurs.
+
+.. seealso:: :py:func:`blockingPost`
+
+.. versionadded:: 3.6
+%End
+
+    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Posts a POST request to obtain the contents of the target ``request``, using the given ``data``, and returns a new
+QgsNetworkReplyContent object for reading. The current thread will be blocked until the request is returned.
+
+This method is safe to call in either the main thread or a worker thread.
+
+If ``forceRefresh`` is false then previously cached replies may be used for the request. If
+it is set to true then a new query is always performed.
+
+If an ``authCfg`` has been specified, then that authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The contents of the reply will be returned after the request is completed or an error occurs.
+
+.. seealso:: :py:func:`blockingGet`
 
 .. versionadded:: 3.6
 %End
