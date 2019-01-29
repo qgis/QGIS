@@ -103,7 +103,10 @@ void TestQgsMdalProvider::load()
   }
 
   {
-    QString file = QString::fromUtf8( "%1/mesh/štvôrček.2dm" ).arg( TEST_DATA_DIR );
+    QString file = QStringLiteral( "%1/mesh/štvôrček.2dm" ).arg( TEST_DATA_DIR );
+    QFileInfo fi( file );
+    QVERIFY( fi.exists() );
+
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
                                   QStringLiteral( "mdal" ),
                                   file,
