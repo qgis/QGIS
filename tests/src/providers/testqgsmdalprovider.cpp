@@ -101,24 +101,6 @@ void TestQgsMdalProvider::load()
     QVERIFY( mp->isValid() );
     delete provider;
   }
-
-  {
-    QString file = QStringLiteral( "%1/mesh/štvôrček.2dm" ).arg( TEST_DATA_DIR );
-    QFileInfo fi( file );
-    QVERIFY( fi.exists() );
-
-    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-                                  QStringLiteral( "mdal" ),
-                                  file,
-                                  QgsDataProvider::ProviderOptions()
-                                );
-
-    QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
-    QVERIFY( mp );
-    QVERIFY( mp->isValid() );
-    delete provider;
-  }
-
   {
     QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
