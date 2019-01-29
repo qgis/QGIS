@@ -236,6 +236,24 @@ for the constructor of this class.
 Returns whether the system proxy should be used.
 %End
 
+    static int timeout();
+%Docstring
+Returns the network timeout length, in milliseconds.
+
+.. seealso:: :py:func:`setTimeout`
+
+.. versionadded:: 3.6
+%End
+
+    static void setTimeout( int time );
+%Docstring
+Sets the maximum timeout ``time`` for network requests, in milliseconds.
+
+.. seealso:: :py:func:`timeout`
+
+.. versionadded:: 3.6
+%End
+
   signals:
 
  void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;

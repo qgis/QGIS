@@ -255,8 +255,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
   connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
   timer->setSingleShot( true );
-  const int timeout = s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt();
-  timer->start( timeout );
+  timer->start( timeout() );
 
   connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
   connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
@@ -384,7 +383,7 @@ void QgsNetworkAccessManager::restartTimeout( QNetworkReply *reply )
     Q_ASSERT( !timer->isActive() );
     QgsDebugMsg( QStringLiteral( "Restarting network reply timeout" ) );
     timer->setSingleShot( true );
-    timer->start( QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt() );
+    timer->start( timeout() );
   }
 }
 
@@ -607,6 +606,16 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
   if ( cache() != newcache )
     setCache( newcache );
+}
+
+int QgsNetworkAccessManager::timeout()
+{
+  return QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt();
+}
+
+void QgsNetworkAccessManager::setTimeout( const int time )
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), time );
 }
 
 

@@ -398,6 +398,22 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     bool useSystemProxy() const { return mUseSystemProxy; }
 
+    /**
+     * Returns the network timeout length, in milliseconds.
+     *
+     * \see setTimeout()
+     * \since QGIS 3.6
+     */
+    static int timeout();
+
+    /**
+     * Sets the maximum timeout \a time for network requests, in milliseconds.
+     *
+     * \see timeout()
+     * \since QGIS 3.6
+     */
+    static void setTimeout( int time );
+
   signals:
 
     /**
