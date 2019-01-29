@@ -116,13 +116,13 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIsNotNone(alg)
 
         temp_file = os.path.join(self.temp_dir, 'non_ascii_ñññ.gpkg')
-        parameters = {'SHAPES':'testmem',
-                        'DIST_FIELD_DEFAULT':5,
-                        'NZONES':1,
-                        'DARC':5,
-                        'DISSOLVE':True,
-                        'POLY_INNER':False,
-                        'BUFFER':temp_file}
+        parameters = {'SHAPES': 'testmem',
+                      'DIST_FIELD_DEFAULT': 5,
+                      'NZONES': 1,
+                      'DARC': 5,
+                      'DISSOLVE': True,
+                      'POLY_INNER': False,
+                      'BUFFER': temp_file}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -135,7 +135,6 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(res.featureCount(), 2)
 
         QgsProject.instance().removeMapLayer(layer)
-
 
 
 if __name__ == '__main__':
