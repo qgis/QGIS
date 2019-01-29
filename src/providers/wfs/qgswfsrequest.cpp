@@ -131,6 +131,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
   QWaitCondition waitCondition;
   QMutex waitConditionMutex;
+
   bool threadFinished = false;
   bool success = false;
 
@@ -163,20 +164,20 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       {
         auto resumeMainThread = [&waitConditionMutex, &waitCondition]()
         {
+          // when this method is called we have "produced" a single authentication request -- so the buffer is now full
+          // and it's time for the "consumer" (main thread) to do its part
           waitConditionMutex.lock();
           waitCondition.wakeAll();
           waitConditionMutex.unlock();
 
-          waitConditionMutex.lock();
-          waitCondition.wait( &waitConditionMutex );
-          waitConditionMutex.unlock();
+          // note that we don't need to handle waking this thread back up - that's done automatically by QgsNetworkAccessManager
         };
 
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );
         connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
 
 #ifndef QT_NO_SSL
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrors, this, resumeMainThread, Qt::DirectConnection );
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection );
 #endif
         QEventLoop loop;
         connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
@@ -205,7 +206,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       waitCondition.wait( &waitConditionMutex );
 
       // If the downloader thread wakes us (the main thread) up and is not yet finished
-      // he needs the authentication to run.
+      // then it has "produced" an authentication request which we need to now "consume".
       // The processEvents() call gives the auth manager the chance to show a dialog and
       // once done with that, we can wake the downloaderThread again and continue the download.
       if ( !threadFinished )
@@ -213,9 +214,8 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
         waitConditionMutex.unlock();
 
         QgsApplication::instance()->processEvents();
-        waitConditionMutex.lock();
-        waitCondition.wakeAll();
-        waitConditionMutex.unlock();
+        // we don't need to wake up the worker thread - it will automatically be woken when
+        // the auth request has been dealt with by QgsNetworkAccessManager
       }
       else
       {
