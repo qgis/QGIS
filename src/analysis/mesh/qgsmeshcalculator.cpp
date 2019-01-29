@@ -152,7 +152,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   QVector<QgsMeshDataBlock> datasetValues;
   QVector<QgsMeshDataBlock> datasetActive;
   QVector<double> times;
-  
+
   const auto datasize = outputGroup->datasets.size();
   datasetValues.reserve( datasize );
   times.reserve( datasize );
