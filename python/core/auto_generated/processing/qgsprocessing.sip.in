@@ -39,6 +39,11 @@ and parameters.
       TypeMesh
     };
 
+    enum PythonOutputType
+    {
+      PythonQgsProcessingAlgorithmSubclass,
+    };
+
     static QString sourceTypeToString( SourceType type );
 %Docstring
 Converts a source ``type`` to a string representation.
