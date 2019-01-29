@@ -82,6 +82,7 @@ class TestQgsNetworkAccessManager : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testProxyExcludeList();
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
@@ -116,6 +117,20 @@ void TestQgsNetworkAccessManager::init()
 
 void TestQgsNetworkAccessManager::cleanup()
 {
+}
+
+void TestQgsNetworkAccessManager::testProxyExcludeList()
+{
+  QgsNetworkAccessManager manager;
+  QNetworkProxy fallback( QNetworkProxy::HttpProxy, QStringLiteral( "babies_first_proxy" ) );
+  manager.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << QStringLiteral( "something_else" ) );
+  QCOMPARE( manager.fallbackProxy().hostName(), QStringLiteral( "babies_first_proxy" ) );
+  QCOMPARE( manager.excludeList(), QStringList() << QStringLiteral( "intranet" ) << QStringLiteral( "something_else" ) );
+
+  QgsNetworkAccessManager manager2;
+  manager2.setFallbackProxyAndExcludes( fallback, QStringList() << QStringLiteral( "intranet" ) << "" );
+  // empty strings MUST be filtered from this list - otherwise they match all hosts!
+  QCOMPARE( manager2.excludeList(), QStringList() << QStringLiteral( "intranet" ) );
 }
 
 void TestQgsNetworkAccessManager::fetchEmptyUrl()
