@@ -125,9 +125,10 @@ void TestQgsNetworkAccessManager::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 1000 );
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 1000 );
 }
 
 void TestQgsNetworkAccessManager::cleanupTestCase()
