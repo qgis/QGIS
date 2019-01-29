@@ -313,28 +313,75 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void setAuthHandler( std::unique_ptr< QgsNetworkAuthenticationHandler > handler );
 #endif
 
-    //! insert a factory into the proxy factories list
+    /**
+     * Inserts a \a factory into the proxy factories list.
+     *
+     * Ownership of \a factory is transferred to the manager.
+     *
+     * \see removeProxyFactory()
+     * \see proxyFactories()
+     */
     void insertProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFER );
 
-    //! remove a factory from the proxy factories list
+    /**
+     * Removes a \a factory from the proxy factories list.
+     *
+     * \see insertProxyFactory()
+     * \see proxyFactories()
+     */
     void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
-    //! retrieve proxy factory list
+    /**
+     * Returns a list of proxy factories used by the manager.
+     *
+     * \see insertProxyFactory()
+     * \see proxyFactories()
+     */
     const QList<QNetworkProxyFactory *> proxyFactories() const;
 
-    //! retrieve fall back proxy (for urls that no factory returned proxies for)
+    /**
+     * Returns the fallback proxy used by the manager.
+     *
+     * The fallback proxy is used for URLs which no other proxy factory returned proxies for.
+     *
+     * \see proxyFactories()
+     * \see setFallbackProxyAndExcludes()
+     */
     const QNetworkProxy &fallbackProxy() const;
 
-    //! retrieve exclude list (urls shouldn't use the fallback proxy)
+    /**
+     * Returns the proxy exclude list.
+     *
+     * This list consists of the beginning of URL strings which will not use the fallback proxy.
+     *
+     * \see fallbackProxy()
+     * \see setFallbackProxyAndExcludes()
+     */
     QStringList excludeList() const;
 
-    //! Sets fallback proxy and URL that shouldn't use it.
+    /**
+     * Sets the fallback \a proxy and URLs which shouldn't use it.
+     *
+     * The fallback proxy is used for URLs which no other proxy factory returned proxies for.
+     * The \a excludes list specifies the beginning of URL strings which will not use this fallback proxy.
+     *
+     * \see fallbackProxy()
+     * \see excludeList()
+     */
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
-    //! Gets name for QNetworkRequest::CacheLoadControl
+    /**
+     * Returns the name for QNetworkRequest::CacheLoadControl.
+     *
+     * \see cacheLoadControlFromName()
+     */
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
-    //! Gets QNetworkRequest::CacheLoadControl from name
+    /**
+     * Returns QNetworkRequest::CacheLoadControl from a \a name.
+     *
+     * \see cacheLoadControlName()
+     */
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
     /**
@@ -346,7 +393,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
-    //! Returns whether the system proxy should be used
+    /**
+     * Returns whether the system proxy should be used.
+     */
     bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:
