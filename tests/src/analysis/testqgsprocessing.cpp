@@ -3270,7 +3270,7 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << r1 );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMultipleLayers('optional', '', optional=True, layerType=QgsProcessing.TypeMapLayer, defaultValue=['/home/nyall/dev/QGIS/tests/testdata/tenbytenraster.asc'])" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMultipleLayers('optional', '', optional=True, layerType=QgsProcessing.TypeMapLayer, defaultValue=['" ) + r1->publicSource() + "'])" );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional multiple vector " ) + v1->id() + "," + r1->publicSource() );
