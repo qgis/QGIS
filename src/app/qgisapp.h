@@ -879,7 +879,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setAppStyleSheet( const QString &stylesheet );
 
     //! request credentials for network manager
-    void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
     void namRequestTimedOut( const QgsNetworkRequestParameters &request );
 

@@ -8,6 +8,7 @@ SET(QGIS_APP_SRCS
   qgisappstylesheet.cpp
   qgsabout.cpp
   qgsalignrasterdialog.cpp
+  qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp

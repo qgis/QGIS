@@ -23,7 +23,7 @@
 #include "qgstest.h"
 #include "qgssettings.h"
 #include <QNetworkReply>
-
+#include <QAuthenticator>
 
 class BackgroundRequest : public QThread
 {
@@ -65,9 +65,33 @@ class TestSslErrorHandler : public QgsSslErrorHandler
 
     void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors ) override
     {
+      Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
       QCOMPARE( errors.at( 0 ).error(), QSslError::SelfSignedCertificate );
       reply->ignoreSslErrors();
     }
+
+};
+
+class TestAuthRequestHandler : public QgsNetworkAuthenticationHandler
+{
+  public:
+
+    TestAuthRequestHandler( const QString &user, const QString &password )
+      : mUser( user )
+      , mPassword( password )
+    {}
+
+    void handleAuthRequest( QNetworkReply *, QAuthenticator *auth ) override
+    {
+      Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
+      if ( !mUser.isEmpty() )
+        auth->setUser( mUser );
+      if ( !mPassword.isEmpty() )
+        auth->setPassword( mPassword );
+    }
+
+    QString mUser;
+    QString mPassword;
 
 };
 
@@ -89,6 +113,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchPost();
     void fetchBadSsl();
     void testSslErrorHandler();
+    void testAuthRequestHandler();
     void fetchTimeout();
 
 };
@@ -481,6 +506,108 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   thread->deleteLater();
 
   QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
+}
+
+void TestQgsNetworkAccessManager::testAuthRequestHandler()
+{
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
+  // initially this request should fail -- we aren't providing the username and password required
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
+
+  QObject context;
+  bool loaded = false;
+  bool gotRequestAboutToBeCreatedSignal = false;
+  bool gotAuthRequest = false;
+  int requestId = -1;
+  QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/basic-auth/me/secret" ) );
+  QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
+  {
+    gotRequestAboutToBeCreatedSignal = true;
+    requestId = params.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( params.request().url(), u );
+  } );
+  connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
+  {
+    QCOMPARE( reply.error(), expectedError );
+    QCOMPARE( reply.requestId(), requestId );
+    QCOMPARE( reply.request().url(), u );
+    loaded = true;
+  } );
+
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestRequiresAuth, &context, [&]( int authRequestId, const QString & realm )
+  {
+    QCOMPARE( authRequestId, requestId );
+    QCOMPARE( realm, QStringLiteral( "Fake Realm" ) );
+    gotAuthRequest = true;
+  } );
+
+  expectedError = QNetworkReply::AuthenticationRequiredError;
+  QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
+
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  {
+    qApp->processEvents();
+  }
+
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+
+  // now try in a thread
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+
+
+  BackgroundRequest *thread = new BackgroundRequest( QNetworkRequest( u ) );
+
+  thread->start();
+
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
+
+  // try with username and password specified
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), QStringLiteral( "secret" ) ) );
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  expectedError = QNetworkReply::NoError;
+  QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
+
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  {
+    qApp->processEvents();
+  }
+
+  // correct username and password, in a thread
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), QStringLiteral( "secret2" ) ) );
+  u = QUrl( QStringLiteral( "http://httpbin.org/basic-auth/me2/secret2" ) );
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  expectedError = QNetworkReply::NoError;
+
+  thread = new BackgroundRequest( QNetworkRequest( u ) );
+  thread->start();
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal )
+  {
+    qApp->processEvents();
+  }
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  thread->exit();
+  thread->wait();
+  thread->deleteLater();
+
+  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< QgsNetworkAuthenticationHandler >() );
 }
 
 void TestQgsNetworkAccessManager::fetchTimeout()
