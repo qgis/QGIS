@@ -116,6 +116,10 @@ class TestQgsNetworkAccessManager : public QObject
     void testAuthRequestHandler();
     void fetchTimeout();
 
+  private:
+
+    QString mHttpBinHost;
+
 };
 
 void TestQgsNetworkAccessManager::initTestCase()
@@ -129,6 +133,11 @@ void TestQgsNetworkAccessManager::initTestCase()
   QgsApplication::initQgis();
 
   QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 1000 );
+
+  mHttpBinHost = QStringLiteral( "httpbin.org" );
+  QString overrideHost = qgetenv( "QGIS_HTTPBIN_HOST" );
+  if ( !overrideHost.isEmpty() )
+    mHttpBinHost = overrideHost;
 }
 
 void TestQgsNetworkAccessManager::cleanupTestCase()
@@ -320,7 +329,7 @@ void TestQgsNetworkAccessManager::fetchPost()
   bool loaded = false;
   bool gotRequestAboutToBeCreatedSignal = false;
   int requestId = -1;
-  QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/post" ) );
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/post" ) );
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
@@ -525,7 +534,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QString expectedUser;
   QString expectedPassword;
   int requestId = -1;
-  QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/basic-auth/me/secret" ) );
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/secret" ) );
   QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
@@ -606,7 +615,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   // correct username and password, in a thread
   QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), QStringLiteral( "secret2" ) ) );
-  u = QUrl( QStringLiteral( "http://httpbin.org/basic-auth/me2/secret2" ) );
+  u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/secret2" ) );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -644,7 +653,7 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   bool gotTimeoutError = false;
   bool finished = false;
   int requestId = -1;
-  QUrl u =  QUrl( QStringLiteral( "http://httpbin.org/delay/10" ) );
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/delay/10" ) );
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
     gotRequestAboutToBeCreatedSignal = true;
