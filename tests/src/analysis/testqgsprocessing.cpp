@@ -5301,12 +5301,12 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "test.txt" ) );
 
   params.insert( QStringLiteral( "non_optional" ), QgsProcessing::TEMPORARY_OUTPUT );
-  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 7 ), QStringLiteral( "_OUTPUT" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 18 ), QStringLiteral( "/non_optional.file" ) );
 
   QgsProcessingOutputLayerDefinition fs;
   fs.sink = QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT );
   params.insert( QStringLiteral( "non_optional" ), QVariant::fromValue( fs ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 7 ), QStringLiteral( "_OUTPUT" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ).right( 18 ), QStringLiteral( "/non_optional.file" ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
