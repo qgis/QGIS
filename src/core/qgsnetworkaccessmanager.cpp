@@ -428,6 +428,9 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
 void QgsNetworkAccessManager::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
   mAuthHandler->handleAuthRequest( reply, auth );
+
+  emit requestAuthDetailsAdded( getRequestId( reply ), auth->realm(), auth->user(), auth->password() );
+
   afterAuthRequestHandled( reply );
 }
 

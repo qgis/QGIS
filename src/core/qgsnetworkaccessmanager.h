@@ -426,9 +426,27 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * This signal is for debugging and logging purposes only, and cannot be used to respond to the
      * requests. See QgsNetworkAuthenticationHandler for details on how to handle authentication requests.
      *
+     * \see requestAuthDetailsAdded()
      * \since QGIS 3.6
      */
     void requestRequiresAuth( int requestId, const QString &realm );
+
+    /**
+     * Emitted when network authentication details have been added to a request.
+     *
+     * The \a requestId argument reflects the unique ID identifying the original request which the authentication relates to.
+     *
+     * This signal is always sent from the main thread QgsNetworkAccessManager instance, so it is necessary
+     * only to connect to the main thread's signal in order to receive notifications about authentication requests
+     * from any thread.
+     *
+     * This signal is for debugging and logging purposes only, and should not be used to respond to the
+     * requests. See QgsNetworkAuthenticationHandler for details on how to handle authentication requests.
+     *
+     * \see requestRequiresAuth()
+     * \since QGIS 3.6
+     */
+    void requestAuthDetailsAdded( int requestId, const QString &realm, const QString &user, const QString &password );
 
 #ifndef QT_NO_SSL
 
