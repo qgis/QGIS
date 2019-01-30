@@ -123,7 +123,7 @@ bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 );
 Compare two doubles using specified number of significant digits
 %End
 
-double qgsRound( double number, double places );
+double qgsRound( double number, int places );
 %Docstring
 Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
 
