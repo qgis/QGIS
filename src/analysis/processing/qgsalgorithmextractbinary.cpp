@@ -33,8 +33,8 @@ QString QgsExtractBinaryFieldAlgorithm::displayName() const
 QString QgsExtractBinaryFieldAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts contents from a binary field, saving them to individual files.\n\n"
-                      "Filenames can be generated using data defined values, allowing them to be taken from"
-                      " an attribute in the source table or based on a more complex expression." );
+                      "Filenames can be generated using values taken from "
+                      "an attribute in the source table or based on a more complex expression." );
 }
 
 QString QgsExtractBinaryFieldAlgorithm::shortDescription() const
@@ -70,11 +70,7 @@ void QgsExtractBinaryFieldAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Binary field" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any ) );
 
-  std::unique_ptr< QgsProcessingParameterString > fileNameParam = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "FILENAME" ), QObject::tr( "File name" ) );
-  fileNameParam->setIsDynamic( true );
-  fileNameParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Filename" ), QObject::tr( "File name" ), QgsPropertyDefinition::String ) );
-  fileNameParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
-  addParameter( fileNameParam.release() );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME" ), QObject::tr( "File name" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "FOLDER" ), QObject::tr( "Destination folder" ) ) );
 }
@@ -95,21 +91,20 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Destination folder %1 does not exist" ).arg( folder ) );
 
   QDir dir( folder );
-  const QString filename = parameterAsString( parameters, QStringLiteral( "FILENAME" ), context );
-  bool dynamicFilename = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "FILENAME" ) );
+  const QString filenameExpressionString = parameterAsString( parameters, QStringLiteral( "FILENAME" ), context );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, input.get() );
-  QgsProperty filenameProperty;
 
   QSet< QString > fields;
   fields.insert( fieldName );
   QgsFeatureRequest request;
-  if ( dynamicFilename )
-  {
-    filenameProperty = parameters.value( QStringLiteral( "FILENAME" ) ).value< QgsProperty >();
-    filenameProperty.prepare( expressionContext );
-    fields.unite( filenameProperty.referencedFields() );
-  }
-  request.setSubsetOfAttributes( fields, input->fields() ).setFlags( QgsFeatureRequest::NoGeometry );
+
+  QgsExpression filenameExpression( filenameExpressionString );
+  filenameExpression.prepare( &expressionContext );
+  fields.unite( filenameExpression.referencedColumns() );
+  request.setSubsetOfAttributes( fields, input->fields() );
+  if ( !filenameExpression.needsGeometry() )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
   QgsFeatureIterator features = input->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   double step = input->featureCount() > 0 ? 100.0 / input->featureCount() : 1;
   int i = 0;
@@ -128,11 +123,12 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
     if ( ba.isEmpty() )
       continue;
 
-    QString name = filename;
-    if ( dynamicFilename )
+    expressionContext.setFeature( feat );
+    QString name = filenameExpression.evaluate( &expressionContext ).toString();
+    if ( filenameExpression.hasEvalError() )
     {
-      expressionContext.setFeature( feat );
-      name = filenameProperty.valueAsString( expressionContext, name );
+      feedback->reportError( QObject::tr( "Error evaluating filename: %1" ).arg( filenameExpression.evalErrorString() ) );
+      continue;
     }
 
     const QString path = dir.filePath( name );
