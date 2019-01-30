@@ -561,7 +561,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   // will contain duplicate global, project, layout, etc scopes.
 
   // TODO: ADD NECESSARY SCOPES ??
-  //context.appendScope( );
+  context.appendScope( mLayerNode->layer()->createExpressionContextScope() );
 
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
