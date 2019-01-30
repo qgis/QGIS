@@ -173,7 +173,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                             supportedExtensions = self.algorithm().provider().supportedOutputVectorLayerExtensions()
                         supportedExtensions = [e.lower() for e in supportedExtensions]
                         if supportedExtensions and ext not in supportedExtensions:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, ext)                    
+                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, ext)
 
         return self.algorithm().preprocessParameters(parameters)
 
