@@ -6329,6 +6329,12 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
   CPLPopErrorHandler();
 
+  // Try to load as mesh layer after raster & vector
+  if ( !ok )
+  {
+    ok = addMeshLayer( fileName, fileInfo.completeBaseName(), "mdal" );
+  }
+
   if ( !ok )
   {
     // we have no idea what this file is...
