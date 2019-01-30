@@ -517,6 +517,11 @@ void QgsSymbolLegendNode::updateLabel()
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
+  if ( vl->providerType() == QLatin1String( "wms" ) )
+  {
+    return;
+  }
+
   QString vlexp = mLayerNode->expression();
 
   if ( mEmbeddedInParent )
@@ -526,9 +531,9 @@ void QgsSymbolLegendNode::updateLabel()
       layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
-    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
+    if ( showFeatureCount && vl )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( !mLabel.isEmpty() && vl && vl->featureCount() >= 0 )
+    else if ( mLabel && vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
@@ -542,7 +547,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( !mLabel.isEmpty() && vl && vl->featureCount() >= 0 )
+    else if ( mLabel && vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
@@ -556,9 +561,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 {
   QgsExpressionContext context; //= QgsLayoutItem::createExpressionContext();
 
-  // We only want the last scope from the map's expression context, as this contains
-  // the map specific variables. We don't want the rest of the map's context, because that
-  // will contain duplicate global, project, layout, etc scopes.
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   // TODO: ADD NECESSARY SCOPES ??
   context.appendScope( mLayerNode->layer()->createExpressionContextScope() );
@@ -568,13 +571,12 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), textOnSymbolLabel(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
-  QgsVectorLayerFeatureCounter *counter = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() )->countSymbolFeatures() ;
+  QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures() ;
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
 
 
   QVariantList featureIds;
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_feature_ids" ), featureIds, true ) );
-
 
   QgsFeatureIds fids = counter->featureIds( mItem.ruleKey() );
 
@@ -590,7 +592,6 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 
   return context;
 }
-
 
 // -------------------------------------------------------------------------
 
