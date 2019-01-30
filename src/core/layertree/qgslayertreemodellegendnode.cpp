@@ -528,7 +528,7 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( mLabel && vl && vl->featureCount() >= 0 )
+    else if ( !mLabel.isEmpty() && vl && vl->featureCount() >= 0 )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
@@ -542,7 +542,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( mLabel && vl && vl->featureCount() >= 0 )
+    else if ( !mLabel.isEmpty() && vl && vl->featureCount() >= 0 )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
