@@ -60,6 +60,7 @@ class TestQgsLayoutPicture : public QObject
 
     void pictureExpression();
     void pictureInvalidExpression();
+    void valid();
 
 
   private:
@@ -420,6 +421,33 @@ void TestQgsLayoutPicture::pictureInvalidExpression()
 
   mLayout->removeItem( mPicture );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty() );
+}
+
+void TestQgsLayoutPicture::valid()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  QgsLayoutItemPicture *picture = new QgsLayoutItemPicture( &l );
+  l.addItem( picture );
+
+  picture->setPicturePath( mPngImage );
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mPngImage );
+
+  picture->setPicturePath( QStringLiteral( "bad" ) );
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+
+  picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
+  picture->refreshPicture();
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mSvgImage );
+
+  picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'bad'" ) ) );
+  picture->refreshPicture();
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutPicture )

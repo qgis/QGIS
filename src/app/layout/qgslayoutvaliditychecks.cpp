@@ -18,6 +18,7 @@
 #include "qgsvaliditycheckcontext.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
 #include "qgslayout.h"
 
 //
@@ -123,6 +124,64 @@ bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext
 }
 
 QList<QgsValidityCheckResult> QgsLayoutOverviewValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
+{
+  return mResults;
+}
+
+
+
+//
+// QgsLayoutPictureSourceValidityCheck
+//
+
+QgsLayoutPictureSourceValidityCheck *QgsLayoutPictureSourceValidityCheck::create() const
+{
+  return new QgsLayoutPictureSourceValidityCheck();
+}
+
+QString QgsLayoutPictureSourceValidityCheck::id() const
+{
+  return QStringLiteral( "layout_picture_source_check" );
+}
+
+int QgsLayoutPictureSourceValidityCheck::checkType() const
+{
+  return QgsAbstractValidityCheck::TypeLayoutCheck;
+}
+
+bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
+{
+  if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
+    return false;
+
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  if ( !layoutContext )
+    return false;
+
+  QList< QgsLayoutItemPicture * > pictureItems;
+  layoutContext->layout->layoutItems( pictureItems );
+  for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
+  {
+    if ( picture->isMissingImage() )
+    {
+      QgsValidityCheckResult res;
+      res.type = QgsValidityCheckResult::Warning;
+      res.title = QObject::tr( "Picture source is missing or corrupt" );
+      const QString name = picture->displayName().toHtmlEscaped();
+
+      const QUrl picUrl = QUrl::fromUserInput( picture->evaluatedPath() );
+      const bool isLocalFile = picUrl.isLocalFile();
+
+      res.detailedDescription = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name,
+                                isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
+      mResults.append( res );
+    }
+  }
+
+  return true;
+}
+
+QList<QgsValidityCheckResult> QgsLayoutPictureSourceValidityCheck::runCheck( const QgsValidityCheckContext *, QgsFeedback * )
 {
   return mResults;
 }

@@ -94,6 +94,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * this value. The path can either be a local path or a remote (http) path.
      * \returns path for the source image
      * \see setPicturePath()
+     * \see evaluatedPath()
      */
     QString picturePath() const;
 
@@ -230,6 +231,23 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    /**
+     * Returns true if the source image is missing and the picture
+     * cannot be rendered.
+     *
+     * \since QGIS 3.6
+     */
+    bool isMissingImage() const;
+
+    /**
+     * Returns the current evaluated picture path, which includes
+     * the result of data defined path overrides.
+     *
+     * \see picturePath()
+     * \since QGIS 3.6
+     */
+    QString evaluatedPath() const;
+
   public slots:
 
     /**
@@ -318,6 +336,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     bool mHasExpressionError = false;
     bool mLoaded = false;
     bool mLoadingSvg = false;
+    bool mIsMissingImage = false;
+    QString mEvaluatedPath;
 
     //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QString &path );

@@ -26,6 +26,7 @@
 #include "qgslayout.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
 #include "qgsabstractvaliditycheck.h"
 #include "qgsvaliditycheckcontext.h"
 #include "layout/qgslayoutvaliditychecks.h"
@@ -46,6 +47,7 @@ class TestQgsLayoutValidityChecks : public QObject
 
     void testScaleBarValidity();
     void testOverviewValidity();
+    void testPictureValidity();
 
   private:
     QString mTestDataDir;
@@ -156,6 +158,63 @@ void TestQgsLayoutValidityChecks::testOverviewValidity()
   QCOMPARE( res.size(), 2 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
   QCOMPARE( res.at( 1 ).type, QgsValidityCheckResult::Warning );
+}
+
+void TestQgsLayoutValidityChecks::testPictureValidity()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  QgsLayoutItemPicture *picture = new QgsLayoutItemPicture( &l );
+  l.addItem( picture );
+
+  QgsLayoutValidityCheckContext context( &l );
+  QgsFeedback f;
+
+  // invalid picture source
+  picture->setPicturePath( QStringLiteral( "blaaaaaaaaaaaaaaaaah" ) );
+  QgsLayoutPictureSourceValidityCheck check;
+  QVERIFY( check.prepareCheck( &context, &f ) );
+  QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
+  QCOMPARE( res.size(), 1 );
+  QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
+
+  QgsLayoutPictureSourceValidityCheck check2;
+  picture->setPicturePath( QString() );
+  QVERIFY( check2.prepareCheck( &context, &f ) );
+  res = check2.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
+
+  QgsLayoutPictureSourceValidityCheck check3;
+  picture->setPicturePath( QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg" );
+  QVERIFY( check3.prepareCheck( &context, &f ) );
+  res = check3.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
+
+  QgsLayoutItemPicture *picture2 = new QgsLayoutItemPicture( &l );
+  l.addItem( picture2 );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'d:/bad' || 'robot'" ) ) );
+  l.refresh();
+
+  QgsLayoutPictureSourceValidityCheck check4;
+  QVERIFY( check4.prepareCheck( &context, &f ) );
+  res = check4.runCheck( &context, &f );
+  QCOMPARE( res.size(), 1 );
+  QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
+
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "''" ) ) );
+  l.refresh();
+  QgsLayoutPictureSourceValidityCheck check5;
+  QVERIFY( check5.prepareCheck( &context, &f ) );
+  res = check5.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
+
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( QStringLiteral( TEST_DATA_DIR ) + "/sam' || 'ple_svg.svg" ) ) );
+  l.refresh();
+  QgsLayoutPictureSourceValidityCheck check6;
+  QVERIFY( check6.prepareCheck( &context, &f ) );
+  res = check6.runCheck( &context, &f );
+  QCOMPARE( res.size(), 0 );
 }
 
 
