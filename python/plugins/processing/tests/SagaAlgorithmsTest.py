@@ -27,6 +27,7 @@ __revision__ = ':%H$'
 
 import nose2
 import shutil
+import tempfile
 
 from qgis.core import (QgsProcessingParameterNumber,
                        QgsProcessingParameterDefinition,

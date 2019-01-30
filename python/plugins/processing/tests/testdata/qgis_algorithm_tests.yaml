@@ -21,7 +21,7 @@ tests:
     params:
       INPUT:
         type: vector
-        name: polys_non_ascii_ñññ.gml
+        name: polys_non_ascii_Ã±Ã±Ã±.gml
     results:
       OUTPUT:
         type: vector
