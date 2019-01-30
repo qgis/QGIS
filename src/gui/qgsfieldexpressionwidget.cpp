@@ -82,6 +82,16 @@ void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
   mFieldProxyModel->setFilters( filters );
 }
 
+void QgsFieldExpressionWidget::setAllowEmptyFieldName( bool allowEmpty )
+{
+  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( allowEmpty );
+}
+
+bool QgsFieldExpressionWidget::allowEmptyFieldName() const
+{
+  return mFieldProxyModel->sourceFieldModel()->allowEmptyFieldName();
+}
+
 void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
 {
   QHBoxLayout *layout = dynamic_cast<QHBoxLayout *>( this->layout() );

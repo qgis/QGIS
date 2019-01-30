@@ -265,7 +265,7 @@ void TestQgsFieldExpressionWidget::testFilters()
 
   widget->setFilters( QgsFieldProxyModel::Time );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QString( "timefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 1 ), QString( "timefld" ) );
 
   QgsProject::instance()->removeMapLayer( layer );
 }
@@ -293,5 +293,3 @@ void TestQgsFieldExpressionWidget::setNull()
 
 QGSTEST_MAIN( TestQgsFieldExpressionWidget )
 #include "testqgsfieldexpressionwidget.moc"
-
-

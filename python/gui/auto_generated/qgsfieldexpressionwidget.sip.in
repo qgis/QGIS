@@ -57,6 +57,24 @@ Returns the title used for the expression dialog
 setFilters allows fitering according to the type of field
 %End
 
+    void setAllowEmptyFieldName( bool allowEmpty );
+%Docstring
+Sets whether an optional empty field ("not set") option is shown in the combo box.
+
+.. seealso:: :py:func:`allowEmptyFieldName`
+
+.. versionadded:: 3.0
+%End
+
+    bool allowEmptyFieldName() const;
+%Docstring
+Returns true if the combo box allows the empty field ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyFieldName`
+
+.. versionadded:: 3.0
+%End
+
     void setLeftHandButtonStyle( bool isLeft );
 
     QgsFieldProxyModel::Filters filters() const;

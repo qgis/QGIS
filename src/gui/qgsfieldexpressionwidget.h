@@ -48,6 +48,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
@@ -74,6 +75,20 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! setFilters allows fitering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
+
+    /**
+     * Sets whether an optional empty field ("not set") option is shown in the combo box.
+     * \see allowEmptyFieldName()
+     * \since QGIS 3.0
+     */
+    void setAllowEmptyFieldName( bool allowEmpty );
+
+    /**
+     * Returns true if the combo box allows the empty field ("not set") choice.
+     * \see setAllowEmptyFieldName()
+     * \since QGIS 3.0
+     */
+    bool allowEmptyFieldName() const;
 
     void setLeftHandButtonStyle( bool isLeft );
 
