@@ -4669,9 +4669,9 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
     QgsDebugMsgLevel( "completeBaseName: " + baseName, 2 );
 
-    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl", Qt::CaseInsensitive ) ) };
+    const bool isVsiCurl = ( src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) );
     const auto scheme { QUrl( src ).scheme() };
-    const bool isRemoteUrl { scheme.startsWith( QStringLiteral( "http" ) ) || scheme == QStringLiteral( "ftp" ) };
+    const bool isRemoteUrl = ( scheme.startsWith( QStringLiteral( "http" ) ) || scheme == QStringLiteral( "ftp" ) );
 
     // create the layer
     QgsVectorLayer::LayerOptions options;
