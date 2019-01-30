@@ -324,7 +324,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param = QgsProcessingParameterBoolean(
                 self.GRASS_VECTOR_EXPORT_NOCAT,
                 self.tr('Also export features without category (not labeled). Otherwise only features with category are exported'),
-                True
+                False
             )
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
