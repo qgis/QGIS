@@ -692,7 +692,7 @@ void TestQgsProcessingAlgs::extractBinary()
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), source );
   parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "DATA" ) );
-  parameters.insert( QStringLiteral( "FILENAME" ), QgsProperty::fromExpression( QStringLiteral( "'test' || \"ATTACHMENTID\" || '.jpg'" ) ) );
+  parameters.insert( QStringLiteral( "FILENAME" ), QStringLiteral( "'test' || \"ATTACHMENTID\" || '.jpg'" ) );
   const QString folder = QDir::tempPath();
   parameters.insert( QStringLiteral( "FOLDER" ), folder );
 
