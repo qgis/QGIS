@@ -533,7 +533,7 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( mLabel && vl )
+    else if ( !mLabel.isEmpty() && vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
@@ -547,7 +547,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( mLabel && vl )
+    else if ( !mLabel.isEmpty() && vl )
     {
       QgsExpressionContext context = createExpressionContext();
       mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
@@ -564,7 +564,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   // TODO: ADD NECESSARY SCOPES ??
-  context.appendScope( mLayerNode->layer()->createExpressionContextScope() );
+  context.appendScope( vl->createExpressionContextScope() );
 
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
