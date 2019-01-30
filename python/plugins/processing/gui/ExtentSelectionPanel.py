@@ -29,19 +29,24 @@ import os
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
+from qgis.PyQt.QtWidgets import (
+    QMenu,
+    QAction,
+    QDialog,
+    QVBoxLayout,
+    QDialogButtonBox,
+    QLabel
+)
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMapLayerComboBox
 from qgis.utils import iface
-from qgis.core import (QgsProcessingUtils,
-                       QgsProcessingParameterDefinition,
+from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameters,
                        QgsProject,
-                       QgsCoordinateReferenceSystem,
-                       QgsRectangle,
-                       QgsReferencedRectangle)
+                       QgsReferencedRectangle,
+                       QgsMapLayerProxyModel)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
@@ -52,6 +57,32 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
         os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+
+class LayerSelectionDialog(QDialog):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr('Select Extent'))
+
+        vl = QVBoxLayout()
+        vl.addWidget(QLabel(self.tr('Use extent from')))
+        self.combo = QgsMapLayerComboBox()
+        self.combo.setFilters(
+            QgsMapLayerProxyModel.HasGeometry | QgsMapLayerProxyModel.RasterLayer | QgsMapLayerProxyModel.MeshLayer)
+        self.combo.setShowCrs(ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF))
+        vl.addWidget(self.combo)
+
+        self.button_box = QDialogButtonBox()
+        self.button_box.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+        vl.addWidget(self.button_box)
+        self.setLayout(vl)
+
+    def selected_layer(self):
+        return self.combo.currentLayer()
 
 
 class ExtentSelectionPanel(BASE, WIDGET):
@@ -133,22 +164,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.leText.setText('')
 
     def useLayerExtent(self):
-        extentsDict = {}
-        extents = []
-        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-        for layer in layers:
-            authid = layer.crs().authid()
-            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
-                    and authid is not None:
-                layerName = u'{} [{}]'.format(layer.name(), authid)
-            else:
-                layerName = layer.name()
-            extents.append(layerName)
-            extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
-        (item, ok) = QInputDialog.getItem(self, self.tr('Select Extent'),
-                                          self.tr('Use extent from'), extents, 0, False)
-        if ok:
-            self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
+        dlg = LayerSelectionDialog(self)
+        if dlg.exec_():
+            layer = dlg.selected_layer()
+            self.setValueFromRect(QgsReferencedRectangle(layer.extent(), layer.crs()))
 
     def useCanvasExtent(self):
         self.setValueFromRect(QgsReferencedRectangle(iface.mapCanvas().extent(),
