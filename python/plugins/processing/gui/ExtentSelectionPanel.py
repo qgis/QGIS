@@ -35,13 +35,16 @@ from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
-from qgis.core import (QgsProcessingUtils,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameters,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
-                       QgsReferencedRectangle)
+                       QgsReferencedRectangle,
+                       QgsWkbTypes,
+                       QgsVectorLayer)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
@@ -115,6 +118,11 @@ class ExtentSelectionPanel(BASE, WIDGET):
         popupmenu.addSeparator()
         popupmenu.addAction(useLayerExtentAction)
 
+        layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+        layers.extend(QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [QgsProcessing.TypeVectorAnyGeometry]))
+        layers.extend(QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance()))
+        useLayerExtentAction.setEnabled(bool(layers))
+
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
         useCanvasExtentAction.triggered.connect(self.useCanvasExtent)
@@ -135,7 +143,9 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def useLayerExtent(self):
         extentsDict = {}
         extents = []
-        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
+        layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+        layers.extend(QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [QgsProcessing.TypeVectorAnyGeometry]))
+        layers.extend(QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance()))
         for layer in layers:
             authid = layer.crs().authid()
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
