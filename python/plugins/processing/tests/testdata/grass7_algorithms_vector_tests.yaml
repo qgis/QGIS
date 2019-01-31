@@ -280,6 +280,9 @@ tests:
       output:
         name: expected/grass7/v_net_salesman.shp
         type: vector
+      sequence:
+        name: expected/grass7/v_net_salesman_seq.csv
+        type: file
 
   - algorithm: grass7:v.net.steiner
     name: v.net.steiner
