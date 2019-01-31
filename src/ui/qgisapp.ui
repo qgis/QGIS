@@ -363,6 +363,7 @@
     <addaction name="mActionMergeFeatures"/>
     <addaction name="mActionMergeFeatureAttributes"/>
     <addaction name="mActionVertexTool"/>
+    <addaction name="mActionVertexToolActiveLayer"/>
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
     <addaction name="mActionReverseLine"/>
@@ -450,6 +451,7 @@
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionVertexTool"/>
+   <addaction name="mActionVertexToolActiveLayer"/>
    <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
