@@ -146,6 +146,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     */
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
 
+    QgsPointLocator::Match snapToPolygonInterior( QgsMapMouseEvent *e );
+
     //! check whether we are still close to the mEndpointMarker
     bool isNearEndpointMarker( const QgsPointXY &mapPoint );
 
