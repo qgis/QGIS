@@ -397,6 +397,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionDeletePart() = 0;
     //! Returns the native Vertex Tool action.
     virtual QAction *actionVertexTool() = 0;
+    //! Returns the native Vertex Tool for Active Layer action.
+    virtual QAction *actionVertexToolActiveLayer() = 0;
 
     // View menu actions
     //! Returns the native pan action. Call trigger() on it to set the default pan map tool.
