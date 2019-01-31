@@ -1009,7 +1009,16 @@ static QString quotedList( const QVariantList &list )
     {
       ret += QLatin1String( "," );
     }
-    ret.append( doubleQuotedMapValue( i->toString() ) );
+
+    QString inner = i->toString();
+    if ( inner.startsWith( '{' ) )
+    {
+      ret.append( inner );
+    }
+    else
+    {
+      ret.append( doubleQuotedMapValue( i->toString() ) );
+    }
   }
   return "E'{" + ret + "}'";
 }
