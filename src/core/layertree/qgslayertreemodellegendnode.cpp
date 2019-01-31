@@ -517,7 +517,7 @@ void QgsSymbolLegendNode::updateLabel()
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  qDebug( vl->providerType() );
+  qInfo() << vl->providerType();
 
   if ( vl->providerType() == QLatin1String( "wms" ) )
     return;
