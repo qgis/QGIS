@@ -197,6 +197,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionDeleteRing() override;
     QAction *actionDeletePart() override;
     QAction *actionVertexTool() override;
+    QAction *actionVertexToolActiveLayer() override;
     QAction *actionPan() override;
     QAction *actionPanToSelected() override;
     QAction *actionZoomIn() override;

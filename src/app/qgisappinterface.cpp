@@ -611,6 +611,7 @@ QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplify
 QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
 QAction *QgisAppInterface::actionVertexTool() { return qgis->actionVertexTool(); }
+QAction *QgisAppInterface::actionVertexToolActiveLayer() { return qgis->actionVertexToolActiveLayer(); }
 
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
 QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
