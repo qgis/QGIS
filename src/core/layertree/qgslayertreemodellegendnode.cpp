@@ -511,18 +511,11 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 
 void QgsSymbolLegendNode::updateLabel()
 {
-  if ( !mLayerNode )
+  if ( !mLayerNode  )
     return;
 
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-
-  qInfo() << vl->providerType();
-
-  if ( vl->providerType() == QLatin1String( "wms" ) )
-    return;
-
-  QString vlexp = mLayerNode->expression();
 
   if ( mEmbeddedInParent )
   {
@@ -531,12 +524,11 @@ void QgsSymbolLegendNode::updateLabel()
       layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
-    if ( showFeatureCount && vl )
+    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( !mLabel.isEmpty() && vl )
+    else if ( vl )
     {
-      QgsExpressionContext context = createExpressionContext();
-      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
+      mLabel = evaluateLabel( mLabel, vl)
     }
   }
   else
@@ -547,17 +539,15 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( !mLabel.isEmpty() && vl )
+    else if ( vl )
     {
-      QgsExpressionContext context = createExpressionContext();
-      mLabel = QgsExpression().replaceExpressionText( mLabel + vlexp, &context );
+      mLabel = evaluateLabel( mLabel, vl)
     }
   }
-
   emit dataChanged();
 }
 
-QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
+QgsExpressionContext * QgsSymbolLegendNode::createExpressionContext() const
 {
   QgsExpressionContext context; //= QgsLayoutItem::createExpressionContext();
 
@@ -591,6 +581,22 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   context.appendScope( scope );
 
   return context;
+}
+
+QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
+{
+  QgsExpressionContext context
+  if ( mLayerNode->layer()->dataProvider()->type() is VectorLayer ) 
+  { 
+    context = createExpressionContext();
+  }
+  else
+  {
+    context = vl->createExpressionContextScope();
+  }
+    
+  label = QgsExpression().replaceExpressionText( label + mLayerNode->expression(), context );
+  return label;
 }
 
 // -------------------------------------------------------------------------
