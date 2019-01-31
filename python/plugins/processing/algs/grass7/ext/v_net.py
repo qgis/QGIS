@@ -111,7 +111,7 @@ def variableOutput(alg, layers, parameters, context, nocats=True):
         alg.exportVectorLayer(grassName=grass_name,
                               fileName=file_name,
                               layer=output_layer_number,
-                              nocats=no_cats,
+                              exportnocat=no_cats,
                               dataType=output_type)
 
 
