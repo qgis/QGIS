@@ -4214,7 +4214,7 @@ static void jumpSpace( const QString &txt, int &i )
     ++i;
 }
 
-static QString getNextString( const QString &txt, int &i, const QString &sep )
+QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QString &sep )
 {
   jumpSpace( txt, i );
   QString cur = txt.mid( i );
@@ -4223,14 +4223,14 @@ static QString getNextString( const QString &txt, int &i, const QString &sep )
     QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
     if ( !stringRe.exactMatch( cur ) )
     {
-      QgsLogger::warning( "Cannot find end of double quoted string: " + txt );
+      QgsMessageLog::logMessage( tr( "Cannot find end of double quoted string: %1" ).arg( txt ), tr( "PostGIS" ) );
       return QString();
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
     {
-      QgsLogger::warning( "Cannot find separator: " + txt.mid( i ) );
+      QgsMessageLog::logMessage( tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), tr( "PostGIS" ) );
       return QString();
     }
     i += sep.length();
@@ -4249,7 +4249,7 @@ static QString getNextString( const QString &txt, int &i, const QString &sep )
   }
 }
 
-static QVariant parseHstore( const QString &txt )
+QVariant QgsPostgresProvider::parseHstore( const QString &txt )
 {
   QVariantMap result;
   int i = 0;
@@ -4259,7 +4259,7 @@ static QVariant parseHstore( const QString &txt )
     QString value = getNextString( txt, i, QStringLiteral( "," ) );
     if ( key.isNull() || value.isNull() )
     {
-      QgsLogger::warning( "Error parsing hstore: " + txt );
+      QgsMessageLog::logMessage( tr( "Error parsing hstore: %1" ).arg( txt ), tr( "PostGIS" ) );
       break;
     }
     result.insert( key, value );
@@ -4268,7 +4268,7 @@ static QVariant parseHstore( const QString &txt )
   return result;
 }
 
-static QVariant parseJson( const QString &txt )
+QVariant QgsPostgresProvider::parseJson( const QString &txt )
 {
   QVariant result;
   QJsonDocument jsonResponse = QJsonDocument::fromJson( txt.toUtf8() );
@@ -4277,7 +4277,7 @@ static QVariant parseJson( const QString &txt )
   return result;
 }
 
-static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName )
+QVariant QgsPostgresProvider::parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName )
 {
   int i = 0;
   QVariantList result;
@@ -4286,7 +4286,7 @@ static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, con
     const QString value = getNextString( txt, i, QStringLiteral( "," ) );
     if ( value.isNull() )
     {
-      QgsLogger::warning( "Error parsing array: " + txt );
+      QgsMessageLog::logMessage( tr( "Error parsing array: %1" ).arg( txt ), tr( "PostGIS" ) );
       break;
     }
     result.append( QgsPostgresProvider::convertValue( subType, QVariant::Invalid, value, typeName ) );
@@ -4294,7 +4294,7 @@ static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, con
   return result;
 }
 
-static QVariant parseStringArray( const QString &txt )
+QVariant QgsPostgresProvider::parseStringArray( const QString &txt )
 {
   int i = 0;
   QStringList result;
@@ -4303,7 +4303,7 @@ static QVariant parseStringArray( const QString &txt )
     const QString value = getNextString( txt, i, QStringLiteral( "," ) );
     if ( value.isNull() )
     {
-      QgsLogger::warning( "Error parsing array: " + txt );
+      QgsMessageLog::logMessage( tr( "Error parsing array: %1" ).arg( txt ), tr( "PostGIS" ) );
       break;
     }
     result.append( value );
@@ -4311,16 +4311,56 @@ static QVariant parseStringArray( const QString &txt )
   return result;
 }
 
-static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName )
+QVariant QgsPostgresProvider::parseMultidimensionalArray( const QString &txt )
+{
+  QStringList result;
+  if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
+  {
+    QgsMessageLog::logMessage( tr( "Error parsing array, missing curly braces: %1" ).arg( txt ), tr( "PostGIS" ) );
+    return result;
+  }
+
+  QStringList values;
+  QString text = txt;
+  while ( !text.isEmpty() )
+  {
+    bool escaped = false;
+    int openedBrackets = 1;
+    int i = 0;
+    while ( i < text.length()  && openedBrackets > 0 )
+    {
+      ++i;
+
+      if ( text.at( i ) == '}' && !escaped ) openedBrackets--;
+      else if ( text.at( i ) == '{' && !escaped ) openedBrackets++;
+
+      escaped = !escaped ? text.at( i ) == '\\' : false;
+    }
+
+    values.append( text.left( ++i ) );
+    i = text.indexOf( ',', i );
+    i = i > 0 ? text.indexOf( '{', i ) : -1;
+    if ( i == -1 )
+      break;
+
+    text = text.mid( i );
+  }
+  return values;
+
+}
+
+QVariant QgsPostgresProvider::parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName )
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
   {
     if ( !txt.isEmpty() )
-      QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
+      QgsMessageLog::logMessage( tr( "Error parsing array, missing curly braces: %1" ).arg( txt ), tr( "PostGIS" ) );
     return QVariant( type );
   }
   QString inner = txt.mid( 1, txt.length() - 2 );
-  if ( type == QVariant::StringList )
+  if ( ( type == QVariant::StringList || type == QVariant::List ) && inner.startsWith( "{" ) )
+    return parseMultidimensionalArray( inner );
+  else if ( type == QVariant::StringList )
     return parseStringArray( inner );
   else
     return parseOtherArray( inner, subType, typeName );
