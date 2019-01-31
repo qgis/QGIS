@@ -255,7 +255,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      *
      * \since: 3.8
      */
-    QgsExpressionContext createExpressionContext() const;
+    QgsExpressionContext *createExpressionContext() const;
 
      /**
      * Evaluate the label with the proper context
