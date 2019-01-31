@@ -452,6 +452,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionVertexTool() { return mActionVertexTool; }
+    QAction *actionVertexToolActiveLayer() { return mActionVertexToolActiveLayer; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
