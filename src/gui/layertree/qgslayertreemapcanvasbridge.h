@@ -17,7 +17,6 @@
 #define QGSLAYERTREEMAPCANVASBRIDGE_H
 
 #include <QObject>
-#include "qgis.h"
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
@@ -69,7 +68,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      * \since QGIS 3.0
      * \deprecated use setOverviewCanvas instead
      */
-    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ); // TODO QGIS 4.0 remove
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) SIP_DEPRECATED; // TODO QGIS 4.0 remove
     % MethodCode
     sipCpp->setOverviewCanvas( a0 );
     % End
