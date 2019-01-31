@@ -194,6 +194,41 @@ tests:
         name: expected/grass7/v_net_centrality.shp
         type: vector
 
+  - algorithm: grass7:v.net.distance
+    name: v.net.distance
+    params:
+      -g: false
+      -l: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      arc_type:
+      - 0
+      - 1
+      flayer:
+        name: custom/grass7/point_start.gml|layername=point_start
+        type: vector
+      from_cats: ''
+      from_where: ''
+      input:
+        name: roads.gml|layername=roads
+        type: vector
+      threshold: 50.0
+      tlayer:
+        name: custom/grass7/point_end.gml|layername=point_end
+        type: vector
+      to_cats: ''
+      to_type:
+      - 0
+      to_where: ''
+    results:
+      output:
+        name: expected/grass7/v_net_distance.shp
+        type: vector
+
   - algorithm: grass7:v.net.salesman
     name: v.net.salesman
     params:
