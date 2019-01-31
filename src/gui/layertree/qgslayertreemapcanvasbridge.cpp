@@ -29,7 +29,7 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, Qg
   , mCanvas( canvas )
   , mPendingCanvasUpdate( false )
   , mAutoSetupOnFirstLayer( true )
-  , mLastLayerCount( !root->findLayers().isEmpty() )
+  , mHasLayersLoaded( !root->findLayers().isEmpty() )
 {
   connect( root, &QgsLayerTreeGroup::customPropertyChanged, this, &QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged );
   connect( root, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged );
@@ -44,7 +44,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mRoot->hasCustomLayerOrder() )
   {
-    Q_FOREACH ( QgsMapLayer *layer, mRoot->customLayerOrder() )
+    const QList<QgsMapLayer *> customOrderLayers = mRoot->customLayerOrder();
+    for ( const QgsMapLayer *layer : customOrderLayers )
     {
       QgsLayerTreeLayer *nodeLayer = mRoot->findLayer( layer->id() );
       if ( nodeLayer )
@@ -61,7 +62,9 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     }
   }
   else
+  {
     setCanvasLayers( mRoot, canvasLayers, overviewLayers, allLayerOrder );
+  }
 
   const QList<QgsLayerTreeLayer *> layerNodes = mRoot->findLayers();
   int currentSpatialLayerCount = 0;
@@ -71,7 +74,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       currentSpatialLayerCount++;
   }
 
-  bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentSpatialLayerCount != 0;
+  bool firstLayers = mAutoSetupOnFirstLayer && !mHasLayersLoaded && currentSpatialLayerCount != 0;
 
   mCanvas->setLayers( canvasLayers );
   if ( mOverviewCanvas )
@@ -86,7 +89,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   if ( !mFirstCRS.isValid() )
   {
     // find out what is the first used CRS in case we may need to turn on OTF projections later
-    Q_FOREACH ( QgsLayerTreeLayer *layerNode, layerNodes )
+    for ( const QgsLayerTreeLayer *layerNode : layerNodes )
     {
       if ( layerNode->layer() && layerNode->layer()->crs().isValid() )
       {
@@ -101,7 +104,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     QgsProject::instance()->setCrs( mFirstCRS );
   }
 
-  mLastLayerCount = currentSpatialLayerCount;
+  mHasLayersLoaded = currentSpatialLayerCount;
   if ( currentSpatialLayerCount == 0 )
     mFirstCRS = QgsCoordinateReferenceSystem();
 
@@ -125,7 +128,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
     }
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const QList<QgsLayerTreeNode *> children = node->children();
+  for ( QgsLayerTreeNode *child : children )
     setCanvasLayers( child, canvasLayers, overviewLayers, allLayers );
 }
 
