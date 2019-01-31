@@ -4314,6 +4314,44 @@ static QVariant parseStringArray( const QString &txt )
   return result;
 }
 
+static QVariant parseMultidimensionalArray( const QString &txt )
+{
+  QStringList result;
+  if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
+  {
+    QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
+    return result;
+  }
+
+  QStringList values;
+  QString text = txt;
+  while ( !text.isEmpty() )
+  {
+    bool escaped = false;
+    int openedBrackets = 1;
+    int i = 0;
+    while ( i < text.length()  && openedBrackets > 0 )
+    {
+      ++i;
+
+      if ( text.at( i ) == '}' && !escaped ) openedBrackets--;
+      else if ( text.at( i ) == '{' && !escaped ) openedBrackets++;
+
+      escaped = !escaped ? text.at( i ) == '\\' : false;
+    }
+
+    values.append( text.left( ++i ) );
+    i = text.indexOf( ",", i );
+    i = i > 0 ? text.indexOf( "{", i ) : -1;
+    if ( i == -1 )
+      break;
+
+    text = text.mid( i );
+  }
+  return values;
+
+}
+
 static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName )
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
@@ -4323,7 +4361,9 @@ static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::T
     return QVariant( type );
   }
   QString inner = txt.mid( 1, txt.length() - 2 );
-  if ( type == QVariant::StringList )
+  if ( ( type == QVariant::StringList || type == QVariant::List ) && inner.startsWith( "{" ) )
+    return parseMultidimensionalArray( inner );
+  else if ( type == QVariant::StringList )
     return parseStringArray( inner );
   else
     return parseOtherArray( inner, subType, typeName );

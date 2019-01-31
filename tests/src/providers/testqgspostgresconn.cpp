@@ -54,6 +54,14 @@ class TestQgsPostgresConn: public QObject
       QCOMPARE( actual, QString( "E'{\"1\",\"-5\"}'" ) );
     }
 
+    void quotedValue2DimArray()
+    {
+      QStringList list;
+      list << QStringLiteral( "{\"hello foo\",b}" ) << QStringLiteral( "{c,\"hello bar\"}" );
+      const QString actual = QgsPostgresConn::quotedValue( list );
+      QCOMPARE( actual, QString( "E'{{\"hello foo\",b},{c,\"hello bar\"}}'" ) );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsPostgresConn )
