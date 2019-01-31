@@ -459,9 +459,10 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
   {
     if ( !mSelectionRect && !mDraggingVertex && !mDraggingEdge )
     {
-      if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
+      QgsPointLocator::Match m = snapToEditableLayer( e );
+      if ( m.isValid() && m.layer() )
       {
-        showVertexEditor();  //#spellok
+        updateVertexEditor( m.layer(), m.featureId() );
       }
     }
   }
@@ -844,8 +845,6 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
   QgsPointLocator::Match m = snapToEditableLayer( e );
   bool targetIsAllowed = ( !mSelectedFeature || ( mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() ) );
 
-  mLastMouseMoveMatch = m;
-
   // possibility to move a vertex
   if ( m.type() == QgsPointLocator::Vertex && targetIsAllowed )
   {
@@ -1071,7 +1070,7 @@ void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry
   validateGeometry( layer, fid );
 
   if ( mVertexEditor && mSelectedFeature && mSelectedFeature->featureId() == fid && mSelectedFeature->layer() == layer )
-    mVertexEditor->updateEditor( mSelectedFeature->layer(), mSelectedFeature.get() );
+    mVertexEditor->updateEditor( mSelectedFeature.get() );
 }
 
 void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
@@ -1086,35 +1085,43 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
   setHighlightedVertices( mSelectedVertices );
 }
 
-
-void QgsVertexTool::showVertexEditor()  //#spellok
+void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  QgsPointLocator::Match m = mLastMouseMoveMatch;
-  if ( m.isValid() && m.layer() )
+  if ( layer )
   {
-    if ( mSelectedFeature && mSelectedFeature->featureId() == m.featureId() && mSelectedFeature->layer() == m.layer() )
+    if ( mSelectedFeature && mSelectedFeature->featureId() == fid && mSelectedFeature->layer() == layer )
     {
       // if show feature is called on a feature that's already binded to the vertex editor, toggle it off
       mSelectedFeature.reset();
       if ( mVertexEditor )
       {
-        mVertexEditor->updateEditor( nullptr, nullptr );
+        mVertexEditor->updateEditor( nullptr );
       }
       return;
     }
 
-    mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
+    mSelectedFeature.reset( new QgsSelectedFeature( fid, layer, mCanvas ) );
+    connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
     for ( int i = 0; i < mSelectedVertices.length(); ++i )
     {
-      if ( mSelectedVertices.at( i ).layer == m.layer() && mSelectedVertices.at( i ).fid == m.featureId() )
+      if ( mSelectedVertices.at( i ).layer == layer && mSelectedVertices.at( i ).fid == fid )
       {
         mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
       }
     }
   }
+
+  // make sure the vertex editor is alive and visible
+  showVertexEditor();
+
+  mVertexEditor->updateEditor( mSelectedFeature.get() );
+}
+
+void QgsVertexTool::showVertexEditor()  //#spellok
+{
   if ( !mVertexEditor )
   {
-    mVertexEditor.reset( new QgsVertexEditor( m.layer() ? m.layer() : currentVectorLayer(), mSelectedFeature ? mSelectedFeature.get() : nullptr, mCanvas ) );
+    mVertexEditor.reset( new QgsVertexEditor( mCanvas ) );
     if ( !QgisApp::instance()->restoreDockWidget( mVertexEditor.get() ) )
       QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
 
@@ -1126,15 +1133,8 @@ void QgsVertexTool::showVertexEditor()  //#spellok
   }
   else
   {
-    mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
-
     mVertexEditor->show();
     mVertexEditor->raise();
-  }
-
-  if ( mSelectedFeature )
-  {
-    connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
   }
 }
 
@@ -1735,7 +1735,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   }
 
   if ( mVertexEditor )
-    mVertexEditor->updateEditor( dragLayer, mSelectedFeature.get() );
+    mVertexEditor->updateEditor( mSelectedFeature.get() );
 
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
   setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
@@ -1838,7 +1838,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
 
 
     if ( mVertexEditor )
-      mVertexEditor->updateEditor( layer, mSelectedFeature.get() );
+      mVertexEditor->updateEditor( mSelectedFeature.get() );
   }
 }
 
@@ -1999,7 +1999,7 @@ void QgsVertexTool::deleteVertex()
   }
 
   if ( mVertexEditor && mSelectedFeature )
-    mVertexEditor->updateEditor( mSelectedFeature->layer(), mSelectedFeature.get() );
+    mVertexEditor->updateEditor( mSelectedFeature.get() );
 }
 
 void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode )
