@@ -936,14 +936,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
         {
-          if ( i == 0 )
-          {
-            markers = pts;
-          }
-          else
-          {
-            markers << pts;
-          }
+          markers << pts;
         }
       }
     }
@@ -998,14 +991,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
           if ( drawVertexMarker && !usingSegmentizedGeometry )
           {
-            if ( i == 0 )
-            {
-              markers = pts;
-            }
-            else
-            {
-              markers << pts;
-            }
+            markers << pts;
 
             Q_FOREACH ( const QPolygonF &hole, holes )
             {
