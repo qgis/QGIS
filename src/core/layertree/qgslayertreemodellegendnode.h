@@ -257,6 +257,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsExpressionContext createExpressionContext() const;
 
+     /**
+     * Evaluate the label with the proper context
+     * 
+     * \since 3.8
+     */
+    QString evaluateLabel( QString label, QgsVectorLayer vl ) const;
+
   public slots:
 
     /**
