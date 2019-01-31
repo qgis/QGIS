@@ -72,13 +72,10 @@ class QgsVertexEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsVertexEditor( QgsVectorLayer *layer,
-                     QgsSelectedFeature *selectedFeature,
-                     QgsMapCanvas *canvas );
+    QgsVertexEditor( QgsMapCanvas *canvas );
 
   public:
-    void updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature );
-    QgsVectorLayer *mLayer = nullptr;
+    void updateEditor( QgsSelectedFeature *selectedFeature );
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QTableView *mTableView = nullptr;
