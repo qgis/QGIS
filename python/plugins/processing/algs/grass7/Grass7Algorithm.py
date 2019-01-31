@@ -631,15 +631,13 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     if outName in parameters and parameters[outName] is not None:
                         # for HTML reports, we need to redirect stdout
                         if out.defaultFileExtension().lower() == 'html':
-                            command += ' > "{}"'.format(
-                                self.parameterAsFileOutput(
-                                    parameters, outName, context)
-                            )
+                            command += ' {}=- > "{}"'.format(
+                                outName,
+                                self.parameterAsFileOutput(parameters, outName, context))
                         else:
                             command += ' {}="{}"'.format(
                                 outName,
-                                self.parameterAsFileOutput(
-                                    parameters, outName, context))
+                                self.parameterAsFileOutput(parameters, outName, context))
                 # For folders destination
                 elif isinstance(out, QgsProcessingParameterFolderDestination):
                     # We need to add a unique temporary basename
