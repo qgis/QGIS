@@ -96,6 +96,9 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Toggle the vertex editor
     void showVertexEditor();  //#spellok
 
+    //! Update vertex editor to show feature from the given match
+    void updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid );
+
   private slots:
     //! update geometry of our feature
     void onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
@@ -406,8 +409,6 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     // support for vertex editor
 
-    //! most recent match when moving mouse
-    QgsPointLocator::Match mLastMouseMoveMatch;
     //! Selected feature for the vertex editor
     std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
     //! Dock widget which allows editing vertices
