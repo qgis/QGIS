@@ -706,3 +706,96 @@ tests:
       CLASSES:
         hash: deeb8769979916ab544a824cd5400d4a4207e7df37fbeaaa6e4830af
         type: rasterhash
+
+  - algorithm: saga:multipleregressionanalysispointsandpredictorgrids
+    name: Multi regression points predictor grids
+    params:
+      ATTRIBUTE: rvalue_1
+      COORD_X: false
+      COORD_Y: false
+      CROSSVAL: 0
+      CROSSVAL_K: 10
+      INTERCEPT: true
+      METHOD: 3
+      POINTS:
+        name: custom/saga/points_regression.shp
+        type: vector
+      PREDICTORS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      P_VALUE: 5.0
+      RESAMPLING: 3
+      RESIDUAL_COR: 0
+    results:
+      INFO_COEFF:
+        name: expected/saga/multiple_regression_points_grids_coef.dbf
+        type: vector
+        compare:
+          fields:
+            R:
+              precision: 2
+            R2:
+              precision: 2
+            R2_ADJ:
+              precision: 2
+            STD_ERROR:
+              precision: 2
+            T:
+              precision: 2
+            SIG:
+              precision: 6
+            P:
+              precision: 6
+      INFO_MODEL:
+        name: expected/saga/multiple_regression_points_grids_model.dbf
+        type: vector
+        compare:
+          fields:
+            VALUE:
+              precision: 2
+      INFO_STEPS:
+        name: expected/saga/multiple_regression_points_grids_steps.dbf
+        type: vector
+        compare:
+          fields:
+            R:
+              precision: 2
+            R2:
+              precision: 2
+            R2_ADJ:
+              precision: 2
+            STD_ERROR:
+              precision: 2
+            SSR:
+              precision: 2
+            SSE:
+              precision: 2
+            MSR:
+              precision: 2
+            MSE:
+              precision: 2
+            F:
+              precision: 2
+            SIG:
+              precision: 6
+            VAR_F:
+              precision: 2
+            VAR_SIG:
+              precision: 6
+      REGRESCORR:
+        hash: d70078f0151919949c1e55c1a677f1a7cda6f7514667270af6745c0d
+        type: rasterhash
+      REGRESSION:
+        hash: b3a725ae64eec2aab8de1197f2306a0905c7c38de0dc89d58aadb3cc
+        type: rasterhash
+      RESIDUALS:
+        name: expected/saga/multiple_regression_points_grids_res.shp
+        type: vector
+        compare:
+          fields:
+            TREND:
+              precision: 2
+            RESIDUAL:
+              precision: 2

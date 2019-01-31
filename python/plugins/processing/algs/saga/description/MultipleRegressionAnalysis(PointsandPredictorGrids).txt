@@ -2,13 +2,13 @@ Multiple Regression Analysis (Points and Predictor Grids)
 statistics_regression
 QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3|None|False
 QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
-QgsProcessingParameterFeatureSource|ATTRIBUTE|Dependent Variable|5|None|False
-QgsProcessingParameterFeatureSource|INFO_COEFF|Details: Coefficients|5|None|True
-QgsProcessingParameterFeatureSource|INFO_MODEL|Details: Model|5|None|True
-QgsProcessingParameterFeatureSource|INFO_STEPS|Details: Steps|5|None|True
-QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
+QgsProcessingParameterField|ATTRIBUTE|Dependent Variable|None|POINTS|-1|False|False
+QgsProcessingParameterVectorDestination|INFO_COEFF|Details: Coefficients|5|None|True|True
+QgsProcessingParameterVectorDestination|INFO_MODEL|Details: Model|5|None|True|True
+QgsProcessingParameterVectorDestination|INFO_STEPS|Details: Steps|5|None|True|True
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals|-1|None|True|True
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
-QgsProcessingParameterRasterDestination|REGRESCORR|Regression with Residual Correction
+QgsProcessingParameterRasterDestination|REGRESCORR|Regression with Residual Correction|None|True|True
 QgsProcessingParameterEnum|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation|False|3
 QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
 QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False
