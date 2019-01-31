@@ -460,9 +460,24 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     if ( !mSelectionRect && !mDraggingVertex && !mDraggingEdge )
     {
       QgsPointLocator::Match m = snapToEditableLayer( e );
+      if ( !m.isValid() )
+      {
+        // as the last resort check if we are on top of a feature if there is no vertex or edge snap
+        m = snapToPolygonInterior( e );
+      }
+
       if ( m.isValid() && m.layer() )
       {
         updateVertexEditor( m.layer(), m.featureId() );
+      }
+      else
+      {
+        // there's really nothing under the cursor - let's deselect any feature we may have
+        mSelectedFeature.reset();
+        if ( mVertexEditor )
+        {
+          mVertexEditor->updateEditor( nullptr );
+        }
       }
     }
   }
@@ -779,6 +794,61 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   return m;
 }
 
+
+QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e )
+{
+  QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
+  QgsPointLocator::Match m;
+
+  QgsPointXY mapPoint = toMapCoordinates( e->pos() );
+
+  // if there is a current layer, it should have priority over other layers
+  // because sometimes there may be match from multiple layers at one location
+  // and selecting current layer is an easy way for the user to prioritize a layer
+  if ( QgsVectorLayer *currentVlayer = currentVectorLayer() )
+  {
+    if ( currentVlayer->isEditable() && currentVlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+    {
+      QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( currentVlayer )->pointInPolygon( mapPoint );
+      if ( !matchList.isEmpty() )
+      {
+        m = matchList.first();
+      }
+    }
+  }
+
+  // if there is no match from the current layer, try to use any editable vector layer
+  if ( !m.isValid() && mMode == AllLayers )
+  {
+    const auto layers = canvas()->layers();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vlayer )
+        continue;
+
+      if ( vlayer->isEditable() && vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      {
+        QgsPointLocator::MatchList matchList = snapUtils->locatorForLayer( vlayer )->pointInPolygon( mapPoint );
+        if ( !matchList.isEmpty() )
+        {
+          m = matchList.first();
+          break;
+        }
+      }
+    }
+  }
+
+  // if we don't have anything in the last snap, keep the area match
+  if ( !mLastSnap && m.isValid() )
+  {
+    mLastSnap.reset( new QgsPointLocator::Match( m ) );
+  }
+
+  return m;
+}
+
+
 bool QgsVertexTool::isNearEndpointMarker( const QgsPointXY &mapPoint )
 {
   if ( !mEndpointMarkerCenter )
@@ -929,6 +999,12 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
   {
     mEdgeCenterMarker->setVisible( false );
     mEdgeBand->setVisible( false );
+  }
+
+  if ( !m.isValid() )
+  {
+    // as the last resort check if we are on top of a feature if there is no vertex or edge snap
+    m = snapToPolygonInterior( e );
   }
 
   updateFeatureBand( m );
