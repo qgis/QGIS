@@ -25,6 +25,7 @@ __copyright__ = '(C) 2017, Alexander Bruy'
 
 __revision__ = ':%H$'
 
+import os
 import nose2
 import shutil
 import tempfile
