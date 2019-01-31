@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAGA_METADATA>
+  <HISTORY saga-version="2.3.1">
+    <MODULE library="statistics_regression" id="1" name="Multiple Regression Analysis (Points and Predictor Grids)">
+      <OPTION type="grid_system" id="PARAMETERS_GRID_SYSTEM" name="Grid system">
+        <CELLSIZE>0.0001</CELLSIZE>
+        <XMIN>18.666347944200002</XMIN>
+        <XMAX>18.7035479442</XMAX>
+        <YMIN>45.7767514376</YMIN>
+        <YMAX>45.8116514376</YMAX>
+      </OPTION>
+      <OPTION type="table_field" id="ATTRIBUTE" name="Dependent Variable" index="1">rvalue_1</OPTION>
+      <OPTION type="choice" id="RESAMPLING" name="Resampling" index="3">B-Spline Interpolation</OPTION>
+      <OPTION type="boolean" id="COORD_X" name="Include X Coordinate">FALSE</OPTION>
+      <OPTION type="boolean" id="COORD_Y" name="Include Y Coordinate">FALSE</OPTION>
+      <OPTION type="boolean" id="INTERCEPT" name="Intercept">TRUE</OPTION>
+      <OPTION type="choice" id="METHOD" name="Method" index="3">stepwise</OPTION>
+      <OPTION type="double" id="P_VALUE" name="Significance Level">5.000000</OPTION>
+      <OPTION type="choice" id="CROSSVAL" name="Cross Validation" index="0">none</OPTION>
+      <OPTION type="choice" id="RESIDUAL_COR" name="Residual Interpolation" index="0">Multleve B-Spline Interpolation</OPTION>
+      <INPUT_LIST type="grid_list" id="PREDICTORS" name="Predictors" system="PARAMETERS_GRID_SYSTEM">
+        <dem type="grid_list" id="PREDICTORS" name="Predictors" system="PARAMETERS_GRID_SYSTEM">
+          <FILE>/tmp/processing_158a4797a951407ca275f957a94862a4/e678b6f2c3484cf9b60adafa5e69b1d6/dem.sgrd</FILE>
+        </dem>
+      </INPUT_LIST>
+      <INPUT type="shapes" id="POINTS" name="Points">
+        <FILE>/tmp/processing_158a4797a951407ca275f957a94862a4/f2045b740e8e466293cb61f78c148a83/POINTS.shp</FILE>
+      </INPUT>
+      <OUTPUT type="table" id="INFO_STEPS" name="Details: Steps">MLRA Steps</OUTPUT>
+    </MODULE>
+  </HISTORY>
+  <SOURCE>
+    <FILE>/home/nyall/dev/QGIS/python/plugins/processing/tests/testdata/expected/saga/multiple_regression_points_grids_steps.dbf</FILE>
+    <DATABASE>
+      <FIELDS>
+        <FIELD TYPE="INTEGER">MODEL</FIELD>
+        <FIELD TYPE="DOUBLE">R</FIELD>
+        <FIELD TYPE="DOUBLE">R2</FIELD>
+        <FIELD TYPE="DOUBLE">R2_ADJ</FIELD>
+        <FIELD TYPE="DOUBLE">STD_ERROR</FIELD>
+        <FIELD TYPE="DOUBLE">SSR</FIELD>
+        <FIELD TYPE="DOUBLE">SSE</FIELD>
+        <FIELD TYPE="DOUBLE">MSR</FIELD>
+        <FIELD TYPE="DOUBLE">MSE</FIELD>
+        <FIELD TYPE="DOUBLE">DF</FIELD>
+        <FIELD TYPE="DOUBLE">F</FIELD>
+        <FIELD TYPE="DOUBLE">SIG</FIELD>
+        <FIELD TYPE="DOUBLE">VAR_F</FIELD>
+        <FIELD TYPE="DOUBLE">VAR_SIG</FIELD>
+        <FIELD TYPE="STRING">DIR</FIELD>
+        <FIELD TYPE="STRING">VARIABLE</FIELD>
+      </FIELDS>
+    </DATABASE>
+    <PROJECTION></PROJECTION>
+  </SOURCE>
+  <DESCRIPTION></DESCRIPTION>
+</SAGA_METADATA>
