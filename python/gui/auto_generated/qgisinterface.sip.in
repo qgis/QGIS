@@ -414,9 +414,21 @@ Returns the native Delete Ring action.
 %Docstring
 Returns the native Delete Part action.
 %End
+
     virtual QAction *actionVertexTool() = 0;
 %Docstring
-Returns the native Vertex Tool action.
+Returns the native "Vertex Tool for All Layers" action.
+
+.. seealso:: :py:func:`actionVertexToolActiveLayer`
+%End
+
+    virtual QAction *actionVertexToolActiveLayer() = 0;
+%Docstring
+Returns the native "Vertex Tool for Active Layer" action.
+
+.. seealso:: :py:func:`actionVertexTool`
+
+.. versionadded:: 3.6
 %End
 
     virtual QAction *actionPan() = 0;
