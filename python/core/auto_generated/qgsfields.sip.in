@@ -54,22 +54,29 @@ Copy constructor
 
     void clear();
 %Docstring
-Remove all fields
+Removes all fields
 %End
 
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
 %Docstring
-Append a field. The field must have unique name, otherwise it is rejected (returns false)
+Appends a field. The field must have unique name, otherwise it is rejected (returns false)
+%End
+
+    bool rename( int fieldIdx, const QString &name );
+%Docstring
+Renames a name of field. The field must have unique name, otherwise change is rejected (returns false)
+
+.. versionadded:: 3.6
 %End
 
     bool appendExpressionField( const QgsField &field, int originIndex );
 %Docstring
-Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
+Appends an expression field. The field must have unique name, otherwise it is rejected (returns false)
 %End
 
     void remove( int fieldIdx );
 %Docstring
-Remove a field with the given index
+Removes a field with the given index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -85,12 +92,12 @@ Remove a field with the given index
 
     void extend( const QgsFields &other );
 %Docstring
-Extend with fields from another QgsFields container
+Extends with fields from another QgsFields container
 %End
 
     bool isEmpty() const;
 %Docstring
-Check whether the container is empty
+Checks whether the container is empty
 %End
 
     int count() const;
@@ -252,7 +259,7 @@ name of the field.
 
     int lookupField( const QString &fieldName ) const;
 %Docstring
-Look up field's index from the field name.
+Looks up field's index from the field name.
 This method matches in the following order:
 
 1. The exact field name taking case sensitivity into account
