@@ -406,6 +406,7 @@ tests:
       GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
       GRASS_VECTOR_DSCO: ''
       GRASS_VECTOR_LCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: true
       input:
         name: pointsz.gml|layername=pointsz
         type: vector
