@@ -595,7 +595,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
 {
   QgsExpressionContext *context;
-  if ( mLayerNode->layer()->type() is VectorLayer ) 
+  if ( mLayerNode->layer()->type() == VectorLayer ) 
   {
     context = &createExpressionContext();
     Q_UNUSED( vl )
