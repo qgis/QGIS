@@ -58,7 +58,7 @@ def incorporatePoints(alg, parameters, context, feedback, pointLayerName='points
         threshold = alg.parameterAsDouble(parameters, 'threshold', context)
 
         # Create the v.net connect command for point layer integration
-        command = u"v.net input={} points={} output={} operation=connect threshold={}".format(
+        command = u"v.net -s input={} points={} output={} operation=connect threshold={}".format(
             lineLayer, pointLayer, intLayer, threshold)
         alg.commands.append(command)
 
