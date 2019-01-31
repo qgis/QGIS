@@ -3734,7 +3734,7 @@ void QgisApp::createOverview()
   // add to the Panel submenu
   mPanelMenu->addAction( mOverviewDock->toggleViewAction() );
 
-  mLayerTreeCanvasBridge->setOvervewCanvas( mOverviewCanvas );
+  mLayerTreeCanvasBridge->setOverviewCanvas( mOverviewCanvas );
 }
 
 void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *thepDockWidget )
