@@ -39,6 +39,7 @@ after selecting a point, performs the identification:
     {
       VectorLayer,
       RasterLayer,
+      MeshLayer,
       AllLayers
     };
     typedef QFlags<QgsMapToolIdentify::Type> LayerType;
@@ -103,9 +104,9 @@ this has been made private and two publics methods are offered
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
 :param mode: Identification mode. Can use Qgis default settings or a defined mode.
-:param layerType: Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
+:param layerType: Only performs identification in a certain type of layers (raster, vector, mesh). Default value is AllLayers.
 
-:return: a list of IdentifyResult*
+:return: a list of IdentifyResult
 %End
 
     QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
@@ -144,9 +145,9 @@ this has been made private and two publics methods are offered
 :param y: y coordinates of mouseEvent
 :param mode: Identification mode. Can use Qgis default settings or a defined mode.
 :param layerList: Performs the identification within the given list of layers.
-:param layerType: Only performs identification in a certain type of layers (raster, vector).
+:param layerType: Only performs identification in a certain type of layers (raster, vector, mesh).
 
-:return: a list of IdentifyResult*
+:return: a list of IdentifyResult
 %End
 
 
@@ -157,6 +158,15 @@ Call the right method depending on layer type
 
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+
+    bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point );
+%Docstring
+Identifies data from active scalar and vector dataset from the mesh layer
+
+Works only if layer was already rendered (triangular mesh is created)
+
+.. versionadded:: 3.6
+%End
 
     QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
 %Docstring
