@@ -509,6 +509,15 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
   }
 }
 
+void QgsSymbolLegendNode::invalidateMapBasedData()
+{
+  if ( mSymbolUsesMapUnits )
+  {
+    mPixmap = QPixmap();
+    emit dataChanged();
+  }
+}
+
 void QgsSymbolLegendNode::updateLabel()
 {
   if ( !mLayerNode )
@@ -547,7 +556,7 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
-QgsExpressionContext * QgsSymbolLegendNode::createExpressionContext() const
+QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 {
   QgsExpressionContext context; //= QgsLayoutItem::createExpressionContext();
 
@@ -580,7 +589,7 @@ QgsExpressionContext * QgsSymbolLegendNode::createExpressionContext() const
 
   context.appendScope( scope );
 
-  return &context;
+  return context;
 }
 
 QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
@@ -588,17 +597,18 @@ QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) 
   QgsExpressionContext *context;
   if ( mLayerNode->layer()->type() is VectorLayer ) 
   {
-    context = createExpressionContext();
+    context = &createExpressionContext();
     Q_UNUSED( vl )
   }
   else
   {
-    context = vl->createExpressionContextScope();
+    context = vl->createExpressionContext();
   }
 
   label = QgsExpression().replaceExpressionText( label + mLayerNode->expression(), context );
   return label;
 }
+
 
 // -------------------------------------------------------------------------
 
