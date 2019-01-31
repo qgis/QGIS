@@ -511,7 +511,7 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 
 void QgsSymbolLegendNode::updateLabel()
 {
-  if ( !mLayerNode  )
+  if ( !mLayerNode )
     return;
 
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
@@ -528,7 +528,7 @@ void QgsSymbolLegendNode::updateLabel()
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
     else if ( vl )
     {
-      mLabel = evaluateLabel( mLabel, vl)
+      mLabel = evaluateLabel( mLabel, vl );
     }
   }
   else
@@ -541,7 +541,7 @@ void QgsSymbolLegendNode::updateLabel()
     }
     else if ( vl )
     {
-      mLabel = evaluateLabel( mLabel, vl)
+      mLabel = evaluateLabel( mLabel, vl );
     }
   }
   emit dataChanged();
@@ -580,48 +580,25 @@ QgsExpressionContext * QgsSymbolLegendNode::createExpressionContext() const
 
   context.appendScope( scope );
 
-  return context;
+  return &context;
 }
 
 QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
 {
-  QgsExpressionContext context
-  if ( mLayerNode->layer()->dataProvider()->type() is VectorLayer ) 
-  { 
-    context = createExpressionContext();
-  }
-  else
-  {
-    context = vl->createExpressionContextScope();
-  }
-    
-  label = QgsExpression().replaceExpressionText( label + mLayerNode->expression(), context );
-  return label;
+  QgsExpressionContext context;
+    if ( mLayerNode->layer()->dataProvider()->type() is VectorLayer ) 
+    {
+      context = createExpressionContext();
+      UNUSED( vl )
+    }
+    else
+    {
+      context = vl->createExpressionContextScope();
+    }
+
+    label = QgsExpression().replaceExpressionText( label + mLayerNode->expression(), context );
+    return label;
 }
-
-// -------------------------------------------------------------------------
-
-
-QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon, QObject *parent, const QString &key )
-  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mLabel( label )
-  , mIcon( icon )
-  , mKey( key )
-{
-}
-
-QVariant QgsSimpleLegendNode::data( int role ) const
-{
-  if ( role == Qt::DisplayRole || role == Qt::EditRole )
-    return mUserLabel.isEmpty() ? mLabel : mUserLabel;
-  else if ( role == Qt::DecorationRole )
-    return mIcon;
-  else if ( role == RuleKeyRole && !mKey.isEmpty() )
-    return mKey;
-  else
-    return QVariant();
-}
-
 
 // -------------------------------------------------------------------------
 
