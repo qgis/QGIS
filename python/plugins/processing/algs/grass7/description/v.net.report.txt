@@ -3,4 +3,4 @@ v.net.report - Reports lines information of a network
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False
 Hardcoded|operation=report
-QgsProcessingParameterFileDestination|html|Report|Html files (*.html)|None|False
+QgsProcessingParameterFileDestination|output|Report|Html files (*.html)|None|False
