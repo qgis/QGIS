@@ -8995,7 +8995,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
 
     QgsAttributeMap attrMap;
-    for ( int i = 0; i < feature.fields().count(); i++ )
+    for ( int i = 0; i < feature.attributes().count(); i++ )
     {
       attrMap[i] = feature.attribute( i );
     }
