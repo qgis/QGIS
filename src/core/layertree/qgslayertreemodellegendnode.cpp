@@ -590,8 +590,8 @@ QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) 
   if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
   {
     context = createExpressionContext();
-    label = label + mLayerNode->expression()
-    Q_UNUSED( vl )
+    label = label + mLayerNode->expression();
+    Q_UNUSED( vl );
   }
   else
   {
