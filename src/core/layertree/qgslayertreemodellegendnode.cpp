@@ -526,7 +526,7 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( vl )
+    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
     {
       mLabel = evaluateLabel( mLabel, vl );
     }
@@ -539,7 +539,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( vl )
+    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
     {
       mLabel = evaluateLabel( mLabel, vl );
     }
@@ -583,24 +583,11 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   return context;
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
+QString QgsSymbolLegendNode::evaluateLabel( QString label ) const
 {
-  qInfo() << mLayerNode->layer()->dataProvider()->name();
-  qInfo() << mLayerNode->layer()->type();
-  qInfo() << mLayerNode->layer()->flags();
-  QgsExpressionContext context;
-  if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
-  {
-    context = createExpressionContext();
-    label = label + mLayerNode->expression();
-    Q_UNUSED( vl );
-  }
-  else
-  {
-    context = vl->createExpressionContext();
-  }
+  QgsExpressionContext context = createExpressionContext();
 
-  label = QgsExpression().replaceExpressionText( label, &context );
+  label = QgsExpression().replaceExpressionText( label + mLayerNode->expression();, &context );
   return label;
 }
 
