@@ -428,7 +428,9 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
 
-  // TODO: the following commented code is necessary to avoid to export channelSelection in
+
+#if 0
+  // TODO: the following jumped code is necessary to avoid to export channelSelection in
   // case it's set as default value. The drawback is that it's necessary to calc band
   // statistics that can be really slow depending on dataProvider and rastr localtion.
   // this is the reason this part of code is commented and the channelSlection is
@@ -436,45 +438,46 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   //
   // before to export check if the band combination and contrast setting are the
   // default ones to avoid to export this tags
-  //  bool isDefaultCombination = true;
-  //  QList<int> defaultBandCombination( { 1, 2, 3 } );
+  bool isDefaultCombination = true;
+  QList<int> defaultBandCombination( { 1, 2, 3 } );
 
-  //  isDefaultCombination = isDefaultCombination && ( usesBands() == defaultBandCombination );
-  //  isDefaultCombination = isDefaultCombination && (
-  //      mRedContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum &&
-  //      mGreenContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum &&
-  //      mBlueContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum
-  //    );
-  //  // compute raster statistics (slow) only if true the previous conditions
-  //  if ( isDefaultCombination)
-  //  {
-  //    QgsRasterBandStats statRed = bandStatistics(1, QgsRasterBandStats::Min|QgsRasterBandStats::Max);
-  //    isDefaultCombination = isDefaultCombination && (
-  //        ( mRedContrastEnhancement->minimumValue() == statRed.minimumValue &&
-  //          mRedContrastEnhancement->maximumValue() == statRed.maximumValue )
-  //      );
-  //  }
-  //  if ( isDefaultCombination)
-  //  {
-  //    QgsRasterBandStats statGreen = bandStatistics(2, QgsRasterBandStats::Min|QgsRasterBandStats::Max);
-  //    isDefaultCombination = isDefaultCombination && (
-  //          ( mGreenContrastEnhancement->minimumValue() == statGreen.minimumValue &&
-  //            mGreenContrastEnhancement->maximumValue() == statGreen.maximumValue )
-  //      );
-  //  }
-  //  if ( isDefaultCombination)
-  //  {
-  //    QgsRasterBandStats statBlue = bandStatistics(3, QgsRasterBandStats::Min|QgsRasterBandStats::Max);
-  //    isDefaultCombination = isDefaultCombination && (
-  //          ( mBlueContrastEnhancement->minimumValue() == statBlue.minimumValue &&
-  //            mBlueContrastEnhancement->maximumValue() == statBlue.maximumValue )
-  //      );
-  //  }
-  //  if ( isDefaultCombination ):
-  //    return
+  isDefaultCombination = isDefaultCombination && ( usesBands() == defaultBandCombination );
+  isDefaultCombination = isDefaultCombination && (
+                           mRedContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum &&
+                           mGreenContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum &&
+                           mBlueContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum
+                         );
+  // compute raster statistics (slow) only if true the previous conditions
+  if ( isDefaultCombination )
+  {
+    QgsRasterBandStats statRed = bandStatistics( 1, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    isDefaultCombination = isDefaultCombination && (
+                             ( mRedContrastEnhancement->minimumValue() == statRed.minimumValue &&
+                               mRedContrastEnhancement->maximumValue() == statRed.maximumValue )
+                           );
+  }
+  if ( isDefaultCombination )
+  {
+    QgsRasterBandStats statGreen = bandStatistics( 2, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    isDefaultCombination = isDefaultCombination && (
+                             ( mGreenContrastEnhancement->minimumValue() == statGreen.minimumValue &&
+                               mGreenContrastEnhancement->maximumValue() == statGreen.maximumValue )
+                           );
+  }
+  if ( isDefaultCombination )
+  {
+    QgsRasterBandStats statBlue = bandStatistics( 3, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    isDefaultCombination = isDefaultCombination && (
+                             ( mBlueContrastEnhancement->minimumValue() == statBlue.minimumValue &&
+                               mBlueContrastEnhancement->maximumValue() == statBlue.maximumValue )
+                           );
+  }
+  if ( isDefaultCombination ):
+      return
+#endif
 
-  // look for RasterSymbolizer tag
-  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+        // look for RasterSymbolizer tag
+        QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
   if ( elements.size() == 0 )
     return;
 
