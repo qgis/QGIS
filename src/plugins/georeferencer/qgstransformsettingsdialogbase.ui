@@ -162,7 +162,7 @@
       <item row="2" column="0">
        <widget class="QCheckBox" name="saveGcpCheckBox">
         <property name="text">
-         <string>Save GCP Points</string>
+         <string>Save GCP points</string>
         </property>
        </widget>
       </item>
