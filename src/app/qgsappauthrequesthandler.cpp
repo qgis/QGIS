@@ -44,15 +44,10 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   for ( ;; )
   {
-    bool ok;
-
-    {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
-      ok = QgsCredentials::instance()->get(
-             QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-             username, password,
-             QObject::tr( "Authentication required" ) );
-    }
+    bool ok = QgsCredentials::instance()->get(
+                QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+                username, password,
+                QObject::tr( "Authentication required" ) );
     if ( !ok )
       return;
 
@@ -60,22 +55,16 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
       break;
 
     // credentials didn't change - stored ones probably wrong? clear password and retry
-    {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
-      QgsCredentials::instance()->put(
-        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-        username, QString() );
-    }
+    QgsCredentials::instance()->put(
+      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+      username, QString() );
   }
 
   // save credentials
-  {
-    QMutexLocker lock( QgsCredentials::instance()->mutex() );
-    QgsCredentials::instance()->put(
-      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-      username, password
-    );
-  }
+  QgsCredentials::instance()->put(
+    QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+    username, password
+  );
 
   auth->setUser( username );
   auth->setPassword( password );
