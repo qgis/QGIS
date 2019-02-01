@@ -39,6 +39,7 @@ from qgis.core import (Qgis,
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
+from processing.gui.ContextAction import ContextAction
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 

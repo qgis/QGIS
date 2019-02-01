@@ -40,6 +40,7 @@ from processing.script import ScriptUtils
 class DeleteScriptAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate("DeleteScriptAction", "Delete Script…")
 
     def isEnabled(self):

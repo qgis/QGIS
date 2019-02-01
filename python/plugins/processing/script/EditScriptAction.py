@@ -41,6 +41,7 @@ from processing.script import ScriptUtils
 class EditScriptAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate("EditScriptAction", "Edit Script…")
 
     def isEnabled(self):
