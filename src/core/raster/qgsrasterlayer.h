@@ -423,7 +423,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \returns true in case of success
      * \since QGIS 3.6
      */
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() );
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 
 
   public slots:
