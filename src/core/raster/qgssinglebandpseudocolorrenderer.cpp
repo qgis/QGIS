@@ -373,9 +373,6 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
         rampType = QStringLiteral( "intervals" );
         break;
       case ( QgsColorRampShader::Interpolated ):
-      // managed by default
-      default:
-        // TODO: what to do in case of new QgsColorRampShader types?
         rampType = QStringLiteral( "ramp" );
         break;
     }
