@@ -278,9 +278,15 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     bool loadVariant( const QVariant &child );
 
     /**
-     * Attempts to convert the child to executable Python code.
+     * Attempts to convert the child to executable Python code, and returns a list of the generated lines of code.
+     *
+     * The \a outputType argument specifies the type of script to generate.
+     *
+     * Additional parameters to be passed to the child algorithm are specified in the \a extraParameters argument.
+     *
+     * The \a currentIndent and \a indentSize are used to set the base line indent and size of further indented lines respectively.
      */
-    QString asPythonCode() const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize ) const;
 
   private:
 
