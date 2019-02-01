@@ -526,7 +526,7 @@ void QgsSymbolLegendNode::updateLabel()
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
+    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
     {
       mLabel = evaluateLabel( mLabel );
     }
@@ -539,7 +539,7 @@ void QgsSymbolLegendNode::updateLabel()
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
+    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
     {
       mLabel = evaluateLabel( mLabel );
     }
