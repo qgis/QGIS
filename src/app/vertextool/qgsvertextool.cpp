@@ -1188,7 +1188,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
   }
 
   // make sure the vertex editor is alive and visible
-  showVertexEditor();
+  showVertexEditor();  //#spellok
 
   mVertexEditor->updateEditor( mSelectedFeature.get() );
 }
