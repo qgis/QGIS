@@ -364,7 +364,6 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Returns a string version of the parameter input \a value, which is suitable for use as an input
      * parameter value when running an algorithm directly from a Python command.
-     * The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
      */
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
