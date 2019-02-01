@@ -1334,6 +1334,9 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
           case QgsHueSaturationFilter::GrayscaleAverage:
             property = QStringLiteral( "average" );
             break;
+          case QgsHueSaturationFilter::GrayscaleOff:
+            // added just to avoid travis fail
+            break;
         }
         if ( !property.isEmpty() )
           vendorOptionWriter( QStringLiteral( "grayScale" ), property );
