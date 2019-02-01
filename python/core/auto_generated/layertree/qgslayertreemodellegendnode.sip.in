@@ -263,21 +263,23 @@ Sets format of text to be shown on top of the symbol.
 .. versionadded:: 3.2
 %End
 
-    QgsExpressionContext *createExpressionContext() const;
+    QgsExpressionContext createExpressionContext() const;
 %Docstring
 Create an expression context containing symbol elements
 
 \since: 3.8
 %End
 
-    QString evaluateLabel( QString label, QgsVectorLayer *vl);
+    QString evaluateLabel( QString label, QgsVectorLayer *vl ) const;
 %Docstring
 Evaluate the label with the proper context
 
 :param label: text to evaluate
 :param vl: pointer to the vectorlayer
-\since: 3.8
+
+.. versionadded:: 3.8
 %End
+
   public slots:
 
     void checkAllItems();
