@@ -589,14 +589,15 @@ QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) 
   if ( mLayerNode->layer()->type() == 0 )
   {
     context = createExpressionContext();
-    Q_UNUSED( vl )
+    label = label + mLayerNode->expression();
+    Q_UNUSED( vl );
   }
   else
   {
     context = vl->createExpressionContext();
   }
 
-  label = QgsExpression().replaceExpressionText( label+ mLayerNode->expression(), &context );
+  label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
 
