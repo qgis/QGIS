@@ -12,7 +12,11 @@
 # py files located under /usr/share/qgis/python/plugins
 %global __python %{__python3}
 
+%if 0%{?fedora} >= 30
+%define grass grass76
+%else
 %define grass grass74
+%endif
 
 %if %{_timestamp} > 0
 # Epoch is set only when building packages from master
