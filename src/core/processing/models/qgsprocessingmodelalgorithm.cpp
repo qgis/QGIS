@@ -381,12 +381,12 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       auto safeName = []( const QString & name )->QString
       {
         QString n = name.toLower().trimmed();
-        QRegularExpression rx( QStringLiteral( "[^a-z_A-Z0-9]" ) );
+        QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
         n.replace( rx, QString() );
-        return n;
+        return QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase );
       };
 
-      const QString algorithmClassName = QgsStringUtils::capitalize( safeName( name() ), QgsStringUtils::ForceFirstLetterToCapital );
+      const QString algorithmClassName = safeName( name() );
       lines << QStringLiteral( "class %1(QgsProcessingAlgorithm):" ).arg( algorithmClassName );
       lines << QString();
 
