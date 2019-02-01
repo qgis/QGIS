@@ -739,11 +739,11 @@ void TestQgsLayerTree::testSymbolText()
 
   QgsLegendSettings settings;
   settings.setWrapChar( QStringLiteral( "," ) );
-  QCOMPARE( nodes.at( 0 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "a [% 1 + 2 %]" ) );
+  QCOMPARE( nodes.at( 0 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "a 3" ) );
   QCOMPARE( nodes.at( 1 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "b,c" ) );
   QCOMPARE( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "c" ) );
   nodes.at( 2 )->setUserLabel( QStringLiteral( "[% 2+3 %] x [% 3+4 %]" ) );
-  QCOMPARE( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "[% 2+3 %] x [% 3+4 %]" ) );
+  QCOMPARE( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), QStringLiteral( "5 x 7" ) );
 
   QgsExpressionContext context;
   QCOMPARE( settings.evaluateItemText( nodes.at( 0 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "a 3" ) );
