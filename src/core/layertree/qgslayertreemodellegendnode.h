@@ -260,9 +260,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     /**
     * Evaluate the label with the proper context
     * \param label text to evaluate
+    * \param vl pointer to the vectorlayer
     * \since 3.8
     */
-    QString evaluateLabel( QString label ) const;
+    QString evaluateLabel( QString label, QgsVectorLayer *vl ) const;
 
   public slots:
 
