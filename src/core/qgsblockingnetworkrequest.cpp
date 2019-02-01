@@ -28,8 +28,6 @@
 #include <QNetworkCacheMetaData>
 #include <QAuthenticator>
 
-const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
-
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
 {
   connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply * >::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
@@ -127,7 +125,6 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
         break;
     };
 
-    mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
     if ( mFeedback )
       connect( mFeedback, &QgsFeedback::canceled, mReply, &QNetworkReply::abort );
 
@@ -308,8 +305,6 @@ void QgsBlockingNetworkRequest::replyFinished()
               mReply = QgsNetworkAccessManager::instance()->post( request, mPostData );
               break;
           };
-
-          mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
 
           if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg ) )
           {
