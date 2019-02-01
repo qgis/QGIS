@@ -6046,44 +6046,56 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( svSource.staticValue().toInt(), 5 );
   svSource.setStaticValue( 7 );
   QCOMPARE( svSource.staticValue().toInt(), 7 );
+  QCOMPARE( svSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "7" ) );
   svSource = QgsProcessingModelChildParameterSource::fromModelParameter( "a" );
   // check that calling setStaticValue flips source to StaticValue
   QCOMPARE( svSource.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( svSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "parameters['a']" ) );
   svSource.setStaticValue( 7 );
   QCOMPARE( svSource.staticValue().toInt(), 7 );
   QCOMPARE( svSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( svSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "7" ) );
 
   // model parameter source
   QgsProcessingModelChildParameterSource mpSource = QgsProcessingModelChildParameterSource::fromModelParameter( "a" );
   QCOMPARE( mpSource.source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( mpSource.parameterName(), QStringLiteral( "a" ) );
+  QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "parameters['a']" ) );
   mpSource.setParameterName( "b" );
   QCOMPARE( mpSource.parameterName(), QStringLiteral( "b" ) );
+  QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "parameters['b']" ) );
   mpSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setParameterName flips source to ModelParameter
   QCOMPARE( mpSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "5" ) );
   mpSource.setParameterName( "c" );
   QCOMPARE( mpSource.parameterName(), QStringLiteral( "c" ) );
   QCOMPARE( mpSource.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "parameters['c']" ) );
 
   // child alg output source
   QgsProcessingModelChildParameterSource oSource = QgsProcessingModelChildParameterSource::fromChildOutput( "a", "b" );
   QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( oSource.outputChildId(), QStringLiteral( "a" ) );
   QCOMPARE( oSource.outputName(), QStringLiteral( "b" ) );
+  QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "outputs['a']['b']" ) );
   oSource.setOutputChildId( "c" );
   QCOMPARE( oSource.outputChildId(), QStringLiteral( "c" ) );
+  QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "outputs['c']['b']" ) );
   oSource.setOutputName( "d" );
   QCOMPARE( oSource.outputName(), QStringLiteral( "d" ) );
+  QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "outputs['c']['d']" ) );
   oSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setOutputChildId flips source to ChildOutput
   QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "5" ) );
   oSource.setOutputChildId( "c" );
   QCOMPARE( oSource.outputChildId(), QStringLiteral( "c" ) );
   QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::ChildOutput );
   oSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setOutputName flips source to ChildOutput
   QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "5" ) );
   oSource.setOutputName( "d" );
   QCOMPARE( oSource.outputName(), QStringLiteral( "d" ) );
   QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::ChildOutput );
@@ -6092,14 +6104,18 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildParameterSource expSource = QgsProcessingModelChildParameterSource::fromExpression( "1+2" );
   QCOMPARE( expSource.source(), QgsProcessingModelChildParameterSource::Expression );
   QCOMPARE( expSource.expression(), QStringLiteral( "1+2" ) );
+  QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "QgsExpression('1+2').evaluate()" ) );
   expSource.setExpression( "1+3" );
   QCOMPARE( expSource.expression(), QStringLiteral( "1+3" ) );
+  QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "QgsExpression('1+3').evaluate()" ) );
   expSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setExpression flips source to Expression
   QCOMPARE( expSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "5" ) );
   expSource.setExpression( "1+4" );
   QCOMPARE( expSource.expression(), QStringLiteral( "1+4" ) );
   QCOMPARE( expSource.source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr ), QStringLiteral( "QgsExpression('1+4').evaluate()" ) );
 
   // source equality operator
   QVERIFY( QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) ==

@@ -20,6 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsprocessing.h"
+class QgsProcessingParameterDefinition;
 
 ///@cond NOT_STABLE
 
@@ -214,7 +216,7 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
     /**
      * Attempts to convert the source to executable Python code.
      */
-    QString asPythonCode() const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition ) const;
 
   private:
 
