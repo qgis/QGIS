@@ -755,6 +755,7 @@ void TestQgsLayerTree::testSymbolText()
   scope->setVariable( QStringLiteral( "bbbb" ), QStringLiteral( "aaaa,bbbb,cccc" ) );
   context.appendScope( scope );
   nodes.at( 2 )->setUserLabel( QStringLiteral( "[% @bbbb %],[% 3+4 %]" ) );
+  qInfo() << settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context );
   QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "aaaa" )
             << QStringLiteral( "bbbb" )
             << QStringLiteral( "cccc" )
