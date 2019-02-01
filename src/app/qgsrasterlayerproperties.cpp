@@ -56,6 +56,7 @@
 #include "qgshillshaderendererwidget.h"
 #include "qgssettings.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsfileutils.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -1873,8 +1874,7 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
     type = StyleType::SLD;
   else
     // ensure the user never omits the extension from the file name
-    if ( !outputFileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-      outputFileName += QLatin1String( ".qml" );
+    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
 
   apply(); // make sure the style to save is uptodate
 
