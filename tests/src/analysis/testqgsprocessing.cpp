@@ -576,6 +576,7 @@ class TestQgsProcessing: public QObject
     void combineFields();
     void fieldNamesToIndices();
     void indicesToFields();
+    void variantToPythonLiteral();
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
     void supportedExtensions();
@@ -7504,6 +7505,29 @@ void TestQgsProcessing::indicesToFields()
   QList<int> indices3;
   QgsFields fields3 = QgsProcessingUtils::indicesToFields( indices3, fields );
   QCOMPARE( fields3, QgsFields() );
+}
+
+void TestQgsProcessing::variantToPythonLiteral()
+{
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant() ), QStringLiteral( "None" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsProperty::fromExpression( QStringLiteral( "1+2" ) ) ) ), QStringLiteral( "QgsProperty.fromExpression('1+2')" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsCoordinateReferenceSystem() ) ), QStringLiteral( "QgsCoordinateReferenceSystem()" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) ), QStringLiteral( "QgsCoordinateReferenceSystem('EPSG:3111')" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsRectangle( 1, 2, 3, 4 ) ) ), QStringLiteral( "'1, 3, 2, 4'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) ) ) ), QStringLiteral( "'1, 3, 2, 4 [EPSG:28356]'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsPointXY( 1, 2 ) ) ), QStringLiteral( "'1,2'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariant::fromValue( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) ) ) ), QStringLiteral( "'1,2 [EPSG:28356]'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( true ), QStringLiteral( "True" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( false ), QStringLiteral( "False" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( 5 ), QStringLiteral( "5" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( 5.5 ), QStringLiteral( "5.5" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( 5LL ), QStringLiteral( "5" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QVariantList() << true << QVariant() << QStringLiteral( "a" ) ), QStringLiteral( "[True,None,'a']" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a" ) ), QStringLiteral( "'a'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QString() ), QStringLiteral( "''" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "'a \\'string\\''" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \n str\tin\\g" ) ), QStringLiteral( "'a \\n str\\tin\\\\g'" ) );
 }
 
 void TestQgsProcessing::stringToPythonLiteral()
