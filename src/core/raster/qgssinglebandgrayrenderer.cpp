@@ -274,8 +274,8 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     // to use real min/max values and in othere the actual edited min/max values
     switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
     {
-      case ( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ):
-      case ( QgsContrastEnhancement::ClipToMinimumMaximum ):
+      case QgsContrastEnhancement::StretchAndClipToMinimumMaximum:
+      case QgsContrastEnhancement::ClipToMinimumMaximum:
       {
         // with this renderer export have to be check against real min/max values of the raster
         QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
@@ -298,9 +298,11 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
         }
         break;
       }
-      case ( QgsContrastEnhancement::NoEnhancement ):
-      case ( QgsContrastEnhancement::StretchToMinimumMaximum ):
-      default:
+      case QgsContrastEnhancement::UserDefinedEnhancement:
+        break;
+      case QgsContrastEnhancement::NoEnhancement:
+        break;
+      case QgsContrastEnhancement::StretchToMinimumMaximum:
         break;
     }
 
