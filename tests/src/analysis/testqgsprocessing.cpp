@@ -6244,9 +6244,7 @@ void TestQgsProcessing::modelerAlgorithm()
   child.removeModelOutput( QStringLiteral( "a" ) );
   QCOMPARE( child.modelOutputs().count(), 1 );
 
-
   // model algorithm tests
-
 
   QgsProcessingModelAlgorithm alg( "test", "testGroup" );
   QCOMPARE( alg.name(), QStringLiteral( "test" ) );
@@ -6948,19 +6946,66 @@ void TestQgsProcessing::modelExecution()
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
 
-  QStringList actualParts = model2.asPythonCode().split( '\n' );
-  QStringList expectedParts = QStringLiteral( "##model=name\n"
-                              "##DIST=number\n"
-                              "##SOURCE_LAYER=source\n"
-                              "##model_out_layer=output outputVector\n"
-                              "##my_out=output outputVector\n"
-                              "results={}\n"
-                              "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':QgsExpression('@myvar*2').evaluate()}, context=context, feedback=feedback)\n"
-                              "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
-                              "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT']}, context=context, feedback=feedback)\n"
-                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
-                              "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
-                              "return results" ).split( '\n' );
+  QStringList actualParts = model2.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 2 );
+  QgsDebugMsg( actualParts.join( '\n' ) );
+  QStringList expectedParts = QStringLiteral( "from qgis.core import QgsProcessing\n"
+                              "from qgis.core import QgsProcessingAlgorithm\n"
+                              "from qgis.core import QgsProcessingParameterFeatureSource\n"
+                              "from qgis.core import QgsProcessingParameterNumber\n"
+                              "from qgis.core import QgsProcessingParameterFeatureSink\n"
+                              "import processing\n"
+                              "\n"
+                              "\n"
+                              "class model(QgsProcessingAlgorithm):\n"
+                              "  def createInstance(self):\n"
+                              "    return model()\n"
+                              "\n"
+                              "  def name(self):\n"
+                              "    return 'model'\n"
+                              "\n"
+                              "  def displayName(self):\n"
+                              "    return 'model'\n"
+                              "\n"
+                              "  def group(self):\n"
+                              "    return ''\n"
+                              "\n"
+                              "  def groupId(self):\n"
+                              "    return ''\n"
+                              "\n"
+                              "  def initAlgorithm(self, config=None):\n"
+                              "    self.addParameter(QgsProcessingParameterFeatureSource('SOURCE_LAYER', '', defaultValue=None))\n"
+                              "    self.addParameter(QgsProcessingParameterNumber('DIST', '', type=QgsProcessingParameterNumber.Double, defaultValue=None))\n"
+                              "    self.addParameter(QgsProcessingParameterFeatureSink('cx1:MODEL_OUT_LAYER', '', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, defaultValue=None))\n"
+                              "    self.addParameter(QgsProcessingParameterFeatureSink('cx3:MY_OUT', '', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
+                              "\n"
+                              "  def processAlgorithm(self, parameters, context, feedback):\n"
+                              "    results={}\n"
+                              "    outputs={}\n"
+                              "    alg_params = {\n"
+                              "      'DISSOLVE':False,\n"
+                              "      'DISTANCE':parameters['DIST'],\n"
+                              "      'END_CAP_STYLE':1,\n"
+                              "      'INPUT':parameters['SOURCE_LAYER'],\n"
+                              "      'JOIN_STYLE':2,\n"
+                              "      'SEGMENTS':QgsExpression('@myvar*2').evaluate(),\n"
+                              "      'OUTPUT':parameters['cx1:MODEL_OUT_LAYER'],\n"
+                              "    }\n"
+                              "    outputs['cx1']=processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
+                              "    results['cx1:MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
+                              "    alg_params = {\n"
+                              "      'INPUT':outputs['cx1']['OUTPUT'],\n"
+                              "      'OUTPUT':QgsProcessing.TEMPORARY_OUTPUT,\n"
+                              "    }\n"
+                              "    outputs['cx2']=processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
+                              "    alg_params = {\n"
+                              "      'EXPRESSION':'true',\n"
+                              "      'INPUT':outputs['cx1']['OUTPUT'],\n"
+                              "      'OUTPUT':parameters['MY_OUT'],\n"
+                              "      'OUTPUT':parameters['cx3:MY_OUT'],\n"
+                              "    }\n"
+                              "    outputs['cx3']=processing.run('native:extractbyexpression', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
+                              "    results['cx3:MY_OUT']=outputs['cx3']['OUTPUT']\n"
+                              "    return results" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
 }
 
