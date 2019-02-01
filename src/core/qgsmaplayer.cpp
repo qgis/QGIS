@@ -1425,7 +1425,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
     root.appendChild( layerNode );
   }
 
-  // note rster layer generate only 1.0 SLD version mostly becase seems none is using SE1.1.0 at leasst for rasters
+  // note: Only SLD 1.0 version is generated because seems none is using SE1.1.0 at least for rasters
   if ( rlayer )
   {
     // Create the root element
