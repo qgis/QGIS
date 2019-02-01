@@ -413,7 +413,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       if ( !shortHelpString().isEmpty() )
       {
         lines << indent + QStringLiteral( "def shortHelpString(self):" );
-        lines << indent + indent + QStringLiteral( "return '%1'" ).arg( shortHelpString() );
+        lines << indent + indent + QStringLiteral( "return \"\"\"%1\"\"\"" ).arg( shortHelpString() );
         lines << QString();
       }
       if ( !helpUrl().isEmpty() )
