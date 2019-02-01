@@ -297,7 +297,6 @@ layers and other factors within the context.
 %Docstring
 Returns a string version of the parameter input ``value``, which is suitable for use as an input
 parameter value when running an algorithm directly from a Python command.
-The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
 %End
 
     virtual QString asScriptCode() const;
