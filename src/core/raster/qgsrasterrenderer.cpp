@@ -163,7 +163,7 @@ void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const Qg
   element.appendChild( rasterSymolizerElem );
 
   // add opacity only is different from default
-  if ( opacity() != 1.0 )
+  if ( !qgsDoubleNear( opacity(), 1.0 ) )
   {
     QDomElement opacityElem = doc.createElement( QStringLiteral( "sld:Opacity" ) );
     opacityElem.appendChild( doc.createTextNode( QString::number( opacity() ) ) );
