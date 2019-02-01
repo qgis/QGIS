@@ -144,12 +144,12 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     int minval = min.toInt();
     if ( allowNull )
     {
-      int stepval = step.isValid() ? step.toInt() : 1;
-      int newMinval = minval - stepval;
+      uint stepval = step.isValid() ? step.toUInt() : 1;
       // make sure there is room for a new value (i.e. signed integer does not overflow)
-      if ( newMinval < minval )
+      int minvalOverflow = uint( minval ) - stepval;
+      if ( minvalOverflow < minval )
       {
-        minval = newMinval;
+        minval = minvalOverflow;
       }
       mIntSpinBox->setValue( minval );
       QgsSpinBox *intSpinBox( qobject_cast<QgsSpinBox *>( mIntSpinBox ) );
