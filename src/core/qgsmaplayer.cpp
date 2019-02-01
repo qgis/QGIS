@@ -1391,7 +1391,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, Style
   return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag, categories );
 }
 
-void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
+void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 {
   QDomDocument myDocument = QDomDocument();
 
@@ -1399,7 +1399,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
   myDocument.appendChild( header );
 
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( this );
+  const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
   if ( !vlayer && !rlayer )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
@@ -1468,7 +1468,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
   doc = myDocument;
 }
 
-QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag )
+QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 {
   QString errorMsg;
   QDomDocument myDocument;

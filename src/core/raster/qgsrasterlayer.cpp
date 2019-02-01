@@ -1220,7 +1220,7 @@ QDateTime QgsRasterLayer::timestamp() const
 }
 
 
-bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props )
+bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
 {
   Q_UNUSED( errorMessage );
 
