@@ -1397,7 +1397,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
   if ( !vlayer && !rlayer )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
-               .arg( QStringLiteral( "Non vector or raster layers are supported yet" ) );
+               .arg( tr( "Non vector or raster layers are supported yet" ) );
     return;
   }
 
