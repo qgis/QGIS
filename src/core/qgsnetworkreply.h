@@ -139,8 +139,22 @@ class CORE_EXPORT QgsNetworkReplyContent
      */
     QNetworkRequest request() const { return mRequest; }
 
+    /**
+     * Sets the reply content. This is not done by default, as reading network reply content
+     * can only be done once.
+     *
+     * \see content()
+     */
     void setContent( const QByteArray &content ) { mContent = content; }
 
+    /**
+     * Returns the reply content. This is not available by default, as reading network reply content
+     * can only be done once.
+     *
+     * Blocking network requests (see QgsBlockingNetworkRequest) will automatically populate this content.
+     *
+     * \see setContent()
+     */
     QByteArray content() const { return mContent; }
 
   private:
