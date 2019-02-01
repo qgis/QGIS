@@ -509,15 +509,6 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
   }
 }
 
-void QgsSymbolLegendNode::invalidateMapBasedData()
-{
-  if ( mSymbolUsesMapUnits )
-  {
-    mPixmap = QPixmap();
-    emit dataChanged();
-  }
-}
-
 void QgsSymbolLegendNode::updateLabel()
 {
   if ( !mLayerNode )
@@ -595,7 +586,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
 {
   QgsExpressionContext context;
-  if ( mLayerNode->layer()->type() == VectorLayer )
+  if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
   {
     context = createExpressionContext();
     Q_UNUSED( vl )
@@ -607,6 +598,29 @@ QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) 
 
   label = QgsExpression().replaceExpressionText( label + mLayerNode->expression(), &context );
   return label;
+}
+
+// -------------------------------------------------------------------------
+
+
+QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon, QObject *parent, const QString &key )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mLabel( label )
+  , mIcon( icon )
+  , mKey( key )
+{
+}
+
+QVariant QgsSimpleLegendNode::data( int role ) const
+{
+  if ( role == Qt::DisplayRole || role == Qt::EditRole )
+    return mUserLabel.isEmpty() ? mLabel : mUserLabel;
+  else if ( role == Qt::DecorationRole )
+    return mIcon;
+  else if ( role == RuleKeyRole && !mKey.isEmpty() )
+    return mKey;
+  else
+    return QVariant();
 }
 
 
