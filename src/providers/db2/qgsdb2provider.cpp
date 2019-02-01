@@ -235,7 +235,6 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
   db.setPort( port.toInt() );
   bool connected = false;
   int i = 0;
-  QgsCredentials::instance()->lock();
   while ( !connected && i < 3 )
   {
     i++;
@@ -249,7 +248,6 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
       {
         errMsg = QStringLiteral( "Cancel clicked" );
         QgsDebugMsg( errMsg );
-        QgsCredentials::instance()->unlock();
         break;
       }
     }
@@ -291,7 +289,6 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
   {
     QgsCredentials::instance()->put( databaseName, userName, password );
   }
-  QgsCredentials::instance()->unlock();
 
   return db;
 }

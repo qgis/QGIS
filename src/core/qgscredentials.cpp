@@ -40,9 +40,11 @@ QgsCredentials *QgsCredentials::instance()
 
 bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message )
 {
+  QMutexLocker locker( &mMutex );
   if ( mCredentialCache.contains( realm ) )
   {
     QPair<QString, QString> credentials = mCredentialCache.take( realm );
+    locker.unlock();
     username = credentials.first;
     password = credentials.second;
     QgsDebugMsg( QStringLiteral( "retrieved realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
@@ -50,6 +52,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
     if ( !password.isNull() )
       return true;
   }
+  locker.unlock();
 
   if ( request( realm, username, password, message ) )
   {
@@ -66,6 +69,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
 void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
   QgsDebugMsg( QStringLiteral( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+  QMutexLocker locker( &mMutex );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 

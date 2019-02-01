@@ -1589,10 +1589,6 @@ QgisApp::~QgisApp()
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
 
-  // replace gui based network access managers with failing only ones
-  QgsNetworkAccessManager::instance()->setSslErrorHandler( qgis::make_unique< QgsSslErrorHandler >() );
-  QgsNetworkAccessManager::instance()->setAuthHandler( qgis::make_unique< QgsNetworkAuthenticationHandler >() );
-
   const QList<QgsMapCanvas *> canvases = mapCanvases();
   for ( QgsMapCanvas *canvas : canvases )
   {
@@ -13978,7 +13974,6 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
     bool ok;
 
     {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
       ok = QgsCredentials::instance()->get(
              QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
              username, password,
@@ -13992,7 +13987,6 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 
     // credentials didn't change - stored ones probably wrong? clear password and retry
     {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
       QgsCredentials::instance()->put(
         QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
         username, QString() );
@@ -14000,7 +13994,6 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
   }
 
   {
-    QMutexLocker lock( QgsCredentials::instance()->mutex() );
     QgsCredentials::instance()->put(
       QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
       username, password
