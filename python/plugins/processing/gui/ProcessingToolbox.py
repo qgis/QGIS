@@ -192,9 +192,12 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 popupmenu.addSeparator()
             for action in actions:
                 action.setData(alg, self)
-                if action.isEnabled():
+                if action.is_separator:
+                    popupmenu.addSeparator()
+                elif action.isEnabled():
                     contextMenuAction = QAction(action.name,
                                                 popupmenu)
+                    contextMenuAction.setIcon(action.icon())
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
