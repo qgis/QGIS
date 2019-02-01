@@ -1464,9 +1464,11 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 {
+  const QgsMapLayer *mlayer = qobject_cast<const QgsMapLayer *>( this );
+
   QString errorMsg;
   QDomDocument myDocument;
-  exportSldStyle( myDocument, errorMsg );
+  mlayer->exportSldStyle( myDocument, errorMsg );
   if ( !errorMsg.isNull() )
   {
     resultFlag = false;
@@ -1475,17 +1477,17 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
   QString filename;
-  if ( providerType() == QLatin1String( "ogr" ) )
+  if ( mlayer->providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = uri.split( '|' );
     filename = theURIParts[0];
   }
-  else if ( providerType() == QLatin1String( "gpx" ) )
+  else if ( mlayer->providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = uri.split( '?' );
     filename = theURIParts[0];
   }
-  else if ( providerType() == QLatin1String( "delimitedtext" ) )
+  else if ( mlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
     // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
