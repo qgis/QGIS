@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsmeshlayer.h"
+#include "qgsreferencedgeometry.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -387,6 +388,84 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   QString normalized = source;
   normalized.replace( '\\', '/' );
   return normalized.trimmed();
+}
+
+QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+  else if ( value.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    if ( !value.value< QgsCoordinateReferenceSystem >().isValid() )
+      return QStringLiteral( "QgsCoordinateReferenceSystem()" );
+    else
+      return QStringLiteral( "QgsCoordinateReferenceSystem('%1')" ).arg( value.value< QgsCoordinateReferenceSystem >().authid() );
+  }
+  else if ( value.canConvert< QgsRectangle >() )
+  {
+    QgsRectangle r = value.value<QgsRectangle>();
+    return QStringLiteral( "'%1, %3, %2, %4'" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ) );
+  }
+  else if ( value.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
+    return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+  }
+  else if ( value.canConvert< QgsPointXY >() )
+  {
+    QgsPointXY r = value.value<QgsPointXY>();
+    return QStringLiteral( "'%1,%2'" ).arg( qgsDoubleToString( r.x() ),
+                                            qgsDoubleToString( r.y() ) );
+  }
+  else if ( value.canConvert< QgsReferencedPointXY >() )
+  {
+    QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
+    return QStringLiteral( "'%1,%2 [%3]'" ).arg( qgsDoubleToString( r.x() ),
+           qgsDoubleToString( r.y() ),
+           r.crs().authid() );
+  }
+
+  switch ( value.type() )
+  {
+    case QVariant::Bool:
+      return value.toBool() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
+
+    case QVariant::Double:
+      return QString::number( value.toDouble() );
+
+    case QVariant::Int:
+    case QVariant::UInt:
+      return QString::number( value.toInt() );
+
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+      return QString::number( value.toLongLong() );
+
+    case QVariant::List:
+    {
+      QStringList parts;
+      const QVariantList vl = value.toList();
+      for ( const QVariant &v : vl )
+      {
+        parts << variantToPythonLiteral( v );
+      }
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+    }
+
+    default:
+      break;
+  }
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
