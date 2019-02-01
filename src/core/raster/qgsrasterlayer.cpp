@@ -1444,6 +1444,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
         vendorOptionWriter( QStringLiteral( "contrast" ), QString::number( cF ) );
       }
 
+#if 0
       // TODO: check if the below mapping formula make sense to map QGIS contrast with SLD gamma value
       //
       // add SLD1.0 ContrastEnhancement GammaValue = QGIS Contrast
@@ -1454,28 +1455,29 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       // [-100,0] => [0,1] and [0,100] => [1,100]
       // an alternative could be scale [-100,100] => (0,2]
       //
-      //  if ( newProps.contains( QStringLiteral( "contrast" ) ) )
-      //  {
-      //    double gamma;
-      //    double contrast = newProps[ QStringLiteral( "contrast" ) ].toDouble();
-      //    double percentage = (contrast - (-100.0))/(100.0 - (-100.0));
-      //    if ( percentage <= 0.5)
-      //    {
-      //      // stretch % to [0-1]
-      //      gamma = percentage / 0.5;
-      //    }
-      //    else
-      //    {
-      //      gamma = contrast;
-      //    }
+      if ( newProps.contains( QStringLiteral( "contrast" ) ) )
+      {
+        double gamma;
+        double contrast = newProps[ QStringLiteral( "contrast" ) ].toDouble();
+        double percentage = ( contrast - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+        if ( percentage <= 0.5 )
+        {
+          // stretch % to [0-1]
+          gamma = percentage / 0.5;
+        }
+        else
+        {
+          gamma = contrast;
+        }
 
-      //    QDomElement globalContrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
-      //    rasterSymolizerElem.appendChild( globalContrastEnhancementElem );
+        QDomElement globalContrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
+        rasterSymolizerElem.appendChild( globalContrastEnhancementElem );
 
-      //    QDomElement gammaValueElem = doc.createElement( QStringLiteral( "sld:GammaValue" ) );
-      //    gammaValueElem.appendChild( doc.createTextNode( QString::number( gamma ) ) );
-      //    globalContrastEnhancementElem.appendChild( gammaValueElem );
-      //  }
+        QDomElement gammaValueElem = doc.createElement( QStringLiteral( "sld:GammaValue" ) );
+        gammaValueElem.appendChild( doc.createTextNode( QString::number( gamma ) ) );
+        globalContrastEnhancementElem.appendChild( gammaValueElem );
+      }
+#endif
     }
   }
   return true;
