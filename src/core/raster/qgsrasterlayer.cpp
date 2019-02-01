@@ -1297,7 +1297,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
 
   if ( isSpatial() ) // TODO: does it make sense this control?
   {
-    // store contraints
+    // store constraints
     QDomElement constraintElem = doc.createElement( QStringLiteral( "sld:LayerFeatureConstraints" ) );
     node.appendChild( constraintElem );
 

@@ -400,7 +400,7 @@ void QgsContrastEnhancement::toSld( QDomDocument &doc, QDomElement &element ) co
       return;
     default:
       QString algName = contrastEnhancementAlgorithmString( contrastEnhancementAlgorithm() );
-      QgsDebugMsg( QObject::tr( "No SLD1.0 convertion yet for stretch algorithm %1" ).arg( algName ) );
+      QgsDebugMsg( QObject::tr( "No SLD1.0 conversion yet for stretch algorithm %1" ).arg( algName ) );
       return;
   }
 
