@@ -1325,16 +1325,14 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
         QString property;
         switch ( hueSaturationFilter()->grayscaleMode() )
         {
-          case ( QgsHueSaturationFilter::GrayscaleLightness ):
+          case QgsHueSaturationFilter::GrayscaleLightness:
             property = QStringLiteral( "lightness" );
             break;
-          case ( QgsHueSaturationFilter::GrayscaleLuminosity ):
+          case QgsHueSaturationFilter::GrayscaleLuminosity:
             property = QStringLiteral( "luminosity" );
             break;
-          case ( QgsHueSaturationFilter::GrayscaleAverage ):
+          case QgsHueSaturationFilter::GrayscaleAverage:
             property = QStringLiteral( "average" );
-            break;
-          default:
             break;
         }
         if ( !property.isEmpty() )
