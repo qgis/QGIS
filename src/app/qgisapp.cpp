@@ -13657,15 +13657,10 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *inReply, QAuthenticator 
 
   for ( ;; )
   {
-    bool ok;
-
-    {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
-      ok = QgsCredentials::instance()->get(
+    bool ok = QgsCredentials::instance()->get(
              QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
              username, password,
              tr( "Authentication required" ) );
-    }
     if ( !ok )
       return;
 
@@ -13676,22 +13671,16 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *inReply, QAuthenticator 
       break;
 
     // credentials didn't change - stored ones probably wrong? clear password and retry
-    {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
       QgsCredentials::instance()->put(
         QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
         username, QString() );
-    }
   }
 
   // save credentials
-  {
-    QMutexLocker lock( QgsCredentials::instance()->mutex() );
     QgsCredentials::instance()->put(
       QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
       username, password
     );
-  }
 
   auth->setUser( username );
   auth->setPassword( password );
@@ -13715,7 +13704,6 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
     bool ok;
 
     {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
       ok = QgsCredentials::instance()->get(
              QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
              username, password,
@@ -13729,7 +13717,6 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 
     // credentials didn't change - stored ones probably wrong? clear password and retry
     {
-      QMutexLocker lock( QgsCredentials::instance()->mutex() );
       QgsCredentials::instance()->put(
         QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
         username, QString() );
@@ -13737,7 +13724,6 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
   }
 
   {
-    QMutexLocker lock( QgsCredentials::instance()->mutex() );
     QgsCredentials::instance()->put(
       QStringLiteral( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
       username, password
