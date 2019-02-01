@@ -747,7 +747,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         vendorOptions = rasterSymbolizer.elementsByTagName('sld:VendorOption')
         self.assertTrue(vendorOptions.size() == 0)
 
-        # set no defalt values and check exported sld
+        # set no default values and check exported sld
         myRasterLayer.setName('')
         myRasterLayer.setAbstract('fake')
         myRasterLayer.setTitle('fake')

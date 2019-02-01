@@ -322,7 +322,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // min/max calculation again that can takes a lot for remote or big images
   //
   // contrast enhancement against a color map can be SLD simulated playing with ColorMapEntryies
-  // each ContrastEnhancementAlgorithm need a specfic management.
+  // each ContrastEnhancementAlgorithm need a specific management.
   // set type of ColorMap ramp [ramp, intervals, values]
   // basing on interpolation algorithm of the raster shader
   QList< QPair< QString, QColor > > colorMapping( classes );

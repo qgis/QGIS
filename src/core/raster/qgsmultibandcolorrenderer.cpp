@@ -433,7 +433,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // TODO: the following jumped code is necessary to avoid to export channelSelection in
   // case it's set as default value. The drawback is that it's necessary to calc band
   // statistics that can be really slow depending on dataProvider and rastr localtion.
-  // this is the reason this part of code is commented and the channelSlection is
+  // this is the reason this part of code is commented and the channelSelection is
   // always exported.
   //
   // before to export check if the band combination and contrast setting are the
