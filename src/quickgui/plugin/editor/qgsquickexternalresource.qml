@@ -15,6 +15,7 @@
 
 import QtQuick 2.5
 import QtQuick.Controls 2.0
+import QtGraphicalEffects 1.0
 import QgsQuick 0.1 as QgsQuick
 
 /**
@@ -28,8 +29,11 @@ Item {
   property var image: image
 
   id: fieldItem
-  anchors.left: parent.left
-  anchors.right: parent.right
+  anchors {
+    left: parent.left
+    right: parent.right
+    rightMargin: 10 * QgsQuick.Utils.dp
+  }
 
   height: Math.max(image.height, button.height)
 
@@ -39,36 +43,57 @@ Item {
     height: window.height
     width: window.width
     edge: Qt.RightEdge
+    imageButtonSize: button.height
   }
 
   Image {
     property var currentValue: value
 
     id: image
-    width: 200 * QgsQuick.Utils.dp
+    width: customStyle.height * 3
     autoTransform: true
     fillMode: Image.PreserveAspectFit
+    visible: currentValue
 
     Component.onCompleted: image.source = getSource()
 
     function getSource() {
       if (image.status === Image.Error)
-        return QgsQuick.Utils.getThemeIcon("ic_broken_image_black")
+        return ""
       else if (image.currentValue && QgsQuick.Utils.fileExists(homePath + "/" + image.currentValue))
         return homePath + "/" + image.currentValue
       else
-        return QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+        return ""
     }
+  }
+
+  Image {
+      id: icon
+      source: image.status === Image.Error ? QgsQuick.Utils.getThemeIcon("ic_broken_image_black") : QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
+      width: button.width
+      height: button.height
+      sourceSize.width: width
+      sourceSize.height: height
+      fillMode: Image.PreserveAspectFit
+      visible: !image.currentValue
+  }
+
+  ColorOverlay {
+      anchors.fill: icon
+      source: icon
+      color: customStyle.fontColor
   }
 
   Button {
     id: button
-    visible: fieldItem.enabled
-    width: 45 * QgsQuick.Utils.dp
-    height: 45 * QgsQuick.Utils.dp
+    visible: enabled
+    width: customStyle.height
+    height: width
+    padding: 0
 
     anchors.right: parent.right
     anchors.bottom: parent.bottom
+    anchors.verticalCenter: parent.verticalCenter
 
     onClicked: {
       photoCapturePanel.visible = true
@@ -77,9 +102,19 @@ Item {
     }
 
     background: Image {
-      source: QgsQuick.Utils.getThemeIcon("ic_camera_alt_border")
+      id: cameraIcon
+      source: QgsQuick.Utils.getThemeIcon("ic_camera")
       width: button.width
       height: button.height
+      sourceSize.width: width
+      sourceSize.height: height
+      fillMode: Image.PreserveAspectFit
+    }
+
+    ColorOverlay {
+        anchors.fill: cameraIcon
+        source: cameraIcon
+        color: customStyle.fontColor
     }
   }
 }

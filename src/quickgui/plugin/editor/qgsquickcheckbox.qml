@@ -15,7 +15,7 @@
 
 import QtQuick 2.0
 import QtQuick.Controls 2.2
-import QgisQuick 0.1 as QgsQuick
+import QgsQuick 0.1 as QgsQuick
 
 /**
  * Checkbox for QGIS Attribute Form
@@ -30,12 +30,34 @@ Item {
     right: parent.right
     left: parent.left
   }
+  id: fieldItem
 
   CheckBox {
     property var currentValue: value
-
+    height: customStyle.height
+    id: checkBox
+    leftPadding: 0
     checked: value == config['CheckedState']
 
+    indicator: Rectangle {
+                implicitWidth: customStyle.height
+                implicitHeight: customStyle.height
+                radius: customStyle.cornerRadius
+                border.color: checkBox.activeFocus ? customStyle.fontColor : "grey"
+                border.width: 1
+                Rectangle {
+                    visible: checkBox.checked
+                    color: customStyle.fontColor
+                    radius: customStyle.cornerRadius
+                    anchors.margins: 4
+                    anchors.fill: parent
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: checkBox.currentValue = !checkBox.currentValue
+                }
+        }
     onCheckedChanged: {
       valueChanged( checked ? config['CheckedState'] : config['UncheckedState'], false )
       forceActiveFocus()

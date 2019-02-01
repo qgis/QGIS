@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-import QtQuick 2.0
+import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 import QgsQuick 0.1 as QgsQuick
@@ -25,6 +25,7 @@ import QgsQuick 0.1 as QgsQuick
  */
 Item {
   signal valueChanged(var value, bool isNull)
+  id: fieldItem
 
   anchors {
     left: parent.left
@@ -32,28 +33,55 @@ Item {
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  height: childrenRect.height + 10 * QgsQuick.Utils.dp
+  height: customStyle.height
 
   ComboBox {
     id: comboBox
 
     property var reverseConfig: ({})
     property var currentValue: value
-
+    property var currentMap
+    property var currentKey
+    height: parent.height
     anchors { left: parent.left; right: parent.right }
-
     currentIndex: find(reverseConfig[value])
 
+    ListModel {
+        id: listModel
+    }
+
     Component.onCompleted: {
-      model = Object.keys(config['map']);
-      for(var key in config['map']) {
-        reverseConfig[config['map'][key]] = key;
+      if( config['map'] )
+      {
+        if( config['map'].length )
+        {
+          //it's a list (>=QGIS3.0)
+          for(var i=0; i<config['map'].length; i++)
+          {
+            currentMap = config['map'][i]
+            currentKey = Object.keys(currentMap)[0]
+            listModel.append( { text: currentKey } )
+            reverseConfig[currentMap[currentKey]] = currentKey;
+          }
+          model=listModel
+          textRole = 'text'
+        }
+        else
+        {
+          //it's a map (<=QGIS2.18)
+          model = Object.keys(config['map']);
+          for(var key in config['map']) {
+            reverseConfig[config['map'][key]] = key;
+          }
+        }
       }
+
       currentIndex = find(reverseConfig[value])
     }
 
     onCurrentTextChanged: {
-      valueChanged(config['map'][currentText], false)
+      currentMap= config['map'].length ? config['map'][currentIndex] : config['map']
+      valueChanged(currentMap[currentText], false)
     }
 
     // Workaround to get a signal when the value has changed
@@ -76,32 +104,36 @@ Item {
     // [hidpi fixes]
     delegate: ItemDelegate {
       width: comboBox.width
-      height: 36 * QgsQuick.Utils.dp
-      text: modelData
+      height: comboBox.height * 0.8
+      text: config['map'].length ? model.text : modelData
       font.weight: comboBox.currentIndex === index ? Font.DemiBold : Font.Normal
-      font.pointSize: 12 * QgsQuick.Utils.dp
+      font.pixelSize: customStyle.fontPixelSize
       highlighted: comboBox.highlightedIndex == index
+      leftPadding: 5 * QgsQuick.Utils.dp
     }
 
     contentItem: Text {
-      height: 36 * QgsQuick.Utils.dp
+      height: comboBox.height * 0.8
       text: comboBox.displayText
+      font.pixelSize: customStyle.fontPixelSize
       horizontalAlignment: Text.AlignLeft
       verticalAlignment: Text.AlignVCenter
       elide: Text.ElideRight
+      leftPadding: 5 * QgsQuick.Utils.dp
+      color: customStyle.fontColor
     }
 
     background: Item {
       implicitWidth: 120 * QgsQuick.Utils.dp
-      implicitHeight: 36 * QgsQuick.Utils.dp
+      implicitHeight: comboBox.height * 0.8
 
       Rectangle {
         anchors.fill: parent
         id: backgroundRect
-        border.color: comboBox.pressed ? "#17a81a" : "#21be2b"
+        border.color: comboBox.pressed ? customStyle.activeColor : customStyle.normalColor
         border.width: comboBox.visualFocus ? 2 : 1
-        color: "#dddddd"
-        radius: 2
+        color: customStyle.backgroundColor
+        radius: customStyle.cornerRadius
       }
     }
     // [/hidpi fixes]
