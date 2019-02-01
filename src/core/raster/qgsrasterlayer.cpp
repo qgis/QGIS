@@ -1267,15 +1267,17 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "sld:FeatureTypeStyle" ) );
     userStyleElem.appendChild( featureTypeStyleElem );
 
-    // TODO: readd this tag if there is a way to fill it's value with the named style
-    // by default Nam under sld:FeatureTypeStyle can have 0 occurrences
+#if 0
+    // TODO: Is there a way to fill it's value with the named style?
+    // by default <sld:Name> under <sld:FeatureTypeStyle> can have 0 occurrences
     // the same happen for tags:
     // sld:Title
     // sld:Abstract
     // sld:FeatureTypeName
     // sld:SemanticTypeIdentifier
-    //QDomElement typeStyleNameElem = doc.createElement( QStringLiteral( "sld:Name" ) );
-    //featureTypeStyleElem.appendChild( typeStyleNameElem );
+    QDomElement typeStyleNameElem = doc.createElement( QStringLiteral( "sld:Name" ) );
+    featureTypeStyleElem.appendChild( typeStyleNameElem );
+#endif
 
     QDomElement typeStyleRuleElem = doc.createElement( QStringLiteral( "sld:Rule" ) );
     featureTypeStyleElem.appendChild( typeStyleRuleElem );
