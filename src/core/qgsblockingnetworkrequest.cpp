@@ -306,6 +306,9 @@ void QgsBlockingNetworkRequest::replyFinished()
               break;
           };
 
+          if ( mFeedback )
+            connect( mFeedback, &QgsFeedback::canceled, mReply, &QNetworkReply::abort );
+
           if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg ) )
           {
             mReplyContent.clear();
