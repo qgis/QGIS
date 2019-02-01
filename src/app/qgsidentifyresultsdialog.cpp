@@ -33,6 +33,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaplayer.h"
+#include "qgsmeshlayer.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
@@ -476,6 +477,9 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       break;
 
     case QgsMapLayer::MeshLayer:
+      addFeature( qobject_cast<QgsMeshLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes );
+      break;
+
     case QgsMapLayer::PluginLayer:
       break;
   }
@@ -920,6 +924,49 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   if ( !attributes.isEmpty() )
   {
     mPlotCurves.append( new QgsIdentifyPlotCurve( attributes, mPlot, layer->name() ) );
+  }
+}
+
+void QgsIdentifyResultsDialog::addFeature( QgsMeshLayer *layer,
+    const QString &label,
+    const QMap< QString, QString > &attributes,
+    const QMap< QString, QString > &derivedAttributes )
+{
+  QTreeWidgetItem *layItem = layerItem( layer );
+
+  if ( !layItem )
+  {
+    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+
+    lstResults->addTopLevelItem( layItem );
+    connect( layer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
+    connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
+  }
+
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( QgsFields(),
+      QgsFeature(),
+      layer->crs(),
+      QStringList() << label << QString() );
+  layItem->addChild( featItem );
+
+  // attributes
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+  }
+
+  if ( derivedAttributes.size() >= 0 )
+  {
+    QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    derivedItem->setData( 0, Qt::UserRole, "derived" );
+    derivedItem->setAlwaysOnTopPriority( 0 );
+    featItem->addChild( derivedItem );
+
+    for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
+    {
+      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    }
   }
 }
 
@@ -1395,6 +1442,14 @@ QgsRasterLayer *QgsIdentifyResultsDialog::rasterLayer( QTreeWidgetItem *item )
   if ( !item )
     return nullptr;
   return qobject_cast<QgsRasterLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+}
+
+QgsMeshLayer *QgsIdentifyResultsDialog::meshLayer( QTreeWidgetItem *item )
+{
+  item = layerItem( item );
+  if ( !item )
+    return nullptr;
+  return qobject_cast<QgsMeshLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )

@@ -27,6 +27,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
+#include "qgsmeshlayer.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -214,6 +215,10 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   {
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry );
   }
+  else if ( layer->type() == QgsMapLayer::MeshLayer && layerType.testFlag( MeshLayer ) )
+  {
+    return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry );
+  }
   else
   {
     return false;
@@ -223,6 +228,89 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
   return identifyVectorLayer( results, layer, QgsGeometry::fromPointXY( point ) );
+}
+
+bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsGeometry &geometry )
+{
+  const QgsPointXY point = geometry.asPoint();  // mesh layers currently only support identification by point
+  return identifyMeshLayer( results, layer, point );
+}
+
+bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point )
+{
+  QgsDebugMsgLevel( "point = " + point.toString(), 4 );
+  if ( !layer || !layer->dataProvider() )
+    return false;
+
+  const QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
+  const QgsMeshDatasetIndex scalarDatasetIndex = rendererSettings.activeScalarDataset();
+  const QgsMeshDatasetIndex vectorDatasetIndex = rendererSettings.activeVectorDataset();
+  if ( ! scalarDatasetIndex.isValid() && ! vectorDatasetIndex.isValid() )
+    return false;
+
+  QMap< QString, QString > scalarAttributes, vectorAttributes;
+
+  QString scalarGroup;
+  if ( scalarDatasetIndex.isValid() )
+  {
+    scalarGroup = layer->dataProvider()->datasetGroupMetadata( scalarDatasetIndex.group() ).name();
+
+    const QgsMeshDatasetValue scalarValue = layer->datasetValue( scalarDatasetIndex, point );
+    const double scalar = scalarValue.scalar();
+    if ( std::isnan( scalar ) )
+      scalarAttributes.insert( tr( "Scalar Value" ), tr( "no data" ) );
+    else
+      scalarAttributes.insert( tr( "Scalar Value" ), QString::number( scalar ) );
+  }
+
+  QString vectorGroup;
+  if ( vectorDatasetIndex.isValid() )
+  {
+    vectorGroup = layer->dataProvider()->datasetGroupMetadata( vectorDatasetIndex.group() ).name();
+
+    const QgsMeshDatasetValue vectorValue = layer->datasetValue( vectorDatasetIndex, point );
+    const double vectorX = vectorValue.x();
+    const double vectorY = vectorValue.y();
+
+    if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
+      vectorAttributes.insert( tr( "Vector Value" ), tr( "no data" ) );
+    else
+    {
+      vectorAttributes.insert( tr( "Vector Magnitude" ), QString::number( vectorValue.scalar() ) );
+      vectorAttributes.insert( tr( "Vector x-component" ), QString::number( vectorY ) );
+      vectorAttributes.insert( tr( "Vector y-component" ), QString::number( vectorX ) );
+    }
+  }
+
+  const QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
+  if ( scalarGroup == vectorGroup )
+  {
+    const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+                                 scalarGroup,
+                                 vectorAttributes,
+                                 derivedAttributes );
+    results->append( result );
+  }
+  else
+  {
+    if ( !scalarGroup.isEmpty() )
+    {
+      const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+                                   scalarGroup,
+                                   scalarAttributes,
+                                   derivedAttributes );
+      results->append( result );
+    }
+    if ( !vectorGroup.isEmpty() )
+    {
+      const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+                                   vectorGroup,
+                                   vectorAttributes,
+                                   derivedAttributes );
+      results->append( result );
+    }
+  }
+  return true;
 }
 
 QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsPoint &point )
