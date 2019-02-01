@@ -42,7 +42,7 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id() )
   , mContext( context )
-  , mInterruptionChecker( context )
+  , mInterruptionChecker( qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context ) )
   , mLayer( layer )
   , mFields( layer->fields() )
   , mLabeling( false )
@@ -106,6 +106,10 @@ QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
   delete mSource;
 }
 
+QgsFeedback *QgsVectorLayerRenderer::feedback() const
+{
+  return mInterruptionChecker.get();
+}
 
 bool QgsVectorLayerRenderer::render()
 {
@@ -239,7 +243,7 @@ bool QgsVectorLayerRenderer::render()
   // slow fetchFeature() implementations, such as in the WFS provider, can
   // check it, instead of relying on just the mContext.renderingStopped() check
   // in drawRenderer()
-  fit.setInterruptionChecker( &mInterruptionChecker );
+  fit.setInterruptionChecker( mInterruptionChecker.get() );
 
   if ( ( mRenderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && mRenderer->usingSymbolLevels() )
     drawRendererLevels( fit );
