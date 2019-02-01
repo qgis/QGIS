@@ -644,9 +644,9 @@ void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const
   altitudeVendorOptionElem.appendChild( doc.createTextNode( QString::number( altitude() ) ) );
   shadedReliefElem.appendChild( altitudeVendorOptionElem );
 
-  // azimut VendorOption tag
+  // azimuth VendorOption tag
   QDomElement azimutVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
-  azimutVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "azimut" ) );
+  azimutVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "azimuth" ) );
   azimutVendorOptionElem.appendChild( doc.createTextNode( QString::number( azimuth() ) ) );
   shadedReliefElem.appendChild( azimutVendorOptionElem );
 
