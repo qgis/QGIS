@@ -1348,7 +1348,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     if ( hasScaleBasedVisibility() )
     {
       // note that denominator is the inverted value of scale
-      if ( maximumScale() != 0.0)
+      if ( maximumScale() != 0.0 )
       {
         QDomElement minScaleElem = doc.createElement( QStringLiteral( "sld:MinScaleDenominator" ) );
         minScaleElem.appendChild( doc.createTextNode( QString::number( maximumScale() ) ) );
@@ -1356,7 +1356,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       }
 
       QDomElement maxScaleElem = doc.createElement( QStringLiteral( "sld:MaxScaleDenominator" ) );
-      maxScaleElem.appendChild( doc.createTextNode( QString::number( minimumScale()  ) ) );
+      maxScaleElem.appendChild( doc.createTextNode( QString::number( minimumScale() ) ) );
       typeStyleRuleElem.appendChild( maxScaleElem );
     }
 
@@ -1370,10 +1370,10 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     if ( elements.size() != 0 )
     {
       // there SHOULD be only one
-      QDomElement rasterSymbolizerElem = elements.at(0).toElement();
+      QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
 
       // lamda helper used below to reduce code redundancy
-      auto vendorOptionWriter = [&](QString name, QString value)
+      auto vendorOptionWriter = [&]( QString name, QString value )
       {
         QDomElement vendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
         vendorOptionElem.setAttribute( QStringLiteral( "name" ), name );
@@ -1385,19 +1385,19 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       if ( hueSaturationFilter()->grayscaleMode() != QgsHueSaturationFilter::GrayscaleOff )
       {
         QString property;
-        switch( hueSaturationFilter()->grayscaleMode() )
+        switch ( hueSaturationFilter()->grayscaleMode() )
         {
-        case (QgsHueSaturationFilter::GrayscaleLightness):
-          property = QStringLiteral( "lightness" );
-          break;
-        case (QgsHueSaturationFilter::GrayscaleLuminosity):
-          property = QStringLiteral( "luminosity" );
-          break;
-        case (QgsHueSaturationFilter::GrayscaleAverage):
-          property = QStringLiteral( "average" );
-          break;
-        default:
-          break;
+          case ( QgsHueSaturationFilter::GrayscaleLightness ):
+            property = QStringLiteral( "lightness" );
+            break;
+          case ( QgsHueSaturationFilter::GrayscaleLuminosity ):
+            property = QStringLiteral( "luminosity" );
+            break;
+          case ( QgsHueSaturationFilter::GrayscaleAverage ):
+            property = QStringLiteral( "average" );
+            break;
+          default:
+            break;
         }
         if ( !property.isEmpty() )
           vendorOptionWriter( QStringLiteral( "grayScale" ), property );
@@ -1421,7 +1421,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
         {
           // normlize value [-100:100] -> [0:1]
           int s = hueSaturationFilter()->saturation();
-          double sF = ( s - (-100.0) ) / (100.0 - (-100.0) );
+          double sF = ( s - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
           vendorOptionWriter( QStringLiteral( "saturation" ), QString::number( sF ) );
         }
       }
@@ -1431,7 +1431,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       {
         // normalize value [-255:255] -> [0:1]
         int b = brightnessFilter()->brightness();
-        double bF = ( b - (-255.0) ) / (255.0 - (-255.0) );
+        double bF = ( b - ( -255.0 ) ) / ( 255.0 - ( -255.0 ) );
         vendorOptionWriter( QStringLiteral( "brightness" ), QString::number( bF ) );
       }
 
@@ -1440,8 +1440,8 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       {
         // normlize value [-100:100] -> [0:1]
         int c = brightnessFilter()->contrast();
-        double cF = ( c - (-100.0) ) / (100.0 - (-100.0) );
-        vendorOptionWriter( QStringLiteral( "contrast" ), QString::number(cF  ) );
+        double cF = ( c - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+        vendorOptionWriter( QStringLiteral( "contrast" ), QString::number( cF ) );
       }
 
       // TODO: check if the below mapping formula make sense to map QGIS contrast with SLD gamma value

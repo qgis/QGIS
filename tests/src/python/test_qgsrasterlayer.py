@@ -753,141 +753,141 @@ class TestQgsRasterLayer(unittest.TestCase):
         assert myRasterLayer.isValid(), myMessage
 
         # do generic export with default layer values
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = root.elementsByTagName('sld:LayerFeatureConstraints')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
 
         elements = element.elementsByTagName('sld:FeatureTypeConstraint')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
 
         elements = root.elementsByTagName('sld:UserStyle')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
 
         name = element.firstChildElement('sld:Name')
-        self.assertFalse( name.isNull() )
-        self.assertEqual( name.text(), 'landsat')
+        self.assertFalse(name.isNull())
+        self.assertEqual(name.text(), 'landsat')
 
         abstract = element.firstChildElement('sld:Abstract')
-        self.assertTrue( abstract.isNull() )
+        self.assertTrue(abstract.isNull())
 
         title = element.firstChildElement('sld:Title')
-        self.assertTrue( title.isNull() )
+        self.assertTrue(title.isNull())
 
         featureTypeStyle = element.firstChildElement('sld:FeatureTypeStyle')
-        self.assertFalse( featureTypeStyle.isNull() )
+        self.assertFalse(featureTypeStyle.isNull())
 
         rule = featureTypeStyle.firstChildElement('sld:Rule')
-        self.assertFalse( rule.isNull() )
+        self.assertFalse(rule.isNull())
 
         temp = rule.firstChildElement('sld:MinScaleDenominator')
-        self.assertTrue( temp.isNull() )
+        self.assertTrue(temp.isNull())
 
         temp = rule.firstChildElement('sld:MaxScaleDenominator')
-        self.assertTrue( temp.isNull() )
+        self.assertTrue(temp.isNull())
 
         rasterSymbolizer = rule.firstChildElement('sld:RasterSymbolizer')
-        self.assertFalse( rule.isNull() )
+        self.assertFalse(rule.isNull())
 
         vendorOptions = rasterSymbolizer.elementsByTagName('sld:VendorOption')
-        self.assertTrue( vendorOptions.size() == 0 )
+        self.assertTrue(vendorOptions.size() == 0)
 
         # set no defalt values and check exported sld
         myRasterLayer.setName('')
         myRasterLayer.setAbstract('fake')
         myRasterLayer.setTitle('fake')
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = root.elementsByTagName('sld:LayerFeatureConstraints')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
 
         elements = element.elementsByTagName('sld:FeatureTypeConstraint')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
 
         elements = root.elementsByTagName('sld:UserStyle')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
 
         # no generated if empty
         name = element.firstChildElement('sld:Name')
-        self.assertTrue( name.isNull() )
+        self.assertTrue(name.isNull())
 
         # generated if not empty
         abstract = element.firstChildElement('sld:Abstract')
-        self.assertFalse( abstract.isNull() )
-        self.assertEqual( abstract.text(), 'fake')
+        self.assertFalse(abstract.isNull())
+        self.assertEqual(abstract.text(), 'fake')
 
         title = element.firstChildElement('sld:Title')
-        self.assertFalse( title.isNull() )
-        self.assertEqual( title.text(), 'fake')
+        self.assertFalse(title.isNull())
+        self.assertEqual(title.text(), 'fake')
 
         # if setScaleBasedVisibility is true print scales
         myRasterLayer.setScaleBasedVisibility(True)
         myRasterLayer.setMaximumScale(0.0001)
         myRasterLayer.setMinimumScale(0.01)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:Rule')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         rule = elements.at(0).toElement()
-        self.assertFalse( rule.isNull() )
+        self.assertFalse(rule.isNull())
 
         temp = rule.firstChildElement('sld:MinScaleDenominator')
-        self.assertFalse( temp.isNull() )
-        self.assertEqual( temp.text(), '0.0001')
+        self.assertFalse(temp.isNull())
+        self.assertEqual(temp.text(), '0.0001')
 
         temp = rule.firstChildElement('sld:MaxScaleDenominator')
-        self.assertFalse( temp.isNull() )
-        self.assertEqual( temp.text(), '0.01')
+        self.assertFalse(temp.isNull())
+        self.assertEqual(temp.text(), '0.01')
 
         # check non default hueSaturationFilter values
         hue = myRasterLayer.hueSaturationFilter()
         hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleLightness)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'grayScale', 'lightness')
 
         hue = myRasterLayer.hueSaturationFilter()
         hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleLuminosity)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'grayScale', 'luminosity')
 
         hue = myRasterLayer.hueSaturationFilter()
         hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleAverage)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'grayScale', 'average')
 
         hue = myRasterLayer.hueSaturationFilter()
         hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleOff)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'grayScale', None)
 
         # manage colorize vendorOption tags
         hue = myRasterLayer.hueSaturationFilter()
         hue.setColorizeOn(True)
         hue.setColorizeStrength(50)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'colorizeOn', '1')
         self.assertVendorOption(element, 'colorizeRed', '255')
         self.assertVendorOption(element, 'colorizeGreen', '128')
@@ -898,12 +898,12 @@ class TestQgsRasterLayer(unittest.TestCase):
         # other hue non default values, no colorize and saturation = 0
         hue = myRasterLayer.hueSaturationFilter()
         hue.setColorizeOn(False)
-        hue.setSaturation(0) 
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        hue.setSaturation(0)
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'colorizeOn', None)
         self.assertVendorOption(element, 'colorizeRed', None)
         self.assertVendorOption(element, 'colorizeGreen', None)
@@ -917,11 +917,11 @@ class TestQgsRasterLayer(unittest.TestCase):
         hue = myRasterLayer.hueSaturationFilter()
         hue.setColorizeOn(False)
         hue.setSaturation(100)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'colorizeOn', None)
         self.assertVendorOption(element, 'colorizeRed', None)
         self.assertVendorOption(element, 'colorizeGreen', None)
@@ -929,15 +929,15 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertVendorOption(element, 'colorizeStrength', None)
         self.assertVendorOption(element, 'saturation', '1')
         hue.setSaturation(-100)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         self.assertVendorOption(root, 'saturation', '0')
 
         # brightness filter default values
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertTrue(myRasterLayer.brightnessFilter().brightness() == 0)
         self.assertTrue(myRasterLayer.brightnessFilter().contrast() == 0)
         self.assertVendorOption(element, 'brightness', None)
@@ -947,21 +947,21 @@ class TestQgsRasterLayer(unittest.TestCase):
         bf = myRasterLayer.brightnessFilter()
         bf.setBrightness(-255)
         bf.setContrast(-100)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'brightness', '0')
         self.assertVendorOption(element, 'contrast', '0')
 
         bf.setBrightness(255)
         bf.setContrast(100)
-        dom, root, errorMessage = self.layerToSld( myRasterLayer )
+        dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
-        self.assertFalse( element.isNull() )
+        self.assertFalse(element.isNull())
         self.assertVendorOption(element, 'brightness', '1')
         self.assertVendorOption(element, 'contrast', '1')
 
@@ -972,14 +972,13 @@ class TestQgsRasterLayer(unittest.TestCase):
         for vendorOptionIndex in range(vendorOptions.count()):
             vendorOption = vendorOptions.at(vendorOptionIndex)
             self.assertEqual('sld:VendorOption', vendorOption.nodeName())
-            if ( vendorOption.attributes().namedItem('name').nodeValue() == name):
+            if (vendorOption.attributes().namedItem('name').nodeValue() == name):
                 found = True
                 self.assertEqual(vendorOption.firstChild().nodeValue(), expectedValue)
-        if ( expectedValue is None )  and found:
+        if (expectedValue is None) and found:
             self.fail("found VendorOption: {} where supposed not present".format(name))
         if expectedValue and not found:
             self.fail("Not found VendorOption: {}".format(name))
-
 
     def layerToSld(self, layer, properties={}):
         dom = QDomDocument()
@@ -988,6 +987,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         errorMessage = ''
         layer.writeSld(root, dom, errorMessage, properties)
         return dom, root, errorMessage
+
 
 if __name__ == '__main__':
     unittest.main()

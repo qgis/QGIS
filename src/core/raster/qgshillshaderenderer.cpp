@@ -552,29 +552,29 @@ void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const
 
   // look for RasterSymbolizer tag
   QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
-  if ( elements.size() == 0)
+  if ( elements.size() == 0 )
     return;
 
   // there SHOULD be only one
-  QDomElement rasterSymbolizerElem = elements.at(0).toElement();
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
 
   // add Channel Selection tags (if band is not default 1)
   // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
   // after opacity or geometry or as first element after sld:RasterSymbolizer
-  if ( band() != 1)
+  if ( band() != 1 )
   {
     QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
     elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
     if ( elements.size() != 0 )
     {
-      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at(0) );
+      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
     }
     else
     {
       elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
       if ( elements.size() != 0 )
       {
-        rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at(0) );
+        rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
       }
       else
       {

@@ -476,7 +476,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     return;
 
   // there SHOULD be only one
-  QDomElement rasterSymbolizerElem = elements.at(0).toElement();
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
 
   // add Channel Selection tags
   // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
@@ -485,14 +485,14 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
   if ( elements.size() != 0 )
   {
-    rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at(0) );
+    rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
   }
   else
   {
     elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
     if ( elements.size() != 0 )
     {
-      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at(0) );
+      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
     }
     else
     {
@@ -504,16 +504,16 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   QStringList tags;
   tags << QStringLiteral( "sld:RedChannel" ) << QStringLiteral( "sld:GreenChannel" ) << QStringLiteral( "sld:BlueChannel" );
 
-  QList<QgsContrastEnhancement*> contrastEnhancements;
+  QList<QgsContrastEnhancement *> contrastEnhancements;
   contrastEnhancements.append( mRedContrastEnhancement );
   contrastEnhancements.append( mGreenContrastEnhancement );
   contrastEnhancements.append( mBlueContrastEnhancement );
 
   QList<int> bands = usesBands();
   QList<int>::const_iterator bandIt = bands.constBegin();
-  for ( int tagCounter = 0 ; bandIt != bands.constEnd(); ++bandIt, ++tagCounter)
+  for ( int tagCounter = 0 ; bandIt != bands.constEnd(); ++bandIt, ++tagCounter )
   {
-    if ( *bandIt < 0)
+    if ( *bandIt < 0 )
       continue;
 
     QDomElement channelElem = doc.createElement( tags[ tagCounter ] );

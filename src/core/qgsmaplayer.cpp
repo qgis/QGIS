@@ -1394,7 +1394,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
 
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( this );
-  if (!vlayer && !rlayer)
+  if ( !vlayer && !rlayer )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
                .arg( QStringLiteral( "Non vector or raster layers are supported yet" ) );
@@ -1441,7 +1441,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
     props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( mMaxScale );
   }
 
-  if (vlayer)
+  if ( vlayer )
   {
     if ( !vlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
     {
@@ -1450,7 +1450,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
     }
   }
 
-  if (rlayer)
+  if ( rlayer )
   {
     if ( !rlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
     {

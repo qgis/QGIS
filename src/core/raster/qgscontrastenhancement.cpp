@@ -383,7 +383,7 @@ void QgsContrastEnhancement::toSld( QDomDocument &doc, QDomElement &element ) co
     return;
 
   QString algName;
-  switch( contrastEnhancementAlgorithm() )
+  switch ( contrastEnhancementAlgorithm() )
   {
     case StretchToMinimumMaximum:
       algName = QStringLiteral( "StretchToMinimumMaximum" );
