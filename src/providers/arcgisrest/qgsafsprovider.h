@@ -72,6 +72,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     void reloadData() override;
     QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
     QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
   private:
     bool mValid = false;

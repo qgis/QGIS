@@ -315,6 +315,13 @@ QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMa
   return QgsArcGisRestUtils::parseEsriLabeling( mLabelingDataList );
 }
 
+bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
+{
+  // these servers can be sloooooooow, and unpredictable. The previous preview job may have been fast to render,
+  // but the next may take minutes or worse to download...
+  return false;
+}
+
 #ifdef HAVE_GUI
 
 //! Provider for AFS layers source select
