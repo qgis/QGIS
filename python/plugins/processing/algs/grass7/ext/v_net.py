@@ -58,12 +58,12 @@ def incorporatePoints(alg, parameters, context, feedback, pointLayerName='points
         threshold = alg.parameterAsDouble(parameters, 'threshold', context)
 
         # Create the v.net connect command for point layer integration
-        command = u"v.net input={} points={} output={} operation=connect threshold={}".format(
+        command = 'v.net -s input={} points={} output={} operation=connect threshold={}'.format(
             lineLayer, pointLayer, intLayer, threshold)
         alg.commands.append(command)
 
         # Connect the point layer database to the layer 2 of the network
-        command = u"v.db.connect -o map={} table={} layer=2".format(intLayer, pointLayer)
+        command = 'v.db.connect -o map={} table={} layer=2'.format(intLayer, pointLayer)
         alg.commands.append(command)
 
         # remove undesired parameters
@@ -111,7 +111,7 @@ def variableOutput(alg, layers, parameters, context, nocats=True):
         alg.exportVectorLayer(grassName=grass_name,
                               fileName=file_name,
                               layer=output_layer_number,
-                              nocats=no_cats,
+                              exportnocat=no_cats,
                               dataType=output_type)
 
 
