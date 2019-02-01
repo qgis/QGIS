@@ -340,16 +340,16 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       colorMapping.append( QPair< QString, QColor >( highValue, highColor ) );
       break;
     }
-    case ( QgsContrastEnhancement::NoEnhancement ):
-      break;
     case ( QgsContrastEnhancement::StretchToMinimumMaximum ):
-    // use default
-    default:
     {
       colorMapping[0].first = QStringLiteral( "0" );
       colorMapping[1].first = QStringLiteral( "255" );
       break;
     }
+    case ( QgsContrastEnhancement::UserDefinedEnhancement ):
+      break;
+    case ( QgsContrastEnhancement::NoEnhancement ):
+      break;
   }
 
   // create tags
