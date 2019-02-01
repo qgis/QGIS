@@ -585,10 +585,12 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
 
 QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
 {
+  qInfo() << mLayerNode->layer()->type();
   QgsExpressionContext context;
   if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
   {
     context = createExpressionContext();
+    label = label + mLayerNode->expression()
     Q_UNUSED( vl )
   }
   else
@@ -596,7 +598,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) 
     context = vl->createExpressionContext();
   }
 
-  label = QgsExpression().replaceExpressionText( label + mLayerNode->expression(), &context );
+  label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
 
