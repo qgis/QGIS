@@ -201,11 +201,11 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   }
   lines << baseIndent + QStringLiteral( "}" );
 
-  lines << baseIndent + QStringLiteral( "outputs['%1']=processing.run('%2', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ).arg( mId, mAlgorithmId );
+  lines << baseIndent + QStringLiteral( "outputs['%1'] = processing.run('%2', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ).arg( mId, mAlgorithmId );
 
   for ( auto outputIt = mModelOutputs.constBegin(); outputIt != mModelOutputs.constEnd(); ++outputIt )
   {
-    lines << baseIndent + QStringLiteral( "results['%1:%2']=outputs['%1']['%3']" ).arg( mId, outputIt.key(), outputIt.value().childOutputName() );
+    lines << baseIndent + QStringLiteral( "results['%1:%2'] = outputs['%1']['%3']" ).arg( mId, outputIt.key(), outputIt.value().childOutputName() );
   }
 
   return lines;

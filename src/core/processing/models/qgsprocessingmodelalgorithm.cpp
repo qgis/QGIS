@@ -22,6 +22,7 @@
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
+#include "qgsstringutils.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
 
@@ -385,8 +386,9 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         return n;
       };
 
-      const QString algorithmClassName = safeName( name() );
+      const QString algorithmClassName = QgsStringUtils::capitalize( safeName( name() ), QgsStringUtils::ForceFirstLetterToCapital );
       lines << QStringLiteral( "class %1(QgsProcessingAlgorithm):" ).arg( algorithmClassName );
+      lines << QString();
 
       // createInstance
       lines << indent + QStringLiteral( "def createInstance(self):" );
@@ -474,8 +476,8 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   }
 
-  lines << currentIndent + QStringLiteral( "results={}" );
-  lines << currentIndent + QStringLiteral( "outputs={}" );
+  lines << currentIndent + QStringLiteral( "results = {}" );
+  lines << currentIndent + QStringLiteral( "outputs = {}" );
 
   QSet< QString > toExecute;
   for ( auto childIt = mChildAlgorithms.constBegin(); childIt != mChildAlgorithms.constEnd(); ++childIt )
@@ -568,6 +570,8 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       lines << currentIndent + QStringLiteral( "return results" );
       break;
   }
+
+  lines << QString();
 
   return lines;
 }
