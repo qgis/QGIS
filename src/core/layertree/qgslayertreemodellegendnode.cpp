@@ -509,7 +509,8 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
   }
 }
 
-void QgsSymbolLegendNode::updateLabel()
+
+void QgsSymbolLegendNode::updateLabel( QgsExpressionContext context )
 {
   if ( !mLayerNode )
     return;
@@ -528,7 +529,7 @@ void QgsSymbolLegendNode::updateLabel()
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
     else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
     {
-      mLabel = evaluateLabel( mLabel, vl );
+      mLabel = evaluateLabel( mLabel, vl, context );
     }
   }
   else
@@ -541,20 +542,20 @@ void QgsSymbolLegendNode::updateLabel()
     }
     else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
     {
-      mLabel = evaluateLabel( mLabel, vl );
+      mLabel = evaluateLabel( mLabel, vl, context );
     }
   }
   emit dataChanged();
 }
 
-QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
+QgsExpressionContext QgsSymbolLegendNode::createExpressionContext(QgsExpressionContext context) const
 {
-  QgsExpressionContext context; //= QgsLayoutItem::createExpressionContext();
+  //= QgsLayoutItem::createExpressionContext();
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   // TODO: ADD NECESSARY SCOPES ??
-  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerNode->layer() ) );
+  context.appendScope( vl->createExpressionContextScope() );
 
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
@@ -583,23 +584,24 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   return context;
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl ) const
+QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl , QgsExpressionContext context) const
 {
   QgsExpressionContext context;
   if ( mLayerNode->layer()->type() == 0 )
   {
-    context = createExpressionContext();
+    context = createExpressionContext( context );
     label = label + mLayerNode->expression();
     Q_UNUSED( vl );
   }
   else
   {
-    context = vl->createExpressionContext();
+    context = vl->createExpressionContext( context );
   }
 
   label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
+
 
 // -------------------------------------------------------------------------
 
