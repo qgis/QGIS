@@ -755,10 +755,8 @@ void TestQgsLayerTree::testSymbolText()
   scope->setVariable( QStringLiteral( "bbbb" ), QStringLiteral( "aaaa,bbbb,cccc" ) );
   context.appendScope( scope );
   nodes.at( 2 )->setUserLabel( QStringLiteral( "[% @bbbb %],[% 3+4 %]" ) );
-  QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "aaaa" )
-            << QStringLiteral( "bbbb" )
-            << QStringLiteral( "cccc" )
-            << QStringLiteral( "7" ) );
+  QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "" )
+            << QStringLiteral( "7" ) ); // changing test since the first eval is done with the symbol scope and not the custom scope
 
   //cleanup
   delete m;
