@@ -97,6 +97,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         r.setCircleColor(QColor(0, 255, 0))
         r.setCircleRadiusAddition(2.5)
         r.setPlacement(QgsPointDisplacementRenderer.ConcentricRings)
+        r.setLabelDistanceFactor(0.25)
         m = QgsMarkerSymbol()
         m.setColor(QColor(0, 255, 0))
         r.setCenterSymbol(m)
@@ -120,6 +121,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertEqual(r.placement(), QgsPointDisplacementRenderer.ConcentricRings)
         self.assertEqual(r.centerSymbol().color(), QColor(0, 255, 0))
         self.assertEqual(r.embeddedRenderer().symbol().color().name(), '#fdbf6f')
+        self.assertEqual(r.labelDistanceFactor(), 0.25)
 
     def testGettersSetters(self):
         """ test getters and setters """
