@@ -32,7 +32,6 @@
 #endif
 #include "qgsexception.h"
 #include "qgsopenclutils.h"
-#include "qdebug.h"
 #endif
 
 QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle ):
@@ -215,14 +214,13 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
           typeName = QStringLiteral( "float" );
           break;
         default:
-          throw QgsException( QStringLiteral( "Unsupported data type for OpenCL processing.") );
+          throw QgsException( QStringLiteral( "Unsupported data type for OpenCL processing." ) );
       }
 
       if ( inputBlock->dataType() != Qgis::DataType::Float32 )
       {
-        source.replace(QStringLiteral( "__global float *scanLine" ), QStringLiteral( "__global %1 *scanLine" ).arg( typeName ));
+        source.replace( QStringLiteral( "__global float *scanLine" ), QStringLiteral( "__global %1 *scanLine" ).arg( typeName ) );
       }
-      qDebug() << source;
 
       // Data type for input is Float32 (4 bytes)
       std::size_t scanLineWidth( inputBlock->width() + 2 );
@@ -280,7 +278,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
       static std::map<Qgis::DataType, cl::Program> programCache;
       cl::Program program = programCache[inputBlock->dataType()];
-      if (! program.get() )
+      if ( ! program.get() )
       {
         // Create a program from the kernel source
         programCache[inputBlock->dataType()] = QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw );
