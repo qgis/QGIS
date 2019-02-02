@@ -507,8 +507,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   }
 
   // for each mapped band
-  QStringList tags;
-  tags << QStringLiteral( "sld:RedChannel" ) << QStringLiteral( "sld:GreenChannel" ) << QStringLiteral( "sld:BlueChannel" );
+  static QStringList tags { QStringLiteral( "sld:RedChannel" ), QStringLiteral( "sld:GreenChannel" ), QStringLiteral( "sld:BlueChannel" ) };
 
   QList<QgsContrastEnhancement *> contrastEnhancements;
   contrastEnhancements.append( mRedContrastEnhancement );
