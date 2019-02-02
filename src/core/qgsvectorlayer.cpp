@@ -4241,10 +4241,12 @@ void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig &att
   }
 }
 
-QgsExpressionContext QgsVectorLayer::createExpressionContext() const
+QgsExpressionContext QgsVectorLayer::createExpressionContext( QgsExpressionContext context ) const
 {
-  return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+  return context;
 }
+
 
 QgsExpressionContextScope *QgsVectorLayer::createExpressionContextScope() const
 {
