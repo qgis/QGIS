@@ -252,18 +252,19 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * Create an expression context containing symbol elements
-     *
+     * \param context extra QgsExpressionContext to use for evaluation
      * \since: 3.8
      */
-    QgsExpressionContext createExpressionContext() const;
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
 
     /**
     * Evaluate the label with the proper context
     * \param label text to evaluate
     * \param vl pointer to the vectorlayer
+    * \param context extra QgsExpressionContext to use for evaluation
     * \since 3.8
     */
-    QString evaluateLabel( QString label, QgsVectorLayer *vl ) const;
+    QString evaluateLabel( QString label, QgsVectorLayer *vl, QgsExpressionContext context = QgsExpressionContext() ) const;
 
   public slots:
 
@@ -291,8 +292,11 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void toggleAllItems();
 
-  private:
-    void updateLabel();
+    /**
+     * Updates the text label of the current node
+     *\param context extra QgsExpressionContext to use for evaluating the expression
+     */
+    void updateLabel( QgsExpressionContext context = QgsExpressionContext() );
 
   private:
     QgsLegendSymbolItem mItem;
