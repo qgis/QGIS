@@ -264,7 +264,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     * \param context extra QgsExpressionContext to use for evaluation
     * \since 3.8
     */
-    QString evaluateLabel( QString label, QgsVectorLayer *vl, QgsExpressionContext context = QgsExpressionContext() ) const;
+    QString evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context = QgsExpressionContext() ) const;
 
   public slots:
 
@@ -293,10 +293,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     void toggleAllItems();
 
     /**
-     * Updates the text label of the current node
+     * Evaluates  and returns the text label of the current node
      *\param context extra QgsExpressionContext to use for evaluating the expression
      */
-    void updateLabel( QgsExpressionContext context = QgsExpressionContext() );
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext() );
+
+  private:
+    void updateLabel();
 
   private:
     QgsLegendSymbolItem mItem;
