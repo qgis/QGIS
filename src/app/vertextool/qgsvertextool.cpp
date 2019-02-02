@@ -20,6 +20,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
+#include "qgsguiutils.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmulticurve.h"
@@ -256,7 +257,8 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mEdgeCenterMarker = new QgsVertexMarker( canvas );
   mEdgeCenterMarker->setIconType( QgsVertexMarker::ICON_CROSS );
   mEdgeCenterMarker->setColor( Qt::red );
-  mEdgeCenterMarker->setPenWidth( 3 );
+  mEdgeCenterMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+  mEdgeCenterMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
   mEdgeCenterMarker->setVisible( false );
 
   mFeatureBand = createRubberBand( QgsWkbTypes::LineGeometry );
@@ -266,26 +268,27 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mFeatureBandMarkers = new QgsRubberBand( canvas );
   mFeatureBandMarkers->setIcon( QgsRubberBand::ICON_CIRCLE );
   mFeatureBandMarkers->setColor( color );
-  mFeatureBandMarkers->setIconSize( 8 );
+  mFeatureBandMarkers->setIconSize( QgsGuiUtils::scaleIconSize( 8 ) );
   mFeatureBandMarkers->setVisible( false );
 
   mVertexBand = new QgsRubberBand( canvas );
   mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
   mVertexBand->setColor( color );
-  mVertexBand->setIconSize( 15 );
+  mVertexBand->setIconSize( QgsGuiUtils::scaleIconSize( 15 ) );
   mVertexBand->setVisible( false );
 
   QColor color2( color );
   color2.setAlpha( color2.alpha() / 3 );
   mEdgeBand = new QgsRubberBand( canvas );
   mEdgeBand->setColor( color2 );
-  mEdgeBand->setWidth( 10 );
+  mEdgeBand->setWidth( QgsGuiUtils::scaleIconSize( 10 ) );
   mEdgeBand->setVisible( false );
 
   mEndpointMarker = new QgsVertexMarker( canvas );
   mEndpointMarker->setIconType( QgsVertexMarker::ICON_CROSS );
   mEndpointMarker->setColor( Qt::red );
-  mEndpointMarker->setPenWidth( 3 );
+  mEndpointMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+  mEndpointMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
   mEndpointMarker->setVisible( false );
 }
 
@@ -1530,7 +1533,8 @@ void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertice
       QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
       marker->setIconType( QgsVertexMarker::ICON_X );
       marker->setColor( Qt::red );
-      marker->setPenWidth( 3 );
+      marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+      marker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
       marker->setVisible( true );
       marker->setCenter( ptMapPoint );
       mDragPointMarkers << marker;
@@ -2103,7 +2107,8 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
 
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
-    marker->setPenWidth( 3 );
+    marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+    marker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     marker->setColor( Qt::blue );
     marker->setFillColor( Qt::blue );
     marker->setCenter( toMapCoordinates( vertex.layer, geom.vertexAt( vertex.vertexId ) ) );
@@ -2312,7 +2317,8 @@ void QgsVertexTool::GeometryValidation::addError( QgsGeometry::Error e )
     marker->setIconType( QgsVertexMarker::ICON_X );
     marker->setColor( Qt::green );
     marker->setZValue( marker->zValue() + 1 );
-    marker->setPenWidth( 2 );
+    marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+    marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
     marker->setToolTip( e.what() );
     errorMarkers << marker;
   }
