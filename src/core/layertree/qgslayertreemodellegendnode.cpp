@@ -554,7 +554,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext() const
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   // TODO: ADD NECESSARY SCOPES ??
-  context.appendScope( vl->createExpressionContextScope() );
+  context.appendScope( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerNode->layer() ) );
 
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
