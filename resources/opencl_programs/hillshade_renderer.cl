@@ -1,3 +1,4 @@
+// Note: "float *scanLine" may be replaced by code with actual input data type
 __kernel void processNineCellWindow( __global float *scanLine1,
                                      __global float *scanLine2,
                                      __global float *scanLine3,
@@ -39,8 +40,8 @@ __kernel void processNineCellWindow( __global float *scanLine1,
         if ( x32 == rasterParams[0] ) x32 = x22;
         if ( x33 == rasterParams[0] ) x33 = x22;
 
-        float derX = ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * rasterParams[3] );
-        float derY = ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -rasterParams[4]);
+        float derX = ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8.0f * rasterParams[3] );
+        float derY = ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8.0f * -rasterParams[4]);
 
         if ( derX == rasterParams[0] ||
              derX == rasterParams[0] )
@@ -90,7 +91,7 @@ __kernel void processNineCellWindow( __global float *scanLine1,
                                              weight_270 * val270_mul_127 +
                                              weight_315 * val315_mul_127 +
                                              weight_360 * val360_mul_127 ) / xx_plus_yy ) /
-                                         ( 1 + rasterParams[8] * xx_plus_yy );
+                                         ( 1.0f + rasterParams[8] * xx_plus_yy );
               res = clamp( 1.0f + cang_mul_127, 0.0f, 255.0f );
             }
           }
@@ -99,7 +100,7 @@ __kernel void processNineCellWindow( __global float *scanLine1,
             res = ( rasterParams[9] -
                     ( derY * rasterParams[6] -
                       derX * rasterParams[7] )) /
-                      sqrt( 1 + rasterParams[8] *
+                      sqrt( 1.0f + rasterParams[8] *
                       ( derX * derX + derY * derY ) );
             res = res <= 0.0f ? 1.0f : 1.0f + res;
           }
