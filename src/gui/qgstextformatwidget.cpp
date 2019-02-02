@@ -82,6 +82,27 @@ void QgsTextFormatWidget::initWidget()
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
+  const int iconSize32 = QgsGuiUtils::scaleIconSize( 32 );
+  const int iconSize18 = QgsGuiUtils::scaleIconSize( 18 );
+  mPointOffsetAboveLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetAbove->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetAboveRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetOver ->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetBelowLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetBelow->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mPointOffsetBelowRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+
+  const int buttonSize = QgsGuiUtils::scaleIconSize( 24 );
+  mFontUnderlineBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontUnderlineBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontStrikethroughBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontStrikethroughBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontBoldBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontBoldBtn->setMaximumSize( buttonSize, buttonSize );
+  mFontItalicBtn->setMinimumSize( buttonSize, buttonSize );
+  mFontItalicBtn->setMaximumSize( buttonSize, buttonSize );
 
   mPreviewScaleComboBox->setMapCanvas( mMapCanvas );
   mPreviewScaleComboBox->setShowCurrentScaleButton( true );
