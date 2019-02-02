@@ -163,8 +163,8 @@ class CORE_EXPORT QgsContrastEnhancement
      * Write ContrastEnhancement tags following SLD v1.0 specs
      * SLD1.0 is limited to the parameters listed in:
      * https://docs.geoserver.org/stable/en/user/styling/sld/reference/rastersymbolizer.html#contrastenhancement
-     * Btw only <Normalize> + vendor options are supported because there is no clear mapping
-     * of ContrastEnhancement parameters to support <Histogram> or <GammaValue>
+     * Btw only sld:Normalize + vendor options are supported because there is no clear mapping
+     * of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
      * \since QGIS 3.6  */
     void toSld( QDomDocument &doc, QDomElement &element ) const;
 
