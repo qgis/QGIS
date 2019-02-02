@@ -510,7 +510,7 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 }
 
 
-void QgsSymbolLegendNode::updateLabel( QgsExpressionContext context )
+void QgsSymbolLegendNode::updateLabel()
 {
   if ( !mLayerNode )
     return;
@@ -527,10 +527,6 @@ void QgsSymbolLegendNode::updateLabel( QgsExpressionContext context )
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
       mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
-    {
-      mLabel = evaluateLabel( mLabel, vl, context );
-    }
   }
   else
   {
@@ -540,12 +536,47 @@ void QgsSymbolLegendNode::updateLabel( QgsExpressionContext context )
       qlonglong count = vl->featureCount( mItem.ruleKey() );
       mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
-    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
+  }
+
+  emit dataChanged();
+}
+
+QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
+{
+  if ( !mLayerNode )
+    return;
+
+  bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
+
+  if ( mEmbeddedInParent )
+  {
+    QString layerName = mLayerNode->name();
+    if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
+      layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+
+    label = mUserLabel.isEmpty() ? layerName : mUserLabel;
+    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
+      label += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
+    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
     {
-      mLabel = evaluateLabel( mLabel, vl, context );
+      label = evaluateLabelExpression( label, vl, context );
     }
   }
-  emit dataChanged();
+  else
+  {
+    label = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
+    if ( showFeatureCount && vl )
+    {
+      qlonglong count = vl->featureCount( mItem.ruleKey() );
+      label += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+    }
+    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
+    {
+      label = evaluateLabelExpression( label, vl, context );
+    }
+  }
+  return label;
 }
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext(QgsExpressionContext context) const
@@ -584,7 +615,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext(QgsExpressionC
   return context;
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl , QgsExpressionContext context) const
+QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl , QgsExpressionContext context) const
 {
   QgsExpressionContext context;
   if ( mLayerNode->layer()->type() == 0 )
@@ -601,7 +632,6 @@ QString QgsSymbolLegendNode::evaluateLabel( QString label, QgsVectorLayer *vl , 
   label = QgsExpression().replaceExpressionText( label, &context );
   return label;
 }
-
 
 // -------------------------------------------------------------------------
 
