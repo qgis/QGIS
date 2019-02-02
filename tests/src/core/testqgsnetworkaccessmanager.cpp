@@ -24,6 +24,7 @@
 #include "qgssettings.h"
 #include <QNetworkReply>
 #include <QAuthenticator>
+#include <QtConcurrent>
 
 class BackgroundRequest : public QThread
 {
@@ -157,6 +158,7 @@ class TestQgsNetworkAccessManager : public QObject
     void testSslErrorHandler();
     void testAuthRequestHandler();
     void fetchTimeout();
+    void threadSafety();
 
   private:
 
@@ -1045,6 +1047,24 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   blockingThread->exit();
   blockingThread->wait();
   blockingThread->deleteLater();
+}
+
+struct NetworkAccessWrapper
+{
+  explicit NetworkAccessWrapper() = default;
+  void operator()( int )
+  {
+    QNetworkRequest req( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" ) );
+    QgsNetworkAccessManager::blockingGet( req, QString(), true );
+  }
+};
+
+void TestQgsNetworkAccessManager::threadSafety()
+{
+  // smash network fetching over multiple threads
+  QVector< int > list;
+  list.resize( 1000 );
+  QtConcurrent::blockingMap( list, NetworkAccessWrapper() );
 }
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )
