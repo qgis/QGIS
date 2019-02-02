@@ -27,7 +27,7 @@
 #include <QFont>
 #include <QMutex>
 
-#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
@@ -1971,7 +1971,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
 
-    QgsExpressionContext createExpressionContext() const FINAL;
+    /**
+     * Provide the global and layer context for evaluation
+     * \param context extra QgsExpressionContext to add
+     */
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const FINAL;
 
     QgsExpressionContextScope *createExpressionContextScope() const FINAL SIP_FACTORY;
 
