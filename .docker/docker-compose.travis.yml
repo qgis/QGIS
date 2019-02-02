@@ -11,6 +11,11 @@ services:
       ACCEPT_EULA: Y
       SA_PASSWORD: <YourStrong!Passw0rd>
 
+  httpbin:
+    image: kennethreitz/httpbin
+    ports:
+     - "80:80"
+
   qgis-deps:
     tty: true
     image: qgis/qgis3-build-deps:${DOCKER_TAG}
@@ -20,6 +25,7 @@ services:
     links:
       - postgres
       - mssql
+      - httpbin
     environment:
       - CCACHE_DIR=/root/.ccache
       - CTEST_BUILD_DIR=/root/QGIS
@@ -33,3 +39,4 @@ services:
       - TRAVIS_TIMESTAMP=${TRAVIS_TIMESTAMP}
       - QGIS_DISABLE_MESSAGE_HOOKS=1
       - QGIS_NO_OVERRIDE_IMPORT=1
+      - QGIS_HTTPBIN_HOST=localhost
