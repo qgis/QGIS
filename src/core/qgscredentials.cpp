@@ -47,7 +47,9 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
     locker.unlock();
     username = credentials.first;
     password = credentials.second;
+#if 0 // don't leak credentials on log
     QgsDebugMsg( QStringLiteral( "retrieved realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+#endif
 
     if ( !password.isNull() )
       return true;
@@ -56,19 +58,23 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
 
   if ( request( realm, username, password, message ) )
   {
+#if 0 // don't leak credentials on log
     QgsDebugMsg( QStringLiteral( "requested realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+#endif
     return true;
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "unset realm:%1" ).arg( realm ) );
+    QgsDebugMsgLevel( QStringLiteral( "unset realm:%1" ).arg( realm ), 4 );
     return false;
   }
 }
 
 void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
+#if 0 // don't leak credentials on log
   QgsDebugMsg( QStringLiteral( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+#endif
   QMutexLocker locker( &mMutex );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
