@@ -142,7 +142,6 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     connect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
 
     mEngine->setSize( sizePixelsInt );
-
     mScene = new Qgs3DMapScene( *mSettings, mEngine.get() );
     connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
 
