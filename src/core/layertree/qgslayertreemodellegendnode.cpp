@@ -555,12 +555,12 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
     if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
       layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
-    label = mUserLabel.isEmpty() ? layerName : mUserLabel;
+   label = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
-      label += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
+      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
     else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
     {
-      label = evaluateLabelExpression( label, vl, context );
+      mLabel = evaluateLabelExpression( label, vl, context );
     }
   }
   else
@@ -569,14 +569,15 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
     if ( showFeatureCount && vl )
     {
       qlonglong count = vl->featureCount( mItem.ruleKey() );
-      label += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
     }
     else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
     {
-      label = evaluateLabelExpression( label, vl, context );
+      mLabel = evaluateLabelExpression( label, vl, context );
     }
   }
-  return label;
+  emit dataChanged();
+  return mLabel;
 }
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext(QgsExpressionContext context) const
