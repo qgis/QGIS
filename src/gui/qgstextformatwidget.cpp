@@ -83,6 +83,7 @@ void QgsTextFormatWidget::initWidget()
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
   const int iconSize32 = QgsGuiUtils::scaleIconSize( 32 );
+  const int iconSize24 = QgsGuiUtils::scaleIconSize( 24 );
   const int iconSize18 = QgsGuiUtils::scaleIconSize( 18 );
   mPointOffsetAboveLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetAbove->setIconSize( QSize( iconSize32, iconSize18 ) );
@@ -93,6 +94,8 @@ void QgsTextFormatWidget::initWidget()
   mPointOffsetBelowLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetBelow->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetBelowRight->setIconSize( QSize( iconSize32, iconSize18 ) );
+  mLabelMinScale->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ).pixmap( QSize( iconSize24, iconSize24 ) ) );
+  mLabelMaxScale->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ).pixmap( QSize( iconSize24, iconSize24 ) ) );
 
   const int buttonSize = QgsGuiUtils::scaleIconSize( 24 );
   mFontUnderlineBtn->setMinimumSize( buttonSize, buttonSize );
