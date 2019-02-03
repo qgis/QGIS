@@ -359,6 +359,17 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   QStringList lines;
   QString indent = QString( ' ' ).repeated( indentSize );
   QString currentIndent;
+
+  auto safeName = []( const QString & name )->QString
+  {
+    QString n = name.toLower().trimmed();
+    QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
+    n.replace( rx, QString() );
+    return QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase );
+  };
+
+  const QString algorithmClassName = safeName( name() );
+
   switch ( outputType )
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
@@ -368,6 +379,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       // add specific parameter type imports
       const auto params = parameterDefinitions();
       QStringList importLines; // not a set - we need regular ordering
+      importLines.reserve( params.count() );
       for ( const QgsProcessingParameterDefinition *def : params )
       {
         const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
@@ -378,52 +390,8 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       lines << QStringLiteral( "import processing" );
       lines << QString() << QString();
 
-      auto safeName = []( const QString & name )->QString
-      {
-        QString n = name.toLower().trimmed();
-        QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
-        n.replace( rx, QString() );
-        return QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase );
-      };
-
-      const QString algorithmClassName = safeName( name() );
       lines << QStringLiteral( "class %1(QgsProcessingAlgorithm):" ).arg( algorithmClassName );
       lines << QString();
-
-      // createInstance
-      lines << indent + QStringLiteral( "def createInstance(self):" );
-      lines << indent + indent + QStringLiteral( "return %1()" ).arg( algorithmClassName );
-      lines << QString();
-
-      // name, displayName
-      lines << indent + QStringLiteral( "def name(self):" );
-      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
-      lines << QString();
-      lines << indent + QStringLiteral( "def displayName(self):" );
-      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
-      lines << QString();
-
-      // group, groupId
-      lines << indent + QStringLiteral( "def group(self):" );
-      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroup );
-      lines << QString();
-      lines << indent + QStringLiteral( "def groupId(self):" );
-      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroupId );
-      lines << QString();
-
-      // help
-      if ( !shortHelpString().isEmpty() )
-      {
-        lines << indent + QStringLiteral( "def shortHelpString(self):" );
-        lines << indent + indent + QStringLiteral( "return \"\"\"%1\"\"\"" ).arg( shortHelpString() );
-        lines << QString();
-      }
-      if ( !helpUrl().isEmpty() )
-      {
-        lines << indent + QStringLiteral( "def helpUrl(self):" );
-        lines << indent + indent + QStringLiteral( "return '%1'" ).arg( helpUrl() );
-        lines << QString();
-      }
 
       // initAlgorithm, parameter definitions
       lines << indent + QStringLiteral( "def initAlgorithm(self, config=None):" );
@@ -568,6 +536,41 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
       lines << currentIndent + QStringLiteral( "return results" );
+      lines << QString();
+
+      // name, displayName
+      lines << indent + QStringLiteral( "def name(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
+      lines << QString();
+      lines << indent + QStringLiteral( "def displayName(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
+      lines << QString();
+
+      // group, groupId
+      lines << indent + QStringLiteral( "def group(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroup );
+      lines << QString();
+      lines << indent + QStringLiteral( "def groupId(self):" );
+      lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroupId );
+      lines << QString();
+
+      // help
+      if ( !shortHelpString().isEmpty() )
+      {
+        lines << indent + QStringLiteral( "def shortHelpString(self):" );
+        lines << indent + indent + QStringLiteral( "return \"\"\"%1\"\"\"" ).arg( shortHelpString() );
+        lines << QString();
+      }
+      if ( !helpUrl().isEmpty() )
+      {
+        lines << indent + QStringLiteral( "def helpUrl(self):" );
+        lines << indent + indent + QStringLiteral( "return '%1'" ).arg( helpUrl() );
+        lines << QString();
+      }
+
+      // createInstance
+      lines << indent + QStringLiteral( "def createInstance(self):" );
+      lines << indent + indent + QStringLiteral( "return %1()" ).arg( algorithmClassName );
       break;
   }
 
