@@ -210,6 +210,11 @@ void TestQgs3DRendering::testFlatTerrain()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 45 );
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "flat_terrain_3", img3, 40 ) );
+
+  // change camera lens field of view
+  map->setFieldOfView( 85.0f );
+  QImage img4 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "flat_terrain_4", img4, 40 ) );
 }
 
 void TestQgs3DRendering::testDemTerrain()
