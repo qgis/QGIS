@@ -47,7 +47,32 @@ class CORE_EXPORT QgsCredentials
      */
     virtual ~QgsCredentials() = default;
 
+    /**
+     * Requests credentials for the specified \a realm.
+     *
+     * If existing credentials exist for the given \a realm, these will be returned. Otherwise the credential
+     * handler will prompt for the correct username and password.
+     *
+     * The retrieved or user-entered details will be stored in \a username and \a password.
+     *
+     * Optionally, a specific \a message can be used to advise users of the context for the credentials request.
+     *
+     * \note This method will not automatically store the newly obtained credentials. Callers must
+     * manually call put() after verifying that the obtained credentials are correct.
+     *
+     * \see put()
+     */
     bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() );
+
+    /**
+     * Stores the correct \a username and \a password for the specified \a realm.
+     *
+     * These values will be used for all future calls to get() for the same \a realm, without requesting
+     * users to re-enter them. It is the caller's responsibility to ensure that only valid \a username and \a password
+     * combinations are used with this method.
+     *
+     * \see get()
+     */
     void put( const QString &realm, const QString &username, const QString &password );
 
     bool getMasterPassword( QString &password SIP_INOUT, bool stored = false );
