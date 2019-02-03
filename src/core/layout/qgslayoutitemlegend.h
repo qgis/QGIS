@@ -25,6 +25,9 @@
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
 
+//unsure if needed
+#include "qgsexpressioncontext.h"
+
 class QgsLayerTreeModel;
 class QgsSymbol;
 class QgsLayoutItemMap;
@@ -49,6 +52,15 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Uses the context to evaluate the symbol expression
+     * \param index index of the model to work on
+     * \param role role of the index
+     * \excontext expression context to add to the symbolscope
+     * \since: 3.8
+     */
+    QVariant data( const QModelIndex &index, int role, QgsExpressionContext econtext ) const;
 };
 
 
@@ -465,6 +477,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+    
+    
 
   private:
     QgsLayoutItemLegend() = delete;
@@ -508,6 +522,12 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     bool mSizeToContents = true;
 
     friend class QgsCompositionConverter;
+
+    /**
+     * Updates the symbol with the layout context
+     * \since: 3.8
+     */
+    void updateLabels();
 
 };
 
