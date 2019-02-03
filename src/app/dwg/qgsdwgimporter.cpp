@@ -1274,20 +1274,8 @@ void QgsDwgImporter::addXline( const DRW_Xline &data )
   NYI( QObject::tr( "XLINE entities" ) );
 }
 
-void QgsDwgImporter::addArc( const DRW_Arc &data )
+bool QgsDwgImporter::circularStringFromArc( const DRW_Arc &data, QgsCircularString &c )
 {
-  OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(),  "lines" );
-  Q_ASSERT( layer );
-  OGRFeatureDefnH dfn = OGR_L_GetLayerDefn( layer );
-  Q_ASSERT( dfn );
-  OGRFeatureH f = OGR_F_Create( dfn );
-  Q_ASSERT( f );
-
-  addEntity( dfn, f, data );
-
-  SETDOUBLE( thickness );
-
-  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   double half = ( data.staangle + data.endangle ) / 2.0;
   if ( data.staangle > data.endangle )
@@ -1300,12 +1288,37 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
   QgsDebugMsgLevel( QStringLiteral( "arc handle=0x%1 radius=%2 staangle=%3 endangle=%4 isccw=%5 half=%6" )
                     .arg( data.handle, 0, 16 ).arg( data.mRadius ).arg( data.staangle ).arg( data.endangle ).arg( data.isccw ).arg( half ), 5 );
 
-  QgsCircularString c;
   c.setPoints( QgsPointSequence()
                << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + std::sin( a0 ) * data.mRadius )
                << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a1 ) * data.mRadius, data.basePoint.y + std::sin( a1 ) * data.mRadius )
                << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a2 ) * data.mRadius, data.basePoint.y + std::sin( a2 ) * data.mRadius )
              );
+
+  return true;
+}
+
+void QgsDwgImporter::addArc( const DRW_Arc &data )
+{
+  QgsCircularString c;
+  if ( !circularStringFromArc( data, c ) )
+  {
+    LOG( QObject::tr( "Could not create circular string from  %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ), QObject::tr( "arc" ) )
+       );
+    return;
+  }
+
+  OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(), "lines" );
+  Q_ASSERT( layer );
+  OGRFeatureDefnH dfn = OGR_L_GetLayerDefn( layer );
+  Q_ASSERT( dfn );
+  OGRFeatureH f = OGR_F_Create( dfn );
+  Q_ASSERT( f );
+
+  addEntity( dfn, f, data );
+
+  SETDOUBLE( thickness );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   if ( !createFeature( layer, f, c ) )
   {
@@ -1382,12 +1395,14 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
       {
         QgsCircularString *c = new QgsCircularString();
         c->setPoints( s );
+        QgsDebugMsg( QStringLiteral( "add circular string:%1" ).arg( c->asWkt() ) );
         cc.addCurve( c );
       }
       else
       {
         QgsLineString *c = new QgsLineString();
         c->setPoints( s );
+        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( c->asWkt() ) );
         cc.addCurve( c );
       }
 
@@ -1977,64 +1992,84 @@ static void rbsplinu( const DRW_Spline &data,
   }
 }
 
-void QgsDwgImporter::addSpline( const DRW_Spline *data )
+bool QgsDwgImporter::lineFromSpline( const DRW_Spline &data, QgsLineString &l )
 {
-  Q_ASSERT( data );
-
-  if ( data->degree < 1 || data->degree > 3 )
+  if ( data.degree < 1 || data.degree > 3 )
   {
     QgsDebugMsg( QStringLiteral( "%1: unknown spline degree %2" )
-                 .arg( data->handle, 0, 16 )
-                 .arg( data->degree ) );
-    return;
+                 .arg( data.handle, 0, 16 )
+                 .arg( data.degree ) );
+    return false;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "degree: %1 ncontrol:%2 knotslist.size():%3 controllist.size():%4 fitlist.size():%5" )
-                    .arg( data->degree )
-                    .arg( data->ncontrol )
-                    .arg( data->knotslist.size() )
-                    .arg( data->controllist.size() )
-                    .arg( data->fitlist.size() ), 5 );
+                    .arg( data.degree )
+                    .arg( data.ncontrol )
+                    .arg( data.knotslist.size() )
+                    .arg( data.controllist.size() )
+                    .arg( data.fitlist.size() ), 5 );
 
   std::vector<QgsVector> cps;
-  for ( size_t i = 0; i < data->controllist.size(); ++i )
+  for ( size_t i = 0; i < data.controllist.size(); ++i )
   {
-    const DRW_Coord &p = *data->controllist[i];
+    const DRW_Coord &p = *data.controllist[i];
     cps.emplace_back( QgsVector( p.x, p.y ) );
   }
 
-  if ( data->ncontrol == 0 && data->degree != 2 )
+  if ( data.ncontrol == 0 && data.degree != 2 )
   {
-    for ( std::vector<DRW_Coord *>::size_type i = 0; i < data->fitlist.size(); ++i )
+    for ( std::vector<DRW_Coord *>::size_type i = 0; i < data.fitlist.size(); ++i )
     {
-      const DRW_Coord &p = *data->fitlist[i];
+      const DRW_Coord &p = *data.fitlist[i];
       cps.emplace_back( QgsVector( p.x, p.y ) );
     }
   }
 
-  if ( !cps.empty() && data->flags & 1 )
+  if ( !cps.empty() && data.flags & 1 )
   {
-    for ( int i = 0; i < data->degree; ++i )
+    for ( int i = 0; i < data.degree; ++i )
       cps.push_back( cps[i] );
   }
 
   size_t npts = cps.size();
-  size_t k = data->degree + 1;
+  size_t k = data.degree + 1;
   int p1 = mSplineSegs * ( int ) npts;
 
   std::vector<double> h( npts + 1, 1. );
   std::vector<QgsPointXY> p( p1, QgsPointXY( 0., 0. ) );
 
-  if ( data->flags & 1 )
+  if ( data.flags & 1 )
   {
-    rbsplinu( *data, npts, k, p1, cps, h, p );
+    rbsplinu( data, npts, k, p1, cps, h, p );
   }
   else
   {
-    rbspline( *data, npts, k, p1, cps, h, p );
+    rbspline( data, npts, k, p1, cps, h, p );
   }
 
-  OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(),  "polylines" );
+
+  QgsPointSequence ps;
+  for ( size_t i = 0; i < p.size(); ++i )
+    ps << QgsPoint( p[i] );
+  l.setPoints( ps );
+
+  return true;
+}
+
+void QgsDwgImporter::addSpline( const DRW_Spline *data )
+{
+  Q_ASSERT( data );
+
+  QgsLineString l;
+  if ( !lineFromSpline( *data, l ) )
+  {
+    LOG( QObject::tr( "Could not create line from %2 [%1]" )
+         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ), QObject::tr( "spline" ) )
+       );
+    return;
+  }
+
+  OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(), "polylines" );
   Q_ASSERT( layer );
   OGRFeatureDefnH dfn = OGR_L_GetLayerDefn( layer );
   Q_ASSERT( dfn );
@@ -2042,12 +2077,6 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
   Q_ASSERT( f );
 
   addEntity( dfn, f, *data );
-
-  QgsLineString l;
-  QgsPointSequence ps;
-  for ( size_t i = 0; i < p.size(); ++i )
-    ps << QgsPoint( p[i] );
-  l.setPoints( ps );
 
   if ( !createFeature( layer, f, l ) )
   {
@@ -2161,7 +2190,7 @@ void QgsDwgImporter::addMText( const DRW_MText &data )
   addEntity( dfn, f, data );
 
   SETDOUBLE( height );
-  SETSTRING( text );
+  SETSTRING( text );  // TODO: parse MTEXT
   SETDOUBLE( angle );
   SETDOUBLE( widthscale );
   SETDOUBLE( oblique );
@@ -2196,7 +2225,7 @@ void QgsDwgImporter::addText( const DRW_Text &data )
   addEntity( dfn, f, data );
 
   SETDOUBLE( height );
-  SETSTRING( text );  // TODO: parse MTEXT
+  SETSTRING( text );
   SETDOUBLE( angle );
   SETDOUBLE( widthscale );
   SETDOUBLE( oblique );
@@ -2300,9 +2329,16 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
   QgsCurvePolygon p;
 
-  Q_ASSERT( data.looplist.size() == data.loopsnum );
+  if ( data.looplist.size() != data.loopsnum )
+  {
+    LOG( QObject::tr( "0x%1: %2 instead of %3 loops found" )
+         .arg( data.handle, 0, 16 )
+         .arg( data.looplist.size() )
+         .arg( data.loopsnum )
+       );
+  }
 
-  for ( std::vector<DRW_HatchLoop *>::size_type i = 0; i < data.loopsnum; i++ )
+  for ( std::vector<DRW_HatchLoop *>::size_type i = 0; i < data.looplist.size(); i++ )
   {
     const DRW_HatchLoop &hatchLoop = *data.looplist[i];
 
@@ -2315,6 +2351,8 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
       const DRW_LWPolyline *lwp = dynamic_cast<const DRW_LWPolyline *>( entity );
       const DRW_Line *l = dynamic_cast<const DRW_Line *>( entity );
+      const DRW_Arc *a = dynamic_cast<const DRW_Arc *>( entity );
+      const DRW_Spline *sp = dynamic_cast<const DRW_Spline *>( entity );
       if ( lwp )
       {
         curveFromLWPolyline( *lwp, *cc );
@@ -2325,7 +2363,21 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
         ls->setPoints( QgsPointSequence()
                        << QgsPoint( QgsWkbTypes::PointZ, l->basePoint.x, l->basePoint.y, l->basePoint.z )
                        << QgsPoint( QgsWkbTypes::PointZ, l->secPoint.x, l->secPoint.y, l->secPoint.z ) );
-        // QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( ls->asWkt() ) );
+        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( ls->asWkt() ) );
+        cc->addCurve( ls );
+      }
+      else if ( a )
+      {
+        QgsCircularString *cs = new QgsCircularString();
+        circularStringFromArc( *a, *cs );
+        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( cs->asWkt() ) );
+        cc->addCurve( cs );
+      }
+      else if ( sp )
+      {
+        QgsLineString *ls = new QgsLineString();
+        lineFromSpline( *sp, *ls );
+        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( ls->asWkt() ) );
         cc->addCurve( ls );
       }
       else

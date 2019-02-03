@@ -24,6 +24,8 @@
 #include "qgsogrutils.h"
 
 class QgsCompoundCurve;
+class QgsLineString;
+class QgsCircularString;
 class QgsQgsCoordinateReferenceSystem;
 
 class QgsDwgImporter : public DRW_Interface
@@ -182,6 +184,8 @@ class QgsDwgImporter : public DRW_Interface
     void setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const DRW_Coord &value ) const;
 
     bool curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoundCurve &cc );
+    bool circularStringFromArc( const DRW_Arc &data, QgsCircularString &c );
+    bool lineFromSpline( const DRW_Spline &data, QgsLineString &l );
 
     bool expandInserts( QString &error );
 
