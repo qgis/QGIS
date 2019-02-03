@@ -2,6 +2,8 @@
 @itembackground: #b2b2b2
 @itemalternativebackground: #9a9a9a;
 @itemdarkbackground: #373737
+@lightgradient: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #a4a4a4, stop: 1 #8a8a8a)
+@lightalternativegradient: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #b2b2b2, stop: 1 #999999)
 @darkgradient: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #535353, stop: 1 #373737)
 @darkalternativegradient: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #565656,stop: 1 #464646);
 @gradient: QLinearGradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b2b2b2, stop:1 #8f8f8f)

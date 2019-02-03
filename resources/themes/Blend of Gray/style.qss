@@ -138,7 +138,7 @@ QPushButton
     border-color: @itemdarkbackground;
     border-style: solid;
     border-radius: 0.2em;
-    background-color:@itembackground;
+    background-color:@lightgradient;
     color:@text;
 }
 
@@ -149,7 +149,7 @@ QToolButton
     border-color: @itemdarkbackground;
     border-style: solid;
     border-radius: 0.2em;
-    background-color:@itembackground;
+    background-color:@lightgradient;
     color:@text;
 }
 
@@ -189,7 +189,7 @@ QToolBar QToolButton, QToolButton::menu-button
 }
 
 QPushButton:hover, QToolButton:hover {
-    background-color: @itemalternativebackground;
+    background-color: @lightalternativegradient;
 }
 
 QPushButton:pressed, QToolButton:pressed {
