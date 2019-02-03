@@ -35,6 +35,9 @@
 #include <QDomElement>
 #include <QPainter>
 
+// unsure if needed
+#include "qgsexpressioncontext.h"
+
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
   , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot() ) )
@@ -848,6 +851,13 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   return context;
 }
 
+void QgsLayoutItemLegend::updateLabels()
+{
+  QgsExpressionContect context = createExpressionContext();
+
+  mLegendModel.updateLabels( context );
+}
+
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
@@ -888,4 +898,25 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
     return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
 
   return QgsLayerTreeModel::flags( index );
+}
+
+QVariant QgsLegendModel::data( const QModelIndex &index, int role, QgsExpressionContext econtext ) const
+{
+  // handle custom layer node labels
+  if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
+  {
+    QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    QgsLayerTreeModelLegendNode ltmln = index2legendNode ( index );
+    if ( ltmln )
+    {
+      QgsSmybolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendNode );
+        if ( synode )
+        {
+          name = synode->evaluateLabel( econtext );
+        }
+        return name;
+    }
+  }
+
+  return QgsLayerTreeModel::data( index, role );
 }
