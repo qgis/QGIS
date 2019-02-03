@@ -137,7 +137,7 @@ Returns the point and vertex id of a point within the curve.
 :param type: will be set to the vertex type of the node
 
 :return: - true if node exists within the curve
-         - point:  will be set to point at corresponding node in the curve
+         - point: will be set to point at corresponding node in the curve
 %End
 
     virtual QgsCurve *reversed() const = 0 /Factory/;

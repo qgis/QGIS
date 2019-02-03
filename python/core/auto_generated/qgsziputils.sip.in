@@ -33,7 +33,7 @@ Unzip a zip file in an output directory.
 :param dir: The output directory
 
 :return: - false if the zip filename does not exist, the output directory
-         - files:  The absolute path of unzipped files
+         - files: The absolute path of unzipped files
          does not exist or is not writable.
 
 .. versionadded:: 3.0

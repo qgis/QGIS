@@ -114,7 +114,7 @@ Determines if the current expression is valid.
 
 
 :return: - true if the current expression is valid.
-         - expressionError:  will be set to any generated error message if specified
+         - expressionError: will be set to any generated error message 
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );

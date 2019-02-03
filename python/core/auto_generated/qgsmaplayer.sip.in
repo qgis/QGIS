@@ -652,7 +652,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag:  a reference to a flag that will be set to false if we did not manage to save the default metadata.
+         - resultFlag: a reference to a flag that will be set to false if we did not manage to save the default metadata.
 
 .. versionadded:: 3.0
 %End
@@ -689,7 +689,7 @@ record in the users style table in their personal qgis.db)
             key matches the URI.
 
 :return: - a QString with any status messages
-         - resultFlag:  a reference to a flag that will be set to false if we did not manage to load the default metadata.
+         - resultFlag: a reference to a flag that will be set to false if we did not manage to load the default metadata.
 
 .. versionadded:: 3.0
 %End
@@ -752,7 +752,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag:  a reference to a flag that will be set to false if we did not manage to load the default style.
+         - resultFlag: a reference to a flag that will be set to false if we did not manage to load the default style.
 
 .. seealso:: :py:func:`also`
 %End
@@ -771,7 +771,7 @@ record in the users style table in their personal qgis.db)
 :param categories: the style categories to be loaded.
 
 :return: - a QString with any status messages
-         - resultFlag:  a reference to a flag that will be set to false if we did not manage to load the default style.
+         - resultFlag: a reference to a flag that will be set to false if we did not manage to load the default style.
 
 .. seealso:: :py:func:`also`
 %End
@@ -784,7 +784,7 @@ Retrieve a named style for this layer from a sqlite database.
 :param uri: uri for table
 
 :return: - true if style was successfully loaded
-         - qml:  will be set to QML style content from database
+         - qml: will be set to QML style content from database
 %End
 
     virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/,
@@ -832,7 +832,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag:  a reference to a flag that will be set to false if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that will be set to false if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 %End
@@ -851,7 +851,7 @@ record in the users style table in their personal qgis.db)
 :param categories: the style categories to be saved.
 
 :return: - a QString with any status messages
-         - resultFlag:  a reference to a flag that will be set to false if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that will be set to false if we did not manage to save the default style.
 
 .. seealso:: :py:func:`saveDefaultStyle`
 %End

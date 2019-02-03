@@ -36,7 +36,7 @@ This method should/will be called, whenever a new feature will be added to the l
 :param defaultGeometry: A default geometry to add to the feature
 
 :return: - True in case of success, False if the operation failed/was aborted
-         - feature:  Updated feature after adding will be written back to this
+         - feature: Updated feature after adding will be written back to this
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -88,7 +88,7 @@ Copy and move features with defined translation.
 :param dy: The translation on y
 
 :return: - True if all features could be copied.
-         - errorMsg:  If given, it will contain the error message
+         - errorMsg: If given, it will contain the error message
 
 TODO QGIS 3: remove const qualifier
 %End

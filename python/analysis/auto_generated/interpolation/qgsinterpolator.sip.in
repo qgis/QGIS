@@ -85,7 +85,7 @@ Calculates interpolation value for map coordinates x, y
 :param feedback: optional feedback object for progress and cancelation support
 
 :return: - 0 in case of success
-         - result:  interpolation result
+         - result: interpolation result
 %End
 
 
