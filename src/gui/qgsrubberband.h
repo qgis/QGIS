@@ -256,7 +256,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is nullptr, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
@@ -286,7 +286,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
      *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is nullptr, the coordinates are not going to be transformed.
      */
     void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
 
