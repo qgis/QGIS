@@ -68,7 +68,7 @@ be modified by users.
 %Docstring
 Returns the current editable scope for the widget.
 
-:return: editable scope, or 0 if no editable scope is set
+:return: editable scope, or None if no editable scope is set
 
 .. seealso:: :py:func:`setEditableScopeIndex`
 %End
