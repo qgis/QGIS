@@ -2377,15 +2377,26 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
                           );
 
           RESERVE( spline->knotslist, spline->nknots );
-          for ( dint32 j = 0; j < spline->nknots; ++j )
+          dint32 j;
+          for ( j = 0; j < spline->nknots && buf->isGood(); ++j )
           {
             spline->knotslist.push_back( buf->getBitDouble() );
             QgsDebugMsgLevel( QStringLiteral( "  knot %1: %2" ).arg( j )
                               .arg( spline->knotslist.back() ), 4
                             );
           }
+
+          if ( !buf->isGood() )
+          {
+            QgsDebugMsg( QStringLiteral( "NOT GOOD at %1!  degree:%2 flags:0x%3 nknots:%4 ncontrol:%5" )
+                         .arg( j )
+                         .arg( spline->degree ).arg( spline->flags, 0, 16 )
+                         .arg( spline->nknots ).arg( spline->ncontrol )
+                       );
+          }
+
           RESERVE( spline->controllist, spline->ncontrol );
-          for ( dint32 j = 0; j < spline->ncontrol && buf->isGood(); ++j )
+          for ( j = 0; j < spline->ncontrol && buf->isGood(); ++j )
           {
             DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
             spline->controllist.push_back( crd );
