@@ -634,7 +634,7 @@ Searches for the closest vertex in this geometry to the given point.
 :param point: Specifiest the point for search
 
 :return: - The squared Cartesian distance is also returned in sqrDist, negative number on error
-         - atVertex:  Receives index of the closest vertex
+         - atVertex: Receives index of the closest vertex
 %End
 
     double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/, int *leftOf /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
@@ -649,7 +649,7 @@ Searches for the closest segment of geometry to the given point
 :param epsilon: epsilon for segment snapping
 
 :return: - The squared Cartesian distance is also returned in sqrDist, negative number on error
-         - minDistPoint:  Receives the nearest point on the segment
+         - minDistPoint: Receives the nearest point on the segment
 %End
 
     OperationResult addRing( const QVector<QgsPointXY> &ring );
@@ -822,7 +822,7 @@ Returns the minimal enclosing circle for the geometry.
 :param segments: Number of segments used to segment geometry. :py:func:`QgsEllipse.toPolygon`
 
 :return: - the minimal enclosing circle as a QGIS geometry
-         - center:  Center of the minimal enclosing circle returneds
+         - center: Center of the minimal enclosing circle returneds
 
 .. versionadded:: 3.0
 %End

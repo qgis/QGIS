@@ -52,7 +52,7 @@ Note that calling this method also advances the iterator, just like calling read
 :param blockExtent: exact extent of returned raster block
 
 :return: - false if the last part was already returned
-         - columns:  number of columns on output device
+         - columns: number of columns on output device
 
 .. versionadded:: 3.6
 %End

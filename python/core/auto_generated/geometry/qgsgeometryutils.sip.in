@@ -68,7 +68,7 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 :param previousVertex: will be set to previous vertex ID
 
 :return: - true if vertices were successfully retrieved
-         - nextVertex:  will be set to next vertex ID
+         - nextVertex: will be set to next vertex ID
 
 .. note::
 
@@ -99,7 +99,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :param v2: Direction vector of the second line
 
 :return: - Whether the lines intersect
-         - intersection:  Output parameter, the intersection point
+         - intersection: Output parameter, the intersection point
 %End
 
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
@@ -115,7 +115,7 @@ Compute the intersection between two segments
 :param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
 :return: - Whether the segments intersect
-         - intersectionPoint:  Output parameter, the intersection point
+         - intersectionPoint: Output parameter, the intersection point
          * Example:
 .. code-block:: python
 
@@ -598,7 +598,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 :param Lb2: is the second point on the second line,
 
 :return: - true if the intersection can be found, false - otherwise.
-         - intersection:  is the result intersection, of it can be found.
+         - intersection: is the result intersection, of it can be found.
          example:
 .. code-block:: python
 
