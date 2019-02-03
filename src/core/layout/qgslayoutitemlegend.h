@@ -54,13 +54,14 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
-     * Uses the context to evaluate the symbol expression
-     * \param index index of the model to work on
-     * \param role role of the index
-     * \excontext expression context to add to the symbolscope
+     * Set the pointer to the layoutlegend expressioncontext
+     * \param context pointer to the context
      * \since: 3.8
      */
-    QVariant data( const QModelIndex &index, int role, QgsExpressionContext econtext ) const;
+    void setLayoutExpContext( QgsExpressionContext *econtext);
+
+  private:
+    QgsExpressionContext *mLayoutLegendContext = nullptr;
 };
 
 
@@ -523,11 +524,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     friend class QgsCompositionConverter;
 
-    /**
-     * Updates the symbol with the layout context
-     * \since: 3.8
-     */
-    void updateLabels();
+    QgsExpressionContext mExpContext;
 
 };
 
