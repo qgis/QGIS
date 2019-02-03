@@ -82,7 +82,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
     /**
      * Returns the current editable scope for the widget.
-     * \returns editable scope, or 0 if no editable scope is set
+     * \returns editable scope, or nullptr if no editable scope is set
      * \see setEditableScopeIndex()
      */
     QgsExpressionContextScope *editableScope() const;
