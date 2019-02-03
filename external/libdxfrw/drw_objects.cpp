@@ -10,6 +10,9 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
+
 #include <iostream>
 #include <cmath>
 
@@ -20,9 +23,18 @@
 #include "intern/drw_dbg.h"
 #include "intern/dwgutil.h"
 
-#undef QGISDEBUG
-#include "qgslogger.h"
 #include <QStringList>
+
+#include "qgslogger.h"
+
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 #define RESERVE( vector, size ) try { \
     vector.reserve(size); \
