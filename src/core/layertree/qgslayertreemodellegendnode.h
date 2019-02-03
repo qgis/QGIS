@@ -29,6 +29,7 @@
 #include "qgsexpression.h"
 
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
