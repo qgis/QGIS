@@ -711,7 +711,8 @@ std::string dwgBuffer::getCP8Text()
 
 //TU unicode 16 bit (UCS) text converted to utf8
 
-/** Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
+/**
+ * Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
    ts= total input size in bytes.
 **/
 std::string dwgBuffer::getUCSStr( duint16 ts )
@@ -919,31 +920,31 @@ duint32 dwgBuffer::getEnColor( DRW::Version v, int &rgb, int &transparency )
   transparency = 0;
 
   duint16 idx = getBitShort();
-  QgsDebugMsg( QString( "idx reads COLOR: 0x%1" ).arg( idx, 0, 16 ) );
+  QgsDebugMsgLevel( QString( "idx reads COLOR: 0x%1" ).arg( idx, 0, 16 ), 4 );
 
   duint16 flags = idx >> 8;
 
   idx = idx & 0x1FF; //RLZ: warning this is correct?
 
-  QgsDebugMsg( QString( "flag COLOR:0x%1, index COLOR:0x%2" ).arg( flags, 0, 16 ).arg( idx, 0, 16 ) );
+  QgsDebugMsgLevel( QString( "flag COLOR:0x%1, index COLOR:0x%2" ).arg( flags, 0, 16 ).arg( idx, 0, 16 ), 4 );
 
   if ( flags & 0x80 )
   {
     // complex color (rgb)
     rgb = getBitLong() & 0xffffff;
 
-    QgsDebugMsg( QString( "RGB COLOR:0x%1" ).arg( rgb, 0, 16 ) );
+    QgsDebugMsgLevel( QString( "RGB COLOR:0x%1" ).arg( rgb, 0, 16 ), 4 );
 
     if ( flags & 0x80 )
     {
-      QgsDebugMsg( "acdbColor COLOR are present" );
+      QgsDebugMsgLevel( "acdbColor COLOR are present", 4 );
     }
   }
 
   if ( flags & 0x20 )
   {
     transparency = getBitLong();
-    QgsDebugMsg( QString( "Transparency COLOR:0x%1" ).arg( transparency, 0, 16 ) );
+    QgsDebugMsgLevel( QString( "Transparency COLOR:0x%1" ).arg( transparency, 0, 16 ), 4 );
   }
 
   return idx; //default return ByLayer

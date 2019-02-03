@@ -2196,7 +2196,7 @@ void QgsDwgImporter::addText( const DRW_Text &data )
   addEntity( dfn, f, data );
 
   SETDOUBLE( height );
-  SETSTRING( text );
+  SETSTRING( text );  // TODO: parse MTEXT
   SETDOUBLE( angle );
   SETDOUBLE( widthscale );
   SETDOUBLE( oblique );

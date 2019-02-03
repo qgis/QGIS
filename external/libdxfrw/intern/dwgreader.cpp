@@ -149,7 +149,8 @@ bool dwgReader::checkSentinel( dwgBuffer *buf, enum secEnum::DWGSection, bool st
 
 /*********** objects map ************************/
 
-/** Note: object map are split in sections with max size 2035?
+/**
+ * Note: object map are split in sections with max size 2035?
  *  each section are 2 bytes size + data bytes + 2 bytes crc
  *  size value are data bytes + 2 and to calculate crc are used
  *  2 bytes size + data bytes
@@ -973,7 +974,7 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
             ret = false;
             continue;
           }
-          else  //foud entity reads it
+          else  //found entity, read it
           {
             oc = mit->second;
             ObjectMap.erase( mit );
