@@ -6156,7 +6156,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsStringMap extraParams;
   extraParams[QStringLiteral( "SOMETHING" )] = QStringLiteral( "SOMETHING_ELSE" );
   extraParams[QStringLiteral( "SOMETHING2" )] = QStringLiteral( "SOMETHING_ELSE2" );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'SOMETHING':SOMETHING_ELSE,\n      'SOMETHING2':SOMETHING_ELSE2,\n    }\n    outputs[''] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs[''] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
   // bit of a hack -- but try to simulate an algorithm not originally available!
   child.mAlgorithm.reset();
   QVERIFY( !child.algorithm() );
@@ -6199,7 +6199,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 0 ).staticValue().toInt(), 7 );
   QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 1 ).staticValue().toInt(), 9 );
 
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'a':5,\n      'b':[7,9],\n      'SOMETHING':SOMETHING_ELSE,\n      'SOMETHING2':SOMETHING_ELSE2,\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
 
   QgsProcessingModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
@@ -6235,7 +6235,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
   child.modelOutput( "a" ).setDescription( QStringLiteral( "my output 2" ) );
   QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output 2" ) );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'a':5,\n      'b':[7,9],\n      'SOMETHING':SOMETHING_ELSE,\n      'SOMETHING2':SOMETHING_ELSE2,\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
 
   // no existent
   child.modelOutput( "b" ).setDescription( QStringLiteral( "my output 3" ) );
@@ -6983,26 +6983,26 @@ void TestQgsProcessing::modelExecution()
                               "    results = {}\n"
                               "    outputs = {}\n"
                               "    alg_params = {\n"
-                              "      'DISSOLVE':False,\n"
-                              "      'DISTANCE':parameters['DIST'],\n"
-                              "      'END_CAP_STYLE':1,\n"
-                              "      'INPUT':parameters['SOURCE_LAYER'],\n"
-                              "      'JOIN_STYLE':2,\n"
-                              "      'SEGMENTS':QgsExpression('@myvar*2').evaluate(),\n"
-                              "      'OUTPUT':parameters['cx1:MODEL_OUT_LAYER'],\n"
+                              "      'DISSOLVE': False,\n"
+                              "      'DISTANCE': parameters['DIST'],\n"
+                              "      'END_CAP_STYLE': 1,\n"
+                              "      'INPUT': parameters['SOURCE_LAYER'],\n"
+                              "      'JOIN_STYLE': 2,\n"
+                              "      'SEGMENTS': QgsExpression('@myvar*2').evaluate(),\n"
+                              "      'OUTPUT': parameters['cx1:MODEL_OUT_LAYER']\n"
                               "    }\n"
                               "    outputs['cx1'] = processing.run('native:buffer', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
                               "    results['cx1:MODEL_OUT_LAYER'] = outputs['cx1']['OUTPUT']\n"
                               "    alg_params = {\n"
-                              "      'INPUT':outputs['cx1']['OUTPUT'],\n"
-                              "      'OUTPUT':QgsProcessing.TEMPORARY_OUTPUT,\n"
+                              "      'INPUT': outputs['cx1']['OUTPUT'],\n"
+                              "      'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT\n"
                               "    }\n"
                               "    outputs['cx2'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
                               "    alg_params = {\n"
-                              "      'EXPRESSION':'true',\n"
-                              "      'INPUT':outputs['cx1']['OUTPUT'],\n"
-                              "      'OUTPUT':parameters['MY_OUT'],\n"
-                              "      'OUTPUT':parameters['cx3:MY_OUT'],\n"
+                              "      'EXPRESSION': 'true',\n"
+                              "      'INPUT': outputs['cx1']['OUTPUT'],\n"
+                              "      'OUTPUT': parameters['MY_OUT'],\n"
+                              "      'OUTPUT': parameters['cx3:MY_OUT']\n"
                               "    }\n"
                               "    outputs['cx3'] = processing.run('native:extractbyexpression', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n"
                               "    results['cx3:MY_OUT'] = outputs['cx3']['OUTPUT']\n"

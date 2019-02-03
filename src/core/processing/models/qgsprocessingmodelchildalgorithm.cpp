@@ -184,9 +184,9 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
         sourceParts << part;
     }
     if ( sourceParts.count() == 1 )
-      paramParts << QStringLiteral( "'%1':%2" ).arg( paramIt.key(), sourceParts.at( 0 ) );
+      paramParts << QStringLiteral( "'%1': %2" ).arg( paramIt.key(), sourceParts.at( 0 ) );
     else
-      paramParts << QStringLiteral( "'%1':[%2]" ).arg( paramIt.key(), sourceParts.join( ',' ) );
+      paramParts << QStringLiteral( "'%1': [%2]" ).arg( paramIt.key(), sourceParts.join( ',' ) );
   }
 
   lines << baseIndent + QStringLiteral( "alg_params = {" );
@@ -197,7 +197,11 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   }
   for ( auto it = extraParameters.constBegin(); it != extraParameters.constEnd(); ++it )
   {
-    lines << baseIndent + lineIndent + QgsProcessingUtils::stringToPythonLiteral( it.key() ) + ':' + it.value() + ',';
+    lines << baseIndent + lineIndent + QStringLiteral( "%1: %2," ).arg( QgsProcessingUtils::stringToPythonLiteral( it.key() ), it.value() );
+  }
+  if ( lines.constLast().endsWith( ',' ) )
+  {
+    lines[ lines.count() - 1 ].truncate( lines.constLast().length() - 1 );
   }
   lines << baseIndent + QStringLiteral( "}" );
 
