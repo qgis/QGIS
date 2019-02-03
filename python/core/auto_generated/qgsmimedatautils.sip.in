@@ -42,7 +42,7 @@ Returns encoded representation of the object
 
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 %Docstring
-Gets vector layer from uri if possible, otherwise returns 0 and error is set
+Gets vector layer from uri if possible, otherwise returns None and error is set
 
 :param owner: set to true if caller becomes owner
 :param error: set to error message if cannot get vector
@@ -50,7 +50,7 @@ Gets vector layer from uri if possible, otherwise returns 0 and error is set
 
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 %Docstring
-Gets raster layer from uri if possible, otherwise returns 0 and error is set
+Gets raster layer from uri if possible, otherwise returns None and error is set
 
 :param owner: set to true if caller becomes owner
 :param error: set to error message if cannot get raster
@@ -58,7 +58,7 @@ Gets raster layer from uri if possible, otherwise returns 0 and error is set
 
       QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
 %Docstring
-Gets mesh layer from uri if possible, otherwise returns 0 and error is set
+Gets mesh layer from uri if possible, otherwise returns None and error is set
 
 :param owner: set to true if caller becomes owner
 :param error: set to error message if cannot get raster
