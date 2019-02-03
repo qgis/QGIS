@@ -46,7 +46,9 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
+  mExpContext = createExpressionContext();
   mTitle = mSettings.title();
+  mLegendModel.setLayoutExpContext( &mExpContext );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
@@ -869,28 +871,6 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
 
-QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
-{
-  // handle custom layer node labels
-  if ( QgsLayerTreeNode *node = index2node( index ) )
-  {
-    if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) && !node->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
-    {
-      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
-      {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-      }
-      return name;
-    }
-  }
-
-  return QgsLayerTreeModel::data( index, role );
-}
-
 Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 {
   // make the legend nodes selectable even if they are not by default
@@ -900,23 +880,48 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
   return QgsLayerTreeModel::flags( index );
 }
 
-QVariant QgsLegendModel::data( const QModelIndex &index, int role, QgsExpressionContext econtext ) const
+QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
+  QgsExpressionContext context;
+  if ( mLayoutLegendContext )
+  {
+    context = QgsExpressionContext( mLayoutLegendContext );
+  }
+  else
+  {
+    context = QgsExpressionContext();
+  }
+  
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
+    QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-    QgsLayerTreeModelLegendNode ltmln = index2legendNode ( index );
-    if ( ltmln )
+    if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
-      QgsSmybolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendNode );
-        if ( synode )
-        {
-          name = synode->evaluateLabel( econtext );
-        }
-        return name;
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      if ( vlayer && vlayer->featureCount() >= 0 )
+        name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+    }
+    else
+    {
+      QgsLayerTreeModelLegendNode ltmln = index2legendNode ( index );
+      if ( ltmln )
+      {
+        QgsSmybolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendNode );
+          if ( synode )
+          {
+            name = synode->evaluateLabel( new QgsExpressionContext( context ) );
+          }
+          return name;
+      }
     }
   }
 
   return QgsLayerTreeModel::data( index, role );
+}
+
+void setLayoutExpContext( QgsExpressionContext *econtext)
+{
+  mLayoutLegendContext = econtext;
 }
