@@ -856,8 +856,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   context.appendScope( scope );
 
-  mEx
-  mExpContext = context;
+  mExpContext( context );
   return context;
 }
 
@@ -893,7 +892,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     QgsExpressionContext context;
     if ( mLayoutLegendContext )
     {
-      context = QgsExpressionContext( mLayoutLegendContext );
+      context = QgsExpressionContext( *mLayoutLegendContext );
     }
     else
     {
@@ -915,7 +914,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln );
         if ( synode )
         {
-          name = synode->evaluateLabel( new QgsExpressionContext( *context ) );
+          name = synode->evaluateLabel( context );
         }
         return name;
       }
