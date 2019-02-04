@@ -25,8 +25,7 @@ from builtins import str
 from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from qgis.core import (QgsDataSourceUri,
                        QgsVectorLayer,
