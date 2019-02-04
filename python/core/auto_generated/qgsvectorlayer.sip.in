@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsvectorlayer.h                                            *
+ * src/core/tosip/qgsvectorlayer.h                                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -2195,6 +2195,13 @@ It may also contain embedded expressions.
 .. versionadded:: 3.0
 %End
 
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context ) const;
+%Docstring
+Provide the global and layer context for evaluation
+
+:param context: extra QgsExpressionContext to add
+%End
+
     virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
 
 
@@ -2633,7 +2640,7 @@ Sets the extent
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsvectorlayer.h                                            *
+ * src/core/tosip/qgsvectorlayer.h                                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

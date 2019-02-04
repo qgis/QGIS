@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsexpressioncontext.h                                      *
+ * src/core/tosip/qgsexpressioncontext.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -612,7 +612,7 @@ Retrieves a list of function names contained in the context.
 
 .. seealso:: :py:func:`variableNames`
 %End
-
+  
     QgsExpressionFunction *function( const QString &name ) const;
 %Docstring
 Fetches a matching function from the context. The function will be fetched
@@ -1099,7 +1099,7 @@ Registers all known core functions provided by QgsExpressionContextScope objects
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsexpressioncontext.h                                      *
+ * src/core/tosip/qgsexpressioncontext.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
