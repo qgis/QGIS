@@ -299,6 +299,20 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
   return *this;
 }
 
+QgsExpressionContext QgsExpressionContext::operator=( QgsExpressionContext other )
+{
+  qDeleteAll( mStack );
+  mStack.clear();
+  Q_FOREACH ( const QgsExpressionContextScope *scope, other.mStack )
+  {
+    mStack << new QgsExpressionContextScope( *scope );
+  }
+  mHighlightedVariables = other.mHighlightedVariables;
+  mHighlightedFunctions = other.mHighlightedFunctions;
+  mCachedValues = other.mCachedValues;
+  return this;
+}
+
 QgsExpressionContext::~QgsExpressionContext()
 {
   qDeleteAll( mStack );
