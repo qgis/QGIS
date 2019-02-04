@@ -651,6 +651,11 @@ void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPo
   }
 }
 
+double QgsLineSymbolLayer::width( const QgsRenderContext &context ) const
+{
+  return context.convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
+}
+
 double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );

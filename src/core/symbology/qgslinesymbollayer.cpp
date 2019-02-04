@@ -1113,7 +1113,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, Qg
            || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
       {
         //transform
-        x = vPoint.x(), y = vPoint.y();
+        x = vPoint.x();
+        y = vPoint.y();
         z = 0.0;
         if ( ct.isValid() )
         {
@@ -1618,6 +1619,11 @@ double QgsMarkerLineSymbolLayer::width() const
   return mMarker->size();
 }
 
+double QgsMarkerLineSymbolLayer::width( const QgsRenderContext &context ) const
+{
+  return mMarker->size( context );
+}
+
 void QgsMarkerLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsLineSymbolLayer::setOutputUnit( unit );
@@ -1675,7 +1681,7 @@ bool QgsMarkerLineSymbolLayer::hasDataDefinedProperties() const
 
 double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return context.convertToPainterUnits( ( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
+  return ( mMarker->size( context ) / 2.0 ) +
          context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 

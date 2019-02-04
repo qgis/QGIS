@@ -234,6 +234,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     void setWidth( double width ) override;
     double width() const override;
+    double width( const QgsRenderContext &context ) const override;
 
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
