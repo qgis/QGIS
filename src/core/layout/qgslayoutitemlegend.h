@@ -61,7 +61,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
   private:
-    mutable QgsExpressionContext *mLayoutLegendContext;
+    QgsExpressionContext *mLayoutLegendContext;
 };
 
 
