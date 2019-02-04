@@ -449,7 +449,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
-    QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext( bool replace = False) const override;
 
 
   public slots:
@@ -523,7 +523,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     friend class QgsCompositionConverter;
 
-    mutable QgsExpressionContext mExpContext;
+    mutable QgsExpressionContext mExpContext = QgsLayoutItem::createExpressionContext();
 
 };
 
