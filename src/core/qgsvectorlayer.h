@@ -1976,7 +1976,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Provide the global and layer context for evaluation
      * \param context extra QgsExpressionContext to add
      */
-    QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const;
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context ) const;
+
+    QgsExpressionContext createExpressionContext() const FINAL;
 
     QgsExpressionContextScope *createExpressionContextScope() const FINAL SIP_FACTORY;
 
