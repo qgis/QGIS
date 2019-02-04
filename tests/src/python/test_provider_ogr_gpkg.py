@@ -1230,6 +1230,79 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
         del vl2_external
 
+    def testJson(self):
+        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0):
+            return
+
+        tmpfile = os.path.join(self.basetestpath, 'test_json.gpkg')
+        testdata_path = unitTestDataPath('provider')
+        shutil.copy(os.path.join(unitTestDataPath('provider'), 'test_json.gpkg'), tmpfile)
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile, 'foo', 'ogr'))
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('json_content')).type(), QVariant.Map)
+
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+
+        #test reading dict value from attribute
+        while fi.nextFeature(f):
+            if f['fid'] == 1:
+                self.assertIsInstance(f['json_content'], dict)
+                self.assertEqual(f['json_content'], {'foo': 'bar'})
+                #test changing dict value in attribute
+                f['json_content'] = {'foo': 'baz'}
+                self.assertEqual(f['json_content'], {'foo': 'baz'})
+                #test changint dict to list
+                f['json_content'] = ['eins', 'zwei', 'drei']
+                self.assertEqual(f['json_content'], ['eins', 'zwei', 'drei'])
+                #test changing list value in attribute
+                f['json_content'] = ['eins', 'zwei', 'drei', 4]
+                self.assertEqual(f['json_content'], ['eins', 'zwei', 'drei', 4])
+                #test changing to complex json structure
+                f['json_content'] = {'name': 'Lily', 'age': '0', 'cars': {'car1': ['fiat tipo', 'fiat punto', 'davoser schlitten'], 'car2': 'bobbycar', 'car3': 'tesla'}}
+                self.assertEqual(f['json_content'], {'name': 'Lily', 'age': '0', 'cars': {'car1': ['fiat tipo', 'fiat punto', 'davoser schlitten'], 'car2': 'bobbycar', 'car3': 'tesla'}})
+
+        #test adding attribute
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField('json_content2', QVariant.Map, "JSON", 60, 0, 'no comment', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField('json_content3', QVariant.Map, "JSON", 60, 0, 'no comment', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+
+        #test setting values to new attributes
+        while fi.nextFeature(f):
+            if f['fid'] == 2:
+                f['json_content'] = {'uno': 'foo'}
+                f['json_content2'] = ['uno', 'due', 'tre']
+                f['json_content3'] = {'uno': ['uno', 'due', 'tre']}
+                self.assertEqual(f['json_content'], {'foo': 'baz'})
+                self.assertEqual(f['json_content2'], ['uno', 'due', 'tre'])
+                self.assertEqual(f['json_content3'], {'uno': ['uno', 'due', 'tre']})
+
+        #test deleting attribute
+        vl.startEditing()
+        self.assertTrue(vl.deleteAttribute(vl.fields().indexFromName('json_content3')))
+        self.assertTrue(vl.commitChanges())
+
+        #test if index of existent field is not -1 and the one of the deleted is -1
+        self.assertNotEqual(vl.fields().indexFromName('json_content2'), -1)
+        self.assertEqual(vl.fields().indexFromName('json_content3'), -1)
+
+    def test_quote_identifier(self):
+        """Regression #21100"""
+
+        tmpfile = os.path.join(self.basetestpath, 'bug21100-wierd_field_names.gpkg')  # spellok
+        shutil.copy(os.path.join(unitTestDataPath(''), 'bug21100-wierd_field_names.gpkg'), tmpfile) # spellok
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'foo', 'ogr')
+        self.assertTrue(vl.isValid())
+        for i in range(1, len(vl.fields())):
+            self.assertEqual(vl.uniqueValues(i), {'a', 'b', 'c'})
+
 
 if __name__ == '__main__':
     unittest.main()
