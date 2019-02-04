@@ -123,7 +123,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
-    int mVertexMarkerStyle, mVertexMarkerSize;
+    int mVertexMarkerStyle;
+    double mVertexMarkerSize;
 
     QgsWkbTypes::GeometryType mGeometryType;
 

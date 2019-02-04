@@ -428,7 +428,7 @@ Returns whether the symbol utilizes any data defined properties.
 .. deprecated:: Will be removed in QGIS 4.0
 %End
 
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
+    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 );
 %Docstring
 Render a feature. Before calling this the startRender() method should be called to initialize
 the rendering process. After rendering all features stopRender() must be called.
@@ -487,7 +487,7 @@ This is required for layers that generate their own geometry from other
 information in the rendering context.
 %End
 
-    void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize );
+    void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, double currentVertexMarkerSize );
 %Docstring
 Render editing vertex marker at specified point
 

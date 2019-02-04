@@ -1690,7 +1690,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       NoMarker
     };
 
-    //! Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+    /**
+     * Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+     * \deprecated Use the equivalent QgsSymbolLayerUtils::drawVertexMarker function instead
+     */
     static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
     /**

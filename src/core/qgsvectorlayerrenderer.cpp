@@ -78,7 +78,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mVertexMarkerStyle = QgsVectorLayer::NoMarker;
   }
 
-  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size" ), 3 ).toInt();
+  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size" ), 1.2 ).toDouble();
 
   if ( !mRenderer )
     return;

@@ -60,7 +60,7 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   : mType( type )
   , mUsingSymbolLevels( false )
   , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
-  , mCurrentVertexMarkerSize( 3 )
+  , mCurrentVertexMarkerSize( 2 )
   , mForceRaster( false )
   , mOrderByEnabled( false )
 {
@@ -337,7 +337,7 @@ QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
   return QgsLegendSymbolList();
 }
 
-void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )
+void QgsFeatureRenderer::setVertexMarkerAppearance( int type, double size )
 {
   mCurrentVertexMarkerType = type;
   mCurrentVertexMarkerSize = size;

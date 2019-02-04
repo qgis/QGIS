@@ -342,7 +342,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QString legendClassificationAttribute() const { return QString(); }
 
     //! Sets type and size of editing vertex markers for subsequent rendering
-    void setVertexMarkerAppearance( int type, int size );
+    void setVertexMarkerAppearance( int type, double size );
 
     /**
      * Returns whether the renderer will render a feature or not.
@@ -505,7 +505,7 @@ class CORE_EXPORT QgsFeatureRenderer
     //! The current type of editing marker
     int mCurrentVertexMarkerType;
     //! The current size of editing marker
-    int mCurrentVertexMarkerSize;
+    double mCurrentVertexMarkerSize;
 
     QgsPaintEffect *mPaintEffect = nullptr;
 
