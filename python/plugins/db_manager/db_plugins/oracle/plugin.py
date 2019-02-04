@@ -557,6 +557,10 @@ class ORTableField(TableField):
             self.table().refreshIndexes()
         return ret
 
+    def getComment(self):
+        """Returns the comment for a field"""
+        return ''
+
 
 class ORTableConstraint(TableConstraint):
 
