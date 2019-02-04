@@ -867,8 +867,8 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
-  , mLayoutLegendContext( nullptr )
 {
+    mLayoutLegendContext = nullptr;
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
