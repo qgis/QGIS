@@ -1,10 +1,11 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayoutitemlegend.h                                *
+ * src/core/tosip/qgslayoutitemlegend.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+
 
 
 
@@ -33,6 +34,15 @@ Construct the model based on the given layer tree
 
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    void setLayoutExpContext( QgsExpressionContext *econtext );
+%Docstring
+Set the pointer to the layoutlegend expressioncontext
+
+:param econtext: pointer to the context
+\since: 3.8
+%End
 
 };
 
@@ -488,8 +498,7 @@ Returns the legend's renderer settings object.
     virtual void finalizeRestoreFromXml();
 
 
-    virtual QgsExpressionContext createExpressionContext() const;
-
+    QgsExpressionContext createExpressionContext( bool replace = false) const;
 
 
   public slots:
@@ -513,7 +522,7 @@ Returns the legend's renderer settings object.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayoutitemlegend.h                                *
+ * src/core/tosip/qgslayoutitemlegend.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
