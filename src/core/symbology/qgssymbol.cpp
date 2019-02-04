@@ -1312,6 +1312,21 @@ double QgsMarkerSymbol::size() const
   return maxSize;
 }
 
+double QgsMarkerSymbol::size( const QgsRenderContext &context ) const
+{
+  // return size of the largest symbol
+  double maxSize = 0;
+  for ( QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->type() != QgsSymbol::Marker )
+      continue;
+    const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
+    const double layerSize = context.convertToPainterUnits( markerLayer->size(), markerLayer->sizeUnit(), markerLayer->sizeMapUnitScale() );
+    maxSize = std::max( maxSize, layerSize );
+  }
+  return maxSize;
+}
+
 void QgsMarkerSymbol::setSizeUnit( QgsUnitTypes::RenderUnit unit )
 {
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
@@ -1630,6 +1645,21 @@ double QgsLineSymbol::width() const
       if ( width > maxWidth )
         maxWidth = width;
     }
+  }
+  return maxWidth;
+}
+
+double QgsLineSymbol::width( const QgsRenderContext &context ) const
+{
+  // return width of the largest symbol
+  double maxWidth = 0;
+  for ( QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->type() != QgsSymbol::Line )
+      continue;
+    const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
+    const double layerWidth = lineLayer->width( context );
+    maxWidth = std::max( maxWidth, layerWidth );
   }
   return maxWidth;
 }
