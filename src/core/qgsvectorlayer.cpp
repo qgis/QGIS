@@ -4241,6 +4241,11 @@ void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig &att
   }
 }
 
+QgsExpressionContext QgsVectorLayer::createExpressionContext() const
+{
+  return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
+}
+
 QgsExpressionContext QgsVectorLayer::createExpressionContext( QgsExpressionContext context ) const
 {
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
