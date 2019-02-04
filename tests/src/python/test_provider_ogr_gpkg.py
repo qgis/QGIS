@@ -1293,6 +1293,16 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertNotEqual(vl.fields().indexFromName('json_content2'), -1)
         self.assertEqual(vl.fields().indexFromName('json_content3'), -1)
 
+    def test_quote_identifier(self):
+        """Regression #21100"""
+
+        tmpfile = os.path.join(self.basetestpath, 'bug21100-wierd_field_names.gpkg')  # spellok
+        shutil.copy(os.path.join(unitTestDataPath(''), 'bug21100-wierd_field_names.gpkg'), tmpfile) # spellok
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'foo', 'ogr')
+        self.assertTrue(vl.isValid())
+        for i in range(1, len(vl.fields())):
+            self.assertEqual(vl.uniqueValues(i), {'a', 'b', 'c'})
+
 
 if __name__ == '__main__':
     unittest.main()
