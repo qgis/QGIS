@@ -570,10 +570,12 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
  * \ingroup core
  * Helper class used when traversing the index looking for vertices - builds a list of matches.
  * \note not available in Python bindings
+ * \since QGIS 3.6
 */
 class QgsPointLocator_VisitorVerticesInRect : public IVisitor
 {
   public:
+    //! Constructs the visitor
     QgsPointLocator_VisitorVerticesInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
       : mLocator( pl )
       , mList( lst )
