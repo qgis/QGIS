@@ -256,6 +256,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Override of edgesInRect that construct rectangle from a center point and tolerance
     MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
 
+    /**
+     * Find vertices within a specified recangle
+     * Optional filter may discard unwanted matches.
+     * \since QGIS 3.6
+     */
+    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
+     * Override of verticesInRect that construct rectangle from a center point and tolerance
+     * \since QGIS 3.6
+     */
+    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+
     // point-in-polygon query
 
     // TODO: function to return just the first match?
@@ -300,6 +313,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     friend class QgsPointLocator_VisitorNearestEdge;
     friend class QgsPointLocator_VisitorArea;
     friend class QgsPointLocator_VisitorEdgesInRect;
+    friend class QgsPointLocator_VisitorVerticesInRect;
 };
 
 
