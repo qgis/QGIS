@@ -799,17 +799,22 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter *painter, QRect rect 
 
 void QgsSymbolLayerUtils::drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize )
 {
-  if ( type == QgsSymbolLayerUtils::SemiTransparentCircle )
+  qreal s = ( markerSize - 1 ) / 2.0;
+
+  switch ( type )
   {
-    p.setPen( QColor( 50, 100, 120, 200 ) );
-    p.setBrush( QColor( 200, 200, 210, 120 ) );
-    p.drawEllipse( x - markerSize, y - markerSize, markerSize * 2 + 1, markerSize * 2 + 1 );
-  }
-  else if ( type == QgsSymbolLayerUtils::Cross )
-  {
-    p.setPen( QColor( 255, 0, 0 ) );
-    p.drawLine( x - markerSize, y + markerSize, x + markerSize, y - markerSize );
-    p.drawLine( x - markerSize, y - markerSize, x + markerSize, y + markerSize );
+    case QgsSymbolLayerUtils::SemiTransparentCircle:
+      p.setPen( QColor( 50, 100, 120, 200 ) );
+      p.setBrush( QColor( 200, 200, 210, 120 ) );
+      p.drawEllipse( x - s, y - s, s * 2, s * 2 );
+      break;
+    case QgsSymbolLayerUtils::Cross:
+      p.setPen( QColor( 255, 0, 0 ) );
+      p.drawLine( x - s, y + s, x + s, y - s );
+      p.drawLine( x - s, y - s, x + s, y + s );
+      break;
+    case QgsSymbolLayerUtils::NoMarker:
+      break;
   }
 }
 

@@ -243,7 +243,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void drawStippledBackground( QPainter *painter, QRect rect );
 
     /**
-     * Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+     * Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex editing.)
      * \since QGIS 3.4.5
      */
     static void drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize );

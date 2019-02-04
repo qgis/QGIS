@@ -249,7 +249,7 @@ Returns a pixmap preview for a color ramp.
 
     static void drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize );
 %Docstring
-Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex editing.)
 
 .. versionadded:: 3.4.5
 %End

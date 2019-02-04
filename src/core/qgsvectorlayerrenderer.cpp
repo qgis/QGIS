@@ -24,6 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
@@ -67,18 +68,18 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   QString markerTypeString = settings.value( QStringLiteral( "qgis/digitizing/marker_style" ), "Cross" ).toString();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
-    mVertexMarkerStyle = QgsVectorLayer::Cross;
+    mVertexMarkerStyle = QgsSymbolLayerUtils::Cross;
   }
   else if ( markerTypeString == QLatin1String( "SemiTransparentCircle" ) )
   {
-    mVertexMarkerStyle = QgsVectorLayer::SemiTransparentCircle;
+    mVertexMarkerStyle = QgsSymbolLayerUtils::SemiTransparentCircle;
   }
   else
   {
-    mVertexMarkerStyle = QgsVectorLayer::NoMarker;
+    mVertexMarkerStyle = QgsSymbolLayerUtils::NoMarker;
   }
 
-  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size" ), 1.2 ).toDouble();
+  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size_mm" ), 2.0 ).toDouble();
 
   if ( !mRenderer )
     return;
