@@ -909,15 +909,15 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
-      QgsLayerTreeModelLegendNode *ltmln = index2legendNode ( index );
+      QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
       if ( ltmln )
       {
         QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln );
-          if ( synode )
-          {
-            name = synode->evaluateLabel( new QgsExpressionContext( *context ) );
-          }
-          return name;
+        if ( synode )
+        {
+          name = synode->evaluateLabel( new QgsExpressionContext( *context ) );
+        }
+        return name;
       }
     }
   }
@@ -925,7 +925,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   return QgsLayerTreeModel::data( index, role );
 }
 
-void setLayoutExpContext( QgsExpressionContext *econtext)
+void setLayoutExpContext( QgsExpressionContext *econtext )
 {
   mLayoutLegendContext = econtext;
 }
