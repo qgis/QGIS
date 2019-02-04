@@ -797,6 +797,27 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter *painter, QRect rect 
   painter->fillRect( rect, brush );
 }
 
+void QgsSymbolLayerUtils::drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize )
+{
+  qreal s = ( markerSize - 1 ) / 2.0;
+
+  switch ( type )
+  {
+    case QgsSymbolLayerUtils::SemiTransparentCircle:
+      p.setPen( QColor( 50, 100, 120, 200 ) );
+      p.setBrush( QColor( 200, 200, 210, 120 ) );
+      p.drawEllipse( x - s, y - s, s * 2, s * 2 );
+      break;
+    case QgsSymbolLayerUtils::Cross:
+      p.setPen( QColor( 255, 0, 0 ) );
+      p.drawLine( x - s, y + s, x + s, y - s );
+      p.drawLine( x - s, y - s, x + s, y + s );
+      break;
+    case QgsSymbolLayerUtils::NoMarker:
+      break;
+  }
+}
+
 #include <QPolygonF>
 
 #include <cmath>
