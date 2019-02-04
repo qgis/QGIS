@@ -61,7 +61,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void setLayoutExpContext( QgsExpressionContext *econtext );
 
   private:
-    QgsExpressionContext *mLayoutLegendContext;
+    QgsExpressionContext *mLayoutLegendContext = nullptr;
 };
 
 
@@ -523,7 +523,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     friend class QgsCompositionConverter;
 
-    QgsExpressionContext mExpContext;
+    QgsExpressionContext mExpContext = QgsExpressionContext();
 
 };
 
