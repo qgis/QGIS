@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "vertextool/qgsvertexentry.h"
+
+#include "qgsguiutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
 
@@ -54,7 +56,8 @@ void QgsVertexEntry::placeMarker()
         mMarker->setIconType( mType );
       }
       mMarker->setColor( c );
-      mMarker->setPenWidth( mPenWidth );
+      mMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+      mMarker->setPenWidth( QgsGuiUtils::scaleIconSize( mPenWidth ) );
       mMarker->setToolTip( mToolTip );
     }
 
