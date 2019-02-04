@@ -46,7 +46,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
-  createExpressionContext( replace = True );
+  createExpressionContext( true );
   mTitle = mSettings.title();
   mLegendModel->setLayoutExpContext( &mExpContext );
 
