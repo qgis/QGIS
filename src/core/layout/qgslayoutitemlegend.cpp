@@ -687,7 +687,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   updateFilterByMap();
 
   // unsure if needed
-  QgsExpressionContext context = createExpressionContext( replace = True);
+  QgsExpressionContext context = createExpressionContext( true );
   mLegendModel->setLayoutExpContext( &mExpContext );
 
 }
@@ -857,7 +857,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
 
   if ( replace )
   {
-    mExpContext.~QgsExpressionContext()
+    mExpContext.~QgsExpressionContext();
     Q_FOREACH( QgsExpressionContextScope *scopep, context.takeScopes())
       {
       mExpContext.appendScope( scopep );
