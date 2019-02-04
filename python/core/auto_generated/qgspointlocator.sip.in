@@ -200,6 +200,21 @@ Optional filter may discard unwanted matches.
 Override of edgesInRect that construct rectangle from a center point and tolerance
 %End
 
+    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find vertices within a specified recangle
+Optional filter may discard unwanted matches.
+
+.. versionadded:: 3.6
+%End
+
+    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Override of verticesInRect that construct rectangle from a center point and tolerance
+
+.. versionadded:: 3.6
+%End
+
 
     MatchList pointInPolygon( const QgsPointXY &point );
 %Docstring

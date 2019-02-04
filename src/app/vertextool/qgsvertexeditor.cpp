@@ -306,7 +306,7 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   mHintLabel = new QLabel( this );
-  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on the edge of an editable feature to show its table of vertices." ),
+  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ),
                        tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
   mHintLabel->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
