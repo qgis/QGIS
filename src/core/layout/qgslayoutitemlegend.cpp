@@ -688,7 +688,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 
   // unsure if needed
   QgsExpressionContext context = createExpressionContext();
-  mLegendModel.setLayoutExpContext( &mExpContext );
+  mLegendModel->setLayoutExpContext( &mExpContext );
 
 }
 
@@ -866,6 +866,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
+  , mLayoutLegendContext( nullptr )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
@@ -884,7 +885,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
 
-  QgsLayerTreeNode *node = index2node( index )
+  QgsLayerTreeNode *node = index2node( index );
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
     QgsExpressionContext context;
