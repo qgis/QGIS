@@ -13658,9 +13658,9 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *inReply, QAuthenticator 
   for ( ;; )
   {
     bool ok = QgsCredentials::instance()->get(
-             QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-             username, password,
-             tr( "Authentication required" ) );
+                QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+                username, password,
+                tr( "Authentication required" ) );
     if ( !ok )
       return;
 
@@ -13671,16 +13671,16 @@ void QgisApp::namAuthenticationRequired( QNetworkReply *inReply, QAuthenticator 
       break;
 
     // credentials didn't change - stored ones probably wrong? clear password and retry
-      QgsCredentials::instance()->put(
-        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-        username, QString() );
+    QgsCredentials::instance()->put(
+      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+      username, QString() );
   }
 
   // save credentials
-    QgsCredentials::instance()->put(
-      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-      username, password
-    );
+  QgsCredentials::instance()->put(
+    QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+    username, password
+  );
 
   auth->setUser( username );
   auth->setPassword( password );
