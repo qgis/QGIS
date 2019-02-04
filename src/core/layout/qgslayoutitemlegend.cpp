@@ -855,8 +855,8 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_out_atlas" ), legendFilterOutAtlas(), true ) );
 
   context.appendScope( scope );
-
-  mExpContext->overwriteWith( context );
+  ~mExpContext;
+  mExpContext.appendScopes( context.takeScopes() );
   return context;
 }
 
