@@ -856,7 +856,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   context.appendScope( scope );
 
-  mExpContext( context );
+  mExpContext->overwriteWith( context );
   return context;
 }
 
