@@ -315,7 +315,7 @@ If supported by the renderer, return classification attribute for the use in leg
 .. versionadded:: 2.6
 %End
 
-    void setVertexMarkerAppearance( int type, int size );
+    void setVertexMarkerAppearance( int type, double size );
 %Docstring
 Sets type and size of editing vertex markers for subsequent rendering
 %End
