@@ -46,8 +46,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
-  QgsExpressionContext ExpContext;
-  createExpressionContext();
+  createExpressionContext( replace = True );
   mTitle = mSettings.title();
   mLegendModel->setLayoutExpContext( &mExpContext );
 
@@ -688,7 +687,7 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   updateFilterByMap();
 
   // unsure if needed
-  QgsExpressionContext context = createExpressionContext();
+  QgsExpressionContext context = createExpressionContext( replace = True);
   mLegendModel->setLayoutExpContext( &mExpContext );
 
 }
@@ -832,7 +831,7 @@ void QgsLayoutItemLegend::onAtlasEnded()
   updateFilterByMap();
 }
 
-QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
+QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace ) const
 {
   QgsExpressionContext context = QgsLayoutItem::createExpressionContext();
 
@@ -855,9 +854,20 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "legend_filter_out_atlas" ), legendFilterOutAtlas(), true ) );
 
   context.appendScope( scope );
-  ~mExpContext;
-  mExpContext.appendScopes( context.takeScopes() );
-  return context;
+
+  if ( replace )
+  {
+    mExpContext.~QgsExpressionContext()
+    Q_FOREACH( QgsExpressionContextScope *scopep, context.takeScopes())
+      {
+      mExpContext.appendScope( scopep );
+      }
+    return mExpContext;
+  }
+  else
+  {
+    return context;
+  }
 }
 
 
