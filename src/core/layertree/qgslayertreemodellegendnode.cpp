@@ -544,7 +544,7 @@ void QgsSymbolLegendNode::updateLabel()
 QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
 {
   if ( !mLayerNode )
-    return;
+    return QString();
 
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
