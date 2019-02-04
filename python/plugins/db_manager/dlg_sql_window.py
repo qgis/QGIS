@@ -94,7 +94,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.populateQueryHistory()
         self.btnQueryHistory.toggled.connect(self.showHideQueryHistory)
 
-        self.btnCancel.setText(self.tr("Cancel (ESC)"))
         self.btnCancel.setEnabled(False)
         self.btnCancel.clicked.connect(self.executeSqlCanceled)
         try:
@@ -553,7 +552,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.editSql.setText(dlg.query)
 
     def createView(self):
-        name, ok = QInputDialog.getText(None, "View name", "View name")
+        name, ok = QInputDialog.getText(None, self.tr("View Name"), self.tr("View name"))
         if ok:
             try:
                 self.db.connector.createSpatialView(name, self._getSqlQuery())
