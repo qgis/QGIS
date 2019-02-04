@@ -582,15 +582,6 @@ class CORE_EXPORT QgsExpressionContext
      * \see variableNames()
      */
     QStringList functionNames() const;
-
-    /**
-     * replace the content of the current class with the one from another QgsExpressionContext
-     * used to update the current context
-     * \param other other context to provide
-     * 
-     * \since: 3.8
-     */
-    QgsExpressionContext overwriteWith( QgsExpressionContext other );
   
     /**
      * Fetches a matching function from the context. The function will be fetched
