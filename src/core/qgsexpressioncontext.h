@@ -404,6 +404,8 @@ class CORE_EXPORT QgsExpressionContext
      */
     QgsExpressionContext( const QgsExpressionContext &other );
 
+    QgsExpressionContext &operator=( QgsExpressionContext other ) SIP_SKIP;
+
     QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;
 
     QgsExpressionContext &operator=( QgsExpressionContext &&other ) noexcept SIP_SKIP;
