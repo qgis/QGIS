@@ -523,7 +523,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     friend class QgsCompositionConverter;
 
-    QgsExpressionContext mExpContext = QgsExpressionContext();
+    QgsExpressionContext mExpContext;
 
 };
 
