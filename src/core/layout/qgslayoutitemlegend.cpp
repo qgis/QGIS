@@ -685,6 +685,11 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   }
 
   updateFilterByMap();
+
+  // unsure if needed
+  QgsExpressionContext context = createExpressionContext();
+  mLegendModel.setLayoutExpContext( &mExpContext );
+
 }
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
@@ -850,6 +855,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   context.appendScope( scope );
 
+  mExpContext = context;
   return context;
 }
 
