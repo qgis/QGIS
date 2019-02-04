@@ -580,7 +580,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
   return mLabel;
 }
 
-QgsExpressionContext QgsSymbolLegendNode::createExpressionContext(QgsExpressionContext context ) const
+QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
 {
   //= QgsLayoutItem::createExpressionContext();
 
