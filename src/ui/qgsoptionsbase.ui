@@ -4259,22 +4259,22 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QSpinBox" name="mMarkerSizeSpinBox">
+                   <widget class="QDoubleSpinBox" name="mMarkerSizeSpinBox">
                     <property name="layoutDirection">
                      <enum>Qt::LeftToRight</enum>
                     </property>
                     <property name="minimum">
-                     <number>3</number>
+                     <number>0.4</number>
                     </property>
                     <property name="singleStep">
-                     <number>1</number>
+                     <number>0.2</number>
                     </property>
                    </widget>
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_6">
                     <property name="text">
-                     <string>Marker size</string>
+                     <string>Marker size (in millimeter)</string>
                     </property>
                    </widget>
                   </item>
