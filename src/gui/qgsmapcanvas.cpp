@@ -1010,7 +1010,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
     QgsPointXY closestPoint;
-    double closestSquaredDistance = pow( extentRect.width() + extentRect.height(), 2.0 );
+    double closestSquaredDistance = pow( extentRect.width(), 2.0 ) + pow( extentRect.height(), 2.0 );
     bool pointFound = false;
     while ( fit.nextFeature( f ) )
     {
