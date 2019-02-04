@@ -41,6 +41,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextscopegenerator.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 class QImage;
