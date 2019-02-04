@@ -48,7 +48,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
 
   mExpContext = createExpressionContext();
   mTitle = mSettings.title();
-  mLegendModel.setLayoutExpContext( &mExpContext );
+  mLegendModel->setLayoutExpContext( &mExpContext );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
@@ -855,16 +855,10 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 
   context.appendScope( scope );
 
-  mExpContext = context;
+  mExpContext = &context;
   return context;
 }
 
-void QgsLayoutItemLegend::updateLabels()
-{
-  QgsExpressionContect context = createExpressionContext();
-
-  mLegendModel.updateLabels( context );
-}
 
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
@@ -889,18 +883,19 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
-  QgsExpressionContext context;
-  if ( mLayoutLegendContext )
-  {
-    context = QgsExpressionContext( mLayoutLegendContext );
-  }
-  else
-  {
-    context = QgsExpressionContext();
-  }
-  
+
+  QgsLayerTreeNode *node = index2node( index )
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
+    QgsExpressionContext context;
+    if ( mLayoutLegendContext )
+    {
+      context = QgsExpressionContext( &mLayoutLegendContext );
+    }
+    else
+    {
+      context = QgsExpressionContext();
+    }
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
@@ -911,10 +906,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
-      QgsLayerTreeModelLegendNode ltmln = index2legendNode ( index );
+      QgsLayerTreeModelLegendNode *ltmln = index2legendNode ( index );
       if ( ltmln )
       {
-        QgsSmybolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendNode );
+        QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln );
           if ( synode )
           {
             name = synode->evaluateLabel( new QgsExpressionContext( context ) );
