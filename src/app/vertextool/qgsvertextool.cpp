@@ -454,33 +454,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     if ( !mDraggingVertex && !mDraggingEdge )
       mSelectionRectStartPos.reset( new QPoint( e->pos() ) );
   }
-
-  if ( e->button() == Qt::RightButton )
-  {
-    if ( !mSelectionRect && !mDraggingVertex && !mDraggingEdge )
-    {
-      QgsPointLocator::Match m = snapToEditableLayer( e );
-      if ( !m.isValid() )
-      {
-        // as the last resort check if we are on top of a feature if there is no vertex or edge snap
-        m = snapToPolygonInterior( e );
-      }
-
-      if ( m.isValid() && m.layer() )
-      {
-        updateVertexEditor( m.layer(), m.featureId() );
-      }
-      else
-      {
-        // there's really nothing under the cursor - let's deselect any feature we may have
-        mSelectedFeature.reset();
-        if ( mVertexEditor )
-        {
-          mVertexEditor->updateEditor( nullptr );
-        }
-      }
-    }
-  }
 }
 
 void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -590,8 +563,17 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else if ( e->button() == Qt::RightButton )
     {
-      // cancel action
-      stopDragging();
+      if ( mDraggingVertex || mDraggingEdge )
+      {
+        // cancel action
+        stopDragging();
+      }
+      else if ( !mSelectionRect )
+      {
+        // Right-click to select/delect a feature for editing (also gets selected in vertex editor).
+        // If there are multiple features at one location, cycle through them with subsequent right clicks.
+        tryToSelectFeature( e );
+      }
     }
   }
 
@@ -600,6 +582,13 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsVertexTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  if ( mSelectedFeatureAlternatives && ( e->pos() - mSelectedFeatureAlternatives->screenPoint ).manhattanLength() >= QApplication::startDragDistance() )
+  {
+    // as soon as the mouse moves more than just a tiny bit, previously stored alternatives info
+    // is probably not valid anymore and will need to be re-calculated
+    mSelectedFeatureAlternatives.reset();
+  }
+
   if ( mSelectionMethod == SelectionRange )
   {
     rangeMethodMoveEvent( e );
@@ -681,6 +670,9 @@ void QgsVertexTool::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
 
 void QgsVertexTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
+  if ( e->button() != Qt::LeftButton )
+    return;
+
   QgsPointLocator::Match m = snapToEditableLayer( e );
   if ( !m.hasEdge() )
     return;
@@ -846,6 +838,126 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
   }
 
   return m;
+}
+
+
+QList<QgsPointLocator::Match> QgsVertexTool::findEditableLayerMatches( const QgsPointXY &mapPoint, QgsVectorLayer *layer )
+{
+  QgsPointLocator::MatchList matchList;
+
+  if ( !layer->isEditable() )
+    return matchList;
+
+  QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
+  QgsPointLocator *locator = snapUtils->locatorForLayer( layer );
+
+  if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+  {
+    matchList << locator->pointInPolygon( mapPoint );
+  }
+
+  double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
+  matchList << locator->edgesInRect( mapPoint, tolerance );
+  matchList << locator->verticesInRect( mapPoint, tolerance );
+
+  return matchList;
+}
+
+
+QSet<QPair<QgsVectorLayer *, QgsFeatureId> > QgsVertexTool::findAllEditableFeatures( const QgsPointXY &mapPoint )
+{
+  QSet< QPair<QgsVectorLayer *, QgsFeatureId> > alternatives;
+
+  // if there is a current layer, it should have priority over other layers
+  // because sometimes there may be match from multiple layers at one location
+  // and selecting current layer is an easy way for the user to prioritize a layer
+  if ( QgsVectorLayer *currentVlayer = currentVectorLayer() )
+  {
+    for ( const QgsPointLocator::Match &m : findEditableLayerMatches( mapPoint, currentVlayer ) )
+    {
+      alternatives.insert( qMakePair( m.layer(), m.featureId() ) );
+    }
+  }
+
+  if ( mMode == AllLayers )
+  {
+    const auto layers = canvas()->layers();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vlayer )
+        continue;
+
+      for ( const QgsPointLocator::Match &m : findEditableLayerMatches( mapPoint, vlayer ) )
+      {
+        alternatives.insert( qMakePair( m.layer(), m.featureId() ) );
+      }
+    }
+  }
+
+  return alternatives;
+}
+
+
+void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
+{
+  if ( !mSelectedFeatureAlternatives )
+  {
+    // this is the first right-click on this location so we currently do not have information
+    // about editable features at this mouse location - let's build the alternatives info
+    QSet< QPair<QgsVectorLayer *, QgsFeatureId> > alternatives = findAllEditableFeatures( toMapCoordinates( e->pos() ) );
+    if ( !alternatives.isEmpty() )
+    {
+      QgsPointLocator::Match m = snapToEditableLayer( e );
+      if ( !m.isValid() )
+      {
+        // as the last resort check if we are on top of a feature if there is no vertex or edge snap
+        m = snapToPolygonInterior( e );
+      }
+
+      mSelectedFeatureAlternatives.reset( new SelectedFeatureAlternatives );
+      mSelectedFeatureAlternatives->screenPoint = e->pos();
+      mSelectedFeatureAlternatives->index = 0;
+      if ( m.isValid() )
+      {
+        // ideally the feature that would get normally highlighted should be also the first choice
+        // because as user moves mouse, different features are highlighted, so the highlighted feature
+        // should be first to get selected
+        QPair<QgsVectorLayer *, QgsFeatureId> firstChoice( m.layer(), m.featureId() );
+        mSelectedFeatureAlternatives->alternatives.append( firstChoice );
+        alternatives.remove( firstChoice );
+      }
+      mSelectedFeatureAlternatives->alternatives.append( alternatives.toList() );
+    }
+  }
+  else
+  {
+    // we have had right-click before on this mouse location - so let's just cycle in our alternatives
+    // move to the next alternative
+    if ( mSelectedFeatureAlternatives->index < mSelectedFeatureAlternatives->alternatives.count() - 1 )
+      ++mSelectedFeatureAlternatives->index;
+    else
+      mSelectedFeatureAlternatives->index = -1;
+  }
+
+  if ( mSelectedFeatureAlternatives && mSelectedFeatureAlternatives->index != -1 )
+  {
+    // we have a feature to select
+    QPair<QgsVectorLayer *, QgsFeatureId> alternative = mSelectedFeatureAlternatives->alternatives.at( mSelectedFeatureAlternatives->index );
+    updateVertexEditor( alternative.first, alternative.second );
+    updateFeatureBand( QgsPointLocator::Match( QgsPointLocator::Area, alternative.first, alternative.second, 0, QgsPointXY() ) );
+  }
+  else
+  {
+    // there's really nothing under the cursor or while cycling through the list of available features
+    // we got to the end of the list - let's deselect any feature we may have had selected
+    mSelectedFeature.reset();
+    if ( mVertexEditor )
+    {
+      mVertexEditor->updateEditor( nullptr );
+    }
+    updateFeatureBand( QgsPointLocator::Match() );
+  }
 }
 
 
