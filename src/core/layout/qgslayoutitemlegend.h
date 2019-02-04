@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \param context pointer to the context
      * \since: 3.8
      */
-    void setLayoutExpContext( QgsExpressionContext *econtext);
+    void setLayoutExpContext( QgsExpressionContext *econtext );
 
   private:
     mutable QgsExpressionContext *mLayoutLegendContext;
@@ -478,8 +478,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
-    
-    
+
 
   private:
     QgsLayoutItemLegend() = delete;
