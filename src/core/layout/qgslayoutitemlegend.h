@@ -449,7 +449,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
-    QgsExpressionContext createExpressionContext( bool replace = false) const;
+    QgsExpressionContext createExpressionContext( bool replace = false ) const;
 
 
   public slots:
