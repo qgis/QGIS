@@ -42,7 +42,7 @@ from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings, QgsProject)
 from qgis.gui import QgsRubberBand
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, pluginMetadata
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=ResourceWarning)
@@ -140,6 +140,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.mActionAddAfs.triggered.connect(self.add_to_ows)
         self.mActionAddGisFile.triggered.connect(self.add_gis_file)
         self.btnShowXml.clicked.connect(self.show_xml)
+
+        # Settings tab
+        self.lblVersion.setText('MetaSearch version: {}'.format(
+            pluginMetadata('MetaSearch', 'version')))
 
         self.manageGui()
 
