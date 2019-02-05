@@ -85,7 +85,7 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
     if ( line != -1 )
     {
 #ifndef _MSC_VER
-      m.prepend( QStringLiteral( ": %1:" ).arg( line ) );
+      m.prepend( QStringLiteral( ":%1 :" ).arg( line ) );
 #else
       m.prepend( QString( "(%1) :" ).arg( line ) );
 #endif
