@@ -206,10 +206,12 @@ Items that return valid URI will be returned in mime data when dragging a select
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
 
-    virtual bool setCrs( const QgsCoordinateReferenceSystem &crs );
+ virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
+
+.. deprecated:: since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
     virtual bool rename( const QString &name );
