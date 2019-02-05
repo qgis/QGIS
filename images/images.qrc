@@ -744,6 +744,7 @@
         <file>themes/default/mIconFieldBool.svg</file>
         <file>themes/default/mIconDataDefineColor.svg</file>
         <file>themes/default/mIconDataDefineColorOn.svg</file>
+        <file>themes/default/mActionNewVirtualLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
