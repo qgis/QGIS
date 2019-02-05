@@ -19,6 +19,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprojectionselectionwidget.h"
+#include "qgsprocessingmatrixparameterdialog.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsprocessingcontext.h"
@@ -1021,6 +1022,86 @@ QString QgsProcessingRangeWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRangeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingRangeWidgetWrapper( parameter, type );
+}
+
+
+
+//
+// QgsProcessingMatrixWidgetWrapper
+//
+
+QgsProcessingMatrixWidgetWrapper::QgsProcessingMatrixWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMatrixWidgetWrapper::createWidget()
+{
+  mMatrixWidget = new QgsProcessingMatrixParameterPanel( nullptr, dynamic_cast< const QgsProcessingParameterMatrix *>( parameterDefinition() ) );
+  mMatrixWidget->setToolTip( parameterDefinition()->toolTip() );
+
+  connect( mMatrixWidget, &QgsProcessingMatrixParameterPanel::changed, this, [ = ]
+  {
+    emit widgetValueHasChanged( this );
+  } );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      return mMatrixWidget;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingMatrixWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QVariantList v = QgsProcessingParameters::parameterAsMatrix( parameterDefinition(), value, context );
+  if ( mMatrixWidget )
+    mMatrixWidget->setValue( v );
+}
+
+QVariant QgsProcessingMatrixWidgetWrapper::widgetValue() const
+{
+  if ( mMatrixWidget )
+    return mMatrixWidget->value().isEmpty() ? QVariant() : mMatrixWidget->value();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingMatrixWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterMatrix::typeName();
+}
+
+QStringList QgsProcessingMatrixWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList();
+}
+
+QList<int> QgsProcessingMatrixWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingMatrixWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "comma delimited string of values, or an array of values" );
+}
+
+QString QgsProcessingMatrixWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMatrix::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMatrixWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMatrixWidgetWrapper( parameter, type );
 }
 
 
