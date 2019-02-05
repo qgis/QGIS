@@ -750,8 +750,11 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex;
 
-    // called from register feature hook
-    void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
+    /**
+     * Calculates the space required to render the provided \a text in map units.
+     * Results will be written to \a labelX and \a labelY.
+     */
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
 
     /**
      * Register a feature for labeling.
