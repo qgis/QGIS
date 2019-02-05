@@ -147,6 +147,7 @@ class contour(GdalAlgorithm):
         offset = self.parameterAsDouble(parameters, self.OFFSET, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         arguments = []

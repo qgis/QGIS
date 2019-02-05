@@ -165,6 +165,7 @@ class GridAverage(GdalAlgorithm):
         arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 

@@ -128,6 +128,7 @@ class gdaltindex(GdalAlgorithm):
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         layers = []
