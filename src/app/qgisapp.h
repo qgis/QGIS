@@ -1244,6 +1244,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add an icon to the Database toolbar
     int addDatabaseToolBarIcon( QAction *qAction );
 
+    void onVirtualLayerAdded( const QString &uri, const QString &layerName );
+
     /**
      * Add a widget to the database toolbar.
      * To remove this widget again, call removeDatabaseToolBarIcon()
