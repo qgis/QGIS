@@ -365,6 +365,8 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     QString n = name.toLower().trimmed();
     QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
     n.replace( rx, QString() );
+    QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
+    n.replace( rx2, QString() );
     return QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase );
   };
 
