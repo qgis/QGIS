@@ -111,7 +111,7 @@ class polygonize(GdalAlgorithm):
         if outFormat:
             arguments.append('-f {}'.format(outFormat))
 
-        layerName = GdalUtils.ogrLayerName(output)
+        layerName = GdalUtils.ogrOutputLayerName(output)
         if layerName:
             arguments.append(layerName)
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))

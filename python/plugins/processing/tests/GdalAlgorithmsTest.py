@@ -258,6 +258,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
         QgsProject.instance().removeMapLayer(layer)
 
+    def testOgrOutputLayerName(self):
+        self.assertEqual(GdalUtils.ogrOutputLayerName('/home/me/out.shp'), 'out')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/test_out.shp'), 'test_out')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/TEST_OUT.shp'), 'TEST_OUT')
+        self.assertEqual(GdalUtils.ogrOutputLayerName('d:/test/test_out.gpkg'), 'test_out')
+
     def testOgrLayerNameExtraction(self):
         with tempfile.TemporaryDirectory() as outdir:
             def _copyFile(dst):
@@ -2660,7 +2666,19 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-b 1 -f "ESRI Shapefile" DN'
+                 '-b 1 -f "ESRI Shapefile" check DN'
+                 ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD': 'VAL',
+                                        'EIGHT_CONNECTEDNESS': False,
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_polygonize.py',
+                 source + ' ' +
+                 outsource + ' ' +
+                 '-b 1 -f "ESRI Shapefile" check VAL'
                  ])
 
             # 8 connectedness
@@ -2673,7 +2691,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-8 -b 1 -f "ESRI Shapefile" DN'
+                 '-8 -b 1 -f "ESRI Shapefile" check DN'
                  ])
 
             # custom output format
@@ -2687,7 +2705,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_polygonize.py',
                  source + ' ' +
                  outsource + ' ' +
-                 '-b 1 -f "GPKG" DN'
+                 '-b 1 -f "GPKG" check DN'
                  ])
 
 
