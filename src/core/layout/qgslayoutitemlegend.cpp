@@ -924,7 +924,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln );
         if ( synode )
         {
-          name = synode->evaluateLabel( context );
+          name = synode->evaluateLabel( context, name );
         }
         return name;
       }
