@@ -163,7 +163,8 @@ QString QgsPathResolver::writePath( const QString &src ) const
     return src;
   }
 
-  QFileInfo srcFileInfo( src );
+  // Strip "file://"
+  QFileInfo srcFileInfo( src.startsWith( QStringLiteral( "file://" ) ) ? src.mid( 7 ) : src );
   QString srcPath = srcFileInfo.exists() ? srcFileInfo.canonicalFilePath() : src;
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
