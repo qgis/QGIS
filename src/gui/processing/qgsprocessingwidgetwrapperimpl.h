@@ -29,7 +29,7 @@ class QPlainTextEdit;
 class QgsProjectionSelectionWidget;
 class QgsSpinBox;
 class QgsDoubleSpinBox;
-
+class QgsProcessingMatrixParameterPanel;
 
 ///@cond PRIVATE
 
@@ -249,6 +249,40 @@ class GUI_EXPORT QgsProcessingRangeWidgetWrapper : public QgsAbstractProcessingP
   private:
 
     int mBlockChangedSignal = 0;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingMatrixWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingMatrixWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+    QStringList compatibleOutputTypes() const override;
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+
+    QgsProcessingMatrixParameterPanel *mMatrixWidget = nullptr;
 
     friend class TestProcessingGui;
 };
