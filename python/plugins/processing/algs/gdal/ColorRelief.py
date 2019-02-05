@@ -111,6 +111,7 @@ class ColorRelief(GdalAlgorithm):
         arguments.append(self.parameterAsFile(parameters, self.COLOR_TABLE, context))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append(out)
 
         arguments.append('-of')

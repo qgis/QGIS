@@ -85,6 +85,7 @@ class rgb2pct(GdalAlgorithm):
         arguments.append(str(self.parameterAsInt(parameters, self.NCOLORS, context)))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
