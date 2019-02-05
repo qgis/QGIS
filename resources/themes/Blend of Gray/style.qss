@@ -274,6 +274,13 @@ QComboBox:item:checked {
     text-decoration:underline;
 }
 
+QComboBox::indicator {
+    background-color:transparent;
+    selection-background-color:transparent;
+    color:transparent;
+    selection-color:transparent;
+}
+
 QLineEdit:focus
 {
     border: 1px solid @selection;
