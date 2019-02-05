@@ -22,6 +22,7 @@
 #include <QStackedWidget>
 #include <QToolButton>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QPlainTextEdit>
 
 #include "qgstest.h"
@@ -41,6 +42,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsspinbox.h"
 #include "qgsmapcanvas.h"
+#include "qgsprocessingmatrixparameterdialog.h"
 #include "models/qgsprocessingmodelalgorithm.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -151,6 +153,8 @@ class TestProcessingGui : public QObject
     void testNumericWrapperInt();
     void testDistanceWrapper();
     void testRangeWrapper();
+    void testMatrixDialog();
+    void testMatrixWrapper();
 };
 
 void TestProcessingGui::initTestCase()
@@ -1475,6 +1479,101 @@ void TestProcessingGui::testRangeWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testMatrixDialog()
+{
+  QgsProcessingParameterMatrix matrixParam( QString(), QString(), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  std::unique_ptr< QgsProcessingMatrixParameterDialog > dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog>( nullptr, nullptr, &matrixParam );
+  // variable length table
+  QVERIFY( dlg->mButtonAdd->isEnabled() );
+  QVERIFY( dlg->mButtonRemove->isEnabled() );
+  QVERIFY( dlg->mButtonRemoveAll->isEnabled() );
+
+  QCOMPARE( dlg->table(), QVariantList() );
+
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  dlg->addRow();
+  QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) << QString() << QString() );
+  dlg->deleteAllRows();
+  QCOMPARE( dlg->table(), QVariantList() );
+
+  QgsProcessingParameterMatrix matrixParam2( QString(), QString(), 3, true, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam2, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  QVERIFY( !dlg->mButtonAdd->isEnabled() );
+  QVERIFY( !dlg->mButtonRemove->isEnabled() );
+  QVERIFY( !dlg->mButtonRemoveAll->isEnabled() );
+}
+
+void TestProcessingGui::testMatrixWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterMatrix param( QStringLiteral( "matrix" ), QStringLiteral( "matrix" ), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+    param.setDefaultValue( QStringLiteral( "0.0,100.0,150.0,250.0" ) );
+    QgsProcessingMatrixWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QVERIFY( w );
+
+    // initial value
+    QCOMPARE( wrapper.parameterValue().toList(), QVariantList() << QStringLiteral( "0.0" ) << QStringLiteral( "100.0" ) << QStringLiteral( "150.0" ) << QStringLiteral( "250.0" ) );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingMatrixWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QVariantList() << 5 << 7, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "5" ) << QStringLiteral( "7" ) );
+    QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "5" ) << QStringLiteral( "7" ) );
+    wrapper.setWidgetValue( QStringLiteral( "28.1,36.5,5.5,8.9" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
+    QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "matrix" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    wrapper.mMatrixWidget->setValue( QVariantList() << QStringLiteral( "7" ) << QStringLiteral( "9" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "7" ) << QStringLiteral( "9" ) );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::cleanupTempDir()
+{
+  QDir tmpDir = QDir( mTempDir );
+  if ( tmpDir.exists() )
+  {
+    Q_FOREACH ( const QString &tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
+    {
+      QVERIFY2( tmpDir.remove( mTempDir + '/' + tf ), qPrintable( "Could not remove " + mTempDir + '/' + tf ) );
+    }
+    QVERIFY2( tmpDir.rmdir( mTempDir ), qPrintable( "Could not remove directory " + mTempDir ) );
+  }
 }
 
 QGSTEST_MAIN( TestProcessingGui )
