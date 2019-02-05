@@ -403,18 +403,18 @@ class ORTable(Table):
             for idx in indexes:
                 if idx.isUnique and len(idx.columns) == 1:
                     fld = idx.fields()[idx.columns[0]]
-                    if (fld.dataType == u"NUMBER" and
-                            not fld.modifier and
-                            fld.notNull and
-                            fld not in ret):
+                    if (fld.dataType == u"NUMBER"
+                            and not fld.modifier
+                            and fld.notNull
+                            and fld not in ret):
                         ret.append(fld)
 
         # and finally append the other suitable fields
         for fld in self.fields():
-            if (fld.dataType == u"NUMBER" and
-                    not fld.modifier and
-                    fld.notNull and
-                    fld not in ret):
+            if (fld.dataType == u"NUMBER"
+                    and not fld.modifier
+                    and fld.notNull
+                    and fld not in ret):
                 ret.append(fld)
 
         if onlyOne:
@@ -514,15 +514,15 @@ class ORTableField(TableField):
 
         # find out whether fields are part of primary key
         for con in self.table().constraints():
-            if (con.type == ORTableConstraint.TypePrimaryKey and
-                    self.name == con.column):
+            if (con.type == ORTableConstraint.TypePrimaryKey
+                    and self.name == con.column):
                 self.primaryKey = True
                 break
 
     def type2String(self):
-        if (u"TIMESTAMP" in self.dataType or
-            self.dataType in [u"DATE", u"SDO_GEOMETRY",
-                              u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
+        if (u"TIMESTAMP" in self.dataType
+            or self.dataType in [u"DATE", u"SDO_GEOMETRY",
+                                 u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
             return u"{}".format(self.dataType)
         if self.charMaxLen in [None, -1]:
             return u"{}".format(self.dataType)
