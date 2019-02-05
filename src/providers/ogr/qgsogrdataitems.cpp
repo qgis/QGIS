@@ -53,30 +53,11 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mIsSubLayer = isSubLayer;
   mToolTip = uri;
   setState( Populated ); // children are not expected
-
-  if ( mPath.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
-  {
-    if ( OGRGetDriverCount() == 0 )
-    {
-      OGRRegisterAll();
-    }
-    gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
-    if ( hDataSource )
-    {
-      mCapabilities |= SetCrs;
-    }
-
-    // It it is impossible to assign a crs to an existing layer
-    // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
-  }
 }
 
 
 bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  if ( !( mCapabilities & SetCrs ) )
-    return false;
-
   QString layerName = mPath.left( mPath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
   QString wkt = crs.toWkt();
 
