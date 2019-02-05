@@ -541,14 +541,15 @@ void QgsSymbolLegendNode::updateLabel()
   emit dataChanged();
 }
 
-QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
+QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QString label )
 {
   if ( !mLayerNode )
     return QString();
 
-  bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
+  if (label.isEmpty() )
+  {
   if ( mEmbeddedInParent )
   {
     QString layerName = mLayerNode->name();
@@ -556,9 +557,7 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
       layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
-    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
-      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
-    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
+    if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
     {
       mLabel = evaluateLabelExpression( mLabel, vl, context );
     }
@@ -566,18 +565,22 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context )
   else
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
-    if ( showFeatureCount && vl )
-    {
-      qlonglong count = vl->featureCount( mItem.ruleKey() );
-      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
-    }
-    else if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
+    if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
     {
       mLabel = evaluateLabelExpression( mLabel, vl, context );
     }
   }
   emit dataChanged();
   return mLabel;
+  }
+  else
+  {
+    if ( vl && ( !( mLayerNode->expression().isEmpty() ) || label.contains( "[%" ) ) )
+    {
+      label = evaluateLabelExpression( label, vl, context );
+    }
+    return label;
+  }
 }
 
 QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpressionContext context ) const
