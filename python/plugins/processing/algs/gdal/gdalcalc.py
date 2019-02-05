@@ -180,6 +180,7 @@ class gdalcalc(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         formula = self.parameterAsString(parameters, self.FORMULA, context)
         if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None:
             noData = self.parameterAsDouble(parameters, self.NO_DATA, context)

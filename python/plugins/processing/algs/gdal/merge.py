@@ -128,6 +128,7 @@ class merge(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
         if self.parameterAsBool(parameters, self.PCT, context):

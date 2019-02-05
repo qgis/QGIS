@@ -109,6 +109,7 @@ class sieve(GdalAlgorithm):
             arguments.append('-mask {}'.format(mask.source()))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
