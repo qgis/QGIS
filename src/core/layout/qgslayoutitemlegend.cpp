@@ -858,10 +858,10 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
   if ( replace )
   {
     mExpContext.~QgsExpressionContext();
-    Q_FOREACH( QgsExpressionContextScope *scopep, context.takeScopes())
-      {
+    Q_FOREACH( QgsExpressionContextScope *scopep, context.takeScopes() )
+    {
       mExpContext.appendScope( scopep );
-      }
+    }
     return mExpContext;
   }
   else
@@ -878,7 +878,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
-    mLayoutLegendContext = nullptr;
+  mLayoutLegendContext = nullptr;
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
 }
