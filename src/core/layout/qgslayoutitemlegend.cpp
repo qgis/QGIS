@@ -858,7 +858,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
   if ( replace )
   {
     mExpContext.~QgsExpressionContext();
-    Q_FOREACH( QgsExpressionContextScope *scopep, context.takeScopes() )
+    Q_FOREACH ( QgsExpressionContextScope *scopep, context.takeScopes() )
     {
       mExpContext.appendScope( scopep );
     }
@@ -920,12 +920,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
-      QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-      if ( ltmln )
+      if ( QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ) )
       {
         qInfo() << "is legendnode";
-        QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln );
-        if ( synode )
+        if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
         {
           qInfo() << "is symbolnode";
           name = synode->evaluateLabel( context, name );
