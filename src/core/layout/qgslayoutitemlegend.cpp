@@ -899,6 +899,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   QgsLayerTreeNode *node = index2node( index );
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
+    qInfo() << "is layer";
     QgsExpressionContext context;
     if ( mLayoutLegendContext )
     {
@@ -910,6 +911,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    qInfo() << name;
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
@@ -921,9 +923,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
       if ( ltmln )
       {
+        qInfo() << "is legendnode";
         QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln );
         if ( synode )
         {
+          qInfo() << "is symbolnode";
           name = synode->evaluateLabel( context, name );
         }
         return name;
