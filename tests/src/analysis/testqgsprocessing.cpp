@@ -6946,6 +6946,7 @@ void TestQgsProcessing::modelExecution()
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
 
+  model2.setName( QStringLiteral( "2my model" ) );
   QStringList actualParts = model2.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 2 );
   QgsDebugMsg( actualParts.join( '\n' ) );
   QStringList expectedParts = QStringLiteral( "from qgis.core import QgsProcessing\n"
@@ -6956,7 +6957,7 @@ void TestQgsProcessing::modelExecution()
                               "import processing\n"
                               "\n"
                               "\n"
-                              "class Model(QgsProcessingAlgorithm):\n"
+                              "class MyModel(QgsProcessingAlgorithm):\n"
                               "\n"
                               "  def initAlgorithm(self, config=None):\n"
                               "    self.addParameter(QgsProcessingParameterFeatureSource('SOURCE_LAYER', '', defaultValue=None))\n"
@@ -6994,10 +6995,10 @@ void TestQgsProcessing::modelExecution()
                               "    return results\n"
                               "\n"
                               "  def name(self):\n"
-                              "    return 'model'\n"
+                              "    return '2my model'\n"
                               "\n"
                               "  def displayName(self):\n"
-                              "    return 'model'\n"
+                              "    return '2my model'\n"
                               "\n"
                               "  def group(self):\n"
                               "    return ''\n"
@@ -7006,7 +7007,7 @@ void TestQgsProcessing::modelExecution()
                               "    return ''\n"
                               "\n"
                               "  def createInstance(self):\n"
-                              "    return Model()\n" ).split( '\n' );
+                              "    return MyModel()\n" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
 }
 
