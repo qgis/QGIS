@@ -895,12 +895,6 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
-  if ( QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ) )
-  {
-    qInfo() << "is legendnode";
-    if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
-      qInfo() << "is symbolnode";
-  }
   QgsLayerTreeNode *node = index2node( index );
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
@@ -935,6 +929,18 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         }
         return name;
       }
+      else // extremely roundabout way
+      {
+        QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
+        if (legendnodes.count() == 1)
+        {
+          if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+          {
+            name = synode->evaluateLabel( context );
+          }
+        }
+      }
+      return name;
     }
   }
 
