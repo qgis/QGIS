@@ -295,9 +295,12 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * Evaluates  and returns the text label of the current node
-     *\param context extra QgsExpressionContext to use for evaluating the expression
+     * \param context extra QgsExpressionContext to use for evaluating the expression
+     * \param label text to evaluate instead of the layer layertree string
+     * \since: 3.8
      */
-    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext() );
+    QString evaluateLabel( QgsExpressionContext context = QgsExpressionContext(), QString label = QString() );
+
 
   private:
     void updateLabel();
