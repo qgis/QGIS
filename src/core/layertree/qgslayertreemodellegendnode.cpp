@@ -548,30 +548,30 @@ QString QgsSymbolLegendNode::evaluateLabel( QgsExpressionContext context, QStrin
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
-  if (label.isEmpty() )
+  if ( label.isEmpty() )
   {
-  if ( mEmbeddedInParent )
-  {
-    QString layerName = mLayerNode->name();
-    if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
-      layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    if ( mEmbeddedInParent )
+    {
+      QString layerName = mLayerNode->name();
+      if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
+        layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
-    mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
-    if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
-    {
-      mLabel = evaluateLabelExpression( mLabel, vl, context );
+      mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
+      if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
+      {
+        mLabel = evaluateLabelExpression( mLabel, vl, context );
+      }
     }
-  }
-  else
-  {
-    mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
-    if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
+    else
     {
-      mLabel = evaluateLabelExpression( mLabel, vl, context );
+      mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
+      if ( vl && ( !( mLayerNode->expression().isEmpty() ) || mLabel.contains( "[%" ) ) )
+      {
+        mLabel = evaluateLabelExpression( mLabel, vl, context );
+      }
     }
-  }
-  emit dataChanged();
-  return mLabel;
+    emit dataChanged();
+    return mLabel;
   }
   else
   {
@@ -619,7 +619,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
   return context;
 }
 
-QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl , QgsExpressionContext context ) const
+QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
 {
   if ( mLayerNode->layer()->type() == 0 )
   {
