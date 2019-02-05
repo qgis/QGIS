@@ -751,7 +751,7 @@ class CORE_EXPORT QgsPalLayerSettings
     double zIndex;
 
     // called from register feature hook
-    void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
+    void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
 
     /**
      * Register a feature for labeling.
@@ -766,7 +766,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
      */
-    void registerFeature( QgsFeature &f, QgsRenderContext &context,
+    void registerFeature( const QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
                           QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
 
@@ -823,7 +823,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
 
     // temporary stuff: set when layer gets prepared or labeled
-    QgsFeature *mCurFeat = nullptr;
+    const QgsFeature *mCurFeat = nullptr;
     QgsFields mCurFields;
     int fieldIndex;
     const QgsMapToPixel *xform = nullptr;
@@ -835,7 +835,6 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
-
   private:
 
     friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
@@ -899,7 +898,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
+    void registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     QMap<Property, QVariant> dataDefinedValues;
 

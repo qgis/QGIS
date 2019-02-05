@@ -34,7 +34,7 @@ void QgsDxfLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPositi
   mDxfExport->drawLabel( layerId(), context, label, mSettings );
 }
 
-void QgsDxfLabelProvider::registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName )
+void QgsDxfLabelProvider::registerDxfFeature( const QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName )
 {
   registerFeature( feature, context );
   mDxfExport->registerDxfLayer( layerId(), feature.id(), dxfLayerName );
