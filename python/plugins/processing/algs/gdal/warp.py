@@ -141,10 +141,10 @@ class warp(GdalAlgorithm):
         multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(multithreading_param)
 
-        extra_param = QgsProcessingParameterBoolean(self.EXTRA,
-                                                    self.tr('Additional command-line parameters'),
-                                                    defaultValue=None,
-                                                    optional=True)
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
         extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(extra_param)
 
