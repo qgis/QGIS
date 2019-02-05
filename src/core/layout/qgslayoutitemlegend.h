@@ -449,6 +449,11 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    /**
+     * Creates an expression context
+     * \param replace replace the object's current expression context or create a new one
+     * \since: 3.8
+     */
     QgsExpressionContext createExpressionContext( bool replace = false ) const;
 
 
