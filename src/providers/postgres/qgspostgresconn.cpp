@@ -1042,8 +1042,34 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   }
 }
 
-PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
+PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry ) const
 {
+  QMutexLocker locker( &mLock );
+
+  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
+
+  PGresult *res = ::PQexec( mConn, query.toUtf8() );
+
+  // libpq may return a non null ptr with conn status not OK so we need to check for it to allow a retry below
+  if ( res && PQstatus() == CONNECTION_OK )
+  {
+    int errorStatus = PQresultStatus( res );
+    if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
+    {
+      if ( logError )
+      {
+        QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
+                                   .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
+                                   tr( "PostGIS" ) );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
+                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
+      }
+    }
+    return res;
+  }
   if ( PQstatus() != CONNECTION_OK )
   {
     if ( logError )
@@ -1057,35 +1083,10 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
       QgsDebugMsg( QStringLiteral( "Connection error: %1 returned %2 [%3]" )
                    .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) );
     }
-
-    return nullptr;
   }
-
-  QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
-  PGresult *res = nullptr;
+  else
   {
-    QMutexLocker locker( &mLock );
-    res = ::PQexec( mConn, query.toUtf8() );
-
-    if ( res )
-    {
-      int errorStatus = PQresultStatus( res );
-      if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
-      {
-        if ( logError )
-        {
-          QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
-                                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
-                                     tr( "PostGIS" ) );
-        }
-        else
-        {
-          QgsDebugMsg( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
-                       .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
-        }
-      }
-    }
-    else if ( logError )
+    if ( logError )
     {
       QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ), tr( "PostGIS" ) );
     }
@@ -1095,7 +1096,35 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
     }
   }
 
-  return res;
+  if ( retry )
+  {
+    QgsMessageLog::logMessage( tr( "resetting bad connection." ), tr( "PostGIS" ) );
+    ::PQreset( mConn );
+    res = PQexec( query, logError, false );
+    if ( PQstatus() == CONNECTION_OK )
+    {
+      if ( res )
+      {
+        QgsMessageLog::logMessage( tr( "retry after reset succeeded." ), tr( "PostGIS" ) );
+        return res;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "retry after reset failed again." ), tr( "PostGIS" ) );
+        return nullptr;
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "connection still bad after reset." ), tr( "PostGIS" ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "bad connection, not retrying." ), tr( "PostGIS" ) );
+  }
+  return nullptr;
+
 }
 
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
@@ -1137,7 +1166,7 @@ QString QgsPostgresConn::uniqueCursorName()
   return QStringLiteral( "qgis_%1" ).arg( ++mNextCursorId );
 }
 
-bool QgsPostgresConn::PQexecNR( const QString &query, bool retry )
+bool QgsPostgresConn::PQexecNR( const QString &query )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors
 
@@ -1164,32 +1193,6 @@ bool QgsPostgresConn::PQexecNR( const QString &query, bool retry )
   if ( PQstatus() == CONNECTION_OK )
   {
     PQexecNR( QStringLiteral( "ROLLBACK" ) );
-  }
-  else if ( retry )
-  {
-    QgsMessageLog::logMessage( tr( "resetting bad connection." ), tr( "PostGIS" ) );
-    ::PQreset( mConn );
-    if ( PQstatus() == CONNECTION_OK )
-    {
-      if ( PQexecNR( query, false ) )
-      {
-        QgsMessageLog::logMessage( tr( "retry after reset succeeded." ), tr( "PostGIS" ) );
-        return true;
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "retry after reset failed again." ), tr( "PostGIS" ) );
-        return false;
-      }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "connection still bad after reset." ), tr( "PostGIS" ) );
-    }
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "bad connection, not retrying." ), tr( "PostGIS" ) );
   }
 
   return false;
