@@ -1281,7 +1281,7 @@ void QgsOptions::selectProjectOnLaunch()
   QString projPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose project file to open at launch" ),
                      lastUsedDir,
-                     tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                     tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS *.QGZ)" );
   if ( !projPath.isNull() )
   {
     mProjectOnLaunchLineEdit->setText( projPath );
