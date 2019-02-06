@@ -125,7 +125,7 @@ and a deep copy. Where possible, use constGet() instead.
 .. versionadded:: 3.0
 %End
 
-    void set( QgsAbstractGeometry *geometry /Transfer/ );
+    void set( QgsAbstractGeometry *geometry /Transfer/ ) /Deprecated/;
 %Docstring
 Sets the underlying geometry store. Ownership of geometry is transferred.
 

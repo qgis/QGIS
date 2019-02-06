@@ -204,7 +204,7 @@ class CORE_EXPORT QgsGeometry
      * \see constGet()
      * \since QGIS 3.0
      */
-    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_DEPRECATED;
 
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry
