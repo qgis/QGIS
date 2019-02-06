@@ -153,9 +153,9 @@ QToolButton
     color:@text;
 }
 
-QTabWidget::top-bar QToolButton {
+QPushButton[autoRaise=true], QToolButton[autoRaise=true] {
     border:1px solid rgba(0,0,0,0);
-    background-color: @background;
+    background-color:transparent;
 }
 
 QToolButton[popupMode="1"]
@@ -169,7 +169,7 @@ QToolButton::menu-button {
     border-radius: 0.2em;
     background:@itemdarkbackground;
 }
-QToolButton:hover, QToolButton::menu-button:hover, QTabWidget::top-bar QToolButton:hover
+QToolButton:hover, QToolButton::menu-button:hover
 {
     border-width: 1px;
     border-color: @itemdarkbackground;
@@ -193,7 +193,7 @@ QToolBar QToolButton, QToolButton::menu-button
     background-color: none;
 }
 
-QPushButton:hover, QToolButton:hover, QTabWidget::top-bar QToolButton:hover {
+QPushButton:hover, QToolButton:hover {
     background-color: @lightalternativegradient;
 }
 
