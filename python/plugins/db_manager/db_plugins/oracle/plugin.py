@@ -91,8 +91,7 @@ class OracleDBPlugin(DBPlugin):
         uri = QgsDataSourceUri()
 
         settingsList = ["host", "port", "database", "username", "password"]
-        host, port, database, username, password = [
-            settings.value(x, "", type=str) for x in settingsList]
+        host, port, database, username, password = [settings.value(x, "", type=str) for x in settingsList]
 
         # get all of the connexion options
 
@@ -203,8 +202,7 @@ class ORDatabase(Database):
         uri = self.uri()
         con = self.database().connector
 
-        uri.setDataSource(u"", u"({}\n)".format(
-            sql), geomCol, filter, uniqueCol.strip(u'"'))
+        uri.setDataSource(u"", u"({}\n)".format(sql), geomCol, filter, uniqueCol.strip(u'"'))
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
@@ -262,6 +260,9 @@ class ORDatabase(Database):
             "DBManagerPlugin", "&Empty Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.emptyTableActionSlot)
+
+    def searchClass(self):
+        return "ORDatabase"
 
 
 class ORSchema(Schema):
@@ -524,7 +525,7 @@ class ORTableField(TableField):
     def type2String(self):
         if (u"TIMESTAMP" in self.dataType or
             self.dataType in [u"DATE", u"SDO_GEOMETRY",
-                                 u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
+                              u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
             return u"{}".format(self.dataType)
         if self.charMaxLen in [None, -1]:
             return u"{}".format(self.dataType)
@@ -558,10 +559,6 @@ class ORTableField(TableField):
             self.table().refreshConstraints()
             self.table().refreshIndexes()
         return ret
-
-    def getComment(self):
-        """Returns the comment for a field"""
-        return ''
 
 
 class ORTableConstraint(TableConstraint):

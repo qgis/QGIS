@@ -511,6 +511,25 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
+    def setField(self, fld, tablename, db):
+        if fld is None:
+            return
+        print (tablename)
+        # Check with SQL query if a comment exists for the field
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, fld.name)
+        # Get the comment for the field with SQL Query
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, fld.name)
+        c = db.connector._execute(None, sql_cpt) # Execute check query
+        res = db.connector._fetchone(c)[0] # Fetch data
+        # Check if result is 1 then it's ok, else we don't want to get a value
+        if res == 1:
+            c = db.connector._execute(None, sql) # Execute query returning the comment value
+            res2 = db.connector._fetchone(c)[0] # Fetch the comment value
+            db.connector._close_cursor(c) # Close cursor
+        else :
+            res2 = None
+        return fld.name, fld.dataType, str(fld.modifier), fld.notNull, fld.default, res2
+
     def getTableIndexes(self, table):
         """ get info about table's indexes. ignore primary key constraint index, they get listed in constraints """
         schema, tablename = self.getSchemaTableName(table)
@@ -857,7 +876,7 @@ class PostGisDBConnector(DBConnector):
             sql = u"ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
-    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None):
+    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None, test=None):
         if new_name is None and data_type is None and not_null is None and default is None and comment is None:
             return
 

@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from .db_plugins.plugin import TableField
-
 from .ui.ui_DlgFieldProperties import Ui_DbManagerDlgFieldProperties as Ui_Dialog
 
 
@@ -42,37 +41,22 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
 
         for item in self.db.connector.fieldTypes():
             self.cboType.addItem(item)
-        self.setField(self.fld)
+
+
+        objClass = self.db.searchClass()
+        if objClass != "PGDatabase":
+            self.label_6.setVisible(False)
+            self.editCom.setVisible(False)
+
+        name, dataType, modifier, chkNull, hasDefault, chkCom = self.db.connector.setField(self.fld, self.table.name, self.db)
+        self.editName.setText(name)
+        self.cboType.setEditText(dataType)
+        self.editLength.setText(modifier)
+        self.chkNull.setChecked(not chkNull)
+        self.editDefault.setText(hasDefault)
+        self.editCom.setText(chkCom)
 
         self.buttonBox.accepted.connect(self.onOK)
-
-    def setField(self, fld):
-        if fld is None:
-            return
-        self.editName.setText(fld.name)
-        self.cboType.setEditText(fld.dataType)
-        if fld.modifier:
-            self.editLength.setText(str(fld.modifier))
-        self.chkNull.setChecked(not fld.notNull)
-        if fld.hasDefault:
-            self.editDefault.setText(fld.default)
-        # This is an ugly patch, but the comments PR https://github.com/qgis/QGIS/pull/8831 added
-        # support for postgres only and broke all the others :(
-        try:
-            # Check with SQL query if a comment exists for the field
-            sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (self.table.name, self.editName.text())
-            # Get the comment for the field with SQL Query
-            sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (self.table.name, self.editName.text())
-            c = self.db.connector._execute(None, sql_cpt) # Execute check query
-            res = self.db.connector._fetchone(c)[0] # Fetch data
-            # Check if result is 1 then it's ok, else we don't want to get a value
-            if res == 1:
-                c = self.db.connector._execute(None, sql) # Execute query returning the comment value
-                res = self.db.connector._fetchone(c)[0] # Fetch the comment value
-                self.db.connector._close_cursor(c) # Close cursor
-                self.editCom.setText(res) # Set comment value
-        except:
-            self.editCom.setEnabled(False)
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld

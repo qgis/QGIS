@@ -177,6 +177,9 @@ class GPKGDatabase(Database):
         vl.setSubsetString(sql)
         return vl
 
+    def searchClass(self):
+        return "GPKGDatabase"
+
 
 class GPKGTable(Table):
 
@@ -300,10 +303,6 @@ class GPKGTableField(TableField):
         TableField.__init__(self, table)
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default
-
-    def getComment(self):
-        """Returns the comment for a field"""
-        return ''
 
 
 class GPKGTableIndex(TableIndex):
