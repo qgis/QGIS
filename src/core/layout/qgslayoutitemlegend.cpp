@@ -940,6 +940,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     return QgsLayerTreeModel::data( index, role );
   }
+}
 
 void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 {
