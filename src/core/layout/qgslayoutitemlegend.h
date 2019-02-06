@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \see layerOriginalLegendNodes()
      * \since QGIS 3.8
      */
-    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const override;
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
 };
 
 
