@@ -898,7 +898,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   // handle custom layer node labels
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  if ( ( QgsLayerTree::isLayer( node ) || ltmln ) && role == Qt::DisplayRole )
+  if ( ( QgsLayerTree::isLayer( node ) || ltmln ) && (role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     qInfo() << "is layer";
 
