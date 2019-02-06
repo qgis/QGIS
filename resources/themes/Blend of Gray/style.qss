@@ -153,6 +153,11 @@ QToolButton
     color:@text;
 }
 
+QTabWidget::top-bar QToolButton {
+    border:1px solid rgba(0,0,0,0);
+    background-color: @background;
+}
+
 QToolButton[popupMode="1"]
 {
     padding-right: 0.9em;
@@ -164,10 +169,10 @@ QToolButton::menu-button {
     border-radius: 0.2em;
     background:@itemdarkbackground;
 }
-QToolButton:hover, QToolButton::menu-button:hover
+QToolButton:hover, QToolButton::menu-button:hover, QTabWidget::top-bar QToolButton:hover
 {
     border-width: 1px;
-    border-color: #1e1e1e;
+    border-color: @itemdarkbackground;
     border-style: solid;
     border-radius: 0.2em;
     background-color: transparent;
@@ -188,11 +193,11 @@ QToolBar QToolButton, QToolButton::menu-button
     background-color: none;
 }
 
-QPushButton:hover, QToolButton:hover {
+QPushButton:hover, QToolButton:hover, QTabWidget::top-bar QToolButton:hover {
     background-color: @lightalternativegradient;
 }
 
-QPushButton:pressed, QToolButton:pressed {
+QPushButton:pressed, QToolButton:pressed, QTabWidget::top-bar QToolButton:pressed {
     background-color: @darkalternativegradient;
 }
 
