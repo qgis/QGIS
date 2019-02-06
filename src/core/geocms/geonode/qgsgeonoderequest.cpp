@@ -281,6 +281,10 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
       majorVersion = geonodeVersionSplit.at( 0 ).toInt();
       minorVersion = geonodeVersionSplit.at( 1 ).toInt();
     }
+    else
+    {
+      return layers;
+    }
   }
   else
   {
