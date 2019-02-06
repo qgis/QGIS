@@ -386,9 +386,13 @@ Returns the QgsExpression for this label settings. May be None if isExpression i
 
     double zIndex;
 
-    void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = 0, QgsRenderContext *context = 0 );
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0 );
+%Docstring
+Calculates the space required to render the provided ``text`` in map units.
+Results will be written to ``labelX`` and ``labelY``.
+%End
 
-    void registerFeature( QgsFeature &f, QgsRenderContext &context  );
+    void registerFeature( const QgsFeature &f, QgsRenderContext &context  );
 
 %Docstring
 Register a feature for labeling.
@@ -457,7 +461,7 @@ Sets the label text formatting settings, e.g., font settings, buffer settings, e
 .. versionadded:: 3.0
 %End
 
-    QgsFeature *mCurFeat;
+    const QgsFeature *mCurFeat;
     QgsFields mCurFields;
     int fieldIndex;
     const QgsMapToPixel *xform;
@@ -469,7 +473,6 @@ Sets the label text formatting settings, e.g., font settings, buffer settings, e
     int mFeaturesToLabel;
     int mFeatsSendingToPal;
     int mFeatsRegPal;
-
 };
 
 class QgsLabelCandidate

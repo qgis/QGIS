@@ -37,7 +37,7 @@ bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext &context, QSet<Q
   return true;
 }
 
-void QgsRuleBasedLabelProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
+void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   // will register the feature to relevant sub-providers
   mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry );
@@ -316,7 +316,7 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext &context, QSet<
   }
 }
 
-QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry )
 {
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
@@ -363,7 +363,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
     return Filtered;
 }
 
-bool QgsRuleBasedLabeling::Rule::isFilterOK( QgsFeature &f, QgsRenderContext &context ) const
+bool QgsRuleBasedLabeling::Rule::isFilterOK( const QgsFeature &f, QgsRenderContext &context ) const
 {
   if ( ! mFilter || mElseRule )
     return true;
