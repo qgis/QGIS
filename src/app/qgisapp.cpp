@@ -4591,7 +4591,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
   Q_FOREACH ( QString src, layerQStringList )
   {
     src = src.trimmed();
-    QString base;
+    QString baseName;
     if ( dataSourceType == QLatin1String( "file" ) )
     {
       QString srcWithoutLayername( src );
@@ -4599,7 +4599,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       if ( posPipe >= 0 )
         srcWithoutLayername.resize( posPipe );
       QFileInfo fi( srcWithoutLayername );
-      base = fi.completeBaseName();
+      baseName = fi.completeBaseName();
 
       // if needed prompt for zipitem layers
       QString vsiPrefix = QgsZipItem::vsiPrefix( src );
@@ -4612,19 +4612,19 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
     }
     else if ( dataSourceType == QLatin1String( "database" ) )
     {
-      base = src;
+      baseName = src;
     }
     else //directory //protocol
     {
       QFileInfo fi( src );
-      base = fi.completeBaseName();
+      baseName = fi.completeBaseName();
     }
     if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
     {
-      base = QgsMapLayer::formatLayerName( base );
+      baseName = QgsMapLayer::formatLayerName( baseName );
     }
 
-    QgsDebugMsg( "completeBaseName: " + base );
+    QgsDebugMsg( "completeBaseName: " + baseName );
 
     const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl", Qt::CaseInsensitive ) ) };
     const auto scheme { QUrl( src ).scheme() };
@@ -5751,74 +5751,6 @@ void QgisApp::showRasterCalculator()
     p.hide();
   }
 }
-
-void QgisApp::showMeshCalculator()
-{
-  QgsMeshCalculatorDialog d( qobject_cast<QgsMeshLayer *>( activeLayer() ), this );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //invoke analysis library
-    std::unique_ptr<QgsMeshCalculator> calculator = d.calculator();
-
-    QProgressDialog p( tr( "Calculating mesh expression…" ), tr( "Abort" ), 0, 0 );
-    p.setWindowModality( Qt::WindowModal );
-    p.setMaximum( 100.0 );
-    QgsFeedback feedback;
-    connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
-    connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
-    p.show();
-    QgsMeshCalculator::Result res = calculator->processCalculation( &feedback );
-    switch ( res )
-    {
-      case QgsMeshCalculator::Success:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Calculation complete." ),
-                                          Qgis::Info, messageTimeout() );
-        break;
-
-      case QgsMeshCalculator::EvaluateError:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Could not evaluate the formula." ),
-                                          Qgis::Critical, messageTimeout() );
-        break;
-
-      case QgsMeshCalculator::InvalidDatasets:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Invalid or incompatible datasets used." ),
-                                          Qgis::Critical, messageTimeout() );
-        break;
-
-      case QgsMeshCalculator::CreateOutputError:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Could not create destination file." ),
-                                          Qgis::Critical );
-        break;
-
-      case QgsMeshCalculator::InputLayerError:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Could not read input layer." ),
-                                          Qgis::Critical );
-        break;
-
-      case QgsMeshCalculator::Canceled:
-        break;
-
-      case QgsMeshCalculator::ParserError:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Could not parse mesh formula." ),
-                                          Qgis::Critical );
-        break;
-
-      case QgsMeshCalculator::MemoryError:
-        visibleMessageBar()->pushMessage( tr( "Mesh calculator" ),
-                                          tr( "Insufficient memory available for operation." ),
-                                          Qgis::Critical );
-        break;
-    }
-    p.hide();
-  }
-}
-
 
 void QgisApp::showAlignRasterTool()
 {
