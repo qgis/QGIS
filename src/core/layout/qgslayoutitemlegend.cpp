@@ -898,7 +898,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   // handle custom layer node labels
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
+  if ( ( QgsLayerTree::isLayer( node ) || ltmln ) && role == Qt::DisplayRole )
   {
     qInfo() << "is layer";
 
@@ -915,7 +915,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     {
       QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
 
-      if ( QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ) )
+      if ( ltmln )
       {
         qInfo() << "is legendnode";
         if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
