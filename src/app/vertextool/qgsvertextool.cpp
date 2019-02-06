@@ -490,6 +490,12 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QList<Vertex> selectedVertices;
     QList<Vertex> editorVertices;
 
+    // the logic for selecting vertices using rectangle:
+    // - if we have a bound (locked) feature, we only allow selection of its vertices
+    // - if we don't have a bound feature, we can select vertices from any feature,
+    //   but if there are some vertices coming from layer(s) with selected feature,
+    //   we give them precedence.
+
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
     const auto editableLayers = editableVectorLayers();
@@ -498,11 +504,17 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( mMode == ActiveLayer && vlayer != currentVectorLayer() )
         continue;
 
+      if ( mSelectedFeature && mSelectedFeature->layer() != vlayer )
+        continue;  // with locked feature we only allow selection of its vertices
+
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
       QgsFeature f;
       QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setNoAttributes() );
       while ( fi.nextFeature( f ) )
       {
+        if ( mSelectedFeature && mSelectedFeature->featureId() != f.id() )
+          continue;  // with locked feature we only allow selection of its vertices
+
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
         QgsGeometry g = f.geometry();
         for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
@@ -514,22 +526,13 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
             if ( isFeatureSelected )
               selectedVertices << Vertex( vlayer, f.id(), i );
-
-            if ( mSelectedFeature && mSelectedFeature->featureId() == f.id() && mSelectedFeature->layer() == vlayer )
-              editorVertices << Vertex( vlayer, f.id(), i );
           }
         }
       }
     }
 
-    // If there were any vertices that come from a feature currently binded to the node editor, use just verices from
-    // that feature, otherwise if there were any vertices from selected features, use just vertices from those selected features.
-    // This allows user to select a bunch of features in complex situations to constrain the selection.
-    if ( !editorVertices.isEmpty() )
-    {
-      vertices = editorVertices;
-    }
-    else if ( !selectedVertices.isEmpty() )
+    // here's where we give precedence to vertices of selected features in case there's no bound (locked) feature
+    if ( !mSelectedFeature && !selectedVertices.isEmpty() )
     {
       vertices = selectedVertices;
     }
@@ -1122,7 +1125,9 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
     m = snapToPolygonInterior( e );
   }
 
-  updateFeatureBand( m );
+  // when we are "locked" to a feature, we don't want to highlight any other features
+  // so the user does not get distracted
+  updateFeatureBand( mSelectedFeature ? QgsPointLocator::Match() : m );
 }
 
 void QgsVertexTool::updateVertexBand( const QgsPointLocator::Match &m )
