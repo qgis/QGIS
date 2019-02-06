@@ -43,20 +43,36 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
             self.cboType.addItem(item)
 
 
-        objClass = self.db.searchClass()
-        if objClass != "PGDatabase":
+        supportCom = self.db.supportsComment()
+        if supportCom != True:
             self.label_6.setVisible(False)
             self.editCom.setVisible(False)
 
-        name, dataType, modifier, chkNull, hasDefault, chkCom = self.db.connector.setField(self.fld, self.table.name, self.db)
-        self.editName.setText(name)
-        self.cboType.setEditText(dataType)
-        self.editLength.setText(modifier)
-        self.chkNull.setChecked(not chkNull)
-        self.editDefault.setText(hasDefault)
-        self.editCom.setText(chkCom)
+        self.setField(fld)
 
         self.buttonBox.accepted.connect(self.onOK)
+
+    def setField(self, fld):
+        print('ok')
+        if fld is None:
+            return
+        self.editName.setText(fld.name)
+        self.cboType.setEditText(fld.dataType)
+        if fld.modifier:
+            self.editLength.setText(str(fld.modifier))
+        self.chkNull.setChecked(not fld.notNull)
+        if fld.hasDefault:
+            self.editDefault.setText(fld.default)
+        print(self.table)
+        tab = self.table.name
+        print(tab)
+        field = fld.name
+        print(field)
+        res = self.db.connector.getComment(tab, field, self.db)
+        print(res)
+        self.editCom.setText(res) # Set comment value
+        #except:
+        #    self.editCom.setEnabled(False)
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld

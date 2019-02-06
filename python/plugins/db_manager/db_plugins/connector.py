@@ -233,8 +233,3 @@ class DBConnector(object):
 
     def getQueryBuilderDictionary(self):
         return {}
-
-    def setField(self, fld, tablename=None, db=None):
-        if fld is None:
-            return
-        return fld.name, fld.dataType, str(fld.modifier), fld.notNull, fld.default, None

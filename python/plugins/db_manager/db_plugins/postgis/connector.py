@@ -193,6 +193,7 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
+
     def getSpatialInfo(self):
         """ returns tuple about PostGIS support:
                 - lib version
@@ -511,25 +512,6 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
-    def setField(self, fld, tablename, db):
-        if fld is None:
-            return
-        print (tablename)
-        # Check with SQL query if a comment exists for the field
-        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, fld.name)
-        # Get the comment for the field with SQL Query
-        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, fld.name)
-        c = db.connector._execute(None, sql_cpt) # Execute check query
-        res = db.connector._fetchone(c)[0] # Fetch data
-        # Check if result is 1 then it's ok, else we don't want to get a value
-        if res == 1:
-            c = db.connector._execute(None, sql) # Execute query returning the comment value
-            res2 = db.connector._fetchone(c)[0] # Fetch the comment value
-            db.connector._close_cursor(c) # Close cursor
-        else :
-            res2 = None
-        return fld.name, fld.dataType, str(fld.modifier), fld.notNull, fld.default, res2
-
     def getTableIndexes(self, table):
         """ get info about table's indexes. ignore primary key constraint index, they get listed in constraints """
         schema, tablename = self.getSchemaTableName(table)
@@ -760,6 +742,27 @@ class PostGisDBConnector(DBConnector):
             self._execute(c, sql)
 
         self._commit()
+
+    def commentTable(self, schema, tablename, comment):
+        self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\''.format(schema, tablename, comment))
+
+    def getComment(self, tab, field, db):
+        """Returns the comment for a field"""
+        # SQL Query checking if a comment exists for the field
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab, field)
+        # SQL Query that return the comment of the field
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab, field)
+        c = db.connector._execute(None, sql_cpt) # Execute Check query
+        res = db.connector._fetchone(c)[0] # Store result
+        print(tab, field, sql_cpt, sql)
+        if res == 1:
+            # When a comment exists
+            c = db.connector._execute(None, sql) # Execute query
+            res = db.connector._fetchone(c)[0] # Store result
+            db.connector._close_cursor(c) # Close cursor
+            return res # Return comment
+        else:
+            return ''
 
     def moveTableToSchema(self, table, new_schema):
         schema, tablename = self.getSchemaTableName(table)

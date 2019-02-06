@@ -475,16 +475,16 @@ class OracleDBConnector(DBConnector):
 
     def singleGeomTypes(self, geomtypes, srids):
         """Intelligent wkbtype grouping (multi with non multi)"""
-        if (QgsWkbTypes.Polygon in geomtypes and
-                QgsWkbTypes.MultiPolygon in geomtypes):
+        if (QgsWkbTypes.Polygon in geomtypes 
+            and QgsWkbTypes.MultiPolygon in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Polygon))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Polygon))
-        if (QgsWkbTypes.Point in geomtypes and
-                QgsWkbTypes.MultiPoint in geomtypes):
+        if (QgsWkbTypes.Point in geomtypes 
+            and QgsWkbTypes.MultiPoint in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Point))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Point))
-        if (QgsWkbTypes.LineString in geomtypes and
-                QgsWkbTypes.MultiLineString in geomtypes):
+        if (QgsWkbTypes.LineString in geomtypes 
+            and QgsWkbTypes.MultiLineString in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.LineString))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.LineString))
         if QgsWkbTypes.Unknown in geomtypes and len(geomtypes) > 1:
@@ -1306,6 +1306,14 @@ class OracleDBConnector(DBConnector):
         """Rename a schema in the database."""
         # Unsupported in Oracle
         pass
+        
+    def commentTable(self, schema, tablename, comment):
+        """Comment the table"""
+        return ''
+
+    def getComment(self, tab, field, db):
+        """Returns the comment for a field"""
+        return ''
 
     def addTableColumn(self, table, field_def):
         """Add a column to a table."""

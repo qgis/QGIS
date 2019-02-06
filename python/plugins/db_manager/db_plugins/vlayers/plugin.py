@@ -132,8 +132,8 @@ class FakeDatabase(Database):
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
         return '"%s"._search_frame_ = "%s"."%s"' % (src_table, dest_table, dest_column)
 
-    def searchClass(self):
-        return "FakeDatabase"
+    def supportsComment(self):
+        return False
 
 
 class LTable(Table):

@@ -1096,6 +1096,7 @@ class TableField(TableSubItemObject):
         return txt
 
     def getComment(self):
+        """Returns the comment for a field"""
         return ''
 
     def delete(self):

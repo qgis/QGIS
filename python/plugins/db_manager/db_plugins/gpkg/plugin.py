@@ -177,8 +177,8 @@ class GPKGDatabase(Database):
         vl.setSubsetString(sql)
         return vl
 
-    def searchClass(self):
-        return "GPKGDatabase"
+    def supportsComment(self):
+        return False
 
 
 class GPKGTable(Table):

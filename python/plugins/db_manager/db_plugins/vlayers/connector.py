@@ -342,6 +342,14 @@ class VLayerConnector(DBConnector):
         print("**unimplemented** runVacuum")
         return False
 
+    def commentTable(self, schema, tablename, comment):
+        """Comment the table"""
+        return ''
+
+    def getComment(self, tab, field, db):
+        """Returns the comment for a field"""
+        return ''
+
     def addTableColumn(self, table, field_def):
         print("**unimplemented** addTableColumn")
         return False

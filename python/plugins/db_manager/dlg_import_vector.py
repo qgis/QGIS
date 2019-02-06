@@ -25,8 +25,7 @@ from builtins import str
 from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QFileInfo
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from qgis.core import (QgsDataSourceUri,
                        QgsVectorLayer,
@@ -52,8 +51,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.outUri = outUri
         self.setupUi(self)
 
-        objClass = self.db.searchClass()
-        if objClass != "PGDatabase":
+        supportCom = self.db.supportsComment()
+        if supportCom != True:
             self.chkCom.setVisible(False)
             self.editCom.setVisible(False)
 
@@ -374,9 +373,9 @@ class DlgImportVector(QDialog, Ui_Dialog):
             self.db.connector.createSpatialIndex((schema, table), geom)
 
         # add comment on table
-        if self.chkCom.isEnabled() and self.chkCom.isChecked() and objClass == "PGDatabase":
+        if self.chkCom.isEnabled() and self.chkCom.isChecked() and supportCom == True:
             # using connector executing COMMENT ON TABLE query (with editCome.text() value)
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\''.format(schema, table, self.editCom.text()))
+            self.db.connector.commentTable(db, schema, table, self.editCom.text())
 
         self.db.connection().reconnect()
         self.db.refresh()
