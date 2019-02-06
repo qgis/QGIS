@@ -545,6 +545,35 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertFalse(vl.dataProvider().deleteFeatures([0]))
 
+        # Reload data and check for fid stability of features whose fid/gmlid
+        # has already been downloaded
+        vl.dataProvider().reloadData()
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+    <my:typename fid="typename.10">
+      <my:INTFIELD>20</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:INTFIELD>30</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(features[0].id(), 2)
+        self.assertEqual(features[0]['INTFIELD'], 20)
+        self.assertEqual(features[1].id(), 1)
+        self.assertEqual(features[1]['INTFIELD'], 30)
+
         # Test with restrictToRequestBBOX=1
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
             f.write("""
