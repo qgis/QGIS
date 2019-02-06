@@ -62,6 +62,15 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   private:
     QgsExpressionContext *mLayoutLegendContext = nullptr;
+
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.8
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const override;
 };
 
 
