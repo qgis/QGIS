@@ -936,10 +936,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           }
         }
       }
-      return name;
     }
-    return QgsLayerTreeModel::data( index, role );
+    return name; 
   }
+  return QgsLayerTreeModel::data( index, role );
 }
 
 void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
