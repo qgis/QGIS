@@ -936,6 +936,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
       else // extremely roundabout way
       {
+        Q_UNUSED( ltmln );
         // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
         QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
         // get non-embedded node since embedded nodes should pop un as ltmln in theory
