@@ -898,34 +898,29 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   // handle custom layer node labels
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  if ( ( QgsLayerTree::isLayer( node ) || ltmln ) && (role == Qt::DisplayRole || role == Qt::EditRole ) )
+  if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
     qInfo() << "is layer";
 
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     qInfo() << name;
-    if ( name.isEmpty() && !node->customProperty( QStringLiteral( "legend/title-label" ) ).toString().isEmpty() )
+    if ( name.empty() && !( node->customProperty( QStringLiteral( "legend/title-label" ) ).toString().empty() ) )
     {
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
       qInfo() << name;
     }
-    qInfo() << name;
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
-      qInfo() << "counting features";
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
       if ( vlayer && vlayer->featureCount() >= 0 )
-      {
-        qInfo() << "feature count is bigger than 0";
         name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-      }
     }
     else
     {
       QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
 
-      if ( ltmln )
+      if ( QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ) )
       {
         qInfo() << "is legendnode";
         if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
@@ -937,19 +932,14 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
       else // extremely roundabout way
       {
-        QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
-        qInfo() << "made new legend nodes";
-        if ( !legendnodes.empty() )
-        {
-          if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          {
-            qInfo() << "evaluating new symbol";
-            name = synode->evaluateLabel( context, name );
-          }
-        }
+        // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
+        QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
+        // get non-embedded node since embedded nodes should pop un as ltmln in theory
+        if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+          name = synode->evaluateLabel( context, name );
       }
     }
-    return name;
+    return name; 
   }
   return QgsLayerTreeModel::data( index, role );
 }
