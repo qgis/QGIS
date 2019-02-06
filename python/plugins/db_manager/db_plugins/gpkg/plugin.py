@@ -301,6 +301,10 @@ class GPKGTableField(TableField):
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default
 
+    def getComment(self):
+        """Returns the comment for a field"""
+        return ''
+
 
 class GPKGTableIndex(TableIndex):
 
