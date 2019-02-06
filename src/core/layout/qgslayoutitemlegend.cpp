@@ -910,8 +910,10 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       qInfo() << "counting features";
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
       if ( vlayer && vlayer->featureCount() >= 0 )
+      {
         qInfo() << "feature count is bigger than 0";
         name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+      }
     }
     else
     {
@@ -931,7 +933,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       {
         QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
         qInfo() << "made new legend nodes";
-        if ( !legendnodes.empty())
+        if ( !legendnodes.empty() )
         {
           if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
           {
@@ -941,7 +943,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         }
       }
     }
-    return name; 
+    return name;
   }
   return QgsLayerTreeModel::data( index, role );
 }
