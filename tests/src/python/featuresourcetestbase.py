@@ -155,6 +155,8 @@ class FeatureSourceTestCase(object):
         self.assert_query(source, '(name = \'Apple\') is not null', [1, 2, 3, 4])
         self.assert_query(source, 'name LIKE \'Apple\'', [2])
         self.assert_query(source, 'name LIKE \'aPple\'', [])
+        self.assert_query(source, 'name LIKE \'Ap_le\'', [2])
+        self.assert_query(source, 'name LIKE \'Ap\\_le\'', [])
         self.assert_query(source, 'name ILIKE \'aPple\'', [2])
         self.assert_query(source, 'name ILIKE \'%pp%\'', [2])
         self.assert_query(source, 'cnt > 0', [1, 2, 3, 4])

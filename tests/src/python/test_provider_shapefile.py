@@ -203,6 +203,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                     'name = \'apple\'',
                     'name LIKE \'Apple\'',
                     'name LIKE \'aPple\'',
+                    'name LIKE \'Ap_le\'',
+                    'name LIKE \'Ap\\_le\'',
                     '"name"="name2"'])
 
     def testRepack(self):
