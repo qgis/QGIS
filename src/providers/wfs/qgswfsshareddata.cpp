@@ -925,6 +925,32 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
   {
     const QgsFeature &gmlFeature = featPair.first;
 
+    QgsFeature cachedFeature;
+    cachedFeature.initAttributes( dataProviderFields.size() );
+
+    // copy the geometry
+    // Do this now to update localComputedExtent, even if we skip the feature
+    // afterwards as being already downloaded.
+    QgsGeometry geometry = gmlFeature.geometry();
+    if ( !mGeometryAttribute.isEmpty() && !geometry.isNull() )
+    {
+      QByteArray array( geometry.asWkb() );
+
+      cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
+
+      QgsRectangle bBox( geometry.boundingBox() );
+      if ( localComputedExtent.isNull() )
+        localComputedExtent = bBox;
+      else
+        localComputedExtent.combineExtentWith( bBox );
+      QgsGeometry polyBoundingBox = QgsGeometry::fromRect( bBox );
+      cachedFeature.setGeometry( polyBoundingBox );
+    }
+    else
+    {
+      cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString() ) );
+    }
+
     const QString &gmlId = featPair.second;
     QString md5;
     if ( mDistinctSelect )
@@ -955,30 +981,6 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
     }
 
     updatedFeatureList.push_back( featPair );
-
-    QgsFeature cachedFeature;
-    cachedFeature.initAttributes( dataProviderFields.size() );
-
-    //copy the geometry
-    QgsGeometry geometry = gmlFeature.geometry();
-    if ( !mGeometryAttribute.isEmpty() && !geometry.isNull() )
-    {
-      QByteArray array( geometry.asWkb() );
-
-      cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
-
-      QgsRectangle bBox( geometry.boundingBox() );
-      if ( localComputedExtent.isNull() )
-        localComputedExtent = bBox;
-      else
-        localComputedExtent.combineExtentWith( bBox );
-      QgsGeometry polyBoundingBox = QgsGeometry::fromRect( bBox );
-      cachedFeature.setGeometry( polyBoundingBox );
-    }
-    else
-    {
-      cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString() ) );
-    }
 
     //and the attributes
     for ( int i = 0; i < mFields.size(); i++ )
