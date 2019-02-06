@@ -919,12 +919,13 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
       if ( vlayer && vlayer->featureCount() >= 0 )
         name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+      Q_UNUSED( ltmln );
     }
     else
     {
       QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
 
-      if ( QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ) )
+      if ( ltmln )
       {
         qInfo() << "is legendnode";
         if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
@@ -936,7 +937,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
       else // extremely roundabout way
       {
-        Q_UNUSED( ltmln );
         // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
         QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
         // get non-embedded node since embedded nodes should pop un as ltmln in theory
