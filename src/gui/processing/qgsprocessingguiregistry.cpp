@@ -35,6 +35,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingRangeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAuthConfigWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMatrixWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFileWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
