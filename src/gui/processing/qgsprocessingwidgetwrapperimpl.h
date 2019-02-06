@@ -31,6 +31,7 @@ class QgsSpinBox;
 class QgsDoubleSpinBox;
 class QgsAuthConfigSelect;
 class QgsProcessingMatrixParameterPanel;
+class QgsFileWidget;
 
 ///@cond PRIVATE
 
@@ -320,6 +321,41 @@ class GUI_EXPORT QgsProcessingMatrixWidgetWrapper : public QgsAbstractProcessing
   private:
 
     QgsProcessingMatrixParameterPanel *mMatrixWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingFileWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingFileWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                    QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+
+    QgsFileWidget *mFileWidget = nullptr;
 
     friend class TestProcessingGui;
 };

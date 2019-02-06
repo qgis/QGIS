@@ -25,6 +25,8 @@
 #include "qgsprocessingcontext.h"
 #include "qgsauthconfigselect.h"
 #include "qgsapplication.h"
+#include "qgsfilewidget.h"
+#include "qgssettings.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -1102,6 +1104,109 @@ QString QgsProcessingMatrixWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMatrixWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingMatrixWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingFileWidgetWrapper
+//
+
+QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingFileWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterFile *fileParam = dynamic_cast< const QgsProcessingParameterFile *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mFileWidget = new QgsFileWidget();
+      mFileWidget->setToolTip( parameterDefinition()->toolTip() );
+      mFileWidget->setDialogTitle( parameterDefinition()->description() );
+
+      mFileWidget->setDefaultRoot( QgsSettings().value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString() );
+
+      switch ( fileParam->behavior() )
+      {
+        case QgsProcessingParameterFile::File:
+          mFileWidget->setStorageMode( QgsFileWidget::GetFile );
+          if ( !fileParam->extension().isEmpty() )
+            mFileWidget->setFilter( tr( "%1 files" ).arg( fileParam->extension().toUpper() ) + QStringLiteral( " (*." ) + fileParam->extension().toLower() + ')' );
+          break;
+
+        case QgsProcessingParameterFile::Folder:
+          mFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
+          break;
+      }
+
+      connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+      {
+        QgsSettings().setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( path ).canonicalPath() );
+        emit widgetValueHasChanged( this );
+      } );
+      return mFileWidget;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingFileWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mFileWidget )
+    mFileWidget->setFilePath( v );
+}
+
+QVariant QgsProcessingFileWidgetWrapper::widgetValue() const
+{
+  if ( mFileWidget )
+    return mFileWidget->filePath();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingFileWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterFile::typeName();
+}
+
+QStringList QgsProcessingFileWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName();
+}
+
+QList<int> QgsProcessingFileWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingFileWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing a path to a file or folder" );
+}
+
+QString QgsProcessingFileWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterFile::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFileWidgetWrapper( parameter, type );
 }
 
 

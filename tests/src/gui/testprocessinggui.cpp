@@ -46,6 +46,7 @@
 #include "qgsauthmanager.h"
 #include "qgsprocessingmatrixparameterdialog.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsfilewidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -150,6 +151,7 @@ class TestProcessingGui : public QObject
     void testModelerWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
+    void testFileWrapper();
     void testAuthCfgWrapper();
     void testCrsWrapper();
     void testNumericWrapperDouble();
@@ -824,6 +826,74 @@ void TestProcessingGui::testStringWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testFileWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterFile param( QStringLiteral( "file" ), QStringLiteral( "file" ) );
+
+    QgsProcessingFileWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFileWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QVERIFY( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filter().isEmpty() );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "file" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->setFilePath( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ) );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // with filter
+    QgsProcessingParameterFile param2( QStringLiteral( "file" ), QStringLiteral( "file" ), QgsProcessingParameterFile::File, QStringLiteral( "qml" ) );
+
+    QgsProcessingFileWidgetWrapper wrapper2( &param2, type );
+    w = wrapper2.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper2.wrappedWidget() )->filter(), QStringLiteral( "QML files (*.qml)" ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper2.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
+
+    // folder mode
+    QgsProcessingParameterFile param3( QStringLiteral( "folder" ), QStringLiteral( "folder" ), QgsProcessingParameterFile::Folder );
+
+    QgsProcessingFileWidgetWrapper wrapper3( &param3, type );
+    w = wrapper3.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper3.wrappedWidget() )->storageMode(),  QgsFileWidget::GetDirectory );
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::testAuthCfgWrapper()
