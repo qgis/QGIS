@@ -948,6 +948,18 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   return QgsLayerTreeModel::data( index, role );
 }
 
+QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent ) const
+{
+  if ( !mLegend.contains( nodeLayer ) )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  const LayerLegendData &data = mLegend[nodeLayer];
+  QList<QgsLayerTreeModelLegendNode *> lst( data.activeNodes );
+  if ( !skipNodeEmbeddedInParent && data.embeddedNodeInParent )
+    lst.prepend( data.embeddedNodeInParent );
+  return lst;
+}
+
 void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 {
   mLayoutLegendContext = econtext;
