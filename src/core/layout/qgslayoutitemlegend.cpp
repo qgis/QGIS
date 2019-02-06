@@ -905,7 +905,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     qInfo() << name;
-    if ( name.empty() && !(node->customProperty( QStringLiteral( "legend/title-label" ) ).toString().empty()) )
+    if ( name.isEmpty() && !node->customProperty( QStringLiteral( "legend/title-label" ) ).toString().isEmpty() )
     {
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
       qInfo() << name;
