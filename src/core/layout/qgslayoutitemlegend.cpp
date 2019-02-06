@@ -901,15 +901,20 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
     qInfo() << "is layer";
-
+    //finding the first key that is stored
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     qInfo() << name;
-    if ( name.empty() && !( node->customProperty( QStringLiteral( "legend/title-label" ) ).toString().empty() ) )
+    if ( name.isEmpty() )
+      name=nodeLayer.name();
+    if ( name.empty() )
     {
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
       qInfo() << name;
     }
+    if ( name.isEmpty() )
+      name = node.name();
+
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
