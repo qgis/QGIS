@@ -874,6 +874,7 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext( bool replace 
 // -------------------------------------------------------------------------
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerlegend.h"
 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
@@ -896,18 +897,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
   QgsLayerTreeNode *node = index2node( index );
+  QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
   if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
   {
     qInfo() << "is layer";
-    QgsExpressionContext context;
-    if ( mLayoutLegendContext )
-    {
-      context = QgsExpressionContext( *mLayoutLegendContext );
-    }
-    else
-    {
-      context = QgsExpressionContext();
-    }
+
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     qInfo() << name;
@@ -919,6 +913,8 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
+      QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
+
       if ( QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ) )
       {
         qInfo() << "is legendnode";
@@ -932,20 +928,18 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       else // extremely roundabout way
       {
         QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
-        if (legendnodes.count() == 1)
+        if ( !legendnodes.empty())
         {
           if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
           {
-            name = synode->evaluateLabel( context );
+            name = synode->evaluateLabel( context, name );
           }
         }
       }
       return name;
     }
+    return QgsLayerTreeModel::data( index, role );
   }
-
-  return QgsLayerTreeModel::data( index, role );
-}
 
 void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
 {
