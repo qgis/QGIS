@@ -583,7 +583,7 @@ class CORE_EXPORT QgsExpressionContext
      */
     QStringList functionNames() const;
 
-      /**
+    /**
      * Fetches a matching function from the context. The function will be fetched
      * from the last scope contained within the context which has a matching
      * function set.
