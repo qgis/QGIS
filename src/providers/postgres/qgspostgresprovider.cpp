@@ -2040,19 +2040,22 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( mPrimaryKeyAttrs.size() == 1 &&
            defaultValueClause( mPrimaryKeyAttrs[0] ).startsWith( "nextval(" ) )
       {
-        bool foundNonNullPK = false;
+        bool foundNonEmptyPK = false;
         int idx = mPrimaryKeyAttrs[0];
+        QString defaultValue = defaultValueClause( idx );
         for ( int i = 0; i < flist.size(); i++ )
         {
           QgsAttributes attrs2 = flist[i].attributes();
           QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) );
-          if ( !v2.isNull() )
+          // a PK field with a sequence val is auto populate by QGIS with this default
+          // we are only interested in non default values
+          if ( !v2.isNull() && v2.toString() != defaultValue )
           {
-            foundNonNullPK = true;
+            foundNonEmptyPK = true;
             break;
           }
         }
-        skipSinglePKField = !foundNonNullPK;
+        skipSinglePKField = !foundNonEmptyPK;
       }
 
       if ( !skipSinglePKField )
