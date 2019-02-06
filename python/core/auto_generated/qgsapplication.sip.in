@@ -613,21 +613,21 @@ wide background task handling.
 .. versionadded:: 3.0
 %End
 
-    static QgsColorSchemeRegistry *colorSchemeRegistry();
+    static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color schemes.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsPaintEffectRegistry *paintEffectRegistry();
+    static QgsPaintEffectRegistry *paintEffectRegistry() /KeepReference/;
 %Docstring
 Returns the application's paint effect registry, used for managing paint effects.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsRendererRegistry *rendererRegistry();
+    static QgsRendererRegistry *rendererRegistry() /KeepReference/;
 %Docstring
 Returns the application's renderer registry, used for managing vector layer renderers.
 
@@ -635,7 +635,7 @@ Returns the application's renderer registry, used for managing vector layer rend
 %End
 
 
-    static QgsDataItemProviderRegistry *dataItemProviderRegistry();
+    static QgsDataItemProviderRegistry *dataItemProviderRegistry() /KeepReference/;
 %Docstring
 Returns the application's data item provider registry, which keeps a list of data item
 providers that may add items to the browser tree.
@@ -662,14 +662,14 @@ Returns the application's image cache, used for caching resampled versions of ra
 .. versionadded:: 3.6
 %End
 
-    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching temporary files during QGIS session
 
 .. versionadded:: 3.2
 %End
 
-    static QgsValidityCheckRegistry *validityCheckRegistry();
+    static QgsValidityCheckRegistry *validityCheckRegistry() /KeepReference/;
 %Docstring
 Returns the application's validity check registry, used for managing validity checks.
 
@@ -740,7 +740,7 @@ Returns the application's page size registry, used for managing layout page size
 %End
 
 
-    static QgsActionScopeRegistry *actionScopeRegistry();
+    static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
 Returns the action scope registry.
 
@@ -754,19 +754,19 @@ Returns the application runtime profiler.
 .. versionadded:: 3.0
 %End
 
-    static QgsFieldFormatterRegistry *fieldFormatterRegistry();
+    static QgsFieldFormatterRegistry *fieldFormatterRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available field formatters.
 %End
 
-    static Qgs3DRendererRegistry *renderer3DRegistry();
+    static Qgs3DRendererRegistry *renderer3DRegistry() /KeepReference/;
 %Docstring
 Returns registry of available 3D renderers.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsProjectStorageRegistry *projectStorageRegistry();
+    static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available project storage implementations.
 

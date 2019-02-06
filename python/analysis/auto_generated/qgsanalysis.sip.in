@@ -32,7 +32,7 @@ related to analysis classes.
 Returns a pointer to the singleton instance.
 %End
 
-    static QgsGeometryCheckRegistry *geometryCheckRegistry();
+    static QgsGeometryCheckRegistry *geometryCheckRegistry() /KeepReference/;
 %Docstring
 Returns the global geometry checker registry, used for managing all geometry check factories.
 %End
