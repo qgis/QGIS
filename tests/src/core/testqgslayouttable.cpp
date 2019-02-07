@@ -1415,16 +1415,16 @@ void TestQgsLayoutTable::dataDefinedSource()
 
 void TestQgsLayoutTable::wrappedText()
 {
-    QgsProject p;
-    QgsLayout l( &p );
-    QgsLayoutItemAttributeTable* t = new QgsLayoutItemAttributeTable( &l );
-    t->setWrapBehavior( QgsLayoutTable::WrapText );
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemAttributeTable *t = new QgsLayoutItemAttributeTable( &l );
+  t->setWrapBehavior( QgsLayoutTable::WrapText );
 
-    QFont f;
-    QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
-    QString wrapText = t->wrappedText( sourceText, 100 /*columnWidth*/, f );
-    //there should be no line break before the last word (bug #20546)
-    QVERIFY( !wrapText.endsWith( "\naliqua" ) );
+  QFont f;
+  QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
+  QString wrapText = t->wrappedText( sourceText, 100 /*columnWidth*/, f );
+  //there should be no line break before the last word (bug #20546)
+  QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutTable )
