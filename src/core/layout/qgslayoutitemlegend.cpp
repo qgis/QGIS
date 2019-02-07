@@ -896,9 +896,10 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 {
   // handle custom layer node labels
+  QString name;
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+  if ( ( QgsLayerTree::isLayer( node ) && !ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     //finding the first key that is stored
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
@@ -914,34 +915,38 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      
       if ( vlayer && vlayer->featureCount() >= 0 )
+      {
+        Q_UNUSED( ltmln );
         name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-      Q_UNUSED( ltmln );
+        return name;
+      }
+    }
+  }
+  if ( ( !name.isNull() || ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+  {
+    QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
+
+    if ( ltmln )
+    {
+      if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
+        name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
+      return name;
     }
     else
     {
-      QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
-
-      if ( ltmln )
-      {
-        if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
-          name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
-        return name;
-      }
-      else
-      {
-        // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
-        QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
-        // get non-embedded node since embedded nodes should pop un as ltmln in theory
-        if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-          name = synode->evaluateLabel( context, name );
-      }
+      // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
+      QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
+      // get non-embedded node since embedded nodes should pop un as ltmln in theory
+      if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+        name = synode->evaluateLabel( context, name );
     }
-    return name;
+  return name;
   }
+  Q_UNUSED( name );
   return QgsLayerTreeModel::data( index, role );
 }
-
 QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent ) const
 {
   if ( !mLegend.contains( nodeLayer ) )
