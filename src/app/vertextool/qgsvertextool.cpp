@@ -2030,17 +2030,9 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     for ( ; it2 != layerEdits.end(); ++it2 )
     {
       layer->changeGeometry( it2.key(), it2.value() );
-      for ( int i = 0; i < mSelectedVertices.length(); ++i )
-      {
-        if ( mSelectedVertices.at( i ).layer == layer && mSelectedVertices.at( i ).fid == it2.key() )
-        {
-          mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
-        }
-      }
     }
     layer->endEditCommand();
     layer->triggerRepaint();
-
 
     if ( mVertexEditor )
       mVertexEditor->updateEditor( mSelectedFeature.get() );
@@ -2209,6 +2201,11 @@ void QgsVertexTool::deleteVertex()
 
 void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode )
 {
+  // we need to make a local copy of vertices - often this method gets called
+  // just to refresh positions and so mSelectedVertices is passed. But then in reset mode
+  // we clear that array, which could clear also listVertices.
+  QList<Vertex> listVerticesLocal( listVertices );
+
   if ( mode == ModeReset )
   {
     qDeleteAll( mSelectedVerticesMarkers );
@@ -2241,7 +2238,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     return true;
   };
 
-  for ( const Vertex &vertex : listVertices )
+  for ( const Vertex &vertex : listVerticesLocal )
   {
     if ( mode == ModeAdd && mSelectedVertices.contains( vertex ) )
     {
