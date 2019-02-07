@@ -537,18 +537,19 @@ QGroupBox::title {
     color: @textlight;
 }
 
+QGroupBox::indicator {
+    width: 0.9em;
+    height: 0.9em;
+}
+
 QGroupBox::indicator:unchecked {
     border: 1px solid @background;
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
-    width:0.8em;
-    height:0.8em;
 }
 
 QGroupBox::indicator:checked {
     border: 1px solid @background;
     image: url(@theme_path/icons/qcheckbox-checked.svg);
-    width:0.8em;
-    height:0.8em;
 }
 
 /* ==================================================================================== */
