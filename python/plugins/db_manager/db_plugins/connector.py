@@ -232,5 +232,5 @@ class DBConnector(object):
             return []
 
     def getQueryBuilderDictionary(self):
-        
+
         return {}
