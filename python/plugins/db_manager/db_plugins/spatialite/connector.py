@@ -582,7 +582,6 @@ class SpatiaLiteDBConnector(DBConnector):
     def addTableColumn(self, table, field_def):
         """ add a column to table """
         sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
-        self._execute_and_commit(sql)
         self._execute(None, sql)
 
         sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
