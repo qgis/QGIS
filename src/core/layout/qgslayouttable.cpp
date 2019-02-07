@@ -1157,6 +1157,12 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
         int lastPos = remainingText.lastIndexOf( ' ' );
         while ( lastPos > -1 )
         {
+          //check if remaining text is short enough to go in one line
+          if ( !textRequiresWrapping( remainingText, columnWidth, font ) )
+          {
+            break;
+          }
+
           if ( !textRequiresWrapping( remainingText.left( lastPos ), columnWidth, font ) )
           {
             outLines << remainingText.left( lastPos );
