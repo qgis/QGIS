@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tosip/qgslayoutitemlegend.h                                 *
+ * src/core/layout/qgslayoutitemlegend.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -528,7 +528,7 @@ Creates an expression context
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tosip/qgslayoutitemlegend.h                                 *
+ * src/core/layout/qgslayoutitemlegend.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
