@@ -10,8 +10,8 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="buffer_polys_dissolve" type="ogr:buffer_polys_dissolve_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="buffer_polys_dissolve_Type">
+<xs:element name="buffer_polys_bevel" type="ogr:buffer_polys_bevel_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="buffer_polys_bevel_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
