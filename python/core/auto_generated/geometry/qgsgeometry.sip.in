@@ -493,7 +493,22 @@ In case of error -1 will be returned.
 .. versionadded:: 3.0
 %End
 
+
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
+%Docstring
+Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
+and the indices of the vertices before and after the closest vertex.
+
+:param point: point to search for
+:param beforeVertex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if
+                     not present.
+:param afterVertex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
+                    not present.
+:param sqrDist: will be set to the square distance between the closest vertex and the specified point
+
+:return: - closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+         - atVertex: will be set to the vertex index of the closest found vertex
+%End
 
     double distanceToVertex( int vertex ) const;
 %Docstring

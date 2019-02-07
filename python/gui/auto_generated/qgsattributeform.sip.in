@@ -44,11 +44,32 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+
     void hideButtonBox();
+%Docstring
+Hides the button box (OK/Cancel) and enables auto-commit
+
+.. note::
+
+   set Embed in QgsAttributeEditorContext in constructor instead
+%End
+
 
     void showButtonBox();
+%Docstring
+Shows the button box (OK/Cancel) and disables auto-commit
+
+.. note::
+
+   set Embed in QgsAttributeEditorContext in constructor instead
+%End
+
 
     void disconnectButtonBox();
+%Docstring
+Disconnects the button box (OK/Cancel) from the accept/resetValues slots
+If this method is called, you have to create these connections from outside
+%End
 
     void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
 %Docstring

@@ -74,25 +74,28 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     const QgsFeature &feature() { return mFeature; }
 
+    // TODO QGIS 4.0 - make private
+
     /**
      * Hides the button box (OK/Cancel) and enables auto-commit
      * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
-    // TODO QGIS 4.0 - make private
     void hideButtonBox();
+
+    // TODO QGIS 4.0 - make private
 
     /**
      * Shows the button box (OK/Cancel) and disables auto-commit
      * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
-    // TODO QGIS 4.0 - make private
     void showButtonBox();
+
+    // TODO QGIS 4.0 - make private
 
     /**
      * Disconnects the button box (OK/Cancel) from the accept/resetValues slots
      * If this method is called, you have to create these connections from outside
      */
-    // TODO QGIS 4.0 - make private
     void disconnectButtonBox();
 
     /**

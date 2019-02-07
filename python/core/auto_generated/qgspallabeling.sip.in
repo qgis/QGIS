@@ -54,6 +54,7 @@ class QgsPalLayerSettings
     ~QgsPalLayerSettings();
 
 
+
     enum Placement
     {
       AroundPoint,
@@ -82,11 +83,13 @@ class QgsPalLayerSettings
       BottomRight,
     };
 
+
     enum OffsetType
     {
       FromPoint,
       FromSymbolBounds,
     };
+
 
     enum LinePlacementFlags
     {
@@ -130,6 +133,7 @@ class QgsPalLayerSettings
       MultiRight,
       MultiFollowPlacement
     };
+
 
     enum ObstacleType
     {

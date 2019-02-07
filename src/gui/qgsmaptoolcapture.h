@@ -112,6 +112,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
   protected:
 
+    // TODO QGIS 4.0 returns an enum instead of a magic constant
+
     /**
      * Converts a map point to layer coordinates
      *  \param mapPoint the point in map coordinates
@@ -121,8 +123,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *   1 if the current layer is null or not a vector layer
      *   2 if the transformation failed
      */
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
+
+    // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
      * Converts a point to map coordinates and layer coordinates
@@ -134,8 +137,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  1 if the current layer is null or not a vector layer
      *  2 if the transformation failed
      */
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+
+    // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
      * Fetches the original point from the source layer if it has the same
@@ -143,7 +147,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \returns 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
      * \since QGIS 2.14
      */
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
     /**
@@ -171,11 +174,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 
+    // TODO QGIS 4.0 returns an enum instead of a magic constant
+
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
      */
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
     int addVertex( const QgsPointXY &point );
 
     /**
