@@ -1332,12 +1332,27 @@ static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *co
 
   return context->feature();
 }
-static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsFeature feat = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
-  QString attr = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  QgsFeature feature;
+  QString attr;
+  if ( values.size() == 1 )
+  {
+    attr = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+    feature = context->feature();
+  }
+  else if ( values.size() == 2 )
+  {
+    feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+    attr = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `attribute` requires one or two parameters. %1 given." ).arg( values.length() ) );
+    return QVariant();
+  }
 
-  return feat.attribute( attr );
+  return feature.attribute( attr );
 }
 
 static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5319,10 +5334,30 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     sFunctions << evalFunc;
 
+    QgsStaticExpressionFunction *attributeFunc = new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), -1, fcnAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    attributeFunc->setIsStaticFunction(
+      []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
+    {
+      const QList< QgsExpressionNode *> argList = node->args()->list();
+      for ( QgsExpressionNode *argNode : argList )
+      {
+        if ( !argNode->isStatic( parent, context ) )
+          return false;
+      }
+
+      if ( node->args()->count() == 1 )
+      {
+        // not static -- this is the variant which uses the current feature taken direct from the expression context
+        return false;
+      }
+
+      return true;
+    } );
+    sFunctions << attributeFunc;
+
     sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
         << new QgsWithVariableExpressionFunction()
-        << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
 
         // functions for arrays
