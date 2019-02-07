@@ -905,13 +905,16 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   {
     //finding the first label that is stored
     name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    qInfo() << name;
     if ( name.isEmpty() )
       name = nodeLayer->name();
+    qInfo() << name;
     if ( name.isEmpty() )
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+    qInfo() << name;
     if ( name.isEmpty() )
       name = node->name();
-
+    qInfo() << name;
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
@@ -940,23 +943,15 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
       // get non-embedded node since embedded nodes should pop un as ltmln in theory
       if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+      {
         name = synode->evaluateLabel( context, name );
+        qInfo() << ( " evaluated string is " + name );
+      }
     }
     return name;
   }
   Q_UNUSED( name );
   return QgsLayerTreeModel::data( index, role );
-}
-QList<QgsLayerTreeModelLegendNode *> QgsLegendModel::layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent ) const
-{
-  if ( !mLegend.contains( nodeLayer ) )
-    return QList<QgsLayerTreeModelLegendNode *>();
-
-  const LayerLegendData &data = mLegend[nodeLayer];
-  QList<QgsLayerTreeModelLegendNode *> lst( data.activeNodes );
-  if ( !skipNodeEmbeddedInParent && data.embeddedNodeInParent )
-    lst.prepend( data.embeddedNodeInParent );
-  return lst;
 }
 
 void QgsLegendModel::setLayoutExpContext( QgsExpressionContext *econtext )
