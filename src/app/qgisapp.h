@@ -1786,9 +1786,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
 
     /**
-     * This method will open a dialog so the user can select OGR sublayers to load
+     * This method will open a dialog so the user can select OGR sublayers to load,
+     * and then returns a list of these layers.
      */
-    void askUserForOGRSublayers( QgsVectorLayer *layer );
+    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *layer );
 
     /**
      * Add a raster layer to the map (passed in as a ptr).
@@ -1800,6 +1801,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsRasterLayer *addRasterLayerPrivate( const QString &uri, const QString &baseName,
                                            const QString &providerKey, bool guiWarning,
                                            bool guiUpdate );
+
+    //! Open a mesh layer - this is the generic function which takes all parameters
+    QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
+                                       const QString &providerKey, bool guiWarning = true );
 
     /**
      * Add the current project to the recently opened/saved projects list
