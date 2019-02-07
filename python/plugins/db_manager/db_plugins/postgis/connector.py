@@ -743,8 +743,11 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
-    def commentTable(self, schema, tablename, comment):
-        self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\''.format(schema, tablename, comment))
+    def commentTable(self, schema, tablename, comment, db):
+        db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
+
+    def unCommentTable(self, schema, tablename, db):
+        db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
 
     def getComment(self, tab, field, db):
         """Returns the comment for a field"""
@@ -754,7 +757,6 @@ class PostGisDBConnector(DBConnector):
         sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab, field)
         c = db.connector._execute(None, sql_cpt) # Execute Check query
         res = db.connector._fetchone(c)[0] # Store result
-        print(tab, field, sql_cpt, sql)
         if res == 1:
             # When a comment exists
             c = db.connector._execute(None, sql) # Execute query

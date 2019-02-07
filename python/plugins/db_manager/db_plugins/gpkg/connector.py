@@ -624,6 +624,12 @@ class GPKGDBConnector(DBConnector):
         """Comment the table"""
         return ''
 
+    def commentTable(self, schema, tablename, comment):
+        return ''
+
+    def unCommentTable(self, schema, tablename):
+        return ''
+
     def getComment(self, tab, field, db):
         """Returns the comment for a field"""
         return ''

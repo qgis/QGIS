@@ -373,9 +373,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
             self.db.connector.createSpatialIndex((schema, table), geom)
 
         # add comment on table
+        supportCom = self.db.supportsComment()
         if self.chkCom.isEnabled() and self.chkCom.isChecked() and supportCom == True:
             # using connector executing COMMENT ON TABLE query (with editCome.text() value)
-            self.db.connector.commentTable(db, schema, table, self.editCom.text())
+            self.db.connector.commentTable(schema, table, self.editCom.text(), self.db)
 
         self.db.connection().reconnect()
         self.db.refresh()
