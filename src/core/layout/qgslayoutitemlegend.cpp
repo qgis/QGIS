@@ -898,14 +898,12 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   // handle custom layer node labels
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  if ( QgsLayerTree::isLayer( node ) && role == Qt::DisplayRole )
+  if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
-    qInfo() << "is layer";
     //finding the first key that is stored
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
     QString name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
-    qInfo() << name;
     if ( name.isEmpty() )
       name = nodeLayer->name();
     if ( name.isEmpty() )
@@ -913,7 +911,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( name.isEmpty() )
       name = node->name();
 
-    qInfo() << name;
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
@@ -927,15 +924,11 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
       if ( ltmln )
       {
-        qInfo() << "is legendnode";
         if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
-        {
-          qInfo() << "is symbolnode";
           name = synode->evaluateLabel( context, name );
-        }
         return name;
       }
-      else // extremely roundabout way
+      else
       {
         // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
         QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
@@ -944,7 +937,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
           name = synode->evaluateLabel( context, name );
       }
     }
-    return name; 
+    return name;
   }
   return QgsLayerTreeModel::data( index, role );
 }
