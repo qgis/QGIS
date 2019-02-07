@@ -10,32 +10,12 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="buffer_polys_dissolve" type="ogr:buffer_polys_dissolve_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="buffer_polys_dissolve_Type">
+<xs:element name="buffer_lines_flat" type="ogr:buffer_lines_flat_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="buffer_lines_flat_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
         <xs:element name="geometryProperty" type="gml:MultiPolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="1">
-          <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <xs:maxLength value="5"/>
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
-        <xs:element name="intval" nillable="true" minOccurs="0" maxOccurs="1">
-          <xs:simpleType>
-            <xs:restriction base="xs:integer">
-              <xs:totalDigits value="10"/>
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
-        <xs:element name="floatval" nillable="true" minOccurs="0" maxOccurs="1">
-          <xs:simpleType>
-            <xs:restriction base="xs:decimal">
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>
