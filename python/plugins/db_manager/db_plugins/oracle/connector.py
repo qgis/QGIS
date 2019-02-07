@@ -1307,7 +1307,7 @@ class OracleDBConnector(DBConnector):
         # Unsupported in Oracle
         pass
 
-    def commentTable(self, schema, tablename, comment=None, db):
+    def commentTable(self, schema, tablename, db, comment=None):
         """Comment the table"""
         return ''
 

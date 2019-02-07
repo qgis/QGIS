@@ -571,7 +571,7 @@ class SpatiaLiteDBConnector(DBConnector):
         c.execute('VACUUM')
         self.connection.isolation_level = '' # reset to default isolation
 
-    def commentTable(self, schema, tablename, comment=None, db):
+    def commentTable(self, schema, tablename, db, comment=None):
         """Comment the table"""
         return ''
 

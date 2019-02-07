@@ -748,7 +748,6 @@ class PostGisDBConnector(DBConnector):
         else:
             db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
 
-
     def getComment(self, tablename, field, db):
         """Returns the comment for a field"""
         # SQL Query checking if a comment exists for the field

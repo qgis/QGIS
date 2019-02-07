@@ -342,7 +342,7 @@ class VLayerConnector(DBConnector):
         print("**unimplemented** runVacuum")
         return False
 
-    def commentTable(self, schema, tablename, comment=None, db):
+    def commentTable(self, schema, tablename, db, comment=None):
         """Comment the table"""
         return ''
 
