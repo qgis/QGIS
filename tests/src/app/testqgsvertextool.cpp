@@ -60,6 +60,8 @@ class TestQgsVertexTool : public QObject
     void testMoveEdge();
     void testAddVertex();
     void testAddVertexAtEndpoint();
+    void testAddVertexDoubleClick();
+    void testAddVertexDoubleClickWithShift();
     void testDeleteVertex();
     void testMoveMultipleVertices();
     void testMoveMultipleVertices2();
@@ -99,6 +101,18 @@ class TestQgsVertexTool : public QObject
     void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
     {
       mousePress( mapX, mapY, button, stateKey );
+      mouseRelease( mapX, mapY, button, stateKey );
+    }
+
+    void mouseDoubleClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    {
+      // this is how Qt passes the events: 1. mouse press, 2. mouse release, 3. mouse double-click, 4. mouse release
+
+      mouseClick( mapX, mapY, button, stateKey );
+
+      QgsMapMouseEvent e( mCanvas, QEvent::MouseButtonDblClick, mapToScreen( mapX, mapY ), button, button, stateKey );
+      mVertexTool->canvasDoubleClickEvent( &e );
+
       mouseRelease( mapX, mapY, button, stateKey );
     }
 
@@ -395,6 +409,70 @@ void TestQgsVertexTool::testAddVertexAtEndpoint()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+}
+
+void TestQgsVertexTool::testAddVertexDoubleClick()
+{
+  // add vertex in linestring with double-click and then place the point to the new location
+
+  mouseDoubleClick( 1, 1.5, Qt::LeftButton );
+  mouseClick( 2, 2, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 2 2, 1 3)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  // add vertex in polygon
+  mouseDoubleClick( 4, 2, Qt::LeftButton );
+  mouseClick( 3, 2.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 3 2.5, 4 1))" ) );
+
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  // no other unexpected changes happened
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
+  QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+
+}
+
+void TestQgsVertexTool::testAddVertexDoubleClickWithShift()
+{
+  // add vertex in linestring with shift + double-click to immediately place the new vertex
+
+  mouseDoubleClick( 1, 1.5, Qt::LeftButton, Qt::ShiftModifier );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 1.5, 1 3)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  // add vertex in polygon
+  mouseDoubleClick( 4, 2, Qt::LeftButton, Qt::ShiftModifier );
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 2, 4 1))" ) );
+
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  // no other unexpected changes happened
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
+  QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+
 }
 
 
