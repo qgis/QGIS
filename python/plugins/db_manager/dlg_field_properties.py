@@ -42,7 +42,6 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         for item in self.db.connector.fieldTypes():
             self.cboType.addItem(item)
 
-
         supportCom = self.db.supportsComment()
         if supportCom != True:
             self.label_6.setVisible(False)

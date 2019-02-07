@@ -193,7 +193,6 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
-
     def getSpatialInfo(self):
         """ returns tuple about PostGIS support:
                 - lib version

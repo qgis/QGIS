@@ -591,13 +591,13 @@ class SpatiaLiteDBConnector(DBConnector):
         self._execute_and_commit(sql)
         self._execute(None, sql)
 
-        sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
-        self._execute(None, sql)
+        # sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
+        # self._execute(None, sql)
 
-        sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
-        self._execute(None, sql)
+        # sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
+        # self._execute(None, sql)
 
-        self._commit()
+        # self._commit()
         return True
 
     def deleteTableColumn(self, table, column):

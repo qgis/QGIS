@@ -399,7 +399,7 @@ class PGTableField(TableField):
             if con.type == TableConstraint.TypePrimaryKey and self.num in con.columns:
                 self.primaryKey = True
                 break
-                
+
     def getComment(self):
         """Returns the comment for a field"""
         tab = self.table()
@@ -417,7 +417,6 @@ class PGTableField(TableField):
             return res # Return comment
         else:
             return ''
-
 
 
 class PGTableConstraint(TableConstraint):
