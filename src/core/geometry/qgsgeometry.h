@@ -585,7 +585,7 @@ class CORE_EXPORT QgsGeometry
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
      * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
-    //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
+    //TODO QGIS 4.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
     /**

@@ -179,7 +179,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * \returns filter expression
      * \since QGIS 2.16
      */
-    // TODO QGIS 3.0 - make pure virtual
+    // TODO QGIS 4.0 - make pure virtual
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
 
     /**

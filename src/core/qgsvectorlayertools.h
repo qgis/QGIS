@@ -52,7 +52,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param feature         Updated feature after adding will be written back to this
      * \returns                True in case of success, False if the operation failed/was aborted
      *
-     * TODO QGIS 3: remove const qualifier
+     * TODO QGIS 4: remove const qualifier
      */
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr ) const = 0;
 
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * \returns       True, if the editing session was started
      *
-     * TODO QGIS 3: remove const qualifier
+     * TODO QGIS 4: remove const qualifier
      */
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param allowCancel True if a cancel button should be offered
      * \returns            True if successful
      *
-     * TODO QGIS 3: remove const qualifier
+     * TODO QGIS 4: remove const qualifier
      */
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
 
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param layer       The layer to commit
      * \returns            True if successful
      *
-     * TODO QGIS 3: remove const qualifier
+     * TODO QGIS 4: remove const qualifier
      */
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \param errorMsg If given, it will contain the error message
      * \returns True if all features could be copied.
      *
-     * TODO QGIS 3: remove const qualifier
+     * TODO QGIS 4: remove const qualifier
      */
     virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr ) const;
 

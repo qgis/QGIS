@@ -76,7 +76,7 @@ email                : sherman at mrcc.com
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * \note not available in Python bindings
 */
-//TODO QGIS 3.0 - remove
+//TODO QGIS 4.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
