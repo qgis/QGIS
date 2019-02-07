@@ -71,6 +71,7 @@ class TestQgsLayoutTable : public QObject
     void cellStyles(); //test cell styles
     void cellStylesRender(); //test rendering cell styles
     void dataDefinedSource();
+    void wrappedText();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -1410,6 +1411,20 @@ void TestQgsLayoutTable::dataDefinedSource()
   table->refreshAttributes();
   QCOMPARE( table->contents().length(), 1 );
   QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
+}
+
+void TestQgsLayoutTable::wrappedText()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemAttributeTable *t = new QgsLayoutItemAttributeTable( &l );
+  t->setWrapBehavior( QgsLayoutTable::WrapText );
+
+  QFont f;
+  QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
+  QString wrapText = t->wrappedText( sourceText, 100 /*columnWidth*/, f );
+  //there should be no line break before the last word (bug #20546)
+  QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutTable )
