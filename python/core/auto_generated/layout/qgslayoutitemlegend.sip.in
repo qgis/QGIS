@@ -498,7 +498,13 @@ Returns the legend's renderer settings object.
     virtual void finalizeRestoreFromXml();
 
 
-    QgsExpressionContext createExpressionContext( bool replace = false) const;
+    QgsExpressionContext createExpressionContext( bool replace = false ) const;
+%Docstring
+Creates an expression context
+
+:param replace: replace the object's current expression context or create a new one
+\since: 3.8
+%End
 
 
   public slots:
