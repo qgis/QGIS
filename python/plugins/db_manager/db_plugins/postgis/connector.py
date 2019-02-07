@@ -742,7 +742,7 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
-    def commentTable(self, schema, tablename, comment=None, db):
+    def commentTable(self, schema, tablename, db, comment=None):
         if comment == None:
             db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
         else:
