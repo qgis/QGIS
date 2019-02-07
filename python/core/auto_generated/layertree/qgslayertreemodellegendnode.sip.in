@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tosip/qgslayertreemodellegendnode.h                         *
+ * src/core/layertree/qgslayertreemodellegendnode.h                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -484,7 +484,7 @@ Construct the node using QgsDataDefinedSizeLegend as definition of the node's ap
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/tosip/qgslayertreemodellegendnode.h                         *
+ * src/core/layertree/qgslayertreemodellegendnode.h                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
