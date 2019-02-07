@@ -925,7 +925,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       if ( ltmln )
       {
         if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
-          name = synode->evaluateLabel( context, name );
+          name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
         return name;
       }
       else
