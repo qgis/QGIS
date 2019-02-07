@@ -39,6 +39,9 @@ A XYZ map service is also available for multithreading testing:
 
   ?MAP=/path/to/projects.qgs&SERVICE=XYZ&X=1&Y=0&Z=1&LAYERS=world
 
+Note that multi threading in QGIS server is not officially supported and
+it is not supposed to work in any case
+
 Set MULTITHREADING environment variable to 1 to activate.
 
 
