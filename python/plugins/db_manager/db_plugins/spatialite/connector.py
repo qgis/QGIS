@@ -571,17 +571,11 @@ class SpatiaLiteDBConnector(DBConnector):
         c.execute('VACUUM')
         self.connection.isolation_level = '' # reset to default isolation
 
-    def commentTable(self, schema, tablename, comment):
+    def commentTable(self, schema, tablename, comment=None, db):
         """Comment the table"""
         return ''
 
-    def commentTable(self, schema, tablename, comment):
-        return ''
-
-    def unCommentTable(self, schema, tablename):
-        return ''
-
-    def getComment(self, tab, field, db):
+    def getComment(self, tablename, field, db):
         """Returns the comment for a field"""
         return ''
 
@@ -591,13 +585,13 @@ class SpatiaLiteDBConnector(DBConnector):
         self._execute_and_commit(sql)
         self._execute(None, sql)
 
-        # sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
-        # self._execute(None, sql)
+        sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
+        self._execute(None, sql)
 
-        # sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
-        # self._execute(None, sql)
+        sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
+        self._execute(None, sql)
 
-        # self._commit()
+        self._commit()
         return True
 
     def deleteTableColumn(self, table, column):

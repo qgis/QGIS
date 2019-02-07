@@ -1307,17 +1307,11 @@ class OracleDBConnector(DBConnector):
         # Unsupported in Oracle
         pass
 
-    def commentTable(self, schema, tablename, comment):
+    def commentTable(self, schema, tablename, comment=None, db):
         """Comment the table"""
         return ''
 
-    def commentTable(self, schema, tablename, comment):
-        return ''
-
-    def unCommentTable(self, schema, tablename):
-        return ''
-
-    def getComment(self, tab, field, db):
+    def getComment(self, tablename, field, db):
         """Returns the comment for a field"""
         return ''
 

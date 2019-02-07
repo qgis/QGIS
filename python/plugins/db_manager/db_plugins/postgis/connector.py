@@ -742,18 +742,19 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
-    def commentTable(self, schema, tablename, comment, db):
-        db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
+    def commentTable(self, schema, tablename, comment=None, db):
+        if comment = None:
+            db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
+        else:
+            db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
 
-    def unCommentTable(self, schema, tablename, db):
-        db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
 
-    def getComment(self, tab, field, db):
+    def getComment(self, tablename, field, db):
         """Returns the comment for a field"""
         # SQL Query checking if a comment exists for the field
-        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab, field)
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
         # SQL Query that return the comment of the field
-        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab, field)
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
         c = db.connector._execute(None, sql_cpt) # Execute Check query
         res = db.connector._fetchone(c)[0] # Store result
         if res == 1:
