@@ -196,12 +196,15 @@ class CORE_EXPORT QgsGeometry
      * Sets the underlying geometry store. Ownership of geometry is transferred.
      *
      * \note In QGIS 2.x this method was named setGeometry().
+     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+     *       Using this method will confuse Python's memory management and type information system.
+     *       Better create a new QgsGeometry object instead.
      *
      * \see get()
      * \see constGet()
      * \since QGIS 3.0
      */
-    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_DEPRECATED;
 
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry

@@ -125,13 +125,19 @@ and a deep copy. Where possible, use constGet() instead.
 .. versionadded:: 3.0
 %End
 
-    void set( QgsAbstractGeometry *geometry /Transfer/ );
+    void set( QgsAbstractGeometry *geometry /Transfer/ ) /Deprecated/;
 %Docstring
 Sets the underlying geometry store. Ownership of geometry is transferred.
 
 .. note::
 
    In QGIS 2.x this method was named setGeometry().
+
+.. note::
+
+   This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+   Using this method will confuse Python's memory management and type information system.
+   Better create a new QgsGeometry object instead.
 
 .. seealso:: :py:func:`get`
 
