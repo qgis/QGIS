@@ -899,7 +899,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   QString name;
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node) ? QgsLayerTree::toLayer( node ), nullptr;
+  QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node) ? QgsLayerTree::toLayer( node ) : nullptr;
 
   if ( ( nodeLayer && !ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
