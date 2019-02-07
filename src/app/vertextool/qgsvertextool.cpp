@@ -479,6 +479,14 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // so we need to cancel edge moving before we start dragging new vertex
     stopDragging();
     startDraggingAddVertex( m );
+
+    if ( e->modifiers() & Qt::ShiftModifier )
+    {
+      // if this was shift + double click, immediately place the vertex
+      moveVertex( m.point(), &m );
+      // force update of rubber bands
+      mouseMoveNotDragging( e );
+    }
   }
   else if ( mSelectionRect )
   {
