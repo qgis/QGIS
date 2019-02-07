@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsexpressioncontext.h                                *
+ * src/core/qgsexpressioncontext.h                                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -1099,7 +1099,7 @@ Registers all known core functions provided by QgsExpressionContextScope objects
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsexpressioncontext.h                                *
+ * src/core/qgsexpressioncontext.h                                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
