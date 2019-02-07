@@ -899,12 +899,12 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   QString name;
   QgsLayerTreeNode *node = index2node( index );
   QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
-  if ( ( QgsLayerTree::isLayer( node ) && !ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
-  {
-    //finding the first key that is stored
-    QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-    QString name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+  QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node) ? QgsLayerTree::toLayer( node ), nullptr;
 
+  if ( ( nodeLayer && !ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+  {
+    //finding the first label that is stored
+    name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     if ( name.isEmpty() )
       name = nodeLayer->name();
     if ( name.isEmpty() )
@@ -915,7 +915,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-      
+
       if ( vlayer && vlayer->featureCount() >= 0 )
       {
         Q_UNUSED( ltmln );
@@ -924,7 +924,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       }
     }
   }
-  if ( ( !name.isNull() || ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
+  if ( ( nodeLayer || ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     QgsExpressionContext context = ( mLayoutLegendContext ) ? QgsExpressionContext( *mLayoutLegendContext ) : QgsExpressionContext();
 
@@ -942,7 +942,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
         name = synode->evaluateLabel( context, name );
     }
-  return name;
+    return name;
   }
   Q_UNUSED( name );
   return QgsLayerTreeModel::data( index, role );
