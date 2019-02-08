@@ -865,7 +865,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore &featureStore );
-    void loadGDALSublayers( const QString &uri, const QStringList &list );
+    QList<QgsMapLayer *> loadGDALSublayers( const QString &uri, const QStringList &list );
 
     //! Deletes the selected attributes for the currently selected vector layer
     void deleteSelected( QgsMapLayer *layer = nullptr, QWidget *parent = nullptr, bool checkFeaturesVisible = false );
@@ -1776,9 +1776,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool askUserForZipItemLayers( const QString &path );
 
     /**
-     * This method will open a dialog so the user can select GDAL sublayers to load
+     * This method will open a dialog so the user can select GDAL sublayers to load,
+     * and then returns a list of these layers.
      */
-    void askUserForGDALSublayers( QgsRasterLayer *layer );
+    QList< QgsMapLayer * > askUserForGDALSublayers( QgsRasterLayer *layer );
 
     /**
      * This method will verify if a GDAL layer contains sublayers
@@ -1805,6 +1806,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a mesh layer - this is the generic function which takes all parameters
     QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
                                        const QString &providerKey, bool guiWarning = true );
+
+    bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
+    QgsVectorLayer *addVectorLayerPrivate( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey, bool guiWarning = true );
+
 
     /**
      * Add the current project to the recently opened/saved projects list
