@@ -112,7 +112,7 @@ QMenu::item:checked
     text-decoration:underline;
 }
 
-QWidget:disabled
+QWidget:disabled, QWidget:editable:disabled
 {
     color: @itemalternativebackground;
     background-color: @background;
