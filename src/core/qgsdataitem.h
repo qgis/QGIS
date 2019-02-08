@@ -591,16 +591,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    enum Column
-    {
-      Name,
-      Size,
-      Date,
-      Permissions,
-      Owner,
-      Group,
-      Type
-    };
 
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
