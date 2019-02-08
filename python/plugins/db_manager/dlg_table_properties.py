@@ -51,7 +51,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.db = self.table.database()
 
         supportCom = self.db.supportsComment()
-        if not supportCom :
+        if not supportCom:
             self.tabs.removeTab(3)
 
         m = TableFieldsModel(self)

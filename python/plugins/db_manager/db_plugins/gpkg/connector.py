@@ -620,7 +620,6 @@ class GPKGDBConnector(DBConnector):
         """ run vacuum on the db """
         self._execute_and_commit("VACUUM")
 
-
     def addTableColumn(self, table, field_def):
         """ add a column to table """
 
