@@ -146,6 +146,17 @@ class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
         myTestResult, myMessage = checker.testLayout()
         assert myTestResult, myMessage
 
+    def testEndArrow(self):
+        self.polyline.setEndMarker(QgsLayoutItemPolyline.ArrowHead)
+        self.polyline.setArrowHeadWidth(30.0)
+
+        checker = QgsLayoutChecker('composerpolyline_endArrow', self.layout)
+        checker.setControlPathPrefix("composer_polyline")
+        myTestResult, myMessage = checker.testLayout()
+        assert myTestResult, myMessage
+
+        self.polyline.setEndMarker(QgsLayoutItemPolyline.NoMarker)
+
     def testRemoveNode(self):
         """Test removeNode method"""
 
