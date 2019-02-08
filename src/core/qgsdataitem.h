@@ -611,6 +611,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
     QWidget *paramWidget() override SIP_FACTORY;
+    bool hasDragEnabled() const override { return true; }
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
