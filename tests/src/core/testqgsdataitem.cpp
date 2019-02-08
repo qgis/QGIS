@@ -114,13 +114,13 @@ void TestQgsDataItem::testValid()
 void TestQgsDataItem::testDirItem()
 {
   std::unique_ptr< QgsDirectoryItem > dirItem = qgis::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
-  QCOMPARE( dirItem->dirPath(), TEST_DATA_DIR );
+  QCOMPARE( dirItem->dirPath(), QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
 
   QVERIFY( dirItem->hasDragEnabled() );
   QgsMimeDataUtils::Uri mime = dirItem->mimeUri();
   QVERIFY( mime.isValid() );
-  QCOMPARE( mime.uri, TEST_DATA_DIR );
+  QCOMPARE( mime.uri, QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( mime.layerType, QStringLiteral( "directory" ) );
 }
 
