@@ -742,25 +742,25 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
-    def commentTable(self, schema, tablename, db, comment=None):
-        if comment == None:
-            db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
+    def commentTable(self, schema, tablename, comment=None):
+        if comment is None:
+            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
         else:
-            db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
+            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
 
-    def getComment(self, tablename, field, db):
+    def getComment(self, tablename, field):
         """Returns the comment for a field"""
         # SQL Query checking if a comment exists for the field
         sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
         # SQL Query that return the comment of the field
         sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
-        c = db.connector._execute(None, sql_cpt) # Execute Check query
-        res = db.connector._fetchone(c)[0] # Store result
+        c = self._execute(None, sql_cpt) # Execute Check query
+        res = self._fetchone(c)[0] # Store result
         if res == 1:
             # When a comment exists
-            c = db.connector._execute(None, sql) # Execute query
-            res = db.connector._fetchone(c)[0] # Store result
-            db.connector._close_cursor(c) # Close cursor
+            c = self._execute(None, sql) # Execute query
+            res = self._fetchone(c)[0] # Store result
+            self._close_cursor(c) # Close cursor
             return res # Return comment
         else:
             return ''

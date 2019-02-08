@@ -341,7 +341,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             schem = self.table.schema().name
             tab = self.table.name
             com = self.viewComment.text()
-            self.db.connector.commentTable(schem, tab, self.db, com)
+            self.db.connector.commentTable(schem, tab, com)
         except DbError as e:
             DlgDbError.showError(e, self)
             return
@@ -354,7 +354,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             schem = self.table.schema().name
             tab = self.table.name
-            self.db.connector.commentTable(schem, tab, self.db)
+            self.db.connector.commentTable(schem, tab)
         except DbError as e:
             DlgDbError.showError(e, self)
             return

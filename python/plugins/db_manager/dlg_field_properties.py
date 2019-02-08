@@ -67,7 +67,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         print(tab)
         field = fld.name
         print(field)
-        res = self.db.connector.getComment(tab, field, self.db)
+        res = self.db.connector.getComment(tab, field)
         print(res)
         self.editCom.setText(res) # Set comment value
         #except:

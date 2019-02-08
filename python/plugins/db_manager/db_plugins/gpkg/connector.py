@@ -620,11 +620,11 @@ class GPKGDBConnector(DBConnector):
         """ run vacuum on the db """
         self._execute_and_commit("VACUUM")
 
-    def commentTable(self, schema, tablename, db, comment=None):
+    def commentTable(self, schema, tablename, comment=None):
         """Comment the table"""
         return ''
 
-    def getComment(self, tablename, field, db):
+    def getComment(self, tablename, field):
         """Returns the comment for a field"""
         return ''
 
