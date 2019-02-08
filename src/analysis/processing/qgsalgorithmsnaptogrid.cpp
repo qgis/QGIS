@@ -154,6 +154,11 @@ QgsFeatureList QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature
   return QgsFeatureList() << f;
 }
 
+QgsProcessingFeatureSource::Flag QgsSnapToGridAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 ///@endcond
 
 
