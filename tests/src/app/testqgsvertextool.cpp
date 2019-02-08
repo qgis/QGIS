@@ -547,6 +547,9 @@ void TestQgsVertexTool::testMoveMultipleVertices()
   mouseClick( 1, 1, Qt::LeftButton );
   mouseClick( 0, 0, Qt::LeftButton );
 
+  // extra click away from everything to clear the selection
+  mouseClick( 8, 8, Qt::LeftButton );
+
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0 0, 0 2)" ) );
 

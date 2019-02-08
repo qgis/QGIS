@@ -475,14 +475,14 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     mNewVertexFromDoubleClick.reset();
 
-    // dragging of edges and double clicking on edges to add vertex are slightly overlapping
+    // dragging of edges and double-clicking on edges to add vertex are slightly overlapping
     // so we need to cancel edge moving before we start dragging new vertex
     stopDragging();
     startDraggingAddVertex( m );
 
     if ( e->modifiers() & Qt::ShiftModifier )
     {
-      // if this was shift + double click, immediately place the vertex
+      // if this was shift + double-click, immediately place the vertex
       moveVertex( m.point(), &m );
       // force update of rubber bands
       mouseMoveNotDragging( e );
