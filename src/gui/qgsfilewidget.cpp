@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsfileutils.h"
+#include "qgsmimedatautils.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
@@ -429,39 +430,54 @@ void QgsFileDropEdit::setFilters( const QString &filters )
 
 QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 {
+  QStringList rawPaths;
   QStringList paths;
   if ( event->mimeData()->hasUrls() )
   {
-    Q_FOREACH ( const QUrl &url, event->mimeData()->urls() )
+    const QList< QUrl > urls = event->mimeData()->urls();
+    rawPaths.reserve( urls.count() );
+    for ( const QUrl &url : urls )
     {
-      QFileInfo file( url.toLocalFile() );
-      switch ( mStorageMode )
+      rawPaths.append( url.toLocalFile() );
+    }
+  }
+
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+  for ( const QgsMimeDataUtils::Uri &u : lst )
+  {
+    rawPaths.append( u.uri );
+  }
+
+  for ( const QString &path : qgis::as_const( rawPaths ) )
+  {
+    QFileInfo file( path );
+    switch ( mStorageMode )
+    {
+      case QgsFileWidget::GetFile:
+      case QgsFileWidget::GetMultipleFiles:
+      case QgsFileWidget::SaveFile:
       {
-        case QgsFileWidget::GetFile:
-        case QgsFileWidget::GetMultipleFiles:
-        case QgsFileWidget::SaveFile:
-        {
-          if ( file.isFile() && ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
-            paths.append( file.filePath() );
+        if ( file.isFile() && ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
+          paths.append( file.filePath() );
 
-          break;
+        break;
+      }
+
+      case QgsFileWidget::GetDirectory:
+      {
+        if ( file.isDir() )
+          paths.append( file.filePath() );
+        else if ( file.isFile() )
+        {
+          // folder mode, but a file dropped. So get folder name from file
+          paths.append( file.absolutePath() );
         }
 
-        case QgsFileWidget::GetDirectory:
-        {
-          if ( file.isDir() )
-            paths.append( file.filePath() );
-          else if ( file.isFile() )
-          {
-            // folder mode, but a file dropped. So get folder name from file
-            paths.append( file.absolutePath() );
-          }
-
-          break;
-        }
+        break;
       }
     }
   }
+
   if ( paths.size() > 1 )
   {
     return QStringLiteral( "\"%1\"" ).arg( paths.join( QStringLiteral( "\" \"" ) ) );
