@@ -17,6 +17,7 @@
 #include "qgstest.h"
 
 #include "qgsfilewidget.h"
+#include "qgsmimedatautils.h"
 #include <memory>
 
 class TestQgsFileWidget: public QObject
@@ -103,6 +104,20 @@ void TestQgsFileWidget::testDroppedFiles()
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
 
+  // also should support files dragged from browser
+  mime->setUrls( QList<QUrl>() );
+  QgsMimeDataUtils::Uri uri;
+  uri.uri = TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" );
+  QgsMimeDataUtils::UriList uriList;
+  uriList << uri;
+  mime.reset( QgsMimeDataUtils::encodeUriList( uriList ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
+
+  mime.reset( new QMimeData() );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
   // with file filter
   w->setFilter( QStringLiteral( "Data (*.shp)" ) );
   w->setFilePath( QString() );
