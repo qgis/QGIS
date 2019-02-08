@@ -462,8 +462,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
   mSqliteHandle = mHandle->handle();
   if ( mSqliteHandle )
   {
-    QStringList pragmaList = anUri.params( QStringLiteral( "pragma" ) );
-    Q_FOREACH ( const QString &pragma, pragmaList )
+    const QStringList pragmaList = anUri.params( QStringLiteral( "pragma" ) );
+    for ( const auto &pragma : pragmaList )
     {
       char *errMsg = nullptr;
       int ret = sqlite3_exec( mSqliteHandle, ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
@@ -882,8 +882,8 @@ void QgsSpatiaLiteProvider::fetchConstraints()
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {
-      QString matched = match.captured( 1 );
-      Q_FOREACH ( QString field, matched.split( ',' ) )
+      const QString matched = match.captured( 1 );
+      for ( auto &field : matched.split( ',' ) )
       {
         field = field.trimmed();
         QString fieldName = field.left( field.indexOf( ' ' ) );
@@ -904,7 +904,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
   }
   sqlite3_free_table( results );
 
-  Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
+  for ( const auto fieldIdx : qgis::as_const( mPrimaryKeyAttrs ) )
   {
     QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
@@ -5682,7 +5682,7 @@ QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes() const
 QList<QgsVectorLayer *> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName )
 {
   QList<QgsVectorLayer *> result;
-  Q_FOREACH ( QgsVectorLayer *layer, layers )
+  for ( auto *layer : layers )
   {
     const QgsSpatiaLiteProvider *slProvider = qobject_cast<QgsSpatiaLiteProvider *>( layer->dataProvider() );
     if ( slProvider && slProvider->mSqlitePath == connectionInfo && slProvider->mTableName == tableName )
@@ -5717,7 +5717,7 @@ QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLaye
       {
         // first reference field => try to find if we have layers for the referenced table
         const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mSqlitePath, refTable );
-        Q_FOREACH ( const QgsVectorLayer *foundLayer, foundLayers )
+        for ( const auto *foundLayer : foundLayers )
         {
           QgsRelation relation;
           relation.setName( name );
