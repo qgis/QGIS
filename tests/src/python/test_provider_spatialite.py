@@ -953,7 +953,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self._aliased_sql_helper(dbname)
 
     def testTextPks(self):
-        """Test regression when retrieving fetures from tables with text PKs, see #21176"""
+        """Test regression when retrieving features from tables with text PKs, see #21176"""
 
         # create test db
         dbname = os.path.join(tempfile.gettempdir(), "test_text_pks.sqlite")
