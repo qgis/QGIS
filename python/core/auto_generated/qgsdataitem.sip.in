@@ -533,8 +533,19 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 
     void addChild( QgsDataItem *item /Transfer/ );
 
-    static QIcon iconDir(); // shared icon: open/closed directory
-    static QIcon iconDataCollection(); // default icon for data collection
+    static QIcon iconDir();
+%Docstring
+Returns the standard browser directory icon.
+
+.. seealso:: :py:func:`iconDataCollection`
+%End
+
+    static QIcon iconDataCollection();
+%Docstring
+Returns the standard browser data collection icon.
+
+.. seealso:: :py:func:`iconDir`
+%End
 
   protected:
 
@@ -593,6 +604,10 @@ Constructor.
 
 
     QString dirPath() const;
+%Docstring
+Returns the full path to the directory the item represents.
+%End
+
     virtual bool equal( const QgsDataItem *other );
 
     virtual QIcon icon();

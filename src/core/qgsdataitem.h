@@ -556,8 +556,17 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
-    static QIcon iconDir(); // shared icon: open/closed directory
-    static QIcon iconDataCollection(); // default icon for data collection
+    /**
+     * Returns the standard browser directory icon.
+     * \see iconDataCollection()
+     */
+    static QIcon iconDir();
+
+    /**
+     * Returns the standard browser data collection icon.
+     * \see iconDir()
+     */
+    static QIcon iconDataCollection();
 
   protected:
 
@@ -607,7 +616,11 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    /**
+     * Returns the full path to the directory the item represents.
+     */
     QString dirPath() const { return mDirPath; }
+
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
     QWidget *paramWidget() override SIP_FACTORY;

@@ -67,6 +67,7 @@ Gets mesh layer from uri if possible, otherwise returns None and error is set
       QString layerType;
 
       QString providerKey;
+
       QString name;
       QString uri;
       QStringList supportedCrs;

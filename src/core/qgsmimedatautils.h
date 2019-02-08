@@ -72,16 +72,30 @@ class CORE_EXPORT QgsMimeDataUtils
        */
       QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
 
-      //! Type of URI. Recognized types: "vector" / "raster" / "mesh" / "plugin" / "custom" / "project"
+      /**
+       * Type of URI.
+       *
+       * Recognized types include
+       * - "vector": vector layers
+       * - "raster": raster layers
+       * - "mesh": mesh layers
+       * - "plugin": plugin layers
+       * - "custom": custom types
+       * - "project": QGS/QGZ project file
+       * - "directory": directory path
+       *
+       * Mime data from plugins may use additional custom layer types.
+       */
       QString layerType;
 
       /**
        * For "vector" / "raster" type: provider id.
        * For "plugin" type: plugin layer type name.
        * For "custom" type: key of its QgsCustomDropHandler
-       * For "project" type: unused
+       * For "project" and "directory" types: unused
        */
       QString providerKey;
+
       //! Human readable name to be used e.g. in layer tree
       QString name;
       //! Identifier of the data source recognized by its providerKey
