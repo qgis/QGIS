@@ -18,6 +18,8 @@
 
 #include "qgsfilewidget.h"
 #include "qgsmimedatautils.h"
+#include "qgsdataitem.h"
+#include "qgsbrowsermodel.h"
 #include <memory>
 
 class TestQgsFileWidget: public QObject
@@ -115,6 +117,15 @@ void TestQgsFileWidget::testDroppedFiles()
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
 
+  QgsBrowserModel m;
+  m.initialize();
+  QgsLayerItem *layerItem = new QgsLayerItem( nullptr, QStringLiteral( "Test" ), QString(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.txt" ), QgsLayerItem::Mesh, "mdal" );
+  m.driveItems().first()->addChild( layerItem );
+  mime.reset( m.mimeData( QModelIndexList() << m.findItem( layerItem ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.txt" ) );
+
   mime.reset( new QMimeData() );
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
   event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
@@ -156,6 +167,13 @@ void TestQgsFileWidget::testDroppedFiles()
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) );
 
+  // integration test - dropping a directory item's mime data
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR + QStringLiteral( "/mesh" ) );
+  m.driveItems().first()->addChild( dirItem );
+  mime.reset( m.mimeData( QModelIndexList() << m.findItem( dirItem ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh" ) );
 }
 
 void TestQgsFileWidget::testMultipleFiles()
