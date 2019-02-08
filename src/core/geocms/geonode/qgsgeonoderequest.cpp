@@ -26,6 +26,7 @@
 #include <QJsonObject>
 #include <QUrl>
 #include <QDomDocument>
+#include <QRegularExpression>
 
 QgsGeoNodeRequest::QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent )
   : QObject( parent )
@@ -272,9 +273,18 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
   qint16 minorVersion;
   if ( jsonVariantMap.contains( QStringLiteral( "geonode_version" ) ) )
   {
-    const QStringList geonodeVersionSplit = jsonVariantMap.value( QStringLiteral( "geonode_version" ) ).toString().split( '.' );
-    majorVersion = geonodeVersionSplit.at( 0 ).toInt();
-    minorVersion = geonodeVersionSplit.at( 1 ).toInt();
+    QRegularExpression re( "((\\d+)(\\.\\d+))" );
+    QRegularExpressionMatch match = re.match( jsonVariantMap.value( QStringLiteral( "geonode_version" ) ).toString() );
+    if ( match.hasMatch() )
+    {
+      const QStringList geonodeVersionSplit = match.captured( 0 ).split( '.' );
+      majorVersion = geonodeVersionSplit.at( 0 ).toInt();
+      minorVersion = geonodeVersionSplit.at( 1 ).toInt();
+    }
+    else
+    {
+      return layers;
+    }
   }
   else
   {
