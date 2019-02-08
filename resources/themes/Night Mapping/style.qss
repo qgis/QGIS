@@ -223,7 +223,7 @@ QComboBox {
     border-style: solid;
     border: 1px solid #1e1e1e; 
     border-radius: 0px;
-    padding: 0.12em 1.2em 0.12em 0.12em;
+    padding: 0.12em 1.2em 0.12em 0.2em;
 }
 
 
