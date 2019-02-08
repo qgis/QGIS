@@ -435,10 +435,31 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
     Q_FOREACH ( const QUrl &url, event->mimeData()->urls() )
     {
       QFileInfo file( url.toLocalFile() );
-      if ( ( mStorageMode != QgsFileWidget::GetDirectory && file.isFile() &&
-             ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
-           || ( mStorageMode == QgsFileWidget::GetDirectory && file.isDir() ) )
-        paths.append( file.filePath() );
+      switch ( mStorageMode )
+      {
+        case QgsFileWidget::GetFile:
+        case QgsFileWidget::GetMultipleFiles:
+        case QgsFileWidget::SaveFile:
+        {
+          if ( file.isFile() && ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
+            paths.append( file.filePath() );
+
+          break;
+        }
+
+        case QgsFileWidget::GetDirectory:
+        {
+          if ( file.isDir() )
+            paths.append( file.filePath() );
+          else if ( file.isFile() )
+          {
+            // folder mode, but a file dropped. So get folder name from file
+            paths.append( file.absolutePath() );
+          }
+
+          break;
+        }
+      }
     }
   }
   if ( paths.size() > 1 )
