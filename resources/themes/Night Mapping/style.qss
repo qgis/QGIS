@@ -244,6 +244,10 @@ QComboBox:on {
     selection-color: @text;
 }
 
+QComboBox::icon {
+    padding-left:0.3em;
+}
+
 QComboBox:editable {
     background-color: @darkgradient;
 }
