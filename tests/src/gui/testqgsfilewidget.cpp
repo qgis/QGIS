@@ -126,6 +126,13 @@ void TestQgsFileWidget::testDroppedFiles()
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.txt" ) );
 
+  // plain text should also be permitted
+  mime = qgis::make_unique< QMimeData >();
+  mime->setText( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
+
   mime.reset( new QMimeData() );
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
   event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
@@ -183,11 +190,12 @@ void TestQgsFileWidget::testMultipleFiles()
 
   std::unique_ptr< QMimeData > mime( new QMimeData() );
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) )
-                 << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+                 << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/elev.gpx" ) ) );
   std::unique_ptr< QDropEvent > event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
 
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QStringLiteral( "\"%1\" \"%1\"" ).arg( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QStringLiteral( "\"%1\" \"%2\"" ).arg( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) )
+            .arg( TEST_DATA_DIR + QStringLiteral( "/elev.gpx" ) ) );
 }
 
 
