@@ -1021,6 +1021,15 @@ QWidget *QgsDirectoryItem::paramWidget()
   return new QgsDirectoryParamWidget( mPath );
 }
 
+QgsMimeDataUtils::Uri QgsDirectoryItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "directory" );
+  u.name = mName;
+  u.uri = mDirPath;
+  return u;
+}
+
 QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *parent )
   : QTreeWidget( parent )
 {
