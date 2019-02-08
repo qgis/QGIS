@@ -50,6 +50,10 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
         self.db = self.table.database()
 
+        supportCom = self.db.supportsComment()
+        if not supportCom:
+            self.tabs.removeTab(3)
+
         m = TableFieldsModel(self)
         self.viewFields.setModel(m)
 
@@ -101,7 +105,6 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
     def populateFields(self):
         """ load field information from database """
-
         m = self.viewFields.model()
         m.clear()
 
@@ -334,17 +337,13 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
     def createComment(self):
         """Adds a comment to the selected table"""
-
         try:
-            #Using the db connector, executing de SQL query Comment on table
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(self.table.schema().name, self.table.name, self.viewComment.text()))
+            schem = self.table.schema().name
+            tab = self.table.name
+            com = self.viewComment.text()
+            self.db.connector.commentTable(schem, tab, com)
         except DbError as e:
             DlgDbError.showError(e, self)
-            return
-        except Exception as e:
-            # This is an ugly patch, but the comments PR https://github.com/qgis/QGIS/pull/8831 added
-            # support for postgres only and broke all the others :(
-            QMessageBox.information(self, self.tr("Add comment"), self.tr("Comments are not supported for this database."))
             return
         self.refresh()
         #Display successful message
@@ -352,17 +351,12 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
     def deleteComment(self):
         """Drops the comment on the selected table"""
-
         try:
-            #Using the db connector, executing de SQL query Comment on table using the NULL definition
-            self.db.connector._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(self.table.schema().name, self.table.name))
+            schem = self.table.schema().name
+            tab = self.table.name
+            self.db.connector.commentTable(schem, tab)
         except DbError as e:
             DlgDbError.showError(e, self)
-            return
-        except Exception as e:
-            # This is an ugly patch, but the comments PR https://github.com/qgis/QGIS/pull/8831 added
-            # support for postgres only and broke all the others :(
-            QMessageBox.information(self, self.tr("Add comment"), self.tr("Comments are not supported for this database."))
             return
         self.refresh()
         #Refresh line edit, put a void comment

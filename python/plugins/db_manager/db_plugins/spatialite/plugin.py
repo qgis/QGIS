@@ -175,6 +175,9 @@ class SLDatabase(Database):
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
         return u""" "%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
 
+    def supportsComment(self):
+        return False
+
 
 class SLTable(Table):
 
@@ -293,10 +296,6 @@ class SLTableField(TableField):
         TableField.__init__(self, table)
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default
-
-    def getComment(self):
-        """Returns the comment for a field"""
-        return ''
 
 
 class SLTableIndex(TableIndex):

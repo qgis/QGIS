@@ -132,6 +132,9 @@ class FakeDatabase(Database):
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
         return '"%s"._search_frame_ = "%s"."%s"' % (src_table, dest_table, dest_column)
 
+    def supportsComment(self):
+        return False
+
 
 class LTable(Table):
 
@@ -192,7 +195,3 @@ class LTableField(TableField):
         TableField.__init__(self, table)
         self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default
-
-    def getComment(self):
-        """Returns the comment for a field"""
-        return ''
