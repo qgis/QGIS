@@ -844,7 +844,24 @@ of any layers these layers will also be deleted.
 .. versionadded:: 1.8
 %End
 
+
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Remove a set of layers from the registry.
+
+The specified layers will be removed from the registry. If the registry has ownership
+of any layers these layers will also be deleted.
+
+:param layers: A list of layers to remove. Null pointers are ignored.
+
+.. note::
+
+   As a side-effect the QgsProject instance is marked dirty.
+
+.. seealso:: :py:func:`removeMapLayer`
+
+.. seealso:: :py:func:`removeAllMapLayers`
+%End
 
     void removeMapLayer( const QString &layerId );
 %Docstring
@@ -1323,7 +1340,14 @@ Emitted after a layer was removed from the registry.
 .. seealso:: :py:func:`layerWillBeRemoved`
 %End
 
+
     void removeAll();
+%Docstring
+Emitted when all layers are removed, before layersWillBeRemoved() and
+layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
+layerWillBeRemoved() signals will still be emitted following this signal.
+You can use this signal to do easy (and fast) cleanup.
+%End
 
     void layersAdded( const QList<QgsMapLayer *> &layers );
 %Docstring

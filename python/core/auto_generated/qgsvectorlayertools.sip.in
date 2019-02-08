@@ -27,6 +27,7 @@ in your application.
   public:
     QgsVectorLayerTools();
 
+
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0 ) const = 0;
 %Docstring
 This method should/will be called, whenever a new feature will be added to the layer
@@ -37,9 +38,8 @@ This method should/will be called, whenever a new feature will be added to the l
 
 :return: - True in case of success, False if the operation failed/was aborted
          - feature: Updated feature after adding will be written back to this
-
-TODO QGIS 3: remove const qualifier
 %End
+
 
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
 %Docstring
@@ -50,9 +50,8 @@ If successful layer->startEditing() will be called and true returned.
 :param layer: The layer on which to start an edit session
 
 :return: True, if the editing session was started
-
-TODO QGIS 3: remove const qualifier
 %End
+
 
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
 %Docstring
@@ -63,9 +62,8 @@ Appropriate dialogs should be shown like
 :param allowCancel: True if a cancel button should be offered
 
 :return: True if successful
-
-TODO QGIS 3: remove const qualifier
 %End
+
 
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
 %Docstring
@@ -74,9 +72,8 @@ Should be called, when the features should be committed but the editing session 
 :param layer: The layer to commit
 
 :return: True if successful
-
-TODO QGIS 3: remove const qualifier
 %End
+
 
     virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
@@ -89,8 +86,6 @@ Copy and move features with defined translation.
 
 :return: - True if all features could be copied.
          - errorMsg: If given, it will contain the error message
-
-TODO QGIS 3: remove const qualifier
 %End
 
 };
