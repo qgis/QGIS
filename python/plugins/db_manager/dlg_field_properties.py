@@ -52,7 +52,6 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.buttonBox.accepted.connect(self.onOK)
 
     def setField(self, fld):
-        print('ok')
         if fld is None:
             return
         self.editName.setText(fld.name)
@@ -62,16 +61,10 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.chkNull.setChecked(not fld.notNull)
         if fld.hasDefault:
             self.editDefault.setText(fld.default)
-        print(self.table)
         tab = self.table.name
-        print(tab)
         field = fld.name
-        print(field)
         res = self.db.connector.getComment(tab, field)
-        print(res)
         self.editCom.setText(res) # Set comment value
-        #except:
-        #    self.editCom.setEnabled(False)
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld
