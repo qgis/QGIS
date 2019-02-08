@@ -2770,9 +2770,15 @@ QString createFilters( const QString &type )
         sFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), QStringLiteral( "*.fdd" ) );
         sExtensions << QStringLiteral( "fdd" );
       }
+      else if ( driverName.startsWith( QLatin1String( "GeoJSONSeq" ) ) )
+      {
+        sProtocolDrivers += QLatin1String( "GeoJSON - Newline Delimited;" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON Newline Delimited JSON" ), QStringLiteral( "*.geojsonl *.geojsons *.nlgeojson *.json" ) );
+        sExtensions << QStringLiteral( "geojsonl" ) << QStringLiteral( "geojsons" ) << QStringLiteral( "nlgeojson" ) << QStringLiteral( "json" );
+      }
       else if ( driverName.startsWith( QLatin1String( "GeoJSON" ) ) )
       {
-        sProtocolDrivers += QLatin1String( "GeoJSON,GeoJSON;" );
+        sProtocolDrivers += QLatin1String( "GeoJSON;" );
         sFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), QStringLiteral( "*.geojson" ) );
         sExtensions << QStringLiteral( "geojson" );
       }

@@ -256,7 +256,8 @@ QString createProtocolURI( const QString &type, const QString &url,  const QStri
     uri = url;
     uri.prepend( QStringLiteral( "/vsiswift/" ) );
   }
-  else if ( type == QLatin1String( "GeoJSON" ) )
+  // catching both GeoJSON and GeoJSONSeq
+  else if ( type.startsWith( QLatin1String( "GeoJSON" ) ) )
   {
     uri = url;
   }
