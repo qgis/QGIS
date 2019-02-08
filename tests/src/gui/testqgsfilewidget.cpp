@@ -129,9 +129,11 @@ void TestQgsFileWidget::testDroppedFiles()
   // try with folders
   w->setStorageMode( QgsFileWidget::GetDirectory );
   w->setFilePath( QString() );
-  // should be rejected
+  // dropping a file should accept only the folder containing that file
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
-  QVERIFY( w->lineEdit()->text().isEmpty() );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) +  QStringLiteral( "/mesh" ) );
 
   // but dropping a folder should work
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
