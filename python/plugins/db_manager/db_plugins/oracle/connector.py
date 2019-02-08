@@ -1307,14 +1307,6 @@ class OracleDBConnector(DBConnector):
         # Unsupported in Oracle
         pass
 
-    def commentTable(self, schema, tablename, comment=None):
-        """Comment the table"""
-        return ''
-
-    def getComment(self, tablename, field):
-        """Returns the comment for a field"""
-        return ''
-
     def addTableColumn(self, table, field_def):
         """Add a column to a table."""
         sql = u"ALTER TABLE {0} ADD {1}".format(self.quoteId(table),
