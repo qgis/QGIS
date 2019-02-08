@@ -54,6 +54,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
+  mLineEdit->setDragEnabled( true );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   mLayout->addWidget( mLineEdit );
 
@@ -438,16 +439,23 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
     rawPaths.reserve( urls.count() );
     for ( const QUrl &url : urls )
     {
-      rawPaths.append( url.toLocalFile() );
+      const QString local =  url.toLocalFile();
+      if ( !rawPaths.contains( local ) )
+        rawPaths.append( local );
     }
   }
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
   for ( const QgsMimeDataUtils::Uri &u : lst )
   {
-    rawPaths.append( u.uri );
+    if ( !rawPaths.contains( u.uri ) )
+      rawPaths.append( u.uri );
   }
 
+  if ( !event->mimeData()->text().isEmpty() && !rawPaths.contains( event->mimeData()->text() ) )
+    rawPaths.append( event->mimeData()->text() );
+
+  paths.reserve( rawPaths.count() );
   for ( const QString &path : qgis::as_const( rawPaths ) )
   {
     QFileInfo file( path );
