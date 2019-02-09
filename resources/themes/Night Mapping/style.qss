@@ -303,17 +303,6 @@ QComboBox::indicator {
     selection-color:transparent;
 }
 
-QLineEdit:focus
-{
-    border: 1px solid @focus;
-}
-
-
-QTextEdit:focus
-{
-    border: 1px solid @focus;
-}
-
 /* ==================================================================================== */
 /* SCROLL BAR                                                                           */
 /* ==================================================================================== */
@@ -732,6 +721,27 @@ QHeaderView::section {
     padding: 0 0 0.1em 0.2em;
 }
 
+QToolButton[autoRaise=true]:focus:!pressed {
+    border:1px solid @focusdark;
+}
+
+QToolButton[autoRaise=false]:focus:!pressed {
+    border:1px solid @focusdark;
+}
+
+/* ==================================================================================== */
+/* FOCUS                                                                                */
+/* ==================================================================================== */
+
+QToolButton:focus, QPushButton:focus, QCheckBox:focus, QRadioButton:focus, QGroupBox:focus {
+    outline:1px solid @focusdark;
+    outline-radius: 0.2em;
+}
+
+QComboBox:focus, QAbstractSpinBox:focus, QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
+    border:1px solid @focusdark;
+}
+
 /* ==================================================================================== */
 /* QGIS-SPECIFIC TWEAKS                                                                 */
 /* ==================================================================================== */
@@ -744,6 +754,10 @@ QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
 QgsColorButton:hover, QgsColorRampButton:hover, QgsSymbolButton:hover, QgsFontButton:hover {
     background-color: @darkalternativegradient;
     color:@itembackground;
+}
+
+QgsColorButton:focus, QgsColorRampButton:focus, QgsSymbolButton:focus, QgsFontButton:focus {
+    border:1px solid @focusdark;
 }
 
 QgsMessageBar QLabel, QgsMessageBar QTextEdit, QMessageBar QToolButton, QMessageBar QToolButton::menu-button {
@@ -788,8 +802,15 @@ QgsMessageBar QScrollBar::down-arrow:vertical {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
-QgsPropertyOverrideButton {
+QgsPropertyOverrideButton, QgsPropertyOverrideButton:hover, QgsPropertyOverrideButton:pressed {
+    background: none;
+    border: 1px solid rgba(0, 0, 0, 0%);
     padding: 0px;
+}
+
+QgsPropertyOverrideButton:focus {
+    border:1px solid @focusdark;
+    border-radius: 0.2em;
 }
 
 QListWidget#mOptionsListWidget {
