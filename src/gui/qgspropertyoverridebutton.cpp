@@ -43,12 +43,6 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
   setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
-  QString ss;
-  ss += QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%); } QToolButton:focus { border: 1px solid palette(highlight); }" );
-#ifdef Q_OS_MACX
-  ss += QStringLiteral( "QToolButton::menu-indicator{ width: 5px; }" );
-#endif
-  setStyleSheet( ss );
 
   setIconSize( QSize( iconSize, iconSize ) );
   setPopupMode( QToolButton::InstantPopup );

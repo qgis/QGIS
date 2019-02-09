@@ -166,6 +166,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                    "}" )
           .arg( palette.highlight().color().name(),
                 palette.highlightedText().color().name() );
+
+    ss += QStringLiteral( "QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }" );
+#ifdef Q_OS_MACX
+    ss += QStringLiteral( "QgsPropertyOverrideButton::menu-indicator { width: 5px; }" );
+#endif
   }
 
   QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
