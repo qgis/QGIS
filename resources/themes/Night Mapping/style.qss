@@ -795,3 +795,8 @@ QListWidget#mOptionsListWidget {
 QListWidget#mOptionsListWidget::item {
     padding: 0.1em;
 }
+
+QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,
+QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab {
+    width: 1.2em;
+}
