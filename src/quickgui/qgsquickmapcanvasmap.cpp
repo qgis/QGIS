@@ -102,9 +102,16 @@ void QgsQuickMapCanvasMap::refreshMap()
   if ( project )
   {
     expressionContext << QgsExpressionContextUtils::projectScope( project );
+
+    mapSettings.setLabelingEngineSettings( project->labelingEngineSettings() );
   }
 
   mapSettings.setExpressionContext( expressionContext );
+
+  // enables on-the-fly simplification of geometries to spend less time rendering
+  mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+  // with incremental rendering - enables updates of partially rendered layers (good for WMTS, XYZ layers)
+  mapSettings.setFlag( QgsMapSettings::RenderPartialOutput, mIncrementalRendering );
 
   // create the renderer job
   Q_ASSERT( !mJob );
