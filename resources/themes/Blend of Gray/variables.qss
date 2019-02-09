@@ -12,3 +12,5 @@
 @toggleon: #ee7913
 @selection: #f0f0f0
 @hover: #c7c7c7
+@focusdark: rgba(0,0,0,100)
+@focus: rgba(199,199,199,255)
