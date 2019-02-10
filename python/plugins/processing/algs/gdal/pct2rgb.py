@@ -103,8 +103,11 @@ class pct2rgb(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.RGBA, context):
             arguments.append('-rgba')
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands
