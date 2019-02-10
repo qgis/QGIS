@@ -68,7 +68,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Override Date / Time (UTC):</string>
+             <string>Override Date / Time (UTC)</string>
             </property>
            </widget>
           </item>
@@ -229,7 +229,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Vertical scale:</string>
+             <string>Vertical scale</string>
             </property>
            </widget>
           </item>
@@ -602,7 +602,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="labelScrollSensitivity">
             <property name="text">
-             <string>Sensitivity:</string>
+             <string>Sensitivity</string>
             </property>
            </widget>
           </item>
