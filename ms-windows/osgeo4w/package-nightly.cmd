@@ -63,6 +63,7 @@ path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
+	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-32.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
