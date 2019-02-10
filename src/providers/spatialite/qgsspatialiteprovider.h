@@ -174,6 +174,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     };
 
+    //! Check if version is above major and minor
+    static bool versionIsAbove( sqlite3 *sqlite_handle, int major, int minor = 0 );
+
+
     /**
      * sqlite3 handles pointer
      */
@@ -201,7 +205,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! For views, try to get primary key from a dedicated meta table
     void determineViewPrimaryKey();
 
-    //! Returns primary key(s) from a table name
+    //! Returns integer primary key(s) from a table name
     QStringList tablePrimaryKeys( const QString &tableName ) const;
 
     //! Check if a table/view has any triggers.  Triggers can be used on views to make them editable.

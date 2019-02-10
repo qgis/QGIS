@@ -355,7 +355,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
 
-    // qDebug() << sql;
+    QgsDebugMsgLevel( sql, 4 );
 
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
@@ -515,6 +515,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       }
       else
       {
+        QgsDebugMsgLevel( QStringLiteral( "Primary key is not an integer field: setting autoincrement fid" ), 3 );
         // autoincrement a row number
         mRowNumber++;
         feature.setId( mRowNumber );

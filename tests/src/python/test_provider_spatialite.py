@@ -952,6 +952,65 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         dbname = TEST_DATA_DIR + '/provider/spatialite.db'
         self._aliased_sql_helper(dbname)
 
+    def testTextPks(self):
+        """Test regression when retrieving features from tables with text PKs, see #21176"""
+
+        # create test db
+        dbname = os.path.join(tempfile.gettempdir(), "test_text_pks.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = "CREATE TABLE test_pg (id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+
+        sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+
+        sql = "INSERT INTO test_pg (id, name, geometry) "
+        sql += "VALUES ('one', 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        sql = "INSERT INTO test_pg (id, name, geometry) "
+        sql += "VALUES ('two', 'bogo', GeomFromText('POLYGON((0 0,2 0,2 2,0 2,0 0))', 4326))"
+        cur.execute(sql)
+
+        cur.execute("COMMIT")
+        con.close()
+
+        def _test_db(testPath):
+            vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+            self.assertTrue(vl.isValid())
+
+            f = next(vl.getFeatures())
+            self.assertTrue(f.isValid())
+            fid = f.id()
+            self.assertTrue(fid > 0)
+            self.assertTrue(vl.getFeature(fid).isValid())
+            f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterFid(fid)))
+            self.assertTrue(f2.isValid())
+            self.assertEqual(f2.id(), f.id())
+            self.assertEqual(f2.geometry().asWkt(), f.geometry().asWkt())
+
+            for f in vl.getFeatures():
+                self.assertTrue(f.isValid())
+                self.assertTrue(vl.getFeature(f.id()).isValid())
+                self.assertEqual(vl.getFeature(f.id()).id(), f.id())
+
+        testPath = "dbname=%s table='test_pg' (geometry) key='id'" % dbname
+        _test_db(testPath)
+        testPath = "dbname=%s table='test_pg' (geometry)" % dbname
+        _test_db(testPath)
+        testPath = "dbname=%s table='test_pg' key='id'" % dbname
+        _test_db(testPath)
+        testPath = "dbname=%s table='test_pg'" % dbname
+        _test_db(testPath)
+
 
 if __name__ == '__main__':
     unittest.main()
