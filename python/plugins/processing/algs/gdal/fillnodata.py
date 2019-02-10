@@ -130,8 +130,11 @@ class fillnodata(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands
