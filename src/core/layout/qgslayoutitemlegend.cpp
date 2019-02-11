@@ -905,16 +905,16 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   {
     //finding the first label that is stored
     name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-    qInfo() << name;
+    qInfo() << nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     if ( name.isEmpty() )
       name = nodeLayer->name();
-    qInfo() << name;
+    qInfo() << nodeLayer->name();
     if ( name.isEmpty() )
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-    qInfo() << name;
+    qInfo() << node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     if ( name.isEmpty() )
       name = node->name();
-    qInfo() << name;
+    qInfo() << node->name();
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
