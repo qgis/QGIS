@@ -334,7 +334,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
 
-    void setDynamicParentLayerParameter( const QVariant &value );
+    void setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
 
     QPointer< QWidget > mWidget;
     QPointer< QgsPropertyOverrideButton > mPropertyButton;
