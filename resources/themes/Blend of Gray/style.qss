@@ -242,8 +242,9 @@ QComboBox:editable {
     background-color: @darkgradient;
 }
 QComboBox:editable QLineEdit {
-    background-color: @itemdarkbackground;
+    background-color: transparent;
     color:@itembackground;
+    border: 0;
 }
 
 QComboBox QAbstractItemView, QComboBox QListView {
