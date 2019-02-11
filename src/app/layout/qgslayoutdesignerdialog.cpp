@@ -3845,7 +3845,7 @@ void QgsLayoutDesignerDialog::showSvgExportWarning()
     m.setCheckBoxVisible( true );
     m.setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displaySVGWarning" ) );
     m.setMessageAsHtml( tr( "<p>The SVG export function in QGIS has several "
-                            "problems due to bugs and deficiencies in the " 
+                            "problems due to bugs and deficiencies in the "
                             "underlying Qt SVG library. In particular, there are problems "
                             "with layers not being clipped to the map bounding box.</p>" )
                         + tr( "If you require a vector-based output file from "
