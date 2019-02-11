@@ -1011,7 +1011,7 @@ static QString quotedList( const QVariantList &list )
     }
 
     QString inner = i->toString();
-    if ( inner.startsWith( "{" ) )
+    if ( inner.startsWith( '{' ) )
     {
       ret.append( inner );
     }
