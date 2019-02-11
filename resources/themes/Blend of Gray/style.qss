@@ -337,13 +337,6 @@ QSizeGrip
     width: 0.1em;
 }
 
-QHeaderView::section
-{
-    /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:0 #616161, stop: 0.5 #505050, stop: 0.6 #434343, stop:1 #656565);*/
-    color: @text;
-    padding-left: 0.5em;
-    border: 1px solid #6c6c6c;
-}
 QDockWidget
 {
     titlebar-close-icon: url(@theme_path/icons/close.svg);
@@ -619,7 +612,7 @@ QAbstractItemView, QListView
   background-color: @itembackground;
   alternate-background-color: @itemalternativebackground;
   color: @text;
-  border: none;
+  border: 1px solid @itemdarkbackground;
   border-radius: 0.15em;
   padding: 1px;
   selection-background-color: @selection;
@@ -702,12 +695,48 @@ QTableView {
     selection-color: @itemdarkbackground;
 }
 
-QHeaderView::section {
+QTableView QTableCornerButton::section {
+    background-color: @background;
+    border: 1px solid @itembackground;
+}
+
+QHeaderView {
+    background-color:transparent;
+    border:0;
+}
+
+QHeaderView::section, QHeaderView::section:vertical {
+    padding: 0.1m 0.2em 0.1em 0.2em;
     background: transparent;
     background-color: @background;
     color: @text;
-    border-right: 1px solid @itemdarkbackground;
-    padding: 0 0 0.1em 0.2em;
+    border: 1px solid @itemdarkbackground;
+    border-left: 0;
+    border-top: 0;
+}
+
+QHeaderView::section:vertical {
+    border: 1px solid @itemdarkbackground;
+    border-left: 0;
+    border-top: 0;
+}
+
+QHeaderView::section:last:vertical {
+    border-bottom: 0;
+}
+
+QHeaderView::section:last:horizontal {
+    border-right: 0;
+}
+
+QHeaderView::down-arrow {
+    width: 1.2em;
+    image: url(@theme_path/icons/arrow-down.svg);
+}
+
+QHeaderView::up-arrow {
+    width: 1.2em;
+    image: url(@theme_path/icons/arrow-up.svg);
 }
 
 /* ==================================================================================== */
