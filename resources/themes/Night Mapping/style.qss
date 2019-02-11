@@ -772,6 +772,10 @@ QToolButton[autoRaise=false]:focus:!pressed {
     border:1px solid @focusdark;
 }
 
+QSlider::handle:horizontal:focus, QSlider::handle:vertical:focus {
+    border: 1px solid @focus;
+}
+
 /* ==================================================================================== */
 /* QGIS-SPECIFIC TWEAKS                                                                 */
 /* ==================================================================================== */
