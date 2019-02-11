@@ -304,6 +304,7 @@ QScrollBar:horizontal {
 QScrollBar::handle:horizontal {
     border: 1px solid @itemdarkbackground;
     background: @background;
+    min-width: 0.8em;
 }
 
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
@@ -321,6 +322,7 @@ QScrollBar:vertical {
 QScrollBar::handle:vertical {
     border: 1px solid @itemdarkbackground;
     background: @background;
+    min-height: 0.8em;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
