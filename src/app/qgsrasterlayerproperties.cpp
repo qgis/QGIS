@@ -56,6 +56,7 @@
 #include "qgshillshaderendererwidget.h"
 #include "qgssettings.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsfileutils.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -1863,20 +1864,41 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
                              this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)" );
   if ( outputFileName.isEmpty() )
     return;
 
-  // ensure the user never omits the extension from the file name
-  if ( !outputFileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    outputFileName += QLatin1String( ".qml" );
+  // set style type depending on extension
+  StyleType type = StyleType::QML;
+  if ( outputFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
+    type = StyleType::SLD;
+  else
+    // ensure the user never omits the extension from the file name
+    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
 
   apply(); // make sure the style to save is uptodate
 
+  // then export style
   bool defaultLoadedFlag = false;
-  QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+  QString message;
+  switch ( type )
+  {
+    case QML:
+    {
+      message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+      break;
+    }
+    case SLD:
+    {
+      message = mRasterLayer->saveSldStyle( outputFileName, defaultLoadedFlag );
+      break;
+    }
+  }
   if ( defaultLoadedFlag )
+  {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+    sync();
+  }
   else
     QMessageBox::information( this, tr( "Save Style" ), message );
 }
