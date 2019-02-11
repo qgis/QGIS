@@ -293,6 +293,17 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setWidgetValue`
 %End
 
+    virtual const QgsVectorLayer *linkedVectorLayer() const;
+%Docstring
+Returns the optional vector layer associated with this widget wrapper, or None if no vector
+layer is applicable.
+
+This is used to correctly generate expression contexts within the GUI, e.g. to allow expression
+buttons and property override buttons to correctly show the appropriate vector layer fields.
+
+.. versionadded:: 3.6
+%End
+
   protected:
 
 
