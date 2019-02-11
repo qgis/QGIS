@@ -102,6 +102,7 @@ void QgsExpression::setExpression( const QString &expression )
   d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
   d->mEvalErrorString = QString();
   d->mExp = expression;
+  d->mIsPrepared = false;
 }
 
 QString QgsExpression::expression() const
@@ -313,13 +314,25 @@ bool QgsExpression::needsGeometry() const
   return d->mRootNode->needsGeometry();
 }
 
-void QgsExpression::initGeomCalculator()
+void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
 {
-  if ( d->mCalc )
-    return;
+  if ( ! d->mCalc )
+    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+  QString ellipsoid = context->variable( "project_ellipsoid" ).toString();
+  QString distanceUnitsStr = context->variable( "project_distance_units" ).toString();
+  QString areaUnitsStr = context->variable( "project_area_units" ).toString();
+  QgsCoordinateReferenceSystem crs = context->variable( "_layer_crs" ).value<QgsCoordinateReferenceSystem>();
+  QgsCoordinateTransformContext tContext = context->variable( "_project_transform_context" ).value<QgsCoordinateTransformContext>();
 
-  // Use planimetric as default
-  d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+  d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? GEO_NONE : ellipsoid );
+  if ( ! distanceUnitsStr.isEmpty() )
+    setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
+  if ( ! areaUnitsStr.isEmpty() )
+    setAreaUnits( QgsUnitTypes::stringToAreaUnit( areaUnitsStr ) );
+  if ( crs.isValid() )
+  {
+    d->mCalc->setSourceCrs( crs, tContext );
+  }
 }
 
 void QgsExpression::detach()
@@ -361,6 +374,8 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     return false;
   }
 
+  initGeomCalculator( context );
+  d->mIsPrepared = true;
   return d->mRootNode->prepare( this, context );
 }
 
@@ -385,6 +400,12 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
     return QVariant();
   }
 
+  if ( ! d->mIsPrepared )
+  {
+    qWarning( "QgsExpression::evaluate() called on an expression not yet prepared !" );
+    if ( ! prepare( context ) )
+      return QVariant();
+  }
   return d->mRootNode->eval( this, context );
 }
 

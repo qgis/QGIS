@@ -619,7 +619,7 @@ class CORE_EXPORT QgsExpression
 #endif
 
   private:
-    void initGeomCalculator();
+    void initGeomCalculator( const QgsExpressionContext *context );
 
     struct HelpArg SIP_SKIP
     {
