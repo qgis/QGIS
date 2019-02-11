@@ -492,7 +492,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QAction *mEnableAction = nullptr;
     QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
 
     // Snap indicator
