@@ -200,7 +200,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
         {
           if ( wrapper->parameterDefinition()->name() == parameterDefinition()->dynamicLayerParameterName() )
           {
-            setDynamicParentLayerParameter( wrapper->parameterValue() );
+            setDynamicParentLayerParameter( wrapper );
             connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged );
             break;
           }
@@ -259,11 +259,11 @@ void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstrac
 {
   if ( wrapper )
   {
-    setDynamicParentLayerParameter( wrapper->parameterValue() );
+    setDynamicParentLayerParameter( wrapper );
   }
 }
 
-void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter( const QVariant &value )
+void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
 {
   if ( mPropertyButton )
   {
@@ -279,7 +279,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
       context = tmpContext.get();
     }
 
-    QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition(), value, *context );
+    QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
     if ( !layer )
     {
       mPropertyButton->setVectorLayer( nullptr );

@@ -408,6 +408,20 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
     QgsProcessingContext &mContext;
 };
 
+
+class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+{
+  public:
+    TestLayerWrapper( const QgsProcessingParameterDefinition *parameter = nullptr )
+      : QgsAbstractProcessingParameterWidgetWrapper( parameter )
+    {}
+    QWidget *createWidget() override { return nullptr; }
+    void setWidgetValue( const QVariant &val, QgsProcessingContext & ) override { v = val;}
+    QVariant widgetValue() const override { return v; }
+
+    QVariant v;
+};
+
 void TestProcessingGui::testWrapperDynamic()
 {
   const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
@@ -441,15 +455,20 @@ void TestProcessingGui::testWrapperDynamic()
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   p.addMapLayer( vl );
 
+  TestLayerWrapper layerWrapper( layerDef );
+
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
-  allPartsWrapper.setDynamicParentLayerParameter( QVariant::fromValue( vl ) );
+  layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
   // should not be owned by wrapper
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
-  allPartsWrapper.setDynamicParentLayerParameter( QVariant() );
+  layerWrapper.setWidgetValue( QVariant(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
 
-  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  layerWrapper.setWidgetValue( vl->id(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
 
@@ -458,13 +477,15 @@ void TestProcessingGui::testWrapperDynamic()
   TestProcessingContextGenerator generator( context );
   allPartsWrapper.registerProcessingContextGenerator( &generator );
 
-  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  layerWrapper.setWidgetValue( vl->id(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
 
   // non-project layer
   QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
-  allPartsWrapper.setDynamicParentLayerParameter( pointFileName );
+  layerWrapper.setWidgetValue( pointFileName, context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer()->publicSource(), pointFileName );
   // must be owned by wrapper, or layer may be deleted while still required by wrapper
   QCOMPARE( allPartsWrapper.mDynamicLayer->publicSource(), pointFileName );
