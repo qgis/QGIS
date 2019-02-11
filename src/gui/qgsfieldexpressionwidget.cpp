@@ -177,6 +177,8 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
   if ( fieldName.isEmpty() )
   {
     setRow( -1 );
+    emit fieldChanged( QString() );
+    emit fieldChanged( QString(), true );
     return;
   }
 
