@@ -71,6 +71,11 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
     if ( it != mSource->mFeatures.constEnd() )
       mFeatureIdList.append( mRequest.filterFid() );
   }
+  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  {
+    mUsingFeatureIdList = true;
+    mFeatureIdList = mRequest.filterFids().toList();
+  }
   else
   {
     mUsingFeatureIdList = false;
@@ -105,11 +110,25 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
   // option 1: we have a list of features to traverse
   while ( mFeatureIdListIterator != mFeatureIdList.constEnd() )
   {
-    if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    if ( !mFilterRect.isNull() )
     {
-      // do exact check in case we're doing intersection
-      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().constGet() ) )
+      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // do exact check in case we're doing intersection
+        if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().constGet() ) )
+          hasFeature = true;
+      }
+      else if ( mSource->mSpatialIndex )
+      {
+        // using a spatial index - so we already know that the bounding box intersects correctly
         hasFeature = true;
+      }
+      else
+      {
+        // do bounding box check if we aren't using a spatial index
+        if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().boundingBoxIntersects( mFilterRect ) )
+          hasFeature = true;
+      }
     }
     else
       hasFeature = true;
