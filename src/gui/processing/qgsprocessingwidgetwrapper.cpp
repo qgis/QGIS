@@ -187,6 +187,13 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
   return nullptr;
 }
 
+const QgsVectorLayer *QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mPropertyButton )
+    return mPropertyButton->vectorLayer();
+  return nullptr;
+}
+
 void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
   switch ( mType )
@@ -230,8 +237,8 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
 
   QgsExpressionContext c = context->expressionContext();
 
-  if ( mPropertyButton->vectorLayer() )
-    c << QgsExpressionContextUtils::layerScope( mPropertyButton->vectorLayer() );
+  if ( linkedVectorLayer() )
+    c << QgsExpressionContextUtils::layerScope( linkedVectorLayer() );
 
   if ( mWidgetContext.model() )
   {
