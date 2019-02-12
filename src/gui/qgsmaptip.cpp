@@ -23,6 +23,7 @@
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 // Qt includes
 #include <QPoint>

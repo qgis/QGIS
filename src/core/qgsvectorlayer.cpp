@@ -94,6 +94,7 @@
 #include "qgstransaction.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsgeometryoptions.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "diagram/qgsdiagram.h"
 

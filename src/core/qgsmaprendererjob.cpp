@@ -36,6 +36,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 ///@cond PRIVATE
 

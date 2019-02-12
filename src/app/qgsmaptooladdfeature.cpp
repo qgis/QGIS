@@ -32,6 +32,7 @@
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QSettings>
 

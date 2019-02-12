@@ -40,6 +40,7 @@
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsproviderregistry.h"
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"

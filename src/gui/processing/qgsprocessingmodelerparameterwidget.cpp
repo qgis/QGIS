@@ -21,6 +21,7 @@
 #include "qgsexpressionlineedit.h"
 #include "qgsprocessingguiregistry.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"

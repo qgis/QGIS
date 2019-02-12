@@ -25,6 +25,7 @@
 
 class QgsLayoutDesignerInterface;
 class QgsPropertyOverrideButton;
+class QgsLayoutAtlas;
 
 // NOTE - the inheritance here is tricky, as we need to avoid the multiple inheritance
 // diamond problem and the ideal base object (QgsLayoutConfigObject) MUST be a QObject

@@ -34,6 +34,7 @@
 #include "qgssettings.h"
 #include "qgsgeometryengine.h"
 #include "qgsproviderregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QFile>
 #include <QFileInfo>

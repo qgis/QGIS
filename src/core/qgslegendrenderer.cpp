@@ -23,6 +23,7 @@
 #include "qgssymbol.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QPainter>
 

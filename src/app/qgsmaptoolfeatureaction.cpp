@@ -33,6 +33,7 @@
 #include "qgsgui.h"
 #include "qgsstatusbar.h"
 #include "qgsmapmouseevent.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QSettings>
 #include <QStatusBar>

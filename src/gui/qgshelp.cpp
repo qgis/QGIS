@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmessagelog.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QUrl>
 #include <QFileInfo>

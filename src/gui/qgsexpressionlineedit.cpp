@@ -22,6 +22,8 @@
 #include "qgscodeeditorsql.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>

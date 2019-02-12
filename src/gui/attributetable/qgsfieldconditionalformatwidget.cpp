@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
   : QWidget( parent )

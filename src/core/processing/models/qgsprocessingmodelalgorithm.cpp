@@ -25,6 +25,7 @@
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QFile>
 #include <QTextStream>

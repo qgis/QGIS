@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgsogcutils.h"
 #include "qgsjsonutils.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgswfsgetfeature.h"
 

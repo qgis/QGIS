@@ -17,6 +17,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsexpression.h"
 
 #include <QVBoxLayout>
 #include <QTreeWidget>

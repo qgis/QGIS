@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsreadwritecontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QObject>
 #include "qgstest.h"

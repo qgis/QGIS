@@ -101,6 +101,7 @@ SET(QGIS_CORE_SRCS
   annotations/qgstextannotation.cpp
 
   expression/qgsexpression.cpp
+  expression/qgsexpressioncontextutils.cpp
   expression/qgsexpressionnode.cpp
   expression/qgsexpressionnodeimpl.cpp
   expression/qgsexpressionfunction.cpp
@@ -829,6 +830,7 @@ SET(QGIS_CORE_HDRS
   ../plugins/qgisplugin.h
 
   expression/qgsexpression.h
+  expression/qgsexpressioncontextutils.h
   expression/qgsexpressionnode.h
   expression/qgsexpressionnodeimpl.h
   expression/qgsexpressionfunction.h

@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )

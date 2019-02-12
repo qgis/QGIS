@@ -62,6 +62,7 @@
 #include "qgsmetadatawidget.h"
 #include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
+#include "qgsexpressioncontextutils.h"
 
 //qt includes
 #include <QInputDialog>

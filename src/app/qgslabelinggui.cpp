@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QButtonGroup>
 

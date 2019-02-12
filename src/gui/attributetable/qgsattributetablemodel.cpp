@@ -39,6 +39,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsfieldmodel.h"
 #include "qgstexteditwidgetfactory.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QVariant>
 

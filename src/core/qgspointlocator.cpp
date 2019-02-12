@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrenderer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <spatialindex/SpatialIndex.h>
 

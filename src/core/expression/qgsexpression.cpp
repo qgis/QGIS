@@ -23,7 +23,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgsproject.h"
-
+#include "qgsexpressioncontextutils.h"
 
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );

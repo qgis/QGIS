@@ -22,6 +22,7 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsvectorlayer.h"
 

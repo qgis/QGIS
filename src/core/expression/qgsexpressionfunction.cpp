@@ -53,6 +53,8 @@
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
+
 
 const QString QgsExpressionFunction::helpText() const
 {

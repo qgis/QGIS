@@ -28,6 +28,7 @@
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 //QgsLayoutAttributeTableCompare
 

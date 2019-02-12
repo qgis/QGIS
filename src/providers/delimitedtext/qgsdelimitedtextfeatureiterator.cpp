@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 #include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QtAlgorithms>
 #include <QTextStream>

@@ -33,6 +33,7 @@
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>

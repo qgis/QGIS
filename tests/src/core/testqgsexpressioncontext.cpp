@@ -21,6 +21,8 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgscolorscheme.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QObject>
 #include "qgstest.h"
 

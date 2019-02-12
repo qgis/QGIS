@@ -43,6 +43,7 @@
 #include "qgscoordinateutils.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMouseEvent>
 #include <QCursor>

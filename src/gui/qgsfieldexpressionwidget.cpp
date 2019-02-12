@@ -26,6 +26,7 @@
 #include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
