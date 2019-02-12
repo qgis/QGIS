@@ -407,7 +407,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \param errorMessage reference to string that will be updated with any error messages
      * \param props a open ended set of properties that can drive/inform the SLD encoding
      * \returns true in case of success
-     * \since QGIS 3.6
+     * \since QGIS 3.4.5
      */
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 

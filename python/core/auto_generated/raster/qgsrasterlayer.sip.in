@@ -355,7 +355,7 @@ Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 
 :return: true in case of success
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.5
 %End
 
 

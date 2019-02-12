@@ -134,7 +134,7 @@ https://docs.geoserver.org/stable/en/user/styling/sld/reference/rastersymbolizer
 Btw only sld:Normalize + vendor options are supported because there is no clear mapping
 of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
 
-.. versionadded:: 3.6
+.. versionadded:: 3.4.5
 %End
 
   private:
