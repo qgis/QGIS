@@ -21,6 +21,7 @@
 
 #include "qgsquickidentifykit.h"
 #include "qgsquickmapsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgis.h"
 

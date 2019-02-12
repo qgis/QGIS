@@ -27,6 +27,7 @@
 
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
