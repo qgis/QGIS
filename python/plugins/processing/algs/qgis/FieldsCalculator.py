@@ -79,7 +79,7 @@ class FieldsCalculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
                                                      self.tr('Field type'), options=self.type_names))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
-                                                       self.tr('Field length'), minValue=1, maxValue=255, defaultValue=10))
+                                                       self.tr('Field length'), minValue=0, defaultValue=10))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
                                                        self.tr('Field precision'), minValue=0, maxValue=15, defaultValue=3))
         self.addParameter(QgsProcessingParameterBoolean(self.NEW_FIELD,
