@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QColor>
 #include <QStringList>

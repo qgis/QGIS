@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {

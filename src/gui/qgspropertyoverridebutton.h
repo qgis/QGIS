@@ -29,6 +29,7 @@
 
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsSymbol;
 
 /**
  * \ingroup gui

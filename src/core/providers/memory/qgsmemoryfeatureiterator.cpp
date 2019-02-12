@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 
 ///@cond PRIVATE
 

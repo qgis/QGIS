@@ -29,6 +29,7 @@
 #include <limits>
 
 class QgsProcessingContext;
+class QgsProcessingAlgorithm;
 class QgsRasterLayer;
 class QgsMeshLayer;
 class QgsVectorLayer;

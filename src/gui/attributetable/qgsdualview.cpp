@@ -30,6 +30,7 @@
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QClipboard>
 #include <QDialog>

@@ -31,6 +31,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QObject>
 #include <QPainter>

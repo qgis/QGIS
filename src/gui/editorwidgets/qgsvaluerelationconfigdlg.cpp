@@ -17,6 +17,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

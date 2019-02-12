@@ -34,6 +34,7 @@
 #include "qgsproject.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsexpressioncontextutils.h"
 
 static void _parseAndEvalExpr( int arg )
 {

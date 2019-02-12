@@ -31,6 +31,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QColor>
 #include <QFont>

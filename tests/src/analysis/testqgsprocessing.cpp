@@ -40,6 +40,7 @@
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 
 class DummyAlgorithm : public QgsProcessingAlgorithm

@@ -28,6 +28,7 @@
 #include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterrenderer.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )

@@ -33,6 +33,7 @@
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgsmultirenderchecker.h"
+#include "qgsexpressioncontextutils.h"
 
 /**
  * \ingroup UnitTests

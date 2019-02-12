@@ -22,6 +22,8 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontext.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QLabel>
 #include <QHBoxLayout>
 

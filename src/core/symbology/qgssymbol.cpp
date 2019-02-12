@@ -48,6 +48,7 @@
 #include "qgsproperty.h"
 #include "qgscolorschemeregistry.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )

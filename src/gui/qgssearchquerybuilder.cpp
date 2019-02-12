@@ -32,6 +32,8 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
+#include "qgsexpressioncontextutils.h"
+
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )

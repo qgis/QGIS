@@ -26,6 +26,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsthreadingutils.h"
 #include "qgsgeometrycollection.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {

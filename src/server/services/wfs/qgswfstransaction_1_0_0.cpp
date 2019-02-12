@@ -34,6 +34,7 @@
 #include "qgsfilterrestorer.h"
 #include "qgsogcutils.h"
 #include "qgswfstransaction_1_0_0.h"
+#include "qgsexpressioncontextutils.h"
 
 namespace QgsWfs
 {

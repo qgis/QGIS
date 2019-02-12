@@ -29,6 +29,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QTableWidgetItem>
 #include <QFile>

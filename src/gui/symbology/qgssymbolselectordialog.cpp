@@ -20,6 +20,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayerregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 // the widgets
 #include "qgssymbolslistwidget.h"

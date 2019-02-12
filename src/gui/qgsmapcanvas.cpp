@@ -70,6 +70,7 @@ email                : sherman at mrcc.com
 #include "qgscoordinatetransformcontext.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgsexpressioncontextutils.h"
 
 /**
  * \ingroup gui

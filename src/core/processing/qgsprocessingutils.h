@@ -33,6 +33,7 @@ class QgsProcessingContext;
 class QgsMapLayerStore;
 class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
+class QgsProcessingAlgorithm;
 
 #include <QString>
 #include <QVariant>

@@ -49,6 +49,7 @@
 #include "qgsfieldformatter.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QCloseEvent>
 #include <QLabel>

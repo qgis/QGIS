@@ -69,6 +69,7 @@
 #include "qgsgeometrycheck.h"
 #include "qgsanalysis.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"

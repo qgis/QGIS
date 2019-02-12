@@ -28,6 +28,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsmeshlayer.h"
+#include "qgsexpressioncontextutils.h"
+
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
