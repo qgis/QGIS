@@ -767,7 +767,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmSc
     modelPath = context.project()->projectStorage() ? context.project()->fileName() : context.project()->absoluteFilePath();
   }
 
-  const QString modelFolder = QFileInfo( modelPath ).path();
+  const QString modelFolder = !modelPath.isEmpty() ? QFileInfo( modelPath ).path() : QString();
   modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_path" ), QDir::toNativeSeparators( modelPath ), true ) );
   modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_folder" ), QDir::toNativeSeparators( modelFolder ), true, true ) );
   modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_name" ), model->displayName(), true ) );

@@ -6014,8 +6014,8 @@ void TestQgsProcessing::modelScope()
   QCOMPARE( scope->variable( QStringLiteral( "model_group" ) ).toString(), QStringLiteral( "testGroup" ) );
   QVERIFY( scope->hasVariable( QStringLiteral( "model_path" ) ) );
   QVERIFY( scope->hasVariable( QStringLiteral( "model_folder" ) ) );
-  QVERIFY( scope->variable( QStringLiteral( "model_path" ) ).toString().isEmpty() );
-  QVERIFY( scope->variable( QStringLiteral( "model_folder" ) ).toString().isEmpty() );
+  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), QString() );
+  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), QString() );
 
   QgsProject p;
   pc.setProject( &p );
