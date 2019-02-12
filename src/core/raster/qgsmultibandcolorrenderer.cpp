@@ -475,18 +475,18 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
         // look for RasterSymbolizer tag
         QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
-  if ( elements.size() == 0 )
-    return;
+    if ( elements.size() == 0 )
+      return;
 
-  // there SHOULD be only one
-  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+    // there SHOULD be only one
+    QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
 
-  // add Channel Selection tags
-  // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
-  // after opacity or geometry or as first element after sld:RasterSymbolizer
-  QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
-  elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
-  if ( elements.size() != 0 )
+    // add Channel Selection tags
+    // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
+    // after opacity or geometry or as first element after sld:RasterSymbolizer
+    QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+    if ( elements.size() != 0 )
   {
     rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
   }

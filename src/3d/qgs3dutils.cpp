@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
