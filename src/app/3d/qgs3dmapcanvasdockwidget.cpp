@@ -48,19 +48,29 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+
+
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
-                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
-                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
-  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
-                        tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
-  actionAnim->setCheckable( true );
+
+  toolBar->addSeparator();
 
   QAction *actionIdentify = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionIdentify.svg" ) ),
                             tr( "Identify" ), this, &Qgs3DMapCanvasDockWidget::identify );
   actionIdentify->setCheckable( true );
+
+  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
+                        tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
+  actionAnim->setCheckable( true );
+
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
+                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
+
+  toolBar->addSeparator();
+
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
+                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
+
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
