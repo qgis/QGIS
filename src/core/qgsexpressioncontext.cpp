@@ -35,7 +35,7 @@
 #include "qgsexpressionutils.h"
 #include "qgslayoutrendercontext.h"
 #include "qgsxmlutils.h"
-
+#include "qgsprocessingmodelalgorithm.h"
 #include <QSettings>
 #include <QDir>
 
@@ -1327,6 +1327,29 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "algorithm_id" ), algorithm->id(), true ) );
 
   return scope.release();
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &, QgsProcessingContext &context )
+{
+  std::unique_ptr< QgsExpressionContextScope > modelScope( new QgsExpressionContextScope( QObject::tr( "Model" ) ) );
+  QString modelPath;
+  if ( !model->sourceFilePath().isEmpty() )
+  {
+    modelPath = model->sourceFilePath();
+  }
+  else if ( context.project() )
+  {
+    // fallback to project path -- the model may be embedded in a project, OR an unsaved model. In either case the
+    // project path is a logical value to fall back to
+    modelPath = context.project()->projectStorage() ? context.project()->fileName() : context.project()->absoluteFilePath();
+  }
+
+  const QString modelFolder = QFileInfo( modelPath ).path();
+  modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_path" ), QDir::toNativeSeparators( modelPath ), true ) );
+  modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_folder" ), QDir::toNativeSeparators( modelFolder ), true, true ) );
+  modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_name" ), model->displayName(), true ) );
+  modelScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "model_group" ), model->group(), true ) );
+  return modelScope.release();
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const QString &message )

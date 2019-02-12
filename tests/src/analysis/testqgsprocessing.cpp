@@ -562,6 +562,7 @@ class TestQgsProcessing: public QObject
     void processingFeatureSource();
     void processingFeatureSink();
     void algorithmScope();
+    void modelScope();
     void validateInputCrs();
     void generateIteratingDestination();
     void asPythonCommand();
@@ -5997,6 +5998,39 @@ void TestQgsProcessing::algorithmScope()
   QVERIFY( !exp.evaluate( &context ).isValid() );
   QgsExpression exp2( "parameter('a_param')" );
   QCOMPARE( exp2.evaluate( &context ).toInt(), 5 );
+}
+
+void TestQgsProcessing::modelScope()
+{
+  QgsProcessingContext pc;
+
+  QgsProcessingModelAlgorithm alg( "test", "testGroup" );
+  QVariantMap params;
+  params.insert( QStringLiteral( "a_param" ), 5 );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
+  QVERIFY( scope.get() );
+  QCOMPARE( scope->variable( QStringLiteral( "model_name" ) ).toString(), QStringLiteral( "test" ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_group" ) ).toString(), QStringLiteral( "testGroup" ) );
+  QVERIFY( scope->hasVariable( QStringLiteral( "model_path" ) ) );
+  QVERIFY( scope->hasVariable( QStringLiteral( "model_folder" ) ) );
+  QVERIFY( scope->variable( QStringLiteral( "model_path" ) ).toString().isEmpty() );
+  QVERIFY( scope->variable( QStringLiteral( "model_folder" ) ).toString().isEmpty() );
+
+  QgsProject p;
+  pc.setProject( &p );
+  p.setFileName( TEST_DATA_DIR + QStringLiteral( "/test_file.qgs" ) );
+  scope.reset( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), TEST_DATA_DIR + QStringLiteral( "/test_file.qgs" ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), TEST_DATA_DIR );
+
+  alg.setSourceFilePath( TEST_DATA_DIR + QStringLiteral( "/processing/my_model.model3" ) );
+  scope.reset( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), TEST_DATA_DIR + QStringLiteral( "/processing/my_model.model3" ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), TEST_DATA_DIR + QStringLiteral( "/processing" ) );
+
+  QgsExpressionContext ctx = alg.createExpressionContext( QVariantMap(), pc );
+  QVERIFY( scope->hasVariable( QStringLiteral( "model_path" ) ) );
+  QVERIFY( scope->hasVariable( QStringLiteral( "model_folder" ) ) );
 }
 
 void TestQgsProcessing::validateInputCrs()

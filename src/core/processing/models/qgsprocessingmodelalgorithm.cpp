@@ -1381,6 +1381,13 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
+QgsExpressionContext QgsProcessingModelAlgorithm::createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
+{
+  QgsExpressionContext res = QgsProcessingAlgorithm::createExpressionContext( parameters, context, source );
+  res << QgsExpressionContextUtils::processingModelAlgorithmScope( this, parameters, context );
+  return res;
+}
+
 QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
 {
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();

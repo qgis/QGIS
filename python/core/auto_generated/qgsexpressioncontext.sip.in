@@ -1079,6 +1079,17 @@ standard scopes such as the global and project scopes.
 Creates a new scope which contains variables and functions relating to a processing ``algorithm``,
 when used with the specified ``parameters`` and ``context``.
 For instance, algorithm name and parameter functions.
+
+.. seealso:: :py:func:`processingModelAlgorithmScope`
+%End
+
+    static QgsExpressionContextScope *processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a processing ``model`` algorithm,
+when used with the specified ``parameters`` and ``context``.
+For instance, model name and path variables.
+
+.. versionadded:: 3.6
 %End
 
     static QgsExpressionContextScope *notificationScope( const QString &message = QString() ) /Factory/;

@@ -189,6 +189,8 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
       alg = mModel->childAlgorithm( mChildId ).algorithm();
     QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
     c << algorithmScope;
+    QgsExpressionContextScope *modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
+    c << modelScope;
     QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() );
     c << childScope;
 
