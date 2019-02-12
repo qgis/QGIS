@@ -423,6 +423,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
     def testRasterRenderer(self):
         class fakerenderer(QgsRasterRenderer):
+
             def __init__(self, interface):
                 QgsRasterRenderer.__init__(self, interface, '')
 

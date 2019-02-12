@@ -527,7 +527,7 @@ class ORTableField(TableField):
     def type2String(self):
         if (u"TIMESTAMP" in self.dataType
             or self.dataType in [u"DATE", u"SDO_GEOMETRY",
-                              u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
+                                 u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
             return u"{}".format(self.dataType)
         if self.charMaxLen in [None, -1]:
             return u"{}".format(self.dataType)

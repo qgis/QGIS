@@ -104,7 +104,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                     if outValue == l:
                         outputName = out.name()
                         break
-                style = None                
+                style = None
                 if outputName:
                     style = RenderingStyles.getStyle(alg.id(), outputName)
                 if style is None:
