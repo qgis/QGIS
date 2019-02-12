@@ -336,11 +336,11 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
 
   // look for RasterSymbolizer tag
   QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
-  if ( elements.size() == 0)
+  if ( elements.size() == 0 )
     return;
 
   // there SHOULD be only one
-  QDomElement rasterSymbolizerElem = elements.at(0).toElement();
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
 
   // add Channel Selection tags
   QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
@@ -366,18 +366,18 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
   {
     switch ( rampShader->colorRampType() )
     {
-    case ( QgsColorRampShader::Exact ):
-      rampType = QStringLiteral( "values" );
-      break;
-    case ( QgsColorRampShader::Discrete ):
-      rampType = QStringLiteral( "intervals" );
-      break;
-    case ( QgsColorRampShader::Interpolated ):
+      case ( QgsColorRampShader::Exact ):
+        rampType = QStringLiteral( "values" );
+        break;
+      case ( QgsColorRampShader::Discrete ):
+        rampType = QStringLiteral( "intervals" );
+        break;
+      case ( QgsColorRampShader::Interpolated ):
       // managed by default
-    default:
-      // TODO: what to do in case of new QgsColorRampShader types?
-      rampType = QStringLiteral( "ramp" );
-      break;
+      default:
+        // TODO: what to do in case of new QgsColorRampShader types?
+        rampType = QStringLiteral( "ramp" );
+        break;
     }
   }
 
@@ -390,7 +390,7 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
   // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
   QList<QgsColorRampShader::ColorRampItem> classes = rampShader->colorRampItemList();
   QList<QgsColorRampShader::ColorRampItem>::const_iterator classDataIt = classes.constBegin();
-  for (; classDataIt != classes.constEnd();  ++classDataIt )
+  for ( ; classDataIt != classes.constEnd();  ++classDataIt )
   {
     QDomElement colorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );
     colorMapElem.appendChild( colorMapEntryElem );

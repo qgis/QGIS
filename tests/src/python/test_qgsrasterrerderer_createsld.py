@@ -88,23 +88,23 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
     def testSingleBandPseudoColorRenderer_Interpolated(self):
         # get min and max of the band to renderer
-        bandNo = 3;
-        stats = self.raster_layer.dataProvider().bandStatistics( bandNo, QgsRasterBandStats.Min | QgsRasterBandStats.Max )
+        bandNo = 3
+        stats = self.raster_layer.dataProvider().bandStatistics(bandNo, QgsRasterBandStats.Min | QgsRasterBandStats.Max)
         minValue = stats.minimumValue
         maxValue = stats.maximumValue
         # create shader for the renderer
-        shader = QgsRasterShader( minValue, maxValue )
-        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue);
-        colorRampShaderFcn.setColorRampType( QgsColorRampShader.Interpolated );
-        colorRampShaderFcn.setClassificationMode( QgsColorRampShader.Continuous );
-        colorRampShaderFcn.setClip( True );
-        items=[]
+        shader = QgsRasterShader(minValue, maxValue)
+        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue)
+        colorRampShaderFcn.setColorRampType(QgsColorRampShader.Interpolated)
+        colorRampShaderFcn.setClassificationMode(QgsColorRampShader.Continuous)
+        colorRampShaderFcn.setClip(True)
+        items = []
         for index in range(10):
-            items.append( QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
-        rasterRenderer = QgsSingleBandPseudoColorRenderer( self.raster_layer.dataProvider(), bandNo, shader )
+        rasterRenderer = QgsSingleBandPseudoColorRenderer(self.raster_layer.dataProvider(), bandNo, shader)
         self.raster_layer.setRenderer(rasterRenderer)
 
         # do test
@@ -114,36 +114,36 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
-        self.assertFalse( colorMap.isNull() )
-        self.assertEqual( colorMap.attribute( 'type' ), 'ramp' )
+        self.assertFalse(colorMap.isNull())
+        self.assertEqual(colorMap.attribute('type'), 'ramp')
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual( colorMapEntry.attribute( 'quantity' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'label' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'opacity' ), '' )
-            self.assertEqual( colorMapEntry.attribute( 'color' ), '#{0:02d}{0:02d}{0:02d}'.format(index) )
+            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('opacity'), '')
+            self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
     def testSingleBandPseudoColorRenderer_Discrete(self):
         # get min and max of the band to renderer
-        bandNo = 3;
-        stats = self.raster_layer.dataProvider().bandStatistics( bandNo, QgsRasterBandStats.Min | QgsRasterBandStats.Max )
+        bandNo = 3
+        stats = self.raster_layer.dataProvider().bandStatistics(bandNo, QgsRasterBandStats.Min | QgsRasterBandStats.Max)
         minValue = stats.minimumValue
         maxValue = stats.maximumValue
         # create shader for the renderer
-        shader = QgsRasterShader( minValue, maxValue )
-        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue);
-        colorRampShaderFcn.setColorRampType( QgsColorRampShader.Discrete );
-        colorRampShaderFcn.setClassificationMode( QgsColorRampShader.Continuous );
-        colorRampShaderFcn.setClip( True );
-        items=[]
+        shader = QgsRasterShader(minValue, maxValue)
+        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue)
+        colorRampShaderFcn.setColorRampType(QgsColorRampShader.Discrete)
+        colorRampShaderFcn.setClassificationMode(QgsColorRampShader.Continuous)
+        colorRampShaderFcn.setClip(True)
+        items = []
         for index in range(10):
-            items.append( QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
-        rasterRenderer = QgsSingleBandPseudoColorRenderer( self.raster_layer.dataProvider(), bandNo, shader )
+        rasterRenderer = QgsSingleBandPseudoColorRenderer(self.raster_layer.dataProvider(), bandNo, shader)
         self.raster_layer.setRenderer(rasterRenderer)
 
         # do test
@@ -153,36 +153,36 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
-        self.assertFalse( colorMap.isNull() )
-        self.assertEqual( colorMap.attribute( 'type' ), 'intervals' )
+        self.assertFalse(colorMap.isNull())
+        self.assertEqual(colorMap.attribute('type'), 'intervals')
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual( colorMapEntry.attribute( 'quantity' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'label' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'opacity' ), '' )
-            self.assertEqual( colorMapEntry.attribute( 'color' ), '#{0:02d}{0:02d}{0:02d}'.format(index) )
+            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('opacity'), '')
+            self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
     def testSingleBandPseudoColorRenderer_Exact(self):
         # get min and max of the band to renderer
-        bandNo = 3;
-        stats = self.raster_layer.dataProvider().bandStatistics( bandNo, QgsRasterBandStats.Min | QgsRasterBandStats.Max )
+        bandNo = 3
+        stats = self.raster_layer.dataProvider().bandStatistics(bandNo, QgsRasterBandStats.Min | QgsRasterBandStats.Max)
         minValue = stats.minimumValue
         maxValue = stats.maximumValue
         # create shader for the renderer
-        shader = QgsRasterShader( minValue, maxValue )
-        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue);
-        colorRampShaderFcn.setColorRampType( QgsColorRampShader.Exact );
-        colorRampShaderFcn.setClassificationMode( QgsColorRampShader.Continuous );
-        colorRampShaderFcn.setClip( True );
-        items=[]
+        shader = QgsRasterShader(minValue, maxValue)
+        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue)
+        colorRampShaderFcn.setColorRampType(QgsColorRampShader.Exact)
+        colorRampShaderFcn.setClassificationMode(QgsColorRampShader.Continuous)
+        colorRampShaderFcn.setClip(True)
+        items = []
         for index in range(10):
-            items.append( QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
-        rasterRenderer = QgsSingleBandPseudoColorRenderer( self.raster_layer.dataProvider(), bandNo, shader )
+        rasterRenderer = QgsSingleBandPseudoColorRenderer(self.raster_layer.dataProvider(), bandNo, shader)
         self.raster_layer.setRenderer(rasterRenderer)
 
         # do test
@@ -192,32 +192,32 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
-        self.assertFalse( colorMap.isNull() )
-        self.assertEqual( colorMap.attribute( 'type' ), 'values' )
-        self.assertFalse( colorMap.hasAttribute( 'extendend' ) )
+        self.assertFalse(colorMap.isNull())
+        self.assertEqual(colorMap.attribute('type'), 'values')
+        self.assertFalse(colorMap.hasAttribute('extendend'))
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual( colorMapEntry.attribute( 'quantity' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'label' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'opacity' ), '' )
-            self.assertEqual( colorMapEntry.attribute( 'color' ), '#{0:02d}{0:02d}{0:02d}'.format(index) )
+            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('opacity'), '')
+            self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
         # add check that is set ColoMap extended="true" if colormap is bigger that 255 entries
         # !NOTE! can't reuse previous shader => segmentation fault
-        shader = QgsRasterShader( minValue, maxValue )
-        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue);
-        colorRampShaderFcn.setColorRampType( QgsColorRampShader.Exact );
-        colorRampShaderFcn.setClassificationMode( QgsColorRampShader.Continuous );
-        colorRampShaderFcn.setClip( True );
-        items=[]
+        shader = QgsRasterShader(minValue, maxValue)
+        colorRampShaderFcn = QgsColorRampShader(minValue, maxValue)
+        colorRampShaderFcn.setColorRampType(QgsColorRampShader.Exact)
+        colorRampShaderFcn.setClassificationMode(QgsColorRampShader.Continuous)
+        colorRampShaderFcn.setClip(True)
+        items = []
         for index in range(255):
-            items.append( QgsColorRampShader.ColorRampItem(index, QColor.fromHsv(index, 255,255,255), "{}".format(index) ) )
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor.fromHsv(index, 255, 255, 255), "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
-        rasterRenderer = QgsSingleBandPseudoColorRenderer( self.raster_layer.dataProvider(), bandNo, shader )
+        rasterRenderer = QgsSingleBandPseudoColorRenderer(self.raster_layer.dataProvider(), bandNo, shader)
         # self.raster_layer.setRenderer(rasterRenderer)
         # dom, root = self.rendererToSld(self.raster_layer.renderer())
         # self.assertTrue( colorMap.hasAttribute( 'extendend' ) )
@@ -229,7 +229,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         classesString = ''
         for index in range(10):
             classesString += '{0} {0} {0} {0} 255 {0}\n'.format(index)
-        classes = QgsPalettedRasterRenderer.classDataFromString( classesString )
+        classes = QgsPalettedRasterRenderer.classDataFromString(classesString)
 
         rasterRenderer = QgsPalettedRasterRenderer(
             self.raster_layer.dataProvider(), 3, classes)
@@ -241,39 +241,39 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
-        self.assertFalse( colorMap.isNull() )
-        self.assertEqual( colorMap.attribute( 'type' ), 'values' )
-        self.assertFalse( colorMap.hasAttribute( 'extendend' ) )
+        self.assertFalse(colorMap.isNull())
+        self.assertEqual(colorMap.attribute('type'), 'values')
+        self.assertFalse(colorMap.hasAttribute('extendend'))
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual( colorMapEntry.attribute( 'quantity' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'label' ), '{}'.format(index) )
-            self.assertEqual( colorMapEntry.attribute( 'opacity' ), '' )
-            self.assertEqual( colorMapEntry.attribute( 'color' ), '#{0:02d}{0:02d}{0:02d}'.format(index) )
+            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('opacity'), '')
+            self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
         # add check that is set ColoMap extended="true" if colormap is bigger that 255 entries
         classesString = ''
         values = range(255)
         for index in range(255):
             classesString += '{0} {1} {1} {1} 255 {0}\n'.format(index, random.choice(values))
-        classes = QgsPalettedRasterRenderer.classDataFromString( classesString )
+        classes = QgsPalettedRasterRenderer.classDataFromString(classesString)
         rasterRenderer = QgsPalettedRasterRenderer(
             self.raster_layer.dataProvider(), 3, classes)
         self.raster_layer.setRenderer(rasterRenderer)
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
-        self.assertTrue( colorMap.hasAttribute( 'extended' ) )
-        self.assertEqual( colorMap.attribute( 'extended' ), 'true' )
+        self.assertTrue(colorMap.hasAttribute('extended'))
+        self.assertEqual(colorMap.attribute('extended'), 'true')
 
     def testMultiBandColorRenderer(self):
         rasterRenderer = QgsMultiBandColorRenderer(
             self.raster_layer.dataProvider(), 3, 1, 2)
         self.raster_layer.setRenderer(rasterRenderer)
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.StretchToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax );
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.StretchToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
 
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertNoOpacity(root)
@@ -283,10 +283,10 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
     def testSingleBandGrayRenderer(self):
         # check with StretchToMinimumMaximum
-        rasterRenderer = QgsSingleBandGrayRenderer( self.raster_layer.dataProvider(), 3 )
+        rasterRenderer = QgsSingleBandGrayRenderer(self.raster_layer.dataProvider(), 3)
         self.raster_layer.setRenderer(rasterRenderer)
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.StretchToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax )
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.StretchToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
         maximum = self.raster_layer.renderer().contrastEnhancement().maximumValue()
         minmum = self.raster_layer.renderer().contrastEnhancement().minimumValue()
         self.assertEqual(minmum, 51)
@@ -298,23 +298,23 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertChannelBand(root, 'sld:GrayChannel', '3')
 
         elements = root.elementsByTagName('sld:ContrastEnhancement')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         enhancement = elements.at(0).toElement()
-        self.assertFalse( enhancement.isNull() )
+        self.assertFalse(enhancement.isNull())
 
-        normalize = enhancement.firstChildElement( 'sld:Normalize' )
-        self.assertFalse( normalize.isNull() )
+        normalize = enhancement.firstChildElement('sld:Normalize')
+        self.assertFalse(normalize.isNull())
         self.assertVendorOption(normalize, 'algorithm', 'StretchToMinimumMaximum')
         self.assertVendorOption(normalize, 'minValue', '51')
         self.assertVendorOption(normalize, 'maxValue', '172')
 
         elements = root.elementsByTagName('sld:ColorMap')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         colorMap = elements.at(0).toElement()
-        self.assertFalse( colorMap.isNull() )
+        self.assertFalse(colorMap.isNull())
 
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
-        self.assertEqual( len(colorMapEntries), 2)
+        self.assertEqual(len(colorMapEntries), 2)
         clorMap1 = colorMapEntries.at(0)
         self.assertEqual(clorMap1.attributes().namedItem('color').nodeValue(), '#000000')
         self.assertEqual(clorMap1.attributes().namedItem('quantity').nodeValue(), '0')
@@ -325,8 +325,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
         # check when StretchAndClipToMinimumMaximum
         # then min/max have always to be the real one and not that set in the contrastEnhancement
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.StretchAndClipToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax )
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.StretchAndClipToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
         minmum = self.raster_layer.renderer().contrastEnhancement().setMinimumValue(100)
         maximum = self.raster_layer.renderer().contrastEnhancement().maximumValue()
         minmum = self.raster_layer.renderer().contrastEnhancement().minimumValue()
@@ -338,22 +338,22 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertChannelBand(root, 'sld:GrayChannel', '3')
 
         elements = root.elementsByTagName('sld:ContrastEnhancement')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         enhancement = elements.at(0).toElement()
-        self.assertFalse( enhancement.isNull() )
+        self.assertFalse(enhancement.isNull())
 
-        normalize = enhancement.firstChildElement( 'sld:Normalize' )
-        self.assertFalse( normalize.isNull() )
+        normalize = enhancement.firstChildElement('sld:Normalize')
+        self.assertFalse(normalize.isNull())
         self.assertVendorOption(normalize, 'minValue', '51')
         self.assertVendorOption(normalize, 'maxValue', '172')
 
         elements = root.elementsByTagName('sld:ColorMap')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         colorMap = elements.at(0).toElement()
-        self.assertFalse( colorMap.isNull() )
+        self.assertFalse(colorMap.isNull())
 
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
-        self.assertEqual( len(colorMapEntries), 4)
+        self.assertEqual(len(colorMapEntries), 4)
         clorMap1 = colorMapEntries.at(0)
         self.assertEqual(clorMap1.attributes().namedItem('color').nodeValue(), '#000000')
         self.assertEqual(clorMap1.attributes().namedItem('quantity').nodeValue(), '100')
@@ -374,8 +374,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
         # check when ClipToMinimumMaximum
         # then min/max have always to be the real one and not that set in the contrastEnhancement
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.ClipToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax )
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.ClipToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
         minmum = self.raster_layer.renderer().contrastEnhancement().setMinimumValue(100)
         maximum = self.raster_layer.renderer().contrastEnhancement().maximumValue()
         minmum = self.raster_layer.renderer().contrastEnhancement().minimumValue()
@@ -387,22 +387,22 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertChannelBand(root, 'sld:GrayChannel', '3')
 
         elements = root.elementsByTagName('sld:ContrastEnhancement')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         enhancement = elements.at(0).toElement()
-        self.assertFalse( enhancement.isNull() )
+        self.assertFalse(enhancement.isNull())
 
-        normalize = enhancement.firstChildElement( 'sld:Normalize' )
-        self.assertFalse( normalize.isNull() )
+        normalize = enhancement.firstChildElement('sld:Normalize')
+        self.assertFalse(normalize.isNull())
         self.assertVendorOption(normalize, 'minValue', '51')
         self.assertVendorOption(normalize, 'maxValue', '172')
 
         elements = root.elementsByTagName('sld:ColorMap')
-        self.assertEqual( len(elements), 1)
+        self.assertEqual(len(elements), 1)
         colorMap = elements.at(0).toElement()
-        self.assertFalse( colorMap.isNull() )
+        self.assertFalse(colorMap.isNull())
 
         colorMapEntries = colorMap.elementsByTagName('sld:ColorMapEntry')
-        self.assertEqual( len(colorMapEntries), 4)
+        self.assertEqual(len(colorMapEntries), 4)
         clorMap1 = colorMapEntries.at(0)
         self.assertEqual(clorMap1.attributes().namedItem('color').nodeValue(), '#000000')
         self.assertEqual(clorMap1.attributes().namedItem('quantity').nodeValue(), '100')
@@ -426,7 +426,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
             def __init__(self, interface):
                 QgsRasterRenderer.__init__(self, interface, '')
 
-        rasterRenderer = fakerenderer( self.raster_layer.dataProvider() )
+        rasterRenderer = fakerenderer(self.raster_layer.dataProvider())
         self.raster_layer.setRenderer(rasterRenderer)
 
         # check opacity default value is not exported
@@ -465,31 +465,31 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.raster_layer.setRenderer(rasterRenderer)
 
         # check StretchToMinimumMaximum stretching alg
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.StretchToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax );
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.StretchToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertContrastEnhancement(root, 'sld:RedChannel', 'StretchToMinimumMaximum', '51', '172')
         self.assertContrastEnhancement(root, 'sld:GreenChannel', 'StretchToMinimumMaximum', '122', '130')
         self.assertContrastEnhancement(root, 'sld:BlueChannel', 'StretchToMinimumMaximum', '133', '148')
 
         # check StretchAndClipToMinimumMaximum stretching alg
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.StretchAndClipToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax );
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.StretchAndClipToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertContrastEnhancement(root, 'sld:RedChannel', 'ClipToZero', '51', '172')
         self.assertContrastEnhancement(root, 'sld:GreenChannel', 'ClipToZero', '122', '130')
         self.assertContrastEnhancement(root, 'sld:BlueChannel', 'ClipToZero', '133', '148')
 
         # check ClipToMinimumMaximum stretching alg
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.ClipToMinimumMaximum,
-                                                  limits=QgsRasterMinMaxOrigin.MinMax );
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.ClipToMinimumMaximum,
+                                                 limits=QgsRasterMinMaxOrigin.MinMax)
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertContrastEnhancement(root, 'sld:RedChannel', 'ClipToMinimumMaximum', '51', '172')
         self.assertContrastEnhancement(root, 'sld:GreenChannel', 'ClipToMinimumMaximum', '122', '130')
         self.assertContrastEnhancement(root, 'sld:BlueChannel', 'ClipToMinimumMaximum', '133', '148')
 
         # check NoEnhancement stretching alg
-        self.raster_layer.setContrastEnhancement( algorithm=QgsContrastEnhancement.NoEnhancement );
+        self.raster_layer.setContrastEnhancement(algorithm=QgsContrastEnhancement.NoEnhancement)
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertContrastEnhancement(root, 'sld:RedChannel')
         self.assertContrastEnhancement(root, 'sld:GreenChannel')
@@ -502,18 +502,17 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         for vendorOptionIndex in range(vendorOptions.count()):
             vendorOption = vendorOptions.at(vendorOptionIndex)
             self.assertEqual('sld:VendorOption', vendorOption.nodeName())
-            if ( vendorOption.attributes().namedItem('name').nodeValue() == name):
+            if (vendorOption.attributes().namedItem('name').nodeValue() == name):
                 found = True
                 self.assertEqual(vendorOption.firstChild().nodeValue(), expectedValue)
-        if ( expectedValue is None )  and found:
+        if (expectedValue is None) and found:
             self.fail("found VendorOption: {} where supposed not present".format(name))
         if expectedValue and not found:
             self.fail("Not found VendorOption: {}".format(name))
 
-
     def assertGamma(self, root, expectedValue, index=0):
         enhancement = root.elementsByTagName('sld:ContrastEnhancement').item(index)
-        gamma = enhancement.firstChildElement( 'sld:GammaValue' )
+        gamma = enhancement.firstChildElement('sld:GammaValue')
         self.assertEqual(expectedValue, gamma.firstChild().nodeValue())
 
     def assertOpacity(self, root, expectedValue, index=0):
@@ -527,33 +526,33 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
     def assertContrastEnhancement(self, root, bandTag, expectedAlg=None, expectedMin=None, expectedMax=None, index=0):
         channelSelection = root.elementsByTagName('sld:ChannelSelection').item(index)
         self.assertIsNotNone(channelSelection)
-        band = channelSelection.firstChildElement( bandTag )
+        band = channelSelection.firstChildElement(bandTag)
         # check if no enhancement alg is iset
-        if ( not expectedAlg ):
+        if (not expectedAlg):
             contrastEnhancementName = band.firstChildElement('sld:ContrastEnhancement')
             self.assertEqual('', contrastEnhancementName.firstChild().nodeName())
             return
         # check if enhancement alg is set
         contrastEnhancementName = band.firstChildElement('sld:ContrastEnhancement')
         self.assertEqual('sld:Normalize', contrastEnhancementName.firstChild().nodeName())
-        normalize = contrastEnhancementName.firstChildElement( 'sld:Normalize' )
+        normalize = contrastEnhancementName.firstChildElement('sld:Normalize')
         vendorOptions = normalize.elementsByTagName('VendorOption')
         for vendorOptionIndex in range(vendorOptions.count()):
             vendorOption = vendorOptions.at(vendorOptionIndex)
             self.assertEqual('VendorOption', vendorOption.nodeName())
-            if ( vendorOption.attributes().namedItem('name').nodeValue() == 'algorithm'):
+            if (vendorOption.attributes().namedItem('name').nodeValue() == 'algorithm'):
                 self.assertEqual(expectedAlg, vendorOption.firstChild().nodeValue())
             elif (vendorOption.attributes().namedItem('name').nodeValue() == 'minValue'):
                 self.assertEqual(expectedMin, vendorOption.firstChild().nodeValue())
             elif (vendorOption.attributes().namedItem('name').nodeValue() == 'maxValue'):
                 self.assertEqual(expectedMax, vendorOption.firstChild().nodeValue())
             else:
-                self.fail('Unrecognised vendorOption name {}'.format(vendorOption.attributes().namedItem('name').nodeValue()) )
+                self.fail('Unrecognised vendorOption name {}'.format(vendorOption.attributes().namedItem('name').nodeValue()))
 
     def assertChannelBand(self, root, bandTag, expectedValue, index=0):
         channelSelection = root.elementsByTagName('sld:ChannelSelection').item(index)
         self.assertIsNotNone(channelSelection)
-        band = channelSelection.firstChildElement( bandTag )
+        band = channelSelection.firstChildElement(bandTag)
         sourceChannelName = band.firstChildElement('sld:SourceChannelName')
         self.assertEqual(expectedValue, sourceChannelName.firstChild().nodeValue())
 

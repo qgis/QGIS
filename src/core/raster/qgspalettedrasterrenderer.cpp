@@ -252,11 +252,11 @@ void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
   // look for RasterSymbolizer tag
   QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
-  if ( elements.size() == 0)
+  if ( elements.size() == 0 )
     return;
 
   // there SHOULD be only one
-  QDomElement rasterSymbolizerElem = elements.at(0).toElement();
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
 
   // add Channel Selection tags
   QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
@@ -282,7 +282,7 @@ void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
   QList<QgsPalettedRasterRenderer::Class> classes = this->classes();
   QList<QgsPalettedRasterRenderer::Class>::const_iterator classDataIt = classes.constBegin();
-  for (; classDataIt != classes.constEnd();  ++classDataIt )
+  for ( ; classDataIt != classes.constEnd();  ++classDataIt )
   {
     QDomElement colorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );
     colorMapElem.appendChild( colorMapEntryElem );

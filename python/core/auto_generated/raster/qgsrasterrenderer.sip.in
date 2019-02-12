@@ -115,7 +115,7 @@ Sets origin of min/max values
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 %Docstring
-! Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+Used from subclasses to create SLD Rule elements following SLD v1.0 specs
 
 .. versionadded:: 3.6
 %End
