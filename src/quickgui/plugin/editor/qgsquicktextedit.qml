@@ -46,7 +46,6 @@ Item {
     anchors.left: parent.left
     anchors.right: parent.right
     font.pixelSize: customStyle.fontPixelSize
-    wrapMode: Text.Wrap
     color: customStyle.fontColor
 
     text: value || ''
@@ -66,8 +65,8 @@ Item {
 
     background: Rectangle {
         anchors.fill: parent
-        border.color: comboBox.pressed ? customStyle.activeColor : customStyle.normalColor
-        border.width: comboBox.visualFocus ? 2 : 1
+        border.color: textField.activeFocus ? customStyle.activeColor : customStyle.normalColor
+        border.width: textField.activeFocus ? 2 : 1
         color: customStyle.backgroundColor
         radius: customStyle.cornerRadius
     }
@@ -80,19 +79,14 @@ Item {
   TextArea {
     id: textArea
     height: config['IsMultiline'] === true ? undefined : 0
-    Layout.fillWidth: true
-    Layout.fillHeight: true
     topPadding: customStyle.height * 0.25
     bottomPadding: customStyle.height * 0.25
-
-
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
     font.pixelSize: customStyle.fontPixelSize
     wrapMode: Text.Wrap
     color: customStyle.fontColor
-
     text: value || ''
     textFormat: config['UseHtml'] ? TextEdit.RichText : TextEdit.PlainText
 
