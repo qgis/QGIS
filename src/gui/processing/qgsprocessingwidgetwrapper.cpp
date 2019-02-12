@@ -243,7 +243,7 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
     if ( mWidgetContext.model()->childAlgorithms().contains( mWidgetContext.modelChildAlgorithmId() ) )
       alg = mWidgetContext.model()->childAlgorithm( mWidgetContext.modelChildAlgorithmId() ).algorithm();
 
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), *context );
+    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : mParameterDefinition->algorithm(), QVariantMap(), *context );
     c << algorithmScope;
     QgsExpressionContextScope *childScope = mWidgetContext.model()->createExpressionContextScopeForChildAlgorithm( mWidgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
     c << childScope;
@@ -254,6 +254,11 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
     highlightedFunctions += algorithmScope->functionNames();
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );
+  }
+  else
+  {
+    if ( mParameterDefinition->algorithm() )
+      c << QgsExpressionContextUtils::processingAlgorithmScope( mParameterDefinition->algorithm(), QVariantMap(), *context );
   }
 
   if ( linkedVectorLayer() )

@@ -41,7 +41,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
-                       QgsProject)
+                       QgsProject,
+                       QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext)
 from qgis.utils import iface
@@ -128,6 +129,8 @@ class ParametersPanel(BASE, WIDGET):
         widget_context = QgsProcessingParameterWidgetContext()
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
+        if isinstance(self.alg, QgsProcessingModelAlgorithm):
+            widget_context.setModel(self.alg)
 
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():

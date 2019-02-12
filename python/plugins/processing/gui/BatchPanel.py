@@ -35,7 +35,8 @@ from qgis.PyQt.QtCore import QDir, QFileInfo
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingParameterWidgetContext,
                       QgsProcessingContextGenerator)
 from qgis.utils import iface
@@ -273,6 +274,9 @@ class BatchPanel(BASE, WIDGET):
             widget_context = QgsProcessingParameterWidgetContext()
             if iface is not None:
                 widget_context.setMapCanvas(iface.mapCanvas())
+            if isinstance(self.alg, QgsProcessingModelAlgorithm):
+                widget_context.setModel(self.alg)
+
             wrapper.setWidgetContext(widget_context)
             widget = wrapper.createWrappedWidget(context)
             wrapper.registerProcessingContextGenerator(self.context_generator)
