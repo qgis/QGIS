@@ -908,7 +908,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     qInfo() << nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     if ( name.isEmpty() )
       name = nodeLayer->name();
-    qInfo() << nodeLayer->( '1' + name() );
+    qInfo() << ( '1' + nodeLayer->name() );
     if ( name.isEmpty() )
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     qInfo() << ( '2' + node->customProperty( QStringLiteral( "legend/title-label" ) ).toString() );
@@ -943,7 +943,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
       QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
       // get non-embedded node since embedded nodes should pop un as ltmln in theory
-      qInfo() << ( "Symbol list size " + QVariant( legendNode.count() ).toString() );
+      qInfo() << ( "Symbol list size " + QVariant( legendNodes.count() ).toString() );
       if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
       {
         name = synode->evaluateLabel( context, name );
