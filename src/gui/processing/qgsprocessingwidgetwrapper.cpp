@@ -239,6 +239,8 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
 
   if ( mWidgetContext.model() )
   {
+    c << QgsExpressionContextUtils::processingModelAlgorithmScope( mWidgetContext.model(), QVariantMap(), *context );
+
     const QgsProcessingAlgorithm *alg = nullptr;
     if ( mWidgetContext.model()->childAlgorithms().contains( mWidgetContext.modelChildAlgorithmId() ) )
       alg = mWidgetContext.model()->childAlgorithm( mWidgetContext.modelChildAlgorithmId() ).algorithm();

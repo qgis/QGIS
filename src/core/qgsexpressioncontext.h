@@ -41,6 +41,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingContext;
 class QgsLayoutAtlas;
 class QgsLayoutItem;
+class QgsProcessingModelAlgorithm;
 
 /**
  * \ingroup core
@@ -987,8 +988,17 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Creates a new scope which contains variables and functions relating to a processing \a algorithm,
      * when used with the specified \a parameters and \a context.
      * For instance, algorithm name and parameter functions.
+     * \see processingModelAlgorithmScope()
      */
     static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a processing \a model algorithm,
+     * when used with the specified \a parameters and \a context.
+     * For instance, model name and path variables.
+     * \since QGIS 3.6
+     */
+    static QgsExpressionContextScope *processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Creates a new scope which contains variables and functions relating to provider notifications
