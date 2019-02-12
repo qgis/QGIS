@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsmultibandcolorrenderer.cpp
-                         -----------------------------
-    begin                : December 2011
-    copyright            : (C) 2011 by Marco Hugentobler
-    email                : marco at sourcepole dot ch
- ***************************************************************************/
+                        qgsmultibandcolorrenderer.cpp
+                        -----------------------------
+   begin                : December 2011
+   copyright            : (C) 2011 by Marco Hugentobler
+   email                : marco at sourcepole dot ch
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
