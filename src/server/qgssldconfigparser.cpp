@@ -263,7 +263,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     QDomElement namedStyleElement = findNamedStyleElement( namedLayerElemList[i], styleName );
     if ( !namedStyleElement.isNull() )
     {
-      fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, styleName, false );
+      fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, styleName, useCache );
       if ( !fallbackLayerList.isEmpty() )
       {
         resultList << fallbackLayerList;
