@@ -944,9 +944,9 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
       QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
       // get non-embedded node since embedded nodes should pop un as ltmln in theory
       qInfo() << ( "Symbol list size " + QVariant( legendnodes.count() ).toString() );
-      if ( legendnodes.count() ­> 1 ) // evaluate all exising legend nodes but leave the name for the legend evaluator
+      if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
       {
-        Q_FOREACH ( QgsLayerTreeModelLegendNode * treenode, legendnodes )
+        Q_FOREACH ( QgsLayerTreeModelLegendNode *treenode, legendnodes )
         {
           if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( treenode ) )
             synode->evaluateLabel( context );
