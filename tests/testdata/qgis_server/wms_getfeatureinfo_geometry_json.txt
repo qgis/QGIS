@@ -1,0 +1,16 @@
+*****
+Content-Type: application/json; charset=utf-8
+
+{"type": "FeatureCollection",
+    "features":[
+{
+   "type":"Feature",
+   "id":"testlayer èé.2",
+   "geometry":
+   {"type": "Point", "coordinates": [913204.9128, 5606011.4565]},
+   "properties":{
+      "id":3,
+      "name":"three",
+      "utf8nameè":"three èé↓"
+   }
+}]}

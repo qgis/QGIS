@@ -177,7 +177,7 @@ Negative rounds to powers of 10</string>
    <item row="5" column="0">
     <widget class="QLabel" name="lblSize">
      <property name="text">
-      <string>Size from </string>
+      <string>Size from</string>
      </property>
      <property name="buddy">
       <cstring>minSizeSpinBox</cstring>

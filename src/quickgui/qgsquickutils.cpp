@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QApplication>
 #include <QDesktopWidget>
 #include <QString>
 

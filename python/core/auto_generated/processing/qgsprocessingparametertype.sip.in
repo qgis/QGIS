@@ -51,6 +51,27 @@ A human readable and translatable short name for this parameter type.
 This will be used in comboboxes and list widgets.
 %End
 
+
+    virtual QString pythonImportString() const;
+%Docstring
+Returns a valid Python import string for importing the corresponding parameter type,
+e.g. "from qgis.core import :py:class:`QgsProcessingParameterBoolean`".
+
+.. seealso:: :py:func:`className`
+
+.. versionadded:: 3.6
+%End
+
+
+    virtual QString className() const;
+%Docstring
+Returns the corresponding class name for the parameter type.
+
+.. seealso:: :py:func:`pythonImportString`
+
+.. versionadded:: 3.6
+%End
+
     virtual QString id() const = 0;
 %Docstring
 A static id for this type which will be used for storing this parameter type.

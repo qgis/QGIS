@@ -1,0 +1,19 @@
+*****
+Content-Type: application/json; charset=utf-8
+
+{"type": "FeatureCollection",
+    "features":[
+{"type":"Feature",
+"id":"landsat",
+"properties":{
+    "Band 1": "125",
+    "Band 2": "138",
+    "Band 3": "112",
+    "Band 4": "75",
+    "Band 5": "90",
+    "Band 6": "132",
+    "Band 7": "165",
+    "Band 8": "217",
+    "Band 9": "175"
+}
+}]}

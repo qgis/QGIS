@@ -40,7 +40,7 @@ Format the exception for sending to client
 
 
 :return: - QByteArray the fermatted response.
-         - responseFormat:  QString to store the content type of the response format.
+         - responseFormat: QString to store the content type of the response format.
 
 The defaolt implementation return text/xml format.
 %End

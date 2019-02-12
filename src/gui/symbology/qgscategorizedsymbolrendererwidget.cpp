@@ -26,6 +26,7 @@
 #include "qgscolorrampbutton.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -37,6 +38,7 @@
 #include "qgsexpression.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -194,7 +196,8 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
     {
       if ( index.column() == 0 && category.symbol() )
       {
-        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
+        const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ) );
       }
       break;
     }

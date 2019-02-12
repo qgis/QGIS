@@ -53,8 +53,10 @@
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgsfeatureid.h"
+
 
 
 const QString QgsExpressionFunction::helpText() const

@@ -12,7 +12,11 @@
 # py files located under /usr/share/qgis/python/plugins
 %global __python %{__python3}
 
+%if 0%{?fedora} >= 30
+%define grass grass76
+%else
 %define grass grass74
+%endif
 
 %if %{_timestamp} > 0
 # Epoch is set only when building packages from master
@@ -250,6 +254,8 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 
 %find_lang %{name} --with-qt
 
+# TODO: Remove after F28 EoL
+# Ref: https://fedoraproject.org/wiki/Changes/RemoveObsoleteScriptlets
 %post
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -275,6 +281,7 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %post -n python3-qgis -p /sbin/ldconfig
 
 %postun -n python3-qgis -p /sbin/ldconfig
+# END TODO #
 
 %files -f %{name}.lang
 %doc BUGS NEWS Exception_to_GPL_for_Qt.txt ChangeLog.gz

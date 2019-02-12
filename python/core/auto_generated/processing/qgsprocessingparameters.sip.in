@@ -297,13 +297,23 @@ layers and other factors within the context.
 %Docstring
 Returns a string version of the parameter input ``value``, which is suitable for use as an input
 parameter value when running an algorithm directly from a Python command.
-The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
 %End
 
     virtual QString asScriptCode() const;
 %Docstring
 Returns the parameter definition encoded in a string which can be used within a
-Python processing script.
+Processing script.
+%End
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+%Docstring
+Returns the parameter definition as a Python command which can be used within a
+Python Processing script.
+
+The ``outputType`` argument specifies the desired output format for the Python string,
+i.e. the intended end use of the generated Python code.
+
+.. versionadded:: 3.6
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1172,6 +1182,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     Behavior behavior() const;
 %Docstring
@@ -1244,6 +1256,8 @@ Returns the type name for the parameter class.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QStringList headers() const;
@@ -1343,6 +1357,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QgsProcessing::SourceType layerType() const;
 %Docstring
@@ -1439,6 +1455,8 @@ Returns the type name for the parameter class.
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString toolTip() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     double minimum() const;
@@ -1542,6 +1560,8 @@ Returns the type name for the parameter class.
 
     virtual QStringList dependsOnOtherParameters() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QString parentParameterName() const;
 %Docstring
@@ -1613,6 +1633,8 @@ Returns the type name for the parameter class.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QgsProcessingParameterNumber::Type dataType() const;
@@ -1713,6 +1735,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QStringList options() const;
 %Docstring
@@ -1784,6 +1808,8 @@ Returns the type name for the parameter class.
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     bool multiLine() const;
@@ -1887,6 +1913,8 @@ Returns the type name for the parameter class.
 
     virtual QStringList dependsOnOtherParameters() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QString parentLayerParameterName() const;
 %Docstring
@@ -1985,6 +2013,8 @@ Returns the type name for the parameter class.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -2080,6 +2110,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
     virtual QStringList dependsOnOtherParameters() const;
 
 
@@ -2171,6 +2203,8 @@ Returns the type name for the parameter class.
 
     virtual QString asScriptCode() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -2211,6 +2245,8 @@ output will not be created by default.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 /Factory/;
@@ -2321,6 +2357,8 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
@@ -2410,6 +2448,8 @@ Returns the type name for the parameter class.
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
 
     virtual QString defaultFileExtension() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
@@ -2551,6 +2591,8 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
 
     QString fileFilter() const;
 %Docstring
@@ -2657,6 +2699,8 @@ Returns the type name for the parameter class.
     virtual QString asScriptCode() const;
 
     virtual QStringList dependsOnOtherParameters() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     QString parentLayerParameterName() const;

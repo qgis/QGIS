@@ -626,7 +626,7 @@ QString QgsGdalProvider::htmlMetadata()
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Origin" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[0] ) + QStringLiteral( "," ) + QString::number( mGeoTransform[3] ) + QStringLiteral( "</td></tr>\n" );
 
     // Pixel size
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Pixel Size" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[1] ) + QStringLiteral( "," ) + QString::number( mGeoTransform[5] ) + QStringLiteral( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Pixel Size" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[1], 'g', 19 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[5], 'g', 19 ) + QStringLiteral( "</td></tr>\n" );
   }
 
   return myMetadata;
@@ -1280,7 +1280,9 @@ double QgsGdalProvider::bandScale( int bandNo ) const
   GDALRasterBandH myGdalBand = getBand( bandNo );
   int bGotScale;
   double myScale = GDALGetRasterScale( myGdalBand, &bGotScale );
-  if ( bGotScale )
+
+  // if scale==0, ignore both scale and offset
+  if ( bGotScale && !qgsDoubleNear( myScale, 0.0 ) )
     return myScale;
   else
     return 1.0;
@@ -1293,6 +1295,13 @@ double QgsGdalProvider::bandOffset( int bandNo ) const
     return 0.0;
 
   GDALRasterBandH myGdalBand = getBand( bandNo );
+
+  // if scale==0, ignore both scale and offset
+  int bGotScale;
+  double myScale = GDALGetRasterScale( myGdalBand, &bGotScale );
+  if ( bGotScale && qgsDoubleNear( myScale, 0.0 ) )
+    return 0.0;
+
   int bGotOffset;
   double myOffset = GDALGetRasterOffset( myGdalBand, &bGotOffset );
   if ( bGotOffset )

@@ -104,26 +104,26 @@ void TestQgsAppBrowserProviders::testProjectItemCreation()
     {
       child->populate( true );
 
-      QCOMPARE( child->children().count(), 4 );
-      QVERIFY( dynamic_cast< QgsProjectLayerTreeGroupItem * >( child->children().at( 0 ) ) );
-      QCOMPARE( child->children().at( 0 )->name(), QStringLiteral( "groupwithoutshortname" ) );
+      QCOMPARE( child->children().count(), 7 );
+      QVERIFY( dynamic_cast< QgsProjectLayerTreeGroupItem * >( child->children().at( 2 ) ) );
+      QCOMPARE( child->children().at( 2 )->name(), QStringLiteral( "groupwithoutshortname" ) );
 
-      QCOMPARE( child->children().at( 0 )->children().count(), 1 );
-      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 0 )->children().at( 0 ) ) );
-      QCOMPARE( child->children().at( 0 )->children().at( 0 )->name(), QStringLiteral( "testlayer3" ) );
+      QCOMPARE( child->children().at( 2 )->children().count(), 1 );
+      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 2 )->children().at( 0 ) ) );
+      QCOMPARE( child->children().at( 2 )->children().at( 0 )->name(), QStringLiteral( "testlayer3" ) );
 
-      QVERIFY( dynamic_cast< QgsProjectLayerTreeGroupItem * >( child->children().at( 1 ) ) );
-      QCOMPARE( child->children().at( 1 )->name(), QStringLiteral( "groupwithshortname" ) );
+      QVERIFY( dynamic_cast< QgsProjectLayerTreeGroupItem * >( child->children().at( 3 ) ) );
+      QCOMPARE( child->children().at( 3 )->name(), QStringLiteral( "groupwithshortname" ) );
 
-      QCOMPARE( child->children().at( 1 )->children().count(), 1 );
-      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 1 )->children().at( 0 ) ) );
-      QCOMPARE( child->children().at( 1 )->children().at( 0 )->name(), QStringLiteral( "testlayer2" ) );
+      QCOMPARE( child->children().at( 3 )->children().count(), 1 );
+      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 3 )->children().at( 0 ) ) );
+      QCOMPARE( child->children().at( 3 )->children().at( 0 )->name(), QStringLiteral( "testlayer2" ) );
 
-      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 2 ) ) );
-      QCOMPARE( child->children().at( 2 )->name(), QStringLiteral( "testlayer" ) );
+      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 5 ) ) );
+      QCOMPARE( child->children().at( 5 )->name(), QStringLiteral( "testlayer" ) );
 
-      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 3 ) ) );
-      QCOMPARE( child->children().at( 3 )->name(), QStringLiteral( "testlayer \u00E8\u00E9" ) );
+      QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 6 ) ) );
+      QCOMPARE( child->children().at( 6 )->name(), QStringLiteral( "testlayer \u00E8\u00E9" ) );
 
       delete dirItem;
       return;

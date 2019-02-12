@@ -40,6 +40,7 @@
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )

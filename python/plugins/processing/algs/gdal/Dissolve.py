@@ -124,6 +124,7 @@ class Dissolve(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
@@ -142,6 +143,7 @@ class Dissolve(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append('-nlt PROMOTE_TO_MULTI')
         arguments.append('-dialect')
         arguments.append('sqlite')
         arguments.append('-sql')

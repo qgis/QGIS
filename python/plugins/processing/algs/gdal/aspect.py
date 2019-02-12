@@ -110,6 +110,7 @@ class aspect(GdalAlgorithm):
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(out)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))

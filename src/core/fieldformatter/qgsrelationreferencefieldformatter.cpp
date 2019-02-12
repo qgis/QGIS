@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 QString QgsRelationReferenceFieldFormatter::id() const
 {

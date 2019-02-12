@@ -19,6 +19,7 @@
 
 
 #include "qgswmsutils.h"
+#include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
 #include "qgsfilterrestorer.h"
 #include "qgsexception.h"
@@ -62,6 +63,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QImage>
 #include <QPainter>
@@ -1119,6 +1121,8 @@ namespace QgsWms
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
+    else if ( infoFormat == QgsWmsParameters::Format::JSON )
+      ba = convertFeatureInfoToJson( layers, result );
     else
       ba = result.toByteArray();
 
@@ -2275,6 +2279,131 @@ namespace QgsWms
     return featureInfoString.toUtf8();
   }
 
+  QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc ) const
+  {
+    QString json;
+    json.append( QStringLiteral( "{\"type\": \"FeatureCollection\",\n" ) );
+    json.append( QStringLiteral( "    \"features\":[\n" ) );
+
+    const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
+
+    const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
+    for ( int i = 0; i < layerList.size(); ++i )
+    {
+      const QDomElement layerElem = layerList.at( i ).toElement();
+      const QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
+
+      QgsMapLayer *layer;
+      for ( QgsMapLayer *l : layers )
+      {
+        if ( layerNickname( *l ).compare( layerName ) == 0 )
+        {
+          layer = l;
+        }
+      }
+
+      if ( ! layer )
+        continue;
+
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+
+        // search features to export
+        QgsFeatureList features;
+        QgsAttributeList attributes;
+        const QDomNodeList featuresNode = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
+        if ( featuresNode.isEmpty() )
+          continue;
+
+        for ( int j = 0; j < featuresNode.size(); ++j )
+        {
+          const QDomElement featureNode = featuresNode.at( j ).toElement();
+          const QgsFeatureId fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
+          QgsFeature feature = QgsFeature( vl->getFeature( fid ) );
+
+          QString wkt;
+          if ( withGeometry )
+          {
+            const QDomNodeList attrs = featureNode.elementsByTagName( "Attribute" );
+            for ( int k = 0; k < attrs.count(); k++ )
+            {
+              const QDomElement elm = attrs.at( k ).toElement();
+              if ( elm.attribute( QStringLiteral( "name" ) ).compare( "geometry" ) == 0 )
+              {
+                wkt = elm.attribute( "value" );
+                break;
+              }
+            }
+
+            if ( ! wkt.isEmpty() )
+            {
+              // CRS in WMS parameters may be different from the layer
+              feature.setGeometry( QgsGeometry::fromWkt( wkt ) );
+            }
+          }
+          features << feature;
+
+          // search attributes to export (one time only)
+          if ( !attributes.isEmpty() )
+            continue;
+
+          const QDomNodeList attributesNode = featureNode.elementsByTagName( QStringLiteral( "Attribute" ) );
+          for ( int k = 0; k < attributesNode.size(); ++k )
+          {
+            const QDomElement attributeElement = attributesNode.at( k ).toElement();
+            const QString fieldName = attributeElement.attribute( QStringLiteral( "name" ) );
+
+            attributes << feature.fieldNameIndex( fieldName );
+          }
+        }
+
+        // export
+        QgsJsonExporter exporter( vl );
+        exporter.setAttributeDisplayName( true );
+        exporter.setAttributes( attributes );
+        exporter.setIncludeGeometry( withGeometry );
+
+        for ( const auto feature : features )
+        {
+          if ( json.right( 1 ).compare( QStringLiteral( "}" ) ) == 0 )
+          {
+            json.append( QStringLiteral( "," ) );
+          }
+
+          const QString id = QStringLiteral( "%1.%2" ).arg( layer->name(), QgsJsonUtils::encodeValue( feature.id() ) );
+          json.append( exporter.exportFeature( feature, QVariantMap(), id ) );
+        }
+      }
+      else // raster layer
+      {
+        json.append( QStringLiteral( "{" ) );
+        json.append( QStringLiteral( "\"type\":\"Feature\",\n" ) );
+        json.append( QStringLiteral( "\"id\":\"%1\",\n" ).arg( layer->name() ) );
+        json.append( QStringLiteral( "\"properties\":{\n" ) );
+
+        const QDomNodeList attributesNode = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
+        for ( int j = 0; j < attributesNode.size(); ++j )
+        {
+          const QDomElement attrElmt = attributesNode.at( j ).toElement();
+          const QString name = attrElmt.attribute( QStringLiteral( "name" ) );
+          const QString value = attrElmt.attribute( QStringLiteral( "value" ) );
+
+          if ( j > 0 )
+            json.append( QStringLiteral( ",\n" ) );
+
+          json.append( QStringLiteral( "    \"%1\": \"%2\"" ).arg( name, value ) );
+        }
+
+        json.append( QStringLiteral( "\n}\n}" ) );
+      }
+    }
+
+    json.append( QStringLiteral( "]}" ) );
+
+    return json.toUtf8();
+  }
+
   QDomElement QgsRenderer::createFeatureGML(
     QgsFeature *feat,
     QgsVectorLayer *layer,
@@ -2952,16 +3081,26 @@ namespace QgsWms
   {
     if ( opacity >= 0 && opacity <= 255 )
     {
-      if ( layer->type() == QgsMapLayer::LayerType::VectorLayer )
+      switch ( layer->type() )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        vl->setOpacity( opacity / 255. );
-      }
-      else if ( layer->type() == QgsMapLayer::LayerType::RasterLayer )
-      {
-        QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-        QgsRasterRenderer *rasterRenderer = rl->renderer();
-        rasterRenderer->setOpacity( opacity / 255. );
+        case QgsMapLayer::LayerType::VectorLayer:
+        {
+          QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+          vl->setOpacity( opacity / 255. );
+          break;
+        }
+
+        case QgsMapLayer::LayerType::RasterLayer:
+        {
+          QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+          QgsRasterRenderer *rasterRenderer = rl->renderer();
+          rasterRenderer->setOpacity( opacity / 255. );
+          break;
+        }
+
+        case QgsMapLayer::MeshLayer:
+        case QgsMapLayer::PluginLayer:
+          break;
       }
     }
   }

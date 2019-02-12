@@ -87,7 +87,7 @@ Finds the vector join for a layer field index.
 :param fields: fields of the vector layer (including joined fields)
 
 :return: - the vector layer join info
-         - sourceFieldIndex:  Output: field's index in source layer
+         - sourceFieldIndex: Output: field's index in source layer
 %End
 
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );

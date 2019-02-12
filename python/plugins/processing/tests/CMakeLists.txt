@@ -6,6 +6,7 @@ PLUGIN_INSTALL(processing tests/testdata ${TEST_DATA_FILES})
 
 IF(ENABLE_TESTS)
   INCLUDE(UsePythonTest)
+  ADD_PYTHON_TEST(ProcessingGeneralTest ProcessingGeneralTest.py)
   ADD_PYTHON_TEST(ProcessingGuiTest GuiTest.py)
   ADD_PYTHON_TEST(ProcessingModelerTest ModelerTest.py)
   ADD_PYTHON_TEST(ProcessingProjectProviderTest ProjectProvider.py)

@@ -48,6 +48,7 @@
 #include "qgsproperty.h"
 #include "qgscolorschemeregistry.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -740,7 +741,7 @@ class GeometryRestorer
 };
 ///@endcond PRIVATE
 
-void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
+void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, double currentVertexMarkerSize )
 {
   const QgsGeometry geom = feature.geometry();
   if ( geom.isNull() )
@@ -936,14 +937,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
         {
-          if ( i == 0 )
-          {
-            markers = pts;
-          }
-          else
-          {
-            markers << pts;
-          }
+          markers << pts;
         }
       }
     }
@@ -998,14 +992,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
           if ( drawVertexMarker && !usingSegmentizedGeometry )
           {
-            if ( i == 0 )
-            {
-              markers = pts;
-            }
-            else
-            {
-              markers << pts;
-            }
+            markers << pts;
 
             Q_FOREACH ( const QPolygonF &hole, holes )
             {
@@ -1076,9 +1063,10 @@ QgsSymbolRenderContext *QgsSymbol::symbolRenderContext()
   return mSymbolRenderContext.get();
 }
 
-void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize )
+void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, double currentVertexMarkerSize )
 {
-  QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(), static_cast< QgsVectorLayer::VertexMarkerType >( currentVertexMarkerType ), currentVertexMarkerSize );
+  int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
+  QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), static_cast< QgsSymbolLayerUtils::VertexMarkerType >( currentVertexMarkerType ), markerSize );
 }
 
 ////////////////////
@@ -1321,6 +1309,21 @@ double QgsMarkerSymbol::size() const
     double lsize = markerLayer->size();
     if ( lsize > maxSize )
       maxSize = lsize;
+  }
+  return maxSize;
+}
+
+double QgsMarkerSymbol::size( const QgsRenderContext &context ) const
+{
+  // return size of the largest symbol
+  double maxSize = 0;
+  for ( QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->type() != QgsSymbol::Marker )
+      continue;
+    const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
+    const double layerSize = context.convertToPainterUnits( markerLayer->size(), markerLayer->sizeUnit(), markerLayer->sizeMapUnitScale() );
+    maxSize = std::max( maxSize, layerSize );
   }
   return maxSize;
 }
@@ -1643,6 +1646,21 @@ double QgsLineSymbol::width() const
       if ( width > maxWidth )
         maxWidth = width;
     }
+  }
+  return maxWidth;
+}
+
+double QgsLineSymbol::width( const QgsRenderContext &context ) const
+{
+  // return width of the largest symbol
+  double maxWidth = 0;
+  for ( QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->type() != QgsSymbol::Line )
+      continue;
+    const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
+    const double layerWidth = lineLayer->width( context );
+    maxWidth = std::max( maxWidth, layerWidth );
   }
   return maxWidth;
 }

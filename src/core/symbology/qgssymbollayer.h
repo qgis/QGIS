@@ -791,7 +791,29 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual void setWidth( double width ) { mWidth = width; }
+
+    /**
+     * Returns the estimated width for the line symbol layer.
+     *
+     * \warning This returned value is inaccurate if the symbol layer has sub-symbols with
+     * different width units. Use the overload accepting a QgsRenderContext
+     * argument instead for accurate sizes in this case.
+     *
+     * \see setWidth()
+     */
     virtual double width() const { return mWidth; }
+
+    /**
+     * Returns the line symbol layer width, in painter units.
+     *
+     * This method returns an accurate width by calculating the actual rendered
+     * width of the symbol layer using the provided render \a context.
+     *
+     * \see setWidth()
+     *
+     * \since QGIS 3.4.5
+     */
+    virtual double width( const QgsRenderContext &context ) const;
 
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }

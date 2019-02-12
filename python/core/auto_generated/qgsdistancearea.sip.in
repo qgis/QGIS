@@ -238,7 +238,7 @@ otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFac
 :param azimuth: - azimuth in radians, clockwise from North
 
 :return: - distance in mapUnits
-         - projectedPoint:  calculated projected point
+         - projectedPoint: calculated projected point
 
 .. seealso:: :py:func:`sourceCrs`
 
@@ -405,7 +405,7 @@ will also be in this same CRS.
 :param p2: Ending point, in ellipsoidCrs()
 
 :return: - the latitude at which the geodesic crosses the antimeridian
-         - fractionAlongLine:  will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
+         - fractionAlongLine: will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
 
 .. seealso:: :py:func:`splitGeometryAtAntimeridian`
 

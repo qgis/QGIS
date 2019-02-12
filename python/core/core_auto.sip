@@ -1,5 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/expression/qgsexpression.sip
+%Include auto_generated/expression/qgsexpressioncontextutils.sip
 %Include auto_generated/expression/qgsexpressionnode.sip
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
 %Include auto_generated/expression/qgsexpressionfunction.sip
@@ -32,7 +33,6 @@
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
 %Include auto_generated/qgsdatumtransform.sip
 %Include auto_generated/qgsdbfilterproxymodel.sip
-%Include auto_generated/qgsdefaultvalue.sip
 %Include auto_generated/qgsdiagramrenderer.sip
 %Include auto_generated/qgsdistancearea.sip
 %Include auto_generated/qgseditformconfig.sip
@@ -319,6 +319,7 @@
 %Include auto_generated/qgsactionscoperegistry.sip
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsauxiliarystorage.sip
+%Include auto_generated/qgsblockingnetworkrequest.sip
 %Include auto_generated/qgsbrowsermodel.sip
 %Include auto_generated/qgsbrowserproxymodel.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip
@@ -326,6 +327,7 @@
 %Include auto_generated/qgsdataitem.sip
 %Include auto_generated/qgsdataprovider.sip
 %Include auto_generated/qgsdatasourceuri.sip
+%Include auto_generated/qgsdefaultvalue.sip
 %Include auto_generated/qgsfeature.sip
 %Include auto_generated/qgsfeedback.sip
 %Include auto_generated/qgsfield.sip

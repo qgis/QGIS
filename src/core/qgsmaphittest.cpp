@@ -25,6 +25,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( settings )

@@ -93,7 +93,7 @@ Execute the ``sql`` string.
 :param name: Name of the transaction ( only used if `isDirty` is true)
 
 :return: - true if everything is OK, false otherwise
-         - error:  The error message
+         - error: The error message
 %End
 
     static bool supportsTransaction( const QgsVectorLayer *layer );

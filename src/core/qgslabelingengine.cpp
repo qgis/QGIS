@@ -26,6 +26,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
 #include "qgssymbol.h"
+#include "qgsexpressioncontextutils.h"
 
 // helper function for checking for job cancelation within PAL
 static bool _palIsCanceled( void *ctx )

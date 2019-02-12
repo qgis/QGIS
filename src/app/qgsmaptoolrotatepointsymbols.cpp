@@ -220,11 +220,10 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
 
   if ( markerSymbol )
   {
-    QgsSymbol *clone = markerSymbol->clone();
-    QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone );
+    std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
+    QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
     pointImage = markerClone->bigSymbolPreviewImage();
-    delete clone;
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );

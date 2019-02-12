@@ -15,6 +15,7 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#include <cmath>
 
 #include <QtGlobal>
 #include <QApplication>
@@ -69,14 +70,14 @@ email                : sherman at mrcc.com
 #include "qgscoordinatetransformcontext.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
-#include <cmath>
+#include "qgsexpressioncontextutils.h"
 
 /**
  * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * \note not available in Python bindings
 */
-//TODO QGIS 3.0 - remove
+//TODO QGIS 4.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -1010,7 +1011,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
     QgsPointXY closestPoint;
-    double closestSquaredDistance = extentRect.width() + extentRect.height();
+    double closestSquaredDistance = pow( extentRect.width(), 2.0 ) + pow( extentRect.height(), 2.0 );
     bool pointFound = false;
     while ( fit.nextFeature( f ) )
     {

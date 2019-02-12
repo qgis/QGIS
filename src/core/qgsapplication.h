@@ -549,19 +549,19 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's color scheme registry, used for managing color schemes.
      * \since QGIS 3.0
      */
-    static QgsColorSchemeRegistry *colorSchemeRegistry();
+    static QgsColorSchemeRegistry *colorSchemeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's paint effect registry, used for managing paint effects.
      * \since QGIS 3.0
      */
-    static QgsPaintEffectRegistry *paintEffectRegistry();
+    static QgsPaintEffectRegistry *paintEffectRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's renderer registry, used for managing vector layer renderers.
      * \since QGIS 3.0
      */
-    static QgsRendererRegistry *rendererRegistry();
+    static QgsRendererRegistry *rendererRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
@@ -575,7 +575,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * providers that may add items to the browser tree.
      * \since QGIS 3.0
      */
-    static QgsDataItemProviderRegistry *dataItemProviderRegistry();
+    static QgsDataItemProviderRegistry *dataItemProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
@@ -598,13 +598,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
-    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's validity check registry, used for managing validity checks.
      * \since QGIS 3.6
      */
-    static QgsValidityCheckRegistry *validityCheckRegistry();
+    static QgsValidityCheckRegistry *validityCheckRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
@@ -669,7 +669,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.0
      */
-    static QgsActionScopeRegistry *actionScopeRegistry();
+    static QgsActionScopeRegistry *actionScopeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application runtime profiler.
@@ -680,19 +680,19 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Gets the registry of available field formatters.
      */
-    static QgsFieldFormatterRegistry *fieldFormatterRegistry();
+    static QgsFieldFormatterRegistry *fieldFormatterRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available 3D renderers.
      * \since QGIS 3.0
      */
-    static Qgs3DRendererRegistry *renderer3DRegistry();
+    static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available project storage implementations.
      * \since QGIS 3.2
      */
-    static QgsProjectStorageRegistry *projectStorageRegistry();
+    static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.

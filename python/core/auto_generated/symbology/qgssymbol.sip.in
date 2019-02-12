@@ -428,7 +428,7 @@ Returns whether the symbol utilizes any data defined properties.
 .. deprecated:: Will be removed in QGIS 4.0
 %End
 
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
+    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 );
 %Docstring
 Render a feature. Before calling this the startRender() method should be called to initialize
 the rendering process. After rendering all features stopRender() must be called.
@@ -487,7 +487,7 @@ This is required for layers that generate their own geometry from other
 information in the rendering context.
 %End
 
-    void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize );
+    void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, double currentVertexMarkerSize );
 %Docstring
 Render editing vertex marker at specified point
 
@@ -687,6 +687,10 @@ Will take ownership.
 
 class QgsMarkerSymbol : QgsSymbol
 {
+%Docstring
+
+A marker symbol type, for rendering Point and MultiPoint geometries.
+%End
 
 %TypeHeaderCode
 #include "qgssymbol.h"
@@ -700,6 +704,11 @@ This is a convenience method for easier creation of marker symbols.
 %End
 
     QgsMarkerSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
+%Docstring
+Constructor for QgsMarkerSymbol, with the specified list of initial symbol ``layers``.
+
+Ownership of the ``layers`` are transferred to the symbol.
+%End
 
     void setAngle( double symbolAngle );
 %Docstring
@@ -770,14 +779,37 @@ will be scaled to maintain their current relative size to the whole symbol size.
 
     double size() const;
 %Docstring
-Returns the size for the whole symbol, which is the maximum size of
+Returns the estimated size for the whole symbol, which is the maximum size of
 all marker symbol layers in the symbol.
+
+.. warning::
+
+   This returned value is inaccurate if the symbol consists of multiple
+   symbol layers with different size units. Use the overload accepting a :py:class:`QgsRenderContext`
+   argument instead for accurate sizes in this case.
 
 .. seealso:: :py:func:`setSize`
 
 .. seealso:: :py:func:`sizeUnit`
 
 .. seealso:: :py:func:`sizeMapUnitScale`
+%End
+
+    double size( const QgsRenderContext &context ) const;
+%Docstring
+Returns the symbol size, in painter units. This is the maximum size of
+all marker symbol layers in the symbol.
+
+This method returns an accurate size by calculating the actual rendered
+size of each symbol layer using the provided render ``context``.
+
+.. seealso:: :py:func:`setSize`
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. versionadded:: 3.4.5
 %End
 
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
@@ -890,6 +922,10 @@ and stopRender() calls, or data defined rotation and offset will not be correctl
 
 class QgsLineSymbol : QgsSymbol
 {
+%Docstring
+
+A line symbol type, for rendering LineString and MultiLineString geometries.
+%End
 
 %TypeHeaderCode
 #include "qgssymbol.h"
@@ -903,9 +939,46 @@ This is a convenience method for easier creation of line symbols.
 %End
 
     QgsLineSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
+%Docstring
+Constructor for QgsLineSymbol, with the specified list of initial symbol ``layers``.
+
+Ownership of the ``layers`` are transferred to the symbol.
+%End
 
     void setWidth( double width );
+%Docstring
+Sets the ``width`` for the whole line symbol. Individual symbol layer sizes
+will be scaled to maintain their current relative size to the whole symbol size.
+
+.. seealso:: :py:func:`width`
+%End
+
     double width() const;
+%Docstring
+Returns the estimated width for the whole symbol, which is the maximum width of
+all marker symbol layers in the symbol.
+
+.. warning::
+
+   This returned value is inaccurate if the symbol consists of multiple
+   symbol layers with different width units. Use the overload accepting a :py:class:`QgsRenderContext`
+   argument instead for accurate sizes in this case.
+
+.. seealso:: :py:func:`setWidth`
+%End
+
+    double width( const QgsRenderContext &context ) const;
+%Docstring
+Returns the symbol width, in painter units. This is the maximum width of
+all marker symbol layers in the symbol.
+
+This method returns an accurate width by calculating the actual rendered
+width of each symbol layer using the provided render ``context``.
+
+.. seealso:: :py:func:`setWidth`
+
+.. versionadded:: 3.4.5
+%End
 
     void setDataDefinedWidth( const QgsProperty &property );
 %Docstring
@@ -938,6 +1011,10 @@ Returns data defined width for whole symbol (including all symbol layers).
 
 class QgsFillSymbol : QgsSymbol
 {
+%Docstring
+
+A fill symbol type, for rendering Polygon and MultiPolygon geometries.
+%End
 
 %TypeHeaderCode
 #include "qgssymbol.h"
@@ -951,6 +1028,11 @@ This is a convenience method for easier creation of fill symbols.
 %End
 
     QgsFillSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
+%Docstring
+Constructor for QgsFillSymbol, with the specified list of initial symbol ``layers``.
+
+Ownership of the ``layers`` are transferred to the symbol.
+%End
     void setAngle( double angle );
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 

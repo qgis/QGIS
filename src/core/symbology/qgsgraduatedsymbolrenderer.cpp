@@ -33,6 +33,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>

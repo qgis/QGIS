@@ -149,6 +149,7 @@ class proximity(GdalAlgorithm):
             nodata = None
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         arguments = []
         arguments.append('-srcband')
@@ -186,8 +187,11 @@ class proximity(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
         if isWindows():
-            commands.insert(0, 'python3')
+            commands = ["python3", "-m", self.commandName()]
+        else:
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

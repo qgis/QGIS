@@ -166,7 +166,7 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     QgsRectangle toLayerCoordinates( QgsMapLayer *layer, const QgsRectangle &rect ) const;
     QgsFeatureList identifyVectorLayer( QgsVectorLayer *layer, const QgsPointXY &point ) const;
 
-    double mSearchRadiusMm = 8;
+    double mSearchRadiusMm = 5;
     int mFeaturesLimit = 100;
     IdentifyMode mIdentifyMode = IdentifyMode::TopDownAll;
 };

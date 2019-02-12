@@ -309,6 +309,17 @@ Sets map of map layer style overrides (key: layer ID, value: style name) where a
 .. versionadded:: 2.10
 %End
 
+    static int scaleIconSize( int standardSize );
+%Docstring
+Scales an layer tree model icon size to compensate for display pixel density, making the icon
+size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+displays.
+
+``standardSize`` should be set to a standard icon size, e.g. 16, 24, 48, etc.
+
+.. versionadded:: 3.6
+%End
+
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );

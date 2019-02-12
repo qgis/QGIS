@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsreadwritecontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -71,6 +72,7 @@ class TestQgsLayoutTable : public QObject
     void cellStyles(); //test cell styles
     void cellStylesRender(); //test rendering cell styles
     void dataDefinedSource();
+    void wrappedText();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -239,6 +241,30 @@ void TestQgsLayoutTable::attributeTableFilterFeatures()
   expectedRows.append( row );
 
   //retrieve rows and check
+  compareTable( table, expectedRows );
+
+  table->setFeatureFilter( QStringLiteral( "\"Class\"=@airplane_class" ) );
+  table->setFilterFeatures( true );
+  expectedRows.clear();
+  compareTable( table, expectedRows );
+
+  QgsExpressionContextUtils::setLayoutVariable( &l, QStringLiteral( "airplane_class" ), QStringLiteral( "Biplane" ) );
+
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "0" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "300" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "2" ) << QStringLiteral( "5" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "270" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "4" ) << QStringLiteral( "7" );
+  expectedRows.append( row );
+  row.clear();
+  row << QStringLiteral( "Biplane" ) << QStringLiteral( "240" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "2" ) << QStringLiteral( "5" );
+  expectedRows.append( row );
   compareTable( table, expectedRows );
 }
 
@@ -1386,6 +1412,20 @@ void TestQgsLayoutTable::dataDefinedSource()
   table->refreshAttributes();
   QCOMPARE( table->contents().length(), 1 );
   QCOMPARE( table->contents().at( 0 ), QVector< QVariant >() << 1 << 2 << 3 );
+}
+
+void TestQgsLayoutTable::wrappedText()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemAttributeTable *t = new QgsLayoutItemAttributeTable( &l );
+  t->setWrapBehavior( QgsLayoutTable::WrapText );
+
+  QFont f;
+  QString sourceText( "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua" );
+  QString wrapText = t->wrappedText( sourceText, 100 /*columnWidth*/, f );
+  //there should be no line break before the last word (bug #20546)
+  QVERIFY( !wrapText.endsWith( "\naliqua" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutTable )

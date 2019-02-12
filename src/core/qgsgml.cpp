@@ -61,6 +61,8 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   mExtent.setMinimal();
 
   QNetworkRequest request( uri );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGml" ) );
+
   if ( !authcfg.isEmpty() )
   {
     if ( !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )

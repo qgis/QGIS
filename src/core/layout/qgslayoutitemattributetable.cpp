@@ -28,6 +28,7 @@
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 //QgsLayoutAttributeTableCompare
 
@@ -411,6 +412,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     {
       activeFilter = true;
       req.setFilterExpression( mFeatureFilter );
+      req.setExpressionContext( context );
     }
   }
 

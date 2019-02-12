@@ -58,8 +58,6 @@ class ProcessingConfig:
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
     SHOW_CRS_DEF = 'SHOW_CRS_DEF'
     WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
-    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
-    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
 
     settings = {}
@@ -126,7 +124,7 @@ class ProcessingConfig:
             valuetype=Setting.FILE))
 
         invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
-                                  ProcessingConfig.tr('Ignore features with invalid geometries'),
+                                  ProcessingConfig.tr('Skip (ignore) features with invalid geometries'),
                                   ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -135,24 +133,6 @@ class ProcessingConfig:
             invalidFeaturesOptions[2],
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
-
-        extensions = QgsVectorFileWriter.supportedFormatExtensions()
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
-            ProcessingConfig.tr('Default output vector layer extension'),
-            extensions[0],
-            valuetype=Setting.SELECTION,
-            options=extensions))
-
-        extensions = QgsRasterFileWriter.supportedFormatExtensions()
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
-            ProcessingConfig.tr('Default output raster layer extension'),
-            extensions[0],
-            valuetype=Setting.SELECTION,
-            options=extensions))
 
     @staticmethod
     def setGroupIcon(group, icon):

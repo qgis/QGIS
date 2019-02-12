@@ -294,10 +294,7 @@ bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 }
 
 
-QgsVertexEditor::QgsVertexEditor(
-  QgsVectorLayer *layer,
-  QgsSelectedFeature *selectedFeature,
-  QgsMapCanvas *canvas )
+QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   : mCanvas( canvas )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
@@ -309,7 +306,7 @@ QgsVertexEditor::QgsVertexEditor(
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   mHintLabel = new QLabel( this );
-  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on the edge of an editable feature to show its table of vertices." ),
+  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ),
                        tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
   mHintLabel->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
@@ -328,11 +325,9 @@ QgsVertexEditor::QgsVertexEditor(
   layout->addWidget( mHintLabel );
 
   setWidget( content );
-
-  updateEditor( layer, selectedFeature );
 }
 
-void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature )
+void QgsVertexEditor::updateEditor( QgsSelectedFeature *selectedFeature )
 {
   if ( mSelectedFeature )
   {
@@ -340,13 +335,12 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
     mVertexModel = nullptr;
   }
 
-  mLayer = layer;
   mSelectedFeature = selectedFeature;
 
-  if ( mLayer && mSelectedFeature )
+  if ( mSelectedFeature )
   {
     // TODO We really should just update the model itself.
-    mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+    mVertexModel = new QgsVertexEditorModel( mSelectedFeature->layer(), mSelectedFeature, mCanvas, this );
     mTableView->setModel( mVertexModel );
 
     mHintLabel->setVisible( false );
@@ -398,7 +392,7 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
 
   mSelectedFeature->deselectAllVertices();
 
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QgsCoordinateTransform t( mSelectedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   std::unique_ptr<QgsRectangle> bbox;
   QModelIndexList indexList = selected.indexes();
   for ( int i = 0; i < indexList.length(); ++i )

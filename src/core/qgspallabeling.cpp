@@ -1038,12 +1038,14 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f, QgsRenderContext *context )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context )
 {
   if ( !fm || !f )
   {
     return;
   }
+
+  QString textCopy( text );
 
   //try to keep < 2.12 API - handle no passed render context
   std::unique_ptr< QgsRenderContext > scopedRc;
@@ -1150,29 +1152,25 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
 
     if ( placeDirSymb == QgsPalLayerSettings::SymbolLeftRight )
     {
-      text.append( dirSym );
+      textCopy.append( dirSym );
     }
     else
     {
-      text.prepend( dirSym + QStringLiteral( "\n" ) ); // SymbolAbove or SymbolBelow
+      textCopy.prepend( dirSym + QStringLiteral( "\n" ) ); // SymbolAbove or SymbolBelow
     }
   }
 
   double w = 0.0, h = 0.0;
-  QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+  const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
   int lines = multiLineSplit.size();
 
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
 
   h += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
 
-  for ( int i = 0; i < lines; ++i )
+  for ( const QString &line : multiLineSplit )
   {
-    double width = fm->width( multiLineSplit.at( i ) );
-    if ( width > w )
-    {
-      w = width;
-    }
+    w = std::max( w, fm->width( line ) );
   }
 
 #if 0 // XXX strk
@@ -1186,7 +1184,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
 #endif
 }
 
-void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
+void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngine (labelFeature is set)
   Q_ASSERT( labelFeature );
@@ -1995,7 +1993,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   lf->setDataDefinedValues( dataDefinedValues );
 }
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry )
+void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry )
 {
   mCurFeat = &f;
 

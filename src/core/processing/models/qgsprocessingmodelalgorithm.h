@@ -57,6 +57,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
+    QgsExpressionContext createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const override;
 
     /**
      * Sets the model \a name.
@@ -304,9 +305,13 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void setSourceFilePath( const QString &path );
 
     /**
-     * Attempts to convert the model to executable Python code.
+     * Attempts to convert the model to executable Python code, and returns the generated lines of code.
+     *
+     * The \a outputType argument dictates the desired script type.
+     *
+     * The \a indentSize arguments specifies the size of indented lines.
      */
-    QString asPythonCode() const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
 
     /**
      * Returns a list of possible sources which can be used for the parameters for a child

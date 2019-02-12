@@ -54,7 +54,7 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
-  QByteArray curi = uri.toAscii();
+  QByteArray curi = uri.toUtf8();
   mMeshH = MDAL_LoadMesh( curi.constData() );
   if ( mMeshH )
   {

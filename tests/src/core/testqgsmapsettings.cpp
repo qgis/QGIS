@@ -28,6 +28,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsexpressioncontextutils.h"
 
 class TestQgsMapSettings: public QObject
 {

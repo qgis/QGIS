@@ -38,6 +38,7 @@ from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 class DeleteModelAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate('DeleteModelAction', 'Delete Model…')
 
     def isEnabled(self):

@@ -129,10 +129,11 @@ class CORE_EXPORT QgsPalLayerSettings
     //! copy operator - only copies the permanent members
     QgsPalLayerSettings &operator=( const QgsPalLayerSettings &s );
 
+    //TODO QGIS 4.0 - move to QgsLabelingEngine
+
     /**
      * Placement modes which determine how label candidates are generated for a feature.
      */
-    //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum Placement
     {
       AroundPoint, //!< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.
@@ -145,8 +146,8 @@ class CORE_EXPORT QgsPalLayerSettings
       PerimeterCurved, //! Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
     };
 
+    //TODO QGIS 4.0 - move to QgsLabelingEngine
     //! Positions for labels when using the QgsPalLabeling::OrderedPositionsAroundPoint placement mode
-    //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum PredefinedPointPosition
     {
       TopLeft, //!< Label on top-left of point
@@ -163,22 +164,24 @@ class CORE_EXPORT QgsPalLayerSettings
       BottomRight, //!< Label on bottom right of point
     };
 
+    //TODO QGIS 4.0 - move to QgsLabelingEngine
+
     /**
      * Behavior modifier for label offset and distance, only applies in some
      * label placement modes.
      */
-    //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum OffsetType
     {
       FromPoint, //!< Offset distance applies from point geometry
       FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
     };
 
+    //TODO QGIS 4.0 - move to QgsLabelingEngine, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
+    //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
+
     /**
      * Line placement flags, which control how candidates are generated for a linear feature.
      */
-    //TODO QGIS 3.0 - move to QgsLabelingEngine, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
-    //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
     enum LinePlacementFlags
     {
       OnLine    = 1,      //!< Labels can be placed directly over a line feature.
@@ -229,11 +232,12 @@ class CORE_EXPORT QgsPalLayerSettings
                                will be drawn with right alignment*/
     };
 
+    //TODO QGIS 4.0 - Move to QgsLabelingEngine
+
     /**
      * Valid obstacle types, which affect how features within the layer will act as obstacles
      * for labels.
      */
-    //TODO QGIS 3.0 - Move to QgsLabelingEngine
     enum ObstacleType
     {
       PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
@@ -750,8 +754,11 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex;
 
-    // called from register feature hook
-    void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
+    /**
+     * Calculates the space required to render the provided \a text in map units.
+     * Results will be written to \a labelX and \a labelY.
+     */
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
 
     /**
      * Register a feature for labeling.
@@ -766,7 +773,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
      */
-    void registerFeature( QgsFeature &f, QgsRenderContext &context,
+    void registerFeature( const QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
                           QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
 
@@ -823,7 +830,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
 
     // temporary stuff: set when layer gets prepared or labeled
-    QgsFeature *mCurFeat = nullptr;
+    const QgsFeature *mCurFeat = nullptr;
     QgsFields mCurFields;
     int fieldIndex;
     const QgsMapToPixel *xform = nullptr;
@@ -835,7 +842,6 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
-
   private:
 
     friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
@@ -899,7 +905,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
+    void registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     QMap<Property, QVariant> dataDefinedValues;
 

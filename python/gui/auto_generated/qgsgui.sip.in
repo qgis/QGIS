@@ -32,12 +32,12 @@ Returns a pointer to the singleton instance.
 %End
 
 
-    static QgsEditorWidgetRegistry *editorWidgetRegistry();
+    static QgsEditorWidgetRegistry *editorWidgetRegistry() /KeepReference/;
 %Docstring
 Returns the global editor widget registry, used for managing all known edit widget factories.
 %End
 
-    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry();
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() /KeepReference/;
 %Docstring
 Returns the global source select provider registry, used for managing all known source select widget factories.
 %End
@@ -47,22 +47,22 @@ Returns the global source select provider registry, used for managing all known 
 Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
 %End
 
-    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry();
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() /KeepReference/;
 %Docstring
 Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
 %End
 
-    static QgsMapLayerActionRegistry *mapLayerActionRegistry();
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry() /KeepReference/;
 %Docstring
 Returns the global map layer action registry, used for registering map layer actions.
 %End
 
-    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() /KeepReference/;
 %Docstring
 Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
 %End
 
-    static QgsProcessingGuiRegistry *processingGuiRegistry();
+    static QgsProcessingGuiRegistry *processingGuiRegistry() /KeepReference/;
 %Docstring
 Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
 
@@ -76,7 +76,7 @@ Returns the global processing recent algorithm log, used for tracking recently u
 .. versionadded:: 3.4
 %End
 
-    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry();
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /KeepReference/;
 %Docstring
 Returns the global data item GUI provider registry, used for tracking providers which affect the browser
 GUI.

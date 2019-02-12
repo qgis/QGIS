@@ -298,9 +298,15 @@ Loads this child from a QVariant.
 .. seealso:: :py:func:`toVariant`
 %End
 
-    QString asPythonCode() const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize ) const;
 %Docstring
-Attempts to convert the child to executable Python code.
+Attempts to convert the child to executable Python code, and returns a list of the generated lines of code.
+
+The ``outputType`` argument specifies the type of script to generate.
+
+Additional parameters to be passed to the child algorithm are specified in the ``extraParameters`` argument.
+
+The ``currentIndent`` and ``indentSize`` are used to set the base line indent and size of further indented lines respectively.
 %End
 
 };

@@ -22,6 +22,7 @@
 #include <QStackedWidget>
 #include <QToolButton>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QPlainTextEdit>
 
 #include "qgstest.h"
@@ -43,7 +44,11 @@
 #include "qgsmapcanvas.h"
 #include "qgsauthconfigselect.h"
 #include "qgsauthmanager.h"
+#include "qgsprocessingmatrixparameterdialog.h"
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsfilewidget.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsfieldexpressionwidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -148,12 +153,16 @@ class TestProcessingGui : public QObject
     void testModelerWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
+    void testFileWrapper();
     void testAuthCfgWrapper();
     void testCrsWrapper();
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
     void testRangeWrapper();
+    void testMatrixDialog();
+    void testMatrixWrapper();
+    void testExpressionWrapper();
 
   private:
 
@@ -402,6 +411,20 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
     QgsProcessingContext &mContext;
 };
 
+
+class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+{
+  public:
+    TestLayerWrapper( const QgsProcessingParameterDefinition *parameter = nullptr )
+      : QgsAbstractProcessingParameterWidgetWrapper( parameter )
+    {}
+    QWidget *createWidget() override { return nullptr; }
+    void setWidgetValue( const QVariant &val, QgsProcessingContext & ) override { v = val;}
+    QVariant widgetValue() const override { return v; }
+
+    QVariant v;
+};
+
 void TestProcessingGui::testWrapperDynamic()
 {
   const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
@@ -435,15 +458,20 @@ void TestProcessingGui::testWrapperDynamic()
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   p.addMapLayer( vl );
 
+  TestLayerWrapper layerWrapper( layerDef );
+
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
-  allPartsWrapper.setDynamicParentLayerParameter( QVariant::fromValue( vl ) );
+  layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
   // should not be owned by wrapper
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
-  allPartsWrapper.setDynamicParentLayerParameter( QVariant() );
+  layerWrapper.setWidgetValue( QVariant(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
 
-  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  layerWrapper.setWidgetValue( vl->id(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
 
@@ -452,13 +480,15 @@ void TestProcessingGui::testWrapperDynamic()
   TestProcessingContextGenerator generator( context );
   allPartsWrapper.registerProcessingContextGenerator( &generator );
 
-  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  layerWrapper.setWidgetValue( vl->id(), context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
   QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
 
   // non-project layer
   QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
-  allPartsWrapper.setDynamicParentLayerParameter( pointFileName );
+  layerWrapper.setWidgetValue( pointFileName, context );
+  allPartsWrapper.setDynamicParentLayerParameter( &layerWrapper );
   QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer()->publicSource(), pointFileName );
   // must be owned by wrapper, or layer may be deleted while still required by wrapper
   QCOMPARE( allPartsWrapper.mDynamicLayer->publicSource(), pointFileName );
@@ -820,6 +850,74 @@ void TestProcessingGui::testStringWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testFileWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterFile param( QStringLiteral( "file" ), QStringLiteral( "file" ) );
+
+    QgsProcessingFileWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFileWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QVERIFY( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filter().isEmpty() );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "file" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->setFilePath( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ) );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // with filter
+    QgsProcessingParameterFile param2( QStringLiteral( "file" ), QStringLiteral( "file" ), QgsProcessingParameterFile::File, QStringLiteral( "qml" ) );
+
+    QgsProcessingFileWidgetWrapper wrapper2( &param2, type );
+    w = wrapper2.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper2.wrappedWidget() )->filter(), QStringLiteral( "QML files (*.qml)" ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper2.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
+
+    // folder mode
+    QgsProcessingParameterFile param3( QStringLiteral( "folder" ), QStringLiteral( "folder" ), QgsProcessingParameterFile::Folder );
+
+    QgsProcessingFileWidgetWrapper wrapper3( &param3, type );
+    w = wrapper3.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper3.wrappedWidget() )->storageMode(),  QgsFileWidget::GetDirectory );
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::testAuthCfgWrapper()
@@ -1647,6 +1745,200 @@ void TestProcessingGui::testRangeWrapper()
     QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,100" ) );
 
     delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testMatrixDialog()
+{
+  QgsProcessingParameterMatrix matrixParam( QString(), QString(), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  std::unique_ptr< QgsProcessingMatrixParameterDialog > dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog>( nullptr, nullptr, &matrixParam );
+  // variable length table
+  QVERIFY( dlg->mButtonAdd->isEnabled() );
+  QVERIFY( dlg->mButtonRemove->isEnabled() );
+  QVERIFY( dlg->mButtonRemoveAll->isEnabled() );
+
+  QCOMPARE( dlg->table(), QVariantList() );
+
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  dlg->addRow();
+  QCOMPARE( dlg->table(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) << QString() << QString() );
+  dlg->deleteAllRows();
+  QCOMPARE( dlg->table(), QVariantList() );
+
+  QgsProcessingParameterMatrix matrixParam2( QString(), QString(), 3, true, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  dlg = qgis::make_unique< QgsProcessingMatrixParameterDialog >( nullptr, nullptr, &matrixParam2, QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) << QStringLiteral( "e" ) << QStringLiteral( "f" ) );
+  QVERIFY( !dlg->mButtonAdd->isEnabled() );
+  QVERIFY( !dlg->mButtonRemove->isEnabled() );
+  QVERIFY( !dlg->mButtonRemoveAll->isEnabled() );
+}
+
+void TestProcessingGui::testMatrixWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterMatrix param( QStringLiteral( "matrix" ), QStringLiteral( "matrix" ), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+    param.setDefaultValue( QStringLiteral( "0.0,100.0,150.0,250.0" ) );
+    QgsProcessingMatrixWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QVERIFY( w );
+
+    // initial value
+    QCOMPARE( wrapper.parameterValue().toList(), QVariantList() << QStringLiteral( "0.0" ) << QStringLiteral( "100.0" ) << QStringLiteral( "150.0" ) << QStringLiteral( "250.0" ) );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingMatrixWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QVariantList() << 5 << 7, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "5" ) << QStringLiteral( "7" ) );
+    QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "5" ) << QStringLiteral( "7" ) );
+    wrapper.setWidgetValue( QStringLiteral( "28.1,36.5,5.5,8.9" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
+    QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "matrix" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    wrapper.mMatrixWidget->setValue( QVariantList() << QStringLiteral( "7" ) << QStringLiteral( "9" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << QStringLiteral( "7" ) << QStringLiteral( "9" ) );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testExpressionWrapper()
+{
+  const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
+  const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+
+  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterExpression param( QStringLiteral( "expression" ), QStringLiteral( "expression" ) );
+
+    QgsProcessingExpressionWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingExpressionWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "1+2" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "1+2" ) );
+    QCOMPARE( static_cast< QgsExpressionLineEdit * >( wrapper.wrappedWidget() )->expression(),  QStringLiteral( "1+2" ) );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsExpressionLineEdit * >( wrapper.wrappedWidget() )->expression().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "expression" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsExpressionLineEdit * >( wrapper.wrappedWidget() )->setExpression( QStringLiteral( "3+4" ) );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // with layer
+    param.setParentLayerParameterName( QStringLiteral( "other" ) );
+    QgsProcessingExpressionWidgetWrapper wrapper2( &param, type );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingExpressionWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "11+12" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(),  QStringLiteral( "11+12" ) );
+    QCOMPARE( static_cast< QgsFieldExpressionWidget * >( wrapper2.wrappedWidget() )->expression(),  QStringLiteral( "11+12" ) );
+
+    wrapper2.setWidgetValue( QString(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( wrapper2.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QgsFieldExpressionWidget * >( wrapper2.wrappedWidget() )->expression().isEmpty() );
+
+    static_cast< QgsFieldExpressionWidget * >( wrapper2.wrappedWidget() )->setExpression( QStringLiteral( "3+4" ) );
+    QCOMPARE( spy2.count(), 3 );
+
+    TestLayerWrapper layerWrapper( layerDef );
+    QgsProject p;
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+    p.addMapLayer( vl );
+
+    QVERIFY( !wrapper2.mFieldExpWidget->layer() );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mFieldExpWidget->layer(), vl );
+
+    // should not be owned by wrapper
+    QVERIFY( !wrapper2.mParentLayer.get() );
+    layerWrapper.setWidgetValue( QVariant(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QVERIFY( !wrapper2.mFieldExpWidget->layer() );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QVERIFY( !wrapper2.mFieldExpWidget->layer() );
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // with project layer
+    context.setProject( &p );
+    TestProcessingContextGenerator generator( context );
+    wrapper2.registerProcessingContextGenerator( &generator );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mFieldExpWidget->layer(), vl );
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // non-project layer
+    QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+    layerWrapper.setWidgetValue( pointFileName, context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mFieldExpWidget->layer()->publicSource(), pointFileName );
+    // must be owned by wrapper, or layer may be deleted while still required by wrapper
+    QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
   };
 
   // standard wrapper

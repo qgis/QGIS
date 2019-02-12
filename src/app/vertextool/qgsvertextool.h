@@ -96,6 +96,9 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Toggle the vertex editor
     void showVertexEditor();  //#spellok
 
+    //! Update vertex editor to show feature from the given match
+    void updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid );
+
   private slots:
     //! update geometry of our feature
     void onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
@@ -142,6 +145,32 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      (if snapped to edge, it would offer creation of a new vertex there).
     */
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
+
+    /**
+     * Tries to find a match in polygon interiors. This is useful for mouse move
+     * events to keep features highlighted to see their area.
+     */
+    QgsPointLocator::Match snapToPolygonInterior( QgsMapMouseEvent *e );
+
+    /**
+     * Returns a list of all matches at the given map point. That is a concatenation
+     * of all vertex, edge and area matches (vertex/edge matches using standard search tolerance).
+     * Layer is only searched if it is editable.
+     */
+    QList<QgsPointLocator::Match> findEditableLayerMatches( const QgsPointXY &mapPoint, QgsVectorLayer *layer );
+
+    /**
+     * Returns a set of all matches at the given map point from all editable layers (respecting the mode).
+     * The set does not contain only the closest match from each layer, but all matches in the standard
+     * vertex search tolerance. It also includes area matches.
+     */
+    QSet<QPair<QgsVectorLayer *, QgsFeatureId> > findAllEditableFeatures( const QgsPointXY &mapPoint );
+
+    /**
+     * Implements behavior for mouse right-click to select a feature for editing (and in case of multiple
+     * features in one place, repeated right-clicks will cycle through the features).
+     */
+    void tryToSelectFeature( QgsMapMouseEvent *e );
 
     //! check whether we are still close to the mEndpointMarker
     bool isNearEndpointMarker( const QgsPointXY &mapPoint );
@@ -406,12 +435,25 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     // support for vertex editor
 
-    //! most recent match when moving mouse
-    QgsPointLocator::Match mLastMouseMoveMatch;
     //! Selected feature for the vertex editor
     std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
     //! Dock widget which allows editing vertices
     std::unique_ptr<QgsVertexEditor> mVertexEditor;
+
+    /**
+     * Data structure that stores alternative features to the currently selected (locked) feature.
+     * This is used when user clicks with right mouse button multiple times in one location
+     * to easily switch to the desired feature.
+     */
+    struct SelectedFeatureAlternatives
+    {
+      QPoint screenPoint;
+      QList< QPair<QgsVectorLayer *, QgsFeatureId> > alternatives;
+      int index = -1;
+    };
+
+    //! Keeps information about other possible features to select with right click. Null if no info is currently held.
+    std::unique_ptr<SelectedFeatureAlternatives> mSelectedFeatureAlternatives;
 
     // support for validation of geometries
 

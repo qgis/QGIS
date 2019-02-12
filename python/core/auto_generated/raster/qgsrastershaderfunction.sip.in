@@ -64,7 +64,7 @@ Generates an new RGBA value based on one input ``value``.
 :param returnBlueValue: The blue component of the new RGBA value
 
 :return: - True if the return values are valid otherwise false
-         - returnAlpha:  The alpha component of the new RGBA value
+         - returnAlpha: The alpha component of the new RGBA value
 %End
 
     virtual bool shade( double redValue,
@@ -87,7 +87,7 @@ Generates an new RGBA value based on an original RGBA value.
 :param returnBlueValue: The blue component of the new RGBA value
 
 :return: - True if the return values are valid otherwise false
-         - returnAlpha:  The alpha component of the new RGBA value
+         - returnAlpha: The alpha component of the new RGBA value
 %End
 
     double minimumMaximumRange() const;

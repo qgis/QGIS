@@ -23,6 +23,7 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
 
 
 QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent )
@@ -31,6 +32,13 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Database styles manager" ) );
+
+  mDeleteButton = mButtonBox->button( QDialogButtonBox::StandardButton::Close );
+  mDeleteButton->setText( tr( "Delete Style" ) );
+  mDeleteButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
+  mLoadButton = mButtonBox->button( QDialogButtonBox::StandardButton::Open );
+  mLoadButton->setText( tr( "Load Style" ) );
+  mCancelButton = mButtonBox->button( QDialogButtonBox::StandardButton::Cancel );
 
   QgsSettings settings;
 
@@ -94,6 +102,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   connect( mRelatedTable, &QTableWidget::doubleClicked, this, &QDialog::accept );
   connect( mOthersTable, &QTableWidget::doubleClicked, this, &QDialog::accept );
   connect( mCancelButton, &QPushButton::clicked, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerLoadStyleDialog::showHelp );
   connect( mLoadButton, &QPushButton::clicked, this, &QDialog::accept );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsVectorLayerLoadStyleDialog::deleteStyleFromDB );
   setTabOrder( mRelatedTable, mOthersTable );
@@ -282,7 +291,9 @@ void QgsVectorLayerLoadStyleDialog::updateLoadButtonState()
                              && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
                                 ) ) ||
                            ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+}
 
-
-
+void QgsVectorLayerLoadStyleDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-and-share-layer-properties" ) );
 }

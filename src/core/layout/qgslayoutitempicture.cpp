@@ -485,6 +485,8 @@ void QgsLayoutItemPicture::updateMapRotation()
 
 void QgsLayoutItemPicture::loadPicture( const QString &path )
 {
+  mIsMissingImage = false;
+  mEvaluatedPath = path;
   if ( path.startsWith( QLatin1String( "http" ) ) )
   {
     //remote location
@@ -503,6 +505,7 @@ void QgsLayoutItemPicture::loadPicture( const QString &path )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = FormatSVG;
+    mIsMissingImage = true;
     QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
     mSVG.load( badFile );
     if ( mSVG.isValid() )
@@ -567,6 +570,16 @@ QSizeF QgsLayoutItemPicture::pictureSize()
   {
     return QSizeF( 0, 0 );
   }
+}
+
+bool QgsLayoutItemPicture::isMissingImage() const
+{
+  return mIsMissingImage;
+}
+
+QString QgsLayoutItemPicture::evaluatedPath() const
+{
+  return mEvaluatedPath;
 }
 
 void QgsLayoutItemPicture::shapeChanged()

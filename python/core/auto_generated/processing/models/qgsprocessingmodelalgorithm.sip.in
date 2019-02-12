@@ -56,6 +56,8 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
+    virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
+
 
     void setName( const QString &name );
 %Docstring
@@ -346,9 +348,13 @@ Sets the source file ``path`` for the model, if available.
 .. seealso:: :py:func:`sourceFilePath`
 %End
 
-    QString asPythonCode() const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
 %Docstring
-Attempts to convert the model to executable Python code.
+Attempts to convert the model to executable Python code, and returns the generated lines of code.
+
+The ``outputType`` argument dictates the desired script type.
+
+The ``indentSize`` arguments specifies the size of indented lines.
 %End
 
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),

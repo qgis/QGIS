@@ -141,10 +141,10 @@ class warp(GdalAlgorithm):
         multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(multithreading_param)
 
-        extra_param = QgsProcessingParameterBoolean(self.EXTRA,
-                                                    self.tr('Additional command-line parameters'),
-                                                    defaultValue=None,
-                                                    optional=True)
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
         extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(extra_param)
 
@@ -180,6 +180,7 @@ class warp(GdalAlgorithm):
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
@@ -230,6 +231,7 @@ class warp(GdalAlgorithm):
             arguments.append('-ot ' + self.TYPES[data_type])
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 

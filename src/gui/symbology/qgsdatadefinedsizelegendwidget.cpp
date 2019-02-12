@@ -28,6 +28,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )

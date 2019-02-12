@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelation.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QMenu>
 #include <QFile>

@@ -43,6 +43,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgswkbtypes.h"
 #include "qgspoint.h"

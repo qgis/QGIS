@@ -130,6 +130,7 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
   QgsDebugMsg( "url = " + url );
   mError.clear();
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsCapabilities" ) );
   if ( !setAuthorization( request ) )
   {
     mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
@@ -347,6 +348,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
       QNetworkRequest request( redirect.toUrl() );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsCapabilities" ) );
       if ( !setAuthorization( request ) )
       {
         mCapabilitiesResponse.clear();
@@ -387,6 +389,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
   {
     // Resend request if AlwaysCache
     QNetworkRequest request = mCapabilitiesReply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsCapabilities" ) );
     if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
     {
       QgsDebugMsg( QStringLiteral( "Resend request with PreferCache" ) );
@@ -791,7 +794,24 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   QDomElement supportedCRSsElement = firstChild( coverageOfferingElement, QStringLiteral( "supportedCRSs" ) );
 
   // requestResponseCRSs and requestCRSs + responseCRSs are alternatives
-  coverage->supportedCrs = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestResponseCRSs" ) );
+  // we try to parse one or the other
+  QStringList crsList;
+  crsList = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestResponseCRSs" ) );
+  if ( crsList.isEmpty() )
+  {
+    crsList = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestCRSs" ) );
+    crsList << domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.responseCRSs" ) );
+  }
+
+  // exclude invalid CRSs from the lists
+  for ( const QString &crsid : qgis::as_const( crsList ) )
+  {
+    if ( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsid ).isValid() )
+    {
+      coverage->supportedCrs << crsid;
+    }
+  }
+
   // TODO: requestCRSs, responseCRSs - must be then implemented also in provider
   //QgsDebugMsg( "supportedCrs = " + coverage->supportedCrs.join( "," ) );
 
@@ -814,7 +834,11 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   // If supportedCRSs.nativeCRSs is not defined we try to get it from RectifiedGrid
   if ( coverage->nativeCrs.isEmpty() )
   {
-    coverage->nativeCrs = gridElement.attribute( QStringLiteral( "srsName" ) );
+    QString crs = gridElement.attribute( QStringLiteral( "srsName" ) );
+    if ( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ).isValid() )
+    {
+      coverage->nativeCrs = crs;
+    }
   }
 
   if ( !gridElement.isNull() )

@@ -39,6 +39,34 @@ Content-Type: text/xml; charset=utf-8
     </Style>
    </StyleList>
   </Layer>
+  <Layer hidden="true" queryable="true" id="exclude_attribute" name="exclude_attribute" opacity="1">
+   <ows:Title>A test vector layer</ows:Title>
+   <ows:OutputFormat>image/png</ows:OutputFormat>
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
+    <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
+   </Server>
+   <ows:Abstract>A test vector layer with unicode òà</ows:Abstract>
+   <StyleList>
+    <Style current="true">
+     <Name>default</Name>
+     <Title>default</Title>
+    </Style>
+   </StyleList>
+  </Layer>
+  <Layer hidden="true" queryable="true" id="fields_alias" name="fields_alias" opacity="1">
+   <ows:Title>A test vector layer</ows:Title>
+   <ows:OutputFormat>image/png</ows:OutputFormat>
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
+    <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
+   </Server>
+   <ows:Abstract>A test vector layer with unicode òà</ows:Abstract>
+   <StyleList>
+    <Style current="true">
+     <Name>default</Name>
+     <Title>default</Title>
+    </Style>
+   </StyleList>
+  </Layer>
   <Layer hidden="true" queryable="true" id="testlayer_èé" name="testlayer èé" opacity="1">
    <ows:Title>A test vector layer</ows:Title>
    <ows:OutputFormat>image/png</ows:OutputFormat>
@@ -46,6 +74,19 @@ Content-Type: text/xml; charset=utf-8
     <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
    </Server>
    <ows:Abstract>A test vector layer with unicode òà</ows:Abstract>
+   <StyleList>
+    <Style current="true">
+     <Name>default</Name>
+     <Title>default</Title>
+    </Style>
+   </StyleList>
+  </Layer>
+  <Layer hidden="true" queryable="true" id="landsat" name="landsat" opacity="1">
+   <ows:Title>landsat</ows:Title>
+   <ows:OutputFormat>image/png</ows:OutputFormat>
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
+    <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
+   </Server>
    <StyleList>
     <Style current="true">
      <Name>default</Name>

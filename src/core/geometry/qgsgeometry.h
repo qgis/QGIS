@@ -196,12 +196,15 @@ class CORE_EXPORT QgsGeometry
      * Sets the underlying geometry store. Ownership of geometry is transferred.
      *
      * \note In QGIS 2.x this method was named setGeometry().
+     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+     *       Using this method will confuse Python's memory management and type information system.
+     *       Better create a new QgsGeometry object instead.
      *
      * \see get()
      * \see constGet()
      * \since QGIS 3.0
      */
-    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_DEPRECATED;
 
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry
@@ -573,6 +576,8 @@ class CORE_EXPORT QgsGeometry
      */
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
 
+    //TODO QGIS 4.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
+
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
      * and the indices of the vertices before and after the closest vertex.
@@ -585,7 +590,6 @@ class CORE_EXPORT QgsGeometry
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
      * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
-    //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
     /**

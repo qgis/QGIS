@@ -133,9 +133,20 @@ Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
 %End
 
+    static QString variantToPythonLiteral( const QVariant &value );
+%Docstring
+Converts a variant to a Python literal.
+
+.. seealso:: :py:func:`stringToPythonLiteral`
+
+.. versionadded:: 3.6
+%End
+
     static QString stringToPythonLiteral( const QString &string );
 %Docstring
 Converts a string to a Python string literal. E.g. by replacing ' with \'.
+
+.. seealso:: :py:func:`variantToPythonLiteral`
 %End
 
 

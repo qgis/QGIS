@@ -19,6 +19,7 @@
 #include "qgsstyle.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
 
 ///@cond PRIVATE
 

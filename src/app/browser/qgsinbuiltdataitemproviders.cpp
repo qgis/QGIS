@@ -106,12 +106,17 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   {
     QString enc;
     QDir dir( directoryItem->dirPath() );
-    const QString newFile = QgsNewVectorLayerDialog::runAndCreateLayer( QgisApp::instance(), &enc, QgsProject::instance()->defaultCrsForNewLayers(), dir.filePath( QStringLiteral( "new_layer.shp" ) ) );
+    QString error;
+    const QString newFile = QgsNewVectorLayerDialog::execAndCreateLayer( error, QgisApp::instance(), dir.filePath( QStringLiteral( "new_layer.shp" ) ), &enc, QgsProject::instance()->defaultCrsForNewLayers() );
     if ( !newFile.isEmpty() )
     {
       context.messageBar()->pushSuccess( tr( "New ShapeFile" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
                                            QUrl::fromLocalFile( newFile ).toString(), QDir::toNativeSeparators( newFile ) ) );
       item->refresh();
+    }
+    else if ( !error.isEmpty() )
+    {
+      context.messageBar()->pushCritical( tr( "New ShapeFile" ), tr( "Layer creation failed: %1" ).arg( error ) );
     }
   } );
   newMenu->addAction( createShp );

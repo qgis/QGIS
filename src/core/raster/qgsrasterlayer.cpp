@@ -49,6 +49,7 @@ email                : tim at linfiniti.com
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <cmath>
 #include <cstdio>
@@ -1281,6 +1282,210 @@ QDateTime QgsRasterLayer::timestamp() const
 {
   return mDataProvider->timestamp();
 }
+
+
+bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props ) const
+{
+  Q_UNUSED( errorMessage );
+
+  QgsStringMap localProps = QgsStringMap( props );
+  if ( hasScaleBasedVisibility() )
+  {
+    // TODO: QgsSymbolLayerUtils::mergeScaleDependencies generate SE only and not SLD1.0
+    QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
+  }
+
+  if ( isSpatial() ) // TODO: does it make sense this control?
+  {
+    // store constraints
+    QDomElement constraintElem = doc.createElement( QStringLiteral( "sld:LayerFeatureConstraints" ) );
+    node.appendChild( constraintElem );
+
+    QDomElement featureTypeConstraintElem = doc.createElement( QStringLiteral( "sld:FeatureTypeConstraint" ) );
+    constraintElem.appendChild( featureTypeConstraintElem );
+
+    QDomElement userStyleElem = doc.createElement( QStringLiteral( "sld:UserStyle" ) );
+    node.appendChild( userStyleElem );
+
+    if ( !name().isEmpty() )
+    {
+      QDomElement nameElem = doc.createElement( QStringLiteral( "sld:Name" ) );
+      nameElem.appendChild( doc.createTextNode( name() ) );
+      userStyleElem.appendChild( nameElem );
+    }
+
+    if ( !abstract().isEmpty() )
+    {
+      QDomElement abstractElem = doc.createElement( QStringLiteral( "sld:Abstract" ) );
+      abstractElem.appendChild( doc.createTextNode( abstract() ) );
+      userStyleElem.appendChild( abstractElem );
+    }
+
+    if ( !title().isEmpty() )
+    {
+      QDomElement titleElem = doc.createElement( QStringLiteral( "sld:Title" ) );
+      titleElem.appendChild( doc.createTextNode( title() ) );
+      userStyleElem.appendChild( titleElem );
+    }
+
+    QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "sld:FeatureTypeStyle" ) );
+    userStyleElem.appendChild( featureTypeStyleElem );
+
+#if 0
+    // TODO: Is there a way to fill it's value with the named style?
+    // by default <sld:Name> under <sld:FeatureTypeStyle> can have 0 occurrences
+    // the same happen for tags:
+    // sld:Title
+    // sld:Abstract
+    // sld:FeatureTypeName
+    // sld:SemanticTypeIdentifier
+    QDomElement typeStyleNameElem = doc.createElement( QStringLiteral( "sld:Name" ) );
+    featureTypeStyleElem.appendChild( typeStyleNameElem );
+#endif
+
+    QDomElement typeStyleRuleElem = doc.createElement( QStringLiteral( "sld:Rule" ) );
+    featureTypeStyleElem.appendChild( typeStyleRuleElem );
+
+    // add ScaleDenominator tags
+    if ( hasScaleBasedVisibility() )
+    {
+      // note that denominator is the inverted value of scale
+      if ( maximumScale() != 0.0 )
+      {
+        QDomElement minScaleElem = doc.createElement( QStringLiteral( "sld:MinScaleDenominator" ) );
+        minScaleElem.appendChild( doc.createTextNode( QString::number( maximumScale() ) ) );
+        typeStyleRuleElem.appendChild( minScaleElem );
+      }
+
+      QDomElement maxScaleElem = doc.createElement( QStringLiteral( "sld:MaxScaleDenominator" ) );
+      maxScaleElem.appendChild( doc.createTextNode( QString::number( minimumScale() ) ) );
+      typeStyleRuleElem.appendChild( maxScaleElem );
+    }
+
+    // export renderer dependent tags
+    mPipe.renderer()->toSld( doc, typeStyleRuleElem, localProps );
+
+    // inject raster layer parameters in RasterSymbolizer tag because
+    // they belongs to rasterlayer and not to the renderer => avoid to
+    // pass many parameters value via localProps
+    QDomNodeList elements = typeStyleRuleElem.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+    if ( elements.size() != 0 )
+    {
+      // there SHOULD be only one
+      QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+
+      // lamda helper used below to reduce code redundancy
+      auto vendorOptionWriter = [&]( QString name, QString value )
+      {
+        QDomElement vendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+        vendorOptionElem.setAttribute( QStringLiteral( "name" ), name );
+        vendorOptionElem.appendChild( doc.createTextNode( value ) );
+        rasterSymbolizerElem.appendChild( vendorOptionElem );
+      };
+
+      // add greyScale rendering mode if set
+      if ( hueSaturationFilter()->grayscaleMode() != QgsHueSaturationFilter::GrayscaleOff )
+      {
+        QString property;
+        switch ( hueSaturationFilter()->grayscaleMode() )
+        {
+          case QgsHueSaturationFilter::GrayscaleLightness:
+            property = QStringLiteral( "lightness" );
+            break;
+          case QgsHueSaturationFilter::GrayscaleLuminosity:
+            property = QStringLiteral( "luminosity" );
+            break;
+          case QgsHueSaturationFilter::GrayscaleAverage:
+            property = QStringLiteral( "average" );
+            break;
+          case QgsHueSaturationFilter::GrayscaleOff:
+            // added just to avoid travis fail
+            break;
+        }
+        if ( !property.isEmpty() )
+          vendorOptionWriter( QStringLiteral( "grayScale" ), property );
+      }
+
+      // add Hue, Saturation and Lighting values in props is Hue filter is set
+      if ( hueSaturationFilter() && hueSaturationFilter()->colorizeOn() )
+      {
+        vendorOptionWriter( QStringLiteral( "colorizeOn" ), QString::number( hueSaturationFilter()->colorizeOn() ) );
+        vendorOptionWriter( QStringLiteral( "colorizeRed" ), QString::number( hueSaturationFilter()->colorizeColor().red() ) );
+        vendorOptionWriter( QStringLiteral( "colorizeGreen" ), QString::number( hueSaturationFilter()->colorizeColor().green() ) );
+        vendorOptionWriter( QStringLiteral( "colorizeBlue" ), QString::number( hueSaturationFilter()->colorizeColor().blue() ) );
+        if ( hueSaturationFilter()->colorizeStrength() != 100.0 )
+          vendorOptionWriter( QStringLiteral( "colorizeStrength" ), QString::number( hueSaturationFilter()->colorizeStrength() / 100.0 ) );
+        vendorOptionWriter( QStringLiteral( "saturation" ), QString::number( hueSaturationFilter()->colorizeColor().saturationF() ) );
+      }
+      else
+      {
+        // saturation != 0 (default value)
+        if ( hueSaturationFilter()->saturation() != 0 )
+        {
+          // normlize value [-100:100] -> [0:1]
+          int s = hueSaturationFilter()->saturation();
+          double sF = ( s - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+          vendorOptionWriter( QStringLiteral( "saturation" ), QString::number( sF ) );
+        }
+      }
+
+      // brightness != 0 (default value)
+      if ( brightnessFilter()->brightness() != 0 )
+      {
+        // normalize value [-255:255] -> [0:1]
+        int b = brightnessFilter()->brightness();
+        double bF = ( b - ( -255.0 ) ) / ( 255.0 - ( -255.0 ) );
+        vendorOptionWriter( QStringLiteral( "brightness" ), QString::number( bF ) );
+      }
+
+      // contrast != 0 (default value)
+      if ( brightnessFilter()->contrast() != 0 )
+      {
+        // normlize value [-100:100] -> [0:1]
+        int c = brightnessFilter()->contrast();
+        double cF = ( c - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+        vendorOptionWriter( QStringLiteral( "contrast" ), QString::number( cF ) );
+      }
+
+#if 0
+      // TODO: check if the below mapping formula make sense to map QGIS contrast with SLD gamma value
+      //
+      // add SLD1.0 ContrastEnhancement GammaValue = QGIS Contrast
+      // SLD1.0 does only define 1 as neutral/center double value but does not define range.
+      // because https://en.wikipedia.org/wiki/Gamma_correction assumed gamma is >0.
+      // whilst QGIS has a -100/100 values centered in 0 => QGIS contrast value will be scaled in the
+      // following way:
+      // [-100,0] => [0,1] and [0,100] => [1,100]
+      // an alternative could be scale [-100,100] => (0,2]
+      //
+      if ( newProps.contains( QStringLiteral( "contrast" ) ) )
+      {
+        double gamma;
+        double contrast = newProps[ QStringLiteral( "contrast" ) ].toDouble();
+        double percentage = ( contrast - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+        if ( percentage <= 0.5 )
+        {
+          // stretch % to [0-1]
+          gamma = percentage / 0.5;
+        }
+        else
+        {
+          gamma = contrast;
+        }
+
+        QDomElement globalContrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
+        rasterSymolizerElem.appendChild( globalContrastEnhancementElem );
+
+        QDomElement gammaValueElem = doc.createElement( QStringLiteral( "sld:GammaValue" ) );
+        gammaValueElem.appendChild( doc.createTextNode( QString::number( gamma ) ) );
+        globalContrastEnhancementElem.appendChild( gammaValueElem );
+      }
+#endif
+    }
+  }
+  return true;
+}
+
 
 void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
 {

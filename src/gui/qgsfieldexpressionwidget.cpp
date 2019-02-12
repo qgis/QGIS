@@ -26,6 +26,7 @@
 #include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
@@ -177,6 +178,8 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
   if ( fieldName.isEmpty() )
   {
     setRow( -1 );
+    emit fieldChanged( QString() );
+    emit fieldChanged( QString(), true );
     return;
   }
 

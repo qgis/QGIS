@@ -35,6 +35,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -321,7 +322,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnMoveHelpDown, &QAbstractButton::clicked, this, &QgsOptions::moveHelpPathDown );
 
   //Network timeout
-  mNetworkTimeoutSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt() );
+  mNetworkTimeoutSpinBox->setValue( QgsNetworkAccessManager::timeout() );
   leUserAgent->setText( mSettings->value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString() );
 
   // WMS capabilities expiry time
@@ -360,6 +361,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   const QStringList excludedUrlPathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
   for ( const QString &path : excludedUrlPathList )
   {
+    if ( path.trimmed().isEmpty() )
+      continue;
+
     QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -1032,7 +1036,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "None" ) ) );
   }
-  mMarkerSizeSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_size" ), 3 ).toInt() );
+  mMarkerSizeSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_size_mm" ), 2.0 ).toDouble() );
 
   chkReuseLastValues->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool() );
   chkDisableAttributeValuesDlg->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool() );
@@ -1282,7 +1286,7 @@ void QgsOptions::selectProjectOnLaunch()
   QString projPath = QFileDialog::getOpenFileName( this,
                      tr( "Choose project file to open at launch" ),
                      lastUsedDir,
-                     tr( "QGIS files" ) + " (*.qgs *.QGS)" );
+                     tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS *.QGZ)" );
   if ( !projPath.isNull() )
   {
     mProjectOnLaunchLineEdit->setText( projPath );
@@ -1354,7 +1358,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "help/helpSearchPath" ), helpPaths );
 
   //Network timeout
-  mSettings->setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mNetworkTimeoutSpinBox->value() );
+  QgsNetworkAccessManager::setTimeout( mNetworkTimeoutSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), leUserAgent->text() );
 
   // WMS capabiltiies expiry time
@@ -1385,16 +1389,15 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "cache/size" ), QVariant::fromValue( mCacheSize->value() * 1024L ) );
 
   //url to exclude from proxys
-  QString proxyExcludeString;
+  QStringList excludedUrls;
+  excludedUrls.reserve( mExcludeUrlListWidget->count() );
   for ( int i = 0; i < mExcludeUrlListWidget->count(); ++i )
   {
-    if ( i != 0 )
-    {
-      proxyExcludeString += '|';
-    }
-    proxyExcludeString += mExcludeUrlListWidget->item( i )->text();
+    const QString host = mExcludeUrlListWidget->item( i )->text();
+    if ( !host.trimmed().isEmpty() )
+      excludedUrls << host;
   }
-  mSettings->setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), proxyExcludeString );
+  mSettings->setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), excludedUrls );
 
   QgisApp::instance()->namUpdate();
 
@@ -1620,7 +1623,7 @@ void QgsOptions::saveOptions()
   {
     mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_style" ), "None" );
   }
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_size" ), ( mMarkerSizeSpinBox->value() ) );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_size_mm" ), ( mMarkerSizeSpinBox->value() ) );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), chkReuseLastValues->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), chkDisableAttributeValuesDlg->isChecked() );

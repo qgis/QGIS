@@ -195,12 +195,20 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
       // icons possibly overriding default icon
-      if ( layer->type() == QgsMapLayer::RasterLayer )
+      switch ( layer->type() )
       {
-        return QgsLayerItem::iconRaster();
+        case QgsMapLayer::RasterLayer:
+          return QgsLayerItem::iconRaster();
+
+        case QgsMapLayer::MeshLayer:
+          return QgsLayerItem::iconMesh();
+
+        case QgsMapLayer::VectorLayer:
+        case QgsMapLayer::PluginLayer:
+          break;
       }
 
-      QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QIcon icon;
 
       // if there's just on legend entry that should be embedded in layer - do that!
@@ -224,10 +232,11 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
       if ( vlayer && vlayer->isEditable() )
       {
-        QPixmap pixmap( icon.pixmap( 16, 16 ) );
+        const int iconSize = scaleIconSize( 16 );
+        QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
         QPainter painter( &pixmap );
-        painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( vlayer->isModified() ? "/mIconEditableEdits.svg" : "/mActionToggleEditing.svg" ) );
+        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( vlayer->isModified() ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
         painter.end();
 
         icon = QIcon( pixmap );
@@ -313,7 +322,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
         {
           parts << QString();
-          const QStringList abstractLines = layer->abstract().split( "\n" );
+          const QStringList abstractLines = layer->abstract().split( '\n' );
           for ( const auto &l : abstractLines )
           {
             parts << l.toHtmlEscaped();
@@ -688,6 +697,13 @@ QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const
 void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
 {
   mLayerStyleOverrides = overrides;
+}
+
+int QgsLayerTreeModel::scaleIconSize( int standardSize )
+{
+  QFontMetrics fm( ( QFont() ) );
+  const double scale = 1.1 * standardSize / 24;
+  return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
@@ -1525,7 +1541,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
     QMap<QString, int> widthMax;
     Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, data.originalNodes )
     {
-      QgsSymbolLegendNode *n = dynamic_cast<QgsSymbolLegendNode *>( legendNode );
+      QgsSymbolLegendNode *n = qobject_cast<QgsSymbolLegendNode *>( legendNode );
       if ( n )
       {
         const QSize sz( n->minimumIconSize( context.get() ) );

@@ -79,6 +79,8 @@ this value. The path can either be a local path or a remote (http) path.
 :return: path for the source image
 
 .. seealso:: :py:func:`setPicturePath`
+
+.. seealso:: :py:func:`evaluatedPath`
 %End
 
     double pictureRotation() const;
@@ -251,6 +253,24 @@ Returns the current picture mode (image format).
 
     virtual void finalizeRestoreFromXml();
 
+
+    bool isMissingImage() const;
+%Docstring
+Returns true if the source image is missing and the picture
+cannot be rendered.
+
+.. versionadded:: 3.6
+%End
+
+    QString evaluatedPath() const;
+%Docstring
+Returns the current evaluated picture path, which includes
+the result of data defined path overrides.
+
+.. seealso:: :py:func:`picturePath`
+
+.. versionadded:: 3.6
+%End
 
   public slots:
 

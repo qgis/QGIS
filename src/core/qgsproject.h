@@ -846,6 +846,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void removeMapLayers( const QStringList &layerIds );
 
+    //TODO QGIS 4.0 - add PyName alias to avoid list type conversion error
+
     /**
      * \brief
      * Remove a set of layers from the registry.
@@ -859,7 +861,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeMapLayer()
      * \see removeAllMapLayers()
      */
-    //TODO QGIS 3.0 - add PyName alias to avoid list type conversion error
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 
     /**
@@ -1279,13 +1280,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerRemoved( const QString &layerId );
 
+    //TODO QGIS 4.0 - rename to past tense
+
     /**
      * Emitted when all layers are removed, before layersWillBeRemoved() and
      * layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
      * layerWillBeRemoved() signals will still be emitted following this signal.
      * You can use this signal to do easy (and fast) cleanup.
      */
-    //TODO QGIS 3.0 - rename to past tense
     void removeAll();
 
     /**

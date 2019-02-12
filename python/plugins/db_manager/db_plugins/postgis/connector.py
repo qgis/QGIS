@@ -742,6 +742,29 @@ class PostGisDBConnector(DBConnector):
 
         self._commit()
 
+    def commentTable(self, schema, tablename, comment=None):
+        if comment is None:
+            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
+        else:
+            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
+
+    def getComment(self, tablename, field):
+        """Returns the comment for a field"""
+        # SQL Query checking if a comment exists for the field
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
+        # SQL Query that return the comment of the field
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
+        c = self._execute(None, sql_cpt) # Execute Check query
+        res = self._fetchone(c)[0] # Store result
+        if res == 1:
+            # When a comment exists
+            c = self._execute(None, sql) # Execute query
+            res = self._fetchone(c)[0] # Store result
+            self._close_cursor(c) # Close cursor
+            return res # Return comment
+        else:
+            return ''
+
     def moveTableToSchema(self, table, new_schema):
         schema, tablename = self.getSchemaTableName(table)
         if new_schema == schema:
@@ -857,7 +880,7 @@ class PostGisDBConnector(DBConnector):
             sql = u"ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
-    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None):
+    def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None, test=None):
         if new_name is None and data_type is None and not_null is None and default is None and comment is None:
             return
 

@@ -39,7 +39,7 @@ class QgsFieldsPrivate;
  * - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
  * \note QgsFields objects are implicitly shared.
  */
-class CORE_EXPORT QgsFields
+class CORE_EXPORT  QgsFields
 {
   public:
 
@@ -94,16 +94,22 @@ class CORE_EXPORT QgsFields
 
     virtual ~QgsFields();
 
-    //! Remove all fields
+    //! Removes all fields
     void clear();
 
-    //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
+    //! Appends a field. The field must have unique name, otherwise it is rejected (returns false)
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
 
-    //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
+    /**
+     * Renames a name of field. The field must have unique name, otherwise change is rejected (returns false)
+     * \since QGIS 3.6
+     */
+    bool rename( int fieldIdx, const QString &name );
+
+    //! Appends an expression field. The field must have unique name, otherwise it is rejected (returns false)
     bool appendExpressionField( const QgsField &field, int originIndex );
 
-    //! Remove a field with the given index
+    //! Removes a field with the given index
     void remove( int fieldIdx );
 #ifdef SIP_RUN
     % MethodCode
@@ -119,10 +125,10 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Extend with fields from another QgsFields container
+    //! Extends with fields from another QgsFields container
     void extend( const QgsFields &other );
 
-    //! Check whether the container is empty
+    //! Checks whether the container is empty
     bool isEmpty() const;
 
     //! Returns number of items
@@ -282,7 +288,7 @@ class CORE_EXPORT QgsFields
     int indexOf( const QString &fieldName ) const;
 
     /**
-     * Look up field's index from the field name.
+     * Looks up field's index from the field name.
      * This method matches in the following order:
      *
      *  1. The exact field name taking case sensitivity into account

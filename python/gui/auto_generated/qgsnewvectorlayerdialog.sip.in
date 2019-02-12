@@ -17,14 +17,40 @@ class QgsNewVectorLayerDialog: QDialog
 %End
   public:
 
-    static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      const QString &initialPath = QString() );
+ static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+        const QString &initialPath = QString() ) /Deprecated/;
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 
 If the ``initialPath`` argument is specified, then the dialog will default to the specified filename.
 
 :return: fileName on success, empty string use aborted, QString() if creation failed
+
+.. deprecated:: in QGIS 3.4.5 - use execAndCreateLayer() instead.
+%End
+
+    static QString execAndCreateLayer( QString &errorMessage /Out/, QWidget *parent = 0, const QString &initialPath = QString(), QString *encoding /Out/ = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Runs the dialog and creates a layer matching the dialog parameters.
+
+If the ``initialPath`` argument is specified, then the dialog will default to the specified filename.
+
+Returns a filename if the dialog was accepted, or an empty string if the dialog was canceled.
+If the dialog was accepted but an error occurred while creating the file, then the function will
+return an empty string and ``errorMessage`` will contain the error message.
+
+If ``encoding`` is specified, it will be set to the encoding of the created file.
+
+:param parent: parent widget for dialog
+:param initialPath: initial file path to show in dialog
+:param encoding: if specified, will be set to file encoding of created layer
+:param crs: default layer CRS to show in dialog
+
+:return: - Newly created file name, or an empty string if user canceled or an error occurred.
+         - errorMessage: will be set to any error message encountered during layer creation
+
+
+.. versionadded:: 3.4.5
 %End
 
     QgsNewVectorLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );

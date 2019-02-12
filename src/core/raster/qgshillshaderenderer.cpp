@@ -30,6 +30,7 @@
 #include <chrono>
 #include "qgssettings.h"
 #endif
+#include "qgsexception.h"
 #include "qgsopenclutils.h"
 #endif
 
@@ -165,7 +166,8 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   bool useOpenCL( QgsOpenClUtils::enabled()
                   && QgsOpenClUtils::available()
                   && ( ! mRasterTransparency || mRasterTransparency->isEmpty() )
-                  && mAlphaBand <= 0 );
+                  && mAlphaBand <= 0
+                  && inputBlock->dataTypeSize() <= 4 );
   // Check for sources
   QString source;
   if ( useOpenCL )
@@ -190,6 +192,36 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       std::size_t inputDataTypeSize = inputBlock->dataTypeSize();
       std::size_t outputDataTypeSize = outputBlock->dataTypeSize();
       // Buffer scanline, 1px height, 2px wider
+      QString typeName;
+      switch ( inputBlock->dataType() )
+      {
+        case Qgis::DataType::Byte:
+          typeName = QStringLiteral( "unsigned char" );
+          break;
+        case Qgis::DataType::UInt16:
+          typeName = QStringLiteral( "unsigned int" );
+          break;
+        case Qgis::DataType::Int16:
+          typeName = QStringLiteral( "short" );
+          break;
+        case Qgis::DataType::UInt32:
+          typeName = QStringLiteral( "unsigned int" );
+          break;
+        case Qgis::DataType::Int32:
+          typeName = QStringLiteral( "int" );
+          break;
+        case Qgis::DataType::Float32:
+          typeName = QStringLiteral( "float" );
+          break;
+        default:
+          throw QgsException( QStringLiteral( "Unsupported data type for OpenCL processing." ) );
+      }
+
+      if ( inputBlock->dataType() != Qgis::DataType::Float32 )
+      {
+        source.replace( QStringLiteral( "__global float *scanLine" ), QStringLiteral( "__global %1 *scanLine" ).arg( typeName ) );
+      }
+
       // Data type for input is Float32 (4 bytes)
       std::size_t scanLineWidth( inputBlock->width() + 2 );
       std::size_t inputSize( inputDataTypeSize * inputBlock->width() );
@@ -236,7 +268,6 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       // Whether use multidirectional
       rasterParams.push_back( static_cast<float>( mMultiDirectional ) ); // 17
 
-
       cl::Buffer rasterParamsBuffer( queue, rasterParams.begin(), rasterParams.end(), true, false, nullptr );
       cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
       cl::Buffer scanLine2Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
@@ -245,13 +276,14 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       // Note that result buffer is an image
       cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, outputDataTypeSize * width, nullptr, nullptr );
 
-      static cl::Program program;
-      static std::once_flag programBuilt;
-      std::call_once( programBuilt, [ = ]()
+      static std::map<Qgis::DataType, cl::Program> programCache;
+      cl::Program program = programCache[inputBlock->dataType()];
+      if ( ! program.get() )
       {
         // Create a program from the kernel source
-        program = QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw );
-      } );
+        programCache[inputBlock->dataType()] = QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw );
+        program = programCache[inputBlock->dataType()];
+      }
 
       // Disable program cache when developing and testing cl program
       // program = QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw );
@@ -543,6 +575,84 @@ double QgsHillshadeRenderer::calcFirstDerY( double x11, double x21, double x31, 
   return ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellsize );
 }
 
+void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  QgsStringMap newProps = props;
 
+  // create base structure
+  QgsRasterRenderer::toSld( doc, element, props );
 
+  // look for RasterSymbolizer tag
+  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  if ( elements.size() == 0 )
+    return;
 
+  // there SHOULD be only one
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+
+  // add Channel Selection tags (if band is not default 1)
+  // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
+  // after opacity or geometry or as first element after sld:RasterSymbolizer
+  if ( band() != 1 )
+  {
+    QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+    if ( elements.size() != 0 )
+    {
+      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
+    }
+    else
+    {
+      elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
+      if ( elements.size() != 0 )
+      {
+        rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
+      }
+      else
+      {
+        rasterSymbolizerElem.insertBefore( channelSelectionElem, rasterSymbolizerElem.firstChild() );
+      }
+    }
+
+    // for gray band
+    QDomElement channelElem = doc.createElement( QStringLiteral( "sld:GrayChannel" ) );
+    channelSelectionElem.appendChild( channelElem );
+
+    // set band
+    QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+    sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+    channelElem.appendChild( sourceChannelNameElem );
+  }
+
+  // add ShadedRelief tag
+  QDomElement shadedReliefElem = doc.createElement( QStringLiteral( "sld:ShadedRelief" ) );
+  rasterSymbolizerElem.appendChild( shadedReliefElem );
+
+  // brightnessOnly tag
+  QDomElement brightnessOnlyElem = doc.createElement( QStringLiteral( "sld:BrightnessOnly" ) );
+  brightnessOnlyElem.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
+  shadedReliefElem.appendChild( brightnessOnlyElem );
+
+  // ReliefFactor tag
+  QDomElement reliefFactorElem = doc.createElement( QStringLiteral( "sld:ReliefFactor" ) );
+  reliefFactorElem.appendChild( doc.createTextNode( QString::number( zFactor() ) ) );
+  shadedReliefElem.appendChild( reliefFactorElem );
+
+  // altitude VendorOption tag
+  QDomElement altitudeVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+  altitudeVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "altitude" ) );
+  altitudeVendorOptionElem.appendChild( doc.createTextNode( QString::number( altitude() ) ) );
+  shadedReliefElem.appendChild( altitudeVendorOptionElem );
+
+  // azimuth VendorOption tag
+  QDomElement azimutVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+  azimutVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "azimuth" ) );
+  azimutVendorOptionElem.appendChild( doc.createTextNode( QString::number( azimuth() ) ) );
+  shadedReliefElem.appendChild( azimutVendorOptionElem );
+
+  // multidirectional VendorOption tag
+  QDomElement multidirectionalVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
+  multidirectionalVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "multidirectional" ) );
+  multidirectionalVendorOptionElem.appendChild( doc.createTextNode( QString::number( multiDirectional() ) ) );
+  shadedReliefElem.appendChild( multidirectionalVendorOptionElem );
+}

@@ -103,6 +103,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+
     /**
      * Set the source color \a ramp. Ownership is transferred to the renderer.
      * \see sourceColorRamp()

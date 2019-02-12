@@ -221,10 +221,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void setRequest( const QgsFeatureRequest &request );
 
+    // TODO QGIS 4: return copy instead of reference
+
     /**
      * Gets the the feature request
      */
-    // TODO QGIS 3: return copy instead of reference
     const QgsFeatureRequest &request() const;
 
     /**

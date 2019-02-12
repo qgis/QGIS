@@ -41,12 +41,10 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsapplication.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QThread>
+#include "qgsblockingnetworkrequest.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 
@@ -472,61 +470,33 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
 
 QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
-  QEventLoop loop;
   QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
   for ( auto it = requestHeaders.constBegin(); it != requestHeaders.constEnd(); ++it )
   {
     request.setRawHeader( it.key().toUtf8(), it.value().toUtf8() );
   }
 
-  if ( !authcfg.isEmpty() )
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( authcfg );
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
+
+  if ( feedback && feedback->isCanceled() )
+    return QByteArray();
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
   {
-    QgsApplication::authManager()->updateNetworkRequest( request, authcfg );
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    errorTitle = QStringLiteral( "Network error" );
+    errorText = networkRequest.errorMessage();
+    return QByteArray();
   }
 
-  QNetworkReply *reply = nullptr;
-  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-
-  // Request data, handling redirects
-  while ( true )
-  {
-    reply = nam->get( request );
-    QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
-    if ( feedback )
-    {
-      QObject::connect( feedback, &QgsFeedback::canceled, reply, &QNetworkReply::abort );
-    }
-
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-    reply->deleteLater();
-
-    if ( feedback && feedback->isCanceled() )
-      return QByteArray();
-
-    // Handle network errors
-    if ( reply->error() != QNetworkReply::NoError )
-    {
-      QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( reply->errorString() ) );
-      errorTitle = QStringLiteral( "Network error" );
-      errorText = reply->errorString();
-      return QByteArray();
-    }
-
-    // Handle HTTP redirects
-    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( redirect.isNull() )
-    {
-      break;
-    }
-
-    QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
-    request.setUrl( redirect.toUrl() );
-  }
-  QByteArray result = reply->readAll();
-  return result;
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  return content.content();
 }
 
 QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
@@ -1136,6 +1106,7 @@ void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allow
 {
   mResult = result;
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
   if ( allowCache )
   {
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
@@ -1161,6 +1132,7 @@ void QgsArcGisAsyncQuery::handleReply()
   if ( !redirect.isNull() )
   {
     QNetworkRequest request = mReply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     mReply = QgsNetworkAccessManager::instance()->get( request );
@@ -1188,6 +1160,8 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
   for ( int i = 0, n = urls.size(); i < n; ++i )
   {
     QNetworkRequest request( urls[i] );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
+    QgsSetRequestInitiatorId( request, QString::number( i ) );
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
     if ( allowCache )
     {
@@ -1217,6 +1191,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   {
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     reply = QgsNetworkAccessManager::instance()->get( request );

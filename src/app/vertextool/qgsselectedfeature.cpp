@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsvertexmarker.h"
 #include "qgsgeometryvalidator.h"
+#include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsrubberband.h"
 #include "qgisapp.h"
@@ -211,7 +212,8 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
     marker->setIconType( QgsVertexMarker::ICON_X );
     marker->setColor( Qt::green );
     marker->setZValue( marker->zValue() + 1 );
-    marker->setPenWidth( 2 );
+    marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+    marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
     marker->setToolTip( e.what() );
     mGeomErrorMarkers << marker;
   }

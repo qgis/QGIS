@@ -330,7 +330,7 @@ Calculates the current value of the property, including any transforms which are
 :param defaultValue: default value to return if the property is not active or cannot be calculated
 
 :return: - calculated value for property
-         - ok:  if specified, will be set to true if conversion was successful
+         - ok: will be set to true if conversion was successful
 
 .. seealso:: :py:func:`valueAsString`
 
@@ -351,7 +351,7 @@ Calculates the current value of the property and interprets it as a string.
 :param defaultString: default string to return if the property cannot be calculated as a string
 
 :return: - value parsed to string
-         - ok:  if specified, will be set to true if conversion was successful
+         - ok: will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -372,7 +372,7 @@ Calculates the current value of the property and interprets it as a color.
 :param defaultColor: default color to return if the property cannot be calculated as a color
 
 :return: - value parsed to color
-         - ok:  if specified, will be set to true if conversion was successful
+         - ok: will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -393,7 +393,7 @@ Calculates the current value of the property and interprets it as a double.
 :param defaultValue: default double to return if the property cannot be calculated as a double
 
 :return: - value parsed to double
-         - ok:  if specified, will be set to true if conversion was successful
+         - ok: will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -414,7 +414,7 @@ Calculates the current value of the property and interprets it as an integer.
 :param defaultValue: default integer to return if the property cannot be calculated as an integer
 
 :return: - value parsed to integer
-         - ok:  if specified, will be set to true if conversion was successful
+         - ok: will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -435,7 +435,7 @@ Calculates the current value of the property and interprets it as an boolean.
 :param defaultValue: default boolean to return if the property cannot be calculated as an boolean
 
 :return: - value parsed to boolean
-         - ok:  if specified, will be set to true if conversion was successful
+         - ok: will be set to true if conversion was successful
 
 .. seealso:: :py:func:`value`
 

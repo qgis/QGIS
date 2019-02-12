@@ -43,7 +43,7 @@ class QgsLayoutItemScaleBar;
 class QgsLayoutItemLegend;
 class QgsLayoutItemHtml;
 class QgsLayoutItemAttributeTable;
-
+class QgsLayoutAtlas;
 
 /**
  * QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout

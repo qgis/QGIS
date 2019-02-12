@@ -1210,7 +1210,8 @@ while ($LINE_IDX < $LINE_COUNT){
                   if ( $comment_line =~ m/^:param\s+(\w+)/) {
                     if ( $1 ~~ @SKIPPED_PARAMS_OUT || $1 ~~ @SKIPPED_PARAMS_REMOVE ) {
                       if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
-                        $comment_line =~ s/^:param\s+(\w+):(.*)$/$1: $2/;
+                        $comment_line =~ s/^:param\s+(\w+):\s*(.*?)$/$1: $2/;
+                        $comment_line =~ s/(?:optional|if specified|if given)[,]?\s*//g;
                         push @out_params, $comment_line ;
                         $skipping_param = 2;
                       }

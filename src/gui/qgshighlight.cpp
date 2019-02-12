@@ -29,6 +29,7 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
+#include "qgsexpressioncontextutils.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer

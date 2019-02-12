@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
+class QgsLayout;
+
 /**
  * \ingroup core
  * This class allows checking rendered images against comparison images.

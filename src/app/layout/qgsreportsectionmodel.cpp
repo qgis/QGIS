@@ -15,6 +15,7 @@
 
 #include "qgsreportsectionmodel.h"
 #include "functional"
+#include "qgsguiutils.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -67,10 +68,11 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
 
           if ( section == mEditedSection )
           {
-            QPixmap pixmap( icon.pixmap( 16, 16 ) );
+            const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+            QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
             QPainter painter( &pixmap );
-            painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+            painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
             painter.end();
 
             return QIcon( pixmap );

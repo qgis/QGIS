@@ -206,10 +206,12 @@ Items that return valid URI will be returned in mime data when dragging a select
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
 
-    virtual bool setCrs( const QgsCoordinateReferenceSystem &crs );
+ virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
+
+.. deprecated:: since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
     virtual bool rename( const QString &name );
@@ -531,8 +533,19 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 
     void addChild( QgsDataItem *item /Transfer/ );
 
-    static QIcon iconDir(); // shared icon: open/closed directory
-    static QIcon iconDataCollection(); // default icon for data collection
+    static QIcon iconDir();
+%Docstring
+Returns the standard browser directory icon.
+
+.. seealso:: :py:func:`iconDataCollection`
+%End
+
+    static QIcon iconDataCollection();
+%Docstring
+Returns the standard browser data collection icon.
+
+.. seealso:: :py:func:`iconDir`
+%End
 
   protected:
 
@@ -561,16 +574,6 @@ A directory: contains subdirectories and layers
 #include "qgsdataitem.h"
 %End
   public:
-    enum Column
-    {
-      Name,
-      Size,
-      Date,
-      Permissions,
-      Owner,
-      Group,
-      Type
-    };
 
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
@@ -591,11 +594,18 @@ Constructor.
 
 
     QString dirPath() const;
+%Docstring
+Returns the full path to the directory the item represents.
+%End
+
     virtual bool equal( const QgsDataItem *other );
 
     virtual QIcon icon();
 
     virtual QWidget *paramWidget() /Factory/;
+
+    virtual bool hasDragEnabled() const;
+    virtual QgsMimeDataUtils::Uri mimeUri() const;
 
 
     static bool hiddenPath( const QString &path );

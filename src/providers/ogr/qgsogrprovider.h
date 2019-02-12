@@ -129,6 +129,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
     bool isSaveAndLoadStyleToDatabaseSupported() const override;
+    bool isDeleteStyleFromDatabaseSupported() const override;
     QString fileVectorFilters() const override;
     //! Returns a string containing the available database drivers
     QString databaseDrivers() const;

@@ -61,7 +61,9 @@ from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QVBoxLayout,
                                  QGridLayout,
                                  QFrame,
-                                 QLineEdit)
+                                 QLineEdit,
+                                 QToolButton,
+                                 QAction)
 from qgis.PyQt.QtGui import (QIcon,
                              QImage,
                              QPainter,
@@ -70,7 +72,7 @@ from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsProcessingAlgorithm,
+                       QgsProcessing,
                        QgsProject,
                        QgsSettings,
                        QgsMessageLog,
@@ -92,6 +94,7 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from qgis.utils import iface
 
 
@@ -253,6 +256,13 @@ class ModelerDialog(BASE, WIDGET):
             self.mToolbar.setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
+        self.toolbutton_export_to_script = QToolButton()
+        self.toolbutton_export_to_script.setPopupMode(QToolButton.InstantPopup)
+        self.export_to_script_algorithm_action = QAction(QCoreApplication.translate('ModelerDialog', 'Export as Script Algorithm…'))
+        self.toolbutton_export_to_script.addActions([self.export_to_script_algorithm_action])
+        self.mToolbar.insertWidget(self.mActionExportImage, self.toolbutton_export_to_script)
+        self.export_to_script_algorithm_action.triggered.connect(self.export_as_script_algorithm)
+
         self.mActionOpen.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.mActionSave.setIcon(
@@ -275,8 +285,8 @@ class ModelerDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
         self.mActionExportSvg.setIcon(
             QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
-        #self.mActionExportPython.setIcon(
-        #    QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
+        self.toolbutton_export_to_script.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
         self.mActionEditHelp.setIcon(
             QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
         self.mActionRun.setIcon(
@@ -814,3 +824,9 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
+
+    def export_as_script_algorithm(self):
+        dlg = ScriptEditorDialog(None)
+
+        dlg.editor.setText('\n'.join(self.model.asPythonCode(QgsProcessing.PythonQgsProcessingAlgorithmSubclass, 4)))
+        dlg.show()

@@ -109,6 +109,24 @@ Returns the unique ID identifying the original request which this response was f
 Returns the original network request.
 %End
 
+    void setContent( const QByteArray &content );
+%Docstring
+Sets the reply content. This is not done by default, as reading network reply content
+can only be done once.
+
+.. seealso:: :py:func:`content`
+%End
+
+    QByteArray content() const;
+%Docstring
+Returns the reply content. This is not available by default, as reading network reply content
+can only be done once.
+
+Blocking network requests (see :py:class:`QgsBlockingNetworkRequest`) will automatically populate this content.
+
+.. seealso:: :py:func:`setContent`
+%End
+
 };
 
 /************************************************************************

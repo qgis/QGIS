@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import start_app, unittest
-from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication
+from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication, QgsColorScheme
 
 start_app()
 
@@ -71,6 +71,34 @@ class TestQgsColorSchemeRegistry(unittest.TestCase):
         self.assertEqual(len(registry.schemes()), 0)
         # try removing a scheme not in the registry
         self.assertFalse(registry.removeColorScheme(recentScheme))
+
+    def testOwnership(self):
+        """
+        Test that registered color schemes do not require that a reference to them is kept.
+        They should be parented to the registry (on transfer) and even if there's no reference
+        to the registry around (see the `del` below) this childship should continue to exist.
+        """
+        class TestColorScheme(QgsColorScheme):
+
+            def schemeName(self):
+                return "TestScheme"
+
+            def fetchColors(self, context, baseColors):
+                return None
+
+            def clone(self):
+                return TestColorScheme()
+
+            def flags(self):
+                return 1
+
+        reg = QgsApplication.instance().colorSchemeRegistry()
+        reg.addColorScheme(TestColorScheme())
+        del reg
+
+        reg = QgsApplication.instance().colorSchemeRegistry()
+
+        self.assertIn('TestScheme', [scheme.schemeName() for scheme in reg.schemes()])
 
 
 if __name__ == "__main__":

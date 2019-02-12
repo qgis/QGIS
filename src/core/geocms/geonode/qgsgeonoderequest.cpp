@@ -26,6 +26,7 @@
 #include <QJsonObject>
 #include <QUrl>
 #include <QDomDocument>
+#include <QRegularExpression>
 
 QgsGeoNodeRequest::QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent )
   : QObject( parent )
@@ -185,7 +186,7 @@ void QgsGeoNodeRequest::replyFinished()
         else
         {
           QNetworkRequest request( toUrl );
-
+          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -272,9 +273,18 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
   qint16 minorVersion;
   if ( jsonVariantMap.contains( QStringLiteral( "geonode_version" ) ) )
   {
-    const QStringList geonodeVersionSplit = jsonVariantMap.value( QStringLiteral( "geonode_version" ) ).toString().split( '.' );
-    majorVersion = geonodeVersionSplit.at( 0 ).toInt();
-    minorVersion = geonodeVersionSplit.at( 1 ).toInt();
+    QRegularExpression re( "((\\d+)(\\.\\d+))" );
+    QRegularExpressionMatch match = re.match( jsonVariantMap.value( QStringLiteral( "geonode_version" ) ).toString() );
+    if ( match.hasMatch() )
+    {
+      const QStringList geonodeVersionSplit = match.captured( 0 ).split( '.' );
+      majorVersion = geonodeVersionSplit.at( 0 ).toInt();
+      minorVersion = geonodeVersionSplit.at( 1 ).toInt();
+    }
+    else
+    {
+      return layers;
+    }
   }
   else
   {
@@ -519,6 +529,7 @@ bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
 {
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
   // Add authentication check here
 
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );

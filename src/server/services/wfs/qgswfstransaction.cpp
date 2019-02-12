@@ -34,6 +34,7 @@
 #include "qgsogcutils.h"
 #include "qgswfstransaction.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
 
 
 namespace QgsWfs

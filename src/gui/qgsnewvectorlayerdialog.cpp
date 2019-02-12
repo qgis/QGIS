@@ -58,6 +58,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::LineString );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Polygon );
 
@@ -169,10 +170,10 @@ QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
   wkbType = static_cast<QgsWkbTypes::Type>
             ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  if ( mGeometryWithZCheckBox->isChecked() )
+  if ( mGeometryWithZRadioButton->isChecked() )
     wkbType = QgsWkbTypes::addZ( wkbType );
 
-  if ( mGeometryWithMCheckBox->isChecked() )
+  if ( mGeometryWithMRadioButton->isChecked() )
     wkbType = QgsWkbTypes::addM( wkbType );
 
   return wkbType;
@@ -260,6 +261,16 @@ void QgsNewVectorLayerDialog::checkOk()
 // this is static
 QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs, const QString &initialPath )
 {
+  QString error;
+  QString res = execAndCreateLayer( error, parent, initialPath, pEnc, crs );
+  if ( res.isEmpty() && error.isEmpty() )
+    res = QString( "" ); // maintain gross earlier API compatibility
+  return res;
+}
+
+QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWidget *parent, const QString &initialPath, QString *encoding, const QgsCoordinateReferenceSystem &crs )
+{
+  errorMessage.clear();
   QgsNewVectorLayerDialog geomDialog( parent );
   geomDialog.setCrs( crs );
   if ( !initialPath.isEmpty() )
@@ -300,33 +311,35 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
     QgsDebugMsg( QStringLiteral( "ogr provider loaded" ) );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type,
-        const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem & );
+        const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem &, QString & );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {
       if ( geometrytype != QgsWkbTypes::Unknown )
       {
         QgsCoordinateReferenceSystem srs = geomDialog.crs();
-        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
+        if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage ) )
         {
           return QString();
         }
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "geometry type not recognised" ) );
+        errorMessage = QObject::tr( "Geometry type not recognised" );
+        QgsDebugMsg( errorMessage );
         return QString();
       }
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Resolving newEmptyDataSource(...) failed" ) );
+      errorMessage = QObject::tr( "Resolving newEmptyDataSource(...) failed" );
+      QgsDebugMsg( errorMessage );
       return QString();
     }
   }
 
-  if ( pEnc )
-    *pEnc = enc;
+  if ( encoding )
+    *encoding = enc;
 
   return fileName;
 }

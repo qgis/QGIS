@@ -19,11 +19,16 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprojectionselectionwidget.h"
+#include "qgsprocessingmatrixparameterdialog.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
 #include "qgsprocessingcontext.h"
 #include "qgsauthconfigselect.h"
 #include "qgsapplication.h"
+#include "qgsfilewidget.h"
+#include "qgssettings.h"
+#include "qgsexpressionlineedit.h"
+#include "qgsfieldexpressionwidget.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -1021,6 +1026,374 @@ QString QgsProcessingRangeWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRangeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingRangeWidgetWrapper( parameter, type );
+}
+
+
+
+//
+// QgsProcessingMatrixWidgetWrapper
+//
+
+QgsProcessingMatrixWidgetWrapper::QgsProcessingMatrixWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMatrixWidgetWrapper::createWidget()
+{
+  mMatrixWidget = new QgsProcessingMatrixParameterPanel( nullptr, dynamic_cast< const QgsProcessingParameterMatrix *>( parameterDefinition() ) );
+  mMatrixWidget->setToolTip( parameterDefinition()->toolTip() );
+
+  connect( mMatrixWidget, &QgsProcessingMatrixParameterPanel::changed, this, [ = ]
+  {
+    emit widgetValueHasChanged( this );
+  } );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      return mMatrixWidget;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingMatrixWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QVariantList v = QgsProcessingParameters::parameterAsMatrix( parameterDefinition(), value, context );
+  if ( mMatrixWidget )
+    mMatrixWidget->setValue( v );
+}
+
+QVariant QgsProcessingMatrixWidgetWrapper::widgetValue() const
+{
+  if ( mMatrixWidget )
+    return mMatrixWidget->value().isEmpty() ? QVariant() : mMatrixWidget->value();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingMatrixWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterMatrix::typeName();
+}
+
+QStringList QgsProcessingMatrixWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList();
+}
+
+QList<int> QgsProcessingMatrixWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingMatrixWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "comma delimited string of values, or an array of values" );
+}
+
+QString QgsProcessingMatrixWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMatrix::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMatrixWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMatrixWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingFileWidgetWrapper
+//
+
+QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingFileWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterFile *fileParam = dynamic_cast< const QgsProcessingParameterFile *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mFileWidget = new QgsFileWidget();
+      mFileWidget->setToolTip( parameterDefinition()->toolTip() );
+      mFileWidget->setDialogTitle( parameterDefinition()->description() );
+
+      mFileWidget->setDefaultRoot( QgsSettings().value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString() );
+
+      switch ( fileParam->behavior() )
+      {
+        case QgsProcessingParameterFile::File:
+          mFileWidget->setStorageMode( QgsFileWidget::GetFile );
+          if ( !fileParam->extension().isEmpty() )
+            mFileWidget->setFilter( tr( "%1 files" ).arg( fileParam->extension().toUpper() ) + QStringLiteral( " (*." ) + fileParam->extension().toLower() + ')' );
+          break;
+
+        case QgsProcessingParameterFile::Folder:
+          mFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
+          break;
+      }
+
+      connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+      {
+        QgsSettings().setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( path ).canonicalPath() );
+        emit widgetValueHasChanged( this );
+      } );
+      return mFileWidget;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingFileWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mFileWidget )
+    mFileWidget->setFilePath( v );
+}
+
+QVariant QgsProcessingFileWidgetWrapper::widgetValue() const
+{
+  if ( mFileWidget )
+    return mFileWidget->filePath();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingFileWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterFile::typeName();
+}
+
+QStringList QgsProcessingFileWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName();
+}
+
+QList<int> QgsProcessingFileWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingFileWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representing a path to a file or folder" );
+}
+
+QString QgsProcessingFileWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterFile::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFileWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingExpressionWidgetWrapper
+//
+
+QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterExpression *expParam = dynamic_cast< const QgsProcessingParameterExpression *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      if ( expParam->parentLayerParameterName().isEmpty() )
+      {
+        mExpLineEdit = new QgsExpressionLineEdit();
+        mExpLineEdit->setToolTip( parameterDefinition()->toolTip() );
+        mExpLineEdit->setExpressionDialogTitle( parameterDefinition()->description() );
+        mExpLineEdit->registerExpressionContextGenerator( this );
+        connect( mExpLineEdit, &QgsExpressionLineEdit::expressionChanged, this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mExpLineEdit;
+      }
+      else
+      {
+        mFieldExpWidget = new QgsFieldExpressionWidget();
+        mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
+        mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
+        mFieldExpWidget->registerExpressionContextGenerator( this );
+        connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mFieldExpWidget;
+      }
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingExpressionWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterExpression * >( parameterDefinition() )->parentLayerParameterName() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentLayerWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
+  if ( !layer )
+  {
+    if ( mFieldExpWidget )
+      mFieldExpWidget->setLayer( nullptr );
+    else if ( mExpLineEdit )
+      mExpLineEdit->setLayer( nullptr );
+    return;
+  }
+
+  // need to grab ownership of layer if required - otherwise layer may be deleted when context
+  // goes out of scope
+  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+  if ( ownedLayer && ownedLayer->type() == QgsMapLayer::VectorLayer )
+  {
+    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
+    layer = mParentLayer.get();
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+  }
+
+  if ( mFieldExpWidget )
+    mFieldExpWidget->setLayer( layer );
+  else if ( mExpLineEdit )
+    mExpLineEdit->setLayer( layer );
+}
+
+void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mFieldExpWidget )
+    mFieldExpWidget->setExpression( v );
+  else if ( mExpLineEdit )
+    mExpLineEdit->setExpression( v );
+}
+
+QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
+{
+  if ( mFieldExpWidget )
+    return mFieldExpWidget->expression();
+  else if ( mExpLineEdit )
+    return mExpLineEdit->expression();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingExpressionWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName()
+         << QgsProcessingParameterDistance::typeName();
+}
+
+QStringList QgsProcessingExpressionWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputNumber::typeName();
+}
+
+QList<int> QgsProcessingExpressionWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingExpressionWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string representation of an expression" );
+}
+
+const QgsVectorLayer *QgsProcessingExpressionWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mFieldExpWidget && mFieldExpWidget->layer() )
+    return mFieldExpWidget->layer();
+
+  return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
+}
+
+QString QgsProcessingExpressionWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterExpression::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExpressionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingExpressionWidgetWrapper( parameter, type );
 }
 
 

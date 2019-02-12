@@ -30,6 +30,7 @@ Stores information relating to the current rendering settings for a layout.
       FlagForceVectorOutput,
       FlagHideCoverageLayer,
       FlagDrawSelection,
+      FlagDisableTiledRasterLayerRenders,
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 

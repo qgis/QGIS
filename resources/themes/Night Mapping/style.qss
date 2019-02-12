@@ -112,7 +112,7 @@ QMenu::item:checked
     text-decoration:underline;
 }
 
-QWidget:disabled
+QWidget:disabled, QWidget:editable:disabled
 {
     color: #404040;
     background-color: @background;
@@ -162,6 +162,12 @@ QToolButton
     background-color:@itemdarkbackground;
     color:@text;
 }
+
+QPushButton[autoRaise=true], QToolButton[autoRaise=true] {
+    border:1px solid rgba(0,0,0,0);
+    background-color:transparent;
+}
+
 QToolButton[popupMode="1"]
 {
     padding-right: 0.9em;
@@ -217,7 +223,7 @@ QComboBox {
     border-style: solid;
     border: 1px solid #1e1e1e; 
     border-radius: 0px;
-    padding: 0.12em 1.2em 0.12em 0.12em;
+    padding: 0.12em 1.2em 0.12em 0.2em;
 }
 
 
@@ -238,15 +244,19 @@ QComboBox:on {
     selection-color: @text;
 }
 
+QComboBox::icon {
+    padding-left:0.3em;
+}
+
 QComboBox:editable {
     background-color: @darkgradient;
 }
 QComboBox:editable QLineEdit {
-    border-color: @itemdarkbackground;
-    background-color: @itemdarkbackground;
+    background-color: transparent;
     color:@text;
     selection-background-color: @selection;
     selection-color: @text;
+    border: 0;
 }
 
 QComboBox QAbstractItemView, QComboBox QListView {
@@ -286,15 +296,11 @@ QComboBox:item:checked {
     text-decoration:underline;
 }
 
-QLineEdit:focus
-{
-    border: 1px solid @focus;
-}
-
-
-QTextEdit:focus
-{
-    border: 1px solid @focus;
+QComboBox::indicator {
+    background-color:transparent;
+    selection-background-color:transparent;
+    color:transparent;
+    selection-color:transparent;
 }
 
 /* ==================================================================================== */
@@ -342,13 +348,6 @@ QSizeGrip
   width: 0.1em;
 }
 
-QHeaderView::section
-{
-    /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:0 #616161, stop: 0.5 #505050, stop: 0.6 #434343, stop:1 #656565);*/
-    color: @text;
-    padding-left: 0.5em;
-    border: 1px solid #6c6c6c;
-}
 QDockWidget
 {
     titlebar-close-icon: url(@theme_path/icons/close.svg);
@@ -520,22 +519,28 @@ QRadioButton::indicator:hover
 /* GROUP                                                                                */
 /* ==================================================================================== */
 
+QGroupBox {
+    padding-top: 1.05em;
+    border:1px solid rgba(0,0,0,0);
+}
+
 QGroupBox::title { 
     color: @textlight;
+}
+
+QGroupBox::indicator {
+    width: 0.9em;
+    height: 0.9em;
 }
 
 QGroupBox::indicator:unchecked {
     border: 1px solid @background;
     image: url(@theme_path/icons/qcheckbox-unchecked.svg);
-    width:0.8em;
-    height:0.8em;
 }
 
 QGroupBox::indicator:checked {
     border: 1px solid @background;
     image: url(@theme_path/icons/qcheckbox-checked.svg);
-    width:0.8em;
-    height:0.8em;
 }
 
 /* ==================================================================================== */
@@ -616,7 +621,7 @@ QAbstractItemView, QListView
   background-color: @itembackground;
   alternate-background-color: @background;
   color: @text;
-  border: none;
+  border: 1px solid @itemdarkbackground;
   border-radius: 0px;
   padding: 1px;
   selection-color: @text;
@@ -701,12 +706,74 @@ QTableView {
     selection-color: @text;
 }
 
-QHeaderView::section {
+
+QTableView QTableCornerButton::section {
+    background-color: @background;
+    border: 1px solid @itembackground;
+}
+
+QHeaderView {
+    background-color:transparent;
+    border:0;
+}
+
+QHeaderView::section, QHeaderView::section:vertical {
+    padding: 0.1m 0.2em 0.1em 0.2em;
     background: transparent;
     background-color: @background;
     color: @text;
-    border-right: 1px solid @itemdarkbackground;
-    padding: 0 0 0.1em 0.2em;
+    border: 1px solid @itemdarkbackground;
+    border-left: 0;
+    border-top: 0;
+}
+
+QHeaderView::section:vertical {
+    border: 1px solid @itemdarkbackground;
+    border-left: 0;
+    border-top: 0;
+}
+
+QHeaderView::section:last:vertical {
+    border-bottom: 0;
+}
+
+QHeaderView::section:last:horizontal {
+    border-right: 0;
+}
+
+QHeaderView::down-arrow {
+    width: 1.2em;
+    image: url(@theme_path/icons/arrow-down.svg);
+}
+
+QHeaderView::up-arrow {
+    width: 1.2em;
+    image: url(@theme_path/icons/arrow-up.svg);
+}
+
+/* ==================================================================================== */
+/* FOCUS                                                                                */
+/* ==================================================================================== */
+
+QToolButton:focus, QPushButton:focus, QCheckBox:focus, QRadioButton:focus, QGroupBox:focus {
+    outline:1px solid @focusdark;
+    outline-radius: 0;
+}
+
+QComboBox:focus, QAbstractSpinBox:focus, QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {
+    border:1px solid @focusdark;
+}
+
+QToolButton[autoRaise=true]:focus:!pressed {
+    border:1px solid @focusdark;
+}
+
+QToolButton[autoRaise=false]:focus:!pressed {
+    border:1px solid @focusdark;
+}
+
+QSlider::handle:horizontal:focus, QSlider::handle:vertical:focus {
+    border: 1px solid @focus;
 }
 
 /* ==================================================================================== */
@@ -721,6 +788,10 @@ QgsColorButton, QgsColorRampButton, QgsSymbolButton, QgsFontButton {
 QgsColorButton:hover, QgsColorRampButton:hover, QgsSymbolButton:hover, QgsFontButton:hover {
     background-color: @darkalternativegradient;
     color:@itembackground;
+}
+
+QgsColorButton:focus, QgsColorRampButton:focus, QgsSymbolButton:focus, QgsFontButton:focus {
+    border:1px solid @focusdark;
 }
 
 QgsMessageBar QLabel, QgsMessageBar QTextEdit, QMessageBar QToolButton, QMessageBar QToolButton::menu-button {
@@ -765,8 +836,14 @@ QgsMessageBar QScrollBar::down-arrow:vertical {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
-QgsPropertyOverrideButton {
+QgsPropertyOverrideButton, QgsPropertyOverrideButton:hover, QgsPropertyOverrideButton:pressed {
+    background: none;
+    border: 1px solid rgba(0, 0, 0, 0%);
     padding: 0px;
+}
+
+QgsPropertyOverrideButton:focus {
+    border:1px solid @focusdark;
 }
 
 QListWidget#mOptionsListWidget {
@@ -776,4 +853,9 @@ QListWidget#mOptionsListWidget {
 
 QListWidget#mOptionsListWidget::item {
     padding: 0.1em;
+}
+
+QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,
+QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab {
+    width: 1.2em;
 }

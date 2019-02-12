@@ -240,7 +240,7 @@ Loads this source from a QVariantMap.
 .. seealso:: :py:func:`toVariant`
 %End
 
-    QString asPythonCode() const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition ) const;
 %Docstring
 Attempts to convert the source to executable Python code.
 %End

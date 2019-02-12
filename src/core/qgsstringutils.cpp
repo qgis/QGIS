@@ -96,6 +96,11 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       }
       return result;
     }
+
+    case UpperCamelCase:
+      QString result = QgsStringUtils::capitalize( string.toLower(), QgsStringUtils::ForceFirstLetterToCapital ).simplified();
+      result.remove( ' ' );
+      return result;
   }
   // no warnings
   return string;

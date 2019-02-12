@@ -76,6 +76,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
   public:
     QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
     ~QgsVectorLayerRenderer() override;
+    QgsFeedback *feedback() const override;
 
     bool render() override;
 
@@ -107,7 +108,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsRenderContext &mContext;
 
-    QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
+    std::unique_ptr< QgsVectorLayerRendererInterruptionChecker > mInterruptionChecker;
 
     //! The rendered layer
     QgsVectorLayer *mLayer = nullptr;
@@ -122,7 +123,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
-    int mVertexMarkerStyle, mVertexMarkerSize;
+    int mVertexMarkerStyle = 0;
+    double mVertexMarkerSize = 2.0;
 
     QgsWkbTypes::GeometryType mGeometryType;
 

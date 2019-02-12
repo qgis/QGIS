@@ -39,6 +39,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDir>
 #include <QTextStream>

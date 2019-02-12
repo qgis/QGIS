@@ -54,6 +54,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QApplication>
 #include <QFileInfo>

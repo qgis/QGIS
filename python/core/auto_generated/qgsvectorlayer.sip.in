@@ -800,7 +800,7 @@ Lists all the style in db split into related to the layer and not related to
 :param msgError:
 
 :return: - the number of styles related to current layer
-         - descriptions:  the list in which will be stored the style descriptions
+         - descriptions: the list in which will be stored the style descriptions
 
 .. note::
 
@@ -819,7 +819,7 @@ Delete a style from the database
 :param styleId: the provider's layer_styles table id of the style to delete
 
 :return: - true in case of success
-         - msgError:  reference to string that will be updated with any error messages
+         - msgError: reference to string that will be updated with any error messages
 
 .. versionadded:: 3.0
 %End
@@ -1842,9 +1842,11 @@ Destroy active command and reverts all changes in it
       NoMarker
     };
 
-    static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+ static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 %Docstring
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+
+.. deprecated:: Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
 %End
 
     void updateFields();

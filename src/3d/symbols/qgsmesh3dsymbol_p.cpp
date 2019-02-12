@@ -28,6 +28,7 @@
 #include "qgsmultipolygon.h"
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
+#include "qgsexpressioncontextutils.h"
 
 static QgsExpressionContext _expressionContext3D()
 {

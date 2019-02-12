@@ -36,6 +36,7 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class DeletePreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
+        super().__init__()
         self.name = QCoreApplication.translate('DeletePreconfiguredAlgorithmAction', 'Delete Preconfigured Algorithm…')
 
     def isEnabled(self):

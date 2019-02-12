@@ -132,9 +132,6 @@ class Grass7Utils:
         Find GRASS binary path on the operating system.
         Sets global variable Grass7Utils.command
         """
-        cmdList = ["grass76", "grass74", "grass72", "grass70", "grass",
-                   "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"]
-
         def searchFolder(folder):
             """
             Inline function to search for grass binaries into a folder
@@ -153,6 +150,24 @@ class Grass7Utils:
         path = Grass7Utils.grassPath()
         command = None
 
+        vn = os.path.join(path, "etc", "VERSIONNUMBER")
+        if os.path.isfile(vn):
+            with open(vn, "r") as f:
+                major, minor, patch = f.readlines()[0].split(' ')[0].split('.')
+                if patch != 'svn':
+                    patch = ''
+                cmdList = [
+                    "grass{}{}{}".format(major, minor, patch),
+                    "grass",
+                    "grass{}{}{}.sh".format(major, minor, patch),
+                    "grass.sh"
+                ]
+        else:
+            cmdList = [
+                "grass76", "grass74", "grass72", "grass70", "grass",
+                "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
+            ]
+
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
         if isWindows():
             # If nothing found, use OSGEO4W or QgsPrefix:
@@ -166,7 +181,7 @@ class Grass7Utils:
             # Search in grassPath
             command = searchFolder(path)
 
-        # Under GNU/Linux or if everything has failed, use shutil
+        # If everything has failed, use shutil
         if not command:
             for cmd in cmdList:
                 testBin = shutil.which(cmd)
@@ -203,15 +218,14 @@ class Grass7Utils:
         if folder is None:
             # Under MS-Windows, we use OSGEO4W or QGIS Path for folder
             if isWindows():
-                if "OSGEO4W_ROOT" in os.environ:
-                    testfolder = os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps")
+                if "GISBASE" in os.environ:
+                    folder = os.environ["GISBASE"]
                 else:
-                    testfolder = str(QgsApplication.prefixPath())
-                testfolder = os.path.join(testfolder, 'grass')
-                if os.path.isdir(testfolder):
-                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.')])
-                    if grassfolders:
-                        folder = os.path.join(testfolder, grassfolders[0])
+                    testfolder = os.path.join(str(QgsApplication.prefixPath()), 'grass')
+                    if os.path.isdir(testfolder):
+                        grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
+                        if grassfolders:
+                            folder = os.path.join(testfolder, grassfolders[0])
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle

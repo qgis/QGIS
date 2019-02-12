@@ -301,10 +301,11 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  *
  * \since QGIS 3.0
  */
-inline double qgsRound( double number, double places )
+inline double qgsRound( double number, int places )
 {
+  double m = ( number < 0.0 ) ? -1.0 : 1.0;
   double scaleFactor = std::pow( 10.0, places );
-  return std::trunc( number * scaleFactor + 0.5 ) / scaleFactor;
+  return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
 

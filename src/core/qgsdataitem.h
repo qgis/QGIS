@@ -207,7 +207,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     enum Capability
     {
       NoCapabilities    = 0,
-      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers
+      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated in QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
       Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse          = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -219,8 +219,14 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
+     *
+     * \deprecated since QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
      */
-    virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) { Q_UNUSED( crs ); return false; }
+    Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED
+    {
+      Q_UNUSED( crs );
+      return false;
+    }
 
     /**
      * Sets a new \a name for the item, and returns true if the item was successfully renamed.
@@ -550,8 +556,17 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
-    static QIcon iconDir(); // shared icon: open/closed directory
-    static QIcon iconDataCollection(); // default icon for data collection
+    /**
+     * Returns the standard browser directory icon.
+     * \see iconDataCollection()
+     */
+    static QIcon iconDir();
+
+    /**
+     * Returns the standard browser data collection icon.
+     * \see iconDir()
+     */
+    static QIcon iconDataCollection();
 
   protected:
 
@@ -576,16 +591,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    enum Column
-    {
-      Name,
-      Size,
-      Date,
-      Permissions,
-      Owner,
-      Group,
-      Type
-    };
 
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
@@ -601,10 +606,16 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    /**
+     * Returns the full path to the directory the item represents.
+     */
     QString dirPath() const { return mDirPath; }
+
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
     QWidget *paramWidget() override SIP_FACTORY;
+    bool hasDragEnabled() const override { return true; }
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );

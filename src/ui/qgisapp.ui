@@ -164,6 +164,8 @@
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
+     <addaction name="separator"/>
+     <addaction name="mActionNewVirtualLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
      <property name="title">
@@ -171,6 +173,7 @@
      </property>
      <addaction name="mActionAddOgrLayer"/>
      <addaction name="mActionAddRasterLayer"/>
+     <addaction name="mActionAddMeshLayer"/>
      <addaction name="mActionAddDelimitedText"/>
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
@@ -682,6 +685,8 @@
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
+   <addaction name="separator"/>
+   <addaction name="mActionNewVirtualLayer"/>
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
@@ -3159,6 +3164,27 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Mesh Calculator…</string>
+   </property>
+  </action>
+  <action name="mActionAddMeshLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMeshLayer.svg</normaloff>:/images/themes/default/mActionAddMeshLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Mesh Layer...</string>
+   </property>
+  </action>
+  <action name="mActionNewVirtualLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewVirtualLayer.svg</normaloff>:/images/themes/default/mActionNewVirtualLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Virtual Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New Virtual Layer</string>
    </property>
   </action>
  </widget>

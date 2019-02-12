@@ -62,6 +62,8 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+
     /**
      * Returns the band used by the renderer
      */

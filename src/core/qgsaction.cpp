@@ -25,6 +25,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsexpressioncontextutils.h"
 
 bool QgsAction::runable() const
 {

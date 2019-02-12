@@ -282,7 +282,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * register individual features
          * \note not available in Python bindings
          */
-        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
+        RegisterResult registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
 
         /**
          * Returns true if this rule or any of its children requires advanced composition effects
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * \param context   The context in which the rendering happens
          * \returns          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, QgsRenderContext &context ) const;
+        bool isFilterOK( const QgsFeature &f, QgsRenderContext &context ) const;
 
         /**
          * Check if this rule applies for a given \a scale.
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
+    void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
 
     //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );

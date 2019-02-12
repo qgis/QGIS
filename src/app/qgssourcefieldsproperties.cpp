@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -145,13 +146,6 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
-  //in case there are rows following, there is increased the id to the correct ones
-  for ( int i = idx + 1; i < mIndexedWidgets.count(); i++ )
-    mIndexedWidgets.at( i )->setData( Qt::DisplayRole, i );
-
-  if ( sorted )
-    mFieldsList->setSortingEnabled( true );
-
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
     switch ( mLayer->fields().fieldOrigin( idx ) )
@@ -170,6 +164,9 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
         break;
     }
   }
+
+  if ( sorted )
+    mFieldsList->setSortingEnabled( true );
 }
 
 
@@ -204,7 +201,11 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   }
   mFieldsList->setItem( row, AttrIdCol, dataItem );
 
+  // in case we insert and not append reindex remaining widgets by 1
+  for ( int i = idx + 1; i < mIndexedWidgets.count(); i++ )
+    mIndexedWidgets.at( i )->setData( Qt::DisplayRole, i );
   mIndexedWidgets.insert( idx, mFieldsList->item( row, 0 ) );
+
   mFieldsList->setItem( row, AttrNameCol, new QTableWidgetItem( field.name() ) );
   mFieldsList->setItem( row, AttrAliasCol, new QTableWidgetItem( field.alias() ) );
   mFieldsList->setItem( row, AttrTypeCol, new QTableWidgetItem( QVariant::typeToName( field.type() ) ) );

@@ -55,6 +55,8 @@ Content-Type: text/xml; charset=utf-8
     <Format>text/xml</Format>
     <Format>application/vnd.ogc.gml</Format>
     <Format>application/vnd.ogc.gml/3.1.1</Format>
+    <Format>application/json</Format>
+    <Format>application/geo+json</Format>
     <DCPType>
      <HTTP>
       <Get>
@@ -131,7 +133,63 @@ Content-Type: text/xml; charset=utf-8
     </Style>
    </Layer>
    <Layer queryable="1">
+    <Name>landsat</Name>
+    <Title>landsat</Title>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="30.2573" maxx="18.0457" miny="30.1519" minx="17.9243"/>
+    <BoundingBox maxy="3.53666e+06" SRS="EPSG:3857" maxx="2.00883e+06" miny="3.52308e+06" minx="1.99532e+06"/>
+    <BoundingBox maxy="30.2573" SRS="EPSG:4326" maxx="18.0457" miny="30.1519" minx="17.9243"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+   <Layer queryable="1">
     <Name>testlayer èé</Name>
+    <Title>A test vector layer</Title>
+    <Abstract>A test vector layer with unicode òà</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+   <Layer queryable="1">
+    <Name>fields_alias</Name>
+    <Title>A test vector layer</Title>
+    <Abstract>A test vector layer with unicode òà</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+   <Layer queryable="1">
+    <Name>exclude_attribute</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
     <SRS>CRS:84</SRS>
