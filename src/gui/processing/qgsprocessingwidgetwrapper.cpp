@@ -237,9 +237,6 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
 
   QgsExpressionContext c = context->expressionContext();
 
-  if ( linkedVectorLayer() )
-    c << QgsExpressionContextUtils::layerScope( linkedVectorLayer() );
-
   if ( mWidgetContext.model() )
   {
     const QgsProcessingAlgorithm *alg = nullptr;
@@ -258,6 +255,9 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );
   }
+
+  if ( linkedVectorLayer() )
+    c << QgsExpressionContextUtils::layerScope( linkedVectorLayer() );
 
   return c;
 }
