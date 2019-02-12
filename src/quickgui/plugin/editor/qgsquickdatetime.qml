@@ -65,7 +65,7 @@ Item {
                 inputMethodHints: Qt.ImhDigitsOnly
 
                 // this is a bit difficult to auto generate input mask out of date/time format using regex
-                // mainly because number of caracters is variable (e.g. "d": the day as number without a leading zero)
+                // mainly because number of characters is a variable (e.g. "d": the day as number without a leading zero)
                 inputMask:      if (config['display_format'] === "yyyy-MM-dd" ) { "9999-99-99;_" }
                                 else if (config['display_format'] === "yyyy.MM.dd" ) { "9999.99.09;_" }
                                 else if (config['display_format'] === "yyyy-MM-dd HH:mm:ss" ) { "9999-99-09 99:99:99;_" }

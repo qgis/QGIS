@@ -90,9 +90,8 @@ Drawer {
       }
 
       focus {
-          focusMode: Camera.FocusMacro
-          focusPointMode: Camera.FocusPointCustom
-          customFocusPoint: Qt.point(0.2, 0.2) // Focus relative to top-left corner
+          focusMode: Camera.FocusContinuous
+          focusPointMode: Camera.FocusPointAuto
       }
     }
 
