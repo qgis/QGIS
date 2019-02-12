@@ -376,7 +376,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Optionally, a \a source can be specified which will be used to populate the context if it
      * implements the QgsExpressionContextGenerator interface.
      */
-    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+    virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
         QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const;
 
     /**

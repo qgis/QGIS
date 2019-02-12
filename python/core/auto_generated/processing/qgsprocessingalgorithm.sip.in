@@ -367,7 +367,7 @@ The base class implementation returns None, which indicates that an autogenerate
 parameters widget should be used.
 %End
 
-    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+    virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
         QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
 %Docstring
 Creates an expression context relating to the algorithm. This can be called by algorithms

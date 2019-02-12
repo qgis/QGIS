@@ -56,6 +56,8 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
+    virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
+
 
     void setName( const QString &name );
 %Docstring
