@@ -6020,13 +6020,13 @@ void TestQgsProcessing::modelScope()
   pc.setProject( &p );
   p.setFileName( TEST_DATA_DIR + QStringLiteral( "/test_file.qgs" ) );
   scope.reset( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
-  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), TEST_DATA_DIR + QStringLiteral( "/test_file.qgs" ) );
-  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), TEST_DATA_DIR );
+  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/test_file.qgs" ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), QStringLiteral( TEST_DATA_DIR ) );
 
   alg.setSourceFilePath( TEST_DATA_DIR + QStringLiteral( "/processing/my_model.model3" ) );
   scope.reset( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
-  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), TEST_DATA_DIR + QStringLiteral( "/processing/my_model.model3" ) );
-  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), TEST_DATA_DIR + QStringLiteral( "/processing" ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/processing/my_model.model3" ) );
+  QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/processing" ) );
 
   QgsExpressionContext ctx = alg.createExpressionContext( QVariantMap(), pc );
   QVERIFY( scope->hasVariable( QStringLiteral( "model_path" ) ) );
