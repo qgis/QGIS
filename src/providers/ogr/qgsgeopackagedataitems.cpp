@@ -41,6 +41,7 @@
 #include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsproxyprogresstask.h"
+#include "qgssqliteutils.h"
 
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
@@ -887,12 +888,23 @@ bool QgsGeoPackageVectorLayerItem::rename( const QString &name )
     GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
     if ( hDS )
     {
-      QString sql( QStringLiteral( "ALTER TABLE \"%1\" RENAME TO \"%2\"" ).arg( oldName, name ) );
+      QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
+                   .arg( QgsSqliteUtils::quotedIdentifier( oldName ),
+                         QgsSqliteUtils::quotedIdentifier( name ) ) );
       OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr ) );
       if ( ogrLayer )
         GDALDatasetReleaseResultSet( hDS, ogrLayer );
-      GDALClose( hDS );
       errCause = CPLGetLastErrorMsg( );
+      if ( errCause.isEmpty() )
+      {
+        sql = QStringLiteral( "UPDATE layer_styles SET f_table_name = %2 WHERE f_table_name = %1" )
+              .arg( QgsSqliteUtils::quotedString( oldName ),
+                    QgsSqliteUtils::quotedString( name ) );
+        ogrLayer = GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr );
+        if ( ogrLayer )
+          GDALDatasetReleaseResultSet( hDS, ogrLayer );
+      }
+      GDALClose( hDS );
     }
     else
     {
