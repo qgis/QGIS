@@ -87,6 +87,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
 };
 
+///@cond PRIVATE
 class QgsNearestNeighbourComparator : public INearestNeighborComparator
 {
   public:
@@ -188,7 +189,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
 
 /**
  * \ingroup core
- *  \class QgsSpatialIndexData
+ * \class QgsSpatialIndexData
  * \brief Data of spatial index that may be implicitly shared
  * \note not available in Python bindings
 */
@@ -279,6 +280,8 @@ class QgsSpatialIndexData : public QSharedData
     mutable QMutex mMutex;
 
 };
+
+///@endcond
 
 // -------------------------------------------------------------------------
 
