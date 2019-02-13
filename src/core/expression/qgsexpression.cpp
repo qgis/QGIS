@@ -316,22 +316,34 @@ bool QgsExpression::needsGeometry() const
 
 void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
 {
-  if ( ! d->mCalc )
-    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-  QString ellipsoid = context->variable( "project_ellipsoid" ).toString();
-  QString distanceUnitsStr = context->variable( "project_distance_units" ).toString();
-  QString areaUnitsStr = context->variable( "project_area_units" ).toString();
-  QgsCoordinateReferenceSystem crs = context->variable( "_layer_crs" ).value<QgsCoordinateReferenceSystem>();
-  QgsCoordinateTransformContext tContext = context->variable( "_project_transform_context" ).value<QgsCoordinateTransformContext>();
-
-  d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? GEO_NONE : ellipsoid );
-  if ( ! distanceUnitsStr.isEmpty() )
-    setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
-  if ( ! areaUnitsStr.isEmpty() )
-    setAreaUnits( QgsUnitTypes::stringToAreaUnit( areaUnitsStr ) );
-  if ( crs.isValid() )
+  // Set the geometry calculator from the context if it has not been set by setGeomCalculator()
+  if ( context && ! d->mCalc )
   {
-    d->mCalc->setSourceCrs( crs, tContext );
+    QString ellipsoid = context->variable( "project_ellipsoid" ).toString();
+    QgsCoordinateReferenceSystem crs = context->variable( "_layer_crs" ).value<QgsCoordinateReferenceSystem>();
+    QgsCoordinateTransformContext tContext = context->variable( "_project_transform_context" ).value<QgsCoordinateTransformContext>();
+    if ( crs.isValid() )
+    {
+      d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+      d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? GEO_NONE : ellipsoid );
+      d->mCalc->setSourceCrs( crs, tContext );
+    }
+  }
+
+  // Set the distance units from the context if it has not been set by setDistanceUnits()
+  if ( context && distanceUnits() == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    QString distanceUnitsStr = context->variable( "project_distance_units" ).toString();
+    if ( ! distanceUnitsStr.isEmpty() )
+      setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
+  }
+
+  // Set the area units from the context if it has not been set by setAreaUnits()
+  if ( context && areaUnits() == QgsUnitTypes::AreaUnknownUnit )
+  {
+    QString areaUnitsStr = context->variable( "project_area_units" ).toString();
+    if ( ! areaUnitsStr.isEmpty() )
+      setAreaUnits( QgsUnitTypes::stringToAreaUnit( areaUnitsStr ) );
   }
 }
 
@@ -403,8 +415,7 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
   if ( ! d->mIsPrepared )
   {
     qWarning( "QgsExpression::evaluate() called on an expression not yet prepared !" );
-    if ( ! prepare( context ) )
-      return QVariant();
+    prepare( context );
   }
   return d->mRootNode->eval( this, context );
 }
