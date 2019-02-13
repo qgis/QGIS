@@ -74,7 +74,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     //! Flags controlling index behavior
     enum Flag
     {
-      FlagStoreFeatureGeometries = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbour searches.
+      FlagStoreFeatureGeometries = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbor searches.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -175,14 +175,22 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QList<QgsFeatureId> intersects( const QgsRectangle &rectangle ) const;
 
     /**
-     * Returns nearest neighbors to a \a point. The number of neighbours returned is specified
-     * by the \a neighbours argument.
+     * Returns nearest neighbors to a \a point. The number of neighbors returned is specified
+     * by the \a neighbors argument.
+     *
+     * If the \a maxDistance argument is greater than 0, then only features within the specified
+     * distance of \a point will be considered.
+     *
+     * Note that in some cases the number of returned features may differ from the requested
+     * number of \a neighbors. E.g. if not enough features exist within the \a maxDistance of the
+     * search point. If multiple features are equidistant from the search \a point then the
+     * number of returned feature IDs may exceed \a neighbors.
      *
      * \warning If this QgsSpatialIndex object was not constructed with the FlagStoreFeatureGeometries flag,
-     * then the nearest neighbour test is performed based on the feature bounding boxes ONLY, so for non-point
-     * geometry features this method is not guaranteed to return the actual closest neighbours.
+     * then the nearest neighbor test is performed based on the feature bounding boxes ONLY, so for non-point
+     * geometry features this method is not guaranteed to return the actual closest neighbors.
      */
-    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
+    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors = 1, double maxDistance = 0 ) const;
 
 #ifndef SIP_RUN
 

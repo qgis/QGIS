@@ -147,16 +147,24 @@ Returns a list of features with a bounding box which intersects the specified ``
    when required.
 %End
 
-    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
+    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors = 1, double maxDistance = 0 ) const;
 %Docstring
-Returns nearest neighbors to a ``point``. The number of neighbours returned is specified
-by the ``neighbours`` argument.
+Returns nearest neighbors to a ``point``. The number of neighbors returned is specified
+by the ``neighbors`` argument.
+
+If the ``maxDistance`` argument is greater than 0, then only features within the specified
+distance of ``point`` will be considered.
+
+Note that in some cases the number of returned features may differ from the requested
+number of ``neighbors``. E.g. if not enough features exist within the ``maxDistance`` of the
+search point. If multiple features are equidistant from the search ``point`` then the
+number of returned feature IDs may exceed ``neighbors``.
 
 .. warning::
 
    If this QgsSpatialIndex object was not constructed with the FlagStoreFeatureGeometries flag,
-   then the nearest neighbour test is performed based on the feature bounding boxes ONLY, so for non-point
-   geometry features this method is not guaranteed to return the actual closest neighbours.
+   then the nearest neighbor test is performed based on the feature bounding boxes ONLY, so for non-point
+   geometry features this method is not guaranteed to return the actual closest neighbors.
 %End
 
 
