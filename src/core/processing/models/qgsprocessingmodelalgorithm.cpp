@@ -373,12 +373,21 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   const QString algorithmClassName = safeName( name() );
 
+  QSet< QString > toExecute;
+  for ( auto childIt = mChildAlgorithms.constBegin(); childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( childIt->isActive() && childIt->algorithm() )
+      toExecute.insert( childIt->childId() );
+  }
+  const int totalSteps = toExecute.count();
+
   switch ( outputType )
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
       lines << QStringLiteral( "from qgis.core import QgsProcessing" );
       lines << QStringLiteral( "from qgis.core import QgsProcessingAlgorithm" );
+      lines << QStringLiteral( "from qgis.core import QgsProcessingMultiStepFeedback" );
       // add specific parameter type imports
       const auto params = parameterDefinitions();
       QStringList importLines; // not a set - we need regular ordering
@@ -405,8 +414,12 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       }
 
       lines << QString();
-      lines << indent + QStringLiteral( "def processAlgorithm(self, parameters, context, feedback):" );
+      lines << indent + QStringLiteral( "def processAlgorithm(self, parameters, context, model_feedback):" );
       currentIndent = indent + indent;
+
+      lines << currentIndent + QStringLiteral( "# Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the" );
+      lines << currentIndent + QStringLiteral( "# overall progress through the model" );
+      lines << currentIndent + QStringLiteral( "feedback = QgsProcessingMultiStepFeedback(%1, model_feedback)" ).arg( totalSteps );
       break;
     }
 #if 0
@@ -450,15 +463,9 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   lines << currentIndent + QStringLiteral( "results = {}" );
   lines << currentIndent + QStringLiteral( "outputs = {}" );
 
-  QSet< QString > toExecute;
-  for ( auto childIt = mChildAlgorithms.constBegin(); childIt != mChildAlgorithms.constEnd(); ++childIt )
-  {
-    if ( childIt->isActive() && childIt->algorithm() )
-      toExecute.insert( childIt->childId() );
-  }
-
   QSet< QString > executed;
   bool executedAlg = true;
+  int currentStep = 0;
   while ( executedAlg && executed.count() < toExecute.count() )
   {
     executedAlg = false;
@@ -530,7 +537,15 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       }
 
       lines << child.asPythonCode( outputType, childParams, currentIndent.size(), indentSize );
-
+      currentStep++;
+      if ( currentStep < totalSteps )
+      {
+        lines << QString();
+        lines << currentIndent + QStringLiteral( "feedback.setCurrentStep(%1)" ).arg( currentStep );
+        lines << currentIndent + QStringLiteral( "if feedback.isCanceled():" );
+        lines << currentIndent + indent + QStringLiteral( "return {}" );
+        lines << QString();
+      }
       executed.insert( childId );
     }
   }
