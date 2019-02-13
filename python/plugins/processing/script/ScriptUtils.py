@@ -33,6 +33,7 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm,
                        QgsMessageLog
@@ -57,7 +58,7 @@ def scriptsFolders():
     if folder is not None:
         return folder.split(";")
     else:
-        return [ScriptUtils.defaultScriptsFolder()]
+        return [defaultScriptsFolder()]
 
 
 def loadAlgorithm(moduleName, filePath):
@@ -90,3 +91,46 @@ def findAlgorithmSource(name):
         return scriptsRegistry[name]
     except:
         return None
+
+
+def resetScriptFolder(folder):
+    """Check if script folder exist. If not, notify and try to check if it is absolute to another user setting.
+    If so, modify folder to change user setting to the current user setting."""
+
+    newFolder = folder
+    if os.path.exists(newFolder):
+        return newFolder
+
+    QgsMessageLog.logMessage(QgsApplication .translate("loadAlgorithms", "Script folder {} does not exist").format(newFolder),
+                             QgsApplication.translate("loadAlgorithms", "Processing"),
+                             Qgis.Warning)
+
+    if not os.path.isabs(newFolder):
+        return None
+
+    # try to check if folder is absolute to other QgsApplication.qgisSettingsDirPath()
+
+    # isolate "QGIS3/profiles/"
+    appIndex = -4
+    profileIndex = -3
+    currentSettingPath = QgsApplication.qgisSettingsDirPath()
+    paths = currentSettingPath.split(os.sep)
+    commonSettingPath = os.path.join(paths[appIndex], paths[profileIndex])
+
+    if commonSettingPath in newFolder:
+        # strip not common folder part. e.g. preserve the profile path
+        # stripping the heading part that come from another location
+        tail = newFolder[newFolder.find(commonSettingPath):]
+        # tail folder with the actual userSetting path
+        header = os.path.join(os.sep, os.path.join(*paths[:appIndex]))
+        newFolder = os.path.join(header, tail)
+
+        # skip if it does not exist
+        if not os.path.exists(newFolder):
+            return None
+
+        QgsMessageLog.logMessage(QgsApplication .translate("loadAlgorithms", "Script folder changed into {}").format(newFolder),
+                                 QgsApplication.translate("loadAlgorithms", "Processing"),
+                                 Qgis.Warning)
+
+    return newFolder
