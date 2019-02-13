@@ -142,6 +142,11 @@ QPushButton
     color:@text;
 }
 
+QPushButton[text^=""]
+{
+    min-width: 2.5em;
+}
+
 QToolButton
 {
     padding: 0.12em;
