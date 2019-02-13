@@ -23,6 +23,7 @@
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
+#include "qgslinestring.h"
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -231,6 +232,78 @@ class TestQgsSpatialIndex : public QObject
 
       delete indexBulk;
       delete indexInsert;
+    }
+
+    void testRetrieveGeometries()
+    {
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      int fid = 0;
+      for ( int x = 0; x < 10; ++x )
+      {
+        QgsFeatureList flist;
+        for ( int y = 100; y < 110; ++y )
+        {
+          QgsFeature f( fid++ );
+          f.setGeometry( qgis::make_unique< QgsLineString >( QgsPoint( x, y ), QgsPoint( x + 0.5, y - 0.5 ) ) );
+          flist << f;
+        }
+        vl->dataProvider()->addFeatures( flist );
+      }
+
+      // iterator based population
+
+      // not storing geometries
+      QgsSpatialIndex i1( vl->getFeatures() );
+      QVERIFY( i1.geometry( 1 ).isNull() );
+      QVERIFY( i1.geometry( 50 ).isNull() );
+
+      // storing geometries
+      QgsSpatialIndex i2( vl->getFeatures(), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      QCOMPARE( i2.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
+      QCOMPARE( i2.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+
+      // manual population
+
+      QgsSpatialIndex i3;
+      QgsFeatureIterator fi = vl->getFeatures();
+      QgsFeature f;
+      while ( fi.nextFeature( f ) )
+      {
+        i3.addFeature( f );
+      }
+      QVERIFY( i3.geometry( 1 ).isNull() );
+      QVERIFY( i3.geometry( 50 ).isNull() );
+
+
+      // storing geometries
+      QgsSpatialIndex i4( QgsSpatialIndex::FlagStoreFeatureGeometries );
+      fi = vl->getFeatures();
+      while ( fi.nextFeature( f ) )
+      {
+        i4.addFeature( f );
+      }
+      QCOMPARE( i4.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
+      QCOMPARE( i4.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+
+
+      // not storing geometries
+      QgsSpatialIndex i5( *vl );
+      QVERIFY( i5.geometry( 1 ).isNull() );
+      QVERIFY( i5.geometry( 50 ).isNull() );
+
+      // storing geometries
+      QgsSpatialIndex i6( *vl, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      QCOMPARE( i6.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
+      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+
+      f = vl->getFeature( 1 );
+      QVERIFY( i6.deleteFeature( f ) );
+      QVERIFY( i6.geometry( 1 ).isNull() );
+      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+      f = vl->getFeature( 50 );
+
+      QVERIFY( i6.deleteFeature( f ) );
+      QVERIFY( i6.geometry( 50 ).isNull() );
     }
 
 };

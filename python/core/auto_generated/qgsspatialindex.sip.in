@@ -39,12 +39,19 @@ QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
   public:
 
 
-    QgsSpatialIndex();
+    enum Flag
+    {
+      FlagStoreFeatureGeometries,
+    };
+    typedef QFlags<QgsSpatialIndex::Flag> Flags;
+
+
+    QgsSpatialIndex( QgsSpatialIndex::Flags flags = 0 );
 %Docstring
 Constructor for QgsSpatialIndex. Creates an empty R-tree index.
 %End
 
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = 0 );
 %Docstring
 Constructor - creates R-tree and bulk loads it with features from the iterator.
 This is much faster approach than creating an empty index and then inserting features one by one.
@@ -56,7 +63,7 @@ that of the spatial index construction.
 .. versionadded:: 2.8
 %End
 
-    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0 );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = 0 );
 %Docstring
 Constructor - creates R-tree and bulk loads it with features from the source.
 This is much faster approach than creating an empty index and then inserting features one by one.
@@ -152,12 +159,38 @@ by the ``neighbours`` argument.
 %End
 
 
+    SIP_PYOBJECT geometry( QgsFeatureId id ) const /TypeHint="QgsGeometry"/;
+%Docstring
+Returns the stored geometry for the indexed feature with matching ``id``. A KeyError will be raised if no
+geometry with the specified feature id exists in the index.
+
+Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
+
+.. versionadded:: 3.6
+%End
+%MethodCode
+    std::unique_ptr< QgsGeometry > g = qgis::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+    if ( g->isNull() )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromType( g.release(), sipType_QgsGeometry, Py_None );
+    }
+%End
+
+
     int  refs() const;
 %Docstring
 Gets reference count - just for debugging!
 %End
 
 };
+
+QFlags<QgsSpatialIndex::Flag> operator|(QgsSpatialIndex::Flag f1, QFlags<QgsSpatialIndex::Flag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
