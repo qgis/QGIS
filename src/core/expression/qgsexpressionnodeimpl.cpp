@@ -1261,16 +1261,18 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
 
   mIndex = fields.lookupField( mName );
-  if ( mIndex >= 0 )
+
+  if ( mIndex == -1 && context->hasFeature() )
   {
-    return true;
+    mIndex = context->feature().fieldNameIndex( mName );
   }
-  else
+
+  if ( mIndex == -1 )
   {
     parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
-    mIndex = -1;
     return false;
   }
+  return true;
 }
 
 QString QgsExpressionNodeColumnRef::dump() const
