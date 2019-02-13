@@ -6455,3 +6455,4 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
 
   return new QgsOgrTransaction( connString, ds );
 }
+

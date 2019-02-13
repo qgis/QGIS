@@ -24,6 +24,8 @@
 #include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>
 #include <qgsnetworkaccessmanager.h>
+#include <qgsgeopackagedataitems.h>
+#include <qgsdataitem.h>
 
 #include <QObject>
 
@@ -46,6 +48,8 @@ class TestQgsOgrProvider : public QObject
 
     void setupProxy();
     void testThread();
+    //! Test GPKG data items rename
+    void testGpkgDataItemRename();
 
   private:
     QString mTestDataDir;
@@ -199,6 +203,37 @@ void TestQgsOgrProvider::testThread()
   thread->wait();
   qInstallMessageHandler( 0 );
 
+}
+
+void TestQgsOgrProvider::testGpkgDataItemRename()
+{
+  QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
+  f.open();
+  f.close();
+  QString fileName { f.fileName( ) };
+  f.remove();
+  QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ),  fileName ) );
+  QgsGeoPackageVectorLayerItem item( nullptr,
+                                     QStringLiteral( "Layer 1" ),
+                                     QStringLiteral( "gpkg:/%1|layername=layer 1" )
+                                     .arg( fileName ),
+                                     QStringLiteral( "%1|layername=layer 1" ).arg( fileName ),
+                                     QgsLayerItem::LayerType::TableLayer );
+  item.rename( "layer 3" );
+  // Check that the style is still available
+  QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
+  QVERIFY( metadataLayer.isValid() );
+  QgsFeature feature;
+  QgsFeatureIterator it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 3'" ) ) ) );
+  QVERIFY( it.nextFeature( feature ) );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 1" ) );
+  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 1' " ) ) ) );
+  QVERIFY( !it.nextFeature( feature ) );
+  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 2' " ) ) ) );
+  QVERIFY( it.nextFeature( feature ) );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 2" ) );
 }
 
 

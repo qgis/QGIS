@@ -39,6 +39,7 @@
 #include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsproxyprogresstask.h"
+#include "qgssqliteutils.h"
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
@@ -741,5 +742,88 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
   return ::deleteLayer( mUri, errCause );
+}
+
+bool QgsGeoPackageVectorLayerItem::rename( const QString &name )
+{
+  // Checks that name does not exist yet
+  if ( tableNames().contains( name ) )
+  {
+    return false;
+  }
+  // Check if the layer(s) are in the registry
+  const QList<QgsMapLayer *> layersList( layersInProject() );
+  if ( ! layersList.isEmpty( ) )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Rename Layer" ), QObject::tr( "The layer <b>%1</b> is loaded in the current project with name <b>%2</b>,"
+                                " do you want to remove it from the project and rename it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    {
+      return false;
+    }
+  }
+  if ( ! layersList.isEmpty() )
+  {
+    QgsProject::instance()->removeMapLayers( layersList );
+  }
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mUri );
+  QString errCause;
+  if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( QStringLiteral( "layerName" ) ).isNull() )
+  {
+    errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( mUri );
+  }
+  else
+  {
+    QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+    const QList<QgsMapLayer *> layersList( layersInProject() );
+    if ( ! layersList.isEmpty( ) )
+    {
+      if ( QMessageBox::question( nullptr, QObject::tr( "Rename Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
+                                  " do you want to remove it from the project and rename it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      {
+        return false;
+      }
+    }
+    if ( ! layersList.isEmpty() )
+    {
+      QgsProject::instance()->removeMapLayers( layersList );
+    }
+
+    // TODO: maybe an index?
+    QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
+
+    GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
+    if ( hDS )
+    {
+      QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
+                   .arg( QgsSqliteUtils::quotedIdentifier( oldName ),
+                         QgsSqliteUtils::quotedIdentifier( name ) ) );
+      OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr ) );
+      if ( ogrLayer )
+        GDALDatasetReleaseResultSet( hDS, ogrLayer );
+      errCause = CPLGetLastErrorMsg( );
+      if ( errCause.isEmpty() )
+      {
+        sql = QStringLiteral( "UPDATE layer_styles SET f_table_name = %2 WHERE f_table_name = %1" )
+              .arg( QgsSqliteUtils::quotedString( oldName ),
+                    QgsSqliteUtils::quotedString( name ) );
+        ogrLayer = GDALDatasetExecuteSQL( hDS, sql.toUtf8().constData(), nullptr, nullptr );
+        if ( ogrLayer )
+          GDALDatasetReleaseResultSet( hDS, ogrLayer );
+      }
+      GDALClose( hDS );
+    }
+    else
+    {
+      errCause = QObject::tr( "There was an error opening %1!" ).arg( filePath );
+    }
+  }
+
+  if ( ! errCause.isEmpty() )
+    QMessageBox::critical( nullptr, QObject::tr( "Error renaming layer" ), errCause );
+  else if ( mParent )
+    mParent->refreshConnections();
+
+  return errCause.isEmpty();
 }
 
