@@ -178,7 +178,8 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * Returns nearest neighbors to a \a point. The number of neighbours returned is specified
      * by the \a neighbours argument.
      *
-     * \note The nearest neighbour test is performed based on the feature bounding boxes only, so for non-point
+     * \warning If this QgsSpatialIndex object was not constructed with the FlagStoreFeatureGeometries flag,
+     * then the nearest neighbour test is performed based on the feature bounding boxes ONLY, so for non-point
      * geometry features this method is not guaranteed to return the actual closest neighbours.
      */
     QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;

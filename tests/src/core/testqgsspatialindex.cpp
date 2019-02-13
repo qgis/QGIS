@@ -306,6 +306,27 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( i6.geometry( 50 ).isNull() );
     }
 
+    void testNearestNeighbour()
+    {
+      QgsSpatialIndex i;
+      QgsSpatialIndex i2( QgsSpatialIndex::FlagStoreFeatureGeometries );
+
+      QgsFeature f1( 1 );
+      f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 3 1, 3 3)" ) ) );
+      QgsFeature f2( 2 );
+      f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 0 3)" ) ) );
+      i.addFeature( f1 );
+      i2.addFeature( f1 );
+      i.addFeature( f2 );
+      i2.addFeature( f2 );
+
+      // i does not store feature geometries, so nearest neighbour search uses bounding box only
+      QCOMPARE( i.nearestNeighbor( QgsPointXY( 1, 3 ), 1 ), QList< QgsFeatureId >() << 1 );
+      // i2 does store feature geometries, so nearest neighbour is exact
+      QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 3 ), 1 ), QList< QgsFeatureId >() << 2 );
+
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsSpatialIndex )

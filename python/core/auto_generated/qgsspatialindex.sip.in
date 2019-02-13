@@ -152,9 +152,10 @@ Returns a list of features with a bounding box which intersects the specified ``
 Returns nearest neighbors to a ``point``. The number of neighbours returned is specified
 by the ``neighbours`` argument.
 
-.. note::
+.. warning::
 
-   The nearest neighbour test is performed based on the feature bounding boxes only, so for non-point
+   If this QgsSpatialIndex object was not constructed with the FlagStoreFeatureGeometries flag,
+   then the nearest neighbour test is performed based on the feature bounding boxes ONLY, so for non-point
    geometry features this method is not guaranteed to return the actual closest neighbours.
 %End
 
