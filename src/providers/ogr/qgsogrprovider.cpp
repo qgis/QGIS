@@ -6317,7 +6317,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
 
       listTimestamp.append( ts );
       mapIdToStyleName[fid] = styleName;
-      mapIdToDescription[fid] = styleName;
+      mapIdToDescription[fid] = description;
       mapTimestampToId[ts].append( fid );
     }
   }
