@@ -148,53 +148,53 @@ void TestQgsFieldExpressionWidget::asExpression()
   widget->setField( QStringLiteral( "fld" ) );
   QCOMPARE( widget->asExpression(), QStringLiteral( "\"fld\"" ) );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "fld" ) );
   QCOMPARE( spy2.count(), 1 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld" ) );
-  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+  QCOMPARE( spy2.last().at( 0 ).toString(), QStringLiteral( "fld" ) );
+  QVERIFY( spy2.last().at( 1 ).toBool() );
 
   // check with expressions set
   widget->setField( QStringLiteral( "fld + 1" ) );
   QCOMPARE( widget->asExpression(), QStringLiteral( "fld + 1" ) );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld + 1" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "fld + 1" ) );
   QCOMPARE( spy2.count(), 2 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld + 1" ) );
-  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+  QCOMPARE( spy2.last().at( 0 ).toString(), QStringLiteral( "fld + 1" ) );
+  QVERIFY( spy2.last().at( 1 ).toBool() );
 
   widget->setField( QStringLiteral( "1" ) );
   QCOMPARE( widget->asExpression(), QStringLiteral( "1" ) );
   QCOMPARE( spy.count(), 3 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "1" ) );
   QCOMPARE( spy2.count(), 3 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "1" ) );
-  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+  QCOMPARE( spy2.last().at( 0 ).toString(), QStringLiteral( "1" ) );
+  QVERIFY( spy2.last().at( 1 ).toBool() );
 
   widget->setField( QStringLiteral( "\"fld2\"" ) );
   QCOMPARE( widget->asExpression(), QStringLiteral( "\"fld2\"" ) );
   QCOMPARE( spy.count(), 4 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld2" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "fld2" ) );
   QCOMPARE( spy2.count(), 4 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld2" ) );
-  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+  QCOMPARE( spy2.last().at( 0 ).toString(), QStringLiteral( "fld2" ) );
+  QVERIFY( spy2.last().at( 1 ).toBool() );
 
   // check switching back to a field
   widget->setField( QStringLiteral( "fld3" ) );
   QCOMPARE( widget->asExpression(), QStringLiteral( "\"fld3\"" ) );
   QCOMPARE( spy.count(), 5 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld3" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "fld3" ) );
   QCOMPARE( spy2.count(), 5 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld3" ) );
-  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+  QCOMPARE( spy2.last().at( 0 ).toString(), QStringLiteral( "fld3" ) );
+  QVERIFY( spy2.last().at( 1 ).toBool() );
 
   // and back to null
   widget->setField( QString() );
   QVERIFY( widget->asExpression().isEmpty() );
   QCOMPARE( spy.count(), 6 );
-  QVERIFY( spy.constLast().at( 0 ).toString().isEmpty() );
+  QVERIFY( spy.last().at( 0 ).toString().isEmpty() );
   QCOMPARE( spy2.count(), 6 );
-  QVERIFY( spy2.constLast().at( 0 ).toString().isEmpty() );
-  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+  QVERIFY( spy2.last().at( 0 ).toString().isEmpty() );
+  QVERIFY( spy2.last().at( 1 ).toBool() );
 
   QgsProject::instance()->removeMapLayer( layer );
 }
