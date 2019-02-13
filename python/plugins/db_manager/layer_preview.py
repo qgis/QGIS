@@ -40,7 +40,7 @@ class LayerPreview(QgsMapCanvas):
 
         self.item = None
         self.dirty = False
-        self.currentLayer = None
+        self.currentLayerId = None
 
         # reuse settings from QGIS
         settings = QgsSettings()
@@ -118,9 +118,9 @@ class LayerPreview(QgsMapCanvas):
                     vl = None
 
             # remove old layer (if any) and set new
-            if self.currentLayer:
-                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayer.id()):
-                    QgsProject.instance().removeMapLayers([self.currentLayer.id()])
+            if self.currentLayerId:
+                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayerId):
+                    QgsProject.instance().removeMapLayers([self.currentLayerId])
 
             if vl and vl.isValid():
                 self.setLayers([vl])
@@ -129,7 +129,7 @@ class LayerPreview(QgsMapCanvas):
             else:
                 self.setLayers([])
 
-            self.currentLayer = vl
+            self.currentLayerId = vl.id()
 
             self.freeze(False)
             super().refresh()
