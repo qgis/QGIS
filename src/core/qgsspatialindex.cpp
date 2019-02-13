@@ -98,9 +98,10 @@ class QgsFeatureIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
+    explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr )
       : mFi( fi )
       , mFeedback( feedback )
+      , mFlags( flags )
     {
       readNextEntry();
     }
@@ -131,6 +132,8 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! sets the stream pointer to the first entry, if possible.
     void rewind() override { Q_ASSERT( false && "not available" ); }
 
+    QHash< QgsFeatureId, QgsGeometry > geometries;
+
   protected:
     void readNextEntry()
     {
@@ -142,6 +145,8 @@ class QgsFeatureIteratorDataStream : public IDataStream
         if ( QgsSpatialIndex::featureInfo( f, r, id ) )
         {
           mNextData = new RTree::Data( 0, nullptr, r, id );
+          if ( mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+            geometries.insert( f.id(), f.geometry() );
           return;
         }
       }
@@ -151,6 +156,8 @@ class QgsFeatureIteratorDataStream : public IDataStream
     QgsFeatureIterator mFi;
     RTree::Data *mNextData = nullptr;
     QgsFeedback *mFeedback = nullptr;
+    QgsSpatialIndex::Flags mFlags = nullptr;
+
 };
 
 
@@ -163,10 +170,15 @@ class QgsFeatureIteratorDataStream : public IDataStream
 class QgsSpatialIndexData : public QSharedData
 {
   public:
-    QgsSpatialIndexData()
+    QgsSpatialIndexData( QgsSpatialIndex::Flags flags )
+      : mFlags( flags )
     {
       initTree();
     }
+
+    QgsSpatialIndex::Flags mFlags = nullptr;
+
+    QHash< QgsFeatureId, QgsGeometry > mGeometries;
 
     /**
      * Constructor for QgsSpatialIndexData which bulk loads features from the specified feature iterator
@@ -176,14 +188,19 @@ class QgsSpatialIndexData : public QSharedData
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      */
-    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
+    explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr )
+      : mFlags( flags )
     {
-      QgsFeatureIteratorDataStream fids( fi, feedback );
+      QgsFeatureIteratorDataStream fids( fi, feedback, mFlags );
       initTree( &fids );
+      if ( flags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+        mGeometries = fids.geometries;
     }
 
     QgsSpatialIndexData( const QgsSpatialIndexData &other )
       : QSharedData( other )
+      , mFlags( other.mFlags )
+      , mGeometries( other.mGeometries )
     {
       QMutexLocker locker( &other.mMutex );
 
@@ -241,19 +258,19 @@ class QgsSpatialIndexData : public QSharedData
 // -------------------------------------------------------------------------
 
 
-QgsSpatialIndex::QgsSpatialIndex()
+QgsSpatialIndex::QgsSpatialIndex( QgsSpatialIndex::Flags flags )
 {
-  d = new QgsSpatialIndexData;
+  d = new QgsSpatialIndexData( flags );
 }
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback )
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback, QgsSpatialIndex::Flags flags )
 {
-  d = new QgsSpatialIndexData( fi, feedback );
+  d = new QgsSpatialIndexData( fi, feedback, flags );
 }
 
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback )
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback, QgsSpatialIndex::Flags flags )
 {
-  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setNoAttributes() ), feedback );
+  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setNoAttributes() ), feedback, flags );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT
@@ -306,7 +323,16 @@ bool QgsSpatialIndex::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
   if ( !featureInfo( feature, rect, id ) )
     return false;
 
-  return addFeature( id, rect );
+  if ( addFeature( id, rect ) )
+  {
+    if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+    {
+      QMutexLocker locker( &d->mMutex );
+      d->mGeometries.insert( feature.id(), feature.geometry() );
+    }
+    return true;
+  }
+  return false;
 }
 
 bool QgsSpatialIndex::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
@@ -370,6 +396,8 @@ bool QgsSpatialIndex::deleteFeature( const QgsFeature &f )
 
   QMutexLocker locker( &d->mMutex );
   // TODO: handle exceptions
+  if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+    d->mGeometries.remove( f.id() );
   return d->mRTree->deleteData( r, FID_TO_NUMBER( id ) );
 }
 
@@ -398,6 +426,12 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, i
   d->mRTree->nearestNeighborQuery( neighbors, p, visitor );
 
   return list;
+}
+
+QgsGeometry QgsSpatialIndex::geometry( QgsFeatureId id ) const
+{
+  QMutexLocker locker( &d->mMutex );
+  return d->mGeometries.value( id );
 }
 
 QAtomicInt QgsSpatialIndex::refs() const

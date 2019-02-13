@@ -71,10 +71,17 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 
     /* creation of spatial index */
 
+    //! Flags controlling index behavior
+    enum Flag
+    {
+      FlagStoreFeatureGeometries = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbour searches.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsSpatialIndex. Creates an empty R-tree index.
      */
-    QgsSpatialIndex();
+    QgsSpatialIndex( QgsSpatialIndex::Flags flags = nullptr );
 
     /**
      * Constructor - creates R-tree and bulk loads it with features from the iterator.
@@ -86,7 +93,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 2.8
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
 
     /**
      * Constructor - creates R-tree and bulk loads it with features from the source.
@@ -99,7 +106,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \since QGIS 3.0
      */
-    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
 
     //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex &other );
@@ -176,6 +183,42 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns the stored geometry for the indexed feature with matching \a id.
+     *
+     * Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
+     *
+     * \since QGIS 3.6
+     */
+    QgsGeometry geometry( QgsFeatureId id ) const;
+
+#else
+
+    /**
+     * Returns the stored geometry for the indexed feature with matching \a id. A KeyError will be raised if no
+     * geometry with the specified feature id exists in the index.
+     *
+     * Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
+     *
+     * \since QGIS 3.6
+     */
+    SIP_PYOBJECT geometry( QgsFeatureId id ) const SIP_TYPEHINT( QgsGeometry );
+    % MethodCode
+    std::unique_ptr< QgsGeometry > g = qgis::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+    if ( g->isNull() )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipConvertFromType( g.release(), sipType_QgsGeometry, Py_None );
+    }
+    % End
+#endif
+
     /* debugging */
 
     //! Gets reference count - just for debugging!
@@ -213,5 +256,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QSharedDataPointer<QgsSpatialIndexData> d;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSpatialIndex::Flags )
 
 #endif //QGSSPATIALINDEX_H
