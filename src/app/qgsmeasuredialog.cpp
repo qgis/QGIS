@@ -376,10 +376,14 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
-      // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so area is calculated using Cartesian calculations." );
+      toolTip += "<br> * ";
+      if ( mCartesian->isChecked() )
+        toolTip += tr( "Wanted Cartesian" );
+      else
+        toolTip += tr( "No map projection set" );
+      toolTip += tr( ", so area is calculated using Cartesian calculations." );
       toolTip += "<br> * " + tr( "Units are unknown." );
       mDa.setEllipsoid( GEO_NONE );
       mForceCartesian = true;
@@ -448,10 +452,14 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
-      // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using Cartesian calculations." );
+      toolTip += "<br> * ";
+      if ( mCartesian->isChecked() )
+        toolTip += tr( "Wanted Cartesian" );
+      else
+        toolTip += tr( "No map projection set" );
+      toolTip += tr( ", so area is calculated using Cartesian calculations." );
       toolTip += "<br> * " + tr( "Units are unknown." );
       mDa.setEllipsoid( GEO_NONE );
       mForceCartesian = true;
