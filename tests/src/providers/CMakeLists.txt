@@ -17,6 +17,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
+  ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
@@ -74,6 +75,7 @@ ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_ogrprovidertest ogrprovider_a)
 
 ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)

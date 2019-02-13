@@ -1296,8 +1296,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def test_quote_identifier(self):
         """Regression #21100"""
 
-        tmpfile = os.path.join(self.basetestpath, 'bug21100-wierd_field_names.gpkg')  # spellok
-        shutil.copy(os.path.join(unitTestDataPath(''), 'bug21100-wierd_field_names.gpkg'), tmpfile) # spellok
+        tmpfile = os.path.join(self.basetestpath, 'bug_21100-wierd_field_names.gpkg')  # spellok
+        shutil.copy(os.path.join(unitTestDataPath(''), 'bug_21100-wierd_field_names.gpkg'), tmpfile) # spellok
         vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'foo', 'ogr')
         self.assertTrue(vl.isValid())
         for i in range(1, len(vl.fields())):
