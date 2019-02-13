@@ -88,29 +88,60 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 };
 
 ///@cond PRIVATE
-class QgsNearestNeighbourComparator : public INearestNeighborComparator
+class QgsNearestNeighborComparator : public INearestNeighborComparator
 {
   public:
 
-    QgsNearestNeighbourComparator( const QHash< QgsFeatureId, QgsGeometry > &geometries, const QgsPointXY &point )
+    QgsNearestNeighborComparator( const QHash< QgsFeatureId, QgsGeometry > *geometries, const QgsPointXY &point, double maxDistance )
       : mGeometries( geometries )
       , mPoint( QgsGeometry::fromPointXY( point ) )
+      , mMaxDistance( maxDistance )
     {
     }
 
-    QHash< QgsFeatureId, QgsGeometry > mGeometries;
+    const QHash< QgsFeatureId, QgsGeometry > *mGeometries = nullptr;
     QgsGeometry mPoint;
+    double mMaxDistance = 0;
+    QSet< QgsFeatureId > mFeaturesOutsideMaxDistance;
 
-    double getMinimumDistance( const IShape &, const IShape & ) override
+    double getMinimumDistance( const IShape &query, const IShape &entry ) override
     {
-      Q_ASSERT( false ); // not implemented!
-      return 0;
+      return query.getMinimumDistance( entry );
     }
 
-    double getMinimumDistance( const IShape &, const IData &data ) override
+    double getMinimumDistance( const IShape &query, const IData &data ) override
     {
-      QgsGeometry other = mGeometries.value( data.getIdentifier() );
-      return other.distance( mPoint );
+      // start with the default implementation, which gives distance to bounding box only
+      IShape *pS;
+      data.getShape( &pS );
+      double dist = query.getMinimumDistance( *pS );
+      delete pS;
+
+      // if doing exact distance search, AND either no max distance specified OR the
+      // distance to the bounding box is less than the max distance, calculate the exact
+      // distance now.
+      // (note: if bounding box is already greater than the distance away then max distance, there's no
+      // point doing this more expensive calculation, since we can't possibly use this feature anyway!)
+      if ( mGeometries && ( mMaxDistance <= 0.0 || dist <= mMaxDistance ) )
+      {
+        QgsGeometry other = mGeometries->value( data.getIdentifier() );
+        dist = other.distance( mPoint );
+      }
+
+      if ( mMaxDistance > 0 && dist > mMaxDistance )
+      {
+        // feature is outside of maximum distance threshold. Flag it,
+        // but "trick" libspatialindex into considering it as just outside
+        // our max distance region. This means if there's no other closer features (i.e.,
+        // within our actual maximum search distance), the libspatialindex
+        // nearest neighbor test will use this feature and not needlessly continue hunting
+        // through the remaining more distant features in the index.
+        // TODO: add proper API to libspatialindex to allow a maximum search distance in
+        // nearest neighbor tests
+        mFeaturesOutsideMaxDistance.insert( data.getIdentifier() );
+        return mMaxDistance + 0.00000001;
+      }
+      return dist;
     }
 };
 
@@ -442,7 +473,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) cons
   return list;
 }
 
-QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, int neighbors ) const
+QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, const int neighbors, const double maxDistance ) const
 {
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
@@ -451,15 +482,18 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, i
   Point p( pt, 2 );
 
   QMutexLocker locker( &d->mMutex );
-  if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+  QgsNearestNeighborComparator nnc( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ? &d->mGeometries : nullptr,
+                                    point, maxDistance );
+  d->mRTree->nearestNeighborQuery( neighbors, p, visitor, nnc );
+
+  if ( maxDistance > 0 )
   {
-    QgsNearestNeighbourComparator nnc( d->mGeometries, point );
-    d->mRTree->nearestNeighborQuery( neighbors, p, visitor, nnc );
-  }
-  else
-  {
-    // simple bounding box search - meaningless for non-points
-    d->mRTree->nearestNeighborQuery( neighbors, p, visitor );
+    // trim features outside of max distance
+    list.erase( std::remove_if( list.begin(), list.end(),
+                                [&nnc]( QgsFeatureId id )
+    {
+      return nnc.mFeaturesOutsideMaxDistance.contains( id );
+    } ), list.end() );
   }
 
   return list;
