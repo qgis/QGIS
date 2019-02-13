@@ -87,6 +87,31 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
 };
 
+class QgsNearestNeighbourComparator : public INearestNeighborComparator
+{
+  public:
+
+    QgsNearestNeighbourComparator( const QHash< QgsFeatureId, QgsGeometry > &geometries, const QgsPointXY &point )
+      : mGeometries( geometries )
+      , mPoint( QgsGeometry::fromPointXY( point ) )
+    {
+    }
+
+    QHash< QgsFeatureId, QgsGeometry > mGeometries;
+    QgsGeometry mPoint;
+
+    double getMinimumDistance( const IShape &, const IShape & ) override
+    {
+      Q_ASSERT( false ); // not implemented!
+      return 0;
+    }
+
+    double getMinimumDistance( const IShape &, const IData &data ) override
+    {
+      QgsGeometry other = mGeometries.value( data.getIdentifier() );
+      return other.distance( mPoint );
+    }
+};
 
 /**
  * \ingroup core
@@ -423,7 +448,16 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, i
   Point p( pt, 2 );
 
   QMutexLocker locker( &d->mMutex );
-  d->mRTree->nearestNeighborQuery( neighbors, p, visitor );
+  if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
+  {
+    QgsNearestNeighbourComparator nnc( d->mGeometries, point );
+    d->mRTree->nearestNeighborQuery( neighbors, p, visitor, nnc );
+  }
+  else
+  {
+    // simple bounding box search - meaningless for non-points
+    d->mRTree->nearestNeighborQuery( neighbors, p, visitor );
+  }
 
   return list;
 }
