@@ -361,23 +361,42 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   QString indent = QString( ' ' ).repeated( indentSize );
   QString currentIndent;
 
-  auto safeName = []( const QString & name )->QString
+  QMap< QString, QString> friendlyChildNames;
+  auto safeName = []( const QString & name, bool capitalize )->QString
   {
     QString n = name.toLower().trimmed();
     QRegularExpression rx( QStringLiteral( "[^\\sa-z_A-Z0-9]" ) );
     n.replace( rx, QString() );
     QRegularExpression rx2( QStringLiteral( "^\\d*" ) ); // name can't start in a digit
     n.replace( rx2, QString() );
-    return QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase );
+    if ( !capitalize )
+      n = n.replace( ' ', '_' );
+    return capitalize ? QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase ) : n;
   };
 
-  const QString algorithmClassName = safeName( name() );
+  auto uniqueSafeName = [&friendlyChildNames, &safeName ]( const QString & name, bool capitalize )->QString
+  {
+    const QString base = safeName( name, capitalize );
+    QString candidate = base;
+    int i = 1;
+    while ( friendlyChildNames.contains( candidate ) )
+    {
+      i++;
+      candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
+    }
+    return candidate;
+  };
+
+  const QString algorithmClassName = safeName( name(), true );
 
   QSet< QString > toExecute;
   for ( auto childIt = mChildAlgorithms.constBegin(); childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
     if ( childIt->isActive() && childIt->algorithm() )
+    {
       toExecute.insert( childIt->childId() );
+      friendlyChildNames.insert( childIt->childId(), uniqueSafeName( childIt->description().isEmpty() ? childIt->childId() : childIt->description(), !childIt->description().isEmpty() ) );
+    }
   }
   const int totalSteps = toExecute.count();
 
@@ -462,6 +481,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   lines << currentIndent + QStringLiteral( "results = {}" );
   lines << currentIndent + QStringLiteral( "outputs = {}" );
+  lines << QString();
 
   QSet< QString > executed;
   bool executedAlg = true;
@@ -536,7 +556,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         }
       }
 
-      lines << child.asPythonCode( outputType, childParams, currentIndent.size(), indentSize );
+      lines << child.asPythonCode( outputType, childParams, currentIndent.size(), indentSize, friendlyChildNames );
       currentStep++;
       if ( currentStep < totalSteps )
       {
