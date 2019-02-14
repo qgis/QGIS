@@ -489,7 +489,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(errmsg, "")
         self.assertEqual(idlist, ['1', '3', '4', '2'])
         self.assertEqual(namelist, ['name', 'name2', 'name3', 'name_test2'])
-        self.assertEqual(desclist, ['description_bis', 'description2', 'description3', 'name_test2'])
+        self.assertEqual(desclist, ['description_bis', 'description2', 'description3', 'description_test2'])
 
         # Check that layers_style table is not list in subLayers()
         vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
