@@ -6234,7 +6234,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 0 ).staticValue().toInt(), 7 );
   QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 1 ).staticValue().toInt(), 9 );
 
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
 
   QgsProcessingModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
@@ -6270,7 +6270,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
   child.modelOutput( "a" ).setDescription( QStringLiteral( "my output 2" ) );
   QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output 2" ) );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2 ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
 
   // no existent
   child.modelOutput( "b" ).setDescription( QStringLiteral( "my output 3" ) );
