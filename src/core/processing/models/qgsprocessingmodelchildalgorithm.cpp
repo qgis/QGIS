@@ -162,7 +162,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   return true;
 }
 
-QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize ) const
+QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames ) const
 {
   QStringList lines;
   const QString baseIndent = QString( ' ' ).repeated( currentIndent );
@@ -181,7 +181,7 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
     const auto parts = paramIt.value();
     for ( const QgsProcessingModelChildParameterSource &source : parts )
     {
-      QString part = source.asPythonCode( outputType, def );
+      QString part = source.asPythonCode( outputType, def, friendlyChildNames );
       if ( !part.isEmpty() )
         sourceParts << part;
     }
@@ -207,11 +207,11 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   }
   lines << baseIndent + QStringLiteral( "}" );
 
-  lines << baseIndent + QStringLiteral( "outputs['%1'] = processing.run('%2', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ).arg( mId, mAlgorithmId );
+  lines << baseIndent + QStringLiteral( "outputs['%1'] = processing.run('%2', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ).arg( friendlyChildNames.value( mId, mId ), mAlgorithmId );
 
   for ( auto outputIt = mModelOutputs.constBegin(); outputIt != mModelOutputs.constEnd(); ++outputIt )
   {
-    lines << baseIndent + QStringLiteral( "results['%1:%2'] = outputs['%1']['%3']" ).arg( mId, outputIt.key(), outputIt.value().childOutputName() );
+    lines << baseIndent + QStringLiteral( "results['%1:%2'] = outputs['%3']['%4']" ).arg( mId, outputIt.key(), friendlyChildNames.value( mId, mId ), outputIt.value().childOutputName() );
   }
 
   return lines;
