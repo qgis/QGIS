@@ -373,16 +373,15 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * ";
       if ( mCartesian->isChecked() )
       {
-        toolTip += tr( "Wanted Cartesian" );
+        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
         mConvertToDisplayUnits = true;
       }
       else
       {
-        toolTip += tr( "No map projection set" );
+        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }
-      toolTip += tr( ", so area is calculated using Cartesian calculations." );
-      toolTip += "<br> * " + tr( "Units are unknown." );
       mDa.setEllipsoid( GEO_NONE );
       mForceCartesian = true;
     }
@@ -454,16 +453,15 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * ";
       if ( mCartesian->isChecked() )
       {
-        toolTip += tr( "Wanted Cartesian" );
+        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
         mConvertToDisplayUnits = true;
       }
       else
       {
-        toolTip += tr( "No map projection set" );
+        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }
-      toolTip += tr( ", so area is calculated using Cartesian calculations." );
-      toolTip += "<br> * " + tr( "Units are unknown." );
       mDa.setEllipsoid( GEO_NONE );
       mForceCartesian = true;
     }
