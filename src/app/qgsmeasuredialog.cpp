@@ -144,12 +144,10 @@ void QgsMeasureDialog::updateSettings()
          && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
   {
     mDa.setEllipsoid( GEO_NONE );
-    mForceCartesian = true;
   }
   else
   {
     mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    mForceCartesian = false;
   }
 }
 
@@ -363,7 +361,6 @@ void QgsMeasureDialog::updateUi()
   QString toolTip = tr( "The calculations are based on:" );
 
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mForceCartesian = false;
   mConvertToDisplayUnits = true;
 
   if ( mMeasureArea )
@@ -383,7 +380,6 @@ void QgsMeasureDialog::updateUi()
         mConvertToDisplayUnits = false;
       }
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
@@ -392,7 +388,6 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
                    mCanvas->mapSettings().destinationCrs().description() );
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
@@ -463,7 +458,6 @@ void QgsMeasureDialog::updateUi()
         mConvertToDisplayUnits = false;
       }
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
@@ -472,7 +466,6 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
                    mCanvas->mapSettings().destinationCrs().description() );
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else

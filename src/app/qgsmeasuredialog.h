@@ -103,7 +103,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Indicates whether the user chose "Map units" instead of directly selecting a unit
     bool mUseMapUnits = false;
 
-    //! Indicates wheter we need to convert units.
+    //! Indicates whether we need to convert units.
     bool mConvertToDisplayUnits = true;
 
     //! Number of decimal places we want.
