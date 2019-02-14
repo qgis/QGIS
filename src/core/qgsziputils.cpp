@@ -129,7 +129,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
   }
   else
   {
-    QString err = QObject::tr( "Error opening zip archive: '%1'" ).arg( z ? zip_strerror( z ) : zipFilename );
+    QString err = QObject::tr( "Error opening zip archive: '%1' (ERROR: %2)" ).arg( z ? zip_strerror( z ) : zipFilename, rc );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
     return false;
   }
