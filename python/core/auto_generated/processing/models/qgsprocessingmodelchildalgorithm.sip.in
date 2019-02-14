@@ -298,7 +298,8 @@ Loads this child from a QVariant.
 .. seealso:: :py:func:`toVariant`
 %End
 
-    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames ) const;
+    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize,
+                              const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const;
 %Docstring
 Attempts to convert the child to executable Python code, and returns a list of the generated lines of code.
 

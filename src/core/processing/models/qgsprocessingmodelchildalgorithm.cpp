@@ -162,7 +162,8 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   return true;
 }
 
-QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames ) const
+QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters,
+    int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const
 {
   QStringList lines;
   const QString baseIndent = QString( ' ' ).repeated( currentIndent );
@@ -211,7 +212,9 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
 
   for ( auto outputIt = mModelOutputs.constBegin(); outputIt != mModelOutputs.constEnd(); ++outputIt )
   {
-    lines << baseIndent + QStringLiteral( "results['%1:%2'] = outputs['%3']['%4']" ).arg( mId, outputIt.key(), friendlyChildNames.value( mId, mId ), outputIt.value().childOutputName() );
+    QString outputName = QStringLiteral( "%1:%2" ).arg( mId, outputIt.key() );
+    outputName = friendlyOutputNames.value( outputName, outputName );
+    lines << baseIndent + QStringLiteral( "results['%1'] = outputs['%2']['%3']" ).arg( outputName, friendlyChildNames.value( mId, mId ), outputIt.value().childOutputName() );
   }
 
   return lines;
