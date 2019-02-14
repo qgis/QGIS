@@ -362,6 +362,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   QString currentIndent;
 
   QMap< QString, QString> friendlyChildNames;
+  QMap< QString, QString> friendlyOutputNames;
   auto safeName = []( const QString & name, bool capitalize )->QString
   {
     QString n = name.toLower().trimmed();
@@ -374,12 +375,12 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     return capitalize ? QgsStringUtils::capitalize( n, QgsStringUtils::UpperCamelCase ) : n;
   };
 
-  auto uniqueSafeName = [&friendlyChildNames, &safeName ]( const QString & name, bool capitalize )->QString
+  auto uniqueSafeName = [ &safeName ]( const QString & name, bool capitalize, const QMap< QString, QString > &friendlyNames )->QString
   {
     const QString base = safeName( name, capitalize );
     QString candidate = base;
     int i = 1;
-    while ( friendlyChildNames.contains( candidate ) )
+    while ( friendlyNames.contains( candidate ) )
     {
       i++;
       candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
@@ -395,7 +396,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     if ( childIt->isActive() && childIt->algorithm() )
     {
       toExecute.insert( childIt->childId() );
-      friendlyChildNames.insert( childIt->childId(), uniqueSafeName( childIt->description().isEmpty() ? childIt->childId() : childIt->description(), !childIt->description().isEmpty() ) );
+      friendlyChildNames.insert( childIt->childId(), uniqueSafeName( childIt->description().isEmpty() ? childIt->childId() : childIt->description(), !childIt->description().isEmpty(), friendlyChildNames ) );
     }
   }
   const int totalSteps = toExecute.count();
@@ -429,7 +430,16 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       lines.reserve( lines.size() + params.size() );
       for ( const QgsProcessingParameterDefinition *def : params )
       {
-        lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( def->asPythonString() );
+        std::unique_ptr< QgsProcessingParameterDefinition > defClone( def->clone() );
+
+        if ( defClone->isDestination() )
+        {
+          const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
+          friendlyOutputNames.insert( defClone->name(), friendlyName );
+          defClone->setName( friendlyName );
+        }
+
+        lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
       }
 
       lines << QString();
@@ -529,6 +539,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             if ( outputIt->childOutputName() == destParam->name() )
             {
               QString paramName = child.childId() + ':' + outputIt.key();
+              paramName = friendlyOutputNames.value( paramName, paramName );
               childParams.insert( destParam->name(), QStringLiteral( "parameters['%1']" ).arg( paramName ) );
               isFinalOutput = true;
               break;
@@ -556,7 +567,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         }
       }
 
-      lines << child.asPythonCode( outputType, childParams, currentIndent.size(), indentSize, friendlyChildNames );
+      lines << child.asPythonCode( outputType, childParams, currentIndent.size(), indentSize, friendlyChildNames, friendlyOutputNames );
       currentStep++;
       if ( currentStep < totalSteps )
       {
