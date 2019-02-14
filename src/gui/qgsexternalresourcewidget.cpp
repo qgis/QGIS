@@ -231,6 +231,7 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
     if ( mDocumentViewerContent == Web )
     {
       mWebView->setUrl( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
+      mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
     }
 #endif
 
