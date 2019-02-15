@@ -898,31 +898,26 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
   // handle custom layer node labels
   QString name;
   QgsLayerTreeNode *node = index2node( index );
-  QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index );
+  QgsLayerTreeModelLegendNode *ltmln = index2legendNode( index ); // Possibly useless
   QgsLayerTreeLayer *nodeLayer = QgsLayerTree::isLayer( node ) ? QgsLayerTree::toLayer( node ) : nullptr;
 
   if ( ( nodeLayer && !ltmln ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) )
   {
     //finding the first label that is stored
     name = nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-    qInfo() << nodeLayer->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
     if ( name.isEmpty() )
       name = nodeLayer->name();
-    qInfo() << ( '1' + nodeLayer->name() );
     if ( name.isEmpty() )
       name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-    qInfo() << ( '2' + node->customProperty( QStringLiteral( "legend/title-label" ) ).toString() );
     if ( name.isEmpty() )
       name = node->name();
-    qInfo() << ( '3' + node->name() );
+
     if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-
       if ( vlayer && vlayer->featureCount() >= 0 )
       {
         Q_UNUSED( ltmln );
-        name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
         return name;
       }
     }
@@ -935,15 +930,13 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
     {
       if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( ltmln ) )
         name = synode->evaluateLabel( context ); // removed name input; existing symbol/model tree have distinct names
-      qInfo() << ( "symbol evaled label is " + name );
       return name;
     }
     else
     {
       // QList<QgsLayerTreeModelLegendNode *> legendnodes = nodeLayer->layer()->legend()->createLayerTreeModelLegendNodes( nodeLayer );
-      QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, true );
+      QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, False );
       // get non-embedded node since embedded nodes should pop un as ltmln in theory
-      qInfo() << ( "Symbol list size " + QVariant( legendnodes.count() ).toString() );
       if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
       {
         Q_FOREACH ( QgsLayerTreeModelLegendNode *treenode, legendnodes )
@@ -953,10 +946,7 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         }
       }
       else if ( QgsSymbolLegendNode *synode = dynamic_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-      {
         name = synode->evaluateLabel( context, name );
-        qInfo() << ( " evaluated string is " + name );
-      }
     }
     return name;
   }
