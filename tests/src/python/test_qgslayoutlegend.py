@@ -389,10 +389,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().addMapLayers([point_layer])
         legendlayer = legend.model().rootGroup().addLayer(point_layer)
 
-        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
-        QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
-        legend.model().refreshLayerLegend(layer_tree_layer)
-        legendnodes = legend.model().layerLegendNodes(layer_tree_layer)
+        legend.model().refreshLayerLegend(legendlayer)
+        legendnodes = legend.model().layerLegendNodes(legendlayer)
         legendnodes[0].setUserLabel('[% @symbol_id %]')
         legendnodes[1].setUserLabel('[% @symbol_count %]')
         legendnodes[2].setUserLabel('[% sum("Pilots") %]')
