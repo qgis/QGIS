@@ -57,7 +57,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
 
-        QgsPRoject.instance().clear()
+        QgsProject.instance().clear()
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsProject.instance().addMapLayers([point_layer])
