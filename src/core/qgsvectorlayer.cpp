@@ -695,9 +695,7 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
-
-
-QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
+QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool wait )
 {
   if ( mSymbolFeatureCounted || mFeatureCounter )
     return mFeatureCounter;
@@ -720,13 +718,18 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
     return mFeatureCounter;
   }
 
-  if ( !mFeatureCounter )
+  if ( !mFeatureCounter && !wait )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
     connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
     connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
     QgsApplication::taskManager()->addTask( mFeatureCounter );
+  }
+  else if ( !mFeatureCounter && wait )
+  {
+    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+    mFeatureCounter->run();
   }
 
   return mFeatureCounter;
