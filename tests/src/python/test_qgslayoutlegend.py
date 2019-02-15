@@ -367,6 +367,47 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
+        
+    def testSymbolExpressions(self):
+        """Test expressions embedded in legend node text"""
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+
+        QgsProject.instance().clear()
+
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(point_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+
+        QgsProject.instance().addMapLayers([point_layer])
+        legendlayer = legend.model().rootGroup().addLayer(point_layer)
+
+        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
+        legend.model().refreshLayerLegend(layer_tree_layer)
+        legendnodes = legend.model().layerLegendNodes(layer_tree_layer)
+        legendnodes[0].setUserLabel('[% @symbol_id %]')
+        legendnodes[1].setUserLabel('[% @symbol_count %]')
+        legendnodes[2].setUserLabel('[% sum("Pilots") %]')
+            
+        label1=legendnodes[0].evaluateLabel()
+        label2=legendnodes[1].evaluateLabel()
+        label3=legendnodes[2].evaluateLabel()
+
+        print( label1, ';', label2, ';', label3 )
+
+        self.assertEqual(label1, '0')
+        self.assertEqual(label2, '5')
+        self.assertEqual(label3, '12')
+
+        QgsProject.instance().clear()
 
 if __name__ == '__main__':
     unittest.main()
