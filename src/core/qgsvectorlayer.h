@@ -1409,9 +1409,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Return true if the symbols were counted
-     * Since: 3.8
+     * \Since: 3.8
+     * \returns true if features are counted
      */
-    bool featureCounted() const { return mFeaturesCounted ;}
+    bool featureCounted() const { return mSymbolFeatureCounted ;}
 
     /**
      * Changes a feature's \a geometry within the layer's edit buffer
