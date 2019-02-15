@@ -1519,7 +1519,10 @@ Make layer read-only (editing disabled) or not
     bool featureCounted() const;
 %Docstring
 Return true if the symbols were counted
-Since: 3.8
+
+:return: true if features are counted
+
+.. versionadded:: 3.8
 %End
 
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
