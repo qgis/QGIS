@@ -1516,6 +1516,12 @@ Make layer read-only (editing disabled) or not
 :return: false if the layer is in editing yet
 %End
 
+    bool featureCounted() const;
+%Docstring
+Return true if the symbols were counted
+Since: 3.8
+%End
+
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
 Changes a feature's ``geometry`` within the layer's edit buffer
