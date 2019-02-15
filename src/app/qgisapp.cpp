@@ -4808,7 +4808,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   if ( ! zipItem )
     return false;
 
-  zipItem->populate();
+  zipItem->populate( true );
   QgsDebugMsg( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
