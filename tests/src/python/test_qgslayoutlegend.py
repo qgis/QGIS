@@ -391,10 +391,10 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
-        legendnodes[0].setUserLabel('[% @symbol_id %]')
-        legendnodes[1].setUserLabel('[% @symbol_count %]')
-        legendnodes[2].setUserLabel('[% sum("Pilots") %]')
-
+        legendnodes[0].setUserLabel('[% @symbol_id %], [% @symbol_feature_ids %]')
+        legendnodes[1].setUserLabel('[% @symbol_count %], [% @symbol_label %]')
+        legendnodes[2].setUserLabel('[% sum("Pilots") %], [% @symbol_feature_ids %] ')
+        
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
