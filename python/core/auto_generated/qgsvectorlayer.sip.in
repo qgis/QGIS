@@ -84,6 +84,85 @@ below.
 
 Access data in a SpatiaLite database. The url defines the connection parameters, table,
 geometry column, and other attributes. The url can be constructed using the
+
+
+
+
+
+
+
+
+
+typedef QList<int> QgsAttributeList;
+typedef QSet<int> QgsAttributeIds;
+
+
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
+{
+%Docstring
+Represents a vector layer which manages a vector based data sets.
+
+The QgsVectorLayer is instantiated by specifying the name of a data provider,
+such as postgres or wfs, and url defining the specific data set to connect to.
+The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
+corresponding to the provider type, and passes it the url. The data provider
+connects to the data source.
+
+The QgsVectorLayer provides a common interface to the different data types. It also
+manages editing transactions.
+
+Sample usage of the QgsVectorLayer class:
+
+.. code-block::
+
+         QString uri = "point?crs=epsg:4326&field=id:integer";
+         QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+
+The main data providers supported by QGIS are listed below.
+
+\section providers Vector data providers
+
+\subsection memory Memory data providerType (memory)
+
+The memory data provider is used to construct in memory data, for example scratch
+data or data generated from spatial operations such as contouring. There is no
+inherent persistent storage of the data. The data source uri is constructed. The
+url specifies the geometry type ("point", "linestring", "polygon",
+"multipoint","multilinestring","multipolygon"), optionally followed by url parameters
+as follows:
+
+- crs=definition
+Defines the coordinate reference system to use for the layer.
+definition is any string accepted by :py:func:`QgsCoordinateReferenceSystem.createFromString()`
+
+- index=yes
+Specifies that the layer will be constructed with a spatial index
+
+- field=name:type(length,precision)
+Defines an attribute of the layer. Multiple field parameters can be added
+to the data provider definition. type is one of "integer", "double", "string".
+
+An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
+
+Since QGIS 3.4 when closing a project, the application shows a warning about potential data
+loss if there are any non-empty memory layers present. If your memory layer should not
+trigger such warning, it is possible to suppress that by setting the following custom variable:
+.. code-block:: python
+
+       layer.setCustomProperty("skipMemoryLayersCheck", 1)
+
+\subsection ogr OGR data provider (ogr)
+
+Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+is the OGR connection string. A wide variety of data formats can be accessed using this
+driver, including file based formats used by many GIS systems, database formats, and
+web services. Some of these formats are also supported by custom data providers listed
+below.
+
+\subsection spatialite SpatiaLite data provider (spatialite)
+
+Access data in a SpatiaLite database. The url defines the connection parameters, table,
+geometry column, and other attributes. The url can be constructed using the
 QgsDataSourceUri class.
 
 \subsection postgres PostgreSQL data provider (postgres)
@@ -120,13 +199,13 @@ in the bounding box of the feature iterator)
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
 
-The ‘FILTER’ query string parameter can be used to filter
-the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+The â€˜FILTERâ€™ query string parameter can be used to filter
+the WFS feature type. The â€˜FILTERâ€™ key value can either be a QGIS expression
 or an OGC XML filter. If the value is set to a QGIS expression the driver will
 turn it into OGC XML filter before passing it to the WFS server. Beware the
-QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
-attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
-spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
+QGIS expression filter only supportsâ€ =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULLâ€
+attribute operators, â€œBBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Withinâ€
+spatial binary operators and the QGIS local â€œgeomFromWKT, geomFromGMLâ€
 geometry constructor functions.
 
 Also note:
@@ -800,7 +879,7 @@ Lists all the style in db split into related to the layer and not related to
 :param msgError:
 
 :return: - the number of styles related to current layer
-         - descriptions: the list in which will be stored the style descriptions
+         - descriptions:  the list in which will be stored the style descriptions
 
 .. note::
 
@@ -819,7 +898,7 @@ Delete a style from the database
 :param styleId: the provider's layer_styles table id of the style to delete
 
 :return: - true in case of success
-         - msgError: reference to string that will be updated with any error messages
+         - msgError:  reference to string that will be updated with any error messages
 
 .. versionadded:: 3.0
 %End
@@ -1005,12 +1084,14 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false);
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
 connect to the symbolFeatureCountMapChanged() signal to be
 notified when the freshly updated feature counts are ready.
+
+:param wait: wait for the features to be counter or put the action on the stack
 
 .. note::
 
@@ -1522,7 +1603,7 @@ Return true if the symbols were counted
 
 :return: true if features are counted
 
-.. versionadded:: 3.8
+\Since: 3.8
 %End
 
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
