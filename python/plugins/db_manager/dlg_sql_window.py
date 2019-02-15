@@ -595,8 +595,14 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def _getSqlQuery(self):
         sql = self.editSql.selectedText()
         if len(sql) == 0:
-            sql = self.editSql.text().replace('\n', ' ').strip()
-        return sql
+            sql = self.editSql.text()
+        # Clean it up!
+        lines = []
+        for line in sql.split('\n'):
+            if not line.strip().startswith('--'):
+                lines.append(line)
+        sql = ' '.join(lines)
+        return sql.strip()
 
     def uniqueChanged(self):
         # when an item is (un)checked, simply trigger an update of the combobox text
