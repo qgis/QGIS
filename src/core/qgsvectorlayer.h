@@ -1408,6 +1408,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool setReadOnly( bool readonly = true );
 
     /**
+     * Return true if the symbols were counted
+     * Since: 3.8
+     */
+    bool featureCounted() const { return mFeaturesCounted ;}
+
+    /**
      * Changes a feature's \a geometry within the layer's edit buffer
      * (but does not immediately commit the changes). The \a fid argument
      * specifies the ID of the feature to be changed.
