@@ -602,9 +602,7 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), textOnSymbolLabel(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
-  QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures() ;
-  if (!vl->featureCounted())
-    counter->run();
+  QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures( true );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( counter->featureCount( mItem.ruleKey() ) ), true ) );
 
 
