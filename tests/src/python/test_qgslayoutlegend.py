@@ -394,12 +394,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legendnodes[0].setUserLabel('[% @symbol_id %]')
         legendnodes[1].setUserLabel('[% @symbol_count %]')
         legendnodes[2].setUserLabel('[% sum("Pilots") %]')
-            
-        label1=legendnodes[0].evaluateLabel()
-        label2=legendnodes[1].evaluateLabel()
-        label3=legendnodes[2].evaluateLabel()
 
-        print( label1, ';', label2, ';', label3 )
+        label1 = legendnodes[0].evaluateLabel()
+        label2 = legendnodes[1].evaluateLabel()
+        label3 = legendnodes[2].evaluateLabel()
+
+        print(label1, ';', label2, ';', label3 )
 
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')
