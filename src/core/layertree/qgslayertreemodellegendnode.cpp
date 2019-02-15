@@ -637,7 +637,9 @@ QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLa
     context = vl->createExpressionContext( context );
   }
 
-  label = QgsExpression().replaceExpressionText( label, &context );
+  label = QgsExpression();
+  label.prepare( &context );
+  label.replaceExpressionText( label, &context );
   return label;
 }
 
