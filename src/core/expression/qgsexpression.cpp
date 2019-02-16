@@ -455,6 +455,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     QgsDebugMsg( "Found expression: " + to_replace );
 
     QgsExpression exp( to_replace );
+    exp.prepare( context );
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
