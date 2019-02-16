@@ -1002,7 +1002,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since This is asynchronous since QGIS 3.0
      */
-    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false);
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false );
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -1406,14 +1406,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns false if the layer is in editing yet
      */
     bool setReadOnly( bool readonly = true );
-
-    /**
-     * Return true if the symbols were counted
-     * \returns true if features are counted
-     * 
-     *  \Since: 3.8
-     */
-    bool featureCounted() const { return mSymbolFeatureCounted ;}
 
     /**
      * Changes a feature's \a geometry within the layer's edit buffer
