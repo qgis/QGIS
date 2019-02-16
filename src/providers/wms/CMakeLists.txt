@@ -1,6 +1,3 @@
-FIND_PACKAGE(Qt5XmlPatterns REQUIRED)
-
-
 SET (WMS_SRCS
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
