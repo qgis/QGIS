@@ -355,6 +355,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if sql == "":
             return
 
+        # Clean it up!
+        lines = []
+        for line in sql.split('\n'):
+            if not line.strip().startswith('--'):
+                lines.append(re.sub(r'--.*$', '', line))
+        sql = ' '.join(lines)
+
         # delete the old model
         old_model = self.viewResult.model()
         self.viewResult.setModel(None)
@@ -596,12 +603,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         sql = self.editSql.selectedText()
         if len(sql) == 0:
             sql = self.editSql.text()
-        # Clean it up!
-        lines = []
-        for line in sql.split('\n'):
-            if not line.strip().startswith('--'):
-                lines.append(line)
-        sql = ' '.join(lines)
         return sql.strip()
 
     def uniqueChanged(self):
