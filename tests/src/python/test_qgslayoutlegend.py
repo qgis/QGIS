@@ -367,7 +367,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
-        
     def testSymbolExpressions(self):
         """Test expressions embedded in legend node text"""
 
@@ -391,21 +390,21 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         legend.model().refreshLayerLegend(legendlayer)
         legendnodes = legend.model().layerLegendNodes(legendlayer)
-        legendnodes[0].setUserLabel('[% @symbol_id %], [% @symbol_feature_ids %]')
-        legendnodes[1].setUserLabel('[% @symbol_count %], [% @symbol_label %]')
-        legendnodes[2].setUserLabel('[% sum("Pilots") %], [% @symbol_feature_ids %] ')
-        
+        legendnodes[0].setUserLabel('[% @symbol_id %]')
+        legendnodes[1].setUserLabel('[% @symbol_count %]')
+        legendnodes[2].setUserLabel('[% sum("Pilots") %]')
+
         label1 = legendnodes[0].evaluateLabel()
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
 
-        print(label1, ';', label2, ';', label3 )
 
         self.assertEqual(label1, '0')
         self.assertEqual(label2, '5')
         self.assertEqual(label3, '12')
 
         QgsProject.instance().clear()
+
 
 if __name__ == '__main__':
     unittest.main()
