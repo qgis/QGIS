@@ -84,85 +84,6 @@ below.
 
 Access data in a SpatiaLite database. The url defines the connection parameters, table,
 geometry column, and other attributes. The url can be constructed using the
-
-
-
-
-
-
-
-
-
-typedef QList<int> QgsAttributeList;
-typedef QSet<int> QgsAttributeIds;
-
-
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
-{
-%Docstring
-Represents a vector layer which manages a vector based data sets.
-
-The QgsVectorLayer is instantiated by specifying the name of a data provider,
-such as postgres or wfs, and url defining the specific data set to connect to.
-The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
-corresponding to the provider type, and passes it the url. The data provider
-connects to the data source.
-
-The QgsVectorLayer provides a common interface to the different data types. It also
-manages editing transactions.
-
-Sample usage of the QgsVectorLayer class:
-
-.. code-block::
-
-         QString uri = "point?crs=epsg:4326&field=id:integer";
-         QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
-
-The main data providers supported by QGIS are listed below.
-
-\section providers Vector data providers
-
-\subsection memory Memory data providerType (memory)
-
-The memory data provider is used to construct in memory data, for example scratch
-data or data generated from spatial operations such as contouring. There is no
-inherent persistent storage of the data. The data source uri is constructed. The
-url specifies the geometry type ("point", "linestring", "polygon",
-"multipoint","multilinestring","multipolygon"), optionally followed by url parameters
-as follows:
-
-- crs=definition
-Defines the coordinate reference system to use for the layer.
-definition is any string accepted by :py:func:`QgsCoordinateReferenceSystem.createFromString()`
-
-- index=yes
-Specifies that the layer will be constructed with a spatial index
-
-- field=name:type(length,precision)
-Defines an attribute of the layer. Multiple field parameters can be added
-to the data provider definition. type is one of "integer", "double", "string".
-
-An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
-
-Since QGIS 3.4 when closing a project, the application shows a warning about potential data
-loss if there are any non-empty memory layers present. If your memory layer should not
-trigger such warning, it is possible to suppress that by setting the following custom variable:
-.. code-block:: python
-
-       layer.setCustomProperty("skipMemoryLayersCheck", 1)
-
-\subsection ogr OGR data provider (ogr)
-
-Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
-is the OGR connection string. A wide variety of data formats can be accessed using this
-driver, including file based formats used by many GIS systems, database formats, and
-web services. Some of these formats are also supported by custom data providers listed
-below.
-
-\subsection spatialite SpatiaLite data provider (spatialite)
-
-Access data in a SpatiaLite database. The url defines the connection parameters, table,
-geometry column, and other attributes. The url can be constructed using the
 QgsDataSourceUri class.
 
 \subsection postgres PostgreSQL data provider (postgres)
@@ -1084,7 +1005,7 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false);
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false );
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
@@ -1595,15 +1516,6 @@ If you need only the count of committed features call this method on this layer'
 Make layer read-only (editing disabled) or not
 
 :return: false if the layer is in editing yet
-%End
-
-    bool featureCounted() const;
-%Docstring
-Return true if the symbols were counted
-
-:return: true if features are counted
-
-\Since: 3.8
 %End
 
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
