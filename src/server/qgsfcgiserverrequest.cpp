@@ -199,7 +199,7 @@ void QgsFcgiServerRequest::printRequestInfos()
   {
     if ( getenv( envVar.toStdString().c_str() ) )
     {
-      QgsMessageLog::logMessage( envVar + QString( getenv( envVar.toStdString().c_str() ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), QStringLiteral( "Server" ), Qgis::Info );
     }
   }
 }
