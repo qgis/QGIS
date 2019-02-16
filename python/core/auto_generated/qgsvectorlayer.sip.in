@@ -1005,12 +1005,14 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool wait = false );
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
 connect to the symbolFeatureCountMapChanged() signal to be
 notified when the freshly updated feature counts are ready.
+
+:param wait: wait for the features to be counter or put the action on the stack
 
 .. note::
 
@@ -1842,9 +1844,11 @@ Destroy active command and reverts all changes in it
       NoMarker
     };
 
-    static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+ static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 %Docstring
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+
+.. deprecated:: Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
 %End
 
     void updateFields();
@@ -2195,13 +2199,15 @@ It may also contain embedded expressions.
 .. versionadded:: 3.0
 %End
 
-    virtual QgsExpressionContext createExpressionContext( QgsExpressionContext context = QgsExpressionContext() ) const ${SIP_FINAL};
-
+    QgsExpressionContext createExpressionContext( QgsExpressionContext context ) const;
 %Docstring
 Provide the global and layer context for evaluation
 
 :param context: extra QgsExpressionContext to add
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
+
 
     virtual QgsExpressionContextScope *createExpressionContextScope() const ${SIP_FINAL} /Factory/;
 
