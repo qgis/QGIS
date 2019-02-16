@@ -25,12 +25,14 @@ for module in "${modules[@]}"; do
         outdiff=$(./scripts/sipify.pl -p python/${module}/auto_additions/${pyfile}.temp $header | diff python/$sipfile.in -)
         if [[ -n "$outdiff" ]]; then
           echo " *** SIP file not up to date: $sipfile"
+          echo " $outdiff "
           code=1
         fi
         if [[ -f python/${module}/auto_additions/${pyfile}.temp ]]; then
           outdiff2=$(diff python/${module}/auto_additions/${pyfile} python/${module}/auto_additions/${pyfile}.temp)
           if [[ -n "$outdiff2" ]]; then
             echo " *** Python addition file not up to date: $sipfile"
+            echo " $outdiff2 "
             code=1
           fi
         fi
