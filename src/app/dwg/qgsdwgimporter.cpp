@@ -1759,14 +1759,20 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
       {
         QgsCircularString *c = new QgsCircularString();
         c->setPoints( s );
-        // QgsDebugMsg( QStringLiteral( "add circular string:%1" ).arg( c->asWkt() ) );
+
+        if ( i > 0 )
+          c->moveVertex( QgsVertexId( 0, 0, 0 ), cc.endPoint() );
+
         cc.addCurve( c );
       }
       else
       {
         QgsLineString *c = new QgsLineString();
         c->setPoints( s );
-        // QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( c->asWkt() ) );
+
+        if ( i > 0 )
+          c->moveVertex( QgsVertexId( 0, 0, 0 ), cc.endPoint() );
+
         cc.addCurve( c );
       }
 
@@ -2454,21 +2460,30 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
         ls->setPoints( QgsPointSequence()
                        << QgsPoint( QgsWkbTypes::PointZ, l->basePoint.x, l->basePoint.y, l->basePoint.z )
                        << QgsPoint( QgsWkbTypes::PointZ, l->secPoint.x, l->secPoint.y, l->secPoint.z ) );
-        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( ls->asWkt() ) );
+
+        if ( j > 0 )
+          ls->moveVertex( QgsVertexId( 0, 0, 0 ), cc->endPoint() );
+
         cc->addCurve( ls );
       }
       else if ( a )
       {
         QgsCircularString *cs = new QgsCircularString();
         circularStringFromArc( *a, *cs );
-        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( cs->asWkt() ) );
+
+        if ( j > 0 )
+          cs->moveVertex( QgsVertexId( 0, 0, 0 ), cc->endPoint() );
+
         cc->addCurve( cs );
       }
       else if ( sp )
       {
         QgsLineString *ls = new QgsLineString();
         lineFromSpline( *sp, *ls );
-        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( ls->asWkt() ) );
+
+        if ( j > 0 )
+          ls->moveVertex( QgsVertexId( 0, 0, 0 ), cc->endPoint() );
+
         cc->addCurve( ls );
       }
       else
@@ -2485,6 +2500,8 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
                  );
 #endif
     }
+
+    cc->moveVertex( QgsVertexId( 0, 0, 0 ), cc->endPoint() );
 
     if ( i == 0 )
     {
