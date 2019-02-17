@@ -1606,6 +1606,12 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
       }
     }
 
+    if ( p0 == p1 )
+    {
+      QgsDebugMsg( QStringLiteral( "i:%1,%2 empty segment skipped" ).arg( i0 ).arg( i1 ) );
+      continue;
+    }
+
     if ( staWidth == endWidth )
     {
       if ( s.empty() )
