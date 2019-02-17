@@ -181,11 +181,17 @@ class QgsDwgImporter : public DRW_Interface
     bool exec( const QString &sql, bool logError = true );
     OGRLayerH query( const QString &sql );
 
+    void progress( const QString &msg );
+    QString decode( const std::string &s ) const;
+    void cleanText( QString &s );
+
     void addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_Entity &data );
-    QString colorString( int color, int color24, int transparency, const std::string &layer ) const;
-    double lineWidth( int lWeight, const std::string &layer ) const;
-    QString linetypeString( const std::string &linetype, const std::string &layer ) const;
+    QString colorString( int color, int color24, int transparency, const QString &layer ) const;
+    double lineWidth( int lWeight, const QString &layer ) const;
+    QString linetypeString( const QString &linetype, const QString &layer ) const;
     void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const;
+    void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const QString &value ) const;
+    void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const char *value ) const;
     void setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, double value ) const;
     void setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, int value ) const;
     void setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const DRW_Coord &value ) const;

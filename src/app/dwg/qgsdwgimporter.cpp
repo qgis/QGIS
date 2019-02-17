@@ -52,8 +52,8 @@
 #define LOG( x ) { QgsDebugMsg( x ); QgsMessageLog::logMessage( x, QObject::tr( "DWG/DXF import" ) ); }
 #define ONCE( x ) { static bool show=true; if( show ) LOG( x ); show=false; }
 #define NYI( x ) { static bool show=true; if( show ) LOG( QObject::tr("Not yet implemented %1").arg( x ) ); show=false; }
-#define SETSTRING(a)  setString(dfn, f, #a, data.a)
-#define SETSTRINGPTR(a)  setString(dfn, f.get(), #a, data.a)
+#define SETSTRING(a)  setString(dfn, f, #a, decode(data.a))
+#define SETSTRINGPTR(a)  setString(dfn, f.get(), #a, decode(data.a))
 #define SETDOUBLE(a)  setDouble(dfn, f, #a, data.a)
 #define SETDOUBLEPTR(a)  setDouble(dfn, f.get(), #a, data.a)
 #define SETINTEGER(a) setInteger(dfn, f, #a, data.a)
@@ -726,7 +726,62 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
     switch ( it->second->type() )
     {
       case DRW_Variant::STRING:
-        v = *it->second->content.s->c_str();
+        v = it->second->content.s->c_str();
+
+        if ( k == QLatin1String( "$DWGCODEPAGE" ) )
+        {
+          QHash<QString, QString> encodingMap
+          {
+            { "ASCII", "" },
+            { "8859_1", "ISO-8859-1" },
+            { "8859_2", "ISO-8859-2" },
+            { "8859_3", "ISO-8859-3" },
+            { "8859_4", "ISO-8859-4" },
+            { "8859_5", "ISO-8859-5" },
+            { "8859_6", "ISO-8859-6" },
+            { "8859_7", "ISO-8859-7" },
+            { "8859_8", "ISO-8859-8" },
+            { "8859_9", "ISO-8859-9" },
+            //  { "DOS437", "" },
+            { "DOS850", "CP850" },
+            //  { "DOS852", "" },
+            //  { "DOS855", "" },
+            //  { "DOS857", "" },
+            //  { "DOS860", "" },
+            //  { "DOS861", "" },
+            //  { "DOS863", "" },
+            //  { "DOS864", "" },
+            //  { "DOS865", "" },
+            //  { "DOS869", "" },
+            //  { "DOS932", "" },
+            { "MACINTOSH", "MacRoman" },
+            { "BIG5", "Big5" },
+            { "KSC5601", "ksc5601.1987-0" },
+            //   { "JOHAB", "" },
+            { "DOS866", "CP866" },
+            { "ANSI_1250", "CP1250" },
+            { "ANSI_1251", "CP1251" },
+            { "ANSI_1252", "CP1252" },
+            { "GB2312", "GB2312" },
+            { "ANSI_1253", "CP1253" },
+            { "ANSI_1254", "CP1254" },
+            { "ANSI_1255", "CP1255" },
+            { "ANSI_1256", "CP1256" },
+            { "ANSI_1257", "CP1257" },
+            { "ANSI_874", "CP874" },
+            { "ANSI_932", "Shift_JIS" },
+            { "ANSI_936", "CP936" },
+            { "ANSI_949", "CP949" },
+            { "ANSI_950", "CP950" },
+            //  { "ANSI_1361", "" },
+            //  { "ANSI_1200", "" },
+            { "ANSI_1258", "CP1258" },
+          };
+
+          mCodec = QTextCodec::codecForName( encodingMap.value( v, QStringLiteral( "CP1252" ) ).toLocal8Bit() );
+
+          QgsDebugMsg( QString( "codec set to %1" ).arg( mCodec ? QString( mCodec->name() ) : QStringLiteral( "(unset)" ) ) );
+        }
         break;
 
       case DRW_Variant::INTEGER:
@@ -775,7 +830,9 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
   gdal::ogr_feature_unique_ptr f( OGR_F_Create( dfn ) );
   Q_ASSERT( f );
 
-  SETSTRINGPTR( name );
+  QString name( decode( data.name ) );
+
+  setString( dfn, f.get(), QStringLiteral( "name" ), name );
   SETSTRINGPTR( desc );
 
   QVector<double> path( QVector<double>::fromStdVector( data.path ) );
@@ -806,7 +863,6 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     }
   }
 
-  QString typeName( data.name.c_str() );
   QString dash;
   if ( !upath.empty() )
   {
@@ -824,7 +880,7 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
 
     dash = l.join( QStringLiteral( ";" ) ).toUtf8().constData();
   }
-  mLinetype.insert( typeName.toLower(), dash );
+  mLinetype.insert( name.toLower(), dash );
 
   if ( OGR_L_CreateFeature( layer, f.get() ) != OGRERR_NONE )
   {
@@ -836,7 +892,7 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
   }
 }
 
-QString QgsDwgImporter::colorString( int color, int color24, int transparency, const std::string &layer ) const
+QString QgsDwgImporter::colorString( int color, int color24, int transparency, const QString &layer ) const
 {
 #if 0
   QgsDebugMsgLevel( QStringLiteral( "colorString(color=%1, color24=0x%2, transparency=0x%3 layer=%4" )
@@ -853,7 +909,7 @@ QString QgsDwgImporter::colorString( int color, int color24, int transparency, c
     }
     else if ( color == 256 )
     {
-      return mLayerColor.value( layer.c_str(), QStringLiteral( "0,0,0,255" ) );
+      return mLayerColor.value( layer, QStringLiteral( "0,0,0,255" ) );
     }
     else
     {
@@ -877,14 +933,12 @@ QString QgsDwgImporter::colorString( int color, int color24, int transparency, c
   }
 }
 
-QString QgsDwgImporter::linetypeString( const std::string &olinetype, const std::string &layer ) const
+QString QgsDwgImporter::linetypeString( const QString &olinetype, const QString &layer ) const
 {
-  QString linetype( olinetype.c_str() );
-
-  if ( linetype == QLatin1String( "bylayer" ) )
-    return mLayerLinetype.value( layer.c_str(), QString() );
+  if ( olinetype == QLatin1String( "bylayer" ) )
+    return mLayerLinetype.value( layer, QString() );
   else
-    return mLinetype.value( linetype, QString() );
+    return mLinetype.value( olinetype, QString() );
 }
 
 void QgsDwgImporter::addLayer( const DRW_Layer &data )
@@ -896,35 +950,39 @@ void QgsDwgImporter::addLayer( const DRW_Layer &data )
   gdal::ogr_feature_unique_ptr f( OGR_F_Create( dfn ) );
   Q_ASSERT( f );
 
-  SETSTRINGPTR( name );
-  SETSTRINGPTR( lineType );
+  QString name( decode( data.name ) );
+  QString linetype( decode( data.lineType ) );
+
+  setString( dfn, f.get(), QStringLiteral( "name" ), name );
+  setString( dfn, f.get(), QStringLiteral( "linetype" ), linetype );
+
   SETINTEGERPTR( flags );
 
   QString color = colorString( data.color, data.color24, data.transparency, "" );
-  mLayerColor.insert( data.name.c_str(), color );
+  mLayerColor.insert( name, color );
 
   double linewidth = lineWidth( data.lWeight, "" );
   if ( linewidth < 0. )
     linewidth = 0.;
-  mLayerLinewidth.insert( data.name.c_str(), linewidth );
-  mLayerLinetype.insert( data.name.c_str(), linetypeString( data.lineType, "" ) );
+  mLayerLinewidth.insert( name, linewidth );
+  mLayerLinetype.insert( name, linetypeString( linetype, "" ) );
 
   setInteger( dfn, f.get(), QStringLiteral( "ocolor" ), data.color );
   SETINTEGERPTR( color24 );
   SETINTEGERPTR( transparency );
-  setString( dfn, f.get(), QStringLiteral( "color" ), color.toUtf8().constData() );
+  setString( dfn, f.get(), QStringLiteral( "color" ), color );
   setInteger( dfn, f.get(), QStringLiteral( "lweight" ), DRW_LW_Conv::lineWidth2dxfInt( data.lWeight ) );
   setInteger( dfn, f.get(), QStringLiteral( "linewidth" ), linewidth );
 
   if ( OGR_L_CreateFeature( layer, f.get() ) != OGRERR_NONE )
   {
     LOG( tr( "Could not add %3 %1 [%2]" )
-         .arg( data.name.c_str(), QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "layer" ) )
+         .arg( name, QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "layer" ) )
        );
   }
 }
 
-void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const
+void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const char *value ) const
 {
   int idx = OGR_FD_GetFieldIndex( dfn, field.toLower().toUtf8().constData() );
   if ( idx < 0 )
@@ -932,7 +990,17 @@ void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QStrin
     LOG( tr( "Field %1 not found" ).arg( field ) );
     return;
   }
-  OGR_F_SetFieldString( f, idx, value.c_str() );
+  OGR_F_SetFieldString( f, idx, value );
+}
+
+void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const
+{
+  setString( dfn, f, field, value.c_str() );
+}
+
+void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const QString &value ) const
+{
+  setString( dfn, f, field, value.toUtf8().constData() );
 }
 
 void QgsDwgImporter::setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, double value ) const
@@ -974,7 +1042,7 @@ void QgsDwgImporter::setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, const QString
   OGR_F_SetFieldDoubleList( f, idx, 3, ext.data() );
 }
 
-double QgsDwgImporter::lineWidth( int lWeight, const std::string &layer ) const
+double QgsDwgImporter::lineWidth( int lWeight, const QString &layer ) const
 {
   switch ( lWeight )
   {
@@ -1027,7 +1095,7 @@ double QgsDwgImporter::lineWidth( int lWeight, const std::string &layer ) const
     case 23:
       return 2.11;
     case 29: // bylayer
-      return mLayerLinewidth.value( layer.c_str(), 0.0 );
+      return mLayerLinewidth.value( layer, 0.0 );
     case 30: // byblock
       return -1.0;
     case 31:
@@ -1046,7 +1114,9 @@ void QgsDwgImporter::addDimStyle( const DRW_Dimstyle &data )
   gdal::ogr_feature_unique_ptr f( OGR_F_Create( dfn ) );
   Q_ASSERT( f );
 
-  SETSTRINGPTR( name );
+  QString name( decode( data.name ) );
+
+  setString( dfn, f.get(), QStringLiteral( "name" ), name );
   SETSTRINGPTR( dimpost );
   SETSTRINGPTR( dimapost );
   SETSTRINGPTR( dimblk );
@@ -1119,7 +1189,7 @@ void QgsDwgImporter::addDimStyle( const DRW_Dimstyle &data )
   if ( OGR_L_CreateFeature( layer, f.get() ) != OGRERR_NONE )
   {
     LOG( tr( "Could not add %3 %1 [%2]" )
-         .arg( data.name.c_str(), QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "dimension style" ) )
+         .arg( name, QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "dimension style" ) )
        );
   }
 }
@@ -1138,7 +1208,8 @@ void QgsDwgImporter::addTextStyle( const DRW_Textstyle &data )
   gdal::ogr_feature_unique_ptr f( OGR_F_Create( dfn ) );
   Q_ASSERT( f );
 
-  SETSTRINGPTR( name );
+  QString name( decode( data.name ) );
+  setString( dfn, f.get(), QStringLiteral( "name" ), name );
   SETDOUBLEPTR( height );
   SETDOUBLEPTR( width );
   SETDOUBLEPTR( oblique );
@@ -1151,7 +1222,7 @@ void QgsDwgImporter::addTextStyle( const DRW_Textstyle &data )
   if ( OGR_L_CreateFeature( layer, f.get() ) != OGRERR_NONE )
   {
     LOG( tr( "Could not add %3 %1 [%2]" )
-         .arg( data.name.c_str(), QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "text style" ) )
+         .arg( name, QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "text style" ) )
        );
   }
 }
@@ -1195,7 +1266,10 @@ void QgsDwgImporter::addBlock( const DRW_Block &data )
 {
   Q_ASSERT( mBlockHandle < 0 );
   mBlockHandle = data.handle;
-  QgsDebugMsgLevel( QStringLiteral( "block %1/0x%2 starts" ).arg( data.name.c_str() ).arg( mBlockHandle, 0, 16 ), 5 );
+
+  QString name( decode( data.name ) );
+
+  QgsDebugMsgLevel( QStringLiteral( "block %1/0x%2 starts" ).arg( name ).arg( mBlockHandle, 0, 16 ), 5 );
 
   OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(),  "blocks" );
   Q_ASSERT( layer );
@@ -1206,7 +1280,7 @@ void QgsDwgImporter::addBlock( const DRW_Block &data )
 
   addEntity( dfn, f.get(), data );
 
-  SETSTRINGPTR( name );
+  setString( dfn, f.get(), QStringLiteral( "name" ), name );
   SETINTEGERPTR( flags );
 
   QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
@@ -1245,20 +1319,19 @@ void QgsDwgImporter::addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_En
   setInteger( dfn, f, QStringLiteral( "block" ), mBlockHandle );
   SETINTEGER( eType );
   SETINTEGER( space );
-  SETSTRING( layer );
-  setString( dfn, f, QStringLiteral( "olinetype" ), data.lineType );
-  QString linetype = linetypeString( data.lineType, data.layer );
-  if ( linetype == QLatin1String( "1" ) )
-  {
-    QgsDebugMsg( QStringLiteral( "Linetype == 1" ) );
-  }
-  setString( dfn, f, QStringLiteral( "linetype" ), linetype.toUtf8().constData() );
+
+  QString layer( decode( data.layer ) );
+  QString linetype( decode( data.lineType ) );
+
+  setString( dfn, f, QStringLiteral( "layer" ), layer );
+  setString( dfn, f, QStringLiteral( "olinetype" ), linetype );
+  setString( dfn, f, QStringLiteral( "linetype" ), linetypeString( linetype, layer ) );
   setInteger( dfn, f, QStringLiteral( "ocolor" ), data.color );
   SETINTEGER( color24 );
   SETINTEGER( transparency );
-  setString( dfn, f, QStringLiteral( "color" ), colorString( data.color, data.color24, data.transparency, data.layer ).toUtf8().constData() );
+  setString( dfn, f, QStringLiteral( "color" ), colorString( data.color, data.color24, data.transparency, layer ) );
   setInteger( dfn, f, QStringLiteral( "lweight" ), DRW_LW_Conv::lineWidth2dxfInt( data.lWeight ) );
-  setDouble( dfn, f, QStringLiteral( "linewidth" ), lineWidth( data.lWeight, data.layer ) );
+  setDouble( dfn, f, QStringLiteral( "linewidth" ), lineWidth( data.lWeight, layer ) );
   setInteger( dfn, f, QStringLiteral( "ltscale" ), data.ltypeScale );
   SETINTEGER( visible );
 }
@@ -2204,8 +2277,11 @@ void QgsDwgImporter::addMText( const DRW_MText &data )
 
   addEntity( dfn, f, data );
 
+  QString text( decode( data.text ) );
+  cleanText( text );
+  setString( dfn, f, QStringLiteral( "text" ), text );
+
   SETDOUBLE( height );
-  SETSTRING( text );  // TODO: parse MTEXT
   SETDOUBLE( angle );
   SETDOUBLE( widthscale );
   SETDOUBLE( oblique );
@@ -2761,4 +2837,66 @@ bool QgsDwgImporter::expandInserts( QString &error )
     error = tr( "%1 block insertion expanded." ).arg( i );
     return true;
   }
+}
+
+void QgsDwgImporter::progress( const QString &msg )
+{
+  mLabel->setText( msg );
+  qApp->processEvents();
+}
+
+QString QgsDwgImporter::decode( const std::string &s ) const
+{
+  if ( mCodec )
+    return mCodec->toUnicode( s.c_str() );
+  else
+    return s.c_str();
+}
+
+void QgsDwgImporter::cleanText( QString &res )
+{
+  bool ok = true;
+  QRegularExpression re;
+
+  res = res.replace( "\\~", " " );             // short space
+  res = res.replace( "%%c", QChar( 0x2205 ) ); // diameter
+  res = res.replace( "%%d", QChar( 0x00B0 ) ); // degree
+  res = res.replace( "%%p", QChar( 0x00B1 ) ); // plus/minus
+  res = res.replace( "%%%", QChar( '%' ) );    // percent
+  res = res.replace( "%%u", "" );              // underline
+
+  re.setPattern( QStringLiteral( "\\\\U\\+[0-9A-Fa-f]{4,4}" ) );
+  for ( ;; )
+  {
+    QRegularExpressionMatch m = re.match( res );
+    if ( !m.hasMatch() )
+      break;
+    res.replace( m.captured( 1 ), QChar( m.captured( 1 ).right( 4 ).toInt( &ok, 16 ) ) );
+  }
+
+  re.setPattern( QStringLiteral( "%%[0-9]{3,3}" ) );
+  for ( ;; )
+  {
+    QRegularExpressionMatch m = re.match( res );
+    if ( !m.hasMatch() )
+      break;
+    res.replace( m.captured( 1 ), QChar( m.captured( 1 ).mid( 2 ).toInt( &ok, 10 ) ) );
+  }
+
+  for ( ;; )
+  {
+    QString prev( res );
+
+    res = res.replace( QRegularExpression( "\\\\f[0-9A-Za-z| ]{0,};" ),                     QStringLiteral( "" ) );     // font setting
+    res = res.replace( QRegularExpression( "([^\\\\]|^){" ),                                QStringLiteral( "\\1" ) );  // grouping
+    res = res.replace( QRegularExpression( "([^\\\\])}" ),                                  QStringLiteral( "\\1" ) );
+    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[loLOkx]" ),                     QStringLiteral( "\\1" ) );  // underline, overstrike, strike through
+    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[HWACQ]\\d*(\\.\\d*)?[xX]?;?" ), QStringLiteral( "\\1" ) );  // text height, width, alignment, color and slanting
+    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[ACQ]\\d+;" ),                   QStringLiteral( "\\1" ) );  // alignment, color and slanting
+
+    if ( res == prev )
+      break;
+  }
+
+  // QgsDebugMsg( QStringLiteral( "%1 => %2" ).arg( s.c_str() ).arg( res ) );
 }

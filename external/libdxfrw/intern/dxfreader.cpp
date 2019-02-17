@@ -230,6 +230,7 @@ bool dxfReaderAscii::readCode( int *code )
 
   return filestr->good();
 }
+
 bool dxfReaderAscii::readString( std::string *text )
 {
   type = STRING;
