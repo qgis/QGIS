@@ -1606,7 +1606,7 @@ void DRW_Text::parseCode( int code, dxfReader *reader )
       angle = reader->getDouble() / ARAD;
       break;
     case 51:
-      oblique = reader->getDouble();
+      oblique = reader->getDouble() / ARAD;
       break;
     case 71:
       textgen = reader->getInt32();
@@ -1803,6 +1803,7 @@ bool DRW_MText::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   extPoint = buf->get3BitDouble(); /* Extrusion 3BD 210 Undocumented; */
   secPoint = buf->get3BitDouble(); /* X-axis dir 3BD 11 */
+  haveXAxis = true;
   updateAngle();
   widthscale = buf->getBitDouble(); /* Rect width BD 41 */
   if ( version > DRW::AC1018 )  //2007+
@@ -2192,7 +2193,7 @@ void DRW_Hatch::parseCode( int code, dxfReader *reader )
       else if ( ellipse ) ellipse->endparam = reader->getDouble() / ARAD;
       break;
     case 52:
-      angle = reader->getDouble();
+      angle = reader->getDouble() / ARAD;
       break;
     case 73:
       if ( arc ) arc->isccw = reader->getInt32();
@@ -2959,10 +2960,10 @@ void DRW_Dimension::parseCode( int code, dxfReader *reader )
       rot = reader->getDouble();
       break;
     case 50:
-      angle = reader->getDouble();
+      angle = reader->getDouble() / ARAD;
       break;
     case 52:
-      oblique = reader->getDouble();
+      oblique = reader->getDouble() / ARAD;
       break;
     case 40:
       length = reader->getDouble();

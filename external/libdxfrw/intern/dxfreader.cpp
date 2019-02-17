@@ -282,27 +282,15 @@ bool dxfReaderAscii::readInt64()
 
 bool dxfReaderAscii::readDouble()
 {
+  bool ok = false;
   type = DOUBLE;
   std::string text;
   if ( readString( &text ) )
   {
-#if defined(__APPLE__)
-    int succeeded = sscanf( & ( text[0] ), "%lg", &doubleData );
-    if ( succeeded != 1 )
-    {
-      QgsDebugMsg( QString( "reading double error:%1" ).arg( text.c_str() ) );
-    }
-#else
-    std::istringstream sd( text );
-    sd >> doubleData;
+    doubleData = QString::fromStdString( text ).toDouble( &ok );
     QgsDebugMsg( QString( "%1" ).arg( doubleData ) );
-#endif
-    return true;
   }
-  else
-  {
-    return false;
-  }
+  return ok;
 }
 
 //saved as int or add a bool member??

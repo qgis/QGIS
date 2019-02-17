@@ -360,40 +360,67 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
     pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
     pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
     pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Hali, QgsProperty::fromExpression( QStringLiteral( "CASE"
-        " WHEN etype=%1 THEN"
-        " CASE"
-        " WHEN alignv IN (1,4,7) THEN 'Left'"
-        " WHEN alignv IN (2,5,6) THEN 'Center'"
-        " ELSE 'Right'"
-        " END"
-        " ELSE"
-        "  CASE"
-        " WHEN alignh=0 THEN 'Left'"
-        " WHEN alignh=1 THEN 'Center'"
-        " WHEN alignh=2 THEN 'Right'"
-        " WHEN alignh=3 THEN 'Left'"
-        " WHEN alignh=4 THEN 'Left'"
-        " END "
-        " END" ).arg( DRW::MTEXT ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Vali, QgsProperty::fromExpression( QStringLiteral( "CASE"
-        " WHEN etype=%1 THEN"
-        " CASE"
-        " WHEN alignv < 4 THEN 'Top'"
-        " WHEN alignv < 7 THEN 'Half'"
-        " ELSE 'Bottom'"
-        " END"
-        " ELSE"
-        " CASE"
-        " WHEN alignv=0 THEN 'Base'"
-        " WHEN alignv=1 THEN 'Bottom'"
-        " WHEN alignv=2 THEN 'Half'"
-        " WHEN alignv=3 THEN 'Top'"
-        " END"
-        " END" ).arg( DRW::MTEXT ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle*180.0/pi()" ) ) );
 
-    pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
+    // DXF TEXT
+    // vertical: 0 = Base, 1 = Bottom, 2 = Middle, 3 = Top,  default Base
+    // horizontal: 0 = Left, 1 = Center, 2 = Right, 3 = Aligned (if Base), 4 = Middle (if Base), default Left
+
+    // DXF MTEXT
+    // 1 = Top left;    2 = Top center;    3 = Top right
+    // 4 = Middle left; 5 = Middle center; 6 = Middle right
+    // 7 = Bottom left; 8 = Bottom center; 9 = Bottom right
+
+    // QGIS Quadrant
+    // 0 QuadrantAboveLeft, 1 QuadrantAbove, 2 QuadrantAboveRight,
+    // 3 QuadrantLeft,      4 QuadrantOver,  5 QuadrantRight,
+    // 6 QuadrantBelowLeft, 7 QuadrantBelow, 8 QuadrantBelowRight,
+
+    pls.dataDefinedProperties().setProperty(
+      QgsPalLayerSettings::Hali,
+      QgsProperty::fromExpression( QStringLiteral(
+                                     "CASE"
+                                     " WHEN etype=%1 THEN"
+                                     " CASE"
+                                     " WHEN textgen % 3=2 THEN 'Center'"
+                                     " WHEN textgen % 3=0 THEN 'Right'"
+                                     " ELSE 'Left'"
+                                     " END"
+                                     " ELSE"
+                                     " CASE"
+                                     " WHEN alignh=1 THEN 'Center'"
+                                     " WHEN alignh=2 THEN 'Right'"
+                                     " ELSE 'Left'"
+                                     " END"
+                                     " END"
+                                   ).arg( DRW::MTEXT )
+                                 )
+    );
+
+    pls.dataDefinedProperties().setProperty(
+      QgsPalLayerSettings::Vali,
+      QgsProperty::fromExpression( QStringLiteral(
+                                     "CASE"
+                                     " WHEN etype=%1 THEN"
+                                     " CASE"
+                                     " WHEN textgen<4 THEN 'Top'"
+                                     " WHEN textgen<7 THEN 'Half'"
+                                     " ELSE 'Bottom'"
+                                     " END"
+                                     " ELSE"
+                                     " CASE"
+                                     " WHEN alignv=1 THEN 'Bottom'"
+                                     " WHEN alignv=2 THEN 'Half'"
+                                     " WHEN alignv=3 THEN 'Top'"
+                                     " ELSE 'Base'"
+                                     " END"
+                                     " END"
+                                   ).arg( DRW::MTEXT )
+                                 )
+    );
+
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::AlwaysShow, QgsProperty::fromExpression( QStringLiteral( "1" ) ) );
+
     l->setLabeling( new QgsVectorLayerSimpleLabeling( pls ) );
     l->setLabelsEnabled( true );
   }
