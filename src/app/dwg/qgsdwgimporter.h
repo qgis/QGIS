@@ -30,6 +30,8 @@ class QgsQgsCoordinateReferenceSystem;
 
 class QgsDwgImporter : public DRW_Interface
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsDwgImporter )
+
   public:
     QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs );
     ~QgsDwgImporter() override;
