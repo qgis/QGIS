@@ -13,15 +13,6 @@
 // uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
 // #define DWGDEBUG 1
 
-#ifndef DWGDEBUG
-#ifdef QGSLOGGER_H
-#error qgislogger.h already included
-#endif
-#undef QGISDEBUG
-#endif // !DWGDEBUG
-
-#include "qgslogger.h"
-
 #include <cstdlib>
 
 #include "drw_entities.h"
@@ -30,6 +21,17 @@
 #include "intern/drw_dbg.h"
 
 #include <QStringList>
+
+#include "qgslogger.h"
+
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 #define RESERVE( vector, size ) try { \
     vector.reserve(size); \
@@ -1305,7 +1307,7 @@ bool DRW_Insert::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   angle = buf->getBitDouble();
   extPoint = buf->getExtrusion( false ); //3BD R14 style
 
-  QgsDebugMsgLevel( QStringLiteral( "scale:%1, angle:%2 extrusion:%3" )
+  QgsDebugMsgLevel( QStringLiteral( "scale:%1 angle:%2 extrusion:%3" )
                     .arg( QStringLiteral( "%1,%2,%3" ).arg( xscale ).arg( yscale ).arg( zscale ) )
                     .arg( angle )
                     .arg( QStringLiteral( "%1,%2,%3" ).arg( extPoint.x ).arg( extPoint.y ).arg( extPoint.z ) ), 4

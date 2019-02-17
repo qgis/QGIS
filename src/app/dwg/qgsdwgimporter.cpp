@@ -135,7 +135,6 @@ OGRLayerH QgsDwgImporter::query( const QString &sql )
   return nullptr;
 }
 
-
 void QgsDwgImporter::startTransaction()
 {
   Q_ASSERT( mDs );
@@ -825,11 +824,13 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
 
 QString QgsDwgImporter::colorString( int color, int color24, int transparency, const std::string &layer ) const
 {
+#if 0
   QgsDebugMsgLevel( QStringLiteral( "colorString(color=%1, color24=0x%2, transparency=0x%3 layer=%4" )
                     .arg( color )
                     .arg( color24, 0, 16 )
                     .arg( transparency, 0, 16 )
                     .arg( layer.c_str() ), 5 );
+#endif
   if ( color24 == -1 )
   {
     if ( color == 0 )
@@ -1276,7 +1277,6 @@ void QgsDwgImporter::addXline( const DRW_Xline &data )
 
 bool QgsDwgImporter::circularStringFromArc( const DRW_Arc &data, QgsCircularString &c )
 {
-
   double half = ( data.staangle + data.endangle ) / 2.0;
   if ( data.staangle > data.endangle )
     half += M_PI;
@@ -1284,9 +1284,6 @@ bool QgsDwgImporter::circularStringFromArc( const DRW_Arc &data, QgsCircularStri
   double a0 = data.isccw ? data.staangle : -data.staangle;
   double a1 = data.isccw ? half : -half;
   double a2 = data.isccw ? data.endangle : -data.endangle;
-
-  QgsDebugMsgLevel( QStringLiteral( "arc handle=0x%1 radius=%2 staangle=%3 endangle=%4 isccw=%5 half=%6" )
-                    .arg( data.handle, 0, 16 ).arg( data.mRadius ).arg( data.staangle ).arg( data.endangle ).arg( data.isccw ).arg( half ), 5 );
 
   c.setPoints( QgsPointSequence()
                << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + std::sin( a0 ) * data.mRadius )
@@ -1395,14 +1392,12 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
       {
         QgsCircularString *c = new QgsCircularString();
         c->setPoints( s );
-        QgsDebugMsg( QStringLiteral( "add circular string:%1" ).arg( c->asWkt() ) );
         cc.addCurve( c );
       }
       else
       {
         QgsLineString *c = new QgsLineString();
         c->setPoints( s );
-        QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( c->asWkt() ) );
         cc.addCurve( c );
       }
 
@@ -1459,6 +1454,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
     double endWidth = data.vertlist[i0]->endwidth == 0.0 ? data.width : data.vertlist[i0]->endwidth;
     bool hasBulge( data.vertlist[i0]->bulge != 0.0 );
 
+#if 0
     QgsDebugMsgLevel( QStringLiteral( "i:%1,%2/%3 width=%4 staWidth=%5 endWidth=%6 hadBulge=%7 hasBulge=%8 l=%9 <=> %10" )
                       .arg( i0 ).arg( i1 ).arg( n )
                       .arg( width ).arg( staWidth ).arg( endWidth )
@@ -1466,6 +1462,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
                       .arg( p0.asWkt() )
                       .arg( p1.asWkt() ), 5
                     );
+#endif
 
     if ( !s.empty() && ( width != staWidth || width != endWidth || hadBulge != hasBulge ) )
     {
@@ -1473,14 +1470,12 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
       {
         QgsCircularString *c = new QgsCircularString();
         c->setPoints( s );
-        // QgsDebugMsg( QStringLiteral( "add circular string:%1" ).arg( c->asWkt() ) );
         cc.addCurve( c );
       }
       else
       {
         QgsLineString *c = new QgsLineString();
         c->setPoints( s );
-        // QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( c->asWkt() ) );
         cc.addCurve( c );
       }
 
@@ -1589,14 +1584,12 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
     {
       QgsCircularString *c = new QgsCircularString();
       c->setPoints( s );
-      // QgsDebugMsg( QStringLiteral( "add circular string:%1" ).arg( c->asWkt() ) );
       cc.addCurve( c );
     }
     else
     {
       QgsLineString *c = new QgsLineString();
       c->setPoints( s );
-      // QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( c->asWkt() ) );
       cc.addCurve( c );
     }
   }
@@ -1792,14 +1785,12 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
     {
       QgsCircularString *c = new QgsCircularString();
       c->setPoints( s );
-      // QgsDebugMsg( QStringLiteral( "add circular string:%1" ).arg( c->asWkt() ) );
       cc.addCurve( c );
     }
     else
     {
       QgsLineString *c = new QgsLineString();
       c->setPoints( s );
-      // QgsDebugMsg( QStringLiteral( "add line string:%1" ).arg( c->asWkt() ) );
       cc.addCurve( c );
     }
   }
@@ -2384,6 +2375,15 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
       {
         QgsDebugMsg( QStringLiteral( "unknown obj %1.%2: %3" ).arg( i ).arg( j ).arg( typeid( *entity ).name() ) );
       }
+
+#if 0
+      QgsDebugMsg( QStringLiteral( "curve %1.%2\n  start %3\n  end   %4\n  compare %5" )
+                   .arg( i ).arg( j )
+                   .arg( cc->startPoint().asWkt() )
+                   .arg( cc->endPoint().asWkt() )
+                   .arg( cc->startPoint() == cc->endPoint() )
+                 );
+#endif
     }
 
     if ( i == 0 )

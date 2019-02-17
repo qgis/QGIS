@@ -10,6 +10,9 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -19,11 +22,19 @@
 #include "dwgreader.h"
 #include "drw_textcodec.h"
 
-#undef QGISDEBUG
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include <QStringList>
+
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 
 dwgReader::~dwgReader()
@@ -221,7 +232,7 @@ bool dwgReader::readDwgHandles( dwgBuffer *dbuf, duint32 offset, duint32 size )
  */
 bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( "Entering.", 4 );
 
   bool ret = true;
   bool ret2 = true;

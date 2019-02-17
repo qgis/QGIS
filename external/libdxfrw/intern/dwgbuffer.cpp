@@ -10,34 +10,23 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
 
 #include "dwgbuffer.h"
 #include "../libdwgr.h"
 #include "drw_textcodec.h"
 #include "drw_dbg.h"
 
-#undef QGISDEBUG
 #include "qgslogger.h"
 
-#if 0
-//#include <bitset>
-#include <fstream>
-#include <algorithm>
-#include <sstream>
-#include "dwgreader.h"
-#include "dxfwriter.h"
-
-#define FIRSTHANDLE 48
-
-enum sections
-{
-  secUnknown,
-  secHeader,
-  secTables,
-  secBlocks,
-  secEntities,
-  secObjects
-};
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
 #endif
 
 static unsigned int crctable[256] =

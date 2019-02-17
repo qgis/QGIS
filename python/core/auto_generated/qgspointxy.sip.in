@@ -262,7 +262,7 @@ Multiply x and y by the given value
     sipRes = qHash( *sipCpp );
 %End
 
-}; // class QgsPoint
+}; // class QgsPointXY
 
 
 

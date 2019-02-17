@@ -340,7 +340,7 @@ class CORE_EXPORT QgsPointXY
 
     friend uint qHash( const QgsPointXY &pnt );
 
-}; // class QgsPoint
+}; // class QgsPointXY
 
 Q_DECLARE_METATYPE( QgsPointXY )
 
