@@ -36,6 +36,9 @@
 #include <QFileInfo>
 #include <QVector>
 #include <QTransform>
+#include <QLabel>
+#include <QTextCodec>
+#include <QRegularExpression>
 
 #include <typeinfo>
 
@@ -70,6 +73,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
   , mCrs( crs.srsid() )
   , mCrsH( nullptr )
   , mUseCurves( true )
+  , mEntities( 0 )
 {
   QgsDebugCall;
 
@@ -169,9 +173,11 @@ QgsDwgImporter::~QgsDwgImporter()
   }
 }
 
-bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpandInserts, bool useCurves )
+bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpandInserts, bool useCurves, QLabel *label )
 {
   QgsDebugCall;
+
+  mLabel = label;
 
   OGRwkbGeometryType lineGeomType, hatchGeomType;
   if ( useCurves )
@@ -483,6 +489,8 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     return false;
   }
 
+  progress( tr( "Creating database…" ) );
+
   // create database
   mDs.reset( OGR_Dr_CreateDataSource( driver, mDatabase.toUtf8().constData(), nullptr ) );
   if ( !mDs )
@@ -490,6 +498,8 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     LOG( tr( "Creation of datasource failed [%1]" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return false;
   }
+
+  progress( tr( "Creating tables…" ) );
 
   startTransaction();
 
@@ -543,6 +553,8 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
   commitTransaction();
 
+  progress( tr( "Importing drawing…" ) );
+
   OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(),  "drawing" );
   Q_ASSERT( layer );
 
@@ -590,6 +602,9 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   LOG( tr( "Updating database from %1 [%2]." ).arg( drawing, fi.lastModified().toString() ) );
 
   DRW::error result( DRW::BAD_NONE );
+
+  mTime.start();
+  mEntities = 0;
 
   if ( fi.suffix().compare( QLatin1String( "dxf" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -1218,6 +1233,14 @@ void QgsDwgImporter::endBlock()
 void QgsDwgImporter::addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_Entity &data )
 {
   QgsDebugMsgLevel( QStringLiteral( "handle:0x%1 block:0x%2" ).arg( data.handle, 0, 16 ).arg( mBlockHandle, 0, 16 ), 5 );
+
+  mEntities++;
+  if ( mTime.elapsed() > 1000 )
+  {
+    progress( tr( "%1 entities processed." ).arg( mEntities ) );
+    mTime.restart();
+  }
+
   SETINTEGER( handle );
   setInteger( dfn, f, QStringLiteral( "block" ), mBlockHandle );
   SETINTEGER( eType );
@@ -2547,13 +2570,16 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
   OGR_L_ResetReading( inserts );
 
+  mTime.start();
+
   gdal::ogr_feature_unique_ptr insert;
   int i = 0, errors = 0;
   for ( int i = 0; true; ++i )
   {
-    if ( i % 1000 == 0 )
+    if ( mTime.elapsed() > 1000 )
     {
-      QgsDebugMsg( QStringLiteral( "Expanding inserts %1/%2..." ).arg( i ).arg( n ) );
+      progress( tr( "Expanding block reference %1/%2…" ).arg( i ).arg( n ) );
+      mTime.restart();
     }
 
     insert.reset( OGR_L_GetNextFeature( inserts ) );

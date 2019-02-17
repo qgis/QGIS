@@ -246,8 +246,10 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
 
   QgsDwgImporter importer( mDatabaseFileWidget->filePath(), mCrsSelector->crs() );
 
+  lblMessage->setVisible( true );
+
   QString error;
-  if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked() ) )
+  if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked(), lblMessage ) )
   {
     bar->pushMessage( tr( "Drawing import completed." ), Qgis::Info, 4 );
   }

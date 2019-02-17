@@ -17,7 +17,10 @@
 
 #include "drw_interface.h"
 
+#include <QCoreApplication>
 #include <QString>
+#include <QTime>
+
 #include <ogr_api.h>
 
 #include "qgsabstractgeometry.h"
@@ -27,6 +30,8 @@ class QgsCompoundCurve;
 class QgsLineString;
 class QgsCircularString;
 class QgsQgsCoordinateReferenceSystem;
+class QLabel;
+class QTextCodec;
 
 class QgsDwgImporter : public DRW_Interface
 {
@@ -36,7 +41,7 @@ class QgsDwgImporter : public DRW_Interface
     QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs );
     ~QgsDwgImporter() override;
 
-    bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves );
+    bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves, QLabel *label );
 
     //! Called when header is parsed.
     void addHeader( const DRW_Header *data ) override;
@@ -206,4 +211,9 @@ class QgsDwgImporter : public DRW_Interface
     QHash<QString, double> mLayerLinewidth;
     QHash<QString, QString> mLayerLinetype;
     QHash<QString, QString> mLinetype;
+
+    QLabel *mLabel = nullptr;
+    int mEntities = 0;
+    QTextCodec *mCodec = nullptr;
+    QTime mTime;
 };
