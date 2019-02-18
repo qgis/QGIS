@@ -84,7 +84,7 @@ class TestQgsProcessingAlgRunner(unittest.TestCase):
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()
 
-    def test_bad_script_dont_crash(self):
+    def test_bad_script_dont_crash(self):  # spellok
         """Test regression #21270 (segfault)"""
 
         context = QgsProcessingContext()
