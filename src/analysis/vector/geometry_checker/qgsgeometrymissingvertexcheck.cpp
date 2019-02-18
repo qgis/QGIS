@@ -43,7 +43,7 @@ void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeatur
 
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    if ( feedback->isCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
     }
@@ -152,7 +152,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
 
     if ( featurePool->getFeature( fid, compareFeature, feedback ) )
     {
-      if ( feedback->isCanceled() )
+      if ( feedback && feedback->isCanceled() )
         break;
 
       QgsVertexIterator vertexIterator = compareFeature.geometry().vertices();
