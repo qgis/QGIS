@@ -4261,7 +4261,7 @@ void QgsOgrProvider::open( OpenMode mode )
   if ( !openReadOnly )
   {
     QStringList options;
-    if ( mode == OpenModeForceUpdateRepackOff )
+    if ( mode == OpenModeForceUpdateRepackOff || ( mDeferRepack && OpenModeSameAsCurrent ) )
     {
       options << "AUTO_REPACK=OFF";
     }
@@ -6595,4 +6595,3 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
 
   return new QgsOgrTransaction( connString, ds );
 }
-
