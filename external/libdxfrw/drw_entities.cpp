@@ -2333,12 +2333,12 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     {
       dint32 numPathSeg = buf->getBitLong();
 
-      QgsDebugMsgLevel( QStringLiteral( "segs: %1" ).arg( numPathSeg ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "  segs: %1" ).arg( numPathSeg ), 4 );
 
-      for ( dint32 j = 0; j < numPathSeg; ++j )
+      for ( dint32 j = 0; j < numPathSeg && buf->isGood(); ++j )
       {
         duint8 typePath = buf->getRawChar8();
-        QgsDebugMsgLevel( QStringLiteral( "  typepath: %1" ).arg( typePath ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "   typepath: %1" ).arg( typePath ), 4 );
         if ( typePath == 1 )  //line
         {
           addLine();
@@ -2374,7 +2374,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
           spline->nknots = buf->getBitLong();
           spline->ncontrol = buf->getBitLong();
 
-          QgsDebugMsgLevel( QStringLiteral( "  degree:%1 flags:0x%2 nknots:%3 ncontrol:%4" )
+          QgsDebugMsgLevel( QStringLiteral( "   degree:%1 flags:0x%2 nknots:%3 ncontrol:%4" )
                             .arg( spline->degree ).arg( spline->flags, 0, 16 )
                             .arg( spline->nknots ).arg( spline->ncontrol ), 4
                           );
@@ -2384,7 +2384,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
           for ( j = 0; j < spline->nknots && buf->isGood(); ++j )
           {
             spline->knotslist.push_back( buf->getBitDouble() );
-            QgsDebugMsgLevel( QStringLiteral( "  knot %1: %2" ).arg( j )
+            QgsDebugMsgLevel( QStringLiteral( "    knot %1: %2" ).arg( j )
                               .arg( spline->knotslist.back() ), 4
                             );
           }
@@ -2406,7 +2406,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
             if ( isRational )
               crd->z = buf->getBitDouble(); //RLZ: investigate how store weight
             spline->controllist.push_back( crd );
-            QgsDebugMsgLevel( QStringLiteral( "  control %1: %2" )
+            QgsDebugMsgLevel( QStringLiteral( "    control %1: %2" )
                               .arg( j )
                               .arg( QStringLiteral( "%1,%2,%3" ).arg( crd->x ).arg( crd->y ).arg( crd->z ) ), 4
                             );
@@ -2414,14 +2414,14 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
           if ( version > DRW::AC1021 ) //2010+
           {
             spline->nfit = buf->getBitLong();
-            QgsDebugMsgLevel( QStringLiteral( " nfit:%1" ).arg( spline->nfit ), 4 );
+            QgsDebugMsgLevel( QStringLiteral( "   nfit:%1" ).arg( spline->nfit ), 4 );
             RESERVE( spline->fitlist, spline->nfit );
             for ( dint32 j = 0; j < spline->nfit && buf->isGood(); ++j )
             {
               DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
               spline->fitlist.push_back( crd );
 
-              QgsDebugMsgLevel( QStringLiteral( "  fit %1: %2" )
+              QgsDebugMsgLevel( QStringLiteral( "    fit %1: %2" )
                                 .arg( j )
                                 .arg( QStringLiteral( "%1,%2,%3" ).arg( crd->x ).arg( crd->y ).arg( crd->z ) ), 4
                               );
@@ -2439,7 +2439,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
       pline->flags = buf->getBit();//closed bit
       dint32 numVert = buf->getBitLong();
 
-      QgsDebugMsgLevel( QStringLiteral( "hasBulge:%1 flags:%2 verts:%3" )
+      QgsDebugMsgLevel( QStringLiteral( "  hasBulge:%1 flags:%2 verts:%3" )
                         .arg( hasBulges ).arg( pline->flags, 0, 16 ).arg( numVert ), 4
                       );
 

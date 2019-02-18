@@ -28,6 +28,7 @@
 #include <QStringList>
 
 #ifndef DWGDEBUG
+#undef QGISDEBUG
 #undef QgsDebugCall
 #undef QgsDebugMsg
 #undef QgsDebugMsgLevel
@@ -752,7 +753,7 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
     }
   }
 
-#ifdef QGISDEBUG
+#if 0
   //RLZ: parse remaining object controls, TODO: implement all
   mit = ObjectMap.find( hdr.viewCtrl );
   if ( mit == ObjectMap.end() )
@@ -874,12 +875,12 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
         ret2 = vpEntHeader.parseDwg( version, &buff, bs );
         if ( ret )
           ret = ret2;
-#endif
+#endif // 0
       }
       delete[]tmpByteStr;
     }
   }
-#endif
+#endif // 0
 
   return ret;
 }
@@ -927,6 +928,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
     dwgBuffer buff( tmpByteStr, size, &decoder );
     DRW_Block bk;
     ret2 = bk.parseDwg( version, &buff, bs );
+    if ( !ret2 )
+    {
+      QgsDebugMsg( "parseDwg failed" );
+    }
     delete[]tmpByteStr;
     ret = ret && ret2;
     parseAttribs( &bk );
@@ -965,6 +970,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
             oc = mit->second;
             ObjectMap.erase( mit );
             ret2 = readDwgEntity( dbuf, oc, intfa );
+            if ( !ret2 )
+            {
+              QgsDebugMsg( "readDwgEntity failed" );
+            }
             ret = ret && ret2;
           }
           if ( nextH == bkr->lastEH )
@@ -992,6 +1001,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
             QgsDebugMsgLevel( QString( "Blocks, parsing entity: 0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ), 5 );
 
             ret2 = readDwgEntity( dbuf, oc, intfa );
+            if ( !ret2 )
+            {
+              QgsDebugMsg( "readDwgEntity failed" );
+            }
             ret = ret && ret2;
           }
         }
@@ -1022,6 +1035,10 @@ bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
     DRW_Block end;
     end.isEnd = true;
     ret2 = end.parseDwg( version, &buff1, bs );
+    if ( !ret2 )
+    {
+      QgsDebugMsg( QString( "parseDwg failed" ) );
+    }
     delete[]tmpByteStr;
     ret = ret && ret2;
     if ( bk.parentHandle == DRW::NoHandle ) bk.parentHandle = bkr->handle;
