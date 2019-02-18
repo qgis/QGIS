@@ -484,6 +484,34 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         vl = None
 
+    def testDontRepackOnReload(self):
+        ''' Test fix for #18421 '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        feature_count = vl.featureCount()
+        # Start an iterator that will open a new connection
+        iterator = vl.getFeatures()
+        next(iterator)
+
+        # Delete another feature while in update mode
+        vl.dataProvider().enterUpdateMode()
+        vl.dataProvider().reloadData()
+        vl.dataProvider().deleteFeatures([0])
+
+        # Test that repacking has not been done (since in update mode)
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count)
+        ds = None
+
+        vl = None
+
     def testRepackUnderFileLocks(self):
         ''' Test fix for #15570 and #15393 '''
 
