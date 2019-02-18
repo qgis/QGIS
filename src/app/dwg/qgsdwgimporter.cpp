@@ -2194,7 +2194,7 @@ void QgsDwgImporter::addKnot( const DRW_Entity &data )
 
 void QgsDwgImporter::addInsert( const DRW_Insert &data )
 {
-  OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(),  "inserts" );
+  OGRLayerH layer = OGR_DS_GetLayerByName( mDs.get(), "inserts" );
   Q_ASSERT( layer );
   OGRFeatureDefnH dfn = OGR_L_GetLayerDefn( layer );
   Q_ASSERT( dfn );
@@ -2615,9 +2615,9 @@ bool QgsDwgImporter::expandInserts( QString &error )
     return false;
   }
 
-  QHash<QString, int> blockhandle;
-
   OGR_L_ResetReading( blocks );
+
+  mBlocks.clear();
 
   gdal::ogr_feature_unique_ptr f;
   for ( ;; )
@@ -2628,20 +2628,26 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
     QString name = QString::fromUtf8( OGR_F_GetFieldAsString( f.get(), nameIdx ) );
     int handle = OGR_F_GetFieldAsInteger( f.get(), handleIdx );
-    blockhandle.insert( name, handle );
+    mBlocks.insert( name, handle );
   }
 
-  OGRLayerH inserts = OGR_DS_GetLayerByName( mDs.get(),  "inserts" );
+  return expandInserts( error, -1, QTransform() );
+}
+
+bool QgsDwgImporter::expandInserts( QString &error, int block, QTransform base )
+{
+  QgsDebugMsg( QString( "expanding block:%1" ).arg( block ) );
+  OGRLayerH inserts = OGR_DS_ExecuteSQL( mDs.get(),  QStringLiteral( "SELECT * FROM inserts WHERE block=%1" ).arg( block ).toUtf8().constData(), nullptr, nullptr );
   if ( !inserts )
   {
-    QgsDebugMsg( QStringLiteral( "could not open layer 'inserts'" ) );
+    QgsDebugMsg( QStringLiteral( "could not query layer 'inserts'" ) );
     return false;
   }
 
-  dfn = OGR_L_GetLayerDefn( inserts );
+  OGRFeatureDefnH dfn = OGR_L_GetLayerDefn( inserts );
   Q_ASSERT( dfn );
 
-  nameIdx = OGR_FD_GetFieldIndex( dfn, "name" );
+  int nameIdx = OGR_FD_GetFieldIndex( dfn, "name" );
   int xscaleIdx = OGR_FD_GetFieldIndex( dfn, "xscale" );
   int yscaleIdx = OGR_FD_GetFieldIndex( dfn, "yscale" );
   int zscaleIdx = OGR_FD_GetFieldIndex( dfn, "zscale" );
@@ -2669,16 +2675,21 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
   OGR_L_ResetReading( inserts );
 
-  mTime.start();
+  if ( block == -1 )
+    mTime.start();
 
   gdal::ogr_feature_unique_ptr insert;
   int i = 0, errors = 0;
   for ( int i = 0; true; ++i )
   {
-    if ( mTime.elapsed() > 1000 )
+    if ( block == -1 && mTime.elapsed() > 1000 )
     {
       progress( tr( "Expanding block reference %1/%2…" ).arg( i ).arg( n ) );
       mTime.restart();
+    }
+    else if ( i % 1000 == 0 )
+    {
+      QgsDebugMsg( QStringLiteral( "%1: expanding insert %2/%3…" ).arg( block, 0, 16 ).arg( i ).arg( n ) );
     }
 
     insert.reset( OGR_L_GetNextFeature( inserts ) );
@@ -2714,7 +2725,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     }
     double blockLinewidth = OGR_F_GetFieldAsDouble( insert.get(), linewidthIdx );
 
-    int handle = blockhandle.value( name, -1 );
+    int handle = mBlocks.value( name, -1 );
     if ( handle < 0 )
     {
       QgsDebugMsg( QStringLiteral( "Block '%1' not found" ).arg( name ) );
@@ -2728,18 +2739,23 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
     QTransform t;
     t.translate( p.x(), p.y() ).scale( xscale, yscale ).rotateRadians( angle );
+    t *= base;
 
+    OGRLayerH src = nullptr;
     Q_FOREACH ( const QString &name, QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" )
     {
+      if ( src )
+        OGR_DS_ReleaseResultSet( mDs.get(),  src );
+
       OGRLayerH src = OGR_DS_ExecuteSQL( mDs.get(),  QStringLiteral( "SELECT * FROM %1 WHERE block=%2" ).arg( name ).arg( handle ).toUtf8().constData(), nullptr, nullptr );
       if ( !src )
       {
-        QgsDebugMsg( QStringLiteral( "%1: could not execute query for block %2" ).arg( name ).arg( handle ) );
+        QgsDebugMsg( QStringLiteral( "%1: could not open layer %1" ).arg( name ) );
         continue;
       }
 
-      OGRLayerH dst = OGR_DS_GetLayerByName( mDs.get(),  name.toUtf8().constData() );
-      Q_ASSERT( dst );
+      GIntBig n = OGR_L_GetFeatureCount( src, 0 );
+      Q_UNUSED( n );
 
       dfn = OGR_L_GetLayerDefn( src );
       Q_ASSERT( dfn );
@@ -2762,10 +2778,18 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
       OGR_L_ResetReading( src );
 
+      OGRLayerH dst = OGR_DS_GetLayerByName( mDs.get(),  name.toUtf8().constData() );
+      Q_ASSERT( dst );
+
       gdal::ogr_feature_unique_ptr f;
       int j = 0;
       for ( ;; )
       {
+        if ( j % 1000 == 0 )
+        {
+          QgsDebugMsg( QStringLiteral( "%1.%2: %3/%4 copied" ).arg( block, 0, 16 ).arg( handle, 0, 16 ).arg( j ).arg( n ) );
+        }
+
         f.reset( OGR_L_GetNextFeature( src ) );
         if ( !f )
           break;
@@ -2844,9 +2868,15 @@ bool QgsDwgImporter::expandInserts( QString &error )
         ++j;
       }
 
+      QgsDebugMsgLevel( QStringLiteral( "%1: %2 features copied" ).arg( name ).arg( j ), 5 );
+    }
+
+    if ( src )
       OGR_DS_ReleaseResultSet( mDs.get(),  src );
 
-      QgsDebugMsgLevel( QStringLiteral( "%1: %2 features copied" ).arg( name ).arg( j ), 5 );
+    if ( !expandInserts( error, handle, t ) )
+    {
+      QgsDebugMsg( QString( "%1: Expanding %2 failed" ).arg( block ).arg( handle ) );
     }
   }
 
@@ -2910,12 +2940,12 @@ void QgsDwgImporter::cleanText( QString &res )
   {
     QString prev( res );
 
-    res = res.replace( QRegularExpression( "\\\\f[0-9A-Za-z| ]{0,};" ),                     QStringLiteral( "" ) );     // font setting
-    res = res.replace( QRegularExpression( "([^\\\\]|^){" ),                                QStringLiteral( "\\1" ) );  // grouping
-    res = res.replace( QRegularExpression( "([^\\\\])}" ),                                  QStringLiteral( "\\1" ) );
-    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[loLOkx]" ),                     QStringLiteral( "\\1" ) );  // underline, overstrike, strike through
-    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[HWACQ]\\d*(\\.\\d*)?[xX]?;?" ), QStringLiteral( "\\1" ) );  // text height, width, alignment, color and slanting
-    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[ACQ]\\d+;" ),                   QStringLiteral( "\\1" ) );  // alignment, color and slanting
+    res = res.replace( QRegularExpression( "\\\\f[0-9A-Za-z| ]{0,};" ),                          QString( "" ) );            // font setting
+    res = res.replace( QRegularExpression( "([^\\\\]|^){" ),                                     QStringLiteral( "\\1" ) );  // grouping
+    res = res.replace( QRegularExpression( "([^\\\\])}" ),                                       QStringLiteral( "\\1" ) );
+    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[loLOkx]" ),                          QStringLiteral( "\\1" ) );  // underline, overstrike, strike through
+    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[HhWwAaCcQq]\\d*(\\.\\d*)?[xX]?;?" ), QStringLiteral( "\\1" ) );  // text height, width, alignment, color and slanting
+    res = res.replace( QRegularExpression( "([^\\\\]|^)\\\\[ACQ]\\d+;" ),                        QStringLiteral( "\\1" ) );  // alignment, color and slanting
 
     if ( res == prev )
       break;

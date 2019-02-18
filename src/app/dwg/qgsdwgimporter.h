@@ -201,6 +201,7 @@ class QgsDwgImporter : public DRW_Interface
     bool lineFromSpline( const DRW_Spline &data, QgsLineString &l );
 
     bool expandInserts( QString &error );
+    bool expandInserts( QString &error, int block, QTransform base );
 
     bool createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g ) const;
 
@@ -217,6 +218,7 @@ class QgsDwgImporter : public DRW_Interface
     QHash<QString, double> mLayerLinewidth;
     QHash<QString, QString> mLayerLinetype;
     QHash<QString, QString> mLinetype;
+    QHash<QString, int> mBlocks;
 
     QLabel *mLabel = nullptr;
     int mEntities = 0;
