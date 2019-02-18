@@ -34,7 +34,7 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
     mOwnedFeedback.reset( new QgsProcessingFeedback() );
     mFeedback = mOwnedFeedback.get();
   }
-  if ( !mAlgorithm->prepare( mParameters, context, mFeedback ) )
+  if ( !( mAlgorithm && mAlgorithm->prepare( mParameters, context, mFeedback ) ) )
     cancel();
 }
 
