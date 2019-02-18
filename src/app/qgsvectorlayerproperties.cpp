@@ -469,6 +469,26 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryAutoFixesGroupBox->setEnabled( false );
   }
 
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-properties" ) );
+  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#symbology-properties" ) );
+  mOptsPage_Labels->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#labels-properties" ) );
+  mOptsPage_Diagrams->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
+  mOptsPage_SourceFields->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-fields-properties" ) );
+  mOptsPage_AttributesForm->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#attributes-form-properties" ) );
+  mOptsPage_Joins->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  mOptsPage_AuxiliaryStorage->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#auxiliary-storage-properties" ) );
+  mOptsPage_Actions->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
+  mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#disply-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#rendering-properties" ) );
+  mOptsPage_Variables->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#variables-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#metadata-properties" ) );
+  mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) ) ;
+  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#legend-properties" ) );
+  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#qgis-server-properties" ) );
+  mOptsPage_Digitizing->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#digitizing-properties" ) );
+
+
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
 }
 
@@ -1623,9 +1643,11 @@ void QgsVectorLayerProperties::updateVariableEditor()
 
 void QgsVectorLayerProperties::showHelp()
 {
-  if ( mOptionsListWidget->currentIndex().data().toString() == "Form" )
+  const QVariant helpPage = mOptionsStackedWidget->currentWidget()->property( "helpPage" );
+
+  if ( helpPage.isValid() )
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
+    QgsHelp::openHelp( helpPage.toString() );
   }
   else
   {
