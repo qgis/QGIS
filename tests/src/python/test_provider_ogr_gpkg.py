@@ -1303,6 +1303,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         for i in range(1, len(vl.fields())):
             self.assertEqual(vl.uniqueValues(i), {'a', 'b', 'c'})
 
+    def testGeopackageLayerMetadata(self):
+        """
+        Geopackage layer description and identifier should be read into layer metadata automatically
+        """
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageLayerMetadata.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1', geom_type=ogr.wkbPoint)
+        lyr.SetMetadataItem('DESCRIPTION', "my desc")
+        lyr.SetMetadataItem('IDENTIFIER', "my title")  # see geopackage specs -- "'identifier' is analogous to 'title'"
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "layer1", 'test', u'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertEqual(vl1.metadata().title(), 'my title')
+        self.assertEqual(vl1.metadata().abstract(), 'my desc')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -525,6 +525,21 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   bool supportsBoolean = false;
 
+  // layer metadata
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  if ( mOgrOrigLayer )
+  {
+    QMutex *mutex = nullptr;
+    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
+    QMutexLocker locker( mutex );
+    const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", nullptr );
+    if ( !identifier.isEmpty() )
+      mLayerMetadata.setTitle( identifier ); // see geopackage specs -- "'identifier' is analogous to 'title'"
+    const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", nullptr );
+    if ( !abstract.isEmpty() )
+      mLayerMetadata.setAbstract( abstract );
+  }
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   if ( mOgrOrigLayer )
   {
@@ -853,6 +868,11 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 QStringList QgsOgrProvider::subLayers() const
 {
   return _subLayers( true );
+}
+
+QgsLayerMetadata QgsOgrProvider::layerMetadata() const
+{
+  return mLayerMetadata;
 }
 
 QStringList QgsOgrProvider::subLayersWithoutFeatureCount() const
@@ -2616,6 +2636,8 @@ void QgsOgrProvider::computeCapabilities()
       ability |= TransactionSupport;
     }
   }
+
+  ability |= ReadLayerMetadata;
 
   if ( updateModeActivated )
     leaveUpdateMode();
