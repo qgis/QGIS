@@ -59,8 +59,6 @@ class QgsOgrLayerItem : public QgsLayerItem
   public:
     QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer = false );
 
-    bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
-
     QString layerName() const override;
     //! Retrieve sub layers from a DB ogr layer \a path with the specified \a driver
     static QList<QgsOgrDbLayerInfo *> subLayers( const QString &path, const QString &driver );

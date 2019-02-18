@@ -56,48 +56,6 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
 }
 
 
-bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  QString layerName = mPath.left( mPath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
-  QString wkt = crs.toWkt();
-
-  // save ordinary .prj file
-  OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
-  OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-  char *pszOutWkt = nullptr;
-  OSRExportToWkt( hSRS, &pszOutWkt );
-  QFile prjFile( layerName + ".prj" );
-  if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QTextStream prjStream( &prjFile );
-    prjStream << pszOutWkt << endl;
-    prjFile.close();
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
-    return false;
-  }
-  OSRDestroySpatialReference( hSRS );
-  CPLFree( pszOutWkt );
-
-  // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
-  QFile qpjFile( layerName + ".qpj" );
-  if ( qpjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QTextStream qpjStream( &qpjFile );
-    qpjStream << wkt.toLocal8Bit().data() << endl;
-    qpjFile.close();
-  }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
-    return false;
-  }
-
-  return true;
-}
-
 QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometryType )
 {
   if ( geometryType.contains( QStringLiteral( "Point" ), Qt::CaseInsensitive ) )
