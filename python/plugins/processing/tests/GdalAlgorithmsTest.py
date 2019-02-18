@@ -1225,55 +1225,52 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with input srs
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': 'EPSG:3111',
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': 'EPSG:3111',
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with target using proj string
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': custom_crs,
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': custom_crs,
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with target using custom projection
             custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': custom_crs,
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': custom_crs,
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn('-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn('--optfile ', commands[1])
 
             # with non-EPSG crs code
-            self.assertEqual(
-                alg.getConsoleCommands({'LAYERS': [source],
-                                        'TARGET_CRS': 'POSTGIS:3111',
-                                        'OUTPUT': outdir + '/test.shp'}, context, feedback),
-                ['gdaltindex',
-                 '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-                 outdir + '/test.shp ' +
-                 source])
+            commands = alg.getConsoleCommands({'LAYERS': [source],
+                                               'TARGET_CRS': 'POSTGIS:3111',
+                                               'OUTPUT': outdir + '/test.shp'}, context, feedback)
+            self.assertEqual(len(commands), 2)
+            self.assertEqual(commands[0], 'gdaltindex')
+            self.assertIn(
+                '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' + outdir + '/test.shp',
+                commands[1])
+            self.assertIn('--optfile ', commands[1])
 
     def testGridAverage(self):
         context = QgsProcessingContext()
