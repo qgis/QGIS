@@ -3688,6 +3688,21 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionCont
   return QStringLiteral( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
+static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
+  QVariant value = node->eval( parent, context );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QString() );
+    node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR;
+  }
+  return value;
+}
+
 static QVariant fcnIf( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -4750,6 +4765,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "nullif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value2" ) ), fcnNullIf, QStringLiteral( "Conditionals" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "try" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "alternative" ), true, QVariant() ), fcnTry, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
 
         << new QgsStaticExpressionFunction( QStringLiteral( "aggregate" ),
                                             QgsExpressionFunction::ParameterList()
