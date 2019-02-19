@@ -359,7 +359,8 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry,
     const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
-  return createFeatures( layer, QgsFeaturesDataList() << QgsFeaturesData( geometry, attributes ), context ).first();
+  QgsFeatureList features { createFeatures( layer, QgsFeaturesDataList() << QgsFeatureData( geometry, attributes ), context ) };
+  return features.isEmpty() ? QgsFeature() : features.first();
 }
 
 QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer, const QgsFeaturesDataList &featuresData, QgsExpressionContext *context )
@@ -789,17 +790,17 @@ QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureC
 }
 */
 
-QgsVectorLayerUtils::QgsFeaturesData::QgsFeaturesData( const QgsGeometry &geometry, const QgsAttributeMap &attributes ):
+QgsVectorLayerUtils::QgsFeatureData::QgsFeatureData( const QgsGeometry &geometry, const QgsAttributeMap &attributes ):
   mGeometry( geometry ),
   mAttributes( attributes )
 {}
 
-QgsGeometry QgsVectorLayerUtils::QgsFeaturesData::geometry() const
+QgsGeometry QgsVectorLayerUtils::QgsFeatureData::geometry() const
 {
   return mGeometry;
 }
 
-QgsAttributeMap QgsVectorLayerUtils::QgsFeaturesData::attributes() const
+QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const
 {
   return mAttributes;
 }

@@ -9023,7 +9023,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
     // now create new feature using pasted feature as a template. This automatically handles default
     // values and field constraints
-    newFeaturesDataList << QgsVectorLayerUtils::QgsFeaturesData( geom, attrMap );
+    newFeaturesDataList << QgsVectorLayerUtils::QgsFeatureData( geom, attrMap );
   }
 
   QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};

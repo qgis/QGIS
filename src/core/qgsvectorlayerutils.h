@@ -72,19 +72,19 @@ class CORE_EXPORT QgsVectorLayerUtils
 
     /**
      * \ingroup core
-     * \class QgsFeatureSetData
+     * \class QgsFeatureData
      * \brief Encapsulate geometry and attributes for new features, to be passed to createFeatures
      * \see createFeatures()
      * \since QGIS 3.6
      */
-    class CORE_EXPORT QgsFeaturesData
+    class CORE_EXPORT QgsFeatureData
     {
       public:
 
         /**
-         * Constructs a new QgsFeaturesData with given \a geometry and \a attributes
+         * Constructs a new QgsFeatureData with given \a geometry and \a attributes
          */
-        QgsFeaturesData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
+        QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
 
         //! Returns geometry
         QgsGeometry geometry() const;
@@ -98,8 +98,8 @@ class CORE_EXPORT QgsVectorLayerUtils
     };
 
     // SIP does not lile "using", use legacy typedef
-    //! Alias for list of QgsFeaturesData
-    typedef QList<QgsVectorLayerUtils::QgsFeaturesData> QgsFeaturesDataList;
+    //! Alias for list of QgsFeatureData
+    typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
 
     /**
      * Create a feature iterator for a specified field name or expression.

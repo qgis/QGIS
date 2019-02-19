@@ -57,7 +57,7 @@ Returns the duplicated features in the given layer
 
     };
 
-    class QgsFeaturesData
+    class QgsFeatureData
 {
 %Docstring
 Encapsulate geometry and attributes for new features, to be passed to createFeatures
@@ -72,9 +72,9 @@ Encapsulate geometry and attributes for new features, to be passed to createFeat
 %End
       public:
 
-        QgsFeaturesData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
+        QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
 %Docstring
-Constructs a new QgsFeaturesData with given ``geometry`` and ``attributes``
+Constructs a new QgsFeatureData with given ``geometry`` and ``attributes``
 %End
 
         QgsGeometry geometry() const;
@@ -89,7 +89,7 @@ Returns attributes
 
     };
 
-    typedef QList<QgsVectorLayerUtils::QgsFeaturesData> QgsFeaturesDataList;
+    typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
 
     static QgsFeatureIterator getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly );
 %Docstring
