@@ -67,8 +67,19 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
      * Subclasses should take care to call the base class method when reimplementing this method.
      *
      * \see widgetContext()
+     * \since QGIS 3.6
      */
     virtual void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+
+    /**
+     * Returns the context in which the Processing algorithm widget is shown, e.g., the
+     * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+     * to fine-tune its behavior.
+     *
+     * \see setWidgetContext()
+     * \since QGIS 3.6
+     */
+    const QgsProcessingParameterWidgetContext &widgetContext() const;
 
     /**
      * Sets the algorithm instance associated with the widget.

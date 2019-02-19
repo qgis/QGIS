@@ -27,6 +27,11 @@ void QgsProcessingAlgorithmConfigurationWidget::setWidgetContext( const QgsProce
   mWidgetContext = context;
 }
 
+const QgsProcessingParameterWidgetContext &QgsProcessingAlgorithmConfigurationWidget::widgetContext() const
+{
+  return mWidgetContext;
+}
+
 void QgsProcessingAlgorithmConfigurationWidget::setAlgorithm( const QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm = algorithm;
