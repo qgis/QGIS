@@ -170,6 +170,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * passed for the new feature to copy as many attribute values as possible from the map,
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
+     * \see createFeatures()
      */
     static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
@@ -178,10 +179,10 @@ class CORE_EXPORT QgsVectorLayerUtils
 
     /**
      * Creates a set of new features ready for insertion into a layer. Default values and constraints
-     * (e.g., unique constraints) will automatically be handled. An optional attribute map can be
-     * passed for the new feature to copy as many attribute values as possible from the map,
-     * assuming that they respect the layer's constraints. Note that the created features are not
+     * (e.g., unique constraints) will automatically be handled. Note that the created features are not
      * automatically inserted into the layer.
+     * \see createFeature()
+     * \since QGIS 3.6
      */
     static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
                                           const QgsFeaturesDataList &featuresData,
