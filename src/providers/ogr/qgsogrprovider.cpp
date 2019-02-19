@@ -3621,8 +3621,9 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
 
-  // GPKG fid
-  if ( mGDALDriverName == QLatin1String( "GPKG" ) && mFirstFieldIsFid && index == 0 )
+  // GPKG/SQLite fid
+  if ( ( mGDALDriverName == QLatin1String( "GPKG" ) || mGDALDriverName == QLatin1String( "SQLite" ) )
+       && mFirstFieldIsFid && index == 0 )
   {
     sql += ", " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " AS fid2";
   }
