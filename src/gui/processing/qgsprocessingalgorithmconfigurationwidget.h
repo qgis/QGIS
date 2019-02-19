@@ -24,9 +24,11 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 class QgsProcessingAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
+
 
 /**
  * A configuration widget for processing algorithms allows providing additional
@@ -35,7 +37,7 @@ class QgsProcessingAlgorithmConfigurationWidget;
  * \ingroup gui
  * \since QGIS 3.2
  */
-class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
+class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -56,6 +58,49 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
      * Set the configuration which this widget should represent.
      */
     virtual void setConfiguration( const QVariantMap &configuration ) = 0;
+
+    /**
+     * Sets the \a context in which the Processing algorithm widget is shown, e.g., the
+     * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+     * to fine-tune its behavior.
+     *
+     * Subclasses should take care to call the base class method when reimplementing this method.
+     *
+     * \see widgetContext()
+     */
+    virtual void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+
+    /**
+     * Sets the algorithm instance associated with the widget.
+     *
+     * \see algorithm()
+     * \since QGIS 3.6
+     */
+    void setAlgorithm( const QgsProcessingAlgorithm *algorithm );
+
+    /**
+     * Returns the algorithm instance associated with this widget.
+     *
+     * \see setAlgorithm()
+     * \since QGIS 3.6
+     */
+    const QgsProcessingAlgorithm *algorithm() const { return mAlgorithm; }
+
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \since QGIS 3.6
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
+  private:
+
+    QgsProcessingContextGenerator *mContextGenerator = nullptr;
+    const QgsProcessingAlgorithm *mAlgorithm = nullptr;
+    QgsProcessingParameterWidgetContext mWidgetContext;
 };
 
 
