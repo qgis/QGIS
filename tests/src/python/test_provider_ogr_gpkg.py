@@ -1322,6 +1322,28 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(vl1.metadata().title(), 'my title')
         self.assertEqual(vl1.metadata().abstract(), 'my desc')
 
+    def testUniqueValuesOnFidColumn(self):
+        """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageUniqueValuesOnFidColumn.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 2,2 2,2 0,0 0))'))
+        f.SetField('str_field', 'two')
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertEqual(vl1.uniqueValues(0), {1, 2})
+        self.assertEqual(vl1.uniqueValues(1), {'one', 'two'})
+
 
 if __name__ == '__main__':
     unittest.main()

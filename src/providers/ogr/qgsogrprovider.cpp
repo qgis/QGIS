@@ -3618,7 +3618,15 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
     return uniqueValues; //not a provider field
   }
 
+
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
+
+  // GPKG fid
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) && mFirstFieldIsFid && index == 0 )
+  {
+    sql += ", " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " AS fid2";
+  }
+
   sql += " FROM " + quotedIdentifier( mOgrLayer->name() );
 
   if ( !mSubsetString.isEmpty() )
