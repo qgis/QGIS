@@ -84,6 +84,7 @@ void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
 
 void QgsFieldExpressionWidget::setAllowEmptyFieldName( bool allowEmpty )
 {
+  mCombo->lineEdit()->setClearButtonEnabled( allowEmpty );
   mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( allowEmpty );
 }
 
