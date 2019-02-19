@@ -97,7 +97,7 @@ class CORE_EXPORT QgsVectorLayerUtils
         QgsAttributeMap mAttributes;
     };
 
-    // SIP does not lile "using", use legacy typedef
+    // SIP does not like "using", use legacy typedef
     //! Alias for list of QgsFeatureData
     typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
 
