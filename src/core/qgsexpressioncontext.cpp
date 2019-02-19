@@ -807,6 +807,10 @@ QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsPro
   QgsCoordinateReferenceSystem projectCrs = project->crs();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_ellipsoid" ), project->ellipsoid(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( project->distanceUnits() ), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_area_units" ), QgsUnitTypes::toString( project->areaUnits() ), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_project_transform_context" ), QVariant::fromValue<QgsCoordinateTransformContext>( project->transformContext() ), true, true ) );
 
   // metadata
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), project->metadata().author(), true, true ) );
@@ -885,6 +889,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_name" ), layer->name(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_id" ), layer->id(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_layer_crs" ), QVariant::fromValue<QgsCoordinateReferenceSystem>( layer->crs() ), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer *>( layer ) ) ), true, true ) );
 
   const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );

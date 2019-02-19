@@ -379,8 +379,12 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Sets the geometry calculator used for distance and area calculations in expressions.
-     * (used by $length, $area and $perimeter functions only). By default, no geometry
-     * calculator is set and all distance and area calculations are performed using simple
+     * (used by $length, $area and $perimeter functions only).
+     * If the geometry calculator is set to nullptr (default), prepare() will read variables
+     * from the expression context ("project_ellipsoid", "_project_transform_context" and
+     * "_layer_crs") to build a geometry calculator.
+     * If these variables does not exist and if setGeomCalculator() is not called,
+     * all distance and area calculations are performed using simple
      * Cartesian methods (ie no ellipsoidal calculations).
      * \param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
      * Cartesian calculations.
@@ -399,6 +403,8 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
+     * If distance units are set to QgsUnitTypes::DistanceUnknownUnit (default), prepare() will read
+     * variables from the expression context ("project_distance_units") to determine distance units.
      * \note distances are only converted when a geomCalculator() has been set
      * \see distanceUnits()
      * \see setAreaUnits()
@@ -417,6 +423,8 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
+     * If distance units are set to QgsUnitTypes::AreaUnknownUnit (default), prepare() will read
+     * variables from the expression context ("project_distance_units") to determine distance units.
      * \note areas are only converted when a geomCalculator() has been set
      * \see areaUnits()
      * \see setDistanceUnits()
@@ -619,7 +627,7 @@ class CORE_EXPORT QgsExpression
 #endif
 
   private:
-    void initGeomCalculator();
+    void initGeomCalculator( const QgsExpressionContext *context );
 
     struct HelpArg SIP_SKIP
     {

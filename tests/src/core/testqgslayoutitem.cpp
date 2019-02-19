@@ -1420,6 +1420,7 @@ void TestQgsLayoutItem::itemVariablesFunction()
   map->setId( QStringLiteral( "Map_id" ) );
 
   c = l.createExpressionContext();
+  e.prepare( &c );
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
 
