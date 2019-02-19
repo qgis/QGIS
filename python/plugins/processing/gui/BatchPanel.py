@@ -265,21 +265,21 @@ class BatchPanel(BASE, WIDGET):
     def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row][column] = wrapper
 
+        widget_context = QgsProcessingParameterWidgetContext()
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
+        if isinstance(self.alg, QgsProcessingModelAlgorithm):
+            widget_context.setModel(self.alg)
+        wrapper.setWidgetContext(widget_context)
+        wrapper.registerProcessingContextGenerator(self.context_generator)
+
         # For compatibility with 3.x API, we need to check whether the wrapper is
         # the deprecated WidgetWrapper class. If not, it's the newer
         # QgsAbstractProcessingParameterWidgetWrapper class
         # TODO QGIS 4.0 - remove
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
-            widget_context = QgsProcessingParameterWidgetContext()
-            if iface is not None:
-                widget_context.setMapCanvas(iface.mapCanvas())
-            if isinstance(self.alg, QgsProcessingModelAlgorithm):
-                widget_context.setModel(self.alg)
-
-            wrapper.setWidgetContext(widget_context)
             widget = wrapper.createWrappedWidget(context)
-            wrapper.registerProcessingContextGenerator(self.context_generator)
         else:
             widget = wrapper.widget
 

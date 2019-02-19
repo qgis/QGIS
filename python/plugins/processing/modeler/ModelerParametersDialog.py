@@ -173,9 +173,9 @@ class ModelerParametersDialog(QDialog):
             wrapper = WidgetWrapperFactory.create_wrapper(param, self)
             self.wrappers[param.name()] = wrapper
 
+            wrapper.setWidgetContext(widget_context)
+            wrapper.registerProcessingContextGenerator(self.context_generator)
             if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                wrapper.setWidgetContext(widget_context)
-                wrapper.registerProcessingContextGenerator(self.context_generator)
                 widget = wrapper
             else:
                 widget = wrapper.widget
