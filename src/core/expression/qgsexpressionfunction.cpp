@@ -4215,21 +4215,34 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   if ( !layer )
     return QVariant();
 
+  // here, we always prefer the layer metadata values over the older server-specific published values
   QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   if ( QString::compare( layerProperty, QStringLiteral( "name" ), Qt::CaseInsensitive ) == 0 )
     return layer->name();
   else if ( QString::compare( layerProperty, QStringLiteral( "id" ), Qt::CaseInsensitive ) == 0 )
     return layer->id();
   else if ( QString::compare( layerProperty, QStringLiteral( "title" ), Qt::CaseInsensitive ) == 0 )
-    return layer->title();
+    return !layer->metadata().title().isEmpty() ? layer->metadata().title() : layer->title();
   else if ( QString::compare( layerProperty, QStringLiteral( "abstract" ), Qt::CaseInsensitive ) == 0 )
-    return layer->abstract();
+    return !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->abstract();
   else if ( QString::compare( layerProperty, QStringLiteral( "keywords" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QStringList keywords;
+    const QgsAbstractMetadataBase::KeywordMap keywordMap = layer->metadata().keywords();
+    for ( auto it = keywordMap.constBegin(); it != keywordMap.constEnd(); ++it )
+    {
+      keywords.append( it.value() );
+    }
+    if ( !keywords.isEmpty() )
+      return keywords;
     return layer->keywordList();
+  }
   else if ( QString::compare( layerProperty, QStringLiteral( "data_url" ), Qt::CaseInsensitive ) == 0 )
     return layer->dataUrl();
   else if ( QString::compare( layerProperty, QStringLiteral( "attribution" ), Qt::CaseInsensitive ) == 0 )
-    return layer->attribution();
+  {
+    return !layer->metadata().rights().isEmpty() ? QVariant( layer->metadata().rights() ) : QVariant( layer->attribution() );
+  }
   else if ( QString::compare( layerProperty, QStringLiteral( "attribution_url" ), Qt::CaseInsensitive ) == 0 )
     return layer->attributionUrl();
   else if ( QString::compare( layerProperty, QStringLiteral( "source" ), Qt::CaseInsensitive ) == 0 )
