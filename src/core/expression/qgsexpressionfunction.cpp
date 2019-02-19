@@ -3445,6 +3445,21 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionCont
   return QStringLiteral( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
+static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
+  QVariant value = node->eval( parent, context );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QString() );
+    node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR;
+  }
+  return value;
+}
+
 static QVariant fcnIf( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -4462,6 +4477,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "to_dms" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinuteSecond, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todms" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "try" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "alternative" ), true, QVariant() ), fcnTry, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
 
         << new QgsStaticExpressionFunction( QStringLiteral( "aggregate" ),
                                             QgsExpressionFunction::ParameterList()

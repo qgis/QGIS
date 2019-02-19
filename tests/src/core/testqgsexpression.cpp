@@ -1129,6 +1129,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp match false" ) << "regexp_match('abc DEF','\\\\s[a-z]+')" << false << QVariant( 0 );
       QTest::newRow( "if true" ) << "if(1=1, 1, 0)" << false << QVariant( 1 );
       QTest::newRow( "if false" ) << "if(1=2, 1, 0)" << false << QVariant( 0 );
+      QTest::newRow( "try valid" ) << "try(to_int('1'),0)" << false << QVariant( 1 );
+      QTest::newRow( "try invalid with alternative" ) << "try(to_int('a'),0)" << false << QVariant( 0 );
+      QTest::newRow( "try invalid without alternative" ) << "try(to_int('a'))" << false << QVariant();
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
