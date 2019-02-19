@@ -229,7 +229,7 @@ class Grass7Utils:
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
-                for version in ['', '7', '70', '71', '72', '74', '76']:
+                for version in ['', '7', '76', '74', '72', '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -237,7 +237,7 @@ class Grass7Utils:
                         break
                     # If nothing found, try standalone GRASS installation
                     if folder is None:
-                        for version in ['0', '1', '2', '4', '6']:
+                        for version in ['6', '4', '2', '1', '0']:
                             testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(version)
                             if os.path.isdir(testfolder):
                                 folder = testfolder
