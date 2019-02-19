@@ -36,6 +36,7 @@ class QgsPropertyOverrideButton;
 class QgsVectorLayer;
 class QgsProcessingModelAlgorithm;
 class QgsMapCanvas;
+class QgsProcessingAlgorithm;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -133,6 +134,22 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsMapCanvas *mMapCanvas = nullptr;
 
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class GUI_EXPORT QgsProcessingGuiUtils
+{
+  public:
+
+    static QgsExpressionContext createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator = nullptr,
+        const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(),
+        const QgsProcessingAlgorithm *algorithm = nullptr,
+        const QgsVectorLayer *linkedLayer = nullptr );
+
+
+};
+///@endcond
+#endif
 
 /**
  * \class QgsAbstractProcessingParameterWidgetWrapper
