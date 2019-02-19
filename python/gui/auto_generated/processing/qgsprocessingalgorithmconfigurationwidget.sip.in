@@ -52,6 +52,19 @@ to fine-tune its behavior.
 Subclasses should take care to call the base class method when reimplementing this method.
 
 .. seealso:: :py:func:`widgetContext`
+
+.. versionadded:: 3.6
+%End
+
+    const QgsProcessingParameterWidgetContext &widgetContext() const;
+%Docstring
+Returns the context in which the Processing algorithm widget is shown, e.g., the
+parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+to fine-tune its behavior.
+
+.. seealso:: :py:func:`setWidgetContext`
+
+.. versionadded:: 3.6
 %End
 
     void setAlgorithm( const QgsProcessingAlgorithm *algorithm );
