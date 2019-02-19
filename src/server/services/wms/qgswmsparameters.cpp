@@ -1334,7 +1334,7 @@ namespace QgsWms
         const QStringList splits = f.split( ':' );
         if ( splits.size() == 2 )
         {
-          QStringList layers = splits[0].contains( ',' ) ? splits[0].split( ',' ) : QStringList() << splits[0];
+          const QStringList layers = splits[0].split( ',' );
           for ( QString layer : layers )
           {
             QgsWmsParametersFilter filter;
