@@ -798,6 +798,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter4")
 
+        # display multiple features filtered from multiple layers with same filter for some
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Country_Diagrams,Hello",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "1017529,-4226661,11271098,17063190",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country,Country_Diagrams: \"name\" IN ( 'africa' , 'eurasia' );Hello: \"color\" IN ( 'magenta' , 'cerese' )"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter5")
+
     def test_wms_getmap_filter_ogc(self):
         filter = "<Filter><PropertyIsEqualTo><PropertyName>name</PropertyName>" + \
                  "<Literal>eurasia</Literal></PropertyIsEqualTo></Filter>"

@@ -1329,15 +1329,19 @@ namespace QgsWms
       }
       else if ( !f.isEmpty() )
       {
-        // filter format: "LayerName:filterString;LayerName2:filterString2;..."
+        // filter format: "LayerName,LayerName2:filterString;LayerName3:filterString2;..."
         // several filters can be defined for one layer
         const QStringList splits = f.split( ':' );
         if ( splits.size() == 2 )
         {
-          QgsWmsParametersFilter filter;
-          filter.mFilter = splits[1];
-          filter.mType = QgsWmsParametersFilter::SQL;
-          filters.insert( splits[0], filter );
+          QStringList layers = splits[0].contains( ',' ) ? splits[0].split( ',' ) : QStringList() << splits[0];
+          for ( QString layer : layers )
+          {
+            QgsWmsParametersFilter filter;
+            filter.mFilter = splits[1];
+            filter.mType = QgsWmsParametersFilter::SQL;
+            filters.insert( layer, filter );
+          }
         }
         else
         {
