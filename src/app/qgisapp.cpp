@@ -8996,11 +8996,12 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   QgsExpressionContext context = pasteVectorLayer->createExpressionContext();
 
   QgsFeatureList compatibleFeatures( QgsVectorLayerUtils::makeFeaturesCompatible( features, pasteVectorLayer ) );
-  QgsFeatureList newFeatures;
+  QgsVectorLayerUtils::QgsFeaturesDataList newFeaturesDataList;
+  newFeaturesDataList.reserve( compatibleFeatures.size() );
+
   // Count collapsed geometries
   int invalidGeometriesCount = 0;
 
-  newFeatures.reserve( compatibleFeatures.size() );
   for ( const auto &feature : qgis::as_const( compatibleFeatures ) )
   {
 
@@ -9022,8 +9023,10 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
     // now create new feature using pasted feature as a template. This automatically handles default
     // values and field constraints
-    newFeatures << QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, attrMap, &context );
+    newFeaturesDataList << QgsVectorLayerUtils::QgsFeaturesData( geom, attrMap );
   }
+
+  QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );
@@ -9031,7 +9034,6 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   {
     newIds << f.id();
   }
-
 
   pasteVectorLayer->selectByIds( newIds );
   pasteVectorLayer->endEditCommand();

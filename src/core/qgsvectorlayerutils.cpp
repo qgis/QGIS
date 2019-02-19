@@ -359,10 +359,16 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry,
     const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
+  return createFeatures( layer, QgsFeaturesDataList() << QgsFeaturesData( geometry, attributes ), context ).first();
+}
+
+QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer, const QgsFeaturesDataList &featuresData, QgsExpressionContext *context )
+{
   if ( !layer )
-  {
-    return QgsFeature();
-  }
+    return QgsFeatureList();
+
+  QgsFeatureList result;
+  result.reserve( featuresData.length() );
 
   QgsExpressionContext *evalContext = context;
   std::unique_ptr< QgsExpressionContext > tempContext;
@@ -375,94 +381,104 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
   QgsFields fields = layer->fields();
 
-  QgsFeature newFeature( fields );
-  newFeature.setValid( true );
-  newFeature.setGeometry( geometry );
+  // Cache unique values
+  QMap<int, QSet<QVariant>> uniqueValueCaches;
 
-  // initialize attributes
-  newFeature.initAttributes( fields.count() );
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  for ( const auto &fd : qgis::as_const( featuresData ) )
   {
-    QVariant v;
-    bool checkUnique = true;
 
-    // in order of priority:
-    // 1. passed attribute value and if field does not have a unique constraint like primary key
-    if ( attributes.contains( idx ) )
+    QgsFeature newFeature( fields );
+    newFeature.setValid( true );
+    newFeature.setGeometry( fd.geometry() );
+
+    // initialize attributes
+    newFeature.initAttributes( fields.count() );
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      v = attributes.value( idx );
-    }
+      QVariant v;
+      bool checkUnique = true;
+      const bool hasUniqueConstraint { static_cast<bool>( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) };
 
-    // Cache unique values
-    QSet<QVariant> uniqueValues { layer->uniqueValues( idx ) };
-
-    // 2. client side default expression
-    // note - deliberately not using else if!
-    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique
-                             && uniqueValues.contains( v ) ) )
-         && layer->defaultValueDefinition( idx ).isValid() )
-    {
-      // client side default expression set - takes precedence over all. Why? Well, this is the only default
-      // which QGIS users have control over, so we assume that they're deliberately overriding any
-      // provider defaults for some good reason and we should respect that
-      v = layer->defaultValue( idx, newFeature, evalContext );
-    }
-
-    // 3. provider side default value clause
-    // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique
-                             && uniqueValues.contains( v ) ) )
-         && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
-    {
-      int providerIndex = fields.fieldOriginIndex( idx );
-      QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
-      if ( !providerDefault.isEmpty() )
+      // in order of priority:
+      // 1. passed attribute value and if field does not have a unique constraint like primary key
+      if ( fd.attributes().contains( idx ) )
       {
-        v = providerDefault;
-        checkUnique = false;
+        v = fd.attributes().value( idx );
       }
-    }
 
-    // 4. provider side default literal
-    // note - deliberately not using else if!
-    if ( ( !v.isValid() || ( checkUnique && fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique
-                             && uniqueValues.contains( v ) ) )
-         && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
-    {
-      int providerIndex = fields.fieldOriginIndex( idx );
-      v = layer->dataProvider()->defaultValue( providerIndex );
-      if ( v.isValid() )
+      // Cache unique values
+      if ( hasUniqueConstraint && ! uniqueValueCaches.contains( idx ) )
+        uniqueValueCaches[ idx ] = layer->uniqueValues( idx );
+
+      // 2. client side default expression
+      // note - deliberately not using else if!
+      if ( ( !v.isValid() || ( hasUniqueConstraint
+                               && uniqueValueCaches[ idx ].contains( v ) ) )
+           && layer->defaultValueDefinition( idx ).isValid() )
       {
-        //trust that the provider default has been sensibly set not to violate any constraints
-        checkUnique = false;
+        // client side default expression set - takes precedence over all. Why? Well, this is the only default
+        // which QGIS users have control over, so we assume that they're deliberately overriding any
+        // provider defaults for some good reason and we should respect that
+        v = layer->defaultValue( idx, newFeature, evalContext );
       }
-    }
 
-    // 5. passed attribute value
-    // note - deliberately not using else if!
-    if ( !v.isValid() && attributes.contains( idx ) )
-    {
-      v = attributes.value( idx );
-    }
-
-    // last of all... check that unique constraints are respected
-    // we can't handle not null or expression constraints here, since there's no way to pick a sensible
-    // value if the constraint is violated
-    if ( checkUnique && fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
-    {
-      if ( uniqueValues.contains( v ) )
+      // 3. provider side default value clause
+      // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
+      if ( ( !v.isValid() || ( hasUniqueConstraint
+                               && uniqueValueCaches[ idx ].contains( v ) ) )
+           && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
-        // unique constraint violated
-        QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValue( layer, idx, v );
-        if ( uniqueValue.isValid() )
-          v = uniqueValue;
+        int providerIndex = fields.fieldOriginIndex( idx );
+        QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
+        if ( !providerDefault.isEmpty() )
+        {
+          v = providerDefault;
+          checkUnique = false;
+        }
       }
-    }
 
-    newFeature.setAttribute( idx, v );
+      // 4. provider side default literal
+      // note - deliberately not using else if!
+      if ( ( !v.isValid() || ( checkUnique && hasUniqueConstraint
+                               && uniqueValueCaches[ idx ].contains( v ) ) )
+           && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+      {
+        int providerIndex = fields.fieldOriginIndex( idx );
+        v = layer->dataProvider()->defaultValue( providerIndex );
+        if ( v.isValid() )
+        {
+          //trust that the provider default has been sensibly set not to violate any constraints
+          checkUnique = false;
+        }
+      }
+
+      // 5. passed attribute value
+      // note - deliberately not using else if!
+      if ( !v.isValid() && fd.attributes().contains( idx ) )
+      {
+        v = fd.attributes().value( idx );
+      }
+
+      // last of all... check that unique constraints are respected
+      // we can't handle not null or expression constraints here, since there's no way to pick a sensible
+      // value if the constraint is violated
+      if ( checkUnique && hasUniqueConstraint )
+      {
+        if ( uniqueValueCaches[ idx ].contains( v ) )
+        {
+          // unique constraint violated
+          QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValue( layer, idx, v );
+          if ( uniqueValue.isValid() )
+            v = uniqueValue;
+        }
+      }
+      if ( hasUniqueConstraint )
+        uniqueValueCaches[ idx ].insert( v );
+      newFeature.setAttribute( idx, v );
+    }
+    result.append( newFeature );
   }
-
-  return newFeature;
+  return result;
 }
 
 QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext )
@@ -772,3 +788,18 @@ QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureC
   return mDuplicatedFeatures;
 }
 */
+
+QgsVectorLayerUtils::QgsFeaturesData::QgsFeaturesData( const QgsGeometry &geometry, const QgsAttributeMap &attributes ):
+  mGeometry( geometry ),
+  mAttributes( attributes )
+{}
+
+QgsGeometry QgsVectorLayerUtils::QgsFeaturesData::geometry() const
+{
+  return mGeometry;
+}
+
+QgsAttributeMap QgsVectorLayerUtils::QgsFeaturesData::attributes() const
+{
+  return mAttributes;
+}

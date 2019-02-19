@@ -71,6 +71,37 @@ class CORE_EXPORT QgsVectorLayerUtils
     };
 
     /**
+     * \ingroup core
+     * \class QgsFeatureSetData
+     * \brief Encapsulate geometry and attributes for new features, to be passed to createFeatures
+     * \see createFeatures()
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT QgsFeaturesData
+    {
+      public:
+
+        /**
+         * Constructs a new QgsFeaturesData with given \a geometry and \a attributes
+         */
+        QgsFeaturesData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
+
+        //! Returns geometry
+        QgsGeometry geometry() const;
+
+        //! Returns attributes
+        QgsAttributeMap attributes() const;
+
+      private:
+        QgsGeometry mGeometry;
+        QgsAttributeMap mAttributes;
+    };
+
+    // SIP does not lile "using", use legacy typedef
+    //! Alias for list of QgsFeaturesData
+    typedef QList<QgsVectorLayerUtils::QgsFeaturesData> QgsFeaturesDataList;
+
+    /**
      * Create a feature iterator for a specified field name or expression.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string
@@ -144,6 +175,17 @@ class CORE_EXPORT QgsVectorLayerUtils
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
+
+    /**
+     * Creates a set of new features ready for insertion into a layer. Default values and constraints
+     * (e.g., unique constraints) will automatically be handled. An optional attribute map can be
+     * passed for the new feature to copy as many attribute values as possible from the map,
+     * assuming that they respect the layer's constraints. Note that the created features are not
+     * automatically inserted into the layer.
+     */
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
+                                          const QgsFeaturesDataList &featuresData,
+                                          QgsExpressionContext *context = nullptr );
 
     /**
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so

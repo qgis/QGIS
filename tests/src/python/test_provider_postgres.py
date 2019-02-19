@@ -1183,6 +1183,40 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(g.childCount(), 1)
         self.assertTrue(g.childGeometry(0).vertexCount() > 3)
 
+    def testMassivePaste(self):
+        """Speed test to compare createFeature and createFeatures, for regression #21303"""
+
+        import time
+
+        self.execSQLCommand('CREATE TABLE IF NOT EXISTS massive_paste(pk SERIAL NOT NULL PRIMARY KEY, geom public.geometry(Polygon, 4326))')
+        self.execSQLCommand('TRUNCATE massive_paste')
+
+        start_time = time.time()
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="massive_paste" (geom) sql=', 'test_massive_paste', 'postgres')
+        self.assertTrue(vl.startEditing())
+        features = []
+        context = vl.createExpressionContext()
+        for i in range(4000):
+            features.append(QgsVectorLayerUtils.createFeature(vl, QgsGeometry.fromWkt('Polygon ((7 44, 8 45, 8 46, 7 46, 7 44))'), {0: i}, context))
+        self.assertTrue(vl.addFeatures(features))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 4000)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        self.execSQLCommand('TRUNCATE massive_paste')
+        start_time = time.time()
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="massive_paste" (geom) sql=', 'test_massive_paste', 'postgres')
+        self.assertTrue(vl.startEditing())
+        features_data = []
+        context = vl.createExpressionContext()
+        for i in range(4000):
+            features_data.append(QgsVectorLayerUtils.QgsFeaturesData(QgsGeometry.fromWkt('Polygon ((7 44, 8 45, 8 46, 7 46, 7 44))'), {0: i}))
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+        self.assertTrue(vl.addFeatures(features))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 4000)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
