@@ -28,9 +28,19 @@ from qgis.core import (
     QgsProcessingAlgRunnerTask,
     QgsProcessingAlgorithm,
     QgsProject,
+    QgsProcessingFeedback,
 )
 
 start_app()
+
+
+class ConsoleFeedBack(QgsProcessingFeedback):
+
+    _error = ''
+
+    def reportError(self, error, fatalError=False):
+        self._error = error
+        print(error)
 
 
 class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
@@ -89,10 +99,11 @@ class TestQgsProcessingAlgRunner(unittest.TestCase):
 
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
-        with self.assertRaises(Exception) as e:
-            QgsProcessingAlgRunnerTask(CrashingProcessingAlgorithm(), {}, context=context)
+        feedback = ConsoleFeedBack()
 
-        self.assertEqual(str(e.exception), 'unknown')
+        task = QgsProcessingAlgRunnerTask(CrashingProcessingAlgorithm(), {}, context=context, feedback=feedback)
+        self.assertTrue(task.isCanceled())
+        self.assertEqual(feedback._error, 'Error creating algorithm from createInstance()')
 
 
 if __name__ == '__main__':
