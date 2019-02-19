@@ -1210,7 +1210,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         features_data = []
         context = vl.createExpressionContext()
         for i in range(4000):
-            features_data.append(QgsVectorLayerUtils.QgsFeaturesData(QgsGeometry.fromWkt('Polygon ((7 44, 8 45, 8 46, 7 46, 7 44))'), {0: i}))
+            features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Polygon ((7 44, 8 45, 8 46, 7 46, 7 44))'), {0: i}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
         self.assertTrue(vl.addFeatures(features))
         self.assertTrue(vl.commitChanges())
