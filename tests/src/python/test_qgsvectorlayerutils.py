@@ -457,7 +457,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         print( "\nFeatures on layer2 (after duplication)")
         for f in layer2.getFeatures():
             print( f.attributes() )
-            
+
         print( "\nAll Features and relations")
         featit=layer1.getFeatures()
         f=QgsFeature()
@@ -569,6 +569,23 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(f1.attributes()[2], QVariant())
         self.assertEqual(f1.attributes()[3], 'blah')
         self.assertEqual(f1.attributes()[4], 'blergh')
+
+    def test_create_multiple_unique_constraint(self):
+        """Test create multiple features with unique constraint"""
+
+        vl = createLayerWithOnePoint()
+
+        # field expression check
+        vl.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
+
+        features_data = []
+        context = vl.createExpressionContext()
+        for i in range(2):
+            features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+
+        self.assertEqual(features[0].attributes()[1], 124)
+        self.assertEqual(features[1].attributes()[1], 125)
 
 
 if __name__ == '__main__':

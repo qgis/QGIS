@@ -158,6 +158,15 @@ value can be used as a basis for generated values.
 .. seealso:: :py:func:`valueExists`
 %End
 
+    static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
+%Docstring
+Returns a new attribute value for the specified field index which is guaranteed to
+be unique within regard to ``existingValues``.
+The optional seed value can be used as a basis for generated values.
+
+.. versionadded:: 3.6
+%End
+
     static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );

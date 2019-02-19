@@ -264,6 +264,87 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, in
   return QVariant();
 }
 
+QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed )
+{
+  if ( !layer )
+    return QVariant();
+
+  QgsFields fields = layer->fields();
+
+  if ( fieldIndex < 0 || fieldIndex >= fields.count() )
+    return QVariant();
+
+  QgsField field = fields.at( fieldIndex );
+
+  if ( field.isNumeric() )
+  {
+    QVariant maxVal = existingValues.isEmpty() ? 0 : *std::max_element( existingValues.begin(), existingValues.end() );
+    QVariant newVar( maxVal.toLongLong() + 1 );
+    if ( field.convertCompatible( newVar ) )
+      return newVar;
+    else
+      return QVariant();
+  }
+  else
+  {
+    switch ( field.type() )
+    {
+      case QVariant::String:
+      {
+        QString base;
+        if ( seed.isValid() )
+          base = seed.toString();
+
+        if ( !base.isEmpty() )
+        {
+          // strip any existing _1, _2 from the seed
+          QRegularExpression rx( QStringLiteral( "(.*)_\\d+" ) );
+          QRegularExpressionMatch match = rx.match( base );
+          if ( match.hasMatch() )
+          {
+            base = match.captured( 1 );
+          }
+        }
+        else
+        {
+          // no base seed - fetch first value from layer
+          QgsFeatureRequest req;
+          base = existingValues.isEmpty() ? QString() : existingValues.values().first().toString();
+        }
+
+        // try variants like base_1, base_2, etc until a new value found
+        QStringList vals;
+        for ( const auto &v : qgis::as_const( existingValues ) )
+        {
+          if ( v.toString().startsWith( base ) )
+            vals.push_back( v.toString() );
+        }
+
+        // might already be unique
+        if ( !base.isEmpty() && !vals.contains( base ) )
+          return base;
+
+        for ( int i = 1; i < 10000; ++i )
+        {
+          QString testVal = base + '_' + QString::number( i );
+          if ( !vals.contains( testVal ) )
+            return testVal;
+        }
+
+        // failed
+        return QVariant();
+      }
+
+      default:
+        // todo other types - dates? times?
+        break;
+    }
+  }
+
+  return QVariant();
+
+}
+
 bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
     QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
 {
@@ -468,7 +549,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         if ( uniqueValueCaches[ idx ].contains( v ) )
         {
           // unique constraint violated
-          QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValue( layer, idx, v );
+          QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValueFromCache( layer, idx, uniqueValueCaches[ idx ], v );
           if ( uniqueValue.isValid() )
             v = uniqueValue;
         }

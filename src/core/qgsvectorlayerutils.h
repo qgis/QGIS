@@ -156,6 +156,14 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 
     /**
+     * Returns a new attribute value for the specified field index which is guaranteed to
+     * be unique within regard to \a existingValues.
+     * The optional seed value can be used as a basis for generated values.
+     * \since QGIS 3.6
+     */
+    static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
+
+    /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
