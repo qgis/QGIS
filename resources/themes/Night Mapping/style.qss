@@ -143,7 +143,7 @@ QTextEdit, QPlainTextEdit
 
 QPushButton 
 {
-    padding: 0.12em;
+    padding: 0.21em;
     border-width: 1px;
     border-color: @itembackground;
     border-style: solid;
