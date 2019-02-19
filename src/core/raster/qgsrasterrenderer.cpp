@@ -154,3 +154,19 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bo
   if ( copyMinMaxOrigin )
     setMinMaxOrigin( other->minMaxOrigin() );
 }
+
+void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  QgsStringMap newProps = props;
+
+  QDomElement rasterSymbolizerElem = doc.createElement( QStringLiteral( "sld:RasterSymbolizer" ) );
+  element.appendChild( rasterSymbolizerElem );
+
+  // add opacity only is different from default
+  if ( !qgsDoubleNear( opacity(), 1.0 ) )
+  {
+    QDomElement opacityElem = doc.createElement( QStringLiteral( "sld:Opacity" ) );
+    opacityElem.appendChild( doc.createTextNode( QString::number( opacity() ) ) );
+    rasterSymbolizerElem.appendChild( opacityElem );
+  }
+}
