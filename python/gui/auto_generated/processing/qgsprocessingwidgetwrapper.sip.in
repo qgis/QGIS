@@ -109,6 +109,7 @@ Sets the child algorithm ``id`` within the model which the parameter widget is a
 
 };
 
+
 class QgsAbstractProcessingParameterWidgetWrapper : QObject, QgsExpressionContextGenerator
 {
 %Docstring
