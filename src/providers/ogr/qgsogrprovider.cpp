@@ -3622,6 +3622,9 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
 
   // GPKG/SQLite fid
+  // For GPKG an SQLITE drivers PK fields are not exposed as real fields, (and OGR_F_GetFID only
+  // works with GPKG), so we are adding an extra column that will become index 0
+  // See https://issues.qgis.org/issues/21311
   if ( ( mGDALDriverName == QLatin1String( "GPKG" ) || mGDALDriverName == QLatin1String( "SQLite" ) )
        && mFirstFieldIsFid && index == 0 )
   {
@@ -3649,7 +3652,6 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   while ( f.reset( l->GetNextFeature() ), f )
   {
     uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() ) );
-
     if ( limit >= 0 && uniqueValues.size() >= limit )
       break;
   }
