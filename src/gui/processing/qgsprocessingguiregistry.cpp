@@ -66,7 +66,10 @@ QgsProcessingAlgorithmConfigurationWidget *QgsProcessingGuiRegistry::algorithmCo
   {
     if ( factory->canCreateFor( algorithm ) )
     {
-      return factory->create( algorithm );
+      std::unique_ptr< QgsProcessingAlgorithmConfigurationWidget > widget( factory->create( algorithm ) );
+      if ( widget )
+        widget->setAlgorithm( algorithm );
+      return widget.release();
     }
   }
 
