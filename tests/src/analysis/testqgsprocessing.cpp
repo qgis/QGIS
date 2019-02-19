@@ -6006,6 +6006,12 @@ void TestQgsProcessing::modelScope()
   QgsProcessingContext pc;
 
   QgsProcessingModelAlgorithm alg( "test", "testGroup" );
+
+  QVariantMap variables;
+  variables.insert( QStringLiteral( "v1" ), 5 );
+  variables.insert( QStringLiteral( "v2" ), QStringLiteral( "aabbccd" ) );
+  alg.setVariables( variables );
+
   QVariantMap params;
   params.insert( QStringLiteral( "a_param" ), 5 );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::processingModelAlgorithmScope( &alg, params, pc ) );
@@ -6016,6 +6022,8 @@ void TestQgsProcessing::modelScope()
   QVERIFY( scope->hasVariable( QStringLiteral( "model_folder" ) ) );
   QCOMPARE( scope->variable( QStringLiteral( "model_path" ) ).toString(), QString() );
   QCOMPARE( scope->variable( QStringLiteral( "model_folder" ) ).toString(), QString() );
+  QCOMPARE( scope->variable( QStringLiteral( "v1" ) ).toInt(), 5 );
+  QCOMPARE( scope->variable( QStringLiteral( "v2" ) ).toString(), QStringLiteral( "aabbccd" ) );
 
   QgsProject p;
   pc.setProject( &p );
@@ -6590,6 +6598,11 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg5( "test", "testGroup" );
   alg5.helpContent().insert( "author", "me" );
   alg5.helpContent().insert( "usage", "run" );
+  QVariantMap variables;
+  variables.insert( QStringLiteral( "v1" ), 5 );
+  variables.insert( QStringLiteral( "v2" ), QStringLiteral( "aabbccd" ) );
+  alg5.setVariables( variables );
+  QCOMPARE( alg5.variables(), variables );
   QgsProcessingModelChildAlgorithm alg5c1;
   alg5c1.setChildId( "cx1" );
   alg5c1.setAlgorithmId( "buffer" );
@@ -6638,6 +6651,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.name(), QStringLiteral( "test" ) );
   QCOMPARE( alg6.group(), QStringLiteral( "testGroup" ) );
   QCOMPARE( alg6.helpContent(), alg5.helpContent() );
+  QCOMPARE( alg6.variables(), variables );
   QgsProcessingModelChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );

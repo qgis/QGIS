@@ -419,6 +419,30 @@ Creates a new expression context scope for a child algorithm within the model.
 .. seealso:: :py:func:`variablesForChildAlgorithm`
 %End
 
+    QVariantMap variables() const;
+%Docstring
+Returns the map of custom expression context variables defined for this model.
+
+These variables are added to the model's expression context scope, allowing for preset
+"constant" expression variables to be utilised within the model.
+
+.. seealso:: :py:func:`setVariables`
+
+.. versionadded:: 3.8
+%End
+
+    void setVariables( const QVariantMap &variables );
+%Docstring
+Sets the map of custom expression context ``variables`` for this model.
+
+These variables are added to the model's expression context scope, allowing for preset
+"constant" expression variables to be utilised within the model.
+
+.. seealso:: :py:func:`variables`
+
+.. versionadded:: 3.8
+%End
+
   protected:
 
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
