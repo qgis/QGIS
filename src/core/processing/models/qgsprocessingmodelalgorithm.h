@@ -376,6 +376,28 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
         const QVariantMap &results = QVariantMap() ) const SIP_FACTORY;
 
+    /**
+     * Returns the map of custom expression context variables defined for this model.
+     *
+     * These variables are added to the model's expression context scope, allowing for preset
+     * "constant" expression variables to be utilised within the model.
+     *
+     * \see setVariables()
+     * \since QGIS 3.8
+     */
+    QVariantMap variables() const;
+
+    /**
+     * Sets the map of custom expression context \a variables for this model.
+     *
+     * These variables are added to the model's expression context scope, allowing for preset
+     * "constant" expression variables to be utilised within the model.
+     *
+     * \see variables()
+     * \since QGIS 3.8
+     */
+    void setVariables( const QVariantMap &variables );
+
   protected:
 
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
@@ -399,6 +421,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString mSourceFile;
 
     QVariantMap mResults;
+
+    QVariantMap mVariables;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;

@@ -1059,6 +1059,8 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   }
   map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
 
+  map.insert( QStringLiteral( "modelVariables" ), mVariables );
+
   return map;
 }
 
@@ -1070,6 +1072,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
   mModelGroupId = map.value( QStringLiteral( "model_group" ) ).toString();
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
+
+  mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();
@@ -1442,6 +1446,16 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setProvider( provider() );
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
+}
+
+QVariantMap QgsProcessingModelAlgorithm::variables() const
+{
+  return mVariables;
+}
+
+void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
+{
+  mVariables = variables;
 }
 
 ///@endcond
