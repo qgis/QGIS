@@ -88,8 +88,6 @@ class DBManager(QMainWindow):
         with OverrideCursor(Qt.WaitCursor):
             try:
                 self.reloadButtons()
-                # Force-reload information on the layer
-                self.info.setDirty()
                 # clear preview, this will delete the layer in preview tab
                 self.preview.loadPreview(None)
                 self.refreshTabs()

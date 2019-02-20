@@ -63,25 +63,17 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 
 ADD_LIBRARY(ogrprovider MODULE ${OGR_SRCS} ${OGR_MOC_SRCS})
-ADD_LIBRARY(ogrprovider_a STATIC ${OGR_SRCS} ${OGR_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(ogrprovider
   qgis_core
 )
 
-TARGET_LINK_LIBRARIES(ogrprovider_a
-  qgis_core
-)
 
 IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (ogrprovider
     qgis_gui
   )
-  TARGET_LINK_LIBRARIES (ogrprovider_a
-    qgis_gui
-  )
 ENDIF ()
-
 
 IF (MSVC)
   #needed for linking to gdal which needs odbc

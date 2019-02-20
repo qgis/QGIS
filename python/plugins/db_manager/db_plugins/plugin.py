@@ -594,7 +594,6 @@ class Schema(DbItemObject):
         ret = self.database().connector.renameSchema(self.name, new_name)
         if ret is not False:
             self.name = new_name
-            # FIXME: refresh triggers
             self.refresh()
         return ret
 
@@ -653,9 +652,6 @@ class Table(DbItemObject):
         ret = self.database().connector.renameTable((self.schemaName(), self.name), new_name)
         if ret is not False:
             self.name = new_name
-            self._triggers = None
-            self._rules = None
-            self._constraints = None
             self.refresh()
         return ret
 
