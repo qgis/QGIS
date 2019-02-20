@@ -108,7 +108,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
     QRegExp reFieldDef( "\\:"
                         "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
                         "(?:\\((\\-?\\d+)"                // length
-                        "(?:\\,(\\d+))?"                  // precision
+                        "(?:\\,(\\-?\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
                         "$", Qt::CaseInsensitive );
     QStringList fields = url.allQueryItemValues( QStringLiteral( "field" ) );
