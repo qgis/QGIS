@@ -79,14 +79,14 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     /**
      * Sets whether an optional empty field ("not set") option is shown in the combo box.
      * \see allowEmptyFieldName()
-     * \since QGIS 3.0
+     * \since QGIS 3.6
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns true if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
-     * \since QGIS 3.0
+     * \since QGIS 3.6
      */
     bool allowEmptyFieldName() const;
 

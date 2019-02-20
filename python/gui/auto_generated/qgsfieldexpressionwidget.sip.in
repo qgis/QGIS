@@ -63,7 +63,7 @@ Sets whether an optional empty field ("not set") option is shown in the combo bo
 
 .. seealso:: :py:func:`allowEmptyFieldName`
 
-.. versionadded:: 3.0
+.. versionadded:: 3.6
 %End
 
     bool allowEmptyFieldName() const;
@@ -72,7 +72,7 @@ Returns true if the combo box allows the empty field ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyFieldName`
 
-.. versionadded:: 3.0
+.. versionadded:: 3.6
 %End
 
     void setLeftHandButtonStyle( bool isLeft );
