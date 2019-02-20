@@ -38,39 +38,44 @@
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 
-QgsVertexEditorModel::QgsVertexEditorModel( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature, QgsMapCanvas *canvas, QObject *parent )
+QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent )
   : QAbstractTableModel( parent )
-  , mLayer( layer )
-  , mSelectedFeature( selectedFeature )
   , mCanvas( canvas )
-  , mHasZ( false )
-  , mHasM( false )
-  , mHasR( true ) //always show for now - avoids scanning whole feature for curves TODO - avoid this
-  , mZCol( -1 )
-  , mMCol( -1 )
-  , mRCol( -1 )
 {
-
-  QgsWkbTypes::Type layerWKBType = mLayer->wkbType();
-
-  mHasZ = QgsWkbTypes::hasZ( layerWKBType );
-  mHasM = QgsWkbTypes::hasM( layerWKBType );
-
-  if ( mHasZ )
-    mZCol = 2;
-
-  if ( mHasM )
-    mMCol = 2 + ( mHasZ ? 1 : 0 );
-
-  if ( mHasR )
-    mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
-
   QWidget *parentWidget = dynamic_cast< QWidget * >( parent );
   if ( parentWidget )
-  {
     mWidgetFont = parentWidget->font();
+}
+
+void QgsVertexEditorModel::setFeature( QgsSelectedFeature *selectedFeature )
+{
+  beginResetModel();
+
+  mSelectedFeature = selectedFeature;
+  if ( !mSelectedFeature )
+  {
+    mLayer = nullptr;
+  }
+  else
+  {
+    mLayer = mSelectedFeature->layer();
+
+    QgsWkbTypes::Type layerWKBType = mLayer->wkbType();
+
+    mHasZ = QgsWkbTypes::hasZ( layerWKBType );
+    mHasM = QgsWkbTypes::hasM( layerWKBType );
+
+    if ( mHasZ )
+      mZCol = 2;
+
+    if ( mHasM )
+      mMCol = 2 + ( mHasZ ? 1 : 0 );
+
+    if ( mHasR )
+      mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
   }
 
+  endResetModel();
 }
 
 int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
@@ -84,7 +89,10 @@ int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 );
+  if ( !mSelectedFeature )
+    return 0;
+  else
+    return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 );
 }
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
@@ -296,6 +304,7 @@ bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 
 QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   : mCanvas( canvas )
+  , mVertexModel( new QgsVertexEditorModel( mCanvas, this ) )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
   setObjectName( QStringLiteral( "VertexEditor" ) );
@@ -320,6 +329,8 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( this ) );
   mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( this ) );
   mTableView->setVisible( false );
+  mTableView->setModel( mVertexModel );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 
   layout->addWidget( mTableView );
   layout->addWidget( mHintLabel );
@@ -329,24 +340,16 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
 
 void QgsVertexEditor::updateEditor( QgsSelectedFeature *selectedFeature )
 {
-  if ( mSelectedFeature )
-  {
-    delete mVertexModel;
-    mVertexModel = nullptr;
-  }
 
   mSelectedFeature = selectedFeature;
 
+  mVertexModel->setFeature( mSelectedFeature );
+
   if ( mSelectedFeature )
   {
-    // TODO We really should just update the model itself.
-    mVertexModel = new QgsVertexEditorModel( mSelectedFeature->layer(), mSelectedFeature, mCanvas, this );
-    mTableView->setModel( mVertexModel );
-
     mHintLabel->setVisible( false );
     mTableView->setVisible( true );
 
-    connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
     connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
   }
   else

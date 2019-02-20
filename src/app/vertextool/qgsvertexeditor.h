@@ -25,7 +25,6 @@
 #include <QStyledItemDelegate>
 
 class QgsMapCanvas;
-class QgsRubberBand;
 class QgsSelectedFeature;
 class QgsVectorLayer;
 
@@ -37,9 +36,9 @@ class QgsVertexEditorModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    QgsVertexEditorModel( QgsVectorLayer *layer,
-                          QgsSelectedFeature *selectedFeature,
-                          QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent = nullptr );
+
+    void setFeature( QgsSelectedFeature *selectedFeature );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -54,13 +53,13 @@ class QgsVertexEditorModel : public QAbstractTableModel
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
-    bool mHasZ;
-    bool mHasM;
-    bool mHasR;
+    bool mHasZ = false;
+    bool mHasM = false;
+    bool mHasR = true; //always show for now - avoids scanning whole feature for curves TODO - avoid this
 
-    int mZCol;
-    int mMCol;
-    int mRCol;
+    int mZCol = -1;
+    int mMCol = -1;
+    int mRCol = -1;
 
     QFont mWidgetFont;
 
