@@ -128,11 +128,11 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     double a0, a;
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->relative() && nPoints > 2 )
     {
-      a0 = std::atan2( -( prevPoint.y() - penulPoint.y() ), prevPoint.x() - penulPoint.x() ) + canvasRotationRad;
+      a0 = std::atan2( -( prevPoint.y() - penulPoint.y() ), prevPoint.x() - penulPoint.x() );
     }
     else
     {
-      a0 = canvasRotationRad;
+      a0 = 0;
     }
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
@@ -140,8 +140,12 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      a = std::atan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() ) + canvasRotationRad;
+      a = std::atan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
     }
+
+    a0 += canvasRotationRad;
+    a += canvasRotationRad;
+
     painter->setPen( mConstruction2Pen );
     painter->drawArc( QRectF( prevPointPix.x() - 20,
                               prevPointPix.y() - 20,
