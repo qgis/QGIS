@@ -48,9 +48,6 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         return QCoreApplication.translate('Processing', string)
 
-    def createInstance(self):
-        return ExampleProcessingAlgorithm()
-
     def name(self):
         """
         Returns the algorithm name, used for identifying the algorithm. This
