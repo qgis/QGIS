@@ -931,7 +931,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
 
       mSelectedFeatureAlternatives.reset( new SelectedFeatureAlternatives );
       mSelectedFeatureAlternatives->screenPoint = e->pos();
-      mSelectedFeatureAlternatives->index = 0;
+      mSelectedFeatureAlternatives->index = -1;
       if ( m.isValid() )
       {
         // ideally the feature that would get normally highlighted should be also the first choice
@@ -942,17 +942,23 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
         alternatives.remove( firstChoice );
       }
       mSelectedFeatureAlternatives->alternatives.append( alternatives.toList() );
+
+      if ( mSelectedFeature )
+      {
+        // in case there is already a feature locked, continue in the loop from it
+        QPair<QgsVectorLayer *, QgsFeatureId> currentSelection( mSelectedFeature->layer(), mSelectedFeature->featureId() );
+        int currentIndex = mSelectedFeatureAlternatives->alternatives.indexOf( currentSelection );
+        if ( currentIndex != -1 )
+          mSelectedFeatureAlternatives->index = currentIndex;
+      }
     }
   }
+
+  // move to the next alternative
+  if ( mSelectedFeatureAlternatives->index < mSelectedFeatureAlternatives->alternatives.count() - 1 )
+    ++mSelectedFeatureAlternatives->index;
   else
-  {
-    // we have had right-click before on this mouse location - so let's just cycle in our alternatives
-    // move to the next alternative
-    if ( mSelectedFeatureAlternatives->index < mSelectedFeatureAlternatives->alternatives.count() - 1 )
-      ++mSelectedFeatureAlternatives->index;
-    else
-      mSelectedFeatureAlternatives->index = -1;
-  }
+    mSelectedFeatureAlternatives->index = -1;
 
   if ( mSelectedFeatureAlternatives && mSelectedFeatureAlternatives->index != -1 )
   {
