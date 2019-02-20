@@ -424,7 +424,7 @@ Creates a new expression context scope for a child algorithm within the model.
 Returns the map of custom expression context variables defined for this model.
 
 These variables are added to the model's expression context scope, allowing for preset
-"constant" expression variables to be utilised within the model.
+"constant" expression variables to be utilized within the model.
 
 .. seealso:: :py:func:`setVariables`
 
@@ -436,7 +436,7 @@ These variables are added to the model's expression context scope, allowing for 
 Sets the map of custom expression context ``variables`` for this model.
 
 These variables are added to the model's expression context scope, allowing for preset
-"constant" expression variables to be utilised within the model.
+"constant" expression variables to be utilized within the model.
 
 .. seealso:: :py:func:`variables`
 
