@@ -380,7 +380,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Returns the map of custom expression context variables defined for this model.
      *
      * These variables are added to the model's expression context scope, allowing for preset
-     * "constant" expression variables to be utilised within the model.
+     * "constant" expression variables to be utilized within the model.
      *
      * \see setVariables()
      * \since QGIS 3.8
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Sets the map of custom expression context \a variables for this model.
      *
      * These variables are added to the model's expression context scope, allowing for preset
-     * "constant" expression variables to be utilised within the model.
+     * "constant" expression variables to be utilized within the model.
      *
      * \see variables()
      * \since QGIS 3.8
