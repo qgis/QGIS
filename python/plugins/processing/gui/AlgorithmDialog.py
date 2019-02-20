@@ -263,8 +263,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     self.showLog()
 
                     task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, self.context, self.feedback)
-                    task.executed.connect(on_complete)
-                    self.setCurrentTask(task)
+                    if task.isCanceled():
+                        on_complete(False, {})
+                    else:
+                        task.executed.connect(on_complete)
+                        self.setCurrentTask(task)
                 else:
                     self.proxy_progress = QgsProxyProgressTask(QCoreApplication.translate("AlgorithmDialog", "Executing “{}”").format(self.algorithm().displayName()))
                     QgsApplication.taskManager().addTask(self.proxy_progress)
