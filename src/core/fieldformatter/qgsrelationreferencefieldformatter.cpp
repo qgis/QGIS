@@ -130,11 +130,19 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
     return QVariant();
   }
 
-  QgsFeature feature;
-  auto iterator = referencedLayer->getFeatures();
-
   QgsExpression expr( referencedLayer->displayExpression() );
+
+  QgsFeatureRequest request;
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  QgsAttributeList requiredAttributes = expr.referencedAttributeIndexes( referencedLayer->fields() ).toList();
+  requiredAttributes << referencedFieldIdx;
+  request.setSubsetOfAttributes( requiredAttributes );
+  QgsFeature feature;
+  auto iterator = referencedLayer->getFeatures( request );
+
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( referencedLayer ) );
+
+  expr.prepare( &context );
 
   while ( iterator.nextFeature( feature ) )
   {
