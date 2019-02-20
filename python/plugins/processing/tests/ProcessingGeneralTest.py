@@ -32,7 +32,9 @@ import gc
 from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsProcessingContext,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingFeatureBasedAlgorithm)
 from qgis.PyQt import sip
 from qgis.analysis import (QgsNativeAlgorithms)
 from qgis.testing import start_app, unittest
@@ -90,6 +92,51 @@ class TestProcessingGeneral(unittest.TestCase):
         del context
         gc.collect()
         self.assertTrue(sip.isdeleted(layer))
+
+    def testCreateInstancePython(self):
+        class my_alg1(QgsProcessingAlgorithm):
+            """
+            An algorithm subclass with no createInstance method - should use default PyQGIS one
+            """
+
+            def name(self):
+                return 'myalg1'
+
+            def group(self):
+                return 'g1'
+
+            def initAlgorithm(self, config=None):
+                pass
+
+            def processAlgorithm(self, parameters, context, feedback):
+                return {}
+
+        class my_alg2(QgsProcessingFeatureBasedAlgorithm):
+            """
+            An algorithm subclass with no createInstance method - should use default PyQGIS one
+            """
+
+            def name(self):
+                return 'myalg2'
+
+            def group(self):
+                return 'g2'
+
+            def initAlgorithm(self, config=None):
+                pass
+
+            def processFeature(self, feature, context, feedback):
+                return {}
+
+        a1 = my_alg1()
+        self.assertEqual(a1.name(), 'myalg1')
+        a11 = a1.create()
+        self.assertEqual(a11.name(), 'myalg1')
+
+        a2 = my_alg2()
+        self.assertEqual(a2.name(), 'myalg2')
+        a22 = a2.create()
+        self.assertEqual(a22.name(), 'myalg2')
 
 
 if __name__ == '__main__':

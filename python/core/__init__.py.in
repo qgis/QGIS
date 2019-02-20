@@ -52,3 +52,9 @@ QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.setEnumValue = _qgssettings_set_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
 QgsTask.fromFunction = fromFunction
+
+# avoids Python QgsProcessingAlgorithm subclasses from having to manually implement createInstance()
+def qgis_processing_algorithm_createInstance(self):
+  return self.__class__()
+QgsProcessingAlgorithm.createInstance = qgis_processing_algorithm_createInstance
+QgsProcessingFeatureBasedAlgorithm.createInstance = qgis_processing_algorithm_createInstance
