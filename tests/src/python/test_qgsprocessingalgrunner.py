@@ -103,7 +103,7 @@ class TestQgsProcessingAlgRunner(unittest.TestCase):
 
         task = QgsProcessingAlgRunnerTask(CrashingProcessingAlgorithm(), {}, context=context, feedback=feedback)
         self.assertTrue(task.isCanceled())
-        self.assertEqual(feedback._error, 'Error creating algorithm from createInstance()')
+        self.assertIn('name \'ExampleProcessingAlgorithm\' is not defined', feedback._error)
 
 
 if __name__ == '__main__':
