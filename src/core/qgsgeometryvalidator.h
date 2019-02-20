@@ -40,11 +40,31 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     void run() override;
     void stop();
 
-    //! Validate geometry and produce a list of geometry errors
+    /**
+     * Validate geometry and produce a list of geometry errors.
+     * This method blocks the thread until the validation is finished.
+     */
     static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 
   signals:
-    void errorFound( const QgsGeometry::Error & );
+
+    /**
+     * Sent when an error has been found during the validation process.
+     *
+     * The \a error contains details about the error.
+     */
+    void errorFound( const QgsGeometry::Error &error );
+
+    /**
+     * Sent when the validation is finished.
+     *
+     * The result is in a human readable \a summary, mentioning
+     * if the validation has been aborted, successfully been validated
+     * or how many errors have been found.
+     *
+     * \since QGIS 3.6
+     */
+    void validationFinished( const QString &summary );
 
   public slots:
     void addError( const QgsGeometry::Error & );
