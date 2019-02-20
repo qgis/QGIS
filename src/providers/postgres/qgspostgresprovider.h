@@ -522,6 +522,7 @@ class QgsPostgresSharedData
     QVariantList lookupKey( QgsFeatureId featureId );
     void clear();
 
+    void clearSupportsEnumValuesCache( );
     bool fieldSupportsEnumValuesIsSet( int index );
     bool fieldSupportsEnumValues( int index );
     void setFieldSupportsEnumValues( int index, bool isSupported );

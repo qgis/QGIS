@@ -711,6 +711,10 @@ struct PGTypeInfo
 
 bool QgsPostgresProvider::loadFields()
 {
+
+  // Clear cached information about enum values support
+  mShared->clearSupportsEnumValuesCache();
+
   if ( !mIsQuery )
   {
     QgsDebugMsg( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ) );
@@ -5173,6 +5177,12 @@ void QgsPostgresSharedData::clear()
   mKeyToFid.clear();
   mFeaturesCounted = -1;
   mFidCounter = 0;
+}
+
+void QgsPostgresSharedData::clearSupportsEnumValuesCache()
+{
+  QMutexLocker locker( &mMutex );
+  mFieldSupportsEnumValues.clear();
 }
 
 bool QgsPostgresSharedData::fieldSupportsEnumValuesIsSet( int index )
