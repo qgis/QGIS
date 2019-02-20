@@ -199,6 +199,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
+    const bool needsGeom = mProviderRequest.filterExpression()->needsGeometry();
     Q_FOREACH ( const QString &field, mProviderRequest.filterExpression()->referencedColumns() )
     {
       int idx = source->mFields.lookupField( field );
@@ -210,6 +211,12 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
         mProviderRequest.disableFilter();
         // can't limit at provider side
         mProviderRequest.setLimit( -1 );
+        if ( needsGeom )
+        {
+          // have to get geometry from provider in order to evaluate expression on client
+          mProviderRequest.setFlags( mProviderRequest.flags() & ~QgsFeatureRequest::NoGeometry );
+        }
+        break;
       }
     }
   }
