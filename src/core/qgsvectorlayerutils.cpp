@@ -485,7 +485,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // 1. passed attribute value and if field does not have a unique constraint like primary key
       if ( fd.attributes().contains( idx ) )
       {
-        v = fd.attributes().value( idx );
+        v = fd.attributes().at( idx );
       }
 
       // Cache unique values
