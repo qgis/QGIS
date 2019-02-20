@@ -968,11 +968,14 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     }
   }
 
-  // move to the next alternative
-  if ( mSelectedFeatureAlternatives->index < mSelectedFeatureAlternatives->alternatives.count() - 1 )
-    ++mSelectedFeatureAlternatives->index;
-  else
-    mSelectedFeatureAlternatives->index = -1;
+  if ( mSelectedFeatureAlternatives )
+  {
+    // move to the next alternative
+    if ( mSelectedFeatureAlternatives->index < mSelectedFeatureAlternatives->alternatives.count() - 1 )
+      ++mSelectedFeatureAlternatives->index;
+    else
+      mSelectedFeatureAlternatives->index = -1;
+  }
 
   if ( mSelectedFeatureAlternatives && mSelectedFeatureAlternatives->index != -1 )
   {
