@@ -494,8 +494,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 2. client side default expression
       // note - deliberately not using else if!
-      if ( ( !v.isValid() || ( hasUniqueConstraint
-                               && uniqueValueCaches[ idx ].contains( v ) ) )
+      if ( ( ! v.isValid() || v.isNull() || ( hasUniqueConstraint
+                                              && uniqueValueCaches[ idx ].contains( v ) ) )
            && layer->defaultValueDefinition( idx ).isValid() )
       {
         // client side default expression set - takes precedence over all. Why? Well, this is the only default
@@ -506,8 +506,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 3. provider side default value clause
       // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-      if ( ( !v.isValid() || ( hasUniqueConstraint
-                               && uniqueValueCaches[ idx ].contains( v ) ) )
+      if ( ( ! v.isValid() || v.isNull() || ( hasUniqueConstraint
+                                              && uniqueValueCaches[ idx ].contains( v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -521,8 +521,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 4. provider side default literal
       // note - deliberately not using else if!
-      if ( ( !v.isValid() || ( checkUnique && hasUniqueConstraint
-                               && uniqueValueCaches[ idx ].contains( v ) ) )
+      if ( ( ! v.isValid() || v.isNull() || ( checkUnique && hasUniqueConstraint
+                                              && uniqueValueCaches[ idx ].contains( v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -536,7 +536,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 5. passed attribute value
       // note - deliberately not using else if!
-      if ( !v.isValid() && fd.attributes().contains( idx ) )
+      if ( ( !v.isValid() || v.isNull() ) && fd.attributes().contains( idx ) )
       {
         v = fd.attributes().value( idx );
       }
