@@ -1397,6 +1397,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns feature count including changes which have not yet been committed
      * If you need only the count of committed features call this method on this layer's provider.
+     * \returns the number of features on this layer or -1 if unknown.
      */
     long featureCount() const FINAL;
 

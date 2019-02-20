@@ -2891,6 +2891,8 @@ QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
 
 long QgsVectorLayer::featureCount() const
 {
+  if ( ! mDataProvider )
+    return -1;
   return mDataProvider->featureCount() +
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
 }
