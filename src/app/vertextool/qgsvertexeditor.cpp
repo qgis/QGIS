@@ -52,15 +52,9 @@ void QgsVertexEditorModel::setFeature( QgsSelectedFeature *selectedFeature )
   beginResetModel();
 
   mSelectedFeature = selectedFeature;
-  if ( !mSelectedFeature )
+  if ( mSelectedFeature && mSelectedFeature->layer() )
   {
-    mLayer = nullptr;
-  }
-  else
-  {
-    mLayer = mSelectedFeature->layer();
-
-    QgsWkbTypes::Type layerWKBType = mLayer->wkbType();
+    QgsWkbTypes::Type layerWKBType = mSelectedFeature->layer()->wkbType();
 
     mHasZ = QgsWkbTypes::hasZ( layerWKBType );
     mHasM = QgsWkbTypes::hasM( layerWKBType );
@@ -215,7 +209,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   {
     return false;
   }
-  if ( !mSelectedFeature || index.row() >= mSelectedFeature->vertexMap().count() )
+  if ( !mSelectedFeature || !mSelectedFeature->layer() || index.row() >= mSelectedFeature->vertexMap().count() )
   {
     return false;
   }
@@ -255,10 +249,10 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
   QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
 
-  mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
-  mLayer->moveVertex( p, mSelectedFeature->featureId(), index.row() );
-  mLayer->endEditCommand();
-  mLayer->triggerRepaint();
+  mSelectedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
+  mSelectedFeature->layer()->moveVertex( p, mSelectedFeature->featureId(), index.row() );
+  mSelectedFeature->layer()->endEditCommand();
+  mSelectedFeature->layer()->triggerRepaint();
 
   return false;
 }

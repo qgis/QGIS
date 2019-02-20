@@ -48,8 +48,6 @@ class QgsVertexEditorModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   private:
-
-    QgsVectorLayer *mLayer = nullptr;
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
