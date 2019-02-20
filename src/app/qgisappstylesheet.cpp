@@ -122,7 +122,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
 
   QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
-  if ( themeName == QStringLiteral( "default" ) )
+  if ( themeName == QStringLiteral( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style
     QString style = "QListWidget#mOptionsListWidget {"
