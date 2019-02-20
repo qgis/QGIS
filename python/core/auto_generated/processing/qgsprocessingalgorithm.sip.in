@@ -63,7 +63,7 @@ a pre-initialized copy of the algorithm.
 
 
 
-    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const throw( QgsProcessingException ) /TransferBack/;
 %Docstring
 Creates a copy of the algorithm, ready for execution.
 
@@ -75,6 +75,9 @@ to the algorithm, allowing it to dynamically adjust its initialized parameters
 and outputs according to this configuration. This is generally used only for
 algorithms in a model, allowing them to adjust their behavior at run time
 according to some user configuration.
+
+Raises a QgsProcessingException if a new algorithm instance could not be created,
+e.g. if there is an issue with the subclass' createInstance() method.
 
 .. seealso:: :py:func:`initAlgorithm`
 %End
@@ -401,7 +404,7 @@ Associates this algorithm with its provider. No transfer of ownership is involve
 
   protected:
 
-    virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory/;
+    virtual QgsProcessingAlgorithm *createInstance() const = 0 /Factory,VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Creates a new instance of the algorithm class.
 
