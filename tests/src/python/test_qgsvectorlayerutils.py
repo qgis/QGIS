@@ -574,8 +574,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         """Test create multiple features with unique constraint"""
 
         vl = createLayerWithOnePoint()
-
-        # field expression check
         vl.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
 
         features_data = []
@@ -586,6 +584,37 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         self.assertEqual(features[0].attributes()[1], 124)
         self.assertEqual(features[1].attributes()[1], 125)
+
+    def test_create_nulls_and_defaults(self):
+        """Test bug #21304 when pasting features from another layer and default values are not honored"""
+
+        vl = createLayerWithOnePoint()
+        vl.setDefaultValueDefinition(1, QgsDefaultValue('300'))
+
+        features_data = []
+        context = vl.createExpressionContext()
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_1', 1: None}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_3', 1: QVariant(QVariant.Int)}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_4'}))
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+
+        for f in features:
+            self.assertEqual(f.attributes()[1], 300, f.id())
+
+        vl = createLayerWithOnePoint()
+        vl.setDefaultValueDefinition(0, QgsDefaultValue("'my_default'"))
+
+        features_data = []
+        context = vl.createExpressionContext()
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: None}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: QVariant()}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: QVariant(QVariant.String)}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {}))
+        features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
+
+        for f in features:
+            self.assertEqual(f.attributes()[0], 'my_default', f.id())
 
 
 if __name__ == '__main__':
