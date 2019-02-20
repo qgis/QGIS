@@ -959,7 +959,6 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     // we have a feature to select
     QPair<QgsVectorLayer *, QgsFeatureId> alternative = mSelectedFeatureAlternatives->alternatives.at( mSelectedFeatureAlternatives->index );
     updateVertexEditor( alternative.first, alternative.second );
-    updateFeatureBand( QgsPointLocator::Match( QgsPointLocator::Area, alternative.first, alternative.second, 0, QgsPointXY() ) );
   }
   else
   {
@@ -970,8 +969,11 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     {
       mVertexEditor->updateEditor( nullptr );
     }
-    updateFeatureBand( QgsPointLocator::Match() );
   }
+
+  // we have either locked ourselves to a feature or unlocked again
+  // in any case, we don't want feature highlight anymore (vertex editor has its own highlight)
+  updateFeatureBand( QgsPointLocator::Match() );
 }
 
 
