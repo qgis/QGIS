@@ -1507,6 +1507,8 @@ Returns the list of attributes which make up the layer's primary keys.
 %Docstring
 Returns feature count including changes which have not yet been committed
 If you need only the count of committed features call this method on this layer's provider.
+
+:return: the number of features on this layer or -1 if unknown.
 %End
 
     bool setReadOnly( bool readonly = true );
