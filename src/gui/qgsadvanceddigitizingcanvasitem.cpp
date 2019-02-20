@@ -69,8 +69,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   if ( mupp == 0 )
     return;
 
-  const double canvasRotation = mMapCanvas->rotation();
-  const double canvasRotationRad = canvasRotation * M_PI / 180;
+  const double canvasRotationRad = mMapCanvas->rotation() * M_PI / 180;
   const double canvasMaxDimension = std::max( canvasWidth / mupp, canvasHeight / mupp );
 
   QPointF curPointPix, prevPointPix, penulPointPix, snapSegmentPix1, snapSegmentPix2;
