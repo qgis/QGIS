@@ -215,19 +215,32 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 /**
  * Keeps the best match from a selected feature so that we can possibly use it with higher priority.
  * If we do not encounter any selected feature within tolerance, we use the best match as usual.
+ *
+ * There are two kinds of "selected" features... if we have a "locked" feature in vertex tool,
+ * we get a non-null QgsSelectedFeature which has feature's layer and feature id. In such case we
+ * only allow matches from that feature. The other kind is if some features within layer are
+ * in the layer's list of selected features - in that case we accept any match from those features
+ * (but only if we do not have "locked" feature)
  */
 class SelectedMatchFilter : public QgsPointLocator::MatchFilter
 {
   public:
-    explicit SelectedMatchFilter( double tol )
-      : mTolerance( tol ) {}
+    explicit SelectedMatchFilter( double tol, QgsSelectedFeature *selectedFeature )
+      : mTolerance( tol )
+      , mSelectedFeature( selectedFeature ) {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
-      if ( match.distance() <= mTolerance && match.layer() && match.layer()->selectedFeatureIds().contains( match.featureId() ) )
+      if ( match.distance() <= mTolerance && match.layer() )
       {
-        if ( !mBestSelectedMatch.isValid() || match.distance() < mBestSelectedMatch.distance() )
-          mBestSelectedMatch = match;
+        // option 1: we have "locked" feature - we consider just a match from that feature
+        // option 2: we do not have "locked" feature - we consider matches from any selected feature
+        if ( ( mSelectedFeature && mSelectedFeature->layer() == match.layer() && mSelectedFeature->featureId() == match.featureId() )
+             || ( !mSelectedFeature && match.layer()->selectedFeatureIds().contains( match.featureId() ) ) )
+        {
+          if ( !mBestSelectedMatch.isValid() || match.distance() < mBestSelectedMatch.distance() )
+            mBestSelectedMatch = match;
+        }
       }
       return true;
     }
@@ -237,6 +250,7 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
 
   private:
     double mTolerance;
+    QgsSelectedFeature *mSelectedFeature;   // not null in case of selected (locked) feature
     QgsPointLocator::Match mBestSelectedMatch;
 };
 
@@ -740,7 +754,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
       }
 
       snapUtils->setConfig( config );
-      SelectedMatchFilter filter( tol );
+      SelectedMatchFilter filter( tol, mSelectedFeature.get() );
       m = snapUtils->snapToMap( mapPoint, &filter );
 
       // we give priority to snap matches that are from selected features
@@ -767,7 +781,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
     }
 
     snapUtils->setConfig( config );
-    SelectedMatchFilter filter( tol );
+    SelectedMatchFilter filter( tol, mSelectedFeature.get() );
     m = snapUtils->snapToMap( mapPoint, &filter );
 
     // we give priority to snap matches that are from selected features
