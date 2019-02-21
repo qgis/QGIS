@@ -17,7 +17,6 @@
 #define QGSVERTEXENTRY_H
 
 #include "qgspoint.h"
-#include "qgsvertexmarker.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -27,21 +26,10 @@ class QgsVertexEntry
     bool mSelected;
     QgsPoint mPoint;
     QgsVertexId mVertexId;
-    int mPenWidth;
-    QString mToolTip;
-    QgsVertexMarker::IconType mType;
-    QgsVertexMarker *mMarker = nullptr;
-    QgsMapCanvas *mCanvas = nullptr;
-    QgsMapLayer *mLayer = nullptr;
 
   public:
-    QgsVertexEntry( QgsMapCanvas *canvas,
-                    QgsMapLayer *layer,
-                    const QgsPoint &p,
-                    QgsVertexId vertexId,
-                    const QString &tooltip = QString(),
-                    QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
-                    int penWidth = 2 );
+    QgsVertexEntry( const QgsPoint &p,
+                    QgsVertexId vertexId );
     ~QgsVertexEntry();
 
     QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
@@ -51,8 +39,6 @@ class QgsVertexEntry
     QgsPointXY pointV1() const { return QgsPointXY( mPoint.x(), mPoint.y() ); }
     QgsVertexId vertexId() const { return mVertexId; }
     bool isSelected() const { return mSelected; }
-
-    void placeMarker();
 
     void setSelected( bool selected = true );
 

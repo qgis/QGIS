@@ -48,10 +48,6 @@ QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
   // rolling back
   connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsLockedFeature::beforeRollBack );
 
-  // projection or extents changed
-  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsLockedFeature::updateVertexMarkersPosition );
-  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsLockedFeature::updateVertexMarkersPosition );
-
   // geometry was changed
   connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
 
@@ -277,7 +273,7 @@ void QgsLockedFeature::createVertexMap()
   QgsPoint pt;
   while ( geom->nextVertex( vertexId, pt ) )
   {
-    mVertexMap.append( new QgsVertexEntry( mCanvas, mLayer, pt, vertexId, tr( "ring %1, vertex %2" ).arg( vertexId.ring ).arg( vertexId.vertex ) ) );
+    mVertexMap.append( new QgsVertexEntry( pt, vertexId ) );
   }
 }
 
@@ -336,14 +332,6 @@ void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices 
     entry->setSelected( !entry->isSelected() );
   }
   emit selectionChanged();
-}
-
-void QgsLockedFeature::updateVertexMarkersPosition()
-{
-  Q_FOREACH ( QgsVertexEntry *vertexEntry, mVertexMap )
-  {
-    vertexEntry->placeMarker();
-  }
 }
 
 QgsFeatureId QgsLockedFeature::featureId()

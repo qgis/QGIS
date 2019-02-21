@@ -65,11 +65,10 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
   public:
 
     enum VertexToolMode
-    {
-      ActiveLayer,
+
       AllLayers
     };
-    Q_ENUM( VertexToolMode );
+    Q_ENUM( VertexToolMode )
 
     QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, VertexToolMode mode = QgsVertexTool::AllLayers );
 
@@ -453,7 +452,11 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     };
 
     //! Keeps information about other possible features to select with right click. Null if no info is currently held.
+<<<<<<< HEAD
     std::unique_ptr<LockedFeatureAlternatives> mLockedFeatureAlternatives;
+=======
+    std::unique_ptr<SelectedFeatureAlternatives> mLockedFeatureAlternatives;
+>>>>>>> remove vertex highlighting from editor
 
     // support for validation of geometries
 

@@ -24,10 +24,8 @@
 class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsMapLayer;
-class QgsRubberBand;
 class QgsGeometryValidator;
 class QgsVertexMarker;
-
 class QgsVertexEntry;
 
 /**
@@ -135,11 +133,6 @@ class QgsLockedFeature: public QObject
      * geometry validation finished
      */
     void validationFinished();
-
-    /**
-     * Updates vertex markers position accoording to changed feature geometry
-     */
-    void updateVertexMarkersPosition();
 
     /*
      * a feature was removed from the layer - might be the selected
