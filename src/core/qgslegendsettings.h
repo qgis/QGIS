@@ -179,16 +179,16 @@ class CORE_EXPORT QgsLegendSettings
     void setMapScale( double scale ) { mMapScale = scale; }
 
     /**
-     * Returns the factor of map units per pixel used for symbol sized by map units.
-     * \see setMapScale()
+     * Returns the factor of map units per pixel for symbols with size given in map units calculated by mDpi and mMmPerMapUnit
+     * \see setMapUnitsPerPixel()
      */
-    double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
+    double mapUnitsPerPixel() const;
 
     /**
-     * Sets the map units per pixel \a mapUnitsPerPixel mostly taken from the map settings.
+     * Sets the the mMmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
      * \see mapUnitsPerPixel()
      */
-    void setMapUnitsPerPixel( double mapUnitsPerPixel ) { mMapUnitsPerPixel = mapUnitsPerPixel; }
+    void setMapUnitsPerPixel( double mapUnitsPerPixel );
 
     int dpi() const { return mDpi; }
     void setDpi( int dpi ) { mDpi = dpi; }
@@ -301,9 +301,6 @@ class CORE_EXPORT QgsLegendSettings
 
     //! Denominator of map's scale
     double mMapScale = 1;
-
-    //! the map units per pixel given by the map parameters - for symbols with size given in map units
-    double mMapUnitsPerPixel = 1;
 
     //! DPI to be used when rendering legend
     int mDpi = 96;
