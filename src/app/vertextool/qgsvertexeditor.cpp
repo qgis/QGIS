@@ -19,7 +19,7 @@
 #include "qgsvertexeditor.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
-#include "qgsselectedfeature.h"
+#include "qgslockedfeature.h"
 #include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
@@ -47,7 +47,7 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *paren
     mWidgetFont = parentWidget->font();
 }
 
-void QgsVertexEditorModel::setFeature( QgsSelectedFeature *selectedFeature )
+void QgsVertexEditorModel::setFeature( QgsLockedFeature *selectedFeature )
 {
   beginResetModel();
 
@@ -332,7 +332,7 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   setWidget( content );
 }
 
-void QgsVertexEditor::updateEditor( QgsSelectedFeature *selectedFeature )
+void QgsVertexEditor::updateEditor( QgsLockedFeature *selectedFeature )
 {
 
   mSelectedFeature = selectedFeature;
@@ -344,7 +344,7 @@ void QgsVertexEditor::updateEditor( QgsSelectedFeature *selectedFeature )
     mHintLabel->setVisible( false );
     mTableView->setVisible( true );
 
-    connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+    connect( mSelectedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
   }
   else
   {

@@ -120,7 +120,7 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
-  vertextool/qgsselectedfeature.cpp
+  vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexentry.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -372,7 +372,7 @@ SET (QGIS_APP_MOC_HDRS
   decorations/qgsdecorationgrid.h
   decorations/qgsdecorationgriddialog.h
 
-  vertextool/qgsselectedfeature.h
+  vertextool/qgslockedfeature.h
   vertextool/qgsvertexeditor.h
   vertextool/qgsvertextool.h
 

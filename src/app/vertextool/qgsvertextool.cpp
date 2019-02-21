@@ -35,7 +35,7 @@
 #include "qgsvertexmarker.h"
 #include "qgsstatusbar.h"
 #include "qgisapp.h"
-#include "qgsselectedfeature.h"
+#include "qgslockedfeature.h"
 #include "qgsvertexeditor.h"
 #include "qgsvertexentry.h"
 #include "qgsmapmouseevent.h"
@@ -1328,7 +1328,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
       return;
     }
 
-    mLockedFeature.reset( new QgsSelectedFeature( fid, layer, mCanvas ) );
+    mLockedFeature.reset( new QgsLockedFeature( fid, layer, mCanvas ) );
     connect( mLockedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
     for ( int i = 0; i < mSelectedVertices.length(); ++i )
     {
@@ -1372,7 +1372,7 @@ void QgsVertexTool::cleanupVertexEditor()
   mVertexEditor.reset();
 }
 
-static int _firstSelectedVertex( QgsSelectedFeature &selectedFeature )
+static int _firstSelectedVertex( QgsLockedFeature &selectedFeature )
 {
   QList<QgsVertexEntry *> &vertexMap = selectedFeature.vertexMap();
   for ( int i = 0, n = vertexMap.size(); i < n; ++i )
@@ -1385,7 +1385,7 @@ static int _firstSelectedVertex( QgsSelectedFeature &selectedFeature )
   return -1;
 }
 
-static void _safeSelectVertex( QgsSelectedFeature &selectedFeature, int vertexNr )
+static void _safeSelectVertex( QgsLockedFeature &selectedFeature, int vertexNr )
 {
   int n = selectedFeature.vertexMap().size();
   selectedFeature.selectVertex( ( vertexNr + n ) % n );
