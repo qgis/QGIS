@@ -165,8 +165,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     parameters[param.name()] = value
                     if param.isDestination():
                         context = dataobjects.createContext()
-                        if not self.algorithm().provider().isSupportedOutputValue(value, param, context):
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget)
+                        ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
+                        if not ok:
+                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 
@@ -309,7 +310,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             except:
                 pass
             self.messageBar().clearWidgets()
-            self.messageBar().pushMessage("", self.tr("Unsupported output file extension"),
+            self.messageBar().pushMessage("", e.message,
                                           level=Qgis.Warning, duration=5)
 
     def finish(self, successful, result, context, feedback):

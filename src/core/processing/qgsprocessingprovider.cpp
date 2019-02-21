@@ -107,16 +107,21 @@ QStringList QgsProcessingProvider::supportedOutputTableExtensions() const
   return supportedOutputVectorLayerExtensions();
 }
 
-bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context ) const
+bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error ) const
 {
   QString outputPath = QgsProcessingParameters::parameterAsOutputLayer( parameter, outputValue, context );
-
+  error.clear();
   if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
        ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
     if ( outputPath.isEmpty() || outputPath.startsWith( QLatin1String( "memory:" ) ) )
     {
-      return supportsNonFileBasedOutput();
+      if ( !supportsNonFileBasedOutput() )
+      {
+        error = tr( "This algorithm only supports disk-based outputs" );
+        return false;
+      }
+      return true;
     }
 
     QString providerKey;
@@ -129,15 +134,32 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
     QgsProcessingUtils::parseDestinationString( outputPath, providerKey, uri, layerName, format, options, useWriter, extension );
 
     if ( providerKey != QLatin1String( "ogr" ) )
-      return supportsNonFileBasedOutput();
+    {
+      if ( !supportsNonFileBasedOutput() )
+      {
+        error = tr( "This algorithm only supports disk-based outputs" );
+        return false;
+      }
+      return true;
+    }
 
-    return supportedOutputVectorLayerExtensions().contains( extension, Qt::CaseInsensitive );
+    if ( !supportedOutputVectorLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
+    {
+      error = tr( "%1 files are not supported as outputs for this algorithm" ).arg( extension );
+      return false;
+    }
+    return true;
   }
   else if ( parameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
     QFileInfo fi( outputPath );
     const QString extension = fi.completeSuffix();
-    return supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive );
+    if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
+    {
+      error = tr( "%1 files are not supported as outputs for this algorithm" ).arg( extension );
+      return false;
+    }
+    return true;
   }
   else
   {

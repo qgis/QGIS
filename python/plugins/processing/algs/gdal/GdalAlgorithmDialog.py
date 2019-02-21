@@ -142,5 +142,5 @@ class GdalParametersPanel(ParametersPanel):
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
             self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
-        except AlgorithmDialogBase.InvalidOutputExtension:
-            self.text.setPlainText(self.tr("Invalid output file name"))
+        except AlgorithmDialogBase.InvalidOutputExtension as e:
+            self.text.setPlainText(e.message)
