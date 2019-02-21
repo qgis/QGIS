@@ -140,6 +140,13 @@ formats for geometry-less layers can override this method to return a different 
 .. versionadded:: 3.4.3
 %End
 
+    virtual bool isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context ) const;
+%Docstring
+Returns true if the specified ``outputValue`` is of a supported file format for the given destination ``parameter``.
+
+.. versionadded:: 3.6
+%End
+
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 %Docstring
 Returns the default file extension to use for vector outputs created by the

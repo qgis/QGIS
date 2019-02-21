@@ -141,6 +141,13 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QStringList supportedOutputTableExtensions() const;
 
     /**
+     * Returns true if the specified \a outputValue is of a supported file format for the given destination \a parameter.
+     *
+     * \since QGIS 3.6
+    */
+    virtual bool isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context ) const;
+
+    /**
      * Returns the default file extension to use for vector outputs created by the
      * provider.
      *

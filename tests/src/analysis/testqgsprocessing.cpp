@@ -5116,6 +5116,15 @@ void TestQgsProcessing::parameterVectorOut()
 
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
   DummyProvider3 provider;
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.shp", def.get(), context ) );
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.SHP", def.get(), context ) );
+  QVERIFY( !provider.isSupportedOutputValue( "ogr:d:/test.shp", def.get(), context ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.SHP" ), def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.mif", def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.MIF", def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( "ogr:d:/test.MIF", def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF" ), def.get(), context ) );
+
   provider.loadAlgorithms();
   def->mOriginalProvider = &provider;
   QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 2 );
@@ -5223,6 +5232,14 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  DummyProvider3 provider;
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.tif", def.get(), context ) );
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.TIF", def.get(), context ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.tif" ), def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.mig", def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.MIG", def.get(), context ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIG" ), def.get(), context ) );
 
   // test layers to load on completion
   def.reset( new QgsProcessingParameterRasterDestination( "x", QStringLiteral( "desc" ), QStringLiteral( "default.tif" ), true ) );
