@@ -349,18 +349,16 @@ void QgsGeometryValidator::run()
 
       if ( mStop )
       {
-        emit errorFound( QgsGeometry::Error( QObject::tr( "Geometry validation was aborted." ) ) );
+        emit validationFinished( QObject::tr( "Geometry validation was aborted." ) );
       }
       else if ( mErrorCount > 0 )
       {
-        emit errorFound( QgsGeometry::Error( QObject::tr( "Geometry has %1 errors." ).arg( mErrorCount ) ) );
+        emit validationFinished( QObject::tr( "Geometry has %1 errors." ).arg( mErrorCount ) );
       }
-#if 0
       else
       {
-        emit errorFound( QgsGeometry::Error( QObject::tr( "Geometry is valid." ) ) );
+        emit validationFinished( QObject::tr( "Geometry is valid." ) );
       }
-#endif
       break;
     }
   }
