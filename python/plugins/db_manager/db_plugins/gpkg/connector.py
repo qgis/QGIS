@@ -59,8 +59,10 @@ class GPKGDBConnector(DBConnector):
         self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
         if self.gdal_ds is None:
             self.gdal_ds = gdal.OpenEx(self.dbname)
-        if self.gdal_ds is None or self.gdal_ds.GetDriver().ShortName != 'GPKG':
+        if self.gdal_ds is None:
             raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
+        if self.gdal_ds.GetDriver().ShortName != 'GPKG':
+            raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{dbname}" not recognized as GPKG ({shortname} reported instead.)').format(dbname=self.dbname, shortname=self.gdal_ds.GetDriver().ShortName))
         self.has_raster = self.gdal_ds.RasterCount != 0 or self.gdal_ds.GetMetadata('SUBDATASETS') is not None
         self.connection = None
 
