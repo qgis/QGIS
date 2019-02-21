@@ -467,7 +467,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     /**
      * Returns a list of layers on which as task is dependent. The task will automatically
-     * be canceled if any of these layers are above to be removed.
+     * be canceled if any of these layers are about to be removed.
      * \param taskId task ID
      * \returns list of layers
      * \see tasksDependentOnLayer()
