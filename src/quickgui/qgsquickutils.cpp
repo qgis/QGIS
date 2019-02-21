@@ -95,20 +95,22 @@ bool QgsQuickUtils::fileExists( const QString &path )
   return ( check_file.exists() && check_file.isFile() );
 }
 
-QString QgsQuickUtils::getFileName( const QString &path, const QString &prefixPath )
+QString QgsQuickUtils::getRelativePath( const QString &path, const QString &prefixPath )
 {
-  if ( !prefixPath.isEmpty() )
-  {
-    QString modPath = path;
-    if ( modPath.startsWith( prefixPath ) )
-      return modPath.replace( prefixPath, "" );
-    QString filePrefixPath = QStringLiteral( "file://%1" ).arg( prefixPath );
-    if ( modPath.startsWith( filePrefixPath ) )
-      return modPath.replace( filePrefixPath, "" );
-  }
-  QFileInfo fileInfo( path );
-  QString filename( fileInfo.fileName() );
-  return filename;
+  QString resultPath = path;
+  QString prefixPathWithSlash;
+  if ( !prefixPath.endsWith( "/" ) )
+    prefixPathWithSlash = QStringLiteral( "%1/" ).arg( prefixPath );
+  else
+    prefixPathWithSlash = prefixPath;
+
+  if ( resultPath.startsWith( prefixPathWithSlash ) )
+    return resultPath.replace( prefixPathWithSlash, QString() );
+  QString filePrefixPath = QStringLiteral( "file://%1" ).arg( prefixPathWithSlash );
+  if ( resultPath.startsWith( filePrefixPath ) )
+    return resultPath.replace( filePrefixPath, QString() );
+
+  return resultPath;
 }
 
 void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
@@ -171,7 +173,7 @@ QString QgsQuickUtils::formatDistance( double distance,
          .arg( QgsUnitTypes::toAbbreviatedString( destUnits ) );
 }
 
-bool QgsQuickUtils::remove( const QString &filePath )
+bool QgsQuickUtils::removeFile( const QString &filePath )
 {
   QFile file( filePath );
   return file.remove( filePath );

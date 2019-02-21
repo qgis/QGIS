@@ -31,13 +31,13 @@ Item {
   property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
 
   id: fieldItem
+  height: image.hasValidSource? customStyle.height * 3 : customStyle.height
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  height: image.hasValidSource? customStyle.height * 3 : customStyle.height
   QgsQuick.PhotoCapture {
     id: photoCapturePanel
     visible: false
@@ -52,8 +52,8 @@ Item {
     property bool hasValidSource: false
 
     id: image
-    height: hasValidSource? customStyle.height * 3 : customStyle.height
-    sourceSize.width: hasValidSource? customStyle.height * 3 : customStyle.height
+    height: fieldItem.height
+    sourceSize.height: height
     autoTransform: true
     fillMode: Image.PreserveAspectFit
     visible: hasValidSource
@@ -87,8 +87,6 @@ Item {
   ColorOverlay {
       anchors.fill: image
       source: image
-      height: customStyle.height
-      width: customStyle.height
       color: customStyle.fontColor
       visible: !image.hasValidSource
   }

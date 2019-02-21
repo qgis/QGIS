@@ -124,13 +124,13 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE static bool fileExists( const QString &path );
 
     /**
-     * Returns filename from given path. If a param prefixPath is not empty, returns relative path of the file to this path.
-     * If a path starts with "file://", this prefix is ignored.
-     * @param path Absolute path to file
-     * @param prefixPath Optional parameter; defines if the function returns fileName or a relative path to this path.
-     * \since QGIS 3.4
+     * Returns relative path of the file to given prefixPath. If prefixPath does not match a path parameter,
+     * returns given path. If a path starts with "file://", this prefix is ignored.
+     * \param path Absolute path to file
+     * \param prefixPath
+     * \since QGIS 3.8
      */
-    Q_INVOKABLE static QString getFileName( const QString &path, const QString &prefixPath = QStringLiteral( "" ) );
+    Q_INVOKABLE static QString getRelativePath( const QString &path, const QString &prefixPath );
 
     /**
       * Log message in QgsMessageLog
@@ -201,11 +201,11 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * Deletes file from a given path.
       *
       * \param filePath Absolute path to file
-      * \returns bool True, if removal was successfull, otherwise false.
+      * \returns bool True, if removal was successful, otherwise false.
       *
       * \since QGIS 3.8
       */
-    Q_INVOKABLE static bool remove( const QString &filePath );
+    Q_INVOKABLE static bool removeFile( const QString &filePath );
 
     /**
       * Converts distance to human readable distance in destination system of measurement
