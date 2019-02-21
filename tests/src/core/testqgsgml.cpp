@@ -64,6 +64,7 @@ class TestQgsGML : public QObject
     void testLineStringGML3_LineStringSegment();
     void testPolygonGML3();
     void testPolygonGML3_srsDimension_on_Polygon();
+    void testPolygonGML3_srsDimension_on_posList();
     void testMultiLineStringGML3();
     void testMultiPolygonGML3();
     void testPointGML3_2();
@@ -642,6 +643,38 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
                                    "<gml:exterior>"
                                    "<gml:LinearRing>"
                                    "<gml:posList>0 0 -100 0 10 -100 10 10 -100 10 0 -100 0 0 -100</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</myns:mygeom>"
+                                   "</myns:mytypename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::Polygon );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
+  QCOMPARE( poly.size(), 1 );
+  QCOMPARE( poly[0].size(), 5 );
+  delete features[0].first;
+}
+
+void TestQgsGML::testPolygonGML3_srsDimension_on_posList()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:mytypename fid='mytypename.1'>"
+                                   "<myns:mygeom>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList srsDimension='3'>0 0 -100 0 10 -100 10 10 -100 10 0 -100 0 0 -100</gml:posList>"
                                    "</gml:LinearRing>"
                                    "</gml:exterior>"
                                    "</gml:Polygon>"

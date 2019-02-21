@@ -815,11 +815,14 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     }
   }
 
-  if ( elDimension != 0 )
+  if ( elDimension != 0 || mDimensionStack.isEmpty() )
   {
-    mDimension = elDimension;
+    mDimensionStack.push( elDimension );
   }
-  mDimensionStack.push( mDimension );
+  else
+  {
+    mDimensionStack.push( mDimensionStack.back() );
+  }
 
   if ( mEpsg == 0 && isGeom )
   {
@@ -847,7 +850,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
+  int lastDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
@@ -858,6 +861,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( parseMode == PosList && isGMLNS &&
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
+    mDimension = lastDimension;
     mParseModeStack.pop();
   }
   else if ( parseMode == AttributeTuple &&
