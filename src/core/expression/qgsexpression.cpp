@@ -414,7 +414,6 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
 
   if ( ! d->mIsPrepared )
   {
-    qWarning( "QgsExpression::evaluate() called on an expression not yet prepared !" );
     prepare( context );
   }
   return d->mRootNode->eval( this, context );
