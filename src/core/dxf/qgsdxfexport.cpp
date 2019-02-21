@@ -3477,9 +3477,6 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
     return;
   }
 
-  bool polygon = line[0] == line[ line.size() - 1 ];
-  if ( polygon )
-    --n;
   if ( n < 2 )
   {
     QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
@@ -3488,6 +3485,10 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
 
   if ( mForce2d || !line.at( 0 ).is3D() )
   {
+    bool polygon = line[0] == line[ line.size() - 1 ];
+    if ( polygon )
+      --n;
+
     writeGroup( 0, QStringLiteral( "LWPOLYLINE" ) );
     writeHandle();
     writeGroup( 8, layer );
