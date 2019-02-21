@@ -395,7 +395,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   QgsRenderContext context;
   context.setScaleFactor( settings.dpi() / 25.4 );
   context.setRendererScale( settings.mapScale() );
-  context.setMapToPixel( QgsMapToPixel( settings.mapUnitsPerPixel() == 1 ? 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) : settings.mapUnitsPerPixel() ) );
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
   context.setPainter( ctx ? ctx->painter : nullptr );
 
