@@ -122,7 +122,7 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                       'DIST_FIELD_DEFAULT': 5,
                       'NZONES': 1,
                       'DARC': 5,
-                      'DISSOLVE': True,
+                      'DISSOLVE': False,
                       'POLY_INNER': False,
                       'BUFFER': temp_file}
         feedback = QgsProcessingFeedback()
