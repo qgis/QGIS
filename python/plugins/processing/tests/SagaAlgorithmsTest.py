@@ -117,7 +117,7 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg = QgsApplication.processingRegistry().createAlgorithmById('saga:fixeddistancebuffer')
         self.assertIsNotNone(alg)
 
-        temp_file = os.path.join(self.temp_dir, 'non_ascii_ñññ.gpkg')
+        temp_file = os.path.join(self.temp_dir, 'non_ascii_ñññ.shp')
         parameters = {'SHAPES': 'testmem',
                       'DIST_FIELD_DEFAULT': 5,
                       'NZONES': 1,
