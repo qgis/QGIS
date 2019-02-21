@@ -1337,6 +1337,8 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
         mLockedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
       }
     }
+
+    connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
   }
 
   // make sure the vertex editor is alive and visible
@@ -1370,6 +1372,25 @@ void QgsVertexTool::cleanupVertexEditor()
 {
   mLockedFeature.reset();
   mVertexEditor.reset();
+}
+
+void QgsVertexTool::lockedFeatureSelectionChanged()
+{
+  Q_ASSERT( mLockedFeature );
+  QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
+  QList<Vertex> vertices;
+  for ( int i = 0, n = vertexMap.size(); i < n; ++i )
+  {
+    if ( vertexMap[i]->isSelected() )
+    {
+      vertices << Vertex( mLockedFeature->layer(), mLockedFeature->featureId(), i );
+    }
+  }
+
+  disconnect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
+  setHighlightedVertices( vertices, ModeReset );
+  connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
+
 }
 
 static int _firstSelectedVertex( QgsLockedFeature &selectedFeature )
@@ -2286,6 +2307,18 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
     {
       createMarkerForVertex( vertex );
+    }
+  }
+
+  if ( mLockedFeature )
+  {
+    for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
+    {
+      if ( mLockedFeature->featureId() != vertex.fid || mLockedFeature->layer() != vertex.layer )
+        continue;
+
+      if ( mVertexEditor )
+        mVertexEditor->updateEditor( mLockedFeature.get() );
     }
   }
 }

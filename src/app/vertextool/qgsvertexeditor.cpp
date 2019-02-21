@@ -339,6 +339,24 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
   mVertexModel->setFeature( mLockedFeature );
 
+  updateTableSelection();
+
+//  QItemSelectionModel *selectionModel = mTableView->selectionModel();
+//  QItemSelection selection;
+//  if ( mLockedFeature )
+//  {
+//    QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
+//    for ( int i = 0, n = vertexMap.size(); i < n; ++i )
+//    {
+//      if ( vertexMap[i]->isSelected() )
+//      {
+//        QModelIndex index = mVertexModel->index( i, 0 );
+//        selection.select( index, index );
+//      }
+//    }
+//  }
+//  selectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
+
   if ( mLockedFeature )
   {
     mHintLabel->setVisible( false );
