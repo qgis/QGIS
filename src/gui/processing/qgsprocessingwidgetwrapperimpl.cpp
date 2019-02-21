@@ -29,12 +29,16 @@
 #include "qgssettings.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsprocessingmultipleselectiondialog.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QMenu>
 
 ///@cond PRIVATE
 
@@ -1395,6 +1399,340 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExpressionWidgetWrappe
 {
   return new QgsProcessingExpressionWidgetWrapper( parameter, type );
 }
+
+
+
+//
+// QgsProcessingEnumPanelWidget
+//
+
+QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, const QgsProcessingParameterEnum *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( tr( "…" ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingEnumPanelWidget::showDialog );
+}
+
+void QgsProcessingEnumPanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingEnumPanelWidget::showDialog()
+{
+  QVariantList availableOptions;
+  if ( mParam )
+  {
+    availableOptions.reserve( mParam->options().size() );
+    for ( int i = 0; i < mParam->options().count(); ++i )
+      availableOptions << i;
+  }
+
+  QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+  const QStringList options = mParam ? mParam->options() : QStringList();
+  dlg.setValueFormatter( [options]( const QVariant & v ) -> QString
+  {
+    const int i = v.toInt();
+    return options.size() > i ? options.at( i ) : QString();
+  } );
+  if ( dlg.exec() )
+  {
+    setValue( dlg.selectedOptions() );
+  }
+}
+
+void QgsProcessingEnumPanelWidget::updateSummaryText()
+{
+  if ( mParam )
+    mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+}
+
+
+//
+// QgsProcessingEnumCheckboxPanelWidget
+//
+QgsProcessingEnumCheckboxPanelWidget::QgsProcessingEnumCheckboxPanelWidget( QWidget *parent, const QgsProcessingParameterEnum *param, int columns )
+  : QWidget( parent )
+  , mParam( param )
+  , mButtonGroup( new QButtonGroup( this ) )
+  , mColumns( columns )
+{
+  mButtonGroup->setExclusive( !mParam->allowMultiple() );
+
+  QGridLayout *l = new QGridLayout();
+  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setMargin( 0 );
+
+  int rows = static_cast< int >( std::ceil( mParam->options().count() / static_cast< double >( mColumns ) ) );
+  for ( int i = 0; i < mParam->options().count(); ++i )
+  {
+    QAbstractButton *button = nullptr;
+    if ( mParam->allowMultiple() )
+      button = new QCheckBox( mParam->options().at( i ) );
+    else
+      button = new QRadioButton( mParam->options().at( i ) );
+
+    connect( button, &QAbstractButton::toggled, this, [ = ]
+    {
+      if ( !mBlockChangedSignal )
+        emit changed();
+    } );
+
+    mButtons.insert( i, button );
+    mButtonGroup->addButton( button, i );
+    l->addWidget( button, i % rows, i / rows );
+  }
+  l->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum ), 0, mColumns );
+  setLayout( l );
+
+  if ( mParam->allowMultiple() )
+  {
+    setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( this, &QWidget::customContextMenuRequested, this, &QgsProcessingEnumCheckboxPanelWidget::showPopupMenu );
+  }
+}
+
+QVariant QgsProcessingEnumCheckboxPanelWidget::value() const
+{
+  if ( mParam->allowMultiple() )
+  {
+    QVariantList value;
+    for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    {
+      if ( it.value()->isChecked() )
+        value.append( it.key() );
+    }
+    return value;
+  }
+  else
+  {
+    return mButtonGroup->checkedId() >= 0 ? mButtonGroup->checkedId() : QVariant();
+  }
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
+{
+  mBlockChangedSignal = true;
+  if ( mParam->allowMultiple() )
+  {
+    QVariantList selected;
+    if ( value.isValid() )
+      selected = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+    for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    {
+      it.value()->setChecked( selected.contains( it.key() ) );
+    }
+  }
+  else
+  {
+    QVariant v = value;
+    if ( v.type() == QVariant::List )
+      v = v.toList().value( 0 );
+    if ( mButtons.contains( v ) )
+      mButtons.value( v )->setChecked( true );
+  }
+  mBlockChangedSignal = false;
+  emit changed();
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::showPopupMenu()
+{
+  QMenu popupMenu;
+  QAction *selectAllAction = new QAction( tr( "Select All" ), &popupMenu );
+  connect( selectAllAction, &QAction::triggered, this, &QgsProcessingEnumCheckboxPanelWidget::selectAll );
+  QAction *clearAllAction = new QAction( tr( "Clear Selection" ), &popupMenu );
+  connect( clearAllAction, &QAction::triggered, this, &QgsProcessingEnumCheckboxPanelWidget::deselectAll );
+  popupMenu.addAction( selectAllAction );
+  popupMenu.addAction( clearAllAction );
+  popupMenu.exec( QCursor::pos() );
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::selectAll()
+{
+  mBlockChangedSignal = true;
+  for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    it.value()->setChecked( true );
+  mBlockChangedSignal = false;
+  emit changed();
+}
+
+void QgsProcessingEnumCheckboxPanelWidget::deselectAll()
+{
+  mBlockChangedSignal = true;
+  for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
+    it.value()->setChecked( false );
+  mBlockChangedSignal = false;
+  emit changed();
+}
+
+
+//
+// QgsProcessingEnumWidgetWrapper
+//
+
+QgsProcessingEnumWidgetWrapper::QgsProcessingEnumWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterEnum *expParam = dynamic_cast< const QgsProcessingParameterEnum *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      // checkbox panel only for use outside in standard gui!
+      if ( expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "useCheckBoxes" ), false ).toBool() )
+      {
+        const int columns = expParam->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "columns" ), 2 ).toInt();
+        mCheckboxPanel = new QgsProcessingEnumCheckboxPanelWidget( nullptr, expParam, columns );
+        mCheckboxPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mCheckboxPanel, &QgsProcessingEnumCheckboxPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mCheckboxPanel;
+      }
+    }
+    FALLTHROUGH
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      if ( expParam->allowMultiple() )
+      {
+        mPanel = new QgsProcessingEnumPanelWidget( nullptr, expParam );
+        mPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mPanel, &QgsProcessingEnumPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPanel;
+      }
+      else
+      {
+        mComboBox = new QComboBox();
+
+        if ( expParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+          mComboBox->addItem( tr( "[Not selected]" ), QVariant() );
+        const QStringList options = expParam->options();
+        for ( int i = 0; i < options.count(); ++i )
+          mComboBox->addItem( options.at( i ), i );
+
+        mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mComboBox;
+      }
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setCurrentIndex( mComboBox->findData( QVariant() ) );
+    else
+    {
+      const int v = QgsProcessingParameters::parameterAsEnum( parameterDefinition(), value, context );
+      mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+    }
+  }
+  else if ( mPanel || mCheckboxPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QList< int > v = QgsProcessingParameters::parameterAsEnums( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( int i : v )
+        opts << i;
+    }
+    if ( mPanel )
+      mPanel->setValue( opts );
+    else if ( mCheckboxPanel )
+      mCheckboxPanel->setValue( opts );
+  }
+}
+
+QVariant QgsProcessingEnumWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentData();
+  else if ( mPanel )
+    return mPanel->value();
+  else if ( mCheckboxPanel )
+    return mCheckboxPanel->value();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingEnumWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterEnum::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName();
+}
+
+QStringList QgsProcessingEnumWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputNumber::typeName();
+}
+
+QList<int> QgsProcessingEnumWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingEnumWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "selected option index (starting from 0), array of indices, or comma separated string of options (e.g. '1,3')" );
+}
+
+QString QgsProcessingEnumWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterEnum::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingEnumWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingEnumWidgetWrapper( parameter, type );
+}
+
 
 
 ///@endcond PRIVATE
