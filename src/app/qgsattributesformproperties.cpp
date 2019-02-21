@@ -277,7 +277,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
 void QgsAttributesFormProperties::storeAttributeTypeDialog()
 {
-  if ( mAttributeTypeDialog->fieldIdx() < 0 )
+  if ( mAttributeTypeDialog->fieldIdx() < 0 || mAttributeTypeDialog->fieldIdx() >= mLayer->fields().count() )
     return;
 
   FieldConfig cfg;

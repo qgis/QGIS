@@ -71,6 +71,37 @@ class CORE_EXPORT QgsVectorLayerUtils
     };
 
     /**
+     * \ingroup core
+     * \class QgsFeatureData
+     * \brief Encapsulate geometry and attributes for new features, to be passed to createFeatures
+     * \see createFeatures()
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT QgsFeatureData
+    {
+      public:
+
+        /**
+         * Constructs a new QgsFeatureData with given \a geometry and \a attributes
+         */
+        QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
+
+        //! Returns geometry
+        QgsGeometry geometry() const;
+
+        //! Returns attributes
+        QgsAttributeMap attributes() const;
+
+      private:
+        QgsGeometry mGeometry;
+        QgsAttributeMap mAttributes;
+    };
+
+    // SIP does not like "using", use legacy typedef
+    //! Alias for list of QgsFeatureData
+    typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
+
+    /**
      * Create a feature iterator for a specified field name or expression.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string
@@ -125,6 +156,14 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 
     /**
+     * Returns a new attribute value for the specified field index which is guaranteed to
+     * be unique within regard to \a existingValues.
+     * The optional seed value can be used as a basis for generated values.
+     * \since QGIS 3.6
+     */
+    static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
+
+    /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
@@ -139,11 +178,23 @@ class CORE_EXPORT QgsVectorLayerUtils
      * passed for the new feature to copy as many attribute values as possible from the map,
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
+     * \see createFeatures()
      */
     static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
+
+    /**
+     * Creates a set of new features ready for insertion into a layer. Default values and constraints
+     * (e.g., unique constraints) will automatically be handled. Note that the created features are not
+     * automatically inserted into the layer.
+     * \see createFeature()
+     * \since QGIS 3.6
+     */
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
+                                          const QgsFeaturesDataList &featuresData,
+                                          QgsExpressionContext *context = nullptr );
 
     /**
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
