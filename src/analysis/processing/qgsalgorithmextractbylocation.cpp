@@ -29,7 +29,6 @@ void QgsLocationBasedAlgorithm::addPredicateParameter()
 
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
-  widgetMetadata.insert( QStringLiteral( "class" ), QStringLiteral( "processing.gui.wrappers.EnumWidgetWrapper" ) );
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
   widgetMetadata.insert( QStringLiteral( "columns" ), 2 );
   predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );

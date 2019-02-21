@@ -94,7 +94,6 @@ class CheckValidity(QgisAlgorithm):
                                                      self.tr('Method'), self.methods, defaultValue=2))
         self.parameterDefinition(self.METHOD).setMetadata({
             'widget_wrapper': {
-                'class': 'processing.gui.wrappers.EnumWidgetWrapper',
                 'useCheckBoxes': True,
                 'columns': 3}})
 

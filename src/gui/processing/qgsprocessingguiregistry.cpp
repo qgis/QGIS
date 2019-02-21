@@ -37,6 +37,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingMatrixWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFileWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingExpressionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingEnumWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

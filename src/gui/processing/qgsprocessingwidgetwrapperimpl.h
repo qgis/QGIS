@@ -21,11 +21,14 @@
 
 #define SIP_NO_FILE
 #include "qgsprocessingwidgetwrapper.h"
+#include <QAbstractButton>
 
 class QCheckBox;
 class QComboBox;
 class QLineEdit;
 class QPlainTextEdit;
+class QToolButton;
+class QButtonGroup;
 class QgsProjectionSelectionWidget;
 class QgsSpinBox;
 class QgsDoubleSpinBox;
@@ -34,6 +37,7 @@ class QgsProcessingMatrixParameterPanel;
 class QgsFileWidget;
 class QgsFieldExpressionWidget;
 class QgsExpressionLineEdit;
+class QgsProcessingParameterEnum;
 
 ///@cond PRIVATE
 
@@ -400,6 +404,107 @@ class GUI_EXPORT QgsProcessingExpressionWidgetWrapper : public QgsAbstractProces
 
     friend class TestProcessingGui;
 };
+
+
+class GUI_EXPORT QgsProcessingEnumCheckboxPanelWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingEnumCheckboxPanelWidget( QWidget *parent = nullptr, const QgsProcessingParameterEnum *param = nullptr, int columns = 2 );
+    QVariant value() const;
+    void setValue( const QVariant &value );
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void showPopupMenu();
+    void selectAll();
+    void deselectAll();
+
+  private:
+
+    const QgsProcessingParameterEnum *mParam = nullptr;
+    QMap< QVariant, QAbstractButton * > mButtons;
+    QButtonGroup *mButtonGroup = nullptr;
+    int mColumns = 2;
+    bool mBlockChangedSignal = false;
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingEnumPanelWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingEnumPanelWidget( QWidget *parent = nullptr, const QgsProcessingParameterEnum *param = nullptr );
+    QVariant value() const { return mValue; }
+    void setValue( const QVariant &value );
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void showDialog();
+
+  private:
+
+    void updateSummaryText();
+
+    const QgsProcessingParameterEnum *mParam = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToolButton = nullptr;
+
+    QVariantList mValue;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingEnumWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingEnumWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                    QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+  private:
+
+    QComboBox *mComboBox = nullptr;
+    QgsProcessingEnumPanelWidget *mPanel = nullptr;
+    QgsProcessingEnumCheckboxPanelWidget *mCheckboxPanel = nullptr;
+
+    friend class TestProcessingGui;
+};
+
 
 ///@endcond PRIVATE
 
