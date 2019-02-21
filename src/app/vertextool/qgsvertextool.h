@@ -28,7 +28,7 @@ class QRubberBand;
 
 class QgsGeometryValidator;
 class QgsVertexEditor;
-class QgsSelectedFeature;
+class QgsLockedFeature;
 class QgsSnapIndicator;
 class QgsVertexMarker;
 
@@ -436,7 +436,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     // support for vertex editor
 
     //! Selected feature for the vertex editor
-    std::unique_ptr<QgsSelectedFeature> mLockedFeature;
+    std::unique_ptr<QgsLockedFeature> mLockedFeature;
     //! Dock widget which allows editing vertices
     std::unique_ptr<QgsVertexEditor> mVertexEditor;
 

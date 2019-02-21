@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsselectedfeature.h  - selected feature of vertextool
+    qgslockedfeature.h  - selected feature of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSELECTEDFEATURE_H
-#define QGSSELECTEDFEATURE_H
+#ifndef QGSLOCKEDFEATURE_H
+#define QGSLOCKEDFEATURE_H
 
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
@@ -38,13 +38,13 @@ static const double ZERO_TOLERANCE = 0.000000001;
 /**
  * Class that keeps the selected feature
  */
-class QgsSelectedFeature: public QObject
+class QgsLockedFeature: public QObject
 {
     Q_OBJECT
 
   public:
-    QgsSelectedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
-    ~QgsSelectedFeature() override;
+    QgsLockedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+    ~QgsLockedFeature() override;
 
     /**
      * Setting selected feature
