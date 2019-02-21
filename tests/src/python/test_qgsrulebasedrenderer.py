@@ -150,12 +150,12 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         vl.setRenderer(QgsRuleBasedRenderer(rootrule))
         renderer = vl.renderer()
 
-        # Reunder with else rule and all activated
+        # Render with else rule and all activated
         renderer.startRender(ctx, vl.fields())
         self.assertTrue(renderer.willRenderFeature(ft, ctx))
         renderer.stopRender(ctx)
 
-        # Reunder with else rule where else is deactivated
+        # Render with else rule where else is deactivated
         renderer.rootRule().children()[1].setActive(False)
         renderer.startRender(ctx, vl.fields())
         self.assertFalse(renderer.willRenderFeature(ft, ctx))
@@ -323,6 +323,45 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
+
+    def testWillRenderFeatureTwoElse(self):
+        """Regression #21287, also test rulesForFeature since there were no tests any where and I've found a couple of issues"""
+
+        vl = self.mapsettings.layers()[0]
+        ft = vl.getFeature(0) # 'id' = 1
+
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+        ctx.expressionContext().setFeature(ft)
+
+        # Create rulebased style
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
+        sym4 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': 'black'})
+
+        self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE') # <<< - match this!
+        self.rx4 = QgsRuleBasedRenderer.Rule(sym4, 0.1, 999, 'ELSE')
+
+        rootrule = QgsRuleBasedRenderer.Rule(None)
+        rootrule.appendChild(self.rx2)
+        rootrule.appendChild(self.rx3)
+        rootrule.appendChild(self.rx4)  # <- failed in regression #21287
+
+        vl.setRenderer(QgsRuleBasedRenderer(rootrule))
+        renderer = vl.renderer()
+
+        # Render with else rule and all activated
+        renderer.startRender(ctx, vl.fields())
+        self.assertTrue(renderer.willRenderFeature(ft, ctx))
+
+        # No context? All rules
+        self.assertEqual(len(rootrule.rulesForFeature(ft)), 2)
+        self.assertTrue(set(rootrule.rulesForFeature(ft)), set([self.rx3, self.rx4]))
+
+        # With context: only the matching one
+        self.assertEqual(len(rootrule.rulesForFeature(ft, ctx)), 1)
+        self.assertEqual(rootrule.rulesForFeature(ft, ctx)[0], self.rx3)
+        renderer.stopRender(ctx)
 
 
 if __name__ == '__main__':

@@ -37,6 +37,8 @@ QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &configuration ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
+  if ( ! creation )
+    throw QgsProcessingException( QObject::tr( "Error creating algorithm from createInstance()" ) );
   creation->setProvider( provider() );
   creation->initAlgorithm( configuration );
   return creation.release();
