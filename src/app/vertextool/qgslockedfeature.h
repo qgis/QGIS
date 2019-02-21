@@ -43,16 +43,16 @@ class QgsLockedFeature: public QObject
     Q_OBJECT
 
   public:
-    QgsLockedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
-    ~QgsLockedFeature() override;
 
     /**
-     * Setting selected feature
+     * Creates a locked feature
      * \param featureId id of feature which was selected
-     * \param vlayer vector layer in which feature is selected
+     * \param layer vector layer in which feature is selected
      * \param canvas mapCanvas on which we are working
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+    QgsLockedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+
+    ~QgsLockedFeature() override;
 
     /**
      * Function to select vertex with number
@@ -191,8 +191,7 @@ class QgsLockedFeature: public QObject
 
     QgsFeatureId mFeatureId;
     QgsGeometry *mGeometry = nullptr;
-    bool mFeatureSelected;
-    bool mChangingGeometry;
+    bool mChangingGeometry = false;
     QgsVectorLayer *mLayer = nullptr;
     QList<QgsVertexEntry *> mVertexMap;
     QgsMapCanvas *mCanvas = nullptr;
