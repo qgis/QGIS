@@ -398,7 +398,7 @@ Returns true if all dependencies for the specified task are satisfied
     QList< QgsMapLayer * > dependentLayers( long taskId ) const;
 %Docstring
 Returns a list of layers on which as task is dependent. The task will automatically
-be canceled if any of these layers are above to be removed.
+be canceled if any of these layers are about to be removed.
 
 :param taskId: task ID
 
