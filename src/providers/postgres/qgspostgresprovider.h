@@ -264,6 +264,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString geomParam( int offset ) const;
 
+
+    static QString getNextString( const QString &txt, int &i, const QString &sep );
+    static QVariant parseHstore( const QString &txt );
+    static QVariant parseJson( const QString &txt );
+    static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName );
+    static QVariant parseStringArray( const QString &txt );
+    static QVariant parseMultidimensionalArray( const QString &txt );
+    static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName );
+
+
     /**
      * Gets parametrized primary key clause
      * \param offset specifies offset to use for the pk value parameter
