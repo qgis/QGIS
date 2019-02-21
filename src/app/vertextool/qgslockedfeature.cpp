@@ -33,12 +33,29 @@
 
 
 QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
-                                    QgsVectorLayer *vlayer,
+                                    QgsVectorLayer *layer,
                                     QgsMapCanvas *canvas )
   : mFeatureId( featureId )
-  , mChangingGeometry( false )
+  , mLayer( layer )
+  , mCanvas( canvas )
 {
-  setSelectedFeature( featureId, vlayer, canvas );
+  // signal changing of current layer
+  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsLockedFeature::currentLayerChanged );
+
+  // feature was deleted
+  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsLockedFeature::featureDeleted );
+
+  // rolling back
+  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsLockedFeature::beforeRollBack );
+
+  // projection or extents changed
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsLockedFeature::updateVertexMarkersPosition );
+  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsLockedFeature::updateVertexMarkersPosition );
+
+  // geometry was changed
+  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
+
+  replaceVertexMap();
 }
 
 QgsLockedFeature::~QgsLockedFeature()
@@ -84,34 +101,6 @@ void QgsLockedFeature::updateGeometry( const QgsGeometry *geom )
   {
     mGeometry = new QgsGeometry( *geom );
   }
-}
-
-void QgsLockedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas )
-{
-  mFeatureId = featureId;
-  mLayer = layer;
-  mCanvas = canvas;
-
-  delete mGeometry;
-  mGeometry = nullptr;
-
-  // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsLockedFeature::currentLayerChanged );
-
-  // feature was deleted
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsLockedFeature::featureDeleted );
-
-  // rolling back
-  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsLockedFeature::beforeRollBack );
-
-  // projection or extents changed
-  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsLockedFeature::updateVertexMarkersPosition );
-  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsLockedFeature::updateVertexMarkersPosition );
-
-  // geometry was changed
-  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
-
-  replaceVertexMap();
 }
 
 void QgsLockedFeature::beforeRollBack()
