@@ -711,6 +711,10 @@ struct PGTypeInfo
 
 bool QgsPostgresProvider::loadFields()
 {
+
+  // Clear cached information about enum values support
+  mShared->clearSupportsEnumValuesCache();
+
   if ( !mIsQuery )
   {
     QgsDebugMsg( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ) );
@@ -1683,34 +1687,42 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
 
 void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
 {
-  enumList.clear();
 
   if ( index < 0 || index >= mAttributeFields.count() )
     return;
 
+  if ( ! mShared->fieldSupportsEnumValuesIsSet( index ) )
+  {
+    mShared->setFieldSupportsEnumValues( index, true );
+  }
+  else if ( ! mShared->fieldSupportsEnumValues( index ) )
+  {
+    return;
+  }
+
   //find out type of index
-  QString fieldName = mAttributeFields.at( index ).name();
+  const QString fieldName = mAttributeFields.at( index ).name();
   QString typeName = mAttributeFields.at( index ).typeName();
 
   // Remove schema extension from typeName
   typeName.remove( QRegularExpression( "^([^.]+\\.)+" ) );
 
   //is type an enum?
-  QString typeSql = QStringLiteral( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
+  const QString typeSql = QStringLiteral( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
   QgsPostgresResult typeRes( connectionRO()->PQexec( typeSql ) );
   if ( typeRes.PQresultStatus() != PGRES_TUPLES_OK || typeRes.PQntuples() < 1 )
   {
+    mShared->setFieldSupportsEnumValues( index, false );
     return;
   }
 
-
-  QString typtype = typeRes.PQgetvalue( 0, 0 );
+  const QString typtype = typeRes.PQgetvalue( 0, 0 );
   if ( typtype.compare( QLatin1String( "e" ), Qt::CaseInsensitive ) == 0 )
   {
     //try to read enum_range of attribute
     if ( !parseEnumRange( enumList, fieldName ) )
     {
-      enumList.clear();
+      mShared->setFieldSupportsEnumValues( index, false );
     }
   }
   else
@@ -1718,7 +1730,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
     //is there a domain check constraint for the attribute?
     if ( !parseDomainCheckConstraint( enumList, fieldName ) )
     {
-      enumList.clear();
+      mShared->setFieldSupportsEnumValues( index, false );
     }
   }
 }
@@ -5169,3 +5181,28 @@ void QgsPostgresSharedData::clear()
   mFeaturesCounted = -1;
   mFidCounter = 0;
 }
+
+void QgsPostgresSharedData::clearSupportsEnumValuesCache()
+{
+  QMutexLocker locker( &mMutex );
+  mFieldSupportsEnumValues.clear();
+}
+
+bool QgsPostgresSharedData::fieldSupportsEnumValuesIsSet( int index )
+{
+  QMutexLocker locker( &mMutex );
+  return mFieldSupportsEnumValues.contains( index );
+}
+
+bool QgsPostgresSharedData::fieldSupportsEnumValues( int index )
+{
+  QMutexLocker locker( &mMutex );
+  return mFieldSupportsEnumValues.contains( index ) && mFieldSupportsEnumValues[ index ];
+}
+
+void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSupported )
+{
+  QMutexLocker locker( &mMutex );
+  mFieldSupportsEnumValues[ index ] = isSupported;
+}
+

@@ -522,6 +522,11 @@ class QgsPostgresSharedData
     QVariantList lookupKey( QgsFeatureId featureId );
     void clear();
 
+    void clearSupportsEnumValuesCache( );
+    bool fieldSupportsEnumValuesIsSet( int index );
+    bool fieldSupportsEnumValues( int index );
+    void setFieldSupportsEnumValues( int index, bool isSupported );
+
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
@@ -530,6 +535,7 @@ class QgsPostgresSharedData
     QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
+    QMap<int, bool> mFieldSupportsEnumValues;        // map field index to bool flag supports enum values
 };
 
 // clazy:excludeall=qstring-allocations
