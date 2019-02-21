@@ -200,7 +200,7 @@ Drawer {
             onClicked: {
               captureItem.saveImage = true
               photoPanel.visible = false
-              photoPanel.lastPhotoName = QgsQuick.Utils.getFileName(camera.imageCapture.capturedImagePath)
+              photoPanel.lastPhotoName = QgsQuick.Utils.getFileName(camera.imageCapture.capturedImagePath, photoPanel.targetDir)
               if (photoPanel.lastPhotoName !== "") {
                 fieldItem.image.source = photoPanel.targetDir + "/" + photoPanel.lastPhotoName
                 fieldItem.valueChanged(photoPanel.lastPhotoName, photoPanel.lastPhotoName === "" || photoPanel.lastPhotoName === null)

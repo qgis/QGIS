@@ -95,8 +95,17 @@ bool QgsQuickUtils::fileExists( const QString &path )
   return ( check_file.exists() && check_file.isFile() );
 }
 
-QString QgsQuickUtils::getFileName( const QString &path )
+QString QgsQuickUtils::getFileName( const QString &path, const QString &prefixPath )
 {
+  if ( !prefixPath.isEmpty() )
+  {
+    QString modPath = path;
+    if ( modPath.startsWith( prefixPath ) )
+      return modPath.replace( prefixPath, "" );
+    QString filePrefixPath = QStringLiteral( "file://%1" ).arg( prefixPath );
+    if ( modPath.startsWith( filePrefixPath ) )
+      return modPath.replace( filePrefixPath, "" );
+  }
   QFileInfo fileInfo( path );
   QString filename( fileInfo.fileName() );
   return filename;
@@ -160,6 +169,12 @@ QString QgsQuickUtils::formatDistance( double distance,
   return QStringLiteral( "%1 %2" )
          .arg( QString::number( destDistance, 'f', decimals ) )
          .arg( QgsUnitTypes::toAbbreviatedString( destUnits ) );
+}
+
+bool QgsQuickUtils::remove( const QString &filePath )
+{
+  QFile file( filePath );
+  return file.remove( filePath );
 }
 
 

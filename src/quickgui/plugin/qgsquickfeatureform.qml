@@ -36,6 +36,28 @@ Item {
    */
   signal canceled
 
+   /**
+    * A handler for extra events in externalSourceWidget.
+    */
+  property var externalResourceHandler: QtObject {
+
+        // Called when clicked on the gallery icon to choose a file in a gallery.
+        // param itemWidget widgetEditor for modified field to send valueChanged signal.
+        property var chooseImage: function chooseImage(itemWidget) {
+        }
+
+        // Called when clicked on photo image. Suppose to be used to bring bigger preview.
+        // param imagePath Absolute path to the image.
+        property var previewImage: function previewImage(imagePath) {
+        }
+
+        // Called when clicked on the trash icon. Suppose to delete the value and optionaly also the image.
+        // param itemWidget widgetEditor for modified field to send valueChanged signal.
+        // param imagePath Absolute path to the image.
+        property var removeImage: function removeImage(itemWidget, imagePath) {
+        }
+    }
+
   /**
    * AttributeFormModel binded on a feature supporting auto-generated editor layouts and "tab" layout.
    */
@@ -320,6 +342,7 @@ Item {
           property var constraintValid: ConstraintValid
           property var homePath: form.project ? form.project.homePath : ""
           property var customStyle: form.style.fields
+          property var externalResourceHandler: form.externalResourceHandler
 
           active: widget !== 'Hidden'
 
