@@ -163,17 +163,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     value.destinationProject = dest_project
                 if value:
                     parameters[param.name()] = value
-                    outputPath = QgsProcessingParameters.parameterAsOutputLayer(param, parameters, self.context)
-                    if outputPath.split(":")[0] not in ["memory", "postgis", "ogr"]:
-                        ext = os.path.splitext(outputPath)[1][1:].lower()
-                        supportedExtensions = []
-                        if isinstance(param, QgsProcessingParameterRasterDestination):
-                            supportedExtensions = self.algorithm().provider().supportedOutputRasterLayerExtensions()
-                        elif isinstance(param, (QgsProcessingParameterVectorDestination, QgsProcessingParameterFeatureSink)):
-                            supportedExtensions = self.algorithm().provider().supportedOutputVectorLayerExtensions()
-                        supportedExtensions = [e.lower() for e in supportedExtensions]
-                        if supportedExtensions and ext not in supportedExtensions:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, ext)
+                    if param.isDestination():
+                        context = dataobjects.createContext()
+                        if not self.algorithm().provider().isSupportedOutputValue(value, param, context):
+                            raise AlgorithmDialogBase.InvalidOutputExtension(widget)
 
         return self.algorithm().preprocessParameters(parameters)
 
@@ -316,7 +309,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             except:
                 pass
             self.messageBar().clearWidgets()
-            self.messageBar().pushMessage("", self.tr("Unsupported output file extension: {0}".format(e.ext)),
+            self.messageBar().pushMessage("", self.tr("Unsupported output file extension"),
                                           level=Qgis.Warning, duration=5)
 
     def finish(self, successful, result, context, feedback):

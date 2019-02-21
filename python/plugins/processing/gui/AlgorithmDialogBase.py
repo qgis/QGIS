@@ -35,6 +35,5 @@ class AlgorithmDialogBase:
 
     class InvalidOutputExtension(Exception):
 
-        def __init__(self, widget, ext):
+        def __init__(self, widget):
             self.widget = widget
-            self.ext = ext
