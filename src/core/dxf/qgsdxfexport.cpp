@@ -993,7 +993,7 @@ void QgsDxfExport::writeEntities()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "%1: not override style" ).arg( vl->id() ) );
+      QgsDebugMsg( QStringLiteral( "%1: no override style" ).arg( vl->id() ) );
     }
 
     if ( !vl->renderer() )
