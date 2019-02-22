@@ -71,7 +71,6 @@ class QgsVertexEditor : public QgsDockWidget
   public:
     QgsVertexEditor( QgsMapCanvas *canvas );
 
-  public:
     void updateEditor( QgsLockedFeature *lockedFeature );
     QgsLockedFeature *mLockedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
@@ -82,12 +81,14 @@ class QgsVertexEditor : public QgsDockWidget
     void deleteSelectedRequested();
     void editorClosed();
 
+  public slots:
+    void updateTableSelection();
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
     void closeEvent( QCloseEvent *event ) override;
 
   private slots:
-    void updateTableSelection();
     void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:

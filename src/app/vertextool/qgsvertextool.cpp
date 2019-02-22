@@ -994,12 +994,12 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
   {
     // there's really nothing under the cursor or while cycling through the list of available features
     // we got to the end of the list - let's deselect any feature we may have had selected
+    setHighlightedVertices( QList<Vertex>(), ModeReset );
     mLockedFeature.reset();
     if ( mVertexEditor )
     {
       mVertexEditor->updateEditor( nullptr );
     }
-    setHighlightedVertices( QList<Vertex>(), ModeReset );
   }
 
   // we have either locked ourselves to a feature or unlocked again
@@ -1396,10 +1396,7 @@ void QgsVertexTool::lockedFeatureSelectionChanged()
     }
   }
 
-  disconnect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
   setHighlightedVertices( vertices, ModeReset );
-  connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
-
 }
 
 static int _firstSelectedVertex( QgsLockedFeature &selectedFeature )
@@ -2321,14 +2318,17 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
 
   if ( mLockedFeature )
   {
+    disconnect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
     for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
     {
-      if ( mLockedFeature->featureId() != vertex.fid || mLockedFeature->layer() != vertex.layer )
-        continue;
-
-      if ( mVertexEditor )
-        mVertexEditor->updateEditor( mLockedFeature.get() );
+      // we should never be able to select vertices that are not from the locked feature
+      Q_ASSERT( mLockedFeature->featureId() == vertex.fid && mLockedFeature->layer() == vertex.layer );
+      mLockedFeature->selectVertex( vertex.vertexId );
     }
+    connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
+
+    if ( mVertexEditor )
+      mVertexEditor->updateTableSelection();
   }
 }
 
