@@ -1072,6 +1072,10 @@ void QgsDxfExport::writeEntities()
       QString lName( dxfLayerName( attrIdx < 0 ? layerName( vl ) : fet.attribute( attrIdx ).toString() ) );
 
       sctx.setFeature( &fet );
+
+      if ( !renderer->willRenderFeature( fet, ctx ) )
+        continue;
+
       if ( mSymbologyExport == NoSymbology )
       {
         addFeature( sctx, ct, lName, nullptr, nullptr ); // no symbology at all
