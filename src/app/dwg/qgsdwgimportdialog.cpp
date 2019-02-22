@@ -329,16 +329,27 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
   l = layer( layerGroup, layerFilter, QStringLiteral( "polylines" ) );
   if ( l )
   {
+    sym = new QgsLineSymbol();
+
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
     sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
     sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( QStringLiteral( "width" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyLayerEnabled, QgsProperty::fromExpression( QStringLiteral( "width>0" ) ) );
+    sll->setOutputUnit( QgsUnitTypes::RenderMapUnits );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
-    sym = new QgsLineSymbol();
     sym->changeSymbolLayer( 0, sll );
-    sym->setOutputUnit( QgsUnitTypes::RenderMapUnits );
+
+    sll = new QgsSimpleLineSymbolLayer();
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setPenJoinStyle( Qt::MiterJoin );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyLayerEnabled, QgsProperty::fromExpression( QStringLiteral( "width=0" ) ) );
+    sll->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+    sym->appendSymbolLayer( sll );
+
     l->setRenderer( new QgsSingleSymbolRenderer( sym ) );
   }
 
