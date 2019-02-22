@@ -123,7 +123,7 @@ Returns the expression member of the LayerTreeNode
 \since: 3.8
 %End
 
-signals:
+  signals:
 
     void layerLoaded();
 %Docstring
