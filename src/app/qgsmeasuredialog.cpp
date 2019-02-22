@@ -79,8 +79,25 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeasureDialog::unitsChanged );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsMeasureDialog::reject );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
+  connect( mCartesian, &QRadioButton::toggled, this, &QgsMeasureDialog::projChanged );
 
   groupBox->setCollapsed( true );
+}
+
+void QgsMeasureDialog::projChanged()
+{
+  if ( mCartesian->isChecked() )
+  {
+    mDa.setEllipsoid( GEO_NONE );
+  }
+  else
+  {
+    mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  }
+
+  mTable->clear();
+  mTotal = 0.;
+  updateUi();
 }
 
 void QgsMeasureDialog::openConfigTab()
@@ -102,6 +119,9 @@ void QgsMeasureDialog::crsChanged()
   {
     mUnitsCombo->setEnabled( true );
   }
+
+  mTable->clear();
+  mTotal = 0.;
   updateUi();
 }
 
@@ -116,23 +136,18 @@ void QgsMeasureDialog::updateSettings()
   mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  projChanged();
 
-  mTable->clear();
-  mTotal = 0;
-  updateUi();
 
-  if ( !mCanvas->mapSettings().destinationCrs().isValid() ||
+  if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() ||
        ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
          && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
   {
     mDa.setEllipsoid( GEO_NONE );
-    mForceCartesian = true;
   }
   else
   {
     mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    mForceCartesian = false;
   }
 }
 
@@ -164,6 +179,7 @@ void QgsMeasureDialog::unitsChanged( int index )
       mUseMapUnits = false;
     }
   }
+
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -188,19 +204,6 @@ void QgsMeasureDialog::restart()
 
 void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
 {
-  if ( !mCanvas->mapSettings().destinationCrs().isValid() ||
-       ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
-         && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
-  {
-    mDa.setEllipsoid( GEO_NONE );
-    mForceCartesian = true;
-  }
-  else
-  {
-    mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    mForceCartesian = false;
-  }
-
   mLastMousePoint = point;
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
@@ -217,9 +220,8 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
     double d = mDa.measureLine( p1, p2 );
-    editTotal->setText( formatDistance( mTotal + d, !mForceCartesian ) );
-    if ( !mForceCartesian )
-      d = convertLength( d, mDistanceUnits );
+    editTotal->setText( formatDistance( mTotal + d, mConvertToDisplayUnits ) );
+    d = convertLength( d, mDistanceUnits );
 
     // Set moving
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
@@ -250,7 +252,7 @@ void QgsMeasureDialog::addPoint()
     if ( numPoints > 1 )
     {
       mTotal = mDa.measureLine( mTool->points() );
-      editTotal->setText( formatDistance( mTotal, !mForceCartesian ) );
+      editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
     }
   }
 }
@@ -294,7 +296,7 @@ void QgsMeasureDialog::removeLastPoint()
     }
     else
     {
-      editTotal->setText( formatDistance( mTotal, !mForceCartesian ) );
+      editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
     }
   }
 }
@@ -359,19 +361,25 @@ void QgsMeasureDialog::updateUi()
   QString toolTip = tr( "The calculations are based on:" );
 
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mForceCartesian = false;
-  bool convertToDisplayUnits = true;
+  mConvertToDisplayUnits = true;
 
   if ( mMeasureArea )
   {
-    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
-      // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so area is calculated using Cartesian calculations." );
-      toolTip += "<br> * " + tr( "Units are unknown." );
+      toolTip += "<br> * ";
+      if ( mCartesian->isChecked() )
+      {
+        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+        mConvertToDisplayUnits = true;
+      }
+      else
+      {
+        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += "<br> * " + tr( "Units are unknown." );
+        mConvertToDisplayUnits = false;
+      }
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
-      convertToDisplayUnits = false;
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
@@ -380,8 +388,7 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
                    mCanvas->mapSettings().destinationCrs().description() );
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
-      convertToDisplayUnits = false; //not required since we will be measuring in degrees
+      mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
     {
@@ -436,14 +443,21 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
+    if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
     {
-      // no CRS => no units, newb!
-      toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using Cartesian calculations." );
-      toolTip += "<br> * " + tr( "Units are unknown." );
+      toolTip += "<br> * ";
+      if ( mCartesian->isChecked() )
+      {
+        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+        mConvertToDisplayUnits = true;
+      }
+      else
+      {
+        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += "<br> * " + tr( "Units are unknown." );
+        mConvertToDisplayUnits = false;
+      }
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
-      convertToDisplayUnits = false;
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
@@ -452,8 +466,7 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
                    mCanvas->mapSettings().destinationCrs().description() );
       mDa.setEllipsoid( GEO_NONE );
-      mForceCartesian = true;
-      convertToDisplayUnits = false; //not required since we will be measuring in degrees
+      mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
     {
@@ -560,7 +573,7 @@ void QgsMeasureDialog::updateUi()
       {
         double d = -1;
         d = mDa.measureLine( p1, p2 );
-        if ( !mForceCartesian )
+        if ( mConvertToDisplayUnits )
         {
           if ( mDistanceUnits == QgsUnitTypes::DistanceUnknownUnit && mMapDistanceUnits != QgsUnitTypes::DistanceUnknownUnit )
             d = convertLength( d, mMapDistanceUnits );
@@ -579,7 +592,7 @@ void QgsMeasureDialog::updateUi()
 
     mTotal = mDa.measureLine( mTool->points() );
     mTable->show(); // Show the table with items
-    editTotal->setText( formatDistance( mTotal, convertToDisplayUnits ) );
+    editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
   }
 }
 
