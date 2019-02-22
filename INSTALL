@@ -1,9 +1,9 @@
 QGIS
 Building QGIS from source - step by step
-Friday November 30, 2018
+Friday February 22, 2019
 
 
-Last Updated: Friday November 30, 2018
+Last Updated: Friday February 22, 2019
 Last Change : Friday November 30, 2018
 
 
@@ -457,7 +457,7 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select Advanced Installation):
 
-- qgis-dev-deps
+- qgis-rel-deps
 
 This will also select packages the above packages depend on.
 
