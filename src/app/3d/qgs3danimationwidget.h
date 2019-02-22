@@ -24,6 +24,7 @@
 
 class Qgs3DAnimationSettings;
 class QgsCameraController;
+class Qgs3DMapSettings;
 
 class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
 {
@@ -33,6 +34,8 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     ~Qgs3DAnimationWidget() override;
 
     void setCameraController( QgsCameraController *cameraController );
+
+    void setMap( Qgs3DMapSettings *map );
 
     void setAnimation( const Qgs3DAnimationSettings &animation );
     Qgs3DAnimationSettings animation() const;
@@ -52,6 +55,7 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     void onEditKeyframe();
     void onDuplicateKeyframe();
     void onInterpolationChanged();
+    void onExportAnimation();
 
   private:
     void initializeController( const Qgs3DAnimationSettings &animSettings );
@@ -62,6 +66,7 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
   private:
     std::unique_ptr<Qgs3DAnimationSettings> mAnimationSettings;
     QgsCameraController *mCameraController;
+    Qgs3DMapSettings *mMap;
     QTimer *mAnimationTimer = nullptr;
 };
 

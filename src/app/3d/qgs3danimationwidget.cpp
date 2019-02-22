@@ -18,10 +18,16 @@
 #include "qgs3danimationsettings.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgs3danimationexportdialog.h"
+#include "qgs3dmapsettings.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgs3dmapscene.h"
+#include "qgs3dutils.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include <QProgressDialog>
 
 Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   : QWidget( parent )
@@ -34,7 +40,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   btnPlayPause->setIcon( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ) );
   btnDuplicateKeyframe->setIcon( QIcon( QgsApplication::iconPath( "mActionEditCopy.svg" ) ) );
   btnRepeat->setIcon( QIcon( QgsApplication::iconPath( "mActionRefresh.svg" ) ) );
-
+  btnExportAnimation->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   cboKeyframe->addItem( tr( "<none>" ) );
 
   mAnimationTimer = new QTimer( this );
@@ -45,6 +51,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( btnRemoveKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onRemoveKeyframe );
   connect( btnEditKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onEditKeyframe );
   connect( btnDuplicateKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onDuplicateKeyframe );
+  connect( btnExportAnimation, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onExportAnimation );
   connect( cboInterpolation, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onInterpolationChanged );
 
   btnPlayPause->setCheckable( true );
@@ -136,6 +143,11 @@ void Qgs3DAnimationWidget::setEditControlsEnabled( bool enabled )
   cboInterpolation->setEnabled( enabled );
 }
 
+void Qgs3DAnimationWidget::setMap( Qgs3DMapSettings *map )
+{
+  mMap = map;
+}
+
 void Qgs3DAnimationWidget::onPlayPause()
 {
   if ( mAnimationTimer->isActive() )
@@ -172,6 +184,67 @@ void Qgs3DAnimationWidget::onAnimationTimer()
   else
   {
     sliderTime->setValue( sliderTime->value() + 1 );
+  }
+}
+
+void Qgs3DAnimationWidget::onExportAnimation()
+{
+  if ( !mMap || !mAnimationSettings )
+    QMessageBox::warning( this, tr( "Export Animation" ), tr( "Unable to export 3D animation" ) );
+
+  Qgs3DAnimationExportDialog dialog;
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    Qgs3DAnimationSettings animationSettings = animation();
+
+    QgsOffscreen3DEngine engine;
+    engine.setSize( dialog.frameSize() );
+    Qgs3DMapScene *scene = new Qgs3DMapScene( *mMap, &engine );
+    engine.setRootEntity( scene );
+
+    if ( animationSettings.keyFrames().size() < 2 )
+    {
+      QMessageBox::warning( this, tr( "Export Animation" ), tr( "Unable to export 3D animation. Add at least 2 keyframes" ) );
+      return;
+    }
+
+    const float duration = animationSettings.duration(); //in seconds
+    if ( duration <= 0 )
+    {
+      QMessageBox::warning( this, tr( "Export Animation" ), tr( "Unable to export 3D animation (invalid duration)." ) );
+      return;
+    }
+
+    float time = 0;
+    int frameNo = 0;
+    int fps = dialog.fps();
+    int totalFrames = static_cast<int>( duration * fps );
+    QProgressDialog progress( tr( "Exporting frames..." ), tr( "Abort" ), 0, totalFrames, this );
+    progress.setWindowModality( Qt::WindowModal );
+
+    while ( time <= duration )
+    {
+      progress.setValue( frameNo );
+      if ( progress.wasCanceled() )
+        break;
+      ++frameNo;
+
+      Qgs3DAnimationSettings::Keyframe kf = animationSettings.interpolate( time );
+      scene->cameraController()->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
+
+      const QString path = dialog.fileName( frameNo );
+
+      // It would initially return empty rendered image.
+      // Capturing the initial image and throwing it away fixes that.
+      // Hopefully we will find a better fix in the future.
+      Qgs3DUtils::captureSceneImage( engine, scene );
+      QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+      img.save( path );
+
+      time += 1.0f / static_cast<float>( fps );
+    }
+    progress.hide();
   }
 }
 

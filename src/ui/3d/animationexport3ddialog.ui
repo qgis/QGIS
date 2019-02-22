@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AnimationExport3DDialog</class>
+ <widget class="QDialog" name="AnimationExport3DDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>259</width>
+    <height>218</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Export 3D Animation</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="textLabel1">
+     <property name="text">
+      <string>Template</string>
+     </property>
+     <property name="buddy">
+      <cstring>mTemplateLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="mTemplateLineEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel1_2">
+     <property name="text">
+      <string>Output Directory</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsFileWidget" name="mOutputDirFileWidget" native="true"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="textLabel2">
+     <property name="text">
+      <string>FPS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="mFpsSpinBox">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>30</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mLengthLabel">
+     <property name="text">
+      <string>Width</string>
+     </property>
+     <property name="buddy">
+      <cstring>mWidthSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QSpinBox" name="mWidthSpinBox">
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+       <property name="singleStep">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>800</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>px</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mPrecLabel">
+     <property name="text">
+      <string>Height</string>
+     </property>
+     <property name="buddy">
+      <cstring>mHeightSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QSpinBox" name="mHeightSpinBox">
+       <property name="minimum">
+        <number>100</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+       <property name="singleStep">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>600</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>px</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mTemplateLineEdit</tabstop>
+  <tabstop>mWidthSpinBox</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>AnimationExport3DDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>263</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>AnimationExport3DDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
