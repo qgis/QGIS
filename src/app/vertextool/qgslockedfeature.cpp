@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "vertextool/qgslockedfeature.h"
-#include "vertextool/qgsvertexentry.h"
+#include "qgslockedfeature.h"
+#include "qgsvertexeditor.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgspoint.h"
@@ -283,7 +283,7 @@ void QgsLockedFeature::selectVertex( int vertexNr )
     return;
 
   QgsVertexEntry *entry = mVertexMap.at( vertexNr );
-  entry->setSelected();
+  entry->setSelected( true );
 
   emit selectionChanged();
 }
