@@ -125,7 +125,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
 
     /**
      * Returns relative path of the file to given prefixPath. If prefixPath does not match a path parameter,
-     * returns given path. If a path starts with "file://", this prefix is ignored.
+     * returns an empty string. If a path starts with "file://", this prefix is ignored.
      * \param path Absolute path to file
      * \param prefixPath
      * \since QGIS 3.8
