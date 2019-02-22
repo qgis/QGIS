@@ -173,9 +173,14 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
 
 }
 
-
 void QgsLayerTreeLayer::layerNameChanged()
 {
   Q_ASSERT( mRef );
   emit nameChanged( this, mRef->name() );
 }
+
+void QgsLayerTreeLayer::setExpression( const QString &expression )
+{
+  mExpression = expression;
+}
+
