@@ -318,9 +318,10 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType );
 
-    static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter );
+    static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 
     friend class TestQgsProcessing;
+    friend class QgsProcessingProvider;
 
 };
 
