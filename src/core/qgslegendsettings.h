@@ -179,14 +179,16 @@ class CORE_EXPORT QgsLegendSettings
     void setMapScale( double scale ) { mMapScale = scale; }
 
     /**
-     * Returns the factor of map units per pixel for symbols with size given in map units calculated by mDpi and mMmPerMapUnit
+     * Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
      * \see setMapUnitsPerPixel()
+     * \since QGIS 3.6
      */
     double mapUnitsPerPixel() const;
 
     /**
-     * Sets the the mMmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
+     * Sets the the mmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
      * \see mapUnitsPerPixel()
+     * \since QGIS 3.6
      */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
 
