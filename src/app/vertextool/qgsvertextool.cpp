@@ -2319,16 +2319,19 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
   if ( mLockedFeature )
   {
     disconnect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
+
+    mLockedFeature->deselectAllVertices();
     for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
     {
       // we should never be able to select vertices that are not from the locked feature
       Q_ASSERT( mLockedFeature->featureId() == vertex.fid && mLockedFeature->layer() == vertex.layer );
       mLockedFeature->selectVertex( vertex.vertexId );
     }
-    connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
 
-    if ( mVertexEditor )
-      mVertexEditor->updateTableSelection();
+//    if ( mVertexEditor )
+//      mVertexEditor->updateTableSelection();
+
+    connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
   }
 }
 
