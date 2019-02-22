@@ -221,19 +221,6 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Remove a child from a node
     bool takeChild( QgsLayerTreeNode *node );
 
-    /**
-     * set the expression to evaluate
-     *
-     * \since: 3.8
-     */
-    void setExpression( const QString &expression );
-
-    /**
-     * Returns the expression member of the LayerTreeNode
-     *
-     * \since: 3.8
-     */
-    QString expression() const;
 
   signals:
 
@@ -288,8 +275,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     bool mExpanded;
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
-    //! Expression to evaluate in the legend
-    QString mExpression;
+
 };
 
 
