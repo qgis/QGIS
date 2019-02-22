@@ -2328,9 +2328,6 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
       mLockedFeature->selectVertex( vertex.vertexId );
     }
 
-//    if ( mVertexEditor )
-//      mVertexEditor->updateTableSelection();
-
     connect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
   }
 }

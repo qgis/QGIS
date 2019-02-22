@@ -374,8 +374,10 @@ void QgsVertexEditor::updateTableSelection()
     }
   }
   disconnect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+  disconnect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
   mTableView->selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect );
   connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 
   if ( firstSelectedRow >= 0 )
     mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
@@ -383,21 +385,22 @@ void QgsVertexEditor::updateTableSelection()
   mUpdatingTableSelection = false;
 }
 
-void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
+void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItemSelection & )
 {
   if ( !mLockedFeature || mUpdatingTableSelection )
     return;
 
   mUpdatingVertexSelection = true;
+  disconnect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 
   mLockedFeature->deselectAllVertices();
 
   QgsCoordinateTransform t( mLockedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   std::unique_ptr<QgsRectangle> bbox;
-  QModelIndexList indexList = selected.indexes();
-  for ( int i = 0; i < indexList.length(); ++i )
+  const QModelIndexList indexList = mTableView->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indexList )
   {
-    int vertexIdx = indexList.at( i ).row();
+    int vertexIdx = index.row();
     mLockedFeature->selectVertex( vertexIdx );
 
     // create a bounding box of selected vertices
@@ -425,6 +428,7 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
   }
 
   mUpdatingVertexSelection = false;
+  connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 }
 
 void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
