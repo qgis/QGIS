@@ -44,12 +44,6 @@ endif
 
 DEB_BUILD_NAME ?= $(DISTRIBUTION)-$(DEB_BUILD_ARCH)
 
-ifeq (,$(DISPLAY))
-TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" ninja
-else
-TESTMAKE=ninja
-endif
-
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -57,6 +51,22 @@ QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 GRASSABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2,3|sed -e 's/RC/-/'))
+
+ifeq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
+	NINJA_OPTS += -v
+endif
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	MAKEFLAGS += -j$(NUMJOBS)
+	NINJA_OPTS += -j$(NUMJOBS)
+endif
+
+ifeq (,$(DISPLAY))
+TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" ninja $(NINJA_OPTS)
+else
+TESTMAKE=ninja $(NINJA_OPTS)
+endif
 
 CMAKE_OPTS := \
 	-G Ninja \
@@ -87,11 +97,6 @@ ifeq ($(GRASSVER),7)
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
-endif
-
-ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
 ifneq ($(DISTRIBUTION),xenial)
@@ -230,16 +235,16 @@ override_dh_auto_configure:
 
 override_dh_auto_build-arch:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	ninja -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build || \
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build || \
 			cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log || \
-			ninja -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit || \
+			ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit || \
 			false
 else
-	ninja -C $(QGIS_BUILDDIR)
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif
 
 override_dh_auto_build-indep:
-	ninja -C $(QGIS_BUILDDIR) apidoc
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 
 override_dh_auto_test: test-stamp
 
@@ -264,7 +269,7 @@ endif
 	touch test-stamp
 
 override_dh_auto_install:
-	DESTDIR=$(CURDIR)/debian/tmp ninja -C $(QGIS_BUILDDIR) install
+	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) install
 
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
