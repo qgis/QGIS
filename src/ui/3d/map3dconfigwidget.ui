@@ -63,9 +63,9 @@
          <property name="title">
           <string>Terrain</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout1">
           <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="label_10">
             <property name="text">
              <string>Tile resolution</string>
             </property>
