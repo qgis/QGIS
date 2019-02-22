@@ -445,7 +445,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      * This is used when user clicks with right mouse button multiple times in one location
      * to easily switch to the desired feature.
      */
-    struct SelectedFeatureAlternatives
+    struct LockedFeatureAlternatives
     {
       QPoint screenPoint;
       QList< QPair<QgsVectorLayer *, QgsFeatureId> > alternatives;
@@ -453,7 +453,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     };
 
     //! Keeps information about other possible features to select with right click. Null if no info is currently held.
-    std::unique_ptr<SelectedFeatureAlternatives> mSelectedFeatureAlternatives;
+    std::unique_ptr<LockedFeatureAlternatives> mLockedFeatureAlternatives;
 
     // support for validation of geometries
 
