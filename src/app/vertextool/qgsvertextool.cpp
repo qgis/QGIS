@@ -436,7 +436,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( !clickedOnHighlightedVertex )
+    if ( !clickedOnHighlightedVertex && e->button() == Qt::LeftButton )
       setHighlightedVertices( QList<Vertex>() ); // reset selection
   }
 
@@ -980,6 +980,14 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
   {
     // we have a feature to select
     QPair<QgsVectorLayer *, QgsFeatureId> alternative = mLockedFeatureAlternatives->alternatives.at( mLockedFeatureAlternatives->index );
+    // keep only corrsesponding vertices
+    // todo: it might be nice to keep other vertices in memory, so we could select them when switching lokcked feature
+    QList<Vertex> vertices;
+    for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
+      if ( v.layer == alternative.first && v.fid == alternative.second )
+        vertices << v;
+    setHighlightedVertices( vertices, ModeReset );
+
     updateVertexEditor( alternative.first, alternative.second );
   }
   else
@@ -991,6 +999,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     {
       mVertexEditor->updateEditor( nullptr );
     }
+    setHighlightedVertices( QList<Vertex>(), ModeReset );
   }
 
   // we have either locked ourselves to a feature or unlocked again
