@@ -238,19 +238,6 @@ Returns list of keys stored in custom properties
 Remove a child from a node
 %End
 
-    void setExpression( const QString &expression );
-%Docstring
-set the expression to evaluate
-
-\since: 3.8
-%End
-
-    QString expression() const;
-%Docstring
-Returns the expression member of the LayerTreeNode
-
-\since: 3.8
-%End
 
   signals:
 
