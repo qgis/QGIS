@@ -341,28 +341,12 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
   updateTableSelection();
 
-//  QItemSelectionModel *selectionModel = mTableView->selectionModel();
-//  QItemSelection selection;
-//  if ( mLockedFeature )
-//  {
-//    QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
-//    for ( int i = 0, n = vertexMap.size(); i < n; ++i )
-//    {
-//      if ( vertexMap[i]->isSelected() )
-//      {
-//        QModelIndex index = mVertexModel->index( i, 0 );
-//        selection.select( index, index );
-//      }
-//    }
-//  }
-//  selectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
-
   if ( mLockedFeature )
   {
     mHintLabel->setVisible( false );
     mTableView->setVisible( true );
 
-    connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+    //connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
   }
   else
   {
@@ -377,7 +361,6 @@ void QgsVertexEditor::updateTableSelection()
     return;
 
   mUpdatingTableSelection = true;
-  mTableView->selectionModel()->clearSelection();
   const QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
   int firstSelectedRow = -1;
   QItemSelection selection;
@@ -390,7 +373,9 @@ void QgsVertexEditor::updateTableSelection()
       selection.select( mVertexModel->index( i, 0 ), mVertexModel->index( i, mVertexModel->columnCount() - 1 ) );
     }
   }
-  mTableView->selectionModel()->select( selection, QItemSelectionModel::Select );
+  //disconnect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+  mTableView->selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect );
+  //connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 
   if ( firstSelectedRow >= 0 )
     mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
