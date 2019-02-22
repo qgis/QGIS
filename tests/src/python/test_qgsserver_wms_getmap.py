@@ -838,7 +838,6 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         self.assertEqual(self.strip_version_xmlns(r), expected)
 
-
     def test_wms_getmap_filter_ogc(self):
         filter = "<Filter><PropertyIsEqualTo><PropertyName>name</PropertyName>" + \
                  "<Literal>eurasia</Literal></PropertyIsEqualTo></Filter>"
