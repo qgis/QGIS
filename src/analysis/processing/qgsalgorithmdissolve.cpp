@@ -227,6 +227,8 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       for ( const auto &p : parts )
       {
         result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p );
+        if ( QgsWkbTypes::flatType( result.wkbType() ) == QgsWkbTypes::LineString )
+          result = result.mergeLines();
         if ( feedback->isCanceled() )
           return result;
       }
