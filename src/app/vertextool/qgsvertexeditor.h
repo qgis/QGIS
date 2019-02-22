@@ -81,15 +81,13 @@ class QgsVertexEditor : public QgsDockWidget
     void deleteSelectedRequested();
     void editorClosed();
 
-  public slots:
-    void updateTableSelection();
-
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
     void closeEvent( QCloseEvent *event ) override;
 
   private slots:
-    void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
+    void updateTableSelection();
+    void updateVertexSelection( const QItemSelection &, const QItemSelection &deselected );
 
   private:
 
