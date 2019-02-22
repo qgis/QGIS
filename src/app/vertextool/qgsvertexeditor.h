@@ -25,7 +25,7 @@
 #include <QStyledItemDelegate>
 
 class QgsMapCanvas;
-class QgsSelectedFeature;
+class QgsLockedFeature;
 class QgsVectorLayer;
 
 class QLabel;
@@ -38,7 +38,7 @@ class QgsVertexEditorModel : public QAbstractTableModel
 
     QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
-    void setFeature( QgsSelectedFeature *selectedFeature );
+    void setFeature( QgsLockedFeature *lockedFeature );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -48,7 +48,7 @@ class QgsVertexEditorModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   private:
-    QgsSelectedFeature *mSelectedFeature = nullptr;
+    QgsLockedFeature *mLockedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
     bool mHasZ = false;
@@ -72,8 +72,8 @@ class QgsVertexEditor : public QgsDockWidget
     QgsVertexEditor( QgsMapCanvas *canvas );
 
   public:
-    void updateEditor( QgsSelectedFeature *selectedFeature );
-    QgsSelectedFeature *mSelectedFeature = nullptr;
+    void updateEditor( QgsLockedFeature *lockedFeature );
+    QgsLockedFeature *mLockedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QTableView *mTableView = nullptr;
     QgsVertexEditorModel *mVertexModel = nullptr;

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsselectedfeature.h  - selected feature of vertextool
+    qgslockedfeature.h  - selected feature of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSELECTEDFEATURE_H
-#define QGSSELECTEDFEATURE_H
+#ifndef QGSLOCKEDFEATURE_H
+#define QGSLOCKEDFEATURE_H
 
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
@@ -38,21 +38,21 @@ static const double ZERO_TOLERANCE = 0.000000001;
 /**
  * Class that keeps the selected feature
  */
-class QgsSelectedFeature: public QObject
+class QgsLockedFeature: public QObject
 {
     Q_OBJECT
 
   public:
-    QgsSelectedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
-    ~QgsSelectedFeature() override;
 
     /**
-     * Setting selected feature
+     * Creates a locked feature
      * \param featureId id of feature which was selected
-     * \param vlayer vector layer in which feature is selected
+     * \param layer vector layer in which feature is selected
      * \param canvas mapCanvas on which we are working
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+    QgsLockedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+
+    ~QgsLockedFeature() override;
 
     /**
      * Function to select vertex with number
@@ -191,8 +191,7 @@ class QgsSelectedFeature: public QObject
 
     QgsFeatureId mFeatureId;
     QgsGeometry *mGeometry = nullptr;
-    bool mFeatureSelected;
-    bool mChangingGeometry;
+    bool mChangingGeometry = false;
     QgsVectorLayer *mLayer = nullptr;
     QList<QgsVertexEntry *> mVertexMap;
     QgsMapCanvas *mCanvas = nullptr;
