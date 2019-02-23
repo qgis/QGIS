@@ -80,8 +80,8 @@ class CORE_EXPORT QgsOpenClUtils
      */
     enum ExceptionBehavior
     {
-      Catch,  //! Write errors in the message log and silently fail
-      Throw   //! Write errors in the message log and re-throw exceptions
+      Catch,  //!< Write errors in the message log and silently fail
+      Throw   //!< Write errors in the message log and re-throw exceptions
     };
 
     /**

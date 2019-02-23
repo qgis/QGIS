@@ -89,15 +89,15 @@ class CORE_EXPORT QgsDiagramLayerSettings
       BackgroundColor, //!< Diagram background color
       StrokeColor, //!< Stroke color
       StrokeWidth, //!< Stroke width
-      PositionX, //! x-coordinate data defined diagram position
-      PositionY, //! y-coordinate data defined diagram position
-      Distance, //! Distance to diagram from feature
-      Priority, //! Diagram priority (between 0 and 10)
-      ZIndex, //! Z-index for diagram ordering
-      IsObstacle, //! Whether diagram features act as obstacles for other diagrams/labels
-      Show, //! Whether to show the diagram
-      AlwaysShow, //! Whether the diagram should always be shown, even if it overlaps other diagrams/labels
-      StartAngle, //! Angle offset for pie diagram
+      PositionX, //!< x-coordinate data defined diagram position
+      PositionY, //!< y-coordinate data defined diagram position
+      Distance, //!< Distance to diagram from feature
+      Priority, //!< Diagram priority (between 0 and 10)
+      ZIndex, //!< Z-index for diagram ordering
+      IsObstacle, //!< Whether diagram features act as obstacles for other diagrams/labels
+      Show, //!< Whether to show the diagram
+      AlwaysShow, //!< Whether the diagram should always be shown, even if it overlaps other diagrams/labels
+      StartAngle, //!< Angle offset for pie diagram
     };
 
     /**

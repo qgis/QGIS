@@ -62,10 +62,10 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     enum StorageMode
     {
-      GetFile, //! Select a single file
-      GetDirectory, //! Select a directory
-      GetMultipleFiles, //! Select multiple files
-      SaveFile, //! Select a single new or pre-existing file
+      GetFile, //!< Select a single file
+      GetDirectory, //!< Select a directory
+      GetMultipleFiles, //!< Select multiple files
+      SaveFile, //!< Select a single new or pre-existing file
     };
 
     /**

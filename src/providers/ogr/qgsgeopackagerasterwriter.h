@@ -31,7 +31,7 @@ class QgsGeoPackageRasterWriter
     enum WriterError
     {
       NoError = 0, //!< No errors were encountered
-      WriteError, //! Generic GDAL Translate error
+      WriteError, //!< Generic GDAL Translate error
       ErrUserCanceled, //!< User canceled the export
     };
 

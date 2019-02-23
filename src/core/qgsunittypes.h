@@ -88,8 +88,8 @@ class CORE_EXPORT QgsUnitTypes
       AreaAcres, //!< Acres
       AreaSquareNauticalMiles, //!< Square nautical miles
       AreaSquareDegrees, //!< Square degrees, for planar geographic CRS area measurements
-      AreaSquareCentimeters, //! Square centimeters
-      AreaSquareMillimeters, //! Square millimeters
+      AreaSquareCentimeters, //!< Square centimeters
+      AreaSquareMillimeters, //!< Square millimeters
       AreaUnknownUnit, //!< Unknown areal unit
     };
     Q_ENUM( AreaUnit )
@@ -114,8 +114,8 @@ class CORE_EXPORT QgsUnitTypes
       RenderMapUnits, //!< Map units
       RenderPixels, //!< Pixels
       RenderPercentage, //!< Percentage of another measurement (e.g., canvas size, feature size)
-      RenderPoints, //! points (e.g., for font sizes)
-      RenderInches, //! Inches
+      RenderPoints, //!< points (e.g., for font sizes)
+      RenderInches, //!< Inches
       RenderUnknownUnit, //!< Mixed or unknown units
       RenderMetersInMapUnits, //!< Meters value as Map units
     };

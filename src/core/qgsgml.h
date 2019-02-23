@@ -283,7 +283,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Parsing depth
     int mParseDepth;
     int mFeatureTupleDepth;
-    QString mCurrentTypename; //! Used to track the current (unprefixed) typename for wfs:Member in join layer
+    QString mCurrentTypename; //!< Used to track the current (unprefixed) typename for wfs:Member in join layer
     //! Keep track about the most important nested elements
     QStack<ParseMode> mParseModeStack;
     //! This contains the character data if an important element has been encountered
