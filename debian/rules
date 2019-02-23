@@ -52,6 +52,9 @@ GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 GRASSABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2,3|sed -e 's/RC/-/'))
 
+# Include percentage of started edges
+export NINJA_STATUS=[%f/%t %p]
+
 ifeq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
 	NINJA_OPTS += -v
 endif
