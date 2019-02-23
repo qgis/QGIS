@@ -393,7 +393,6 @@ Depends:
  ${sip3:Depends}
  ${misc:Depends},
 Provides: ${python3:Provides}
-Recommends: liblwgeom-dev
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
