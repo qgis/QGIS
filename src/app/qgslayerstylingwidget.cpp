@@ -670,7 +670,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
 QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
 {
   setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/stylepreset.svg" ) ) );
-  setTitle( QObject::tr( "Style Manager" ) );
+  setTitle( QObject::tr( "Style" ) );
 }
 
 QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
