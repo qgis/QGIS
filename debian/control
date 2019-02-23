@@ -467,7 +467,6 @@ Package: qgis-api-doc
 Architecture: all
 Section: doc
 Depends:
- libjs-jquery,
  ${misc:Depends}
 Recommends:
  qt5-doc-html
