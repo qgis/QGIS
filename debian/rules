@@ -195,7 +195,6 @@ $(2): $(1)
 		-e 's/#([^#]+ |)![^#]+( [^#]*|)#//g' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
-		-e "s#\{QT_PLUGINS_DIR\}#$(QT_PLUGINS_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
