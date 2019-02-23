@@ -454,7 +454,9 @@ Description: Python bindings to QGIS - architecture-independent files
 
 Package: qgis-providers
 Architecture: any
-Pre-Depends: ${misc:Pre-Depends}
+Pre-Depends:
+ dpkg (>= 1.16.1),
+ ${misc:Pre-Depends}
 Depends:
  qgis-providers-common (= ${source:Version}),
  libqca-qt5-2-plugins,
