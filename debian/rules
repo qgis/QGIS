@@ -347,11 +347,10 @@ override_dh_installman:
 override_dh_installmime:
 	dh_installmime -pqgis
 
-
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-	dh_sip -ppython-qgis
+	dh_sip3 -ppython3-qgis
 
 override_dh_compress:
 	dh_compress --exclude=pdf
