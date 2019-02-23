@@ -1548,6 +1548,18 @@ tests:
         name: expected/export_multiline_info.gml
         type: vector
 
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export multipoint info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: multipoints.gml|layername=multipoints
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_geometry_info_multipoint.gml
+        type: vector
+
   - algorithm: qgis:texttofloat
     name: Text to float
     params:
