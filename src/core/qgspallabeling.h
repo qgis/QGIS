@@ -137,13 +137,13 @@ class CORE_EXPORT QgsPalLayerSettings
     enum Placement
     {
       AroundPoint, //!< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.
-      OverPoint, //! Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
+      OverPoint, //!< Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
       Line, //!< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
-      Curved, //! Arranges candidates following the curvature of a line feature. Applies to line layers only.
+      Curved, //!< Arranges candidates following the curvature of a line feature. Applies to line layers only.
       Horizontal, //!< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
       Free, //!< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
       OrderedPositionsAroundPoint, //!< Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.
-      PerimeterCurved, //! Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
+      PerimeterCurved, //!< Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
     };
 
     //TODO QGIS 4.0 - move to QgsLabelingEngine
@@ -151,16 +151,16 @@ class CORE_EXPORT QgsPalLayerSettings
     enum PredefinedPointPosition
     {
       TopLeft, //!< Label on top-left of point
-      TopSlightlyLeft, //! Label on top of point, slightly left of center
+      TopSlightlyLeft, //!< Label on top of point, slightly left of center
       TopMiddle, //!< Label directly above point
-      TopSlightlyRight, //! Label on top of point, slightly right of center
+      TopSlightlyRight, //!< Label on top of point, slightly right of center
       TopRight, //!< Label on top-right of point
       MiddleLeft, //!< Label on left of point
       MiddleRight, //!< Label on right of point
       BottomLeft, //!< Label on bottom-left of point
-      BottomSlightlyLeft, //! Label below point, slightly left of center
+      BottomSlightlyLeft, //!< Label below point, slightly left of center
       BottomMiddle, //!< Label directly below point
-      BottomSlightlyRight, //! Label below point, slightly right of center
+      BottomSlightlyRight, //!< Label below point, slightly right of center
       BottomRight, //!< Label on bottom right of point
     };
 
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsPalLayerSettings
       FontCase = 27, //!< Label text case
       FontLetterSpacing = 28, //!< Letter spacing
       FontWordSpacing = 29, //!< Word spacing
-      FontBlendMode = 30, //! Text blend mode
+      FontBlendMode = 30, //!< Text blend mode
 
       // text formatting
       MultiLineWrapChar = 31,

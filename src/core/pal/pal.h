@@ -62,7 +62,7 @@ namespace pal
     POPMUSIC_TABU_CHAIN = 1, //!< Is the best but slowest
     POPMUSIC_TABU = 2, //!< Is a little bit better than CHAIN but slower
     POPMUSIC_CHAIN = 3, //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
-    FALP = 4 //! only initial solution
+    FALP = 4 //!< only initial solution
   };
 
   //! Enumeration line arrangement flags. Flags can be combined.

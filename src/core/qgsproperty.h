@@ -233,7 +233,7 @@ class CORE_EXPORT QgsProperty
     //! Property types
     enum Type
     {
-      InvalidProperty, //! Invalid (not set) property
+      InvalidProperty, //!< Invalid (not set) property
       StaticProperty, //!< Static property (QgsStaticProperty)
       FieldBasedProperty, //!< Field based property (QgsFieldBasedProperty)
       ExpressionBasedProperty, //!< Expression based property (QgsExpressionBasedProperty)

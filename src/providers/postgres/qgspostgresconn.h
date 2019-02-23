@@ -431,7 +431,7 @@ class QgsPostgresConn : public QObject
 
     int mNextCursorId;
 
-    bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+    bool mShared; //!< whether the connection is shared by more providers (must not be if going to be used in worker threads)
 
     bool mTransaction;
 

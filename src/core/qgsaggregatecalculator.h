@@ -79,9 +79,9 @@ class CORE_EXPORT QgsAggregateCalculator
       InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
       StringMinimumLength, //!< Minimum length of string (string fields only)
       StringMaximumLength, //!< Maximum length of string (string fields only)
-      StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
-      GeometryCollect, //! Create a multipart geometry from aggregated geometries
-      ArrayAggregate //! Create an array of values
+      StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      GeometryCollect, //!< Create a multipart geometry from aggregated geometries
+      ArrayAggregate //!< Create an array of values
     };
 
     //! A bundle of parameters controlling aggregate calculation
