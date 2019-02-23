@@ -21,4 +21,4 @@ usr/lib/qgis/plugins/libvirtuallayerprovider.so
 usr/lib/qgis/plugins/libwcsprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
-#!xenial#{QT_PLUGINS_DIR}/sqldrivers/libqsqlspatialite.so
+#!xenial#usr/lib/*/qt?/plugins/sqldrivers/libqsqlspatialite.so
