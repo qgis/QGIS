@@ -302,6 +302,13 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/wcs-servers.json
 
+	# remove documentation outside usr/share/doc
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/README
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/TODO
+
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/README-qgis.txt
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/README.txt
+
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
 
