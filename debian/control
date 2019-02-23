@@ -338,6 +338,7 @@ Depends:
  qgis-plugin-grass-common (= ${source:Version}),
  qgis-provider-grass (= ${binary:Version}),
  grass-core,
+ ${grass:Depends},
  ${shlibs:Depends},
  ${misc:Depends}
 Description: GRASS plugin for QGIS
