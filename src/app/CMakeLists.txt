@@ -121,7 +121,6 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgriddialog.cpp
 
   vertextool/qgslockedfeature.cpp
-  vertextool/qgsvertexentry.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
 
