@@ -16,10 +16,10 @@
 #ifndef QGSLOCKEDFEATURE_H
 #define QGSLOCKEDFEATURE_H
 
+#include <QObject>
+
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
-
-#include <QObject>
 
 class QgsMapCanvas;
 class QgsVectorLayer;

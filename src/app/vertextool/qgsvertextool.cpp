@@ -37,7 +37,6 @@
 #include "qgisapp.h"
 #include "qgslockedfeature.h"
 #include "qgsvertexeditor.h"
-#include "qgsvertexentry.h"
 #include "qgsmapmouseevent.h"
 
 #include <QMenu>

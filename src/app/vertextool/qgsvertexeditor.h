@@ -19,19 +19,48 @@
 #ifndef QGSVERTEXEDITOR_H
 #define QGSVERTEXEDITOR_H
 
-#include "qgsdockwidget.h"
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
+
+#include "qgis_app.h"
+#include "qgsdockwidget.h"
+#include "qgspoint.h"
+
+class QLabel;
+class QTableView;
 
 class QgsMapCanvas;
 class QgsLockedFeature;
 class QgsVectorLayer;
 
-class QLabel;
-class QTableView;
 
-class QgsVertexEditorModel : public QAbstractTableModel
+class APP_EXPORT QgsVertexEntry
+{
+  public:
+    QgsVertexEntry( const QgsPoint &p,
+                    QgsVertexId vertexId )
+      : mSelected( false )
+      , mPoint( p )
+      , mVertexId( vertexId )
+    {
+    }
+
+    QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
+    QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;
+
+    const QgsPoint &point() const { return mPoint; }
+    QgsVertexId vertexId() const { return mVertexId; }
+    bool isSelected() const { return mSelected; }
+    void setSelected( bool selected ) { mSelected = selected; }
+
+  private:
+    bool mSelected;
+    QgsPoint mPoint;
+    QgsVertexId mVertexId;
+};
+
+class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
@@ -65,7 +94,7 @@ class QgsVertexEditorModel : public QAbstractTableModel
 
 };
 
-class QgsVertexEditor : public QgsDockWidget
+class APP_EXPORT QgsVertexEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:
@@ -98,7 +127,7 @@ class QgsVertexEditor : public QgsDockWidget
 };
 
 
-class CoordinateItemDelegate : public QStyledItemDelegate
+class APP_EXPORT CoordinateItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
