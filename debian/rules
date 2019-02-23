@@ -266,8 +266,6 @@ override_dh_auto_install:
 
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
 
 	# replace leaflet and jquery urls
 	perl -i -p \
