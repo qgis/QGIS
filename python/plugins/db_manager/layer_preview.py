@@ -126,10 +126,10 @@ class LayerPreview(QgsMapCanvas):
                 self.setLayers([vl])
                 QgsProject.instance().addMapLayers([vl], False)
                 self.zoomToFullExtent()
+                self.currentLayerId = vl.id()
             else:
                 self.setLayers([])
-
-            self.currentLayerId = vl.id()
+                self.currentLayerId = None
 
             self.freeze(False)
             super().refresh()
