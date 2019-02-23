@@ -97,7 +97,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- python-qgis (= ${binary:Version}),
+ python3-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
@@ -350,7 +350,7 @@ Description: GRASS plugin for QGIS
 Package: qgis-plugin-grass-common
 Architecture: all
 Depends:
- ${python:Depends},
+ ${python3:Depends},
  ${misc:Depends}
 Breaks: qgis-common (<< 1.5)
 Replaces: qgis-common (<< 1.5)
@@ -361,11 +361,11 @@ Description: GRASS plugin for QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with the QGIS GRASS plugin.
 
-Package: python-qgis
+Package: python3-qgis
 Architecture: any
 Section: python
 Depends:
- python-qgis-common (= ${source:Version}),
+ python3-qgis-common (= ${source:Version}),
  libqgispython2.99.0,
  libsqlite3-mod-spatialite,
  python3-dateutil,
@@ -388,11 +388,11 @@ Depends:
  python3-six,
  python3-tz,
  python3-yaml,
- ${python:Depends},
+ ${python3:Depends},
  ${shlibs:Depends},
- ${sip:Depends}
+ ${sip3:Depends}
  ${misc:Depends},
-Provides: ${python:Provides}
+Provides: ${python3:Provides}
 Recommends: liblwgeom-dev
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -400,7 +400,7 @@ Description: Python bindings to QGIS
  .
  This package contains the files for the Python support.
 
-Package: python-qgis-common
+Package: python3-qgis-common
 Architecture: all
 Section: python
 Depends:
@@ -409,10 +409,9 @@ Depends:
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),
- ${python:Depends},
+ ${python3:Depends},
  ${misc:Depends}
-Provides: ${python:Provides}
-XB-Python-Version: ${python:Versions}
+Provides: ${python3:Provides}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
