@@ -242,7 +242,7 @@ override_dh_clean: cleantemplates
 override_dh_auto_configure:
 	dh_auto_configure -- $(CMAKE_OPTS)
 
-override_dh_auto_build-arch:
+override_dh_auto_build:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build || \
 			cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log || \
@@ -252,7 +252,6 @@ else
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif
 
-override_dh_auto_build-indep:
 	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 
 override_dh_auto_test: test-stamp
