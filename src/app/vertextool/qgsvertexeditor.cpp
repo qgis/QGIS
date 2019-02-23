@@ -20,7 +20,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
 #include "qgslockedfeature.h"
-#include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
 #include "qgsproject.h"
@@ -379,7 +378,7 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
 void QgsVertexEditor::updateTableSelection()
 {
-  if ( !mLockedFeature || mUpdatingVertexSelection )
+  if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
 
   mUpdatingTableSelection = true;
@@ -395,11 +394,7 @@ void QgsVertexEditor::updateTableSelection()
       selection.select( mVertexModel->index( i, 0 ), mVertexModel->index( i, mVertexModel->columnCount() - 1 ) );
     }
   }
-  disconnect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
-  disconnect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
   mTableView->selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect );
-  connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 
   if ( firstSelectedRow >= 0 )
     mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
@@ -409,11 +404,10 @@ void QgsVertexEditor::updateTableSelection()
 
 void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItemSelection & )
 {
-  if ( !mLockedFeature || mUpdatingTableSelection )
+  if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
 
   mUpdatingVertexSelection = true;
-  disconnect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 
   mLockedFeature->deselectAllVertices();
 
@@ -450,7 +444,6 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItem
   }
 
   mUpdatingVertexSelection = false;
-  connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 }
 
 void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
@@ -504,3 +497,5 @@ void CoordinateItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *
     QStyledItemDelegate::setModelData( editor, model, index );
   }
 }
+
+
