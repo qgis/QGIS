@@ -10,6 +10,8 @@ export DH_OPTIONS
 # Enable hardening build flags
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
+include /usr/share/dpkg/pkg-info.mk
+
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -21,10 +23,10 @@ DEB_TEST_TARGET ?= Experimental
 QGIS_BUILDDIR ?= debian/build
 export QT_SELECT=5
 
-QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \([0-9]\+:\)\?\([^+-]\+\).*$$/\2/p')
+QGIS_VERSION=$(shell echo $(DEB_VERSION_UPSTREAM) | sed -e 's/\+.*//')
 
 ifeq (,$(DIST))
-	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
+	DISTRIBUTION := $(DEB_DISTRIBUTION)
 else
 	DISTRIBUTION := $(DIST)
 endif
