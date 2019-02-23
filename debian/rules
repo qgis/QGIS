@@ -20,7 +20,9 @@ DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 
 DEB_TEST_TARGET ?= Experimental
+
 QGIS_BUILDDIR ?= debian/build
+
 export QT_SELECT=5
 
 QGIS_VERSION=$(shell echo $(DEB_VERSION_UPSTREAM) | sed -e 's/\+.*//')
@@ -180,6 +182,10 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 	LDFLAGS += -pg
 endif
 
+ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -DNDEBUG
+	CXXFLAGS += -DNDEBUG
+endif
 
 # multi distribution support:
 # - remove lines with applicable excludes
