@@ -199,7 +199,6 @@ $(2): $(1)
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
-		-e "s/\{GRASSABI\}/$(GRASSABI)/g" \
 		-e "s/\{GRASSVER_QGISABI\}/$(GRASSVER)-$(QGIS_ABI)/g" \
 		$$^ >$$@
 
@@ -355,3 +354,5 @@ endif
 override_dh_strip:
 	dh_strip --dbg-package=qgis-dbg
 
+override_dh_gencontrol:
+	dh_gencontrol -- -Vgrass:Depends="grass$(GRASSABI)"
