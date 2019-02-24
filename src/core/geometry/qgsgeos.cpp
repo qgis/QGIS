@@ -1658,7 +1658,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr );
 }
 
-bool QgsGeos::isValid( QString *errorMsg ) const
+bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles ) const
 {
   if ( !mGeos )
   {
@@ -1667,7 +1667,14 @@ bool QgsGeos::isValid( QString *errorMsg ) const
 
   try
   {
-    return GEOSisValid_r( geosinit.ctxt, mGeos.get() );
+    GEOSGeometry *g1 = nullptr;
+    char *r = nullptr;
+    char res = GEOSisValidDetail_r( geosinit.ctxt, mGeos.get(), allowSelfTouchingHoles ? GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE : 0, &r, &g1 );
+    const bool invalid = res != 1;
+
+    if ( invalid && errorMsg )
+      *errorMsg = QString( r );
+    return !invalid;
   }
   CATCH_GEOS_WITH_ERRMSG( false );
 }
