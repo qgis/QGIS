@@ -171,7 +171,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
  * \see basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
- * \note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+ * \note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the properties palette:
  * bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
  */
 
