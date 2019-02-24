@@ -226,8 +226,10 @@ class CORE_EXPORT QgsGeometryEngine
      * The \a allowSelfTouchingHoles argument specifies whether self-touching holes are permitted.
      * OGC validity states that self-touching holes are NOT permitted, whilst other vendor
      * validity checks (e.g. ESRI) permit self-touching holes.
+     *
+     * If \a errorLoc is specified, it will be set to the geometry of the error location.
      */
-    virtual bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false ) const = 0;
+    virtual bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const = 0;
 
     /**
      * Checks if this is equal to \a geom.

@@ -1793,6 +1793,8 @@ True if the location available from :py:func:`where` is valid.
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
 %End
 
+        bool operator==( const QgsGeometry::Error &other ) const;
+
     };
 
     enum ValidationMethod
