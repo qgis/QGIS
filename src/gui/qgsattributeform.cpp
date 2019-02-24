@@ -1707,10 +1707,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( columnCount <= 0 )
         columnCount = 1;
 
+      QString widgetName;
       QWidget *myContainer = nullptr;
       if ( container->isGroupBox() )
       {
         QGroupBox *groupBox = new QGroupBox( parent );
+        widgetName = QStringLiteral( "QGroupBox" );
         if ( container->showLabel() )
           groupBox->setTitle( container->name() );
         myContainer = groupBox;
@@ -1727,13 +1729,21 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
           scrollArea->setWidget( myContainer );
           scrollArea->setWidgetResizable( true );
           scrollArea->setFrameShape( QFrame::NoFrame );
+          widgetName = QStringLiteral( "QScrollArea QWidget" );
 
           newWidgetInfo.widget = scrollArea;
         }
         else
         {
           newWidgetInfo.widget = myContainer;
+          widgetName = QStringLiteral( "QWidget" );
         }
+      }
+
+      if ( container->backgroundColor().isValid() )
+      {
+        QString style {QStringLiteral( "background-color: %1;" ).arg( container->backgroundColor().name() )};
+        newWidgetInfo.widget->setStyleSheet( style );
       }
 
       QGridLayout *gbLayout = new QGridLayout();

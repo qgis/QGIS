@@ -134,7 +134,7 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 
 .. note::
 
-   To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+   To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the properties palette:
    bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
 %End
 

@@ -525,7 +525,9 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
 
   if ( elem.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
-    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), elem.attribute( QStringLiteral( "name" ) ) ), parent );
+    QColor backgroundColor( elem.attribute( QStringLiteral( "backgroundColor" ), QString() ) );
+    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ),
+        elem.attribute( QStringLiteral( "name" ) ) ), parent, backgroundColor );
     bool ok;
     int cc = elem.attribute( QStringLiteral( "columnCount" ) ).toInt( &ok );
     if ( !ok )
@@ -625,7 +627,8 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "groupBox" ), mIsGroupBox ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpressionEnabled" ), mVisibilityExpression.enabled() ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpression" ), mVisibilityExpression->expression() );
-
+  if ( mBackgroundColor.isValid() )
+    elem.setAttribute( QStringLiteral( "backgroundColor" ), mBackgroundColor.name( ) );
   Q_FOREACH ( QgsAttributeEditorElement *child, mChildren )
   {
     QDomDocument doc = elem.ownerDocument();
