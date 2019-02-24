@@ -920,11 +920,11 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
   if ( !QgsLayerTree::isLayer( currentNode ) )
     return;
-  
-  QgsLayerTReeLayer * layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
+
+  QgsLayerTReeLayer *layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
-  QgsExpressionBuilderDialog expressiondialog( vl, layer->expression(), nullptr, "generic" , vl->createExpressionContext() );
+  QgsExpressionBuilderDialog expressiondialog( vl, layer->expression(), nullptr, "generic", vl->createExpressionContext() );
   if ( expressiondialog.exec() )
     layer->setExpression( expressiondialog.expressionText() );
 
