@@ -51,6 +51,8 @@ qgis:checkvalidity: >
 
   The geometries are classified in three groups (valid, invalid and error), and a vector layer is generated with the features in each of these categories.
 
+  By default the algorithm uses the strict OGC definition of polygon validity, where a polygon is marked as invalid if a self-intersecting ring causes an interior hole. If the "Ignore ring self intersections" option is checked, then this rule will be ignored and a more lenient validity check will be performed.
+
 qgis:clip: >
   This algorithm clips a vector layer using the polygons of an additional polygons layer. Only the parts of the features in the input layer that falls within the polygons of the clipping layer will be added to the resulting layer.
 
