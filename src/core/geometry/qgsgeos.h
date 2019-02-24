@@ -218,7 +218,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr ) const override;
     double area( QString *errorMsg = nullptr ) const override;
     double length( QString *errorMsg = nullptr ) const override;
-    bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false ) const override;
+    bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr ) const override;
     bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
