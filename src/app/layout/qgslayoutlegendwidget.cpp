@@ -100,7 +100,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mEditPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mEditPushButton_clicked );
   connect( mCountToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mCountToolButton_clicked );
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
-  connect( mLayerExpressionButton, &QgToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
+  connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapToolButton, &QToolButton::toggled, this, &QgsLayoutLegendWidget::mFilterByMapToolButton_toggled );
   connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
@@ -921,7 +921,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   if ( !QgsLayerTree::isLayer( currentNode ) )
     return;
 
-  QgsLayerTReeLayer *layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
+  QgsLayerTreeLayer *layer = qobject_cast<QgsLayerTreeLayer *>( currentNode );
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
   QgsExpressionBuilderDialog expressiondialog( vl, layer->expression(), nullptr, "generic", vl->createExpressionContext() );
