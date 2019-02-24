@@ -2457,7 +2457,7 @@ QgsGeometry QgsGeometry::forceRHR() const
 }
 
 
-void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, ValidationMethod method ) const
+void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const ValidationMethod method, const QgsGeometry::ValidityFlags flags ) const
 {
   errors.clear();
   if ( !d->geometry )
@@ -2480,7 +2480,7 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, Validat
       QgsGeos geos( d->geometry.get() );
       QString error;
       QgsGeometry errorLoc;
-      if ( !geos.isValid( &error, true, &errorLoc ) )
+      if ( !geos.isValid( &error, flags & FlagAllowSelfTouchingHoles, &errorLoc ) )
       {
         if ( errorLoc.isNull() )
         {
