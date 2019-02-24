@@ -64,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>377</width>
-        <height>1662</height>
+        <width>374</width>
+        <height>1358</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -128,7 +128,7 @@
           <item row="0" column="2">
            <widget class="QgsPropertyOverrideButton" name="mLegendTitleDDBtn">
             <property name="text">
-             <string>…</string>
+             <string>â€¦</string>
             </property>
            </widget>
           </item>
@@ -289,7 +289,7 @@
                <string>Add group</string>
               </property>
               <property name="text">
-               <string>…</string>
+               <string>â€¦</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -408,6 +408,23 @@
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/mIconExpressionFilter.svg</normaloff>:/images/themes/default/mIconExpressionFilter.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mLayerExpressionButton">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>:/images/themes/default/mActionAddExpression.svg</normaloff>:/images/themes/default/mActionAddExpression.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -596,7 +613,7 @@
           <item row="0" column="2">
            <widget class="QgsPropertyOverrideButton" name="mColumnsDDBtn">
             <property name="text">
-             <string>…</string>
+             <string>â€¦</string>
             </property>
            </widget>
           </item>
@@ -669,7 +686,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton" stdset="0">
+            <property name="showClearButton">
              <bool>false</bool>
             </property>
            </widget>
@@ -689,7 +706,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton" stdset="0">
+            <property name="showClearButton">
              <bool>false</bool>
             </property>
            </widget>
@@ -785,7 +802,7 @@
                <property name="singleStep">
                 <double>0.100000000000000</double>
                </property>
-               <property name="showClearButton" stdset="0">
+               <property name="showClearButton">
                 <bool>false</bool>
                </property>
               </widget>
@@ -835,7 +852,7 @@
             <property name="maximum">
              <double>9999.000000000000000</double>
             </property>
-            <property name="showClearButton" stdset="0">
+            <property name="showClearButton">
              <bool>false</bool>
             </property>
            </widget>
@@ -858,7 +875,7 @@
             <property name="maximum">
              <double>9999.000000000000000</double>
             </property>
-            <property name="showClearButton" stdset="0">
+            <property name="showClearButton">
              <bool>false</bool>
             </property>
            </widget>
@@ -1050,37 +1067,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayoutItemComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgslayoutitemcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFontButton</class>
@@ -1091,6 +1086,28 @@
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayoutItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>
