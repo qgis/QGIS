@@ -345,11 +345,21 @@ class CORE_EXPORT QgsGeometry
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
+    //! Validity check flags
+    enum ValidityFlag
+    {
+      FlagAllowSelfTouchingHoles = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+    };
+    Q_DECLARE_FLAGS( ValidityFlags, ValidityFlag )
+
     /**
-     * Checks validity of the geometry using GEOS
+     * Checks validity of the geometry using GEOS.
+     *
+     * The \a flags parameter indicates optional flags which control the type of validity checking performed.
+     *
      * \since QGIS 1.5
      */
-    bool isGeosValid() const;
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = nullptr ) const;
 
     /**
      * Determines whether the geometry is simple (according to OGC definition),
@@ -2270,6 +2280,7 @@ class CORE_EXPORT QgsGeometry
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGeometry::ValidityFlags )
 
 //! Writes the geometry to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry );
