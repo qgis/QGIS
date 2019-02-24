@@ -18,7 +18,6 @@ Build-Depends:
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
  libgsl-dev,
- libosgearth-dev,
  libpq-dev,
  libproj-dev,
  libqca-qt5-2-dev,
@@ -233,7 +232,6 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis2.99.0
 Description: QGIS - shared Python library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.

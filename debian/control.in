@@ -17,8 +17,7 @@ Build-Depends:
  libfcgi-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
-#sid buster stretch xenial bionic cosmic# libgsl-dev,
-#sid buster bionic cosmic# libosgearth-dev,
+ libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqca-qt5-2-dev,
@@ -61,14 +60,14 @@ Build-Depends:
  python3-sip,
  python3-termcolor,
  python3-yaml,
-#sid buster bionic cosmic# qt3d5-dev,
-#sid buster bionic cosmic# qt3d-assimpsceneimport-plugin,
-#sid buster bionic cosmic# qt3d-defaultgeometryloader-plugin,
-#sid buster bionic cosmic# qt3d-gltfsceneio-plugin,
-#sid buster bionic cosmic# qt3d-scene2d-plugin,
+ qt3d5-dev,
+ qt3d-assimpsceneimport-plugin,
+ qt3d-defaultgeometryloader-plugin,
+ qt3d-gltfsceneio-plugin,
+ qt3d-scene2d-plugin,
  qt5keychain-dev,
  qtbase5-dev,
-#!xenial# qtbase5-private-dev,
+ qtbase5-private-dev,
  qtpositioning5-dev,
  qttools5-dev-tools,
  qttools5-dev,
@@ -90,7 +89,7 @@ Build-Depends:
 Build-Conflicts:
  libqgis-dev,
  qgis-dev
-#sid buster stretch xenial bionic cosmic#Standards-Version: 3.9.7
+Standards-Version: 3.9.7
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: https://qgis.org/
@@ -104,7 +103,6 @@ Depends:
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
-#globe# qgis-plugin-globe,
  qgis-plugin-grass
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -122,7 +120,7 @@ Architecture: all
 Depends:
  libjs-jquery,
  libjs-leaflet,
-#sid buster bionic cosmic# qml-module-qtcharts,
+ qml-module-qtcharts,
  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -131,22 +129,22 @@ Description: QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with QGIS.
 
-#sid buster bionic cosmic#Package: libqgis-3d{QGIS_ABI}
-#sid buster bionic cosmic#Architecture: any
-#sid buster bionic cosmic#Section: libs
-#sid buster bionic cosmic#Depends:
-#sid buster bionic cosmic# qt3d-assimpsceneimport-plugin,
-#sid buster bionic cosmic# qt3d-defaultgeometryloader-plugin,
-#sid buster bionic cosmic# qt3d-gltfsceneio-plugin,
-#sid buster bionic cosmic# qt3d-scene2d-plugin,
-#sid buster bionic cosmic# ${shlibs:Depends},
-#sid buster bionic cosmic# ${misc:Depends}
-#sid buster bionic cosmic#Description: QGIS - shared 3d library
-#sid buster bionic cosmic# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#sid buster bionic cosmic# display databases of geographic information.
-#sid buster bionic cosmic# .
-#sid buster bionic cosmic# This package contains the shared 3d library.
-#sid buster bionic cosmic#
+Package: libqgis-3d{QGIS_ABI}
+Architecture: any
+Section: libs
+Depends:
+ qt3d-assimpsceneimport-plugin,
+ qt3d-defaultgeometryloader-plugin,
+ qt3d-gltfsceneio-plugin,
+ qt3d-scene2d-plugin,
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS - shared 3d library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared 3d library.
+
 Package: libqgis-analysis{QGIS_ABI}
 Architecture: any
 Section: libs
@@ -266,11 +264,11 @@ Depends:
  libexpat1-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
-#sid buster stretch xenial bionic cosmic# libgsl-dev,
+ libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqca-qt5-2-dev,
-#sid buster bionic cosmic# libqgis-3d{QGIS_ABI} (= ${binary:Version}),
+ libqgis-3d{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
@@ -308,7 +306,7 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends:
-#sid buster bionic cosmic# libqgis-3d{QGIS_ABI} (= ${binary:Version}),
+ libqgis-3d{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
@@ -366,32 +364,6 @@ Description: GRASS plugin for QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with the QGIS GRASS plugin.
 
-#globe#Package: qgis-plugin-globe
-#globe#Architecture: any
-#globe#Depends:
-#globe# qgis (= ${binary:Version}),
-#globe# qgis-plugin-globe-common (= ${source:Version}),
-#globe# openscenegraph-plugin-osgearth,
-#globe# ${shlibs:Depends},
-#globe# ${misc:Depends}
-#globe#Description: OSG globe plugin for QGIS
-#globe# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#globe# display databases of geographic information.
-#globe# .
-#globe# This plugin enables 3D viewing using OSG globe in the QGIS.
-#globe#
-#globe#Package: qgis-plugin-globe-common
-#globe#Architecture: all
-#globe#Depends:
-#globe# osgearth-data,
-#globe# ${misc:Depends}
-#globe#Description: OSG globe plugin for QGIS - architecture-independent data
-#globe# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#globe# display databases of geographic information.
-#globe# .
-#globe# This package contains architecture-independent supporting data files for use
-#globe# with the QGIS GLOBE plugin.
-#globe#
 Package: python3-qgis
 Architecture: any
 Section: python

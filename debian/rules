@@ -40,7 +40,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch buster xenial bionic cosmic"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic cosmic"))
 	DISTRIBUTION := sid
 endif
 
@@ -91,7 +91,8 @@ CMAKE_OPTS := \
 	-DWITH_QWTPOLAR=FALSE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
 	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
-	-DDOXYGEN_ON_DEMAND=TRUE
+	-DDOXYGEN_ON_DEMAND=TRUE \
+	-DWITH_QSPATIALITE=TRUE
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -104,15 +105,7 @@ ifeq ($(GRASSVER),7)
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
 endif
 
-ifneq ($(DISTRIBUTION),xenial)
-	CMAKE_OPTS += -DWITH_QSPATIALITE=TRUE
-endif
-
-ifneq (,$(WITH_GLOBE))
-	CMAKE_OPTS += -DWITH_GLOBE=TRUE
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
@@ -145,7 +138,7 @@ endif
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
@@ -194,10 +187,6 @@ endif
 # - remove remaining comments
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
-
-ifneq (,$(WITH_GLOBE))
-	CONTROL_EXPRESSIONS += globe
-endif
 
 ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
@@ -286,9 +275,6 @@ override_dh_auto_install:
 	perl -i -p \
 		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
 		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
-
-	# Use /usr/bin/python2.7 explicitly for Python Policy compliance
-	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
 
 	# Don't include a copy of the world.tif also included in osgearth-data
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
