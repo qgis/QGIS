@@ -1851,6 +1851,11 @@ class CORE_EXPORT QgsGeometry
         % End
 #endif
 
+        bool operator==( const QgsGeometry::Error &other ) const
+        {
+          return other.mMessage == mMessage && other.mHasLocation == mHasLocation && other.mLocation == mLocation;
+        }
+
       private:
         QString mMessage;
         QgsPointXY mLocation;
