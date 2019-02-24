@@ -5064,23 +5064,27 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testValidateGeometry(self):
         tests = [
-            ["", []],
-            ["Point (100 100)", [], []],
-            ["MultiPoint (100 100, 100 200)", [], []],
-            ["LINESTRING (0 0, 0 100, 100 100)", [], []],
-            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", [], []],
-            ["MULTIPOLYGON(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))", [], []],
-            ['MultiPolygon (((159865.14786298031685874 6768656.31838363595306873, 159858.97975336571107619 6769211.44824895076453686, 160486.07089751763851382 6769211.44824895076453686, 160481.95882444124436006 6768658.37442017439752817, 160163.27316101978067309 6768658.37442017439752817, 160222.89822062765597366 6769116.87056819349527359, 160132.43261294672265649 6769120.98264127038419247, 160163.27316101978067309 6768658.37442017439752817, 159865.14786298031685874 6768656.31838363595306873)))', [], []],
-            ['Polygon((0 3, 3 0, 3 3, 0 0, 0 3))', [QgsGeometry.Error('Self-intersection', QgsPointXY(1.5, 1.5))], [QgsGeometry.Error('segments 0 and 2 of line 0 intersect at 1.5, 1.5', QgsPointXY(1.5, 1.5))]],
+            ["", [], [], []],
+            ["Point (100 100)", [], [], []],
+            ["MultiPoint (100 100, 100 200)", [], [], []],
+            ["LINESTRING (0 0, 0 100, 100 100)", [], [], []],
+            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", [], [], []],
+            ["MULTIPOLYGON(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))", [], [], []],
+            ['POLYGON ((200 400, 400 400, 400 200, 300 200, 350 250, 250 250, 300 200, 200 200, 200 400))', [QgsGeometry.Error('Ring self-intersection', QgsPointXY(300, 200))], [], []],
+            ['MultiPolygon (((159865.14786298031685874 6768656.31838363595306873, 159858.97975336571107619 6769211.44824895076453686, 160486.07089751763851382 6769211.44824895076453686, 160481.95882444124436006 6768658.37442017439752817, 160163.27316101978067309 6768658.37442017439752817, 160222.89822062765597366 6769116.87056819349527359, 160132.43261294672265649 6769120.98264127038419247, 160163.27316101978067309 6768658.37442017439752817, 159865.14786298031685874 6768656.31838363595306873)))', [QgsGeometry.Error('Ring self-intersection', QgsPointXY(160163.27316101978067309, 6768658.37442017439752817))], [], []],
+            ['Polygon((0 3, 3 0, 3 3, 0 0, 0 3))', [QgsGeometry.Error('Self-intersection', QgsPointXY(1.5, 1.5))], [QgsGeometry.Error('Self-intersection', QgsPointXY(1.5, 1.5))], [QgsGeometry.Error('segments 0 and 2 of line 0 intersect at 1.5, 1.5', QgsPointXY(1.5, 1.5))]],
         ]
         for t in tests:
             g1 = QgsGeometry.fromWkt(t[0])
             res = g1.validateGeometry(QgsGeometry.ValidatorGeos)
             self.assertEqual(res, t[1],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], res[0].where() if res else ''))
-            res = g1.validateGeometry(QgsGeometry.ValidatorQgisInternal)
+            res = g1.validateGeometry(QgsGeometry.ValidatorGeos, QgsGeometry.FlagAllowSelfTouchingHoles)
             self.assertEqual(res, t[2],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[2], res[0].where() if res else ''))
+            res = g1.validateGeometry(QgsGeometry.ValidatorQgisInternal)
+            self.assertEqual(res, t[3],
+                             "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[3], res[0].where() if res else ''))
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
