@@ -129,7 +129,7 @@ namespace pal
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
-      void registerCancelationCallback( FnIsCanceled fnCanceled, void *context );
+      void registerCancellationCallback( FnIsCanceled fnCanceled, void *context );
 
       //! Check whether the job has been canceled
       inline bool isCanceled() { return fnIsCanceled ? fnIsCanceled( fnIsCanceledContext ) : false; }

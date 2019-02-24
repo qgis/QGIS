@@ -283,8 +283,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
 
   QgsRectangle extent = extentGeom.boundingBox();
 
-
-  p.registerCancelationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
+  p.registerCancellationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
   QTime t;
   t.start();
