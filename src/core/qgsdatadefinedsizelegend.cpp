@@ -178,16 +178,18 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     if ( w > maxTextWidth )
       maxTextWidth = w;
   }
+  // add extra width needed to handle varying rendering of font weight
+  maxTextWidth += 1;
 
   // find out size of the largest symbol
   double largestSize = classes.at( 0 ).size;
-  double outputLargestSize = context.convertToPainterUnits( largestSize, s->sizeUnit(), s->sizeMapUnitScale() );
+  int outputLargestSize = std::round( context.convertToPainterUnits( largestSize, s->sizeUnit(), s->sizeMapUnitScale() ) );
 
   // find out top Y coordinate for individual symbol sizes
   QList<int> symbolTopY;
   Q_FOREACH ( const SizeClass &c, classes )
   {
-    double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
+    int outputSymbolSize = std::round( context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() ) );
     switch ( mVAlign )
     {
       case AlignCenter:
@@ -243,7 +245,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   {
     s->setSize( c.size );
 
-    double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
+    int outputSymbolSize = std::round( context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() ) );
     double tx = ( outputLargestSize - outputSymbolSize ) / 2;
 
     p->save();

@@ -99,7 +99,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     void calculateOutputSize();
 
   protected:
-    //! feedback class for cancelation
+    //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
 
     // copy from mesh layer

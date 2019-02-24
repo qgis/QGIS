@@ -107,7 +107,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     /**
      * Starts the calculation and writes a new raster.
      *
-     * The optional \a feedback argument can be used for progress reporting and cancelation support.
+     * The optional \a feedback argument can be used for progress reporting and cancellation support.
      *
      * \returns QgsRasterCalculator::Success in case of success. If an error is encountered then
      * a description of the error can be obtained by calling lastError().

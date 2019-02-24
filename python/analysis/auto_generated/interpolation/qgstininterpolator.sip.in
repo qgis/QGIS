@@ -32,7 +32,7 @@ Interpolation in a triangular irregular network
     QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor for QgsTinInterpolator.
-The ``feedback`` object specifies an optional QgsFeedback object for progress reports and cancelation support.
+The ``feedback`` object specifies an optional QgsFeedback object for progress reports and cancellation support.
 Ownership of ``feedback`` is not transferred and callers must ensure that it exists for the lifetime of this object.
 %End
     ~QgsTinInterpolator();

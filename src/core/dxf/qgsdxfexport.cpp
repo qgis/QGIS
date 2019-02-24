@@ -992,7 +992,7 @@ void QgsDxfExport::writeEntities()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "%1: not override style" ).arg( vl->id() ) );
+      QgsDebugMsg( QStringLiteral( "%1: no override style" ).arg( vl->id() ) );
     }
 
     if ( !vl->renderer() )
@@ -1072,6 +1072,10 @@ void QgsDxfExport::writeEntities()
       QString lName( dxfLayerName( attrIdx < 0 ? layerName( vl ) : fet.attribute( attrIdx ).toString() ) );
 
       sctx.setFeature( &fet );
+
+      if ( !renderer->willRenderFeature( fet, ctx ) )
+        continue;
+
       if ( mSymbologyExport == NoSymbology )
       {
         addFeature( sctx, ct, lName, nullptr, nullptr ); // no symbology at all
@@ -3477,9 +3481,6 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
     return;
   }
 
-  bool polygon = line[0] == line[ line.size() - 1 ];
-  if ( polygon )
-    --n;
   if ( n < 2 )
   {
     QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
@@ -3488,6 +3489,10 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
 
   if ( mForce2d || !line.at( 0 ).is3D() )
   {
+    bool polygon = line[0] == line[ line.size() - 1 ];
+    if ( polygon )
+      --n;
+
     writeGroup( 0, QStringLiteral( "LWPOLYLINE" ) );
     writeHandle();
     writeGroup( 8, layer );

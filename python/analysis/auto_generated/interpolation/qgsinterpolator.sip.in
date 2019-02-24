@@ -83,7 +83,7 @@ Calculates interpolation value for map coordinates x, y
 :param x: x-coordinate (in map units)
 :param y: y-coordinate (in map units)
 :param result: out: interpolation result
-:param feedback: optional feedback object for progress and cancelation support
+:param feedback: optional feedback object for progress and cancellation support
 
 :return: 0 in case of success*
 %End
@@ -96,7 +96,7 @@ Calculates interpolation value for map coordinates x, y
 Caches the vertex and value data from the provider. All the vertex data
 will be held in virtual memory.
 
-An optional ``feedback`` argument may be specified to allow cancelation and
+An optional ``feedback`` argument may be specified to allow cancellation and
 progress reports from the cache operation.
 
 :return: Success in case of success
