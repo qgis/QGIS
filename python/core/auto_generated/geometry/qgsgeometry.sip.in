@@ -313,9 +313,18 @@ by equals() instead.
 .. versionadded:: 1.5
 %End
 
-    bool isGeosValid() const;
+    enum ValidityFlag
+    {
+      FlagAllowSelfTouchingHoles,
+    };
+    typedef QFlags<QgsGeometry::ValidityFlag> ValidityFlags;
+
+
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = 0 ) const;
 %Docstring
-Checks validity of the geometry using GEOS
+Checks validity of the geometry using GEOS.
+
+The ``flags`` parameter indicates optional flags which control the type of validity checking performed.
 
 .. versionadded:: 1.5
 %End
@@ -2106,6 +2115,8 @@ Downgrades a point list from QgsPoint to :py:class:`QgsPointXY`
     operator QVariant() const;
 
 }; // class QgsGeometry
+
+QFlags<QgsGeometry::ValidityFlag> operator|(QgsGeometry::ValidityFlag f1, QFlags<QgsGeometry::ValidityFlag> f2);
 
 
 
