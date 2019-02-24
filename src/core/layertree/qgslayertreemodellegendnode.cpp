@@ -626,10 +626,10 @@ QgsExpressionContext QgsSymbolLegendNode::createExpressionContext( QgsExpression
 
 QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLayer *vl, QgsExpressionContext context ) const
 {
-  if ( mLayerNode->layer()->type() == 0 )
+  if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
   {
     context = createExpressionContext( context );
-    label = label + mLayerNode->expression();
+    label = label +"[%" + mLayerNode->expression() + "%]";
     Q_UNUSED( vl );
   }
   else
