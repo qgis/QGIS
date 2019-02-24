@@ -31,7 +31,7 @@ The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and size of
 %Docstring
 Writes the grid file.
 
-An optional ``feedback`` object can be set for progress reports and cancelation support
+An optional ``feedback`` object can be set for progress reports and cancellation support
 
 :return: 0 in case of success
 %End

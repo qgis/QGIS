@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
 
     /**
      * Constructor for QgsTinInterpolator.
-     * The \a feedback object specifies an optional QgsFeedback object for progress reports and cancelation support.
+     * The \a feedback object specifies an optional QgsFeedback object for progress reports and cancellation support.
      * Ownership of \a feedback is not transferred and callers must ensure that it exists for the lifetime of this object.
      */
     QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
