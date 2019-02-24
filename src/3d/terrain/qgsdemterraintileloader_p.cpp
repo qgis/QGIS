@@ -152,7 +152,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   QElapsedTimer t;
   t.start();
 
-  // TODO: use feedback object? (but GDAL currently does not support cancelation anyway)
+  // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;
   std::unique_ptr<QgsRasterProjector> projector;
   if ( provider->crs() != destCrs )

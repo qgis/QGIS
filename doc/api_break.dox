@@ -1892,7 +1892,7 @@ QgsRasterCalculator     {#qgis_api_break_3_0_QgsRasterCalculator}
 
 - Cancelled (Result enum value) has been renamed to Canceled  <!--#spellok-->
 - processCalculation() now uses an optional QgsFeedback instead of QProgressDialog
-for progress reports and cancelation.
+for progress reports and cancellation.
 
 QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 ---------------------
@@ -2576,7 +2576,7 @@ QgsRendererAbstractMetadata   {#qgis_api_break_3_0_QgsRendererAbstractMetadata}
 QgsGraphDirector   {#qgis_api_break_3_0_QgsGraphDirector}
 ----------------
 
-- makeGraph() now uses QgsFeedback for progress reporting and cancelation
+- makeGraph() now uses QgsFeedback for progress reporting and cancellation
 - buildProgress() signal was removed
 - buildMessage() signal was removed
 
@@ -2584,7 +2584,7 @@ QgsVectorLayerDirector   {#qgis_api_break_3_0_QgsVectorLayerDirector}
 ----------------------
 
 - QgsVectorLayerDirector() constructor now expects a reference to QgsFeatureSource as the first argument
-- makeGraph() now uses QgsFeedback for progress reporting and cancelation
+- makeGraph() now uses QgsFeedback for progress reporting and cancellation
 
 Processing        {#qgis_api_break_3_0_Processing}
 ----------

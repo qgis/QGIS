@@ -27,7 +27,7 @@
 #include "qgsmaplayer.h"
 
 
-// helper function for checking for job cancelation within PAL
+// helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
 {
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
