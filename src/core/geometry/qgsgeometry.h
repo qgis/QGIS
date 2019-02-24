@@ -1875,10 +1875,12 @@ class CORE_EXPORT QgsGeometry
     /**
      * Validates geometry and produces a list of geometry errors.
      * The \a method argument dictates which validator to utilize.
-     * \note Available in Python bindings since QGIS 1.6
+     *
+     * The \a flags parameter indicates optional flags which control the type of validity checking performed.
+     *
      * \since QGIS 1.5
      */
-    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = nullptr ) const;
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
