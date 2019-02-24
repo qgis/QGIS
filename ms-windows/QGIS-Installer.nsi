@@ -539,9 +539,10 @@ Section "Uninstall"
 
 	;remove the Desktop ShortCut
 	SetShellVarContext all
-	Delete "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk"
-	Delete "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk"
-	Delete "$DESKTOP\OSGeo4W.lnk"
+	Delete "$DESKTOP\${QGIS_BASE}\QGIS Desktop (${VERSION_NUMBER}).lnk"
+	Delete "$DESKTOP\${QGIS_BASE}\QGIS Browser (${VERSION_NUMBER}).lnk"
+	Delete "$DESKTOP\${QGIS_BASE}\OSGeo4W.lnk"
+	RmDir "$DESKTOP\${QGIS_BASE}"
 
 	;remove the Programs Start ShortCut
 	SetShellVarContext all
