@@ -3746,6 +3746,24 @@ tests:
         name: expected/valid.gml
         type: vector
 
+  - algorithm: qgis:checkvalidity
+    name: Check validity polygon ring self intersection
+    params:
+      INPUT_LAYER:
+        name: custom/poly_ring_self_intersection.gml|layername=poly_ring_self_intersection
+        type: vector
+      METHOD: 2
+    results:
+      ERROR_OUTPUT:
+        name: expected/poly_ring_self_intersection_error.gml
+        type: vector
+      INVALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_invalid.gml
+        type: vector
+      VALID_OUTPUT:
+        name: expected/poly_ring_self_intersection_valid.gml
+        type: vector
+
   - algorithm: qgis:polygonize
     name: Polygonize
     params:
