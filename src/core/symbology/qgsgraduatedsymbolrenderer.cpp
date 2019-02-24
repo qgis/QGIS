@@ -175,7 +175,7 @@ const int QgsRendererRangeLabelFormat::MAX_PRECISION = 15;
 const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
-  : mFormat( QStringLiteral( " %1 - %2 " ) )
+  : mFormat( QStringLiteral( "%1 - %2" ) )
   , mReTrailingZeroes( "[.,]?0*$" )
   , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
