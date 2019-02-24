@@ -78,7 +78,7 @@ class CORE_EXPORT QgsValidityCheckRegistry
      * The \a context argument gives the wider in which the check is being run.
      *
      * The \a feedback argument is used to give progress reports and to support
-     * cancelation of long-running checks.
+     * cancellation of long-running checks.
      *
      * This is a blocking call, which will run all matching checks in the main
      * thread and only return when they have all completed.

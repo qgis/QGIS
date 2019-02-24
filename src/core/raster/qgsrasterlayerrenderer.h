@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe *mPipe = nullptr;
     QgsRenderContext &mContext;
 
-    //! feedback class for cancelation and preview generation
+    //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
 
     friend class QgsRasterLayerRendererFeedback;
