@@ -45,7 +45,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param nCols number of columns
      * \param nRows number of rows
      * \param extent area to read
-     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
 

@@ -77,7 +77,7 @@ Emitted when data are ready to be processed
 
     void cancelDownload();
 %Docstring
-Call to abort the download and delete this object after the cancelation
+Call to abort the download and delete this object after the cancellation
 has been processed.
 
 .. seealso:: :py:func:`downloadCanceled`
