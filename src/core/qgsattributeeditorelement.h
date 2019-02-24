@@ -174,6 +174,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param name   The name to show as title
      * \param parent The parent. May be another container.
+     * \param backgroundColor The optional background color of the container.
      */
     QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() )
       : QgsAttributeEditorElement( AeTypeContainer, name, parent )
