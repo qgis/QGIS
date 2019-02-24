@@ -221,7 +221,7 @@ class Grass7Utils:
                 if "GISBASE" in os.environ:
                     folder = os.environ["GISBASE"]
                 else:
-                    testfolder = os.path.join(str(QgsApplication.prefixPath()), 'grass')
+                    testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'grass')
                     if os.path.isdir(testfolder):
                         grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
                         if grassfolders:
