@@ -378,11 +378,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
-    QString mGeometryColumn;          //!< name of the geometry column
+    QString mGeometryColumn;          //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
 
-    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //!< geometry type detected in the database
-    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //!< geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //!< Geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //!< Geometry type requested in the uri
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
 
@@ -438,8 +438,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString paramValue( const QString &fieldvalue, const QString &defaultValue ) const;
 
-    QgsPostgresConn *mConnectionRO = nullptr ; //!< read-only database connection (initially)
-    QgsPostgresConn *mConnectionRW = nullptr ; //!< read-write database connection (on update)
+    QgsPostgresConn *mConnectionRO = nullptr ; //!< Read-only database connection (initially)
+    QgsPostgresConn *mConnectionRW = nullptr ; //!< Read-write database connection (on update)
 
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();

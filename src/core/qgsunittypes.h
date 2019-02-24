@@ -114,7 +114,7 @@ class CORE_EXPORT QgsUnitTypes
       RenderMapUnits, //!< Map units
       RenderPixels, //!< Pixels
       RenderPercentage, //!< Percentage of another measurement (e.g., canvas size, feature size)
-      RenderPoints, //!< points (e.g., for font sizes)
+      RenderPoints, //!< Points (e.g., for font sizes)
       RenderInches, //!< Inches
       RenderUnknownUnit, //!< Mixed or unknown units
       RenderMetersInMapUnits, //!< Meters value as Map units

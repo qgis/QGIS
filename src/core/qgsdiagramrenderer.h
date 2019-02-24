@@ -89,8 +89,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
       BackgroundColor, //!< Diagram background color
       StrokeColor, //!< Stroke color
       StrokeWidth, //!< Stroke width
-      PositionX, //!< x-coordinate data defined diagram position
-      PositionY, //!< y-coordinate data defined diagram position
+      PositionX, //!< X-coordinate data defined diagram position
+      PositionY, //!< Y-coordinate data defined diagram position
       Distance, //!< Distance to diagram from feature
       Priority, //!< Diagram priority (between 0 and 10)
       ZIndex, //!< Z-index for diagram ordering

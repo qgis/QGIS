@@ -77,7 +77,7 @@ is the MDAL connection string. QGIS must be built with MDAL support to allow thi
 
     struct LayerOptions
     {
-      int unused;  //! @todo remove me once there are actual members here (breaks SIP <4.19)
+      int unused;  //!< @todo remove me once there are actual members here (breaks SIP <4.19)
     };
 
     explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
