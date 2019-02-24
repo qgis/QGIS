@@ -1658,7 +1658,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr );
 }
 
-bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles ) const
+bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const
 {
   if ( !mGeos )
   {
@@ -1673,7 +1673,38 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles ) co
     const bool invalid = res != 1;
 
     if ( invalid && errorMsg )
-      *errorMsg = QString( r );
+    {
+      static QgsStringMap translatedErrors;
+
+      if ( translatedErrors.empty() )
+      {
+        // Copied from https://git.osgeo.org/gitea/geos/geos/src/branch/master/src/operation/valid/TopologyValidationError.cpp
+        translatedErrors.insert( QStringLiteral( "topology validation error" ), QObject::tr( "Topology validation error", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "repeated point" ), QObject::tr( "Repeated point", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "hole lies outside shell" ), QObject::tr( "Hole lies outside shell", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "holes are nested" ), QObject::tr( "Holes are nested", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "interior is disconnected" ), QObject::tr( "Interior is disconnected", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "self-intersection" ), QObject::tr( "Self-intersection", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "ring self-intersection" ), QObject::tr( "Ring self-intersection", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "nested shells" ), QObject::tr( "Nested shells", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "duplicate rings" ), QObject::tr( "Duplicate rings", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "too few points in geometry component" ), QObject::tr( "Too few points in geometry component", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "invalid coordinate" ), QObject::tr( "Invalid coordinate", "GEOS Error" ) );
+        translatedErrors.insert( QStringLiteral( "ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) );
+      }
+
+      const QString error( r );
+      *errorMsg = translatedErrors.value( error.toLower(), error );
+
+      if ( g1 && errorLoc )
+      {
+        *errorLoc = geometryFromGeos( g1 );
+      }
+      else if ( g1 )
+      {
+        GEOSGeom_destroy_r( geosinit.ctxt, g1 );
+      }
+    }
     return !invalid;
   }
   CATCH_GEOS_WITH_ERRMSG( false );
