@@ -2462,7 +2462,7 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, Validat
   QgsGeometryValidator::validateGeometry( *this, errors, method );
 }
 
-bool QgsGeometry::isGeosValid() const
+bool QgsGeometry::isGeosValid( const QgsGeometry::ValidityFlags flags ) const
 {
   if ( !d->geometry )
   {
@@ -2477,7 +2477,7 @@ bool QgsGeometry::isGeosValid() const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  return geos.isValid( &mLastError );
+  return geos.isValid( &mLastError, flags & FlagAllowSelfTouchingHoles );
 }
 
 bool QgsGeometry::isSimple() const

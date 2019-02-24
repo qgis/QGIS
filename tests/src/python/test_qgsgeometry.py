@@ -5040,6 +5040,27 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertEqual(res.asWkt(1), t[1],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], res.asWkt(1)))
 
+    def testIsGeosValid(self):
+        tests = [
+            ["", False, False, ''],
+            ["Point (100 100)", True, True, ''],
+            ["MultiPoint (100 100, 100 200)", True, True, ''],
+            ["LINESTRING (0 0, 0 100, 100 100)", True, True, ''],
+            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", True, True, ''],
+            ["MULTIPOLYGON(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))", True, True, ''],
+            ['MultiPolygon (((159865.14786298031685874 6768656.31838363595306873, 159858.97975336571107619 6769211.44824895076453686, 160486.07089751763851382 6769211.44824895076453686, 160481.95882444124436006 6768658.37442017439752817, 160163.27316101978067309 6768658.37442017439752817, 160222.89822062765597366 6769116.87056819349527359, 160132.43261294672265649 6769120.98264127038419247, 160163.27316101978067309 6768658.37442017439752817, 159865.14786298031685874 6768656.31838363595306873)))', False, True, 'Ring Self-intersection']
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            res = g1.isGeosValid()
+            self.assertEqual(res, t[1],
+                             "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], res))
+            if not res:
+                self.assertEqual(g1.lastError(), t[3], t[0])
+            res = g1.isGeosValid(QgsGeometry.FlagAllowSelfTouchingHoles)
+            self.assertEqual(res, t[2],
+                             "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[2], res))
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))

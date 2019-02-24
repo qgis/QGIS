@@ -217,7 +217,17 @@ class CORE_EXPORT QgsGeometryEngine
 
     virtual double area( QString *errorMsg = nullptr ) const = 0;
     virtual double length( QString *errorMsg = nullptr ) const = 0;
-    virtual bool isValid( QString *errorMsg = nullptr ) const = 0;
+
+    /**
+     * Returns true if the geometry is valid.
+     *
+     * If the geometry is invalid, \a errorMsg will be filled with the reported geometry error.
+     *
+     * The \a allowSelfTouchingHoles argument specifies whether self-touching holes are permitted.
+     * OGC validity states that self-touching holes are NOT permitted, whilst other vendor
+     * validity checks (e.g. ESRI) permit self-touching holes.
+     */
+    virtual bool isValid( QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false ) const = 0;
 
     /**
      * Checks if this is equal to \a geom.
