@@ -629,7 +629,9 @@ QString QgsSymbolLegendNode::evaluateLabelExpression( QString label, QgsVectorLa
   if ( mLayerNode->layer()->type() == QgsMapLayer::VectorLayer )
   {
     context = createExpressionContext( context );
-    label = label +"[%" + mLayerNode->expression() + "%]";
+    QString expression = mLayerNode->expression()
+    if ( !expression.isEmpty() )
+      label = label + "[% " + expression + " %]";
     Q_UNUSED( vl );
   }
   else
