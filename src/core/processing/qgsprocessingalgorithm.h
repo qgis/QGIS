@@ -906,7 +906,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * input feature results in multiple output features.
      *
      * The provided \a feedback object can be used to push messages to the log and for giving feedback
-     * to users. Note that handling of progress reports and algorithm cancelation is handled by
+     * to users. Note that handling of progress reports and algorithm cancellation is handled by
      * the base class and subclasses do not need to reimplement this logic.
      *
      * Algorithms can throw a QgsProcessingException if a fatal error occurred which should

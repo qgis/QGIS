@@ -136,7 +136,7 @@ namespace gdal
   /**
    * Performs a fast close of an unwanted GDAL dataset handle by deleting the underlying
    * data store. Use when the resultant dataset is no longer required, e.g. as a result
-   * of user cancelation of an operation.
+   * of user cancellation of an operation.
    *
    * Requires a gdal \a dataset pointer, the corresponding gdal \a driver and underlying
    * dataset file \a path.

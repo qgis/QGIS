@@ -253,7 +253,7 @@ namespace pal
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
       FnIsCanceled fnIsCanceled;
-      //! Application-specific context for the cancelation check function
+      //! Application-specific context for the cancellation check function
       void *fnIsCanceledContext = nullptr;
 
       /**

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
   public slots:
 
     /**
-     * Call to abort the download and delete this object after the cancelation
+     * Call to abort the download and delete this object after the cancellation
      * has been processed.
      * \see downloadCanceled()
      */

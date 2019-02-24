@@ -128,7 +128,7 @@ class CORE_EXPORT QgsLocator : public QObject
     void cancel();
 
     /**
-     * Triggers cancelation of any current running query without blocking. The query may
+     * Triggers cancellation of any current running query without blocking. The query may
      * take some time to cancel after calling this.
      * \see cancel()
      */
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsLocator : public QObject
 
     /**
      * Emitted when locator has finished a query, either as a result
-     * of successful completion or early cancelation.
+     * of successful completion or early cancellation.
      */
     void finished();
 
