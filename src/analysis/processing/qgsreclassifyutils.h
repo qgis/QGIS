@@ -95,7 +95,7 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
      * a class will be changed to the no data value. Otherwise they are saved unchanged.
      *
      * The \a feedback argument gives an optional processing feedback, for progress reports
-     * and cancelation.
+     * and cancellation.
      */
     static void reclassify( const QVector< RasterClass > &classes,
                             QgsRasterInterface *sourceRaster,

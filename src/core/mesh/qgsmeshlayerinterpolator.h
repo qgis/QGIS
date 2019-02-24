@@ -94,7 +94,7 @@ namespace QgsMeshUtils
    * \param transformContext Transform context to transform layer CRS to destination CRS
    * \param mapUnitsPerPixel map units per pixel for block
    * \param extent extent of block in destination CRS
-   * \param feedback optional raster feedback object for cancelation/preview
+   * \param feedback optional raster feedback object for cancellation/preview
    * \returns raster block with Float::64 values. nullptr on error
    *
    * \since QGIS 3.6

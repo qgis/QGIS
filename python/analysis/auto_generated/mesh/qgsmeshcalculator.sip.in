@@ -83,7 +83,7 @@ Creates calculator with geometry mask
 %Docstring
 Starts the calculation, writes new dataset group to file and adds it to the mesh layer
 
-:param feedback: The optional feedback argument for progress reporting and cancelation support
+:param feedback: The optional feedback argument for progress reporting and cancellation support
 
 :return: QgsMeshCalculator.Success in case of success
 %End

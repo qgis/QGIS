@@ -118,7 +118,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param fieldOrExpression field name or an expression string
      * \param ok will be set to false if field or expression is invalid, otherwise true
      * \param selectedOnly set to true to get values from selected features only
-     * \param feedback optional feedback object to allow cancelation
+     * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getDoubleValues
      * \since QGIS 3.0
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param ok will be set to false if field or expression is invalid, otherwise true
      * \param selectedOnly set to true to get values from selected features only
      * \param nullCount optional pointer to integer to store number of null values encountered in
-     * \param feedback optional feedback object to allow cancelation
+     * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getValues
      * \since QGIS 3.0
