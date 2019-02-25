@@ -211,7 +211,8 @@ class AlgWrapper(QgsProcessingAlgorithm):
         """
         True if this alg wrapper has outputs defined.
         """
-        return bool(self._outputs)
+        dests = [p for p in self._inputs.values() if p.isDestination()]
+        return bool(self._outputs) or bool(dests)
 
     @property
     def has_inputs(self):
