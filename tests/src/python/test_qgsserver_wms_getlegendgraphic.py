@@ -586,7 +586,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Min", max_size_diff=QSize(1, 1))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Min", max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_01(self):
         # 1:10000000 scaled
@@ -603,7 +603,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_01", max_size_diff=QSize(1, 1))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_01", max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_02(self):
         # 1:15000000 scaled
@@ -620,7 +620,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_02", max_size_diff=QSize(1, 1))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_02", max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Max(self):
         # 1:100000 max
@@ -637,7 +637,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(1, 1))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
 
         # 1:1000000 max
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -653,7 +653,7 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(1, 1))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
 
 
 if __name__ == '__main__':
