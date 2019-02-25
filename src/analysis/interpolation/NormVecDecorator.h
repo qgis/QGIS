@@ -74,7 +74,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     static const unsigned int DEFAULT_STORAGE_FOR_NORMALS = 100000;
     //! Association with an interpolator object
     TriangleInterpolator *mInterpolator = nullptr;
-    //! Vector that stores the normals for the points. If 'estimateFirstDerivatives()' was called and there is a null pointer, this means, that the triangle point is on a breakline
+    //! Vector that stores the normals for the points. If 'estimateFirstDerivatives()' was called and there is a nullptr, this means, that the triangle point is on a breakline
     QVector<Vector3D *> *mNormVec;
     //! Vector who stores, it a point is not on a breakline, if it is a normal point of the breakline or if it is an endpoint of a breakline
     QVector<PointState> *mPointState;

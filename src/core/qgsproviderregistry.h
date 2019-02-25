@@ -94,7 +94,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \param providerKey identifier of the provider
      * \param dataSource  string containing data source for the provider
      * \param options provider options
-     * \returns new instance of provider or NULL on error
+     * \returns new instance of provider or nullptr on error
      */
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProviderRegistry
      * Gets pointer to provider function
      * \param providerKey identifier of the provider
      * \param functionName name of function
-     * \returns pointer to function or NULL on error. If the provider uses direct provider
+     * \returns pointer to function or nullptr on error. If the provider uses direct provider
      * function pointers instead of a library nullptr will be returned.
      */
     QFunctionPointer function( const QString &providerKey,
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsProviderRegistry
     //! Returns list of available providers by their keys
     QStringList providerList() const;
 
-    //! Returns metadata of the provider or NULL if not found
+    //! Returns metadata of the provider or nullptr if not found
     const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
@@ -226,30 +226,6 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.2
      */
     bool registerProvider( QgsProviderMetadata *providerMetadata SIP_TRANSFER );
-
-    /**
-     * Open the given vector data source
-     *
-     * Similar to open(QString const &), except that the user specifies a data provider
-     * with which to open the data source instead of using the default data provider
-     * that QgsDataManager would figure out to use.  This should be useful when (and if)
-     * there will exist more than one data provider that can handle a given data
-     * source.  (E.g., use GDAL to open an SDTS file, or a different data provider that uses
-     * sdts++.)
-     *
-     * Called by QgsDataManager::open().
-     *
-     * \param name could be a file, URI
-     * \param provider is the key for the dataprovider used to open name
-     * \returns NULL if unable to open vector data source
-     *
-     * Temporarily always returns FALSE until finished implementing.
-     *
-     * Eventually would be nice if could make QgsDataManager smart
-     * enough to figure out whether the given name mapped to a vector,
-     * raster, or database source.
-     */
-    //QgsDataProvider * openVector( QString const & dataSource, QString const & providerKey );
 
     //! Type for data provider metadata associative container
     SIP_SKIP typedef std::map<QString, QgsProviderMetadata *> Providers;

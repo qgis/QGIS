@@ -83,9 +83,9 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     //! Returns marker symbol that will be used to draw markers in legend
     QgsMarkerSymbol *symbol() const;
 
-    //! Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts null pointer to set no transformer.
+    //! Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts nullptr to set no transformer.
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer SIP_TRANSFER );
-    //! Returns transformer for scaling of symbol sizes. Returns null if no transformer is defined.
+    //! Returns transformer for scaling of symbol sizes. Returns nullptr if no transformer is defined.
     QgsSizeScaleTransformer *sizeScaleTransformer() const;
 
     //! Sets list of classes: each class is a pair of symbol size (in units used by the symbol) and label
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
 
     /**
      * Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
-     * If the painter in context is null, it only does size calculation without actual rendering.
+     * If the painter in context is nullptr, it only does size calculation without actual rendering.
      * Does nothing if legend is not configured as collapsed.
      */
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize SIP_OUT = nullptr, int *labelXOffset SIP_OUT = nullptr ) const;
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     //! Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
     QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;
 
-    //! Creates instance from given element and returns it (caller takes ownership). Returns null on error.
+    //! Creates instance from given element and returns it (caller takes ownership). Returns nullptr on error.
     static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     //! Writes configuration to the given XML element.

@@ -82,7 +82,7 @@ Creates a new instance of a provider.
 :param dataSource: string containing data source for the provider
 :param options: provider options
 
-:return: new instance of provider or NULL on error
+:return: new instance of provider or None on error
 %End
 
     int providerCapabilities( const QString &providerKey ) const;
@@ -128,7 +128,7 @@ Gets pointer to provider function
 :param providerKey: identifier of the provider
 :param functionName: name of function
 
-:return: pointer to function or NULL on error. If the provider uses direct provider
+:return: pointer to function or None on error. If the provider uses direct provider
          function pointers instead of a library None will be returned.
 %End
 
@@ -148,7 +148,7 @@ Returns list of available providers by their keys
 
     const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 %Docstring
-Returns metadata of the provider or NULL if not found
+Returns metadata of the provider or None if not found
 %End
 
     virtual QString fileVectorFilters() const;
@@ -238,7 +238,6 @@ register a new vector data provider from its ``providerMetadata``
 
 .. versionadded:: 3.2
 %End
-
 
 
   private:

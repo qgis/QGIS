@@ -287,7 +287,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param mapSettings map settings for legend providers supporting
      *                    contextual legends.
      *
-     * \returns a download handler or null if the provider does not support
+     * \returns a download handler or nullptr if the provider does not support
      *         legend at all. Ownership of the returned object is transferred
      *         to caller.
      *

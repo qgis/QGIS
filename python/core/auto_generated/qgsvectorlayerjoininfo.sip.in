@@ -202,14 +202,22 @@ blacklisted fields and subset.
 
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset /Transfer/ );
 %Docstring
-Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
+Sets the subset of fields to be used from joined layer.
+
+Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset`` of None indicates that all fields should be used.
+
+.. seealso:: :py:func:`joinFieldNamesSubset`
 
 .. versionadded:: 2.6
 %End
 
     QStringList *joinFieldNamesSubset() const;
 %Docstring
-Gets subset of fields to be used from joined layer. All fields will be used if null is returned.
+Returns the subset of fields to be used from joined layer.
+
+All fields will be used if None is returned.
+
+.. seealso:: :py:func:`setJoinFieldNamesSubset`
 
 .. versionadded:: 2.6
 %End

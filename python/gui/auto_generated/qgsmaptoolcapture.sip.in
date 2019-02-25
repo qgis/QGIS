@@ -106,7 +106,7 @@ Converts a map point to layer coordinates
 
 :return:
          0 in case of success
-         1 if the current layer is null or not a vector layer
+         1 if the current layer is None or not a vector layer
          2 if the transformation failed
 %End
 
@@ -121,7 +121,7 @@ Converts a point to map coordinates and layer coordinates
 
 :return:
          0 in case of success
-         1 if the current layer is null or not a vector layer
+         1 if the current layer is None or not a vector layer
          2 if the transformation failed
 %End
 

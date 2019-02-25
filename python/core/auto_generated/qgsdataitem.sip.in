@@ -115,7 +115,7 @@ Removes a child item and returns it without deleting it. Emits relevant signals 
 
 :param child: child to remove
 
-:return: pointer to the removed item or null if no such item was found
+:return: pointer to the removed item or None if no such item was found
 %End
 
     virtual bool equal( const QgsDataItem *other );

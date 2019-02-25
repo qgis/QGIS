@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     /**
      * The project associated with the layout. Used to get access to layers, map themes,
-     * relations and various other bits. It is never null.
+     * relations and various other bits. It is never nullptr.
      *
      */
     QgsProject *project() const;

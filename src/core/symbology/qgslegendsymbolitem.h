@@ -99,7 +99,7 @@ class CORE_EXPORT QgsLegendSymbolItem
 
     /**
      * Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
-     * rather than QgsSymbolLegendNode instance as usual. Passing null removes any data-defined size legend settings.
+     * rather than QgsSymbolLegendNode instance as usual. Passing nullptr removes any data-defined size legend settings.
      *
      * Takes ownership of the settings object.
      * \since QGIS 3.0
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
-     * Returns extra information for data-defined size legend rendering. Normally it returns null.
+     * Returns extra information for data-defined size legend rendering. Normally it returns nullptr.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;

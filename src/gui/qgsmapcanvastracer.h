@@ -56,7 +56,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     void setActionEnableTracing( QAction *action ) { mActionEnableTracing = action; }
 
     /**
-     * Access to action that user may use to toggle snapping on/off. May be null if no action was associated.
+     * Access to action that user may use to toggle snapping on/off. May be nullptr if no action was associated.
      * \since QGIS 3.0
      */
     QAction *actionEnableSnapping() const { return mActionEnableSnapping; }

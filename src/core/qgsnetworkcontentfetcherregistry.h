@@ -69,7 +69,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
 
 #ifndef SIP_RUN
-    //! Returns a pointer to the local file, a null pointer if the file is not accessible yet.
+    //! Returns a pointer to the local file, or nullptr if the file is not accessible yet.
     QFile *file() const {return mFile;}
 #endif
 

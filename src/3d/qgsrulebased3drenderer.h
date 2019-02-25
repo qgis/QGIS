@@ -92,7 +92,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         };
 
         /**
-         * Gets the labeling settings. May return a null pointer.
+         * Returns the labeling settings. May return nullptr.
          */
         QgsAbstract3DSymbol *symbol() const { return mSymbol.get(); }
 
@@ -126,7 +126,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! Sets new symbol (or NULL). Deletes old symbol if any.
+        //! Sets new symbol (or nullptr). Deletes old symbol if any.
         void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
 
         /**
@@ -277,7 +277,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         void updateElseRules();
 
       private:
-        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        Rule *mParent = nullptr; // parent rule (nullptr only for root rule)
         std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
         QString mFilterExp;
         QString mDescription;

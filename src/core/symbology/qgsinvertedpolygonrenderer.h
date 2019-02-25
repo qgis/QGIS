@@ -44,7 +44,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     /**
      * Constructor
-     * \param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
+     * \param embeddedRenderer optional embeddedRenderer. If nullptr, a default one will be assigned.
      * Ownership will be transferred.
      */
     QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer SIP_TRANSFER = nullptr );

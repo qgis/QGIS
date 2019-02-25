@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
   public:
 
     /**
-     * Construct a new tree model with given layer tree (root node must not be null pointer).
+     * Construct a new tree model with given layer tree (root node must not be nullptr).
      * The root node is not transferred by the model.
      */
     explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Returns layer tree node for given index. Returns root node for invalid index.
-     * Returns null pointer if index does not refer to a layer tree node (e.g. it is a legend node)
+     * Returns nullptr if index does not refer to a layer tree node (e.g. it is a legend node)
      */
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
     //! Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
 
     /**
-     * Returns legend node for given index. Returns null for invalid index
+     * Returns legend node for given index. Returns nullptr for invalid index
      * \since QGIS 2.6
      */
     static QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index );
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;
 
-    //! Returns pointer to the root node of the layer tree. Always a non-null pointer.
+    //! Returns pointer to the root node of the layer tree. Always a non nullptr value.
     QgsLayerTree *rootGroup() const;
 
     /**
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Force only display of legend nodes which are valid for given map settings.
-     * Setting null pointer or invalid map settings will disable the functionality.
+     * Setting nullptr or invalid map settings will disable the functionality.
      * Ownership of map settings pointer does not change, a copy is made.
      * \since QGIS 2.6
      */
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Filter display of legend nodes for given map settings
-     * \param settings Map settings. Setting a null pointer or invalid settings will disable any filter. Ownership is not changed, a copy is made
+     * \param settings Map settings. Setting a nullptr or invalid settings will disable any filter. Ownership is not changed, a copy is made
      * \param useExtent Whether to use the extent of the map settings as a first spatial filter on legend nodes
      * \param polygon If not empty, this polygon will be used instead of the map extent to filter legend nodes
      * \param useExpressions Whether to use legend node filter expressions
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true );
 
     /**
-     * Returns the current map settings used for the current legend filter (or null if none is enabled)
+     * Returns the current map settings used for the current legend filter (or nullptr if none is enabled)
      * \since QGIS 2.14
      */
     const QgsMapSettings *legendFilterMapSettings() const { return mLegendFilterMapSettings.get(); }
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
 
     /**
-     * Gets hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
+     * Gets hints about map view - to be used in legend nodes. Arguments that are not nullptr will receive values.
      * If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
      * \since QGIS 2.6
      */
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     {
       //! Pointer to parent for each active node. Top-level nodes have null parent. Pointers are not owned.
       QMap<QgsLayerTreeModelLegendNode *, QgsLayerTreeModelLegendNode *> parents;
-      //! List of children for each active node. Top-level nodes are under null pointer key. Pointers are not owned.
+      //! List of children for each active node. Top-level nodes are under nullptr key. Pointers are not owned.
       QMap<QgsLayerTreeModelLegendNode *, QList<QgsLayerTreeModelLegendNode *> > children;
     };
 #endif
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       /**
        * A legend node that is not displayed separately, its icon is instead
        * shown within the layer node's item.
-       * May be null. if non-null, node is owned by originalNodes !
+       * May be nullptr. if non-null, node is owned by originalNodes !
        */
       QgsLayerTreeModelLegendNode *embeddedNodeInParent = nullptr;
 

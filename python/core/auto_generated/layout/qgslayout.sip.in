@@ -78,7 +78,7 @@ Calling this method removes all items and pages from the layout.
     QgsProject *project() const;
 %Docstring
 The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never null.
+relations and various other bits. It is never None.
 %End
 
     QgsLayoutModel *itemsModel();

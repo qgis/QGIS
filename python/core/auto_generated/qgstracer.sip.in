@@ -143,7 +143,7 @@ indicating some input data topology problems
     QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error /Out/ = 0 );
 %Docstring
 Given two points, find the shortest path and return points on the way.
-The optional "error" argument may receive error code (PathError enum) if it is not null
+The optional "error" argument may receive error code (PathError enum) if it is not None
 
 :return: array of points - trace of linestrings of other features (empty array one error)
 %End

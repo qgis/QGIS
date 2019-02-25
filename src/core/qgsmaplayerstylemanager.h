@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
   public:
 
     /**
-     * Construct a style manager associated with a map layer (must not be null).
+     * Construct a style manager associated with a map layer (must not be nullptr).
      * The style manager will be parented to \a layer.
      */
     QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );

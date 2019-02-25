@@ -717,7 +717,7 @@ Returns the application's authentication manager instance
 
 .. note::
 
-   this can be a null pointer if called before initQgis
+   this can be None if called before initQgis
 
 .. seealso:: :py:func:`initQgis`
 
