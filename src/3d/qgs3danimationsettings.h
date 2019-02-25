@@ -27,6 +27,7 @@ class QDomElement;
 class QgsReadWriteContext;
 
 /**
+ * \ingroup 3d
  * Class that holds information about animation in 3D view. The animation is defined
  * as a series of keyframes
  * \since QGIS 3.8
@@ -34,7 +35,8 @@ class QgsReadWriteContext;
 class _3D_EXPORT Qgs3DAnimationSettings
 {
   public:
-    Qgs3DAnimationSettings() = default;
+    //! ctor
+    Qgs3DAnimationSettings();
 
     //! keyframe definition
     struct Keyframe
