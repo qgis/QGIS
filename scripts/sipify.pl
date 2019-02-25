@@ -89,7 +89,8 @@ sub read_line {
                                   $IS_OVERRIDE,
                                   $ACTUAL_CLASS,
                                   $#CLASSNAME)." :: ".$new_line."\n";
-    return $new_line;
+   $new_line = replace_macros($new_line);
+   return $new_line;
 }
 
 sub write_output {
@@ -453,6 +454,13 @@ sub fix_constants {
     $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/g;
     $line =~ s/\bstd::numeric_limits<int>::max\(\)/INT_MAX/g;
     $line =~ s/\bstd::numeric_limits<int>::min\(\)/INT_MIN/g;
+    return $line;
+}
+
+sub replace_macros {
+    my $line = $_[0];
+    $line =~ s/\bTRUE\b/``True``/g;
+    $line =~ s/\bFALSE\b/``False``/g;
     return $line;
 }
 
