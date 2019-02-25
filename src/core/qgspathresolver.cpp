@@ -18,6 +18,7 @@
 #include "qgis.h"
 
 #include <QFileInfo>
+#include <QUrl>
 
 
 QgsPathResolver::QgsPathResolver( const QString &baseFileName )
@@ -163,9 +164,20 @@ QString QgsPathResolver::writePath( const QString &src ) const
     return src;
   }
 
-  // Strip "file://"
-  QFileInfo srcFileInfo( src.startsWith( QStringLiteral( "file://" ) ) ? src.mid( 7 ) : src );
-  QString srcPath = srcFileInfo.exists() ? srcFileInfo.canonicalFilePath() : src;
+  // Check if it is a plublicSource uri and clean it
+  QUrl url { src };
+  QString srcPath { src };
+  QString urlQuery;
+
+  if ( url.isLocalFile( ) )
+  {
+    srcPath = url.path();
+    urlQuery = url.query();
+  }
+
+  QFileInfo srcFileInfo( srcPath );
+  if ( srcFileInfo.exists() )
+    srcPath = srcFileInfo.canonicalFilePath();
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
   QString vsiPrefix = qgsVsiPrefix( src );
@@ -233,5 +245,12 @@ QString QgsPathResolver::writePath( const QString &src ) const
     srcElems.insert( 0, QStringLiteral( "." ) );
   }
 
-  return vsiPrefix + srcElems.join( QStringLiteral( "/" ) );
+  // Append url query if any
+  QString returnPath { vsiPrefix + srcElems.join( QStringLiteral( "/" ) ) };
+  if ( ! urlQuery.isEmpty() )
+  {
+    returnPath.append( '?' );
+    returnPath.append( urlQuery );
+  }
+  return returnPath;
 }
