@@ -164,7 +164,7 @@ QString QgsPathResolver::writePath( const QString &src ) const
     return src;
   }
 
-  // Check if it is a plublicSource uri and clean it
+  // Check if it is a publicSource uri and clean it
   QUrl url { src };
   QString srcPath { src };
   QString urlQuery;
