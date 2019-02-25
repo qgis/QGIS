@@ -197,6 +197,28 @@ QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientat
         return QVariant();
     }
   }
+  else if ( role == Qt::ToolTipRole )
+  {
+    if ( orientation == Qt::Vertical )
+    {
+      return QVariant( tr( "Vertex %1" ).arg( section ) );
+    }
+    else
+    {
+      if ( section == 0 )
+        return QVariant( tr( "X Coordinate" ) );
+      else if ( section == 1 )
+        return QVariant( tr( "Y Coordinate" ) );
+      else if ( section == mZCol )
+        return QVariant( tr( "Z Coordinate" ) );
+      else if ( section == mMCol )
+        return QVariant( tr( "M Value" ) );
+      else if ( section == mRCol )
+        return QVariant( tr( "Radius Value" ) );
+      else
+        return QVariant();
+    }
+  }
   else
   {
     return QVariant();
