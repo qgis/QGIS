@@ -4475,9 +4475,16 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
 
 bool QgsLayoutDesignerDialog::checkBeforeExport()
 {
-  QgsLayoutValidityCheckContext context( mLayout );
-  return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
-         tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
+  if ( mLayout )
+  {
+    QgsLayoutValidityCheckContext context( mLayout );
+    return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+           tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
+  }
+  else
+  {
+    return true;
+  }
 }
 
 void QgsLayoutDesignerDialog::updateWindowTitle()
