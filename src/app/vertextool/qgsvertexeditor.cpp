@@ -19,8 +19,7 @@
 #include "qgsvertexeditor.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
-#include "qgsselectedfeature.h"
-#include "qgsvertexentry.h"
+#include "qgslockedfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
 #include "qgsproject.h"
@@ -47,14 +46,14 @@ QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *paren
     mWidgetFont = parentWidget->font();
 }
 
-void QgsVertexEditorModel::setFeature( QgsSelectedFeature *selectedFeature )
+void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
 {
   beginResetModel();
 
-  mSelectedFeature = selectedFeature;
-  if ( mSelectedFeature && mSelectedFeature->layer() )
+  mLockedFeature = lockedFeature;
+  if ( mLockedFeature && mLockedFeature->layer() )
   {
-    QgsWkbTypes::Type layerWKBType = mSelectedFeature->layer()->wkbType();
+    QgsWkbTypes::Type layerWKBType = mLockedFeature->layer()->wkbType();
 
     mHasZ = QgsWkbTypes::hasZ( layerWKBType );
     mHasM = QgsWkbTypes::hasM( layerWKBType );
@@ -74,16 +73,16 @@ void QgsVertexEditorModel::setFeature( QgsSelectedFeature *selectedFeature )
 
 int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 {
-  if ( parent.isValid() || !mSelectedFeature )
+  if ( parent.isValid() || !mLockedFeature )
     return 0;
 
-  return mSelectedFeature->vertexMap().count();
+  return mLockedFeature->vertexMap().count();
 }
 
 int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  if ( !mSelectedFeature )
+  if ( !mLockedFeature )
     return 0;
   else
     return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 );
@@ -91,18 +90,18 @@ int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mSelectedFeature ||
+  if ( !index.isValid() || !mLockedFeature ||
        ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
-  if ( index.row() >= mSelectedFeature->vertexMap().count() )
+  if ( index.row() >= mLockedFeature->vertexMap().count() )
     return QVariant();
 
   if ( index.column() >= columnCount() )
     return QVariant();
 
   //get QgsVertexEntry for row
-  const QgsVertexEntry *vertex = mSelectedFeature->vertexMap().at( index.row() );
+  const QgsVertexEntry *vertex = mLockedFeature->vertexMap().at( index.row() );
   if ( !vertex )
   {
     return QVariant();
@@ -209,7 +208,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   {
     return false;
   }
-  if ( !mSelectedFeature || !mSelectedFeature->layer() || index.row() >= mSelectedFeature->vertexMap().count() )
+  if ( !mLockedFeature || !mLockedFeature->layer() || index.row() >= mLockedFeature->vertexMap().count() )
   {
     return false;
   }
@@ -223,20 +222,20 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
     doubleValue = QLocale( QLocale::English ).toDouble( value.toString() );
   }
 
-  double x = ( index.column() == 0 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
-  double y = ( index.column() == 1 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
+  double x = ( index.column() == 0 ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().x() );
+  double y = ( index.column() == 1 ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().y() );
 
   if ( index.column() == mRCol ) // radius modified
   {
-    if ( index.row() == 0 || index.row() >= mSelectedFeature->vertexMap().count() - 1 )
+    if ( index.row() == 0 || index.row() >= mLockedFeature->vertexMap().count() - 1 )
       return false;
 
-    double x1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().x();
-    double y1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().y();
+    double x1 = mLockedFeature->vertexMap().at( index.row() - 1 )->point().x();
+    double y1 = mLockedFeature->vertexMap().at( index.row() - 1 )->point().y();
     double x2 = x;
     double y2 = y;
-    double x3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().x();
-    double y3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().y();
+    double x3 = mLockedFeature->vertexMap().at( index.row() + 1 )->point().x();
+    double y3 = mLockedFeature->vertexMap().at( index.row() + 1 )->point().y();
 
     QgsPoint result;
     if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, doubleValue, QgsPoint( x2, y2 ) ) )
@@ -245,14 +244,14 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
       y = result.y();
     }
   }
-  double z = ( index.column() == mZCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
-  double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
+  double z = ( index.column() == mZCol ? value.toDouble() : mLockedFeature->vertexMap().at( index.row() )->point().z() );
+  double m = ( index.column() == mMCol ? value.toDouble() : mLockedFeature->vertexMap().at( index.row() )->point().m() );
   QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
 
-  mSelectedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
-  mSelectedFeature->layer()->moveVertex( p, mSelectedFeature->featureId(), index.row() );
-  mSelectedFeature->layer()->endEditCommand();
-  mSelectedFeature->layer()->triggerRepaint();
+  mLockedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
+  mLockedFeature->layer()->moveVertex( p, mLockedFeature->featureId(), index.row() );
+  mLockedFeature->layer()->endEditCommand();
+  mLockedFeature->layer()->triggerRepaint();
 
   return false;
 }
@@ -273,18 +272,18 @@ Qt::ItemFlags QgsVertexEditorModel::flags( const QModelIndex &index ) const
 
 bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 {
-  if ( row <= 0 || !mSelectedFeature || row >= mSelectedFeature->vertexMap().count() - 1 )
+  if ( row <= 0 || !mLockedFeature || row >= mLockedFeature->vertexMap().count() - 1 )
     return false;
 
-  const QgsVertexEntry *entry = mSelectedFeature->vertexMap().at( row );
+  const QgsVertexEntry *entry = mLockedFeature->vertexMap().at( row );
 
   bool curvePoint = ( entry->vertexId().type == QgsVertexId::CurveVertex );
   if ( !curvePoint )
     return false;
 
-  const QgsPoint &p1 = mSelectedFeature->vertexMap().at( row - 1 )->point();
-  const QgsPoint &p2 = mSelectedFeature->vertexMap().at( row )->point();
-  const QgsPoint &p3 = mSelectedFeature->vertexMap().at( row + 1 )->point();
+  const QgsPoint &p1 = mLockedFeature->vertexMap().at( row - 1 )->point();
+  const QgsPoint &p2 = mLockedFeature->vertexMap().at( row )->point();
+  const QgsPoint &p3 = mLockedFeature->vertexMap().at( row + 1 )->point();
 
   double cx, cy;
   QgsGeometryUtils::circleCenterRadius( p1, p2, p3, r, cx, cy );
@@ -332,19 +331,21 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   setWidget( content );
 }
 
-void QgsVertexEditor::updateEditor( QgsSelectedFeature *selectedFeature )
+void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 {
 
-  mSelectedFeature = selectedFeature;
+  mLockedFeature = lockedFeature;
 
-  mVertexModel->setFeature( mSelectedFeature );
+  mVertexModel->setFeature( mLockedFeature );
 
-  if ( mSelectedFeature )
+  updateTableSelection();
+
+  if ( mLockedFeature )
   {
     mHintLabel->setVisible( false );
     mTableView->setVisible( true );
 
-    connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+    connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
   }
   else
   {
@@ -355,12 +356,11 @@ void QgsVertexEditor::updateEditor( QgsSelectedFeature *selectedFeature )
 
 void QgsVertexEditor::updateTableSelection()
 {
-  if ( !mSelectedFeature || mUpdatingVertexSelection )
+  if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
 
   mUpdatingTableSelection = true;
-  mTableView->selectionModel()->clearSelection();
-  const QList<QgsVertexEntry *> &vertexMap = mSelectedFeature->vertexMap();
+  const QList<QgsVertexEntry *> &vertexMap = mLockedFeature->vertexMap();
   int firstSelectedRow = -1;
   QItemSelection selection;
   for ( int i = 0, n = vertexMap.size(); i < n; ++i )
@@ -372,7 +372,7 @@ void QgsVertexEditor::updateTableSelection()
       selection.select( mVertexModel->index( i, 0 ), mVertexModel->index( i, mVertexModel->columnCount() - 1 ) );
     }
   }
-  mTableView->selectionModel()->select( selection, QItemSelectionModel::Select );
+  mTableView->selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect );
 
   if ( firstSelectedRow >= 0 )
     mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
@@ -380,25 +380,25 @@ void QgsVertexEditor::updateTableSelection()
   mUpdatingTableSelection = false;
 }
 
-void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
+void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItemSelection & )
 {
-  if ( !mSelectedFeature || mUpdatingTableSelection )
+  if ( !mLockedFeature || mUpdatingVertexSelection || mUpdatingTableSelection )
     return;
 
   mUpdatingVertexSelection = true;
 
-  mSelectedFeature->deselectAllVertices();
+  mLockedFeature->deselectAllVertices();
 
-  QgsCoordinateTransform t( mSelectedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QgsCoordinateTransform t( mLockedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   std::unique_ptr<QgsRectangle> bbox;
-  QModelIndexList indexList = selected.indexes();
-  for ( int i = 0; i < indexList.length(); ++i )
+  const QModelIndexList indexList = mTableView->selectionModel()->selectedRows();
+  for ( const QModelIndex &index : indexList )
   {
-    int vertexIdx = indexList.at( i ).row();
-    mSelectedFeature->selectVertex( vertexIdx );
+    int vertexIdx = index.row();
+    mLockedFeature->selectVertex( vertexIdx );
 
     // create a bounding box of selected vertices
-    QgsPointXY point( mSelectedFeature->vertexMap().at( vertexIdx )->point() );
+    QgsPointXY point( mLockedFeature->vertexMap().at( vertexIdx )->point() );
     if ( !bbox )
       bbox.reset( new QgsRectangle( point, point ) );
     else
@@ -475,3 +475,5 @@ void CoordinateItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *
     QStyledItemDelegate::setModelData( editor, model, index );
   }
 }
+
+

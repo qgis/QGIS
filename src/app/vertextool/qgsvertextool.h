@@ -28,7 +28,7 @@ class QRubberBand;
 
 class QgsGeometryValidator;
 class QgsVertexEditor;
-class QgsSelectedFeature;
+class QgsLockedFeature;
 class QgsSnapIndicator;
 class QgsVertexMarker;
 
@@ -69,7 +69,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
       ActiveLayer,
       AllLayers
     };
-    Q_ENUM( VertexToolMode );
+    Q_ENUM( VertexToolMode )
 
     QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, VertexToolMode mode = QgsVertexTool::AllLayers );
 
@@ -116,6 +116,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     void startRangeVertexSelection();
 
     void cleanEditor( QgsFeatureId id );
+
+    void lockedFeatureSelectionChanged();
 
   private:
 
@@ -436,7 +438,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     // support for vertex editor
 
     //! Selected feature for the vertex editor
-    std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
+    std::unique_ptr<QgsLockedFeature> mLockedFeature;
     //! Dock widget which allows editing vertices
     std::unique_ptr<QgsVertexEditor> mVertexEditor;
 
@@ -445,7 +447,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      * This is used when user clicks with right mouse button multiple times in one location
      * to easily switch to the desired feature.
      */
-    struct SelectedFeatureAlternatives
+    struct LockedFeatureAlternatives
     {
       QPoint screenPoint;
       QList< QPair<QgsVectorLayer *, QgsFeatureId> > alternatives;
@@ -453,7 +455,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     };
 
     //! Keeps information about other possible features to select with right click. Null if no info is currently held.
-    std::unique_ptr<SelectedFeatureAlternatives> mSelectedFeatureAlternatives;
+    std::unique_ptr<LockedFeatureAlternatives> mLockedFeatureAlternatives;
 
     // support for validation of geometries
 
