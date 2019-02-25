@@ -130,7 +130,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Returns whether the effect will colorize a picture.
-     * \returns true if colorization is enableds
+     * \returns true if colorization is enabled
      * \see setColorizeOn
      * \see colorizeColor
      * \see colorizeStrength

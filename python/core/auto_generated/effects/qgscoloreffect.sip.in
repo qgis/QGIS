@@ -143,7 +143,7 @@ Sets whether the effect should colorize a picture.
 %Docstring
 Returns whether the effect will colorize a picture.
 
-:return: true if colorization is enableds
+:return: true if colorization is enabled
 
 .. seealso:: :py:func:`setColorizeOn`
 
