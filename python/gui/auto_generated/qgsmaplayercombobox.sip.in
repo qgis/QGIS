@@ -151,7 +151,7 @@ setLayer set the current layer selected in the combo
   signals:
     void layerChanged( QgsMapLayer *layer );
 %Docstring
-layerChanged this signal is emitted whenever the currently selected layer changes
+Emitted whenever the currently selected layer changes.
 %End
 
   protected slots:

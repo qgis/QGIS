@@ -612,7 +612,7 @@ Calculates the extent to request and the yShift of the top-left point in case of
 
     void extentChanged();
 %Docstring
-Is emitted when the map's extent changes.
+Emitted when the map's extent changes.
 
 .. seealso:: :py:func:`setExtent`
 
@@ -621,7 +621,7 @@ Is emitted when the map's extent changes.
 
     void mapRotationChanged( double newRotation );
 %Docstring
-Is emitted when the map's rotation changes.
+Emitted when the map's rotation changes.
 
 .. seealso:: :py:func:`setMapRotation`
 
@@ -630,7 +630,7 @@ Is emitted when the map's rotation changes.
 
     void preparedForAtlas();
 %Docstring
-Is emitted when the map has been prepared for atlas rendering, just before actual rendering
+Emitted when the map has been prepared for atlas rendering, just before actual rendering
 %End
 
     void layerStyleOverridesChanged();

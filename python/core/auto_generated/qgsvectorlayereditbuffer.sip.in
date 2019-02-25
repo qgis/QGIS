@@ -214,7 +214,7 @@ Returns true if the specified feature ID has been deleted but not committed.
   signals:
     void layerModified();
 %Docstring
-This signal is emitted when modifications has been done on layer
+Emitted when modifications has been done on layer
 %End
 
     void featureAdded( QgsFeatureId fid );

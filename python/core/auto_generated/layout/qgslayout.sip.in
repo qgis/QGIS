@@ -624,7 +624,7 @@ Updates the scene bounds of the layout.
 
     void changed();
 %Docstring
-Is emitted when properties of the layout change. This signal is only
+Emitted when properties of the layout change. This signal is only
 emitted for settings directly managed by the layout, and is not emitted
 when child items change.
 %End
@@ -642,7 +642,7 @@ If None, no item is selected.
 
     void refreshed();
 %Docstring
-Is emitted when the layout has been refreshed and items should also be refreshed
+Emitted when the layout has been refreshed and items should also be refreshed
 and updated.
 %End
 

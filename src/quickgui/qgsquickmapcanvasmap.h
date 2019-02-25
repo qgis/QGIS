@@ -122,12 +122,12 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
   signals:
 
     /**
-     * Signal is emitted when a rendering is starting
+     * Emitted when a rendering is starting.
      */
     void renderStarting();
 
     /**
-     * Signal is emitted when a canvas is refreshed
+     * Emitted when the canvas is refreshed.
      */
     void mapCanvasRefreshed();
 

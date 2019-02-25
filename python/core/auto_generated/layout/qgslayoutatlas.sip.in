@@ -371,7 +371,7 @@ Emitted when the coverage layer for the atlas changes.
 
     void messagePushed( const QString &message );
 %Docstring
-Is emitted when the atlas has an updated status bar ``message``.
+Emitted when the atlas has an updated status bar ``message``.
 %End
 
     void numberFeaturesChanged( int numFeatures );
@@ -381,7 +381,7 @@ Emitted when the number of features for the atlas changes.
 
     void featureChanged( const QgsFeature &feature );
 %Docstring
-Is emitted when the current atlas ``feature`` changes.
+Emitted when the current atlas ``feature`` changes.
 %End
 
     void renderBegun();

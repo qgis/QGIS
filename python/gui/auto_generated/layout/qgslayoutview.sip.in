@@ -517,12 +517,12 @@ Emitted when the current ``tool`` is changed.
 
     void zoomLevelChanged();
 %Docstring
-Is emitted whenever the zoom level of the view is changed.
+Emitted whenever the zoom level of the view is changed.
 %End
 
     void cursorPosChanged( QPointF layoutPoint );
 %Docstring
-Is emitted when the mouse cursor coordinates change within the view.
+Emitted when the mouse cursor coordinates change within the view.
 The ``layoutPoint`` argument indicates the cursor position within
 the layout coordinate system.
 %End

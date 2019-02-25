@@ -473,7 +473,7 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     void symbolChanged( const QString &name );
 
-    //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
+    //! Emitted every time a tag or smartgroup has been added, removed, or renamed
     void groupsModified();
 
     /**

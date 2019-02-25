@@ -543,20 +543,20 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
   signals:
 
     /**
-     * Is emitted when the map's extent changes.
+     * Emitted when the map's extent changes.
      * \see setExtent()
      * \see extent()
      */
     void extentChanged();
 
     /**
-     * Is emitted when the map's rotation changes.
+     * Emitted when the map's rotation changes.
      * \see setMapRotation()
      * \see mapRotation()
      */
     void mapRotationChanged( double newRotation );
 
-    //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
+    //! Emitted when the map has been prepared for atlas rendering, just before actual rendering
     void preparedForAtlas();
 
     /**

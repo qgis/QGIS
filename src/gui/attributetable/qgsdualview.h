@@ -250,18 +250,18 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   signals:
 
     /**
-     * Is emitted, whenever the display expression is successfully changed
+     * Emitted whenever the display expression is successfully changed
      * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
 
     /**
-     * Is emitted, whenever the filter changes
+     * Emitted whenever the filter changes
      */
     void filterChanged();
 
     /**
-     * Is emitted when a filter expression is set using the view.
+     * Emitted when a filter expression is set using the view.
      * \param expression filter expression
      * \param type filter type
      * \since QGIS 2.16

@@ -317,7 +317,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     //! Emitted when the coverage layer for the atlas changes.
     void coverageLayerChanged( QgsVectorLayer *layer );
 
-    //! Is emitted when the atlas has an updated status bar \a message.
+    //! Emitted when the atlas has an updated status bar \a message.
     void messagePushed( const QString &message );
 
     /**
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      */
     void numberFeaturesChanged( int numFeatures );
 
-    //! Is emitted when the current atlas \a feature changes.
+    //! Emitted when the current atlas \a feature changes.
     void featureChanged( const QgsFeature &feature );
 
     //! Emitted when atlas rendering has begun.

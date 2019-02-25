@@ -207,12 +207,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void beforeSave( bool &ok ) SIP_SKIP;
 
     /**
-     * Is emitted, when a feature is changed or added
+     * Emitted when a feature is changed or added
      */
     void featureSaved( const QgsFeature &feature );
 
     /**
-     * Is emitted when a filter expression is set using the form.
+     * Emitted when a filter expression is set using the form.
      * \param expression filter expression
      * \param type filter type
      * \since QGIS 2.16

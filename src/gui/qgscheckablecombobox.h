@@ -77,7 +77,7 @@ class QgsCheckableItemModel : public QStandardItemModel
   signals:
 
     /**
-     * This signal is emitted whenever the items checkstate has changed.
+     * Emitted whenever the items checkstate has changed.
      */
     void itemCheckStateChanged();
 };
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
   signals:
 
     /**
-     * This signal is emitted whenever the checked items list changed.
+     * Emitted whenever the checked items list changed.
      */
     void checkedItemsChanged( const QStringList &items );
 

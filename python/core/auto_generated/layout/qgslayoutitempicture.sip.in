@@ -310,7 +310,7 @@ Forces a recalculation of the picture's frame size
   signals:
     void pictureRotationChanged( double newRotation );
 %Docstring
-Is emitted on picture rotation change
+Emitted on picture rotation change
 %End
 
   protected:

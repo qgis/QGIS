@@ -498,7 +498,7 @@ name or tag changes.
 
     void groupsModified();
 %Docstring
-Is emitted every time a tag or smartgroup has been added, removed, or renamed
+Emitted every time a tag or smartgroup has been added, removed, or renamed
 %End
 
     void entityTagsChanged( QgsStyle::StyleEntity entity, const QString &name, const QStringList &newTags );

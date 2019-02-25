@@ -234,20 +234,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
-  signals:
-
-    /**
-     *   This is emitted when this provider is satisfied that all objects
-     *   have had a chance to adjust themselves after they'd been notified that
-     *   the full extent is available.
-     *
-     *   \note  It currently isn't being emitted because we don't have an easy way
-     *          for the overview canvas to only be repainted.  In the meantime
-     *          we are satisfied for the overview to reflect the new extent
-     *          when the user adjusts the extent of the main map canvas.
-     */
-    void repaintRequested();
-
   private:
     Relkind relkind() const;
 

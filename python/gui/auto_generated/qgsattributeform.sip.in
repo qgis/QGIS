@@ -185,12 +185,12 @@ Notifies about changes of attributes
 
     void featureSaved( const QgsFeature &feature );
 %Docstring
-Is emitted, when a feature is changed or added
+Emitted when a feature is changed or added
 %End
 
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 %Docstring
-Is emitted when a filter expression is set using the form.
+Emitted when a filter expression is set using the form.
 
 :param expression: filter expression
 :param type: filter type

@@ -224,7 +224,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   signals:
 
     /**
-     * Is emitted whenever the sort column is changed
+     * Emitted whenever the sort column is changed
      * \param column The sort column
      * \param order The sort order
      */

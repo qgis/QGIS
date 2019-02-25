@@ -77,7 +77,7 @@ Returns the layer currently associated with the combobox.
   signals:
     void fieldChanged( const QString &fieldName );
 %Docstring
-the signal is emitted when the currently selected field changes
+Emitted when the currently selected field changes.
 %End
 
   public slots:

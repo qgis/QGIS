@@ -72,7 +72,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
   signals:
 
     /**
-     * This signal is emitted when selection was changed
+     * Emitted when selection was changed.
      *
      * \param selected        Newly selected feature ids
      * \param deselected      Ids of all features which have previously been selected but are not any more

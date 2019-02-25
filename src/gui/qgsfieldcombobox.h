@@ -78,7 +78,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     QgsVectorLayer *layer() const;
 
   signals:
-    //! the signal is emitted when the currently selected field changes
+    //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
 
   public slots:

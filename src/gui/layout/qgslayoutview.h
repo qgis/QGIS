@@ -494,12 +494,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void toolSet( QgsLayoutViewTool *tool );
 
     /**
-     * Is emitted whenever the zoom level of the view is changed.
+     * Emitted whenever the zoom level of the view is changed.
      */
     void zoomLevelChanged();
 
     /**
-     * Is emitted when the mouse cursor coordinates change within the view.
+     * Emitted when the mouse cursor coordinates change within the view.
      * The \a layoutPoint argument indicates the cursor position within
      * the layout coordinate system.
      */

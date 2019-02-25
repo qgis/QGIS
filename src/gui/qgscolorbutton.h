@@ -380,7 +380,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
   signals:
 
     /**
-     * Is emitted whenever a new color is set for the button. The color is always valid.
+     * Emitted whenever a new color is set for the button. The color is always valid.
      * In case the new color is the same no signal is emitted, to avoid infinite loops.
      * \param color New color
      */

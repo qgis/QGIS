@@ -1723,14 +1723,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void currentThemeChanged( const QString & );
 
     /**
-     * This signal is emitted when a new layout \a designer has been opened.
+     * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
      * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted before a layout \a designer is going to be closed
+     * Emitted before a layout \a designer is going to be closed
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
@@ -1739,20 +1739,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted after a layout designer window is closed.
+     * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
      * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 
-    //! This signal is emitted when QGIS' initialization is complete
+    //! Emitted when QGIS' initialization is complete
     void initializationCompleted();
 
     void customCrsValidation( QgsCoordinateReferenceSystem &crs );
 
     /**
-     * This signal is emitted when a layer has been saved using save as
+     * Emitted when a layer has been saved using save as
        \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );

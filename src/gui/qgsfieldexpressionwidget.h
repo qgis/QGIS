@@ -171,7 +171,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setAllowEvalErrors( bool allowEvalErrors );
 
   signals:
-    //! the signal is emitted when the currently selected field changes
+    //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
