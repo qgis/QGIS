@@ -20,11 +20,14 @@ from qgis.core import (QgsApplication,
                        QgsVectorLayer,
                        QgsReadWriteContext,
                        QgsEditFormConfig,
-                       QgsFetchedContent)
+                       QgsFetchedContent,
+                       QgsAttributeEditorContainer,
+                       )
 from qgis.gui import QgsGui
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.PyQt.QtGui import QColor
 from utilities import unitTestDataPath
 import socketserver
 import threading
@@ -84,14 +87,16 @@ class TestQgsEditFormConfig(unittest.TestCase):
         config.setLayout(QgsEditFormConfig.GeneratedLayout)
         self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
 
-        uiLocal = os.path.join(unitTestDataPath(), '/qgis_local_server/layer_attribute_form.ui')
+        uiLocal = os.path.join(
+            unitTestDataPath(), '/qgis_local_server/layer_attribute_form.ui')
         config.setUiForm(uiLocal)
         self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
 
         config.setLayout(QgsEditFormConfig.GeneratedLayout)
         self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
 
-        uiUrl = 'http://localhost:' + str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
+        uiUrl = 'http://localhost:' + \
+            str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
         config.setUiForm(uiUrl)
         self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
         content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl)
@@ -139,6 +144,19 @@ class TestQgsEditFormConfig(unittest.TestCase):
         config.setLabelOnTop(1, False)
         self.assertFalse(config.labelOnTop(0))
         self.assertFalse(config.labelOnTop(1))
+
+    def test_backgroundColorSerialize(self):
+        """Test backgroundColor serialization"""
+
+        layer = self.createLayer()
+        config = layer.editFormConfig()
+        color_name = '#ff00ff'
+        container = QgsAttributeEditorContainer('container name', None, QColor('#ff00ff'))
+        doc = QDomDocument()
+        element = container.toDomElement(doc)
+        config = QgsEditFormConfig()
+        container2 = config.attributeEditorElementFromDomElement(element, None, self.layer.id())
+        self.assertEqual(container2.backgroundColor().name(), color_name)
 
 
 if __name__ == '__main__':

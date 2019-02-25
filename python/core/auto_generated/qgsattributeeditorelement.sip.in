@@ -130,12 +130,13 @@ attribute form if it is set to the drag and drop designer.
 %End
   public:
 
-    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent );
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() );
 %Docstring
 Creates a new attribute editor container
 
 :param name: The name to show as title
 :param parent: The parent. May be another container.
+:param backgroundColor: The optional background color of the container.
 %End
 
 
@@ -222,6 +223,20 @@ show or hide this container based on an expression incorporating
 the field value controlled by editor widgets.
 
 .. versionadded:: 3.0
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+backgroundColor
+
+:return: background color of the container
+
+.. versionadded:: 3.8
+%End
+
+    void setBackgroundColor( const QColor &backgroundColor );
+%Docstring
+Sets the background color to ``backgroundColor``
 %End
 
 };

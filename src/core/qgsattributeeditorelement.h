@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include <QColor>
 
 class QgsRelationManager;
 
@@ -173,11 +174,13 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param name   The name to show as title
      * \param parent The parent. May be another container.
+     * \param backgroundColor The optional background color of the container.
      */
-    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent )
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() )
       : QgsAttributeEditorElement( AeTypeContainer, name, parent )
       , mIsGroupBox( true )
       , mColumnCount( 1 )
+      , mBackgroundColor( backgroundColor )
     {}
 
 
@@ -265,6 +268,18 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
+    /**
+     * \brief backgroundColor
+     * \return background color of the container
+     * \since QGIS 3.8
+     */
+    QColor backgroundColor() const;
+
+    /**
+     * Sets the background color to \a backgroundColor
+     */
+    void setBackgroundColor( const QColor &backgroundColor );
+
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
@@ -273,6 +288,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QList<QgsAttributeEditorElement *> mChildren;
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
+    QColor mBackgroundColor;
 };
 
 /**
