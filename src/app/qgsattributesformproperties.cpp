@@ -1053,7 +1053,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       QgsCollapsibleGroupBox *styleGroupBox = new QgsCollapsibleGroupBox( tr( "Style" ), layout->widget() );
       styleGroupBox->setObjectName( QLatin1Literal( "attributeFormPropertiesContainerStyle" ) );
       QFormLayout *customizeGroupBoxLayout = new QFormLayout( styleGroupBox ) ;
-      QgsColorButton *backgroundColorButton = new QgsColorButton( styleGroupBox, tr( "Select the background color for the container" ) );
+      QgsColorButton *backgroundColorButton = new QgsColorButton( styleGroupBox, tr( "Container Background Color" ) );
       backgroundColorButton->setShowNull( true );
       backgroundColorButton->setColor( itemData.backgroundColor() );
       customizeGroupBoxLayout->addRow( new QLabel( tr( "Background color" ), styleGroupBox ),
