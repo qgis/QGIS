@@ -32,14 +32,14 @@ Joins another vector layer to this layer
 
 :param joinInfo: join object containing join layer id, target and source field
 
-:return: (since 2.6) whether the join was successfully added *
+:return: (since 2.6) whether the join was successfully added
 %End
 
     bool removeJoin( const QString &joinLayerId );
 %Docstring
 Removes a vector layer join
 
-:return: true if join was found and successfully removed *
+:return: true if join was found and successfully removed
 %End
 
     void updateFields( QgsFields &fields );

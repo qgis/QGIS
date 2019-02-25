@@ -45,7 +45,7 @@ Constructor for QgsRasterPipe.
     bool insert( int idx, QgsRasterInterface *interface /Transfer/ );
 %Docstring
 Try to insert interface at specified index and connect
-if connection would fail, the interface is not inserted and false is returned *
+if connection would fail, the interface is not inserted and false is returned
 %End
 %MethodCode
     sipRes = sipCpp->insert( a0, a1 );
@@ -61,7 +61,7 @@ if connection would fail, the interface is not inserted and false is returned *
     bool replace( int idx, QgsRasterInterface *interface /Transfer/ );
 %Docstring
 Try to replace interface at specified index and connect
-if connection would fail, the interface is not inserted and false is returned *
+if connection would fail, the interface is not inserted and false is returned
 %End
 
     bool set( QgsRasterInterface *interface /Transfer/ );
@@ -90,7 +90,7 @@ Remove and delete interface from pipe if possible
     bool setOn( int idx, bool on );
 %Docstring
 Set interface at index on/off
-Returns true on success *
+Returns true on success
 %End
 
     bool canSetOn( int idx, bool on );

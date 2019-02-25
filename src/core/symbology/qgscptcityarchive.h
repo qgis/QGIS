@@ -308,7 +308,8 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 
 /**
  * \ingroup core
- * An "All ramps item", which contains all items in a flat hierarchy */
+ * An "All ramps item", which contains all items in a flat hierarchy
+*/
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT

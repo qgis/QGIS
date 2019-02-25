@@ -171,7 +171,7 @@ Returns data type for the band specified by number
     virtual Qgis::DataType sourceDataType( int bandNo ) const;
 %Docstring
 Returns source data type for the band specified by number,
-source data type may be shorter than dataType *
+source data type may be shorter than dataType
 %End
 
     virtual QgsRectangle extent() const;
@@ -221,7 +221,7 @@ Caller is responsible to free the memory returned.
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring
 Set input.
-Returns true if set correctly, false if cannot use that input *
+Returns true if set correctly, false if cannot use that input
 %End
 
     virtual QgsRasterInterface *input() const;

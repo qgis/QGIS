@@ -110,7 +110,7 @@ Returns vector layers in edit mode
 
 :param modified: whether to return only layers that have been modified
 
-:return: list of layers in legend order, or empty list *
+:return: list of layers in legend order, or empty list
 %End
 
     virtual QgsMapLayer *activeLayer() = 0;
@@ -953,13 +953,13 @@ Open attribute table dialog
     virtual void addWindow( QAction *action ) = 0;
 %Docstring
 Add window to Window menu. The action title is the window title
-and the action should raise, unminimize and activate the window. *
+and the action should raise, unminimize and activate the window.
 %End
 
     virtual void removeWindow( QAction *action ) = 0;
 %Docstring
 Remove window from Window menu. Calling this is necessary only for
-windows which are hidden rather than deleted when closed. *
+windows which are hidden rather than deleted when closed.
 %End
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;

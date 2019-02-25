@@ -82,7 +82,7 @@ class CORE_EXPORT QgsPluginLayerRegistry
 
     /**
      * List all known layer types
-     *  \since QGIS */
+     */
     QStringList pluginLayerTypes();
 
     //! Add plugin layer type (take ownership) and return true on success

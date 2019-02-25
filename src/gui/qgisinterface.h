@@ -145,7 +145,8 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns vector layers in edit mode
      * \param modified whether to return only layers that have been modified
-     * \returns list of layers in legend order, or empty list */
+     * \returns list of layers in legend order, or empty list
+    */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 
     //! Returns a pointer to the active layer (layer selected in the legend)
@@ -809,12 +810,14 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add window to Window menu. The action title is the window title
-     * and the action should raise, unminimize and activate the window. */
+     * and the action should raise, unminimize and activate the window.
+    */
     virtual void addWindow( QAction *action ) = 0;
 
     /**
      * Remove window from Window menu. Calling this is necessary only for
-     * windows which are hidden rather than deleted when closed. */
+     * windows which are hidden rather than deleted when closed.
+    */
     virtual void removeWindow( QAction *action ) = 0;
 
     //! Register action to the shortcuts manager so its shortcut can be changed in GUI
