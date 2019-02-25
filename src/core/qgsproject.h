@@ -169,7 +169,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns pointer to project storage implementation that handles read/write of the project file.
-     * If the project file is stored in the local file system, returns null pointer.
+     * If the project file is stored in the local file system, returns nullptr.
      * The project storage object is inferred from fileName() of the project.
      * \since QGIS 3.2
      */
@@ -855,7 +855,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * \param layers A list of layers to remove. Null pointers are ignored.
+     * \param layers A list of layers to remove. nullptr values are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayer()
@@ -885,7 +885,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * \param layer The layer to remove. Null pointers are ignored.
+     * \param layer The layer to remove. nullptr values are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayers()

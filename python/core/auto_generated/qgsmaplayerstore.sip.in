@@ -180,7 +180,7 @@ Remove a set of ``layers`` from the store.
 The specified layers will be removed from the store.
 These layers will also be deleted.
 
-:param layers: A list of layers to remove. Null pointers are ignored.
+:param layers: A list of layers to remove. None values are ignored.
 
 .. seealso:: :py:func:`takeMapLayer`
 
@@ -210,7 +210,7 @@ Remove a ``layer`` from the store.
 
 The specified layer will be removed from the store. The layer will also be deleted.
 
-:param layer: The layer to remove. Null pointers are ignored.
+:param layer: The layer to remove. None values are ignored.
 
 .. seealso:: :py:func:`takeMapLayer`
 

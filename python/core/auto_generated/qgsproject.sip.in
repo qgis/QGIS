@@ -117,7 +117,7 @@ Returns QFileInfo object for the project's associated file.
     QgsProjectStorage *projectStorage() const;
 %Docstring
 Returns pointer to project storage implementation that handles read/write of the project file.
-If the project file is stored in the local file system, returns null pointer.
+If the project file is stored in the local file system, returns None.
 The project storage object is inferred from fileName() of the project.
 
 .. versionadded:: 3.2
@@ -852,7 +852,7 @@ Remove a set of layers from the registry.
 The specified layers will be removed from the registry. If the registry has ownership
 of any layers these layers will also be deleted.
 
-:param layers: A list of layers to remove. Null pointers are ignored.
+:param layers: A list of layers to remove. None values are ignored.
 
 .. note::
 
@@ -888,7 +888,7 @@ Remove a layer from the registry.
 The specified layer will be removed from the registry. If the registry has ownership
 of the layer then it will also be deleted.
 
-:param layer: The layer to remove. Null pointers are ignored.
+:param layer: The layer to remove. None values are ignored.
 
 .. note::
 

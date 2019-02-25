@@ -232,12 +232,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString name() const;
 
     /**
-     * Returns the layer's data provider, it may be null.
+     * Returns the layer's data provider, it may be nullptr.
      */
     virtual QgsDataProvider *dataProvider();
 
     /**
-     * Returns the layer's data provider in a const-correct manner, it may be null.
+     * Returns the layer's data provider in a const-correct manner, it may be nullptr.
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
@@ -941,13 +941,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
-     * \param legend Takes ownership of the object. Can be null pointer
+     * \param legend Takes ownership of the object. Can be nullptr.
      * \since QGIS 2.6
      */
     void setLegend( QgsMapLayerLegend *legend SIP_TRANSFER );
 
     /**
-     * Can be null.
+     * Can be nullptr.
      * \since QGIS 2.6
      */
     QgsMapLayerLegend *legend() const;
@@ -965,7 +965,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER );
 
     /**
-     * Returns 3D renderer associated with the layer. May be null.
+     * Returns 3D renderer associated with the layer. May be nullptr.
      * \since QGIS 3.0
      */
     QgsAbstract3DRenderer *renderer3D() const;

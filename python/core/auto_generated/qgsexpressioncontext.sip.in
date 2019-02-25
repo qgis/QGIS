@@ -263,7 +263,7 @@ Retrieves a function from the scope.
 
 :param name: function name
 
-:return: function, or null if matching function could not be found
+:return: function, or None if matching function could not be found
 
 .. seealso:: :py:func:`hasFunction`
 
@@ -498,7 +498,7 @@ scope which contains a matching variable.
 
 :param name: variable name
 
-:return: matching scope containing variable, or null if none found
+:return: matching scope containing variable, or None if none found
 %End
 
 
@@ -508,7 +508,7 @@ Returns the scope at the specified index within the context.
 
 :param index: index of scope
 
-:return: matching scope, or null if none found
+:return: matching scope, or None if none found
 
 .. seealso:: :py:func:`lastScope`
 %End
@@ -620,7 +620,7 @@ function set.
 
 :param name: function name
 
-:return: function if contained by the context, otherwise null.
+:return: function if contained by the context, otherwise None.
 
 .. seealso:: :py:func:`hasFunction`
 %End

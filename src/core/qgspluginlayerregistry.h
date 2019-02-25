@@ -40,11 +40,11 @@ class CORE_EXPORT QgsPluginLayerType
 
     QString name();
 
-    //! Returns new layer of this type. Return NULL on error
+    //! Returns new layer of this type. Return nullptr on error
     virtual QgsPluginLayer *createLayer() SIP_FACTORY;
 
     /**
-     * Returns new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
+     * Returns new layer of this type, using layer URI (specific to this plugin layer type). Return nullptr on error.
      * \since QGIS 2.10
      */
     virtual QgsPluginLayer *createLayer( const QString &uri ) SIP_FACTORY;
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPluginLayerRegistry
     //! Remove plugin layer type and return true on success
     bool removePluginLayerType( const QString &typeName );
 
-    //! Returns plugin layer type metadata or NULL if doesn't exist
+    //! Returns plugin layer type metadata or nullptr if doesn't exist
     QgsPluginLayerType *pluginLayerType( const QString &typeName );
 
     /**

@@ -45,7 +45,7 @@ class QgsFeatureFilterProvider;
 struct LayerRenderJob
 {
   QgsRenderContext context;
-  QImage *img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
+  QImage *img; // may be nullptr if it is not necessary to draw to separate image (e.g. sequential rendering)
   //! True when img has been initialized (filled with transparent pixels) and is safe to compose
   bool imageInitialized = false;
   QgsMapLayerRenderer *renderer; // must be deleted
@@ -68,7 +68,7 @@ struct LabelRenderJob
   QgsRenderContext context;
 
   /**
-   * May be null if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
+   * May be nullptr if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
    * Note that if complete is false then img will be uninitialized and contain random data!.
    */
   QImage *img = nullptr;

@@ -1190,7 +1190,7 @@ creating a new browser model for every use.
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
 Emitted whenever current (selected) layer changes.
-The pointer to layer can be null if no layer is selected.
+The pointer to layer can be None if no layer is selected.
 %End
 
     void currentThemeChanged( const QString &theme );

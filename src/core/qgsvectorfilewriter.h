@@ -290,7 +290,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * \param symbologyExport symbology to export
      * \param symbologyScale scale of symbology
-     * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * \param filterExtent if not a nullptr, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * \param symbologyExport symbology to export
      * \param symbologyScale scale of symbology
-     * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * \param filterExtent if not a nullptr, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * \param symbologyExport symbology to export
      * \param symbologyScale scale of symbology
-     * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * \param filterExtent if not a nullptr, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * \param symbologyExport symbology to export
      * \param symbologyScale scale of symbology
-     * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+     * \param filterExtent if not a nullptr, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)

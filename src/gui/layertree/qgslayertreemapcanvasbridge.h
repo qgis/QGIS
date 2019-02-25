@@ -75,7 +75,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 #endif
 
     /**
-     * Returns associated overview canvas (may be null)
+     * Returns associated overview canvas (may be nullptr)
      * \since QGIS 3.0
      */
     QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }

@@ -94,7 +94,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \param providerKey identifier of the provider
      * \param dataSource  string containing data source for the provider
      * \param options provider options
-     * \returns new instance of provider or NULL on error
+     * \returns new instance of provider or nullptr on error
      */
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProviderRegistry
      * Gets pointer to provider function
      * \param providerKey identifier of the provider
      * \param functionName name of function
-     * \returns pointer to function or NULL on error. If the provider uses direct provider
+     * \returns pointer to function or nullptr on error. If the provider uses direct provider
      * function pointers instead of a library nullptr will be returned.
      */
     QFunctionPointer function( const QString &providerKey,
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsProviderRegistry
     //! Returns list of available providers by their keys
     QStringList providerList() const;
 
-    //! Returns metadata of the provider or NULL if not found
+    //! Returns metadata of the provider or nullptr if not found
     const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**

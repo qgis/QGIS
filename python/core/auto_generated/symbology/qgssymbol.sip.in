@@ -417,7 +417,7 @@ Returns whether the symbol utilizes any data defined properties.
 
 .. note::
 
-   the layer will be NULL after stopRender
+   the layer will be None after stopRender
 
 .. deprecated:: Will be removed in QGIS 4.0
 %End
@@ -624,7 +624,7 @@ simple line style will look different if the simple line is rendering a polygon 
 %Docstring
 Fields of the layer. Currently only available in startRender() calls
 to allow symbols with data-defined properties prepare the expressions
-(other times fields() returns null)
+(other times fields() returns an empty QgsFields object).
 
 .. versionadded:: 2.4
 %End

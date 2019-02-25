@@ -73,7 +73,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \param destCRS destination CRS, or an invalid (default constructed) CRS if
      * not available
      * \param onlySelected set to true to export only selected features
-     * \param errorMessage if non-null, will be set to any error messages
+     * \param errorMessage if specified, will be set to any error messages
      * \param options optional provider dataset options
      * \param feedback optional feedback object to show progress and cancellation of export
      * \returns NoError for a successful export, or encountered error

@@ -54,13 +54,13 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
 
     /**
      * Returns the current associated vectorLayer
-     * May be null
+     * May be nullptr
      */
     QgsVectorLayer *vectorLayer() const;
 
     /**
      * Sets the associated vectorLayer
-     * May be null
+     * May be nullptr
      */
     void setVectorLayer( QgsVectorLayer *layer );
 

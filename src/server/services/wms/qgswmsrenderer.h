@@ -71,7 +71,7 @@ namespace QgsWms
       ~QgsRenderer();
 
       /**
-       * Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
+       * Returns the map legend as an image (or nullptr in case of error). The caller takes ownership
       of the image object*/
       QImage *getLegendGraphics();
 
@@ -79,7 +79,7 @@ namespace QgsWms
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
       /**
-       * Returns the map as an image (or a null pointer in case of error). The caller takes ownership
+       * Returns the map as an image (or nullptr in case of error). The caller takes ownership
       of the image object). If an instance to existing hit test structure is passed, instead of rendering
       it will fill the structure with symbols that would be used for rendering */
       QImage *getMap( HitTest *hitTest = nullptr );

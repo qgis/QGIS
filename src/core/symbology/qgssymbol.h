@@ -415,7 +415,7 @@ class CORE_EXPORT QgsSymbol
     bool hasDataDefinedProperties() const;
 
     /**
-     * \note the layer will be NULL after stopRender
+     * \note the layer will be nullptr after stopRender
      * \deprecated Will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;
@@ -647,7 +647,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * Fields of the layer. Currently only available in startRender() calls
      * to allow symbols with data-defined properties prepare the expressions
-     * (other times fields() returns null)
+     * (other times fields() returns an empty QgsFields object).
      * \since QGIS 2.4
      */
     QgsFields fields() const { return mFields; }

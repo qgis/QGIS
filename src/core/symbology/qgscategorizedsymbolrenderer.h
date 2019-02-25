@@ -372,7 +372,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
      *
      * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-     * Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+     * Takes ownership of the passed settings objects. nullptr is a valid input that disables data-defined
      * size legend.
      * \since QGIS 3.0
      */
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Returns configuration of appearance of legend when using data-defined size for marker symbols.
-     * Will return null if the functionality is disabled.
+     * Will return nullptr if the functionality is disabled.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;

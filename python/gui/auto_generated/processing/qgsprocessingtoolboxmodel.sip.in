@@ -61,7 +61,7 @@ Returns the node's type.
 
     QgsProcessingToolboxModelNode *parent();
 %Docstring
-Returns the node's parent. If the node's parent is a null pointer, then the node is a root node.
+Returns the node's parent. If the node's parent is None, then the node is a root node.
 %End
 
     QList<QgsProcessingToolboxModelNode *> children();

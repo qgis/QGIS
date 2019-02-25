@@ -253,7 +253,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
-        //! Sets a new symbol (or NULL). Deletes old symbol.
+        //! Sets a new symbol (or nullptr). Deletes old symbol.
         void setSymbol( QgsSymbol *sym SIP_TRANSFER );
         void setLabel( const QString &label ) { mLabel = label; }
 
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         Rule( const QgsRuleBasedRenderer::Rule &rh );
 #endif
 
-        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        Rule *mParent = nullptr; // parent rule (nullptr only for root rule)
         std::unique_ptr< QgsSymbol > mSymbol;
         double mMaximumScale = 0;
         double mMinimumScale = 0;

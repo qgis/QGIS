@@ -737,7 +737,7 @@ Configures appearance of legend. Takes ownership of the passed settings objects.
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
-Returns configuration of appearance of legend. Will return null if no configuration has been set.
+Returns configuration of appearance of legend. Will return None if no configuration has been set.
 
 .. versionadded:: 3.0
 %End

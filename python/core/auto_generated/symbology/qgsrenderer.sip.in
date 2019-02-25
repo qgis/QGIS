@@ -466,7 +466,7 @@ does nothing with subrenderers, but individual derived classes can use these to 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
 %Docstring
 Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
-implementation does not use subrenderers and will always return null.
+implementation does not use subrenderers and will always return None.
 
 .. seealso:: :py:func:`setEmbeddedRenderer`
 

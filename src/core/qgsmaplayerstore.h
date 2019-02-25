@@ -205,7 +205,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * The specified layers will be removed from the store.
      * These layers will also be deleted.
      *
-     * \param layers A list of layers to remove. Null pointers are ignored.
+     * \param layers A list of layers to remove. nullptr values are ignored.
      *
      * \see takeMapLayer()
      * \see removeMapLayer()
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * The specified layer will be removed from the store. The layer will also be deleted.
      *
-     * \param layer The layer to remove. Null pointers are ignored.
+     * \param layer The layer to remove. nullptr values are ignored.
      *
      * \see takeMapLayer()
      * \see removeMapLayers()

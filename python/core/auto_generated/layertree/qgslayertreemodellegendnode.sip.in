@@ -93,7 +93,7 @@ Default implementation does nothing. *
 Entry point called from QgsLegendRenderer to do the rendering.
 Default implementation calls drawSymbol() and drawSymbolText() methods.
 
-If ctx is null, this is just first stage when preparing layout - without actual rendering.
+If ctx is None, this is just first stage when preparing layout - without actual rendering.
 %End
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
@@ -101,7 +101,7 @@ If ctx is null, this is just first stage when preparing layout - without actual 
 Draws symbol on the left side of the item
 
 :param settings: Legend layout configuration
-:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param ctx: Context for rendering - may be None if only doing layout without actual rendering
 :param itemHeight: Minimal height of the legend item - used for correct positioning when rendering
 
 :return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
@@ -112,7 +112,7 @@ Draws symbol on the left side of the item
 Draws label on the right side of the item
 
 :param settings: Legend layout configuration
-:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param ctx: Context for rendering - may be nullptrnullptr if only doing layout without actual rendering
 :param symbolSize: Real size of the associated symbol - used for correct positioning when rendering
 
 :return: Size of the label (may span multiple lines)

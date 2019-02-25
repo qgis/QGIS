@@ -51,7 +51,7 @@ takes ownership of settings, settings may be None
 
         QgsPalLayerSettings *settings() const;
 %Docstring
-Gets the labeling settings. May return a null pointer.
+Returns the labeling settings. May return None.
 %End
 
         bool dependsOnScale() const;
@@ -122,7 +122,7 @@ Unique rule identifier (for identification of rule within labeling, used as prov
 
         void setSettings( QgsPalLayerSettings *settings /Transfer/ );
 %Docstring
-Sets new settings (or NULL). Deletes old settings if any.
+Sets new settings (or None). Deletes old settings if any.
 %End
 
         void setMinimumScale( double scale );

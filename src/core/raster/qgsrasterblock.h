@@ -235,7 +235,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Gives direct access to the raster block data.
-     * The data type of the block must be Qgis::Byte otherwise it returns null pointer.
+     * The data type of the block must be Qgis::Byte otherwise it returns nullptr.
      * Useful for most efficient read access.
      * \note not available in Python bindings
      * \since QGIS 3.4
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Gives direct read/write access to the raster RGB data.
-     * The data type of the block must be Qgis::ARGB32 or Qgis::ARGB32_Premultiplied otherwise it returns null pointer.
+     * The data type of the block must be Qgis::ARGB32 or Qgis::ARGB32_Premultiplied otherwise it returns nullptr.
      * Useful for most efficient read/write access to RGB blocks.
      * \note not available in Python bindings
      * \since QGIS 3.4

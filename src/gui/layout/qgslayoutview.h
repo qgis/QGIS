@@ -601,7 +601,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
   public:
     virtual ~QgsLayoutViewMenuProvider() = default;
 
-    //! Returns a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or nullptr on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
 

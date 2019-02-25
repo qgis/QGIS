@@ -464,7 +464,7 @@ class CORE_EXPORT QgsProperty
     /**
      * Sets an optional transformer to use for manipulating the calculated values for the property.
      * \param transformer transformer to install. Ownership is transferred to the property, and any
-     * existing transformer will be deleted. Set to null to remove an existing transformer.
+     * existing transformer will be deleted. Set to nullptr to remove an existing transformer.
      * \see transformer()
      */
     void setTransformer( QgsPropertyTransformer *transformer SIP_TRANSFER );

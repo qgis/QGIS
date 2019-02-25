@@ -80,7 +80,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     virtual NodeType nodeType() const = 0;
 
     /**
-     * Returns the node's parent. If the node's parent is a null pointer, then the node is a root node.
+     * Returns the node's parent. If the node's parent is nullptr, then the node is a root node.
      */
     QgsProcessingToolboxModelNode *parent() { return mParent; }
 

@@ -105,7 +105,7 @@ Returns whether the drop-down menu is shown for the button.
 Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
 "default color ramp" option.
 
-:param colorramp: default color ramp for the button. Set to a null pointer to disable the default color
+:param colorramp: default color ramp for the button. Set to None to disable the default color
                   ramp option. The ramp will be cloned and ownership is not transferred.
 
 .. seealso:: :py:func:`defaultColorRamp`
@@ -116,7 +116,7 @@ Sets the default color ramp for the button, which is shown in the button's drop-
 Returns a copy of the default color ramp for the button, which is shown in the button's drop-down menu for the
 "default color ramp" option.
 
-:return: default color ramp for the button. Returns a null pointer if the default color ramp
+:return: default color ramp for the button. Returns None if the default color ramp
          option is disabled.
 
 .. seealso:: :py:func:`setDefaultColorRamp`
