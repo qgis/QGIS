@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         };
 
         /**
-         * Gets the labeling settings. May return a null pointer.
+         * Returns the labeling settings. May return nullptr.
          */
         QgsPalLayerSettings *settings() const { return mSettings.get(); }
 
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! Sets new settings (or NULL). Deletes old settings if any.
+        //! Sets new settings (or nullptr). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void updateElseRules();
 
       private:
-        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        Rule *mParent = nullptr; // parent rule (nullptr only for root rule)
         std::unique_ptr<QgsPalLayerSettings> mSettings;
         double mMaximumScale = 0;
         double mMinimumScale = 0;

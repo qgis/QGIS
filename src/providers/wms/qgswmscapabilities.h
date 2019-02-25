@@ -339,7 +339,7 @@ struct QgsWmtsTileMatrix
 
   /**
    * Returns range of tiles that intersects with the view extent
-   * (tml may be null)
+   * (\a tml may be nullptr)
    */
   void viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const;
 

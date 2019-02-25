@@ -140,7 +140,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     /**
      * Given two points, find the shortest path and return points on the way.
-     * The optional "error" argument may receive error code (PathError enum) if it is not null
+     * The optional "error" argument may receive error code (PathError enum) if it is not nullptr
      * \returns array of points - trace of linestrings of other features (empty array one error)
      */
     QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error SIP_OUT = nullptr );

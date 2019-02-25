@@ -453,7 +453,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
-     * implementation does not use subrenderers and will always return null.
+     * implementation does not use subrenderers and will always return nullptr.
      * \see setEmbeddedRenderer()
      * \since QGIS 2.16
      */

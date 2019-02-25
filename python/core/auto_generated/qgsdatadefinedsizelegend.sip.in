@@ -76,11 +76,11 @@ Returns marker symbol that will be used to draw markers in legend
 
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer /Transfer/ );
 %Docstring
-Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts null pointer to set no transformer.
+Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts None to set no transformer.
 %End
     QgsSizeScaleTransformer *sizeScaleTransformer() const;
 %Docstring
-Returns transformer for scaling of symbol sizes. Returns null if no transformer is defined.
+Returns transformer for scaling of symbol sizes. Returns None if no transformer is defined.
 %End
 
     void setClasses( const QList< QgsDataDefinedSizeLegend::SizeClass > &classes );
@@ -151,7 +151,7 @@ Generates legend symbol items according to the configuration
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize /Out/ = 0, int *labelXOffset /Out/ = 0 ) const;
 %Docstring
 Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
-If the painter in context is null, it only does size calculation without actual rendering.
+If the painter in context is None, it only does size calculation without actual rendering.
 Does nothing if legend is not configured as collapsed.
 %End
 
@@ -162,7 +162,7 @@ Returns output image that would be shown in the legend. Returns invalid image if
 
     static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Creates instance from given element and returns it (caller takes ownership). Returns null on error.
+Creates instance from given element and returns it (caller takes ownership). Returns None on error.
 %End
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

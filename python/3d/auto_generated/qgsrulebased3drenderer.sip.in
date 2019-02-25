@@ -89,7 +89,7 @@ takes ownership of symbol, symbol may be None
 
         QgsAbstract3DSymbol *symbol() const;
 %Docstring
-Gets the labeling settings. May return a null pointer.
+Returns the labeling settings. May return None.
 %End
 
         QString filterExpression() const;
@@ -127,7 +127,7 @@ Unique rule identifier (for identification of rule within labeling, used as prov
 
         void setSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
 %Docstring
-Sets new symbol (or NULL). Deletes old symbol if any.
+Sets new symbol (or None). Deletes old symbol if any.
 %End
 
         void setFilterExpression( const QString &filterExp );

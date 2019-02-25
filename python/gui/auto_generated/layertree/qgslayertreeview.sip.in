@@ -72,11 +72,18 @@ Returns pointer to the context menu provider. May be null
 
     QgsMapLayer *currentLayer() const;
 %Docstring
-Gets currently selected layer. May be null
+Returns the currently selected layer, or None if no layers is selected.
+
+.. seealso:: :py:func:`setCurrentLayer`
 %End
+
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
-Sets currently selected layer. Null pointer will deselect any layer.
+Sets the currently selected ``layer``.
+
+If ``layer`` is None then all layers will be deselected.
+
+.. seealso:: :py:func:`currentLayer`
 %End
 
     QgsLayerTreeNode *currentNode() const;
@@ -90,7 +97,7 @@ Gets current group node. If a layer is current node, the function will return pa
 
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 %Docstring
-Gets current legend node. May be null if current node is not a legend node.
+Gets current legend node. May be None if current node is not a legend node.
 
 .. versionadded:: 2.14
 %End

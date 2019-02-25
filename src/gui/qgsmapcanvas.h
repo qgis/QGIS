@@ -133,7 +133,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Gets access to the labeling results (may be null)
+     * Gets access to the labeling results (may be nullptr)
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults() const;

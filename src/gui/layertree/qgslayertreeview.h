@@ -80,9 +80,20 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Returns pointer to the context menu provider. May be null
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
-    //! Gets currently selected layer. May be null
+    /**
+     * Returns the currently selected layer, or nullptr if no layers is selected.
+     *
+     * \see setCurrentLayer()
+     */
     QgsMapLayer *currentLayer() const;
-    //! Sets currently selected layer. Null pointer will deselect any layer.
+
+    /**
+     * Sets the currently selected \a layer.
+     *
+     * If \a layer is nullptr then all layers will be deselected.
+     *
+     * \see currentLayer()
+     */
     void setCurrentLayer( QgsMapLayer *layer );
 
     //! Gets current node. May be null
@@ -91,7 +102,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
-     * Gets current legend node. May be null if current node is not a legend node.
+     * Gets current legend node. May be nullptr if current node is not a legend node.
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
