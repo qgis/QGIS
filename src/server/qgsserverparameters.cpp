@@ -62,11 +62,11 @@ QColor QgsServerParameterDefinition::toColor( bool &ok ) const
   return color;
 }
 
-QString QgsServerParameterDefinition::toString() const
+QString QgsServerParameterDefinition::toString( const bool defaultValue ) const
 {
   QString value = mValue.toString();
 
-  if ( value.isEmpty() )
+  if ( value.isEmpty() && defaultValue )
     value = mDefaultValue.toString();
 
   return value;

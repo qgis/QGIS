@@ -715,7 +715,7 @@ namespace QgsWms
 
   QString QgsWmsParameters::formatAsString() const
   {
-    return mWmsParameters[ QgsWmsParameter::FORMAT ].toString();
+    return mWmsParameters[ QgsWmsParameter::FORMAT ].toString( true );
   }
 
   QString QgsWmsParameters::formatAsString( const QgsWmsParameters::Format format )
