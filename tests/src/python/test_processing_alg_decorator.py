@@ -36,6 +36,7 @@ def define_new_no_inputs(newid=1):
         Test doc string text
         """
 
+
 def define_new_no_outputs_but_sink_instead(newid=1):
     @alg(name=ARGNAME.format(newid), label=alg.tr("Test func"), group="unittest",
          group_label=alg.tr("Test label"))
@@ -86,13 +87,14 @@ class AlgNoInputs(unittest.TestCase):
     def test_can_have_no_inputs(self):
         define_new_no_inputs()
 
+
 class AlgNoOutputsButSinkInstead(unittest.TestCase):
 
     def setUp(self):
         cleanup()
 
     def test_can_have_no_outputs_if_there_is_destination(self):
-        define_new_no_outputs_but_sink_instead()        
+        define_new_no_outputs_but_sink_instead()
 
 
 class AlgInstanceTests(unittest.TestCase):
