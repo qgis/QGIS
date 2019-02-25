@@ -162,6 +162,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     QgsCurve *toCurveType() const override SIP_FACTORY;
 
     QgsRectangle boundingBox() const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
 
     /**
      * Returns the x-coordinate of the specified node in the line string.
@@ -290,6 +291,9 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
+
+    mutable bool mHasCachedValidity = false;
+    mutable QString mValidityFailureReason;
 };
 
 #endif // QGSCURVE_H

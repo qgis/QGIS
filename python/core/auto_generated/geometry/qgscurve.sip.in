@@ -172,6 +172,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsRectangle boundingBox() const;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
     virtual double xAt( int index ) const = 0;
 %Docstring

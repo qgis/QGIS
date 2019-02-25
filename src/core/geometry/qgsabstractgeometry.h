@@ -577,6 +577,19 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool convertTo( QgsWkbTypes::Type type );
 
+    /**
+     * Checks validity of the geometry, and returns TRUE if the geometry is valid.
+     *
+     * \param error will be set to the validity error message
+     * \param flags indicates optional flags which control the type of validity checking performed
+     * (corresponding to QgsGeometry::ValidityFlags).
+     *
+     * \returns TRUE if geometry is valid
+     *
+     * \since QGIS 3.8
+     */
+    virtual bool isValid( QString &error SIP_OUT, int flags = 0 ) const = 0;
+
 #ifndef SIP_RUN
 
     /**

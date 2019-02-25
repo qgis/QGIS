@@ -349,6 +349,11 @@ QgsAbstractGeometry *QgsPoint::boundary() const
   return nullptr;
 }
 
+bool QgsPoint::isValid( QString &, int ) const
+{
+  return true;
+}
+
 bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   Q_UNUSED( position );

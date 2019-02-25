@@ -5052,15 +5052,18 @@ class TestQgsGeometry(unittest.TestCase):
             ['Polygon((0 3, 3 0, 3 3, 0 0, 0 3))', False, False, 'Self-intersection'],
         ]
         for t in tests:
+            # run each check 2 times to allow for testing of cached value
             g1 = QgsGeometry.fromWkt(t[0])
-            res = g1.isGeosValid()
-            self.assertEqual(res, t[1],
-                             "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], res))
-            if not res:
-                self.assertEqual(g1.lastError(), t[3], t[0])
-            res = g1.isGeosValid(QgsGeometry.FlagAllowSelfTouchingHoles)
-            self.assertEqual(res, t[2],
-                             "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[2], res))
+            for i in range(2):
+                res = g1.isGeosValid()
+                self.assertEqual(res, t[1],
+                                 "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], res))
+                if not res:
+                    self.assertEqual(g1.lastError(), t[3], t[0])
+            for i in range(2):
+                res = g1.isGeosValid(QgsGeometry.FlagAllowSelfTouchingHoles)
+                self.assertEqual(res, t[2],
+                                 "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[2], res))
 
     def testValidateGeometry(self):
         tests = [
