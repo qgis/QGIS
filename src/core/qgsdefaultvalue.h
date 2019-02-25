@@ -30,7 +30,7 @@
  *        side default values for fields.
  *
  * A QgsDefaultValue consists of an expression string that will be evaluated
- * on the client when a defeault field value needs to be generated.
+ * on the client when a default field value needs to be generated.
  *
  * Usual values for such an expression are
  *
