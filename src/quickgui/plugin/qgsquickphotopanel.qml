@@ -73,7 +73,7 @@ Drawer {
     Component.onDestruction: {
       if (!captureItem && camera.imageCapture.capturedImagePath != ""){
         captureItem.saveImage = false
-        QgsQuick.Utils.remove(camera.imageCapture.capturedImagePath)
+        QgsQuick.Utils.removeFile(camera.imageCapture.capturedImagePath)
       }
       captureItem.saveImage = false
     }
@@ -164,7 +164,7 @@ Drawer {
               captureItem.saveImage = false
               photoPreview.visible = false
               if (camera.imageCapture.capturedImagePath != "") {
-                QgsQuick.Utils.remove(camera.imageCapture.capturedImagePath)
+                QgsQuick.Utils.removeFile(camera.imageCapture.capturedImagePath)
               }
             }
           }
@@ -200,7 +200,7 @@ Drawer {
             onClicked: {
               captureItem.saveImage = true
               photoPanel.visible = false
-              photoPanel.lastPhotoName = QgsQuick.Utils.getFileName(camera.imageCapture.capturedImagePath)
+              photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.targetDir)
               if (photoPanel.lastPhotoName !== "") {
                 fieldItem.image.source = photoPanel.targetDir + "/" + photoPanel.lastPhotoName
                 fieldItem.valueChanged(photoPanel.lastPhotoName, photoPanel.lastPhotoName === "" || photoPanel.lastPhotoName === null)

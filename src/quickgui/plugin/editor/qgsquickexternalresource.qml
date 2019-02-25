@@ -31,13 +31,13 @@ Item {
   property var notavailableImageSource: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
 
   id: fieldItem
+  height: image.hasValidSource? customStyle.height * 3 : customStyle.height
   anchors {
     left: parent.left
     right: parent.right
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  height: Math.max(image.height, button.height)
   QgsQuick.PhotoCapture {
     id: photoCapturePanel
     visible: false
@@ -52,10 +52,20 @@ Item {
     property bool hasValidSource: false
 
     id: image
-    height: hasValidSource? customStyle.height * 3 : customStyle.height
+    height: fieldItem.height
+    sourceSize.height: height
     autoTransform: true
     fillMode: Image.PreserveAspectFit
     visible: hasValidSource
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: externalResourceHandler.previewImage(homePath + "/" + image.currentValue)
+    }
+
+    onCurrentValueChanged: {
+        image.source = image.getSource()
+    }
 
     onSourceChanged: {
         hasValidSource = (image.source ===  fieldItem.brokenImageSource ||
@@ -79,6 +89,66 @@ Item {
       source: image
       color: customStyle.fontColor
       visible: !image.hasValidSource
+  }
+
+  Button {
+    id: deleteButton
+    visible: fieldItem.enabled && image.hasValidSource
+    width: customStyle.height
+    height: width
+    padding: 0
+
+    anchors.right: imageBrowserButton.left
+    anchors.bottom: parent.bottom
+    anchors.verticalCenter: parent.verticalCenter
+
+    onClicked: externalResourceHandler.removeImage(fieldItem, homePath + "/" + image.currentValue)
+
+    background: Image {
+      id: deleteIcon
+      source: QgsQuick.Utils.getThemeIcon("ic_delete_forever_white")
+      width: deleteButton.width
+      height: deleteButton.height
+      sourceSize.width: width
+      sourceSize.height: height
+      fillMode: Image.PreserveAspectFit
+    }
+
+    ColorOverlay {
+        anchors.fill: deleteIcon
+        source: deleteIcon
+        color: customStyle.fontColor
+    }
+  }
+
+  Button {
+    id: imageBrowserButton
+    visible: fieldItem.enabled
+    width: customStyle.height
+    height: width
+    padding: 0
+
+    anchors.right: button.left
+    anchors.bottom: parent.bottom
+    anchors.verticalCenter: parent.verticalCenter
+
+    onClicked:externalResourceHandler.chooseImage(fieldItem)
+
+    background: Image {
+      id: browseIcon
+      source: QgsQuick.Utils.getThemeIcon("ic_gallery")
+      width: imageBrowserButton.width
+      height: imageBrowserButton.height
+      sourceSize.width: width
+      sourceSize.height: height
+      fillMode: Image.PreserveAspectFit
+    }
+
+    ColorOverlay {
+        anchors.fill: browseIcon
+        source: browseIcon
+        color: customStyle.fontColor
+    }
   }
 
   Button {
