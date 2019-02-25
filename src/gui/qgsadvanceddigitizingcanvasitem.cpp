@@ -38,7 +38,16 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   if ( !mAdvancedDigitizingDockWidget->cadEnabled() )
     return;
 
-  QgsRectangle mapRect = mMapCanvas->extent();
+  // Use visible polygon rather than extent to properly handle rotated maps
+  QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
+  double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
+  double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
+  QgsRectangle mapRect = QgsRectangle( mapPoly[0],
+                                       QgsPointXY(
+                                         mapPoly[0].x() + canvasWidth,
+                                         mapPoly[0].y() - canvasHeight
+                                       )
+                                     );
   if ( rect() != mapRect )
     setRect( mapRect );
 
@@ -54,11 +63,14 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   const QList<QgsPointXY> snappedSegment = mAdvancedDigitizingDockWidget->snappedSegment();
   const bool hasSnappedSegment = snappedSegment.count() == 2;
 
-  const bool curPointExist = mapRect.contains( curPoint );
+  const bool curPointExist = mapPoly.containsPoint( curPoint.toQPointF(), Qt::OddEvenFill );
 
   const double mupp = mMapCanvas->getCoordinateTransform()->mapUnitsPerPixel();
   if ( mupp == 0 )
     return;
+
+  const double canvasRotationRad = mMapCanvas->rotation() * M_PI / 180;
+  const double canvasMaxDimension = std::max( canvasWidth / mupp, canvasHeight / mupp );
 
   QPointF curPointPix, prevPointPix, penulPointPix, snapSegmentPix1, snapSegmentPix2;
 
@@ -130,6 +142,10 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     {
       a = std::atan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
     }
+
+    a0 += canvasRotationRad;
+    a += canvasRotationRad;
+
     painter->setPen( mConstruction2Pen );
     painter->drawArc( QRectF( prevPointPix.x() - 20,
                               prevPointPix.y() - 20,
@@ -143,9 +159,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
       painter->setPen( mLockedPen );
-      double d = std::max( boundingRect().width(), boundingRect().height() );
-      painter->drawLine( prevPointPix - d * QPointF( std::cos( a ), std::sin( a ) ),
-                         prevPointPix + d * QPointF( std::cos( a ), std::sin( a ) ) );
+      painter->drawLine( prevPointPix - canvasMaxDimension * QPointF( std::cos( a ), std::sin( a ) ),
+                         prevPointPix + canvasMaxDimension * QPointF( std::cos( a ), std::sin( a ) ) );
     }
   }
 
@@ -167,7 +182,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     {
       if ( nPoints > 1 )
       {
-        x = mAdvancedDigitizingDockWidget->constraintX()->value() / mupp + prevPointPix.x();
+        x = mAdvancedDigitizingDockWidget->constraintX()->value() + prevPoint.x();
       }
       else
       {
@@ -176,12 +191,12 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      x = toCanvasCoordinates( QgsPointXY( mAdvancedDigitizingDockWidget->constraintX()->value(), 0 ) ).x();
+      x = mAdvancedDigitizingDockWidget->constraintX()->value();
     }
     if ( draw )
     {
-      painter->drawLine( QPointF( x, 0 ),
-                         QPointF( x, boundingRect().height() ) );
+      painter->drawLine( toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) - canvasMaxDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ),
+                         toCanvasCoordinates( QgsPointXY( x, mapPoly[0].y() ) ) + canvasMaxDimension * QPointF( std::sin( -canvasRotationRad ), std::cos( -canvasRotationRad ) ) );
     }
   }
 
@@ -195,8 +210,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     {
       if ( nPoints > 1 )
       {
-        // y is reversed!
-        y = -mAdvancedDigitizingDockWidget->constraintY()->value() / mupp + prevPointPix.y();
+        y = mAdvancedDigitizingDockWidget->constraintY()->value() + prevPoint.y();
       }
       else
       {
@@ -205,12 +219,13 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      y = toCanvasCoordinates( QgsPointXY( 0, mAdvancedDigitizingDockWidget->constraintY()->value() ) ).y();
+      y = mAdvancedDigitizingDockWidget->constraintY()->value();
     }
     if ( draw )
     {
-      painter->drawLine( QPointF( 0, y ),
-                         QPointF( boundingRect().width(), y ) );
+      painter->drawLine( toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) - canvasMaxDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ),
+                         toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) + canvasMaxDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ) );
+
     }
   }
 
