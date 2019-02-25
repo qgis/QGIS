@@ -2504,15 +2504,7 @@ bool QgsGeometry::isGeosValid( const QgsGeometry::ValidityFlags flags ) const
     return false;
   }
 
-  // avoid calling geos for trivial point geometries
-  if ( QgsWkbTypes::geometryType( d->geometry->wkbType() ) == QgsWkbTypes::PointGeometry )
-  {
-    return true;
-  }
-
-  QgsGeos geos( d->geometry.get() );
-  mLastError.clear();
-  return geos.isValid( &mLastError, flags & FlagAllowSelfTouchingHoles, nullptr );
+  return d->geometry->isValid( mLastError, static_cast< int >( flags ) );
 }
 
 bool QgsGeometry::isSimple() const

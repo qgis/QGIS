@@ -206,6 +206,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
     virtual bool addZValue( double zValue = 0 );
 

@@ -607,6 +607,20 @@ Converts the geometry to a specified type.
 .. versionadded:: 2.14
 %End
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const = 0;
+%Docstring
+Checks validity of the geometry, and returns ``True`` if the geometry is valid.
+
+:param flags: indicates optional flags which control the type of validity checking performed
+              (corresponding to QgsGeometry.ValidityFlags).
+
+:return: - ``True`` if geometry is valid
+         - error: will be set to the validity error message
+
+
+.. versionadded:: 3.8
+%End
+
 
     QgsGeometryPartIterator parts();
 %Docstring
