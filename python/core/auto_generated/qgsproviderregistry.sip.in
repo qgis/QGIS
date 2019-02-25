@@ -240,7 +240,6 @@ register a new vector data provider from its ``providerMetadata``
 %End
 
 
-
   private:
     QgsProviderRegistry( const QString &pluginPath );
 }; // class QgsProviderRegistry
