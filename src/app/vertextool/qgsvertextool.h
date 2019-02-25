@@ -69,7 +69,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
       ActiveLayer,
       AllLayers
     };
-    Q_ENUM( VertexToolMode );
+    Q_ENUM( VertexToolMode )
 
     QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, VertexToolMode mode = QgsVertexTool::AllLayers );
 
@@ -116,6 +116,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     void startRangeVertexSelection();
 
     void cleanEditor( QgsFeatureId id );
+
+    void lockedFeatureSelectionChanged();
 
   private:
 
