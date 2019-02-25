@@ -197,7 +197,8 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType */
+     *  source data type may be shorter than dataType
+    */
     virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
     /**
@@ -239,7 +240,8 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Set input.
-      * Returns true if set correctly, false if cannot use that input */
+      * Returns true if set correctly, false if cannot use that input
+    */
     virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
     //! Current input

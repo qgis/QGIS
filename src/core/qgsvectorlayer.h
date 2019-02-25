@@ -505,12 +505,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Joins another vector layer to this layer
       \param joinInfo join object containing join layer id, target and source field
-      \note since 2.6 returns bool indicating whether the join can be added */
+      \note since 2.6 returns bool indicating whether the join can be added
+    */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /**
      * Removes a vector layer join
-      \returns true if join was found and successfully removed */
+     * \returns true if join was found and successfully removed
+    */
     bool removeJoin( const QString &joinLayerId );
 
     /**

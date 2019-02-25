@@ -74,7 +74,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /**
      * Add an attribute field (but does not commit it)
-        returns true if the field was added */
+        returns true if the field was added
+    */
     virtual bool addAttribute( const QgsField &field );
 
     //! Delete an attribute field (but does not commit it)

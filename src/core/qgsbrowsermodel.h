@@ -130,7 +130,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \param path item path
      * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
-     * \returns model index, invalid if item not found */
+     * \returns model index, invalid if item not found
+    */
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     //! \note not available in Python bindings

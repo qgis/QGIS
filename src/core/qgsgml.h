@@ -347,7 +347,8 @@ class CORE_EXPORT QgsGmlStreamingParser
  * This class reads data from a WFS server or alternatively from a GML file. It
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
- * request is finished */
+ * request is finished
+*/
 class CORE_EXPORT QgsGml : public QObject
 {
     Q_OBJECT

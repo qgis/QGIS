@@ -37,7 +37,7 @@ Starts the image download
 
 .. note::
 
-   Make sure to connect to "finish" and "error" before starting *
+   Make sure to connect to "finish" and "error" before starting
 %End
 
   signals:
@@ -46,7 +46,7 @@ Starts the image download
 %Docstring
 Emitted when the download completes
 
-:param legend: The downloaded legend image *
+:param legend: The downloaded legend image
 %End
     void progress( qint64 received, qint64 total );
 %Docstring
@@ -189,7 +189,7 @@ Returns a list of user no data value ranges.
     virtual QStringList subLayers() const;
 %Docstring
 Returns the sublayers of this layer - useful for providers that manage
-their own layers, such as WMS *
+their own layers, such as WMS
 %End
 
     virtual bool supportsLegendGraphic() const;

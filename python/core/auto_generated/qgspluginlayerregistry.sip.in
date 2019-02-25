@@ -72,7 +72,6 @@ Constructor for QgsPluginLayerRegistry.
     QStringList pluginLayerTypes();
 %Docstring
 List all known layer types
-\since QGIS *
 %End
 
     bool addPluginLayerType( QgsPluginLayerType *pluginLayerType /Transfer/ );

@@ -103,7 +103,7 @@ Returns true if the block may contain no data. It does not guarantee
 that it really contains any no data. It can be used to speed up processing.
 Not the difference between this method and hasNoDataValue().
 
-:return: true if the block may contain no data *
+:return: true if the block may contain no data
 %End
 
     void setNoDataValue( double noDataValue );
@@ -142,7 +142,7 @@ Gets byte array representing a value.
 :param dataType: data type
 :param value: value
 
-:return: byte array representing the value *
+:return: byte array representing the value
 %End
 
     double value( int row, int column ) const;
@@ -180,7 +180,7 @@ Read a single color
 :param row: row index
 :param column: column index
 
-:return: color *
+:return: color
 %End
 
     QRgb color( qgssize index ) const;
@@ -189,7 +189,7 @@ Read a single value
 
 :param index: data matrix index (long type in Python)
 
-:return: color *
+:return: color
 %End
 
     bool isNoData( int row, int column ) const;
@@ -235,7 +235,7 @@ Set value on position
 :param column: column index
 :param value: the value to be set
 
-:return: true on success *
+:return: true on success
 %End
 
     bool setValue( qgssize index, double value );
@@ -245,7 +245,7 @@ Set value on index (indexed line by line)
 :param index: data matrix index (long type in Python)
 :param value: the value to be set
 
-:return: true on success *
+:return: true on success
 %End
 
     bool setColor( int row, int column, QRgb color );
@@ -256,7 +256,7 @@ Set color on position
 :param column: column index
 :param color: the color to be set, QRgb value
 
-:return: true on success *
+:return: true on success
 %End
 
     bool setColor( qgssize index, QRgb color );
@@ -266,7 +266,7 @@ Set color on index (indexed line by line)
 :param index: data matrix index (long type in Python)
 :param color: the color to be set, QRgb value
 
-:return: true on success *
+:return: true on success
 %End
 
 
@@ -277,7 +277,7 @@ Set no data on pixel
 :param row: row index
 :param column: column index
 
-:return: true on success *
+:return: true on success
 %End
 
     bool setIsNoData( qgssize index );
@@ -286,21 +286,21 @@ Set no data on pixel
 
 :param index: data matrix index (long type in Python)
 
-:return: true on success *
+:return: true on success
 %End
 
     bool setIsNoData();
 %Docstring
 Set the whole block to no data
 
-:return: true on success *
+:return: true on success
 %End
 
     bool setIsNoDataExcept( QRect exceptRect );
 %Docstring
 Set the whole block to no data except specified rectangle
 
-:return: true on success *
+:return: true on success
 %End
 
     void setIsData( int row, int column );
@@ -375,7 +375,7 @@ Convert data to different type.
 
 :param destDataType: dest data type
 
-:return: true on success *
+:return: true on success
 %End
 
     QImage image() const;

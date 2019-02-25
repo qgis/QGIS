@@ -72,7 +72,8 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * Try to insert interface at specified index and connect
-     * if connection would fail, the interface is not inserted and false is returned */
+     * if connection would fail, the interface is not inserted and false is returned
+    */
     bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 #ifdef SIP_RUN
     % MethodCode
@@ -89,7 +90,8 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * Try to replace interface at specified index and connect
-     * if connection would fail, the interface is not inserted and false is returned */
+     * if connection would fail, the interface is not inserted and false is returned
+    */
     bool replace( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 
     /**
@@ -113,7 +115,8 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * Set interface at index on/off
-     *  Returns true on success */
+     *  Returns true on success
+    */
     bool setOn( int idx, bool on );
 
     //! Test if interface at index may be switched on/off
@@ -155,7 +158,8 @@ class CORE_EXPORT QgsRasterPipe
 
     /**
      * \brief Try to connect interfaces in pipe and to the provider at beginning.
-        Returns true if connected or false if connection failed */
+        Returns true if connected or false if connection failed
+    */
     bool connect( QVector<QgsRasterInterface *> interfaces );
 
 };

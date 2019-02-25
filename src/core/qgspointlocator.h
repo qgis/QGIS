@@ -121,7 +121,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
+     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true
+    */
     bool init( int maxFeaturesToIndex = -1 );
 
     //! Indicate whether the data have been already indexed

@@ -72,7 +72,7 @@ Changes values of attributes (but does not commit it).
     virtual bool addAttribute( const QgsField &field );
 %Docstring
 Add an attribute field (but does not commit it)
-returns true if the field was added *
+returns true if the field was added
 %End
 
     virtual bool deleteAttribute( int attr );

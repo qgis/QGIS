@@ -433,14 +433,14 @@ Joins another vector layer to this layer
 
 .. note::
 
-   since 2.6 returns bool indicating whether the join can be added *
+   since 2.6 returns bool indicating whether the join can be added
 %End
 
     bool removeJoin( const QString &joinLayerId );
 %Docstring
 Removes a vector layer join
 
-:return: true if join was found and successfully removed *
+:return: true if join was found and successfully removed
 %End
 
     QgsVectorLayerJoinBuffer *joinBuffer();

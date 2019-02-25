@@ -62,14 +62,16 @@ class CORE_EXPORT QgsImageFetcher : public QObject
 
     /**
      * Starts the image download
-     * \note Make sure to connect to "finish" and "error" before starting */
+     * \note Make sure to connect to "finish" and "error" before starting
+    */
     virtual void start() = 0;
 
   signals:
 
     /**
      * Emitted when the download completes
-     *  \param legend The downloaded legend image */
+     *  \param legend The downloaded legend image
+    */
     void finish( const QImage &legend );
     //! Emitted to report progress
     void progress( qint64 received, qint64 total );
@@ -250,7 +252,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * \brief Returns the sublayers of this layer - useful for providers that manage
-     *  their own layers, such as WMS */
+     *  their own layers, such as WMS
+    */
     QStringList subLayers() const override
     {
       return QStringList();
@@ -556,12 +559,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
-    are suited for printing. A value of -1 means it has not been set */
+    are suited for printing. A value of -1 means it has not been set
+    */
     int mDpi = -1;
 
     /**
      * Source no data value is available and is set to be used or internal no data
-     *  is available. Used internally only  */
+     *  is available. Used internally only
+    */
     //bool hasNoDataValue ( int bandNo );
 
     //! \brief Cell value representing original source no data. e.g. -9999, indexed from 0
@@ -573,12 +578,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * \brief Use source nodata value. User can disable usage of source nodata
      *  value as nodata. It may happen that a value is wrongly given by GDAL
-     *  as nodata (e.g. 0) and it has to be treated as regular value. */
+     *  as nodata (e.g. 0) and it has to be treated as regular value.
+    */
     QList<bool> mUseSrcNoDataValue;
 
     /**
      * \brief List of lists of user defined additional no data values
-     *  for each band, indexed from 0 */
+     *  for each band, indexed from 0
+    */
     QList< QgsRasterRangeList > mUserNoDataValue;
 
     mutable QgsRectangle mExtent;
