@@ -87,7 +87,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
   signals:
 
     /**
-     * This signal is emitted when the currently selected band changes.
+     * Emitted when the currently selected band changes.
      */
     void bandChanged( int band );
 

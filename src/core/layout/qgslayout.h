@@ -666,7 +666,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
   signals:
 
     /**
-     * Is emitted when properties of the layout change. This signal is only
+     * Emitted when properties of the layout change. This signal is only
      * emitted for settings directly managed by the layout, and is not emitted
      * when child items change.
      */
@@ -684,7 +684,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void selectedItemChanged( QgsLayoutItem *selected );
 
     /**
-     * Is emitted when the layout has been refreshed and items should also be refreshed
+     * Emitted when the layout has been refreshed and items should also be refreshed
      * and updated.
      */
     void refreshed();

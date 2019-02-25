@@ -1003,21 +1003,21 @@ class GUI_EXPORT QgisInterface : public QObject
     void currentLayerChanged( QgsMapLayer *layer );
 
     /**
-     * Signal emitted when the current \a theme is changed so plugins
+     * Emitted when the current \a theme is changed so plugins
      * can change their tool button icons.
      * \since QGIS 3.0
     */
     void currentThemeChanged( const QString &theme );
 
     /**
-     * This signal is emitted when a new layout \a designer has been opened.
+     * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
      * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted before a layout \a designer is going to be closed
+     * Emitted before a layout \a designer is going to be closed
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
@@ -1026,7 +1026,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
     /**
-     * This signal is emitted after a layout designer window is closed.
+     * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
      * \since QGIS 3.0
@@ -1034,7 +1034,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void layoutDesignerClosed();
 
     /**
-     * This signal is emitted when the initialization is complete.
+     * Emitted when the initialization is complete.
      */
     void initializationCompleted();
 
@@ -1057,7 +1057,7 @@ class GUI_EXPORT QgisInterface : public QObject
     void newProjectCreated();
 
     /**
-     * This signal is emitted when a layer has been saved using save as.
+     * Emitted when a layer has been saved using save as.
      * \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );

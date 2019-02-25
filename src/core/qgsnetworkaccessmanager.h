@@ -481,7 +481,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
 
     /**
-     * This signal is emitted whenever a pending network reply is finished.
+     * Emitted whenever a pending network reply is finished.
      *
      * The \a reply parameter will contain a QgsNetworkReplyContent object, containing all the useful
      * information relating to the reply, including headers and reply content.

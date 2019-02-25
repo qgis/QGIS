@@ -281,13 +281,13 @@ layer() will still return a valid pointer for cleanup purpose.
 
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 %Docstring
-Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
+Emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
 You should connect to this signal, to be sure, to not get a cached value if querying the cache.
 %End
 
     void featureAdded( QgsFeatureId fid );
 %Docstring
-Is emitted, when a new feature has been added to the layer and this cache.
+Emitted when a new feature has been added to the layer and this cache.
 You should connect to this signal instead of the layers', if you want to be sure
 that this cache has updated information for the new feature
 

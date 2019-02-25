@@ -2329,7 +2329,7 @@ by the backend data provider).
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 %Docstring
-This signal is emitted when selection was changed
+Emitted when selection was changed
 
 :param selected: Newly selected feature ids
 :param deselected: Ids of all features which have previously been selected but are not any more
@@ -2338,7 +2338,7 @@ This signal is emitted when selection was changed
 
     void layerModified();
 %Docstring
-This signal is emitted when modifications has been done on layer
+Emitted when modifications has been done on layer
 %End
 
     void allowCommitChanged();
@@ -2350,37 +2350,37 @@ Emitted whenever the allowCommitChanged() property of this layer changes.
 
     void beforeModifiedCheck() const;
 %Docstring
-Is emitted, when layer is checked for modifications. Use for last-minute additions
+Emitted when the layer is checked for modifications. Use for last-minute additions.
 %End
 
     void beforeEditingStarted();
 %Docstring
-Is emitted, before editing on this layer is started
+Emitted before editing on this layer is started.
 %End
 
     void editingStarted();
 %Docstring
-Is emitted, when editing on this layer has started
+Emitted when editing on this layer has started.
 %End
 
     void editingStopped();
 %Docstring
-Is emitted, when edited changes successfully have been written to the data provider
+Emitted when edited changes have been successfully written to the data provider.
 %End
 
     void beforeCommitChanges();
 %Docstring
-Is emitted, before changes are committed to the data provider
+Emitted before changes are committed to the data provider.
 %End
 
     void beforeRollBack();
 %Docstring
-Is emitted, before changes are rolled back
+Emitted before changes are rolled back.
 %End
 
     void afterRollBack();
 %Docstring
-Is emitted, after changes are rolled back
+Emitted after changes are rolled back.
 
 .. versionadded:: 3.4
 %End
@@ -2451,7 +2451,7 @@ If features are deleted outside of an edit command, this signal will be emitted 
 
     void updatedFields();
 %Docstring
-Is emitted, whenever the fields available from this layer have been changed.
+Emitted whenever the fields available from this layer have been changed.
 This can be due to manually adding attributes or due to a join.
 %End
 
@@ -2464,7 +2464,7 @@ Emitted when the layer's subset string has changed.
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 %Docstring
-Is emitted whenever an attribute value change is done in the edit buffer.
+Emitted whenever an attribute value change is done in the edit buffer.
 Note that at this point the attribute change is not yet saved to the provider.
 
 :param fid: The id of the changed feature
@@ -2474,7 +2474,7 @@ Note that at this point the attribute change is not yet saved to the provider.
 
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
 %Docstring
-Is emitted whenever a geometry change is done in the edit buffer.
+Emitted whenever a geometry change is done in the edit buffer.
 Note that at this point the geometry change is not yet saved to the provider.
 
 :param fid: The id of the changed feature
@@ -2483,27 +2483,27 @@ Note that at this point the geometry change is not yet saved to the provider.
 
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
 %Docstring
-This signal is emitted, when attributes are deleted from the provider
+Emitted when attributes are deleted from the provider
 %End
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
 %Docstring
-This signal is emitted, when attributes are added to the provider
+Emitted when attributes are added to the provider
 %End
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
 %Docstring
-This signal is emitted, when features are added to the provider
+Emitted when features are added to the provider
 %End
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
 %Docstring
-This signal is emitted, when features are deleted from the provider
+Emitted when features are deleted from the provider
 %End
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
 %Docstring
-This signal is emitted, when attribute value changes are saved to the provider
+Emitted when attribute value changes are saved to the provider
 %End
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 %Docstring
-This signal is emitted, when geometry changes are saved to the provider
+Emitted when geometry changes are saved to the provider
 %End
 
     void labelingFontNotFound( QgsVectorLayer *layer, const QString &fontfamily );

@@ -1195,7 +1195,7 @@ The pointer to layer can be null if no layer is selected.
 
     void currentThemeChanged( const QString &theme );
 %Docstring
-Signal emitted when the current ``theme`` is changed so plugins
+Emitted when the current ``theme`` is changed so plugins
 can change their tool button icons.
 
 .. versionadded:: 3.0
@@ -1203,7 +1203,7 @@ can change their tool button icons.
 
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 %Docstring
-This signal is emitted when a new layout ``designer`` has been opened.
+Emitted when a new layout ``designer`` has been opened.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
@@ -1212,7 +1212,7 @@ This signal is emitted when a new layout ``designer`` has been opened.
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 %Docstring
-This signal is emitted before a layout ``designer`` is going to be closed
+Emitted before a layout ``designer`` is going to be closed
 and deleted.
 
 .. seealso:: :py:func:`layoutDesignerClosed`
@@ -1224,7 +1224,7 @@ and deleted.
 
     void layoutDesignerClosed();
 %Docstring
-This signal is emitted after a layout designer window is closed.
+Emitted after a layout designer window is closed.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
@@ -1235,7 +1235,7 @@ This signal is emitted after a layout designer window is closed.
 
     void initializationCompleted();
 %Docstring
-This signal is emitted when the initialization is complete.
+Emitted when the initialization is complete.
 %End
 
     void projectRead();
@@ -1264,7 +1264,7 @@ Emitted when starting an entirely new project.
 
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 %Docstring
-This signal is emitted when a layer has been saved using save as.
+Emitted when a layer has been saved using save as.
 
 .. versionadded:: 2.7
 %End

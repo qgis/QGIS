@@ -61,12 +61,12 @@ Synchronize to remote layers
 
     void progressStarted();
 %Docstring
-The signal is emitted when the process has started.
+Emitted when the process has started.
 %End
 
     void layerProgressUpdated( int layer, int numLayers );
 %Docstring
-Is emitted whenever a new layer is being processed.
+Emitted whenever a new layer is being processed.
 It is possible to estimate the progress of the complete operation by
 comparing the index of the current ``layer`` to the total amount
 ``numLayers``.
@@ -74,7 +74,7 @@ comparing the index of the current ``layer`` to the total amount
 
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 %Docstring
-Is emitted when the mode for the progress of the current operation is
+Emitted when the mode for the progress of the current operation is
 set.
 
 :param mode: progress mode

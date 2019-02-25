@@ -2140,7 +2140,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
   signals:
 
     /**
-     * This signal is emitted when selection was changed
+     * Emitted when selection was changed
      *
      * \param selected        Newly selected feature ids
      * \param deselected      Ids of all features which have previously been selected but are not any more
@@ -2148,7 +2148,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
-    //! This signal is emitted when modifications has been done on layer
+    //! Emitted when modifications has been done on layer
     void layerModified();
 
     /**
@@ -2158,26 +2158,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void allowCommitChanged();
 
-    //! Is emitted, when layer is checked for modifications. Use for last-minute additions
+    //! Emitted when the layer is checked for modifications. Use for last-minute additions.
     void beforeModifiedCheck() const;
 
-    //! Is emitted, before editing on this layer is started
+    //! Emitted before editing on this layer is started.
     void beforeEditingStarted();
 
-    //! Is emitted, when editing on this layer has started
+    //! Emitted when editing on this layer has started.
     void editingStarted();
 
-    //! Is emitted, when edited changes successfully have been written to the data provider
+    //! Emitted when edited changes have been successfully written to the data provider.
     void editingStopped();
 
-    //! Is emitted, before changes are committed to the data provider
+    //! Emitted before changes are committed to the data provider.
     void beforeCommitChanges();
 
-    //! Is emitted, before changes are rolled back
+    //! Emitted before changes are rolled back.
     void beforeRollBack();
 
     /**
-     * Is emitted, after changes are rolled back
+     * Emitted after changes are rolled back.
      * \since QGIS 3.4
      */
     void afterRollBack();
@@ -2247,7 +2247,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void featuresDeleted( const QgsFeatureIds &fids );
 
     /**
-     * Is emitted, whenever the fields available from this layer have been changed.
+     * Emitted whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.
      */
     void updatedFields();
@@ -2259,7 +2259,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void subsetStringChanged();
 
     /**
-     * Is emitted whenever an attribute value change is done in the edit buffer.
+     * Emitted whenever an attribute value change is done in the edit buffer.
      * Note that at this point the attribute change is not yet saved to the provider.
      *
      * \param fid The id of the changed feature
@@ -2269,7 +2269,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
     /**
-     * Is emitted whenever a geometry change is done in the edit buffer.
+     * Emitted whenever a geometry change is done in the edit buffer.
      * Note that at this point the geometry change is not yet saved to the provider.
      *
      * \param fid The id of the changed feature
@@ -2277,17 +2277,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
 
-    //! This signal is emitted, when attributes are deleted from the provider
+    //! Emitted when attributes are deleted from the provider
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
-    //! This signal is emitted, when attributes are added to the provider
+    //! Emitted when attributes are added to the provider
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
-    //! This signal is emitted, when features are added to the provider
+    //! Emitted when features are added to the provider
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
-    //! This signal is emitted, when features are deleted from the provider
+    //! Emitted when features are deleted from the provider
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
-    //! This signal is emitted, when attribute value changes are saved to the provider
+    //! Emitted when attribute value changes are saved to the provider
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
-    //! This signal is emitted, when geometry changes are saved to the provider
+    //! Emitted when geometry changes are saved to the provider
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 
     //! Emitted when the font family defined for labeling layer is not found on system

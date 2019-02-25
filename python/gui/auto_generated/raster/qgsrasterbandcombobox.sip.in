@@ -79,7 +79,7 @@ Sets the current ``band`` number selected in the combobox.
 
     void bandChanged( int band );
 %Docstring
-This signal is emitted when the currently selected band changes.
+Emitted when the currently selected band changes.
 %End
 
 };

@@ -131,14 +131,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   signals:
 
     /**
-     * Is emitted, whenever the current edit selection has been changed.
+     * Emitted whenever the current edit selection has been changed.
      *
      * \param feat the feature, which will be edited.
      */
     void currentEditSelectionChanged( QgsFeature &feat );
 
     /**
-     * Is emitted, whenever the display expression is successfully changed
+     * Emitted whenever the display expression is successfully changed
      * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
 
     /**
-     * Is emitted, when the context menu is created to add the specific actions to it
+     * Emitted when the context menu is created to add the specific actions to it
      * \param menu is the already created context menu
      * \param atIndex is the position of the current feature in the model
      */

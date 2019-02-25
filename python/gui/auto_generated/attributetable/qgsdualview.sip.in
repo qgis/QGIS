@@ -227,19 +227,19 @@ Cancel the progress dialog (if any)
 
     void displayExpressionChanged( const QString &expression );
 %Docstring
-Is emitted, whenever the display expression is successfully changed
+Emitted whenever the display expression is successfully changed
 
 :param expression: The expression that was applied
 %End
 
     void filterChanged();
 %Docstring
-Is emitted, whenever the filter changes
+Emitted whenever the filter changes
 %End
 
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 %Docstring
-Is emitted when a filter expression is set using the view.
+Emitted when a filter expression is set using the view.
 
 :param expression: filter expression
 :param type: filter type

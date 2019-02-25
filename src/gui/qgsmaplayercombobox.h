@@ -136,7 +136,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setLayer( QgsMapLayer *layer );
 
   signals:
-    //! layerChanged this signal is emitted whenever the currently selected layer changes
+    //! Emitted whenever the currently selected layer changes.
     void layerChanged( QgsMapLayer *layer );
 
   protected slots:

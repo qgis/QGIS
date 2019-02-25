@@ -134,7 +134,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
 
   signals:
-    //! This signal is emitted when the relations were loaded after reading a project
+    //! Emitted when the relations were loaded after reading a project
     void relationsLoaded();
 
     /**

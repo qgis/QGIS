@@ -279,7 +279,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   signals:
-    //! Is emitted on picture rotation change
+    //! Emitted on picture rotation change
     void pictureRotationChanged( double newRotation );
 
   protected:
