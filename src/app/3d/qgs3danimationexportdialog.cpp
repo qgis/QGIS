@@ -23,25 +23,30 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
+#include "qgsspinbox.h"
 
-#include <QRegExp>
-#include <QValidator>
-#include <QDir>
-
-const QString FRAME_PLACEHOLDER = QStringLiteral("#####");
+#include <QtGlobal>
 
 Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
 {
   setupUi( this );
   QgsSettings settings;
 
-  const QString templateText = QStringLiteral("%1%2.jpg").arg( QgsProject::instance()->baseName() ).arg(FRAME_PLACEHOLDER);
+  const QString templateText = settings.value( QStringLiteral( "Export3DAnimation/fileNameTemplate" ),
+                               QStringLiteral( "%1####.jpg" ).arg( QgsProject::instance()->baseName() )
+                               , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  QRegExp rx(QStringLiteral("\\w+%1\\.{1}\\w+").arg(FRAME_PLACEHOLDER)); //e.g. anyprefix#####.png
-  QValidator *validator = new QRegExpValidator(rx, this);
-  mTemplateLineEdit->setValidator(validator);
+  QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
+  QValidator *validator = new QRegExpValidator( rx, this );
+  mTemplateLineEdit->setValidator( validator );
 
-  mOutputDirFileWidget->setStorageMode(QgsFileWidget::GetDirectory);
+  connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [ = ]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Export3DAnimation/fileNameTemplate" ), mTemplateLineEdit->text() );
+  } );
+
+  mOutputDirFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mOutputDirFileWidget->setDialogTitle( tr( "Select directory for 3D animation frames" ) );
   mOutputDirFileWidget->lineEdit()->setShowClearButton( false );
   mOutputDirFileWidget->setDefaultRoot( settings.value( QStringLiteral( "Export3DAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
@@ -53,23 +58,43 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
     settings.setValue( QStringLiteral( "Export3DAnimation/lastDir" ), mOutputDirFileWidget->filePath(), QgsSettings::App );
   } );
 
-  mFpsSpinBox->setValue(settings.value( QStringLiteral( "Export3DAnimation/fps" ), 30).toInt());
-  mWidthSpinBox->setValue(settings.value( QStringLiteral( "Export3DAnimation/width" ), 800).toInt());
-  mHeightSpinBox->setValue(settings.value( QStringLiteral( "Export3DAnimation/height" ), 600).toInt());
+  mFpsSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/fps" ), 30 ).toInt() );
+  connect( mFpsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QgsSpinBox::valueChanged ), this, [ = ]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Export3DAnimation/fps" ), mFpsSpinBox->value() );
+  } );
+
+  mWidthSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/width" ), 800 ).toInt() );
+  connect( mWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QgsSpinBox::valueChanged ), this, [ = ]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Export3DAnimation/width" ), mWidthSpinBox->value() );
+  } );
+
+  mHeightSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/height" ), 600 ).toInt() );
+  connect( mHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QgsSpinBox::valueChanged ), this, [ = ]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Export3DAnimation/height" ), mHeightSpinBox->value() );
+  } );
 
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-Qgs3DAnimationExportDialog::~Qgs3DAnimationExportDialog() = default;
-
-QString Qgs3DAnimationExportDialog::fileName(int frameNo) const
+QString Qgs3DAnimationExportDialog::outputDirectory() const
 {
   const QString dir = mOutputDirFileWidget->filePath();
-  QString name = mTemplateLineEdit->text();
-  Q_ASSERT( name.contains(FRAME_PLACEHOLDER) ); // asserted by validator
-  name = name.replace(FRAME_PLACEHOLDER, QString::number(frameNo));
-  return QDir(dir).absoluteFilePath(name);
+  return dir;
 }
+
+QString Qgs3DAnimationExportDialog::fileNameExpression() const
+{
+  const QString name = mTemplateLineEdit->text();
+  return name;
+}
+
+Qgs3DAnimationExportDialog::~Qgs3DAnimationExportDialog() = default;
 
 int Qgs3DAnimationExportDialog::fps() const
 {
@@ -81,5 +106,5 @@ QSize Qgs3DAnimationExportDialog::frameSize() const
 {
   const int width = mWidthSpinBox->value();
   const int height = mHeightSpinBox->value();
-  return QSize(width, height);
+  return QSize( width, height );
 }

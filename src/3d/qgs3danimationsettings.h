@@ -17,6 +17,7 @@
 #define QGS3DANIMATIONSETTINGS_H
 
 #include "qgsvector3d.h"
+#include "qgis_3d.h"
 
 #include <QEasingCurve>
 #include <QVector>
@@ -28,8 +29,9 @@ class QgsReadWriteContext;
 /**
  * Class that holds information about animation in 3D view. The animation is defined
  * as a series of keyframes
+ * \since QGIS 3.8
  */
-class Qgs3DAnimationSettings
+class _3D_EXPORT Qgs3DAnimationSettings
 {
   public:
     Qgs3DAnimationSettings() = default;

@@ -23,6 +23,7 @@
 #include "qgsoffscreen3dengine.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgsfeedback.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -195,56 +196,34 @@ void Qgs3DAnimationWidget::onExportAnimation()
   Qgs3DAnimationExportDialog dialog;
   if ( dialog.exec() == QDialog::Accepted )
   {
-    Qgs3DAnimationSettings animationSettings = animation();
+    QgsFeedback progressFeedback;
 
-    QgsOffscreen3DEngine engine;
-    engine.setSize( dialog.frameSize() );
-    Qgs3DMapScene *scene = new Qgs3DMapScene( *mMap, &engine );
-    engine.setRootEntity( scene );
+    QProgressDialog progressDialog( tr( "Exporting frames..." ), tr( "Abort" ), 0, 100, this );
+    progressDialog.setWindowModality( Qt::WindowModal );
+    QString error;
 
-    if ( animationSettings.keyFrames().size() < 2 )
+    connect( &progressFeedback, &QgsFeedback::progressChanged, this,
+             [&progressDialog, &progressFeedback] { progressDialog.setValue( static_cast<int>( progressFeedback.progress() ) ); }
+           );
+
+    connect( &progressDialog, &QProgressDialog::canceled, this,
+             [&progressFeedback] { progressFeedback.cancel(); }
+           );
+
+    bool success = Qgs3DUtils::exportAnimation( animation(),
+                   *mMap,
+                   dialog.fps(),
+                   dialog.outputDirectory(),
+                   dialog.fileNameExpression(),
+                   dialog.frameSize(),
+                   error,
+                   &progressFeedback );
+
+    if ( !success )
     {
-      QMessageBox::warning( this, tr( "Export Animation" ), tr( "Unable to export 3D animation. Add at least 2 keyframes" ) );
+      QMessageBox::warning( this, tr( "Export Animation" ), error );
       return;
     }
-
-    const float duration = animationSettings.duration(); //in seconds
-    if ( duration <= 0 )
-    {
-      QMessageBox::warning( this, tr( "Export Animation" ), tr( "Unable to export 3D animation (invalid duration)." ) );
-      return;
-    }
-
-    float time = 0;
-    int frameNo = 0;
-    int fps = dialog.fps();
-    int totalFrames = static_cast<int>( duration * fps );
-    QProgressDialog progress( tr( "Exporting frames..." ), tr( "Abort" ), 0, totalFrames, this );
-    progress.setWindowModality( Qt::WindowModal );
-
-    while ( time <= duration )
-    {
-      progress.setValue( frameNo );
-      if ( progress.wasCanceled() )
-        break;
-      ++frameNo;
-
-      Qgs3DAnimationSettings::Keyframe kf = animationSettings.interpolate( time );
-      scene->cameraController()->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
-
-      const QString path = dialog.fileName( frameNo );
-
-      // It would initially return empty rendered image.
-      // Capturing the initial image and throwing it away fixes that.
-      // Hopefully we will find a better fix in the future.
-      Qgs3DUtils::captureSceneImage( engine, scene );
-      QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-
-      img.save( path );
-
-      time += 1.0f / static_cast<float>( fps );
-    }
-    progress.hide();
   }
 }
 
