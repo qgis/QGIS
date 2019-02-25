@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mFpsLabel">
      <property name="text">
-      <string>Frame Per Second</string>
+      <string>Frames Per Second</string>
      </property>
     </widget>
    </item>
@@ -84,7 +84,7 @@
    <item row="3" column="1" colspan="2">
     <widget class="QgsSpinBox" name="mWidthSpinBox">
      <property name="suffix">
-      <string>px</string>
+      <string> px</string>
      </property>
      <property name="minimum">
       <number>100</number>
@@ -103,7 +103,7 @@
    <item row="4" column="1" colspan="2">
     <widget class="QgsSpinBox" name="mHeightSpinBox">
      <property name="suffix">
-      <string>px</string>
+      <string> px</string>
      </property>
      <property name="minimum">
       <number>100</number>

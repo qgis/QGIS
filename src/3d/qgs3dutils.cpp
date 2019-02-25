@@ -137,9 +137,11 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     if ( feedback )
     {
       if ( feedback->isCanceled() )
-        return true;
+      {
+        error = QObject::tr( "Export cancelled" );
+        return false;
+      }
       feedback->setProgress( frameNo / static_cast<double>( totalFrames ) * 100 );
-      QCoreApplication::processEvents();
     }
     ++frameNo;
 

@@ -203,22 +203,25 @@ void Qgs3DAnimationWidget::onExportAnimation()
     QString error;
 
     connect( &progressFeedback, &QgsFeedback::progressChanged, this,
-             [&progressDialog, &progressFeedback] { progressDialog.setValue( static_cast<int>( progressFeedback.progress() ) ); }
-           );
+             [&progressDialog, &progressFeedback]
+    {
+      progressDialog.setValue( static_cast<int>( progressFeedback.progress() ) );
+      QCoreApplication::processEvents();
+    } );
 
-    connect( &progressDialog, &QProgressDialog::canceled, this,
-             [&progressFeedback] { progressFeedback.cancel(); }
-           );
+    connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
 
-    bool success = Qgs3DUtils::exportAnimation( animation(),
-                   *mMap,
-                   dialog.fps(),
-                   dialog.outputDirectory(),
-                   dialog.fileNameExpression(),
-                   dialog.frameSize(),
-                   error,
-                   &progressFeedback );
+    bool success = Qgs3DUtils::exportAnimation(
+                     animation(),
+                     *mMap,
+                     dialog.fps(),
+                     dialog.outputDirectory(),
+                     dialog.fileNameExpression(),
+                     dialog.frameSize(),
+                     error,
+                     &progressFeedback );
 
+    progressDialog.hide();
     if ( !success )
     {
       QMessageBox::warning( this, tr( "Export Animation" ), error );

@@ -53,6 +53,7 @@ class TestQgs3DRendering : public QObject
     void testMapTheme();
     void testMesh();
     void testRuleBasedRenderer();
+    void testAnimationExport();
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -392,6 +393,48 @@ bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, in
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
+}
+
+void TestQgs3DRendering::testAnimationExport()
+{
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  Qgs3DAnimationSettings animSettings;
+  Qgs3DAnimationSettings::Keyframes keyframes;
+  Qgs3DAnimationSettings::Keyframe kf1;
+  kf1.dist = 2500;
+  Qgs3DAnimationSettings::Keyframe kf2;
+  kf2.time = 2;
+  kf2.dist = 3000;
+  keyframes << kf1;
+  keyframes << kf2;
+  animSettings.setKeyframes( keyframes );
+
+  QString dir = QDir::temp().path();
+  QString error;
+
+  bool success = Qgs3DUtils::exportAnimation(
+                   animSettings,
+                   *map,
+                   1,
+                   dir,
+                   "test3danimation###.png",
+                   QSize( 600, 400 ),
+                   error,
+                   nullptr );
+
+  QVERIFY( success );
+
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
