@@ -639,7 +639,7 @@ class QgsWmsCapabilities
     /**
      * \brief   Returns a list of the supported layers of the WMS server
      *
-     * \retval The list of layers will be placed here.
+     * \returns The list of layers will be placed here.
      *
      * \todo Document this better
      */
@@ -656,7 +656,7 @@ class QgsWmsCapabilities
     /**
      * \brief   Returns a list of the supported tile layers of the WMS server
      *
-     * \retval The list of tile sets will be placed here.
+     * \returns The list of tile sets will be placed here.
      */
     QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
 
