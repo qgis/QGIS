@@ -17,14 +17,14 @@
 use XML::Simple;
 use Data::Dumper;
 
-print <<EOF;
-/*
- This is NOT a proper c++ source code. This file is only designed to be caught
- by qmake and included in lupdate. It contains all translateable strings collected
- by pylupdate5.
-*/
-
-EOF
+sub xmlescape {
+  my $data = shift;
+  $data =~ s/&/&amp;/sg;
+  $data =~ s/</&lt;/sg;
+  $data =~ s/>/&gt;/sg;
+  $data =~ s/"/&quot;/sg;
+  return $data;
+}
 
 my %labels;
 my $file;
@@ -67,9 +67,19 @@ while($file = <I>) {
 }
 close I;
 
+print <<EOF;
+<?xml version="1.0" encoding="UTF-8"?>
+ <!--
+ This is NOT a proper UI code. This file is only designed to be caught
+ by qmake and included in lupdate. It contains all translateable strings collected
+ by scripts/qgm2ui.pl.
+ -->
+<ui version="4.0">
+  <class>grasslabels</class>;
+EOF
+
 foreach (sort keys %labels) {
-	s/\\/\\\\/g;
-	s/"/\\"/g;
-	s/\n/\\n/g;
-	print "translate( \"grasslabel\", \"$_\" );\n";
+	print "  <property><string>" . xmlescape($_) . "</string></property>\n";
 }
+
+print "</ui>\n";

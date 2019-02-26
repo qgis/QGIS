@@ -15,21 +15,23 @@
 ###########################################################################
 
 use XML::Simple;
+use YAML::XS qw/LoadFile/;
 use Data::Dumper;
 
-die "usage: $0 dest.cpp\n" unless @ARGV==1;
+sub xmlescape {
+  my $data = shift;
 
-open F, ">$ARGV[0]";
-binmode(F, ":utf8");
+  $data =~ s/&/&amp;/sg;
+  $data =~ s/</&lt;/sg;
+  $data =~ s/>/&gt;/sg;
+  $data =~ s/"/&quot;/sg;
 
-print F <<EOF;
-/*
- This is NOT a proper c++ source code. This file is only designed to be caught
- by qmake and included in lupdate. It contains all translateable strings collected
- by processing2cpp.pl.
-*/
+  return $data;
+}
 
-EOF
+
+die "usage: $0 dir\n" unless @ARGV==1;
+die "directory $ARGV[0] not found" unless -d $ARGV[0];
 
 my %strings;
 
@@ -79,7 +81,16 @@ for my $f (<python/plugins/processing/algs/saga/description/*/*.txt>) {
 	$strings{"SAGAAlgorithm"}{$desc} = 1;
 }
 
-for my $f ( ("python/plugins/processing/gui/algclasssification.txt", "python/plugins/processing/gui/algnames.txt") ) {
+for my $f (<python/plugins/processing/algs/help/*.yaml>) {
+	my ($base) = $f =~ /.*\/(.*)\.yaml$/;
+	$base = uc $base;
+	my $yaml = LoadFile($f);
+	for my $k (keys %$yaml) {
+		$strings{"${base}Algorithm"}{$yaml->{$k}} = 1;
+	}
+}
+
+for my $f ( ("python/plugins/processing/gui/algnames.txt") ) {
 	open I, $f;
 	while(<I>) {
 		chop;
@@ -92,13 +103,29 @@ for my $f ( ("python/plugins/processing/gui/algclasssification.txt", "python/plu
 }
 
 foreach my $k (keys %strings) {
+	die "$ARGV[0]/$k-i18n.ui already exists" if -f "$ARGV[0]/$k-i18n.ui";
+	open F, ">$ARGV[0]/$k-i18n.ui";
+	binmode(F, ":utf8");
+
+print F <<EOF;
+<?xml version="1.0" encoding="UTF-8"?>
+ <!--
+ This is NOT a proper UI code. This file is only designed to be caught
+ by qmake and included in lupdate. It contains all translateable strings collected
+ by scripts/processing2ui.pl.
+ -->
+<ui version="4.0">
+  <class>$k</class>;
+EOF
+
 	foreach my $v (keys %{ $strings{$k} } ) {
-		$v =~ s/\\/\\\\/g;
-		$v =~ s/"/\\"/g;
-		$v =~ s/\n/\\n/g;
-
-		print F "translate(\"$k\", \"$v\");\n";
+		next if $v eq "";
+		print F "  <property><string>" . xmlescape($v) . "</string></property>\n";
 	}
-}
 
-close F;
+	print F <<EOF;
+</ui>
+EOF
+
+	close F;
+}

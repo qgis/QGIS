@@ -27,7 +27,7 @@ import os
 import codecs
 import yaml
 from qgis.core import QgsSettings, Qgis
-from qgis.PyQt.QtCore import QLocale
+from qgis.PyQt.QtCore import QLocale, QCoreApplication
 
 
 def loadShortHelp():
@@ -37,7 +37,11 @@ def loadShortHelp():
         if f.endswith("yaml"):
             filename = os.path.join(path, f)
             with codecs.open(filename, encoding='utf-8') as stream:
-                h.update(yaml.load(stream))
+                for k, v in yaml.load(stream).items():
+                    if v is None:
+                        continue
+                    h[k] = QCoreApplication.translate("{}Algorithm".format(f[:-5].upper()), v)
+
     version = ".".join(Qgis.QGIS_VERSION.split(".")[0:2])
     overrideLocale = QgsSettings().value('locale/overrideFlag', False, bool)
     if not overrideLocale:
@@ -51,7 +55,9 @@ def loadShortHelp():
             return s.replace("{qgisdocs}", "https://docs.qgis.org/%s/%s/docs" % (version, locale))
         else:
             return None
+
     h = {k: replace(v) for k, v in list(h.items())}
+
     return h
 
 
