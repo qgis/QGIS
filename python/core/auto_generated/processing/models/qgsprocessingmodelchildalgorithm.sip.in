@@ -125,7 +125,7 @@ to adjust their behavior at run time according to some user configuration.
 
     const QgsProcessingAlgorithm *algorithm() const;
 %Docstring
-Returns the underlying child algorithm, or a None
+Returns the underlying child algorithm, or ``None``
 if a matching algorithm is not available.
 
 .. seealso:: :py:func:`reattach`

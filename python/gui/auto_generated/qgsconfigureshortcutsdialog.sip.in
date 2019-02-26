@@ -29,7 +29,7 @@ Reusable dialog for allowing users to configure shortcuts contained in a QgsShor
 Constructor for QgsConfigureShortcutsDialog.
 
 :param parent: parent widget
-:param manager: associated :py:class:`QgsShortcutsManager`, or leave as None to use the default
+:param manager: associated :py:class:`QgsShortcutsManager`, or leave as ``None`` to use the default
                 singleton QgsShortcutsManager instance.
 %End
 

@@ -80,7 +80,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     virtual NodeType nodeType() const = 0;
 
     /**
-     * Returns the node's parent. If the node's parent is nullptr, then the node is a root node.
+     * Returns the node's parent. If the node's parent is NULLPTR, then the node is a root node.
      */
     QgsProcessingToolboxModelNode *parent() { return mParent; }
 
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 
     /**
      * Tries to find a child node belonging to this node, which corresponds to
-     * a group node with the given group \a id. Returns nullptr if no matching
+     * a group node with the given group \a id. Returns NULLPTR if no matching
      * child group node was found.
      */
     QgsProcessingToolboxModelGroupNode *getChildGroupNode( const QString &id );
@@ -324,7 +324,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     /**
      * Returns the provider which corresponds to a given \a index, or
-     * a nullptr if the index does not represent a provider.
+     * NULLPTR if the index does not represent a provider.
      *
      * \see algorithmForIndex()
      * \see indexForProvider()
@@ -342,7 +342,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     /**
      * Returns the algorithm which corresponds to a given \a index, or
-     * a nullptr if the index does not represent an algorithm.
+     * NULLPTR if the index does not represent an algorithm.
      *
      * \see isAlgorithm()
      * \see providerForIndex()

@@ -270,7 +270,7 @@ class CORE_EXPORT QgsRenderContext
     double rendererScale() const {return mRendererScale;}
 
     /**
-     * Gets access to new labeling engine (may be nullptr)
+     * Gets access to new labeling engine (may be NULLPTR)
      * \note not available in Python bindings
      */
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
@@ -523,7 +523,7 @@ class CORE_EXPORT QgsRenderContext
     //! Map scale
     double mRendererScale = 1.0;
 
-    //! Newer labeling engine implementation (can be nullptr)
+    //! Newer labeling engine implementation (can be NULLPTR)
     QgsLabelingEngine *mLabelingEngine = nullptr;
 
     //! Color used for features that are marked as selected

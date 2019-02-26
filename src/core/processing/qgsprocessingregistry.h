@@ -96,7 +96,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
-     * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * Finds an algorithm by its ID. If no matching algorithm is found, NULLPTR
      * is returned.
      * \see algorithms()
      * \see createAlgorithmById()
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
 
     /**
-     * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, NULLPTR
      * is returned. Callers take responsibility for deleting the returned object.
      *
      * The \a configuration argument allows passing of a map of configuration settings

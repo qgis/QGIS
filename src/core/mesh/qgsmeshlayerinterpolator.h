@@ -95,7 +95,7 @@ namespace QgsMeshUtils
    * \param mapUnitsPerPixel map units per pixel for block
    * \param extent extent of block in destination CRS
    * \param feedback optional raster feedback object for cancellation/preview
-   * \returns raster block with Float::64 values. nullptr on error
+   * \returns raster block with Float::64 values. NULLPTR on error
    *
    * \since QGIS 3.6
    */

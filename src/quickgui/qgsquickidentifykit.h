@@ -119,10 +119,10 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     /**
       * Gets the closest feature to the point within the search radius
       *
-      * If layer is nullptr, identifies the closest feature from either
+      * If layer is NULLPTR, identifies the closest feature from either
       * all identifiable layers (IdentifyMode::TopDownAll) or the first layer from top to bottom layers
       * with non-empty identified feature list (IdentifyMode::TopDownStopAtFirst)
-      * If layer is not nullptr, identifies the closest feature from given layer regardless identify mode.
+      * If layer is not NULLPTR, identifies the closest feature from given layer regardless identify mode.
       *
       * To modify search radius, use QgsQuickIdentifyKit::searchRadiusMm
       *
@@ -134,10 +134,10 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     /**
       * Gets all features in the search radius
       *
-      * If layer is nullptr, identifies features from either
+      * If layer is NULLPTR, identifies features from either
       * all identifiable layers (IdentifyMode::TopDownAll) or the first layer from top to bottom layers
       * with non-empty identified feature list (IdentifyMode::TopDownStopAtFirst)
-      * If layer is not nullptr, identifies only features from given layer regardless identify mode.
+      * If layer is not NULLPTR, identifies only features from given layer regardless identify mode.
       *
       * To limit number of results, use QgsQuickIdentifyKit::featuresLimit
       * To modify search radius, use QgsQuickIdentifyKit::searchRadiusMm

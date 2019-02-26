@@ -60,7 +60,7 @@ Implementations will remove the feature from the layer or from the data provider
     QgsVectorLayer *layer() const;
 %Docstring
 Gets a pointer to the underlying layer.
-May return a ``None`` if the layer has been deleted.
+May return a ````None```` if the layer has been deleted.
 This must only be called from the main thread.
 %End
 

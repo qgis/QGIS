@@ -108,7 +108,7 @@ syncing north arrows with a map item.
 
     QgsLayoutItemMap *linkedMap() const;
 %Docstring
-Returns the linked rotation map, if set. An None means map rotation is
+Returns the linked rotation map, if set. An ``None`` means map rotation is
 disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 

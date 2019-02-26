@@ -240,7 +240,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param joinStyle join style for corners ( Round (1) / Miter (2) / Bevel (3) )
      * \param miterLimit limit on the miter ratio used for very sharp corners
      * \param errorMsg error messages emitted, if any
-     * \returns buffered geometry, or an nullptr if buffer could not be
+     * \returns buffered geometry, or an NULLPTR if buffer could not be
      * calculated
      * \since QGIS 3.0
      */

@@ -998,7 +998,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * notified when the freshly updated feature counts are ready.
      *
      * \note If the count features for symbols has been already done a
-     *       nullptr is returned. If you need to wait for the results,
+     *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
      *
      * \since This is asynchronous since QGIS 3.0

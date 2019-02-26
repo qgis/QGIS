@@ -42,7 +42,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     /**
      * Constructor for QgsConfigureShortcutsDialog.
      * \param parent parent widget
-     * \param manager associated QgsShortcutsManager, or leave as nullptr to use the default
+     * \param manager associated QgsShortcutsManager, or leave as NULLPTR to use the default
      * singleton QgsShortcutsManager instance.
      */
     QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsShortcutsManager *manager = nullptr );

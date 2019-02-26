@@ -515,7 +515,7 @@ When called with an empty ``configuration`` map the provider's default renderer 
 This method returns a new renderer and the caller takes ownership of the returned object.
 
 Only providers which report the CreateRenderer capability will return a feature renderer. Other
-providers will return None.
+providers will return ``None``.
 
 .. versionadded:: 3.2
 %End
@@ -532,7 +532,7 @@ When called with an empty ``configuration`` map the provider's default labeling 
 This method returns a new labeling settings and the caller takes ownership of the returned object.
 
 Only providers which report the CreateLabeling capability will return labeling settings. Other
-providers will return None.
+providers will return ``None``.
 
 .. versionadded:: 3.6
 %End
@@ -642,7 +642,7 @@ For general debug information use QgsMessageLog.logMessage() instead.
 %Docstring
 Converts the geometry to the provider type if possible / necessary
 
-:return: the converted geometry or None if no conversion was necessary or possible
+:return: the converted geometry or ``None`` if no conversion was necessary or possible
 %End
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );

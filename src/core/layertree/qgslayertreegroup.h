@@ -147,13 +147,13 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QList<QgsLayerTreeGroup *> findGroups() const;
 
     /**
-     * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or nullptr on error).
+     * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
-     * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or nullptr on error).
+     * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
      * Also resolves textual references to layers from the project (calls resolveReferences() internally).
      * \since QGIS 3.0
      */

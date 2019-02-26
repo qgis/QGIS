@@ -104,7 +104,7 @@ Calculate the symmetric difference of this and ``geom``.
     virtual QgsPoint *centroid( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
 Calculates the centroid of this.
-May return a `None`.
+May return a ```None```.
 
 .. versionadded:: 3.0
 %End
@@ -112,7 +112,7 @@ May return a `None`.
     virtual QgsPoint *pointOnSurface( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate a point that is guaranteed to be on the surface of this.
-May return a `None`.
+May return a ```None```.
 
 .. versionadded:: 3.0
 %End

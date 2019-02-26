@@ -189,7 +189,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void setMenuProvider( QgsLayoutViewMenuProvider *provider SIP_TRANSFER );
 
     /**
-    * Returns the provider for context menus. Returned value may be nullptr if no provider is set.
+    * Returns the provider for context menus. Returned value may be NULLPTR if no provider is set.
     * \see setMenuProvider()
     */
     QgsLayoutViewMenuProvider *menuProvider() const;
@@ -601,7 +601,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
   public:
     virtual ~QgsLayoutViewMenuProvider() = default;
 
-    //! Returns a newly created menu instance (or nullptr on error)
+    //! Returns a newly created menu instance (or NULLPTR on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
 

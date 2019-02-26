@@ -277,7 +277,7 @@ Returns the labeling property definitions.
 
     QgsExpression *getLabelExpression();
 %Docstring
-Returns the QgsExpression for this label settings. May be None if isExpression is ``False``.
+Returns the QgsExpression for this label settings. May be ``None`` if isExpression is ``False``.
 %End
 
     QColor previewBkgrdColor;

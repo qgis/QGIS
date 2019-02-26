@@ -1890,7 +1890,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Paste features from clipboard into a new memory layer.
      * If no features are in clipboard an empty layer is returned.
-     * Returns a new memory layer or a nullptr if the operation failed.
+     * Returns a new memory layer or NULLPTR if the operation failed.
      */
     std::unique_ptr< QgsVectorLayer > pasteToNewMemoryVector();
 

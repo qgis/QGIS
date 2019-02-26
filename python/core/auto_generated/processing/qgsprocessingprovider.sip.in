@@ -229,7 +229,7 @@ Returns a list of algorithms supplied by this provider.
 
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 %Docstring
-Returns the matching algorithm by ``name``, or a None if no matching
+Returns the matching algorithm by ``name``, or ``None`` if no matching
 algorithm is contained by this provider.
 
 .. seealso:: :py:func:`algorithms`

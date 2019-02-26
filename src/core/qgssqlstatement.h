@@ -656,7 +656,7 @@ class CORE_EXPORT QgsSQLStatement
         //! Table definition
         QgsSQLStatement::NodeTableDef *tableDef() const { return mTableDef; }
 
-        //! On expression. Will be nullptr if usingColumns() is not empty
+        //! On expression. Will be NULLPTR if usingColumns() is not empty
         QgsSQLStatement::Node *onExpr() const { return mOnExpr; }
 
         //! Columns referenced by USING

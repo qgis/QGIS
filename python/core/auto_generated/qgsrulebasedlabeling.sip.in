@@ -37,7 +37,7 @@ class QgsRuleBasedLabeling : QgsAbstractVectorLayerLabeling
       public:
         Rule( QgsPalLayerSettings *settings /Transfer/, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
 %Docstring
-takes ownership of settings, settings may be None
+takes ownership of settings, settings may be ``None``
 %End
         ~Rule();
 
@@ -51,7 +51,7 @@ takes ownership of settings, settings may be None
 
         QgsPalLayerSettings *settings() const;
 %Docstring
-Returns the labeling settings. May return None.
+Returns the labeling settings. May return ``None``.
 %End
 
         bool dependsOnScale() const;
@@ -122,7 +122,7 @@ Unique rule identifier (for identification of rule within labeling, used as prov
 
         void setSettings( QgsPalLayerSettings *settings /Transfer/ );
 %Docstring
-Sets new settings (or None). Deletes old settings if any.
+Sets new settings (or ``None``). Deletes old settings if any.
 %End
 
         void setMinimumScale( double scale );

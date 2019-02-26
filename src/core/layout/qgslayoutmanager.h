@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QList< QgsPrintLayout * > printLayouts() const;
 
     /**
-     * Returns the layout with a matching name, or nullptr if no matching layouts
+     * Returns the layout with a matching name, or NULLPTR if no matching layouts
      * were found.
      */
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;

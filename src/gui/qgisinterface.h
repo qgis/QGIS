@@ -998,7 +998,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Emitted whenever current (selected) layer changes.
-     *  The pointer to layer can be nullptr if no layer is selected.
+     *  The pointer to layer can be NULLPTR if no layer is selected.
      */
     void currentLayerChanged( QgsMapLayer *layer );
 

@@ -58,7 +58,7 @@ Remove ``provider`` implementation from the list (``provider`` object is deleted
 
     QgsSourceSelectProvider *providerByName( const QString &name );
 %Docstring
-Returns a provider by ``name`` or None if not found
+Returns a provider by ``name`` or ``None`` if not found
 %End
 
     QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey );

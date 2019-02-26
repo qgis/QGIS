@@ -62,7 +62,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     QgsBrowserModel *browserModel() { return mModel; }
 
     /**
-     * Returns the data item at the specified proxy \a index, or a nullptr if no item
+     * Returns the data item at the specified proxy \a index, or NULLPTR if no item
      * exists at the index.
      */
     QgsDataItem *dataItem( const QModelIndex &index ) const;

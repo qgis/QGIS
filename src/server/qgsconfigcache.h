@@ -52,9 +52,9 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 
     /**
      * If the project is not cached yet, then the project is read thanks to the
-     * path. If the project is not available, then a nullptr is returned.
+     * path. If the project is not available, then NULLPTR is returned.
      * \param path the filename of the QGIS project
-     * \returns the project or nullptr if an error happened
+     * \returns the project or NULLPTR if an error happened
      * \since QGIS 3.0
      */
     const QgsProject *project( const QString &path );

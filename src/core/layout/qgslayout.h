@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     /**
      * The project associated with the layout. Used to get access to layers, map themes,
-     * relations and various other bits. It is never nullptr.
+     * relations and various other bits. It is never NULLPTR.
      *
      */
     QgsProject *project() const;
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void updateZValues( bool addUndoCommands = true );
 
     /**
-     * Returns the layout item with matching \a uuid unique identifier, or a nullptr
+     * Returns the layout item with matching \a uuid unique identifier, or NULLPTR
      * if a matching item could not be found.
      *
      * If \a includeTemplateUuids is TRUE, then item's template UUID
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
-     * Returns the layout item with matching template \a uuid unique identifier, or a nullptr
+     * Returns the layout item with matching template \a uuid unique identifier, or NULLPTR
      * if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
      * template UUIDs for a match.
      *
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutItem *itemById( const QString &id ) const;
 
     /**
-     * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
+     * Returns the layout multiframe with matching \a uuid unique identifier, or NULLPTR
      * if a matching multiframe could not be found.
      *
      * If \a includeTemplateUuids is TRUE, then the multiframe's QgsLayoutMultiFrame::templateUuid()
@@ -485,7 +485,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the map item which will be used to generate corresponding world files when the
      * layout is exported. If no map was explicitly set via setReferenceMap(), the largest
-     * map in the layout will be returned (or nullptr if there are no maps in the layout).
+     * map in the layout will be returned (or NULLPTR if there are no maps in the layout).
      * \see setReferenceMap()
      */
     QgsLayoutItemMap *referenceMap() const;
@@ -630,7 +630,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     /**
      * Creates a new group from a list of layout \a items and adds the group to the layout.
-     * If grouping was not possible, a nullptr will be returned.
+     * If grouping was not possible, NULLPTR will be returned.
      * \see ungroupItems()
      */
     QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
@@ -679,7 +679,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     /**
      * Emitted whenever the selected item changes.
-     * If nullptr, no item is selected.
+     * If NULLPTR, no item is selected.
      */
     void selectedItemChanged( QgsLayoutItem *selected );
 

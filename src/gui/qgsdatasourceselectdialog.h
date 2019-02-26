@@ -50,7 +50,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     /**
      * Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
      *
-     * \param browserModel an existing browser model (typically from app), if nullptr an instance will be created
+     * \param browserModel an existing browser model (typically from app), if NULLPTR an instance will be created
      * \param setFilterByLayerType activates filtering by layer type
      * \param layerType sets the layer type filter, this is in effect only if filtering by layer type is also active
      * \param parent the object

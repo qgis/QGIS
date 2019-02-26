@@ -164,7 +164,7 @@ Sets a ``provider`` for context menus. Ownership of the provider is transferred 
 
     QgsLayoutViewMenuProvider *menuProvider() const;
 %Docstring
-Returns the provider for context menus. Returned value may be None if no provider is set.
+Returns the provider for context menus. Returned value may be ``None`` if no provider is set.
 
 .. seealso:: :py:func:`setMenuProvider`
 %End
@@ -605,7 +605,7 @@ instances to provide custom context menus (opened upon right-click).
 
     virtual QMenu *createContextMenu( QWidget *parent /Transfer/, QgsLayout *layout, QPointF layoutPoint ) const = 0 /Factory/;
 %Docstring
-Returns a newly created menu instance (or None on error)
+Returns a newly created menu instance (or ``None`` on error)
 %End
 };
 

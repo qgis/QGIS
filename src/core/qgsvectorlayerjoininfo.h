@@ -184,7 +184,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     /**
      * Sets the subset of fields to be used from joined layer.
      *
-     * Ownership of \a fileNamesSubset is transferred. A \a fieldNameSubset of nullptr indicates that all fields should be used.
+     * Ownership of \a fileNamesSubset is transferred. A \a fieldNameSubset of NULLPTR indicates that all fields should be used.
      *
      * \see joinFieldNamesSubset()
      * \since QGIS 2.6
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     /**
      * Returns the subset of fields to be used from joined layer.
      *
-     * All fields will be used if nullptr is returned.
+     * All fields will be used if NULLPTR is returned.
      *
      * \see setJoinFieldNamesSubset()
      *

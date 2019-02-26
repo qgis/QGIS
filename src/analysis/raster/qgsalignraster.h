@@ -167,9 +167,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
       virtual ~ProgressHandler() = default;
     };
 
-    //! Assign a progress handler instance. Does not take ownership. nullptr can be passed.
+    //! Assign a progress handler instance. Does not take ownership. NULLPTR can be passed.
     void setProgressHandler( ProgressHandler *progressHandler ) { mProgressHandler = progressHandler; }
-    //! Gets associated progress handler. May be nullptr (default)
+    //! Gets associated progress handler. May be NULLPTR (default)
     ProgressHandler *progressHandler() const { return mProgressHandler; }
 
     //! Sets list of rasters that will be aligned

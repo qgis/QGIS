@@ -371,7 +371,7 @@ class CORE_EXPORT QgsDistanceArea
      * Points \a p1 and \a p2 are expected to be in degrees and in currently used ellipsoid
      *
      * \returns distance in meters
-     * \note if course1 is not nullptr, bearing (in radians) from first point is calculated
+     * \note if course1 is not NULLPTR, bearing (in radians) from first point is calculated
      * (the same for course2)
      */
     double computeDistanceBearing( const QgsPointXY &p1, const QgsPointXY &p2,

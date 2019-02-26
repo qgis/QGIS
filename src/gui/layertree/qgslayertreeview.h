@@ -81,7 +81,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
     /**
-     * Returns the currently selected layer, or nullptr if no layers is selected.
+     * Returns the currently selected layer, or NULLPTR if no layers is selected.
      *
      * \see setCurrentLayer()
      */
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     /**
      * Sets the currently selected \a layer.
      *
-     * If \a layer is nullptr then all layers will be deselected.
+     * If \a layer is NULLPTR then all layers will be deselected.
      *
      * \see currentLayer()
      */
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
-     * Gets current legend node. May be nullptr if current node is not a legend node.
+     * Gets current legend node. May be NULLPTR if current node is not a legend node.
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;

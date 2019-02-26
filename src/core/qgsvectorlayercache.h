@@ -347,7 +347,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     /**
      * \brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
-     * signal is being emitted, but before the local reference to it has been set to nullptr. So call to
+     * signal is being emitted, but before the local reference to it has been set to NULLPTR. So call to
      * layer() will still return a valid pointer for cleanup purpose.
      */
     void cachedLayerDeleted();

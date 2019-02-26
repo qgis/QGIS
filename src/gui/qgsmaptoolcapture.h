@@ -120,7 +120,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  \param[in,out] layerPoint the point in layer coordinates
      *  \returns
      *   0 in case of success
-     *   1 if the current layer is nullptr or not a vector layer
+     *   1 if the current layer is NULLPTR or not a vector layer
      *   2 if the transformation failed
      */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \param[in,out] mapPoint the point in map coordinates
      * \returns
      *  0 in case of success
-     *  1 if the current layer is nullptr or not a vector layer
+     *  1 if the current layer is NULLPTR or not a vector layer
      *  2 if the transformation failed
      */
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );

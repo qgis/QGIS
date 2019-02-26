@@ -78,7 +78,7 @@ Calling this method removes all items and pages from the layout.
     QgsProject *project() const;
 %Docstring
 The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never None.
+relations and various other bits. It is never ``None``.
 %End
 
     QgsLayoutModel *itemsModel();
@@ -177,7 +177,7 @@ which deferred z-order updates.
 
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
-Returns the layout item with matching ``uuid`` unique identifier, or a None
+Returns the layout item with matching ``uuid`` unique identifier, or ``None``
 if a matching item could not be found.
 
 If ``includeTemplateUuids`` is ``True``, then item's template UUID
@@ -196,7 +196,7 @@ Note that template UUIDs are only available while a layout is being restored fro
 
     QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
 %Docstring
-Returns the layout item with matching template ``uuid`` unique identifier, or a None
+Returns the layout item with matching template ``uuid`` unique identifier, or ``None``
 if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
 template UUIDs for a match.
 
@@ -224,7 +224,7 @@ item found.
 
     QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
-Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
+Returns the layout multiframe with matching ``uuid`` unique identifier, or ``None``
 if a matching multiframe could not be found.
 
 If ``includeTemplateUuids`` is ``True``, then the multiframe's :py:func:`QgsLayoutMultiFrame.templateUuid()`
@@ -438,7 +438,7 @@ Returns list of keys stored in custom properties for the layout.
 %Docstring
 Returns the map item which will be used to generate corresponding world files when the
 layout is exported. If no map was explicitly set via setReferenceMap(), the largest
-map in the layout will be returned (or None if there are no maps in the layout).
+map in the layout will be returned (or ``None`` if there are no maps in the layout).
 
 .. seealso:: :py:func:`setReferenceMap`
 %End
@@ -587,7 +587,7 @@ and it's associated objects.
     QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
 %Docstring
 Creates a new group from a list of layout ``items`` and adds the group to the layout.
-If grouping was not possible, a None will be returned.
+If grouping was not possible, ``None`` will be returned.
 
 .. seealso:: :py:func:`ungroupItems`
 %End
@@ -637,7 +637,7 @@ Emitted whenever the expression variables stored in the layout have been changed
     void selectedItemChanged( QgsLayoutItem *selected );
 %Docstring
 Emitted whenever the selected item changes.
-If None, no item is selected.
+If ``None``, no item is selected.
 %End
 
     void refreshed();

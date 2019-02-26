@@ -380,13 +380,13 @@ class CORE_EXPORT QgsExpression
     /**
      * Sets the geometry calculator used for distance and area calculations in expressions.
      * (used by $length, $area and $perimeter functions only).
-     * If the geometry calculator is set to nullptr (default), prepare() will read variables
+     * If the geometry calculator is set to NULLPTR (default), prepare() will read variables
      * from the expression context ("project_ellipsoid", "_project_transform_context" and
      * "_layer_crs") to build a geometry calculator.
      * If these variables does not exist and if setGeomCalculator() is not called,
      * all distance and area calculations are performed using simple
      * Cartesian methods (ie no ellipsoidal calculations).
-     * \param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
+     * \param calc geometry calculator. Ownership is not transferred. Set to NULLPTR to force
      * Cartesian calculations.
      * \see geomCalculator()
      */

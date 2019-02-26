@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType() const { return mNodeType; }
-    //! Gets pointer to the parent. If parent is nullptr, the node is a root node
+    //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }

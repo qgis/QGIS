@@ -84,7 +84,7 @@ Returns a list of all print layouts contained in the manager.
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
-Returns the layout with a matching name, or None if no matching layouts
+Returns the layout with a matching name, or ``None`` if no matching layouts
 were found.
 %End
 

@@ -66,7 +66,7 @@ Find the best editor widget and its configuration for a given field.
 
 %Docstring
 Create an attribute editor widget wrapper of a given type for a given field.
-The editor may be None if you want the widget wrapper to create a default widget.
+The editor may be ``None`` if you want the widget wrapper to create a default widget.
 
 :param widgetId: The id of the widget type to create an attribute editor for
 :param vl: The vector layer for which this widget will be created
@@ -85,7 +85,7 @@ The editor may be None if you want the widget wrapper to create a default widget
 
 %Docstring
 Create an attribute editor widget wrapper of the best type for a given field.
-The editor may be None if you want the widget wrapper to create a default widget.
+The editor may be ``None`` if you want the widget wrapper to create a default widget.
 
 :param vl: The vector layer for which this widget will be created
 :param fieldIdx: The field index on the specified layer for which this widget will be created
@@ -134,7 +134,7 @@ Gets access to all registered factories
 %Docstring
 Gets a factory for the given widget type id.
 
-:return: A factory or None if not existent
+:return: A factory or ``None`` if not existent
 %End
 
     bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory /Transfer/ );
@@ -144,7 +144,7 @@ Register a new widget factory with the given id
 :param widgetId: The id which will be used later to refer to this widget type
 :param widgetFactory: The factory which will create this widget type
 
-:return: ``True``, if successful, ``False``, if the widgetId is already in use or widgetFactory is None
+:return: ``True``, if successful, ``False``, if the widgetId is already in use or widgetFactory is ``None``
 %End
 
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin );

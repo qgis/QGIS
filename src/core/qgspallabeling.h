@@ -402,7 +402,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool isExpression;
 
     /**
-     * Returns the QgsExpression for this label settings. May be nullptr if isExpression is FALSE.
+     * Returns the QgsExpression for this label settings. May be NULLPTR if isExpression is FALSE.
      */
     QgsExpression *getLabelExpression();
 

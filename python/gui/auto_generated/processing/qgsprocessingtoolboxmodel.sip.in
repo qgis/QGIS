@@ -61,7 +61,7 @@ Returns the node's type.
 
     QgsProcessingToolboxModelNode *parent();
 %Docstring
-Returns the node's parent. If the node's parent is None, then the node is a root node.
+Returns the node's parent. If the node's parent is ``None``, then the node is a root node.
 %End
 
     QList<QgsProcessingToolboxModelNode *> children();
@@ -79,7 +79,7 @@ ownership back to the caller.
     QgsProcessingToolboxModelGroupNode *getChildGroupNode( const QString &id );
 %Docstring
 Tries to find a child node belonging to this node, which corresponds to
-a group node with the given group ``id``. Returns None if no matching
+a group node with the given group ``id``. Returns ``None`` if no matching
 child group node was found.
 %End
 
@@ -304,7 +304,7 @@ Returns the model index corresponding to the given ``node``.
     QgsProcessingProvider *providerForIndex( const QModelIndex &index ) const;
 %Docstring
 Returns the provider which corresponds to a given ``index``, or
-a None if the index does not represent a provider.
+``None`` if the index does not represent a provider.
 
 .. seealso:: :py:func:`algorithmForIndex`
 
@@ -324,7 +324,7 @@ an empty string if the index does not represent a provider.
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
 %Docstring
 Returns the algorithm which corresponds to a given ``index``, or
-a None if the index does not represent an algorithm.
+``None`` if the index does not represent an algorithm.
 
 .. seealso:: :py:func:`isAlgorithm`
 

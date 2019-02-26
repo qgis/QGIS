@@ -33,7 +33,7 @@ Returns unique identifier of the 3D renderer class
 
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
-Returns new instance of the renderer given the DOM element. Returns None on error.
+Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
 Pure virtual function: must be implemented in derived classes.
 %End
 

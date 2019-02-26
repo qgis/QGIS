@@ -516,7 +516,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * This method returns a new renderer and the caller takes ownership of the returned object.
      *
      * Only providers which report the CreateRenderer capability will return a feature renderer. Other
-     * providers will return nullptr.
+     * providers will return NULLPTR.
      *
      * \since QGIS 3.2
      */
@@ -533,7 +533,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * This method returns a new labeling settings and the caller takes ownership of the returned object.
      *
      * Only providers which report the CreateLabeling capability will return labeling settings. Other
-     * providers will return nullptr.
+     * providers will return NULLPTR.
      *
      * \since QGIS 3.6
      */
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Converts the geometry to the provider type if possible / necessary
-     * \returns the converted geometry or nullptr if no conversion was necessary or possible
+     * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
      */
     QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 

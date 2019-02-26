@@ -119,7 +119,7 @@ class CORE_EXPORT QgsGeometryEngine
 
     /**
      * Calculates the centroid of this.
-     * May return a `nullptr`.
+     * May return a `NULLPTR`.
      *
      * \since QGIS 3.0 the centroid is returned
      */
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsGeometryEngine
 
     /**
      * Calculate a point that is guaranteed to be on the surface of this.
-     * May return a `nullptr`.
+     * May return a `NULLPTR`.
      *
      * \since QGIS 3.0 the centroid is returned
      */

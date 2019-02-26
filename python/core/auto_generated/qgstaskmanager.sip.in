@@ -360,7 +360,7 @@ Returns the task with matching ID.
 
 :param id: task ID
 
-:return: task if found, or None
+:return: task if found, or ``None``
 %End
 
     QList<QgsTask *> tasks() const;

@@ -756,7 +756,7 @@ Table definition
 
         QgsSQLStatement::Node *onExpr() const;
 %Docstring
-On expression. Will be None if usingColumns() is not empty
+On expression. Will be ``None`` if usingColumns() is not empty
 %End
 
         QList<QString> usingColumns() const;

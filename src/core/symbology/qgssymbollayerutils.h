@@ -614,7 +614,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Returns a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
-     * If the string is empty, returns nullptr.
+     * If the string is empty, returns NULLPTR.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
      * \since QGIS 2.2
      */

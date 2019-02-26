@@ -35,7 +35,7 @@ class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
   public:
 
     /**
-     * Construct a new tree model with given layer tree (root node must not be nullptr).
+     * Construct a new tree model with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the model.
      */
     explicit QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );

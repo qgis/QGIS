@@ -139,7 +139,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     /**
      * Destination project. Can be set to a QgsProject instance in which
      * to automatically load the resulting sink/layer after completing processing.
-     * The default behavior is not to load the result into any project (nullptr).
+     * The default behavior is not to load the result into any project (NULLPTR).
      */
     QgsProject *destinationProject = nullptr;
 
@@ -428,14 +428,14 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
 
     /**
-     * Returns a pointer to the algorithm which owns this parameter. May be nullptr
+     * Returns a pointer to the algorithm which owns this parameter. May be NULLPTR
      * for non-owned parameters.
      * \see provider()
      */
     QgsProcessingAlgorithm *algorithm() const;
 
     /**
-     * Returns a pointer to the provider for the algorithm which owns this parameter. May be nullptr
+     * Returns a pointer to the provider for the algorithm which owns this parameter. May be NULLPTR
      * for non-owned parameters or algorithms.
      * \see algorithm()
      */

@@ -165,7 +165,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * Finds the next layout item above an \a item, where \a item is
      * the item to search above.
      *
-     * If no items were found, a nullptr will be returned.
+     * If no items were found, NULLPTR will be returned.
      *
      * \see findItemBelow()
      */
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * Finds the next layout item below an \a item, where \a item
      * is the item to search below.
      *
-     * If no items were found, a nullptr will be returned.
+     * If no items were found, NULLPTR will be returned.
 
      * \see findItemAbove()
      */

@@ -122,7 +122,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbolWidgetContext context() const;
 
     /**
-     * Returns the symbol that is currently active in the widget. Can be nullptr.
+     * Returns the symbol that is currently active in the widget. Can be NULLPTR.
      * \returns The active symbol.
      */
     QgsSymbol *symbol() { return mSymbol; }
@@ -298,7 +298,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolWidgetContext context() const;
 
     /**
-     * Returns the symbol that is currently active in the widget. Can be nullptr.
+     * Returns the symbol that is currently active in the widget. Can be NULLPTR.
      * \returns The active symbol.
      */
     QgsSymbol *symbol();

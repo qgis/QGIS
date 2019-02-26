@@ -358,7 +358,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      * \param field The primary key to join
      * \param layer The vector layer for which the auxiliary layer has to be created
      *
-     * \returns A new auxiliary layer or a nullptr if an error happened.
+     * \returns A new auxiliary layer or NULLPTR if an error happened.
      */
     QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const SIP_FACTORY;
 

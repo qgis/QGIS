@@ -39,7 +39,7 @@ Create a symbol layer of this type given the map of properties.
 %End
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) /Factory/;
 %Docstring
-Create widget for symbol layer of this type. Can return None if there's no GUI
+Create widget for symbol layer of this type. Can return ``None`` if there's no GUI
 %End
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) /Factory/;
 %Docstring
@@ -106,7 +106,7 @@ QgsSymbolLayerRegistry is not usually directly created, but rather accessed thro
 
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 %Docstring
-Returns metadata for specified symbol layer. Returns None if not found
+Returns metadata for specified symbol layer. Returns ``None`` if not found
 %End
 
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata /Transfer/ );

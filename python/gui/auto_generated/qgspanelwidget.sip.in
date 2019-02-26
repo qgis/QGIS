@@ -101,7 +101,7 @@ widget.
 
 :param widget: widget which may be contained within a panel widget
 
-:return: parent panel widget if found, otherwise None
+:return: parent panel widget if found, otherwise ``None``
 
 .. versionadded:: 3.0
 %End
@@ -209,7 +209,7 @@ the inheritance tree changed, e.g dialogs.
 %Docstring
 Returns the internal widget that is wrapped in this panel.
 
-:return: The internal widget. Can be None.
+:return: The internal widget. Can be ``None``.
 %End
 
 };

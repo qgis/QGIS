@@ -203,7 +203,7 @@ Returns an interpolated point on the curve at the specified ``distance``.
 If z or m values are present, the output z and m will be interpolated using
 the existing vertices' z or m values.
 
-If distance is negative, or is greater than the length of the curve, a None
+If distance is negative, or is greater than the length of the curve, ``None``
 will be returned.
 
 .. versionadded:: 3.4

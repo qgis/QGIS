@@ -90,7 +90,7 @@ the model are searched.
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 %Docstring
-Returns the data item at the specified index, or a None if no item
+Returns the data item at the specified index, or ``None`` if no item
 exists at the index.
 %End
 

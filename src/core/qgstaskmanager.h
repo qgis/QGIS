@@ -430,7 +430,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     /**
      * Returns the task with matching ID.
      * \param id task ID
-     * \returns task if found, or nullptr
+     * \returns task if found, or NULLPTR
      */
     QgsTask *task( long id ) const;
 

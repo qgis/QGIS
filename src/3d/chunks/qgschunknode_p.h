@@ -102,9 +102,9 @@ class QgsChunkNode
     int tileY() const { return mTileY; }
     //! Returns chunk tile Z coordinate of the tiling scheme
     int tileZ() const { return mTileZ; }
-    //! Returns pointer to the parent node. Parent is nullptr in the root node
+    //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
-    //! Returns array of the four children. Children may be nullptr if they were not created yet
+    //! Returns array of the four children. Children may be NULLPTR if they were not created yet
     QgsChunkNode *const *children() const { return mChildren; }
     //! Returns current state of the node
     State state() const { return mState; }

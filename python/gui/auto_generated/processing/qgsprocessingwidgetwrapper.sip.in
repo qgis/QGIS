@@ -184,7 +184,7 @@ The supplied ``context`` is used while initializing the widget to the parameter'
 Creates and returns a new label to accompany widgets created by the wrapper.
 
 The caller takes ownership of the returned label. Some parameter type and dialog type
-combinations will return None for this method. If None is returned, then no
+combinations will return ``None`` for this method. If ``None`` is returned, then no
 label should be shown for the parameter's widget (i.e. the label is embedded inside the
 widget itself).
 
@@ -270,7 +270,7 @@ The caller takes ownership of the returned widget.
 Creates a new label to accompany widgets created by the wrapper.
 
 The caller takes ownership of the returned label. Some parameter type and dialog type
-combinations will return None for this method. If None is returned, then no
+combinations will return ``None`` for this method. If ``None`` is returned, then no
 label should be shown for the parameter's widget (i.e. the label is embedded inside the
 widget itself).
 
@@ -296,7 +296,7 @@ Returns the current value of the parameter.
 
     virtual const QgsVectorLayer *linkedVectorLayer() const;
 %Docstring
-Returns the optional vector layer associated with this widget wrapper, or None if no vector
+Returns the optional vector layer associated with this widget wrapper, or ``None`` if no vector
 layer is applicable.
 
 This is used to correctly generate expression contexts within the GUI, e.g. to allow expression

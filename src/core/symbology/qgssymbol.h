@@ -415,7 +415,7 @@ class CORE_EXPORT QgsSymbol
     bool hasDataDefinedProperties() const;
 
     /**
-     * \note the layer will be nullptr after stopRender
+     * \note the layer will be NULLPTR after stopRender
      * \deprecated Will be removed in QGIS 4.0
      */
     Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;

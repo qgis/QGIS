@@ -1015,7 +1015,7 @@ notified when the freshly updated feature counts are ready.
 .. note::
 
    If the count features for symbols has been already done a
-   None is returned. If you need to wait for the results,
+   ``None`` is returned. If you need to wait for the results,
    you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
@@ -1421,7 +1421,7 @@ editing.
 
     QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
-Access to labeling configuration. May be None if labeling is not used.
+Access to labeling configuration. May be null if labeling is not used.
 
 .. note::
 

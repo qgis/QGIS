@@ -380,7 +380,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     //! Second segment point for drawing the balloon connection (ccw direction)
     QPointF mBalloonSegmentPoint2;
 
-    //! Associated layer (or nullptr if not attached to a layer)
+    //! Associated layer (or NULLPTR if not attached to a layer)
     QgsWeakMapLayerPointer mMapLayer;
 
     //! Associated feature, or invalid feature if no feature associated

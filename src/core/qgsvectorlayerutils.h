@@ -212,9 +212,9 @@ class CORE_EXPORT QgsVectorLayerUtils
      * thread is safe too.
      * This should be used in scenarios, where a ``QWeakPointer<QgsVectorLayer>`` is kept in a thread
      * and features should be fetched from this layer. Using the layer directly is not safe to do.
-     * The result will be ``nullptr`` if the layer has been deleted.
+     * The result will be ``NULLPTR`` if the layer has been deleted.
      * If \a feedback is specified, the call will return if the feedback is canceled.
-     * Returns a new feature source for the \a layer. The source may be a nullptr if the layer no longer
+     * Returns a new feature source for the \a layer. The source may be NULLPTR if the layer no longer
      * exists or if the feedback is canceled.
      *
      * \note Requires Qt >= 5.10 to make use of the thread-safe implementation

@@ -109,7 +109,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
      * "default color ramp" option.
-     * \param colorramp default color ramp for the button. Set to nullptr to disable the default color
+     * \param colorramp default color ramp for the button. Set to NULLPTR to disable the default color
      * ramp option. The ramp will be cloned and ownership is not transferred.
      * \see defaultColorRamp
      */
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Returns a copy of the default color ramp for the button, which is shown in the button's drop-down menu for the
      * "default color ramp" option.
-     * \returns default color ramp for the button. Returns nullptr if the default color ramp
+     * \returns default color ramp for the button. Returns NULLPTR if the default color ramp
      * option is disabled.
      * \see setDefaultColorRamp
      */

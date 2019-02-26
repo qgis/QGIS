@@ -188,7 +188,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * If z or m values are present, the output z and m will be interpolated using
      * the existing vertices' z or m values.
      *
-     * If distance is negative, or is greater than the length of the curve, a nullptr
+     * If distance is negative, or is greater than the length of the curve, NULLPTR
      * will be returned.
      *
      * \since QGIS 3.4

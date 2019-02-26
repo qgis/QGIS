@@ -212,7 +212,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
 
     /**
-     * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
+     * Returns a const pointer to the z vertex data, or NULLPTR if the linestring does
      * not have z values.
      * \note Not available in Python bindings
      * \see xData()
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
 
     /**
-     * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
+     * Returns a const pointer to the m vertex data, or NULLPTR if the linestring does
      * not have m values.
      * \note Not available in Python bindings
      * \see xData()

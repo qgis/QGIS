@@ -223,7 +223,7 @@ Override the assigned rule key (should be used just internally by rule-based ren
 
         void setSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
-Sets a new symbol (or None). Deletes old symbol.
+Sets a new symbol (or ``None``). Deletes old symbol.
 %End
         void setLabel( const QString &label );
 
