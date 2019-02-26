@@ -91,9 +91,10 @@ namespace QgsWms
 
       /**
        * Returns the map as DXF data
-       \param options: extracted from the FORMAT_OPTIONS parameter
-       \returns the map as DXF data
-       \since QGIS 3.0*/
+       * \param options extracted from the FORMAT_OPTIONS parameter
+       * \returns the map as DXF data
+       * \since QGIS 3.0
+      */
       QgsDxfExport getDxf( const QMap<QString, QString> &options );
 
       /**
