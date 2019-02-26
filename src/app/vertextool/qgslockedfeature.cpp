@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsselectedfeature.cpp  - selected feature of vertextool
+    qgslockedfeature.cpp  - locked feature of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "vertextool/qgsselectedfeature.h"
-#include "vertextool/qgsvertexentry.h"
+#include "qgslockedfeature.h"
+#include "qgsvertexeditor.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgspoint.h"
@@ -32,16 +32,29 @@
 #include "qgsmapcanvas.h"
 
 
-QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
-                                        QgsVectorLayer *vlayer,
-                                        QgsMapCanvas *canvas )
+QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
+                                    QgsVectorLayer *layer,
+                                    QgsMapCanvas *canvas )
   : mFeatureId( featureId )
-  , mChangingGeometry( false )
+  , mLayer( layer )
+  , mCanvas( canvas )
 {
-  setSelectedFeature( featureId, vlayer, canvas );
+  // signal changing of current layer
+  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsLockedFeature::currentLayerChanged );
+
+  // feature was deleted
+  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsLockedFeature::featureDeleted );
+
+  // rolling back
+  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsLockedFeature::beforeRollBack );
+
+  // geometry was changed
+  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
+
+  replaceVertexMap();
 }
 
-QgsSelectedFeature::~QgsSelectedFeature()
+QgsLockedFeature::~QgsLockedFeature()
 {
   deleteVertexMap();
 
@@ -61,13 +74,13 @@ QgsSelectedFeature::~QgsSelectedFeature()
   delete mGeometry;
 }
 
-void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
+void QgsLockedFeature::currentLayerChanged( QgsMapLayer *layer )
 {
   if ( layer == mLayer )
     deleteLater();
 }
 
-void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
+void QgsLockedFeature::updateGeometry( const QgsGeometry *geom )
 {
   delete mGeometry;
 
@@ -86,68 +99,40 @@ void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
   }
 }
 
-void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas )
+void QgsLockedFeature::beforeRollBack()
 {
-  mFeatureId = featureId;
-  mLayer = layer;
-  mCanvas = canvas;
-
-  delete mGeometry;
-  mGeometry = nullptr;
-
-  // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsSelectedFeature::currentLayerChanged );
-
-  // feature was deleted
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsSelectedFeature::featureDeleted );
-
-  // rolling back
-  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsSelectedFeature::beforeRollBack );
-
-  // projection or extents changed
-  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
-  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
-
-  // geometry was changed
-  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
-
-  replaceVertexMap();
-}
-
-void QgsSelectedFeature::beforeRollBack()
-{
-  disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
   deleteVertexMap();
 }
 
-void QgsSelectedFeature::beginGeometryChange()
+void QgsLockedFeature::beginGeometryChange()
 {
   Q_ASSERT( !mChangingGeometry );
   mChangingGeometry = true;
 
-  disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
 }
 
-void QgsSelectedFeature::endGeometryChange()
+void QgsLockedFeature::endGeometryChange()
 {
   Q_ASSERT( mChangingGeometry );
   mChangingGeometry = false;
 
-  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
 }
 
-void QgsSelectedFeature::canvasLayersChanged()
+void QgsLockedFeature::canvasLayersChanged()
 {
   currentLayerChanged( mCanvas->currentLayer() );
 }
 
-void QgsSelectedFeature::featureDeleted( QgsFeatureId fid )
+void QgsLockedFeature::featureDeleted( QgsFeatureId fid )
 {
   if ( fid == mFeatureId )
     deleteLater();
 }
 
-void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
+void QgsLockedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   QgsDebugCall;
 
@@ -159,7 +144,7 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &g
   replaceVertexMap();
 }
 
-void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
+void QgsLockedFeature::validateGeometry( QgsGeometry *g )
 {
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
@@ -190,15 +175,15 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
   if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
     method = QgsGeometry::ValidatorGeos;
   mValidator = new QgsGeometryValidator( *g, nullptr, method );
-  connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsSelectedFeature::addError );
-  connect( mValidator, &QThread::finished, this, &QgsSelectedFeature::validationFinished );
+  connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsLockedFeature::addError );
+  connect( mValidator, &QThread::finished, this, &QgsLockedFeature::validationFinished );
   mValidator->start();
 
   QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( tr( "Validation started." ) );
 }
 
-void QgsSelectedFeature::addError( QgsGeometry::Error e )
+void QgsLockedFeature::addError( QgsGeometry::Error e )
 {
   mGeomErrors << e;
   if ( !mTip.isEmpty() )
@@ -223,13 +208,13 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
   sb->setToolTip( mTip );
 }
 
-void QgsSelectedFeature::validationFinished()
+void QgsLockedFeature::validationFinished()
 {
   QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", mGeomErrorMarkers.size() ) );
 }
 
-void QgsSelectedFeature::replaceVertexMap()
+void QgsLockedFeature::replaceVertexMap()
 {
   // delete old map
   deleteVertexMap();
@@ -243,7 +228,7 @@ void QgsSelectedFeature::replaceVertexMap()
   emit vertexMapChanged();
 }
 
-void QgsSelectedFeature::deleteVertexMap()
+void QgsLockedFeature::deleteVertexMap()
 {
   Q_FOREACH ( QgsVertexEntry *entry, mVertexMap )
   {
@@ -253,18 +238,18 @@ void QgsSelectedFeature::deleteVertexMap()
   mVertexMap.clear();
 }
 
-bool QgsSelectedFeature::isSelected( int vertexNr )
+bool QgsLockedFeature::isSelected( int vertexNr )
 {
   return mVertexMap.at( vertexNr )->isSelected();
 }
 
-QgsGeometry *QgsSelectedFeature::geometry()
+QgsGeometry *QgsLockedFeature::geometry()
 {
   Q_ASSERT( mGeometry );
   return mGeometry;
 }
 
-void QgsSelectedFeature::createVertexMap()
+void QgsLockedFeature::createVertexMap()
 {
 
   if ( !mGeometry )
@@ -288,22 +273,22 @@ void QgsSelectedFeature::createVertexMap()
   QgsPoint pt;
   while ( geom->nextVertex( vertexId, pt ) )
   {
-    mVertexMap.append( new QgsVertexEntry( mCanvas, mLayer, pt, vertexId, tr( "ring %1, vertex %2" ).arg( vertexId.ring ).arg( vertexId.vertex ) ) );
+    mVertexMap.append( new QgsVertexEntry( pt, vertexId ) );
   }
 }
 
-void QgsSelectedFeature::selectVertex( int vertexNr )
+void QgsLockedFeature::selectVertex( int vertexNr )
 {
   if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
     return;
 
   QgsVertexEntry *entry = mVertexMap.at( vertexNr );
-  entry->setSelected();
+  entry->setSelected( true );
 
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::deselectVertex( int vertexNr )
+void QgsLockedFeature::deselectVertex( int vertexNr )
 {
   if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
     return;
@@ -314,7 +299,7 @@ void QgsSelectedFeature::deselectVertex( int vertexNr )
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::deselectAllVertices()
+void QgsLockedFeature::deselectAllVertices()
 {
   for ( int i = 0; i < mVertexMap.size(); i++ )
   {
@@ -323,7 +308,7 @@ void QgsSelectedFeature::deselectAllVertices()
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::invertVertexSelection( int vertexNr )
+void QgsLockedFeature::invertVertexSelection( int vertexNr )
 {
   if ( vertexNr < 0 || vertexNr >= mVertexMap.size() )
     return;
@@ -336,7 +321,7 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
+void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
   Q_FOREACH ( int index, vertexIndices )
   {
@@ -349,25 +334,17 @@ void QgsSelectedFeature::invertVertexSelection( const QVector<int> &vertexIndice
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::updateVertexMarkersPosition()
-{
-  Q_FOREACH ( QgsVertexEntry *vertexEntry, mVertexMap )
-  {
-    vertexEntry->placeMarker();
-  }
-}
-
-QgsFeatureId QgsSelectedFeature::featureId()
+QgsFeatureId QgsLockedFeature::featureId()
 {
   return mFeatureId;
 }
 
-QList<QgsVertexEntry *> &QgsSelectedFeature::vertexMap()
+QList<QgsVertexEntry *> &QgsLockedFeature::vertexMap()
 {
   return mVertexMap;
 }
 
-QgsVectorLayer *QgsSelectedFeature::layer()
+QgsVectorLayer *QgsLockedFeature::layer()
 {
   return mLayer;
 }
