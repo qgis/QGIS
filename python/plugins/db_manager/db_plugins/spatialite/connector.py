@@ -23,7 +23,7 @@ from builtins import str
 
 from functools import cmp_to_key
 
-from qgis.core import Qgis
+from qgis.core import Qgis, QgsSqliteUtils
 from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtWidgets import QApplication
 
@@ -171,19 +171,7 @@ class SpatiaLiteDBConnector(DBConnector):
         tablenames = []
         items = []
 
-        sys_tables = ["SpatialIndex", "geom_cols_ref_sys", "geometry_columns", "geometry_columns_auth",
-                      "views_geometry_columns", "virts_geometry_columns", "spatial_ref_sys", "spatial_ref_sys_all", "spatial_ref_sys_aux",
-                      "sqlite_sequence", "tableprefix_metadata", "tableprefix_rasters",
-                      "layer_params", "layer_statistics", "layer_sub_classes", "layer_table_layout",
-                      "pattern_bitmaps", "symbol_bitmaps", "project_defs", "raster_pyramids",
-                      "sqlite_stat1", "sqlite_stat2", "spatialite_history",
-                      "geometry_columns_field_infos",
-                      "geometry_columns_statistics", "geometry_columns_time",
-                      "sql_statements_log", "vector_layers", "vector_layers_auth", "vector_layers_field_infos", "vector_layers_statistics",
-                      "views_geometry_columns_auth", "views_geometry_columns_field_infos", "views_geometry_columns_statistics",
-                      "virts_geometry_columns_auth", "virts_geometry_columns_field_infos", "virts_geometry_columns_statistics",
-                      "virts_layer_statistics", "views_layer_statistics", "ElementaryGeometries"
-                      ]
+        sys_tables = QgsSqliteUtils.systemTables()
 
         try:
             vectors = self.getVectorTables(schema)
