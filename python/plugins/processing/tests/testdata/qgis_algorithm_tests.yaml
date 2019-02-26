@@ -7009,4 +7009,16 @@ tests:
         name: expected/surface_vol_gaps.gml
         type: vector
 
+  - algorithm: native:dissolve
+    name: Test dissolve with consecutive lines
+    params:
+      INPUT:
+        name: custom/consecutivelines.gml|layername=consecutivelines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolved_consecutive_lines.gml
+        type: vector
+
+
 # See ../README.md for a description of the file format
