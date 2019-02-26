@@ -25,6 +25,7 @@
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
+#include "qgssqliteutils.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
@@ -33,6 +34,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QRegularExpression>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -388,14 +390,27 @@ QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem *parent, const Q
 QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
+  QStringList skippedLayerNames;
 
-  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  char **papszOptions = nullptr;
+  papszOptions = CSLSetNameValue( papszOptions, "@LIST_ALL_TABLES", "YES" );
+  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, papszOptions, nullptr ) );
+  CSLDestroy( papszOptions );
+
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
+  QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
+  if ( driverName == QStringLiteral( "SQLite" ) )
+  {
+    skippedLayerNames = QgsSqliteUtils::systemTables();
+  }
+
   if ( !hDataSource )
     return children;
   int numLayers = GDALDatasetGetLayerCount( hDataSource.get() );
 
   // Check if layer names are unique, so we can use |layername= in URI
   QMap< QString, int > mapLayerNameToCount;
+  QList< int > skippedLayers;
   bool uniqueNames = true;
   for ( int i = 0; i < numLayers; ++i )
   {
@@ -408,13 +423,21 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
       uniqueNames = false;
       break;
     }
+    if ( ( driverName == QStringLiteral( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geometry($|_.*)" ) ) ) )
+         || skippedLayerNames.contains( layerName ) )
+    {
+      skippedLayers << i;
+    }
   }
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true, uniqueNames );
-    children.append( item );
+    if ( !skippedLayers.contains( i ) )
+    {
+      QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true, uniqueNames );
+      children.append( item );
+    }
   }
 
   return children;
