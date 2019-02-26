@@ -69,7 +69,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     {
       public:
         virtual ~SQLValidatorCallback() = default;
-        //! method should return true if the SQL is valid. Otherwise return false and set the errorReason
+        //! method should return TRUE if the SQL is valid. Otherwise return FALSE and set the errorReason
         virtual bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) = 0;
     };
 
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! add a list of API for autocompletion
     void addApis( const QStringList &list );
 
-    //! Sets if multiple tables/joins are supported. Default is false
+    //! Sets if multiple tables/joins are supported. Default is FALSE
     void setSupportMultipleTables( bool bMultipleTables, const QString &mainTypename = QString() );
 
     /**

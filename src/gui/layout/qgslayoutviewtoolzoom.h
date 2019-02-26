@@ -48,7 +48,7 @@ class GUI_EXPORT QgsLayoutViewToolZoom : public QgsLayoutViewTool
 
   protected:
 
-    //! Will be true will marquee zoom operation is in progress
+    //! Will be TRUE will marquee zoom operation is in progress
     bool mMarqueeZoom = false;
 
   private:

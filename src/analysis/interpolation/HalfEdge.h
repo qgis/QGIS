@@ -35,9 +35,9 @@ class ANALYSIS_EXPORT HalfEdge
     int mNext = -10;
     //! Number of the point at which this HalfEdge points
     int mPoint = -10;
-    //! True, if the HalfEdge belongs to a break line, false otherwise
+    //! True, if the HalfEdge belongs to a break line, FALSE otherwise
     bool mBreak = false;
-    //! True, if the HalfEdge belongs to a constrained edge, false otherwise
+    //! True, if the HalfEdge belongs to a constrained edge, FALSE otherwise
     bool mForced = false;
 
   public:

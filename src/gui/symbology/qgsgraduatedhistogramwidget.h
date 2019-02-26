@@ -56,7 +56,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
     /**
      * Emitted when the user modifies the graduated ranges using the histogram widget.
-     * \param rangesAdded true if the user has added ranges, false if the user has just
+     * \param rangesAdded TRUE if the user has added ranges, FALSE if the user has just
      * modified existing range breaks
      */
     void rangesModified( bool rangesAdded );

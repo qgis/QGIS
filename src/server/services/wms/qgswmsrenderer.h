@@ -213,7 +213,7 @@ namespace QgsWms
        * \param version WMS version
        * \param featureBBox The bounding box of the selected features in output CRS
        * \param filterGeom Geometry for filtering selected features
-       * \returns true in case of success
+       * \returns TRUE in case of success
        */
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
                                        const QgsPointXY *infoPoint,

@@ -154,14 +154,14 @@ class CORE_EXPORT QgsSymbol
      * Ownership of \a layer is transferred to the symbol.
      * \param index The index at which the layer should be added
      * \param layer The symbol layer to add
-     * \returns True if the layer is added, False if the index or the layer is bad
+     * \returns TRUE if the layer is added, FALSE if the index or the layer is bad
      */
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
     /**
      * Appends a symbol \a layer at the end of the current symbol layer list.
      * Ownership of \a layer is transferred to the symbol.
-     * \returns true if the layer was successfully added, false if the layer is not compatible with the
+     * \returns TRUE if the layer was successfully added, FALSE if the layer is not compatible with the
      * symbol's type().
      */
     bool appendSymbolLayer( QgsSymbolLayer *layer SIP_TRANSFER );
@@ -183,8 +183,8 @@ class CORE_EXPORT QgsSymbol
      * Deletes the current layer at the specified \a index and replaces it with \a layer.
      * Ownership of \a layer is transferred to the symbol.
      *
-     * Returns false if \a layer is not compatible with the symbol's type(), or
-     * true if the layer was successfully replaced.
+     * Returns FALSE if \a layer is not compatible with the symbol's type(), or
+     * TRUE if the layer was successfully replaced.
      */
     bool changeSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsSymbol
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
-     * \param clipFeaturesToExtent set to true to enable clipping (defaults to true)
+     * \param clipFeaturesToExtent set to true to enable clipping (defaults to TRUE)
      * \see clipFeaturesToExtent
      * \since QGIS 2.9
      */
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsSymbol
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
-     * \returns true if features will be clipped
+     * \returns TRUE if features will be clipped
      * \see setClipFeaturesToExtent
      * \since QGIS 2.9
      */
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsSymbol
     void setForceRHR( bool force ) { mForceRHR = force; }
 
     /**
-     * Returns true if polygon features drawn by the symbol will be reoriented to follow the
+     * Returns TRUE if polygon features drawn by the symbol will be reoriented to follow the
      * standard right-hand-rule orientation, in which the area that is
      * bounded by the polygon is to the right of the boundary. In particular, the exterior
      * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
      *
-     * If \a correctRingOrientation is true then the ring will be oriented to match standard ring orientation, e.g.
+     * If \a correctRingOrientation is TRUE then the ring will be oriented to match standard ring orientation, e.g.
      * clockwise for exterior rings and counter-clockwise for interior rings.
      */
     static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
      *
-     * If \a correctRingOrientation is true then the ring will be oriented to match standard ring orientation, e.g.
+     * If \a correctRingOrientation is TRUE then the ring will be oriented to match standard ring orientation, e.g.
      * clockwise for exterior rings and counter-clockwise for interior rings.
      *
      */
@@ -526,7 +526,7 @@ class CORE_EXPORT QgsSymbol
 #endif
 
     /**
-     * True if render has already been started - guards against multiple calls to
+     * TRUE if render has already been started - guards against multiple calls to
      * startRender() (usually a result of not cloning a shared symbol instance before rendering).
      */
     bool mStarted = false;
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param c
      * \param u
      * \param opacity value between 0 (fully transparent) and 1 (fully opaque)
-     * \param selected set to true if symbol should be drawn in a "selected" state
+     * \param selected set to TRUE if symbol should be drawn in a "selected" state
      * \param renderHints flags controlling rendering behavior
      * \param f
      * \param fields

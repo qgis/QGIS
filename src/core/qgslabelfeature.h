@@ -188,18 +188,18 @@ class CORE_EXPORT QgsLabelFeature
     bool hasFixedPosition() const { return mHasFixedPosition; }
     //! Sets whether the label should use a fixed position instead of being automatically placed
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
-    //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
+    //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     QgsPointXY fixedPosition() const { return mFixedPosition; }
-    //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
+    //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     void setFixedPosition( const QgsPointXY &point ) { mFixedPosition = point; }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
     //! Sets whether the label should use a fixed angle instead of using angle from automatic placement
     void setHasFixedAngle( bool enabled ) { mHasFixedAngle = enabled; }
-    //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
+    //! Angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
     double fixedAngle() const { return mFixedAngle; }
-    //! Sets angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns true)
+    //! Sets angle in degrees of the fixed angle (relevant only if hasFixedAngle() returns TRUE)
     void setFixedAngle( double angle ) { mFixedAngle = angle; }
 
     /**
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsLabelFeature
     void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }
 
     /**
-     * Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
+     * Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns TRUE).
      * Determines which side of the point to use.
      * For X coordinate, values -1, 0, 1 mean left, center, right.
      * For Y coordinate, values -1, 0, 1 mean above, center, below.
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsLabelFeature
 
     /**
      * Returns whether the feature will act as an obstacle for labels.
-     * \returns true if feature is an obstacle
+     * \returns TRUE if feature is an obstacle
      * \see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }

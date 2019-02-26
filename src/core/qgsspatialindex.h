@@ -145,14 +145,14 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 
     /**
      * Add a feature \a id to the index with a specified bounding box.
-     * \returns true if feature was successfully added to index.
+     * \returns TRUE if feature was successfully added to index.
      * \deprecated Use addFeature() instead
     */
     Q_DECL_DEPRECATED bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds ) SIP_DEPRECATED;
 
     /**
      * Add a feature \a id to the index with a specified bounding box.
-     * \returns true if feature was successfully added to index.
+     * \returns TRUE if feature was successfully added to index.
      * \since QGIS 3.4
     */
     bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     * \param f input feature
     * \param r will be set to spatial index region
     * \param id will be set to feature's ID
-    * \returns true if feature info was successfully retrieved and the feature can be added to
+    * \returns TRUE if feature info was successfully retrieved and the feature can be added to
     * the index
     */
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id ) SIP_SKIP;
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * \param f input feature
      * \param rect will be set to feature's geometry bounding box
      * \param id will be set to feature's ID
-     * \returns true if feature info was successfully retrieved and the feature can be added to
+     * \returns TRUE if feature info was successfully retrieved and the feature can be added to
      * the index
      * \since QGIS 3.0
      */

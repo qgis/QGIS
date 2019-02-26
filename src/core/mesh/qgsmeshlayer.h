@@ -214,7 +214,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
   private: // Private methods
 
     /**
-     * Returns true if the provider is in read-only mode
+     * Returns TRUE if the provider is in read-only mode
      */
     bool isReadOnly() const override {return true;}
 

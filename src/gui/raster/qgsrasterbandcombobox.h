@@ -56,7 +56,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
     int currentBand() const;
 
     /**
-     * Returns true if the combo box is showing the "not set" option.
+     * Returns TRUE if the combo box is showing the "not set" option.
      * \see setShowNotSetOption()
      */
     bool isShowingNotSetOption() const;

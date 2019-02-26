@@ -121,7 +121,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     /**
      * Attempts to remove the child algorithm with matching \a id.
-     * Returns true if the algorithm could be removed, or false
+     * Returns TRUE if the algorithm could be removed, or FALSE
      * if the algorithm could not be removed (e.g. due to other
      * child algorithms depending on it).
      * \see deactivateChildAlgorithm()
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Attempts to activate the child algorithm with matching \a id.
      * If any child algorithms on which the child depends are not active,
-     * then the child will not be activated and false will be returned.
+     * then the child will not be activated and FALSE will be returned.
      * \see deactivateChildAlgorithm()
      */
     bool activateChildAlgorithm( const QString &id );
@@ -184,14 +184,14 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void removeModelParameter( const QString &name );
 
     /**
-     * Returns true if any child algorithms depend on the model parameter
+     * Returns TRUE if any child algorithms depend on the model parameter
      * with the specified \a name.
      * \see otherParametersDependOnParameter()
      */
     bool childAlgorithmsDependOnParameter( const QString &name ) const;
 
     /**
-     * Returns true if any other model parameters depend on the parameter
+     * Returns TRUE if any other model parameters depend on the parameter
      * with the specified \a name (e.g. field parameters where \a name
      * is the parent layer parameter).
      * \see childAlgorithmsDependOnParameter()
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const;
 
     /**
-     * Returns true if an output from a child algorithm is required elsewhere in
+     * Returns TRUE if an output from a child algorithm is required elsewhere in
      * the model.
      */
     bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
@@ -438,11 +438,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Checks whether the output vector type given by \a outputType is compatible
      * with the list of acceptable data types specified by \a acceptableDataTypes.
-     * Returns true if vector output is compatible.
+     * Returns TRUE if vector output is compatible.
      *
      * \note This method is intended to be "permissive" rather than "restrictive".
      * I.e. we only reject outputs which we know can NEVER be acceptable, but
-     * if there's doubt then we default to returning true.
+     * if there's doubt then we default to returning TRUE.
      */
     static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
 

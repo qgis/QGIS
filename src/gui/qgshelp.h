@@ -63,7 +63,7 @@ class GUI_EXPORT QgsHelp
 
     /**
      * Check if given URL accessible by issuing HTTP HEAD request.
-     * Returns true if URL accessible, false otherwise.
+     * Returns TRUE if URL accessible, FALSE otherwise.
      * \param url URL to check
      * \since QGIS 3.0
      */

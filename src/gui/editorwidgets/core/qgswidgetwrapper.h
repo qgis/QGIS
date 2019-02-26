@@ -156,7 +156,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     static QgsWidgetWrapper *fromWidget( QWidget *widget );
 
     /**
-     * Returns true if the widget has been properly initialized.
+     * Returns TRUE if the widget has been properly initialized.
      * This acts as hint for the calling party if this wrapper can be used
      * after initializing it.
      * If it cannot be used this is a hint to the caller that he may try to find

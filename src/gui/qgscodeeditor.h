@@ -46,8 +46,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \param parent The parent QWidget
      * \param title The title to show in the code editor dialog
-     * \param folding false: Enable folding for code editor
-     * \param margin false: Enable margin for code editor
+     * \param folding FALSE: Enable folding for code editor
+     * \param margin FALSE: Enable margin for code editor
      * \since QGIS 2.6
      */
     QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false );

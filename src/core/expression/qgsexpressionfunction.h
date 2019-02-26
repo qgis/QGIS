@@ -58,9 +58,9 @@ class CORE_EXPORT QgsExpressionFunction
         /**
          * Constructor for Parameter.
          * \param name parameter name, used when named parameter are specified in an expression
-         * \param optional set to true if parameter should be optional
+         * \param optional set to TRUE if parameter should be optional
          * \param defaultValue default value to use for optional parameters
-         * \param isSubExpression set to true if this parameter is a sub-expression
+         * \param isSubExpression set to TRUE if this parameter is a sub-expression
          */
         Parameter( const QString &name,
                    bool optional = false,
@@ -75,14 +75,14 @@ class CORE_EXPORT QgsExpressionFunction
         //! Returns the name of the parameter.
         QString name() const { return mName; }
 
-        //! Returns true if the parameter is optional.
+        //! Returns TRUE if the parameter is optional.
         bool optional() const { return mOptional; }
 
         //! Returns the default value for the parameter.
         QVariant defaultValue() const { return mDefaultValue; }
 
         /**
-         * Returns true if parameter argument is a separate sub-expression, and
+         * Returns TRUE if parameter argument is a separate sub-expression, and
          * should not be checked while determining referenced columns for the expression.
          * \since QGIS 3.2
          */
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsExpressionFunction
     virtual QStringList aliases() const;
 
     /**
-     * True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
+     * TRUE if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
      * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
      * Functions are non lazy default and will be given the node return value when called.
      */
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsExpressionFunction
      * A function is static if it will return the same value for every feature with different
      * attributes and/or geometry.
      *
-     * By default this will return true, if all arguments that have been passed to the function
+     * By default this will return TRUE, if all arguments that have been passed to the function
      * are also static.
      *
      * \since QGIS 3.0
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsExpressionFunction
     bool isContextual() const { return mIsContextual; }
 
     /**
-     * Returns true if the function is deprecated and should not be presented as a valid option
+     * Returns TRUE if the function is deprecated and should not be presented as a valid option
      * to users in expression builders.
      * \since QGIS 3.0
      */
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsExpressionFunction
     bool operator==( const QgsExpressionFunction &other ) const;
 
     /**
-     * Returns true if the function handles NULL values in arguments by itself, and the default
+     * Returns TRUE if the function handles NULL values in arguments by itself, and the default
      * NULL value handling should be skipped.
      */
     virtual bool handlesNull() const;
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsExpressionFunction
   protected:
 
     /**
-     * This will return true if all the params for the provided function \a node are static within the
+     * This will return TRUE if all the params for the provided function \a node are static within the
      * constraints imposed by the \a context within the given \a parent.
      *
      * This can be used as callback for custom implementations of subclasses. It is the default for implementation
@@ -469,7 +469,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     /**
      * Tag this function as either static or not static.
      * This will indicate that the function is always expected to return the same value for
-     * an iteration (or explicitly request that it's going to be called for every feature, if false).
+     * an iteration (or explicitly request that it's going to be called for every feature, if FALSE).
      *
      * \see setIsStaticFunction
      */

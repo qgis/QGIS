@@ -471,7 +471,7 @@ class CORE_EXPORT QgsDxfExport
      * \param ct the coordinate transform
      * \param layer the layer name
      * \param symbolLayer the symbollayer to write to the dxf file
-     * \param allSymbolLayers if true, all symbol layers of the subsymbol are written. If false, only the first one is written
+     * \param allSymbolLayers if TRUE, all symbol layers of the subsymbol are written. If FALSE, only the first one is written
     */
     void addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers );
 

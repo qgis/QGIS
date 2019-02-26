@@ -135,11 +135,11 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
     QgsLayoutObject *layoutObject();
 
     /**
-     * Sets the current \a item to show in the widget. If true is returned, \a item
+     * Sets the current \a item to show in the widget. If TRUE is returned, \a item
      * was an acceptable type for display in this widget and the widget has been
      * updated to match \a item's properties.
      *
-     * If false is returned, then the widget could not be successfully updated
+     * If FALSE is returned, then the widget could not be successfully updated
      * to show the properties of \a item.
      */
     bool setItem( QgsLayoutItem *item );
@@ -184,7 +184,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      *
      * Subclasses can override this if they support changing items in place.
      *
-     * Implementations must return true if the item was accepted and
+     * Implementations must return TRUE if the item was accepted and
      * the widget was updated.
      */
     virtual bool setNewItem( QgsLayoutItem *item );

@@ -154,7 +154,7 @@ class CORE_EXPORT QgsField
 
     /**
      * Returns if this field is numeric. Any integer or floating point type
-     * will return true for this.
+     * will return TRUE for this.
      *
      * \since QGIS 2.18
      */
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsField
      *
      * \param v  The value to convert
      *
-     * \returns   True if the conversion was successful
+     * \returns   TRUE if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
 #ifdef SIP_RUN

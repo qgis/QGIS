@@ -50,7 +50,7 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
      * Constructor for QgsLayoutViewMouseEvent. Should only be required to be called from the QgsLayoutView.
      * \param view The view in which the event occurred.
      * \param event The original mouse event
-     * \param snap set to true to snap the point using the layout's snapping settings
+     * \param snap set to TRUE to snap the point using the layout's snapping settings
      */
     QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEvent *event, bool snap = false );
 
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
     QPointF snappedPoint() const { return mSnappedPoint; }
 
     /**
-     * Returns true if point was snapped, e.g. to grid or guide lines.
+     * Returns TRUE if point was snapped, e.g. to grid or guide lines.
      * \see snappedPoint()
      */
     bool isSnapped() const { return mSnapped; }

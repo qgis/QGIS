@@ -66,7 +66,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
     void setDefaultValue( const QVariant &value ) { mDefaultValue = value; }
 
     /**
-     * Returns true if the output is mandatory. This may override the associated
+     * Returns TRUE if the output is mandatory. This may override the associated
      * child algorithm's parameter optional status - e.g. allowing
      * an optional output from an algorithm to be mandatory within a model.
      * \see setMandatory()

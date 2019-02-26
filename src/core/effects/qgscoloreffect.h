@@ -121,7 +121,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Sets whether the effect should colorize a picture.
-     * \param colorizeOn set to true to enable colorization
+     * \param colorizeOn set to TRUE to enable colorization
      * \see colorizeOn
      * \see setColorizeColor
      * \see setColorizeStrength
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Returns whether the effect will colorize a picture.
-     * \returns true if colorization is enabled
+     * \returns TRUE if colorization is enabled
      * \see setColorizeOn
      * \see colorizeColor
      * \see colorizeStrength
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Sets the color used for colorizing a picture. This is only used if
-     *  setColorizeOn() is set to true.
+     *  setColorizeOn() is set to TRUE.
      * \param colorizeColor colorization color
      * \see colorizeColor
      * \see setColorizeOn
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Returns the color used for colorizing a picture. This is only used if
-     * colorizeOn() is set to true.
+     * colorizeOn() is set to TRUE.
      * \returns colorization color
      * \see setColorizeColor
      * \see colorizeOn
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Sets the strength for colorizing a picture. This is only used if
-     *  setColorizeOn() is set to true.
+     *  setColorizeOn() is set to TRUE.
      * \param colorizeStrength colorization strength, between 0 and 100
      * \see colorizeStrength
      * \see setColorizeOn
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     /**
      * Returns the strength used for colorizing a picture. This is only used if
-     * setColorizeOn() is set to true.
+     * setColorizeOn() is set to TRUE.
      * \returns colorization strength, between 0 and 100
      * \see setColorizeStrength
      * \see colorizeOn

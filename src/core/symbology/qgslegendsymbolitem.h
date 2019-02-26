@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! Used for older code that identifies legend entries from symbol pointer within renderer
     QgsSymbol *legacyRuleKey() const { return mOriginalSymbolPointer; }
 
-    //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
+    //! Determine whether given scale is within the scale range. Returns TRUE if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
 
     /**

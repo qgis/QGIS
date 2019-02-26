@@ -110,8 +110,8 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
     /**
      * Sets whether undo commands for the layout should be temporarily blocked.
      *
-     * If \a blocked is true, subsequent undo commands will be blocked until a follow-up
-     * call to blockCommands( false ) is made.
+     * If \a blocked is TRUE, subsequent undo commands will be blocked until a follow-up
+     * call to blockCommands( FALSE ) is made.
      *
      * Note that calls to blockCommands are stacked, so two calls blocking the commands
      * will take two calls unblocking commands in order to release the block.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
     void blockCommands( bool blocked );
 
     /**
-     * Returns true if undo commands are currently blocked.
+     * Returns TRUE if undo commands are currently blocked.
      * \see blockCommands()
      */
     bool isBlocked() const;

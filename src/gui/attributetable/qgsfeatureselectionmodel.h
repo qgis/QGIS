@@ -131,7 +131,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 
     /**
      * If sync is disabled
-     * Is set to true, if a clear and select operation should be performed before syncing
+     * Is set to TRUE, if a clear and select operation should be performed before syncing
      */
     bool mClearAndSelectBuffer;
 };

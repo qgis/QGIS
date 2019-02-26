@@ -154,7 +154,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     /**
      * Removes an interior ring from the polygon. The first interior ring has index 0.
      * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
-     * the function will return true.  It is not possible to remove the exterior ring using this method.
+     * the function will return TRUE.  It is not possible to remove the exterior ring using this method.
      * \see removeInteriorRings()
      */
     bool removeInteriorRing( int ringIndex );

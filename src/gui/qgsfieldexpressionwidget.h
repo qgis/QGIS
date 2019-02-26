@@ -84,7 +84,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
-     * Returns true if the combo box allows the empty field ("not set") choice.
+     * Returns TRUE if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
      * \since QGIS 3.6
      */
@@ -106,12 +106,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
-      * Returns true if the current expression is valid
+      * Returns TRUE if the current expression is valid
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
     /**
-     * If the content is not just a simple field this method will return true.
+     * If the content is not just a simple field this method will return TRUE.
      */
     bool isExpression() const;
 

@@ -469,7 +469,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when initialized.
-     * \returns true if the layer is valid and can be accessed
+     * \returns TRUE if the layer is valid and can be accessed
      */
     bool isValid() const;
 
@@ -507,11 +507,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     virtual void setSubLayerVisibility( const QString &name, bool visible );
 
-    //! Returns true if the layer can be edited.
+    //! Returns TRUE if the layer can be edited.
     virtual bool isEditable() const;
 
     /**
-     * Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
+     * Returns TRUE if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
      * \since QGIS 2.16
      */
     virtual bool isSpatial() const;
@@ -530,7 +530,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * Invoked by QgsProject::read().
      *
-     * \returns true if successful
+     * \returns TRUE if successful
      */
     bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
 
@@ -549,7 +549,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * Invoked by QgsProject::write().
      *
-     * \returns true if successful
+     * \returns TRUE if successful
      */
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
@@ -635,7 +635,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Save the current metadata of this layer as the default metadata
      * (either as a .qmd file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default metadata.
      * \returns a QString with any status messages
      * \since QGIS 3.0
@@ -651,7 +651,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * is a file and save to that, if that fails the qgis.db metadata
      * table will be used to create a metadata entry who's
      * key matches the URI.
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default metadata.
      * \returns a QString with any status messages
      * \since QGIS 3.0
@@ -667,7 +667,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * is a file and load that, if that fails the qgis.db metadata
      * table will be consulted to see if there is a metadata who's
      * key matches the URI.
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default metadata.
      * \returns a QString with any status messages
      * \since QGIS 3.0
@@ -678,7 +678,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Retrieve the default metadata for this layer if one
      * exists (either as a .qmd file on disk or as a
      * record in the users metadata table in their personal qgis.db)
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default metadata.
      * \returns a QString with any status messages
      * \since QGIS 3.0
@@ -690,7 +690,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param db path to sqlite database
      * \param uri uri for table
      * \param qmd will be set to QMD xml metadata content from database
-     * \returns true if style was successfully loaded
+     * \returns TRUE if style was successfully loaded
      * \since QGIS 3.0
      */
     bool loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd );
@@ -699,7 +699,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Import the metadata of this layer from a QDomDocument
      * \param document source QDomDocument
      * \param errorMessage this QString will be initialized on error
-     * \returns true on success
+     * \returns TRUE on success
      * \since QGIS 3.0
      */
     bool importNamedMetadata( QDomDocument &document, QString &errorMessage );
@@ -717,7 +717,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default style.
      * \returns a QString with any status messages
      * \see also loadNamedStyle();
@@ -733,7 +733,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * is a file and load that, if that fails the qgis.db styles
      * table will be consulted to see if there is a style who's
      * key matches the URI.
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default style.
      * \param categories the style categories to be loaded.
      * \returns a QString with any status messages
@@ -746,7 +746,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param db path to sqlite database
      * \param uri uri for table
      * \param qml will be set to QML style content from database
-     * \returns true if style was successfully loaded
+     * \returns TRUE if style was successfully loaded
      */
     virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml SIP_OUT );
 
@@ -756,7 +756,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMsg this QString will be initialized on error
      * during the execution of readSymbology
      * \param categories the style categories to import
-     * \returns true on success
+     * \returns TRUE on success
      * \since QGIS 2.8
      */
     virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT,
@@ -786,7 +786,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default style.
      * \returns a QString with any status messages
      * \see loadNamedStyle() and \see saveNamedStyle()
@@ -802,7 +802,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * is a file and save to that, if that fails the qgis.db styles
      * table will be used to create a style entry who's
      * key matches the URI.
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default style.
      * \param categories the style categories to be saved.
      * \returns a QString with any status messages
@@ -813,7 +813,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Saves the properties of this layer to an SLD format file.
      * \param uri uri of destination for exported SLD file.
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * the SLD file could not be generated
      * \returns a string with any status or error messages
      * \see loadSldStyle()
@@ -823,7 +823,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Attempts to style the layer using the formatting from an SLD type file.
      * \param uri uri of source SLD file
-     * \param resultFlag a reference to a flag that will be set to false if
+     * \param resultFlag a reference to a flag that will be set to FALSE if
      * the SLD file could not be loaded
      * \returns a string with any status or error messages
      * \see saveSldStyle()
@@ -841,7 +841,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
      * \param categories the style categories to be read
-     * \returns true in case of success.
+     * \returns TRUE in case of success.
      */
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
                                 QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) = 0;
@@ -852,8 +852,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
      * \param categories the style categories to be read
-     * \returns true in case of success.
-     * \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     * \returns TRUE in case of success.
+     * \note To be implemented in subclasses. Default implementation does nothing and returns FALSE.
      * \since QGIS 2.16
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
@@ -867,7 +867,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \param categories the style categories to be written
      *  \note There is a confusion of terms with the GUI. This method actually writes what is called a style in the application.
-     *  \returns true in case of success.
+     *  \returns TRUE in case of success.
      */
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                                  StyleCategories categories = AllStyleCategories ) const = 0;
@@ -879,8 +879,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \param categories the style categories to be written
-     *  \returns true in case of success.
-     *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     *  \returns TRUE in case of success.
+     *  \note To be implemented in subclasses. Default implementation does nothing and returns FALSE.
      *  \note There is a confusion of terms with the GUI. This method actually writes what is known as the symbology in the application.
      *  \since QGIS 2.16
      */
@@ -898,7 +898,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param baseName base name of the layer
      * \param provider provider string
      * \param options provider options
-     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
      * data source
      * \see dataSourceChanged()
      * \since QGIS 3.6
@@ -973,7 +973,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Tests whether the layer should be visible at the specified \a scale.
      *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \returns true if the layer is visible at the given scale.
+     * \returns TRUE if the layer is visible at the given scale.
      * \see minimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
@@ -985,7 +985,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no minimum scale visibility.
-     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to TRUE.
      * \see setMinimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
@@ -997,7 +997,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the layer will be visible.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no maximum scale visibility.
-     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to TRUE.
      * \see setMaximumScale()
      * \see minimumScale()
      * \see hasScaleBasedVisibility()
@@ -1007,7 +1007,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns whether scale based visibility is enabled for the layer.
-     * \returns true if scale based visibility is enabled
+     * \returns TRUE if scale based visibility is enabled
      * \see minimumScale()
      * \see maximumScale()
      * \see setScaleBasedVisibility()
@@ -1016,7 +1016,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool hasScaleBasedVisibility() const;
 
     /**
-     * Returns true if auto refresh is enabled for the layer.
+     * Returns TRUE if auto refresh is enabled for the layer.
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
      * \since QGIS 3.0
@@ -1025,7 +1025,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the auto refresh interval (in milliseconds). Note that
-     * auto refresh is only active when hasAutoRefreshEnabled() is true.
+     * auto refresh is only active when hasAutoRefreshEnabled() is TRUE.
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
      * \since QGIS 3.0
@@ -1095,7 +1095,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString refreshOnNotifyMessage() const { return mRefreshOnNofifyMessage; }
 
     /**
-     * Returns true if the refresh on provider nofification is enabled
+     * Returns TRUE if the refresh on provider nofification is enabled
      *
      * \since QGIS 3.0
      */
@@ -1126,7 +1126,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the layer will be visible.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A \a scale of 0 indicates no minimum scale visibility.
-     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to TRUE.
      * \see minimumScale()
      * \see setMaximumScale()
      * \see setScaleBasedVisibility()
@@ -1137,7 +1137,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the layer will be visible.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A \a scale of 0 indicates no maximum scale visibility.
-     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+     * \note Scale based visibility is only used if setScaleBasedVisibility() is set to TRUE.
      * \see maximumScale()
      * \see setMinimumScale()
      * \see setScaleBasedVisibility()
@@ -1146,7 +1146,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets whether scale based visibility is enabled for the layer.
-     * \param enabled set to true to enable scale based visibility
+     * \param enabled set to TRUE to enable scale based visibility
      * \see setMinimumScale
      * \see setMaximumScale
      * \see hasScaleBasedVisibility
@@ -1156,7 +1156,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
      * Will emit a repaintRequested() signal.
-     * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
+     * If \a deferredUpdate is TRUE then the layer will only be repainted when the canvas is next
      * re-rendered, and will not trigger any canvas redraws itself.
      *
      * \note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
@@ -1174,7 +1174,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see dependencies()
      *
      * \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
-     * \returns false if a dependency cycle has been detected
+     * \returns FALSE if a dependency cycle has been detected
      * \since QGIS 3.0
      */
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
@@ -1213,7 +1213,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * By emitting this signal the layer tells that either appearance or content have been changed
      * and any view showing the rendered layer should refresh itself.
-     * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
+     * If \a deferredUpdate is TRUE then the layer will only be repainted when the canvas is next
      * re-rendered, and will not trigger any canvas redraws itself.
      */
     void repaintRequested( bool deferredUpdate = false );
@@ -1469,7 +1469,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
     /**
-     * This method returns true by default but can be overwritten to specify
+     * This method returns TRUE by default but can be overwritten to specify
      * that a certain layer is writable.
      */
     virtual bool isReadOnly() const;

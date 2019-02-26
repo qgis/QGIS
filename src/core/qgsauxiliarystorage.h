@@ -101,7 +101,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * Deletes all features from the layer. Changes are automatically committed
      * and the layer remains editable.
      *
-     * \returns true if changes are committed without error, false otherwise.
+     * \returns TRUE if changes are committed without error, FALSE otherwise.
      */
     bool clear();
 
@@ -111,12 +111,12 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsVectorLayerJoinInfo joinInfo() const;
 
     /**
-     * Returns true if the property is stored in the layer already, false
+     * Returns TRUE if the property is stored in the layer already, FALSE
      * otherwise.
      *
      * \param definition The property definition to check
      *
-     * \returns true if the property is stored, false otherwise
+     * \returns TRUE if the property is stored, FALSE otherwise
      */
     bool exists( const QgsPropertyDefinition &definition ) const;
 
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \param definition The definition of the property to add
      *
-     * \returns true if the auxiliary field is well added, false otherwise
+     * \returns TRUE if the auxiliary field is well added, FALSE otherwise
      */
     bool addAuxiliaryField( const QgsPropertyDefinition &definition );
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     /**
      * Commits changes and starts editing then.
      *
-     * \returns true if commit step passed, false otherwise
+     * \returns TRUE if commit step passed, FALSE otherwise
      */
     bool save();
 
@@ -149,13 +149,13 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \param attr The index of the attribute to remove
      *
-     * \returns true if the attribute is well deleted, false otherwise
+     * \returns TRUE if the attribute is well deleted, FALSE otherwise
      */
     bool deleteAttribute( int attr ) override;
 
     /**
-     * Returns true if the underlying field has to be hidden from editing
-     * tools like attribute table, false otherwise.
+     * Returns TRUE if the underlying field has to be hidden from editing
+     * tools like attribute table, FALSE otherwise.
      *
      * \param index The index of the field for which visibility is checked
      */
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * Returns the name of the auxiliary field for a property definition.
      *
      * \param def The property definition
-     * \param joined The join prefix is taken into account if true
+     * \param joined The join prefix is taken into account if TRUE
      */
     static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
 
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     /**
      * Returns the status of the auxiliary storage currently defined.
      *
-     * \returns true if the auxiliary storage is valid, false otherwise
+     * \returns TRUE if the auxiliary storage is valid, FALSE otherwise
      */
     bool isValid() const;
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     /**
      * Saves the current database to a new path.
      *
-     * \returns true if everything is saved, false otherwise
+     * \returns TRUE if everything is saved, FALSE otherwise
      */
     bool saveAs( const QString &filename );
 
@@ -339,14 +339,14 @@ class CORE_EXPORT QgsAuxiliaryStorage
      * Actually, the current filename of the project is used to deduce the
      * path of the database to save.
      *
-     * \returns true if everything is saved, false otherwise
+     * \returns TRUE if everything is saved, FALSE otherwise
      */
     bool saveAs( const QgsProject &project );
 
     /**
      * Saves the current database.
      *
-     * \returns true if everything is saved, false otherwise
+     * \returns TRUE if everything is saved, FALSE otherwise
      */
     bool save() const;
 
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      *
      * \param uri The uri of the table to remove
      *
-     * \returns true if the table is well deleted, false otherwise
+     * \returns TRUE if the table is well deleted, FALSE otherwise
      */
     static bool deleteTable( const QgsDataSourceUri &uri );
 
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      * \param uri The uri of the table to duplicate
      * \param newTable The name of the new table
      *
-     * \returns true if the table is well duplicated, false otherwise
+     * \returns TRUE if the table is well duplicated, FALSE otherwise
      */
     static bool duplicateTable( const QgsDataSourceUri &uri, const QString &newTable );
 
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static QString extension();
 
     /**
-     * Returns true if the auxiliary database yet exists for a project, false otherwise.
+     * Returns TRUE if the auxiliary database yet exists for a project, FALSE otherwise.
      *
      * \param project The project for which the database is checked
      *

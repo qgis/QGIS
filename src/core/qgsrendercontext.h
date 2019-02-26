@@ -251,7 +251,7 @@ class CORE_EXPORT QgsRenderContext
     bool forceVectorOutput() const;
 
     /**
-     * Returns true if advanced effects such as blend modes such be used
+     * Returns TRUE if advanced effects such as blend modes such be used
      */
     bool useAdvancedEffects() const;
 
@@ -278,8 +278,8 @@ class CORE_EXPORT QgsRenderContext
     QColor selectionColor() const { return mSelectionColor; }
 
     /**
-     * Returns true if vector selections should be shown in the rendered map
-     * \returns true if selections should be shown
+     * Returns TRUE if vector selections should be shown in the rendered map
+     * \returns TRUE if selections should be shown
      * \see setShowSelection
      * \see selectionColor
      * \since QGIS v2.4
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Sets whether vector selections should be shown in the rendered map
-     * \param showSelection set to true if selections should be shown
+     * \param showSelection set to TRUE if selections should be shown
      * \see showSelection
      * \see setSelectionColor
      * \since QGIS v2.4
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsRenderContext
     void setShowSelection( bool showSelection );
 
     /**
-     * Returns true if the rendering optimization (geometry simplification) can be executed
+     * Returns TRUE if the rendering optimization (geometry simplification) can be executed
      */
     bool useRenderingOptimization() const;
 

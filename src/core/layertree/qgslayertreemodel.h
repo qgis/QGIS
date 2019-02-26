@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Convert a \a list of indexes to a list of layer tree nodes.
      * Indices that do not represent layer tree nodes are skipped.
-     * If \a skipInternal is true, a node is included in the output list only if no parent node is in the list.
+     * If \a skipInternal is TRUE, a node is included in the output list only if no parent node is in the list.
      */
     QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
 
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node
-     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is TRUE)
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
      * \see layerOriginalLegendNodes()
      * \since QGIS 2.6

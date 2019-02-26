@@ -49,7 +49,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     /**
      * Reports that the algorithm encountered an \a error while executing.
      *
-     * If \a fatalError is true then the error prevented the algorithm from executing.
+     * If \a fatalError is TRUE then the error prevented the algorithm from executing.
      */
     virtual void reportError( const QString &error, bool fatalError = false ) { Q_UNUSED( fatalError ); QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical ); }
 

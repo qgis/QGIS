@@ -32,8 +32,8 @@ class QgsDateTimeEdit;
  * Options:
  * <ul>
  * <li><b>display_format</b> <i>The format used to represent the date/time to the user.</i></li>
- * <li><b>calendar_popup</b> <i>If True, will offer a calendar popup.</i></li>
- * <li><b>allow_null</b> <i>If True, will allow NULL values. Requires QgsDateTimeEdit as widget (Be aware if you work with .ui files).</i></li>
+ * <li><b>calendar_popup</b> <i>If TRUE, will offer a calendar popup.</i></li>
+ * <li><b>allow_null</b> <i>If TRUE, will allow NULL values. Requires QgsDateTimeEdit as widget (Be aware if you work with .ui files).</i></li>
  * <li><b>field_format</b> <i>The format used to save the date/time.</i></li>
  * </ul>
  * \note not available in Python bindings

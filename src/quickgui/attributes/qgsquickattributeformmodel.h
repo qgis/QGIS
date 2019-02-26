@@ -49,7 +49,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     //! Whether use tabs layout
     Q_PROPERTY( bool hasTabs READ hasTabs WRITE setHasTabs NOTIFY hasTabsChanged )
 
-    //! Returns true if all constraints defined on fields are satisfied with the current attribute values
+    //! Returns TRUE if all constraints defined on fields are satisfied with the current attribute values
     Q_PROPERTY( bool constraintsValid READ constraintsValid NOTIFY constraintsValidChanged )
 
   public:

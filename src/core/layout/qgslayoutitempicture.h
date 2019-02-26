@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void finalizeRestoreFromXml() override;
 
     /**
-     * Returns true if the source image is missing and the picture
+     * Returns TRUE if the source image is missing and the picture
      * cannot be rendered.
      *
      * \since QGIS 3.6

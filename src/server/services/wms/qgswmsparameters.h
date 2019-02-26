@@ -187,7 +187,7 @@ namespace QgsWms
       virtual ~QgsWmsParameter() = default;
 
       /**
-       * Returns true if the parameter is valid, false otherwise.
+       * Returns TRUE if the parameter is valid, FALSE otherwise.
        */
       bool isValid() const override;
 
@@ -377,7 +377,7 @@ namespace QgsWms
       QgsProjectVersion versionAsNumber() const;
 
       /**
-       * Returns true if \a version is valid, false otherwise.
+       * Returns TRUE if \a version is valid, FALSE otherwise.
        * \since QGIS 3.4
        */
       bool versionIsValid( const QString version ) const;
@@ -528,7 +528,7 @@ namespace QgsWms
 
       /**
        * Checks if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
-       * \returns true if the INFO_FORMAT is an image format
+       * \returns TRUE if the INFO_FORMAT is an image format
        */
       bool infoFormatIsImage() const;
 
@@ -1132,13 +1132,13 @@ namespace QgsWms
 
       /**
        * Returns if the client wants the feature info response with geometry information
-       * \returns true if geometry information is requested for feature info response
+       * \returns TRUE if geometry information is requested for feature info response
        */
       bool withGeometry() const;
 
       /**
        * \brief withMapTip
-       * \returns true if maptip information is requested for feature info response
+       * \returns TRUE if maptip information is requested for feature info response
        */
       bool withMapTip() const;
 
@@ -1151,7 +1151,7 @@ namespace QgsWms
       /**
        * Returns a layout parameter thanks to its \a id.
        * \param id Parameter id
-       * \param ok True if the parameter is valid, false otherwise
+       * \param ok TRUE if the parameter is valid, FALSE otherwise
        * \returns The layout parameter
        * \since QGIS 3.4
        */

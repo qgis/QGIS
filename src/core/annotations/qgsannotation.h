@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     virtual QgsAnnotation *clone() const = 0 SIP_FACTORY;
 
     /**
-     * Returns true if the annotation is visible and should be rendered.
+     * Returns TRUE if the annotation is visible and should be rendered.
      * \see setVisible()
      */
     bool isVisible() const { return mVisible; }
@@ -95,8 +95,8 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void setVisible( bool visible );
 
     /**
-     * Returns true if the annotation is attached to a fixed map position, or
-     * false if the annotation uses a position relative to the current map
+     * Returns TRUE if the annotation is attached to a fixed map position, or
+     * FALSE if the annotation uses a position relative to the current map
      * extent.
      * \see setHasFixedMapPosition()
      * \see mapPosition()
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     bool mVisible = true;
 
-    //! True if the item stays at the same map position, false if the item stays on same screen position
+    //! True if the item stays at the same map position, FALSE if the item stays on same screen position
     bool mHasFixedMapPosition = true;
 
     //! Map position (for fixed position items)

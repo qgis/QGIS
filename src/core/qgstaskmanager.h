@@ -44,7 +44,7 @@ typedef QList< QgsTask * > QgsTaskList;
  * task commences (ie via calling run() ).
  *
  * Long running tasks should periodically check the isCanceled() flag to detect if the task
- * has been canceled via some external event. If this flag is true then the task should
+ * has been canceled via some external event. If this flag is TRUE then the task should
  * clean up and terminate at the earliest possible convenience.
  *
  * \since QGIS 3.0
@@ -88,12 +88,12 @@ class CORE_EXPORT QgsTask : public QObject
     Flags flags() const { return mFlags; }
 
     /**
-     * Returns true if the task can be canceled.
+     * Returns TRUE if the task can be canceled.
      */
     bool canCancel() const { return mFlags & CanCancel; }
 
     /**
-     * Returns true if the task is active, ie it is not complete and has
+     * Returns TRUE if the task is active, ie it is not complete and has
      * not been canceled.
      */
     bool isActive() const { return mOverallStatus == Running; }
@@ -199,9 +199,9 @@ class CORE_EXPORT QgsTask : public QObject
      * If \a timeout is ``0`` the thread will be blocked forever.
      * In case of a timeout, the task will still be running.
      * In case the task already is finished, the method will return immediately while
-     * returning ``true``.
+     * returning ``TRUE``.
      *
-     * The result will be false if the wait timed out and true in any other case.
+     * The result will be FALSE if the wait timed out and TRUE in any other case.
      */
     bool waitForFinished( int timeout = 30000 );
 
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsTask : public QObject
     virtual void finished( bool result ) { Q_UNUSED( result ); }
 
     /**
-     * Will return true if task should terminate ASAP. If the task reports the CanCancel
+     * Will return TRUE if task should terminate ASAP. If the task reports the CanCancel
      * flag, then derived classes' run() methods should periodically check this and
      * terminate in a safe manner.
      */
@@ -456,7 +456,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     void cancelAll();
 
-    //! Returns true if all dependencies for the specified task are satisfied
+    //! Returns TRUE if all dependencies for the specified task are satisfied
     bool dependenciesSatisfied( long taskId ) const;
 
     /**
@@ -614,7 +614,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     bool resolveDependencies( long firstTaskId, long currentTaskId, QSet< long > &results ) const;
 
-    //! Will return true if the specified task has circular dependencies
+    //! Will return TRUE if the specified task has circular dependencies
     bool hasCircularDependencies( long taskId ) const;
 
     friend class TestQgsTaskManager;

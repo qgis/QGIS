@@ -55,8 +55,8 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 
     /**
      * Resolve paths in symbol layer's properties (if there are any paths).
-     * When saving is true, paths are converted from absolute to relative,
-     * when saving is false, paths are converted from relative to absolute.
+     * When saving is TRUE, paths are converted from absolute to relative,
+     * when saving is FALSE, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in symbol layer
      * instances the paths are always absolute
      * \since QGIS 3.0

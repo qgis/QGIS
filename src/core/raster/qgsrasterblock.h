@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param dataType raster data type
      *  \param width width of data matrix
      *  \param height height of data matrix
-     *  \returns true on success
+     *  \returns TRUE on success
      */
     bool reset( Qgis::DataType dataType, int width, int height );
 
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRasterBlock
     // and works also if block is valid but empty - difference between valid and empty?
 
     /**
-     * \brief Returns true if the block is valid (correctly filled with data).
+     * \brief Returns TRUE if the block is valid (correctly filled with data).
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
@@ -71,8 +71,8 @@ class CORE_EXPORT QgsRasterBlock
     void setValid( bool valid ) { mValid = valid; }
 
     /**
-     * Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
-     *  This method does not return true if size is not zero and all values are
+     * Returns TRUE if block is empty, i.e. its size is 0 (zero rows or cols).
+     *  This method does not return TRUE if size is not zero and all values are
      *  'no data' (null).
      */
     bool isEmpty() const;
@@ -119,10 +119,10 @@ class CORE_EXPORT QgsRasterBlock
       return typeSize( mDataType );
     }
 
-    //! Returns true if data type is numeric
+    //! Returns TRUE if data type is numeric
     static bool typeIsNumeric( Qgis::DataType type );
 
-    //! Returns true if data type is color
+    //! Returns TRUE if data type is color
     static bool typeIsColor( Qgis::DataType type );
 
     //! Returns data type
@@ -132,17 +132,17 @@ class CORE_EXPORT QgsRasterBlock
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 
     /**
-     * True if the block has no data value.
-     * \returns true if the block has no data value
+     * TRUE if the block has no data value.
+     * \returns TRUE if the block has no data value
      * \see noDataValue(), setNoDataValue(), resetNoDataValue()
      */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
     /**
-     * Returns true if the block may contain no data. It does not guarantee
+     * Returns TRUE if the block may contain no data. It does not guarantee
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
-     * \returns true if the block may contain no data
+     * \returns TRUE if the block may contain no data
     */
     bool hasNoData() const
     {
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRasterBlock
      * Reads a single value from the pixel at \a row and \a column, if type of block is numeric. If type is color,
      * returned value is undefined.
      *
-     * Additionally, the \a isNoData argument will be set to true if the pixel represents a nodata value. This method
+     * Additionally, the \a isNoData argument will be set to TRUE if the pixel represents a nodata value. This method
      * is more efficient then calling isNoData() and value() separately.
      *
      * \note Not available in Python bindings
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsRasterBlock
      * Reads a single value from the pixel at the specified data matrix \a index, if type of block is numeric. If type is color,
      * returned value is undefined.
      *
-     * Additionally, the \a isNoData argument will be set to true if the pixel represents a nodata value. This method
+     * Additionally, the \a isNoData argument will be set to TRUE if the pixel represents a nodata value. This method
      * is more efficient then calling isNoData() and value() separately.
      *
      * \note Not available in Python bindings
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsRasterBlock
      * Checks if value at position is no data
      * \param row row index
      * \param column column index
-     * \returns true if value is no data
+     * \returns TRUE if value is no data
      * \see valueAndNoData()
     */
     bool isNoData( int row, int column ) const
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsRasterBlock
      * Check if value at position is no data
      * \param row row index
      * \param column column index
-     * \returns true if value is no data
+     * \returns TRUE if value is no data
      * \see valueAndNoData()
     */
     bool isNoData( qgssize row, qgssize column ) const
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Check if value at position is no data
      * \param index data matrix index (long type in Python)
-     * \returns true if value is no data
+     * \returns TRUE if value is no data
      * \see valueAndNoData()
     */
     bool isNoData( qgssize index ) const
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \param value the value to be set
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setValue( int row, int column, double value )
     {
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Set value on index (indexed line by line)
      *  \param index data matrix index (long type in Python)
      *  \param value the value to be set
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setValue( qgssize index, double value )
     {
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \param color the color to be set, QRgb value
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setColor( int row, int column, QRgb color )
     {
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Set color on index (indexed line by line)
      *  \param index data matrix index (long type in Python)
      *  \param color the color to be set, QRgb value
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setColor( qgssize index, QRgb color )
     {
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Set no data on pixel
      *  \param row row index
      *  \param column column index
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setIsNoData( int row, int column )
     {
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * \brief Set no data on pixel
      *  \param index data matrix index (long type in Python)
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setIsNoData( qgssize index )
     {
@@ -464,13 +464,13 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * \brief Set the whole block to no data
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setIsNoData();
 
     /**
      * \brief Set the whole block to no data except specified rectangle
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool setIsNoDataExcept( QRect exceptRect );
 
@@ -581,7 +581,7 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * \brief Convert data to different type.
      *  \param destDataType dest data type
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool convert( Qgis::DataType destDataType );
 
@@ -592,7 +592,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Sets the block data via an \a image.
-     * \returns true on success
+     * \returns TRUE on success
     */
     bool setImage( const QImage *image );
 
@@ -652,7 +652,7 @@ class CORE_EXPORT QgsRasterBlock
      * Test if value is nodata comparing to noDataValue
      * \param value tested value
      * \param noDataValue no data value
-     * \returns true if value is nodata
+     * \returns TRUE if value is nodata
     */
     static bool isNoDataValue( double value, double noDataValue )
     {
@@ -666,13 +666,13 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Test if value is nodata for specific band
      * \param value tested value
-     * \returns true if value is nodata
+     * \returns TRUE if value is nodata
     */
     bool isNoDataValue( double value ) const;
 
     /**
      * Allocate no data bitmap
-     *  \returns true on success
+     *  \returns TRUE on success
     */
     bool createNoDataBitmap();
 

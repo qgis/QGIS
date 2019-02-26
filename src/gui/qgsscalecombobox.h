@@ -79,7 +79,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     /**
      * Helper function to convert a scale \a string to double.
      * The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * If specified, \a ok will be set to true if the string was successfully interpreted as a scale.
+     * If specified, \a ok will be set to TRUE if the string was successfully interpreted as a scale.
      * \see toString()
      */
     static double toDouble( const QString &string, bool *ok = nullptr );

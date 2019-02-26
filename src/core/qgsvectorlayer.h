@@ -2508,7 +2508,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Layer opacity
     double mLayerOpacity = 1.0;
 
-    //! Flag if the vertex markers should be drawn only for selection (true) or for all features (false)
+    //! Flag if the vertex markers should be drawn only for selection (TRUE) or for all features (FALSE)
     bool mVertexMarkerOnlyForSelection = false;
 
     QStringList mCommitErrors;

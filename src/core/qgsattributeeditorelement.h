@@ -196,14 +196,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
      *
-     * \param isGroupBox If true, this will be a group box
+     * \param isGroupBox If TRUE, this will be a group box
      */
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
 
     /**
      * Returns if this container is going to be rendered as a group box
      *
-     * \returns True if it will be a group box, false if it will be a tab
+     * \returns TRUE if it will be a group box, FALSE if it will be a tab
      */
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * Initializes the relation from the id
      *
      * \param relManager The relation manager to use for the initialization
-     * \returns true if the relation was found in the relationmanager
+     * \returns TRUE if the relation was found in the relationmanager
      */
     bool init( QgsRelationManager *relManager );
 

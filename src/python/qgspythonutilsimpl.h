@@ -48,7 +48,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! close Python interpreter
     void exitPython() override;
 
-    //! returns true if Python support is ready to use (must be inited first)
+    //! returns TRUE if Python support is ready to use (must be inited first)
     bool isEnabled() override;
 
     //! returns path where QGIS Python stuff is located
@@ -58,13 +58,13 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
      * run a statement (wrapper for PyRun_String)
      * this command is more advanced as enables error checking etc.
      * when an exception is raised, it shows dialog with exception details
-     * \returns true if no error occurred
+     * \returns TRUE if no error occurred
      */
     bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) override;
 
     /**
      * run a statement, error reporting is not done
-     * \returns true if no error occurred
+     * \returns TRUE if no error occurred
      */
     bool runStringUnsafe( const QString &command, bool single = true ) override;
 
@@ -75,7 +75,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     /**
      * Gets information about error to the supplied arguments
-     * \returns false if there was no Python error
+     * \returns FALSE if there was no Python error
      */
     bool getError( QString &errorClassName, QString &errorText ) override;
 

@@ -58,7 +58,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   the QGIS settings. The caller takes ownership of the
      *   returned object
      *   \param geometryType
-     *   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. default is false.
+     *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
      */
     QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
 

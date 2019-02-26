@@ -82,7 +82,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * Ownership of \a factory is transferred to the registry.
      *
-     * Returns true if the factory was successfully added, or false if the factory could not be added. Each
+     * Returns TRUE if the factory was successfully added, or FALSE if the factory could not be added. Each
      * factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface::parameterType(),
      * and attempting to add a new factory with a duplicate type will result in failure.
      *

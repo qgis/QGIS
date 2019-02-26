@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLayoutSize
     /**
      * Tests whether the size is empty, ie both its width and height
      * are zero.
-     * \returns true if size is empty
+     * \returns TRUE if size is empty
     */
     bool isEmpty() const;
 

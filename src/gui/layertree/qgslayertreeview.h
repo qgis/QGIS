@@ -98,7 +98,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     /**
      * Returns list of selected nodes
-     * \param skipInternal If true, will ignore nodes which have an ancestor in the selection
+     * \param skipInternal If TRUE, will ignore nodes which have an ancestor in the selection
      */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
     //! Returns list of selected nodes filtered to just layer nodes

@@ -69,7 +69,7 @@ class QgsRange
     T upper() const { return mUpper; }
 
     /**
-     * Returns true if the lower bound is inclusive, or false if the lower
+     * Returns TRUE if the lower bound is inclusive, or FALSE if the lower
      * bound is exclusive.
      * \see lower()
      * \see includeUpper()
@@ -77,7 +77,7 @@ class QgsRange
     bool includeLower() const { return mIncludeLower; }
 
     /**
-     * Returns true if the upper bound is inclusive, or false if the upper
+     * Returns TRUE if the upper bound is inclusive, or FALSE if the upper
      * bound is exclusive.
      * \see upper()
      * \see includeLower()
@@ -85,20 +85,20 @@ class QgsRange
     bool includeUpper() const { return mIncludeUpper; }
 
     /**
-     * Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
+     * Returns TRUE if the range is empty, ie the lower bound equals (or exceeds) the upper bound
      * and either the bounds are exclusive.
      * \see isSingleton()
      */
     bool isEmpty() const { return mLower > mUpper || ( mUpper == mLower && !( mIncludeLower || mIncludeUpper ) ); }
 
     /**
-     * Returns true if the range consists only of a single value or instant.
+     * Returns TRUE if the range consists only of a single value or instant.
      * \see isEmpty()
      */
     bool isSingleton() const { return mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
 
     /**
-     * Returns true if this range contains another range.
+     * Returns TRUE if this range contains another range.
      * \see overlaps()
      */
     bool contains( const QgsRange<T> &other ) const
@@ -119,7 +119,7 @@ class QgsRange
     }
 
     /**
-     * Returns true if this range contains a specified \a element.
+     * Returns TRUE if this range contains a specified \a element.
      */
     bool contains( T element ) const
     {
@@ -137,7 +137,7 @@ class QgsRange
     }
 
     /**
-     * Returns true if this range overlaps another range.
+     * Returns TRUE if this range overlaps another range.
      * \see contains()
      */
     bool overlaps( const QgsRange<T> &other ) const
@@ -250,7 +250,7 @@ class QgsTemporalRange
     T end() const { return mUpper; }
 
     /**
-     * Returns true if the beginning is inclusive, or false if the beginning
+     * Returns TRUE if the beginning is inclusive, or FALSE if the beginning
      * is exclusive.
      * \see begin()
      * \see includeEnd()
@@ -258,21 +258,21 @@ class QgsTemporalRange
     bool includeBeginning() const { return mIncludeLower; }
 
     /**
-     * Returns true if the end is inclusive, or false if the end is exclusive.
+     * Returns TRUE if the end is inclusive, or FALSE if the end is exclusive.
      * \see end()
      * \see includeBeginning()
      */
     bool includeEnd() const { return mIncludeUpper; }
 
     /**
-     * Returns true if the range consists only of a single instant.
+     * Returns TRUE if the range consists only of a single instant.
      * \see isEmpty()
      * \see isInfinite()
      */
     bool isInstant() const { return mLower.isValid() && mUpper.isValid() && mLower == mUpper && ( mIncludeLower || mIncludeUpper ); }
 
     /**
-     * Returns true if the range consists of all possible values.
+     * Returns TRUE if the range consists of all possible values.
      * \see isEmpty()
      * \see isInstant()
      */
@@ -282,7 +282,7 @@ class QgsTemporalRange
     }
 
     /**
-     * Returns true if the range is empty, ie the beginning equals (or exceeds) the end
+     * Returns TRUE if the range is empty, ie the beginning equals (or exceeds) the end
      * and either of the bounds are exclusive.
      * A range with both invalid beginning and end is considered infinite and not empty.
      */
@@ -304,7 +304,7 @@ class QgsTemporalRange
     }
 
     /**
-     * Returns true if this range contains another range.
+     * Returns TRUE if this range contains another range.
      */
     bool contains( const QgsTemporalRange<T> &other ) const
     {
@@ -336,7 +336,7 @@ class QgsTemporalRange
     }
 
     /**
-     * Returns true if this range contains a specified \a element.
+     * Returns TRUE if this range contains a specified \a element.
      */
     bool contains( const T &element ) const
     {
@@ -363,7 +363,7 @@ class QgsTemporalRange
     }
 
     /**
-     * Returns true if this range overlaps another range.
+     * Returns TRUE if this range overlaps another range.
      */
     bool overlaps( const QgsTemporalRange<T> &other ) const
     {

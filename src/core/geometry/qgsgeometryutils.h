@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance distance to traverse along geometry
      * \param previousVertex will be set to previous vertex ID
      * \param nextVertex will be set to next vertex ID
-     * \returns true if vertices were successfully retrieved
+     * \returns TRUE if vertices were successfully retrieved
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \since QGIS 3.0
      */
@@ -111,9 +111,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q1 Second segment start point
      * \param q2 Second segment end point
      * \param intersectionPoint Output parameter, the intersection point
-     * \param isIntersection Output parameter, return true if an intersection is found
+     * \param isIntersection Output parameter, return TRUE if an intersection is found
      * \param tolerance The tolerance to use
-     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
+     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
      * * Example:
      * \code{.py}
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param linePoint1 a first point on the line
      * \param linePoint2 a second point on the line
      * \param intersection the initial point and the returned intersection point
-     * \return true if an intersection has been found
+     * \return TRUE if an intersection has been found
      */
     static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
@@ -316,18 +316,18 @@ class CORE_EXPORT QgsGeometryUtils
                                     double &centerX SIP_OUT, double &centerY SIP_OUT );
 
     /**
-     * Returns true if the circle defined by three angles is ordered clockwise.
+     * Returns TRUE if the circle defined by three angles is ordered clockwise.
      *
      * The angles are defined counter-clockwise from the origin, i.e. using
      * Euclidean angles as opposed to geographic "North up" angles.
      */
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 
-    //! Returns true if, in a circle, angle is between angle1 and angle2
+    //! Returns TRUE if, in a circle, angle is between angle1 and angle2
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
 
     /**
-     * Returns true if an angle is between angle1 and angle3 on a circle described by
+     * Returns TRUE if an angle is between angle1 and angle3 on a circle described by
      * angle1, angle2 and angle3.
      */
     static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
@@ -350,8 +350,8 @@ class CORE_EXPORT QgsGeometryUtils
      * Calculates the midpoint on the circle passing through \a p1 and \a p2,
      * with the specified \a center coordinate.
      *
-     * If \a useShortestArc is true, then the midpoint returned will be that corresponding
-     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * If \a useShortestArc is TRUE, then the midpoint returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is FALSE, the longer arc from \a p1
      * to \a p2 will be used (i.e. winding the other way around the circle).
      *
      * \see segmentMidPoint()
@@ -611,7 +611,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param P22 is the second point that belongs to second skew line,
      * \param X1 is the result projection point of line P2P22 onto line P1P12,
      * \param epsilon the tolerance to use.
-     * \return true if such point exists, false - otherwise.
+     * \return TRUE if such point exists, FALSE - otherwise.
      */
     static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
                                      const QgsVector3D &P2, const QgsVector3D &P22,
@@ -625,7 +625,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param Lb1 is the first point on the second line,
      * \param Lb2 is the second point on the second line,
      * \param intersection is the result intersection, of it can be found.
-     * \return true if the intersection can be found, false - otherwise.
+     * \return TRUE if the intersection can be found, FALSE - otherwise.
      * example:
      * \code{.py}
      *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
@@ -662,7 +662,7 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \param points List of points in which a 3D point is searched.
      * \param point The point to update with Z dimension and value.
-     * \returns true if the point is updated, false otherwise
+     * \returns TRUE if the point is updated, FALSE otherwise
      *
      * \since QGIS 3.0
      */

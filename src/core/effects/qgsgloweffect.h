@@ -226,7 +226,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     /**
      * Specifies whether the glow is drawn outside the picture or within
      * the picture.
-     * \returns true if glow is to be drawn outside the picture, or false
+     * \returns TRUE if glow is to be drawn outside the picture, or FALSE
      * to draw glow within the picture
      */
     virtual bool shadeExterior() const = 0;

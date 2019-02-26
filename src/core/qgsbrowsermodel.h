@@ -154,7 +154,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     Q_DECL_DEPRECATED void connectItem( QgsDataItem *item ) SIP_DEPRECATED;
 
     /**
-     * Returns true if the model has been initialized.
+     * Returns TRUE if the model has been initialized.
      *
      * \see initialize()
      */

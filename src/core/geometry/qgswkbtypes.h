@@ -542,7 +542,7 @@ class CORE_EXPORT QgsWkbTypes
     static Type parseType( const QString &wktStr );
 
     /**
-     * Returns true if the WKB type is a single type.
+     * Returns TRUE if the WKB type is a single type.
      * \see isMultiType()
      * \see singleType()
      */
@@ -552,7 +552,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /**
-     * Returns true if the WKB type is a multi type.
+     * Returns TRUE if the WKB type is a multi type.
      * \see isSingleType()
      * \see multiType()
      */
@@ -602,7 +602,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /**
-     * Returns true if the WKB type is a curved type or can contain curved geometries.
+     * Returns TRUE if the WKB type is a curved type or can contain curved geometries.
      * \since QGIS 2.14
      */
     static bool isCurvedType( Type type )
@@ -763,7 +763,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /**
      * Tests whether a WKB type contains the z-dimension.
-     * \returns true if type has z values
+     * \returns TRUE if type has z values
      * \see addZ()
      * \see hasM()
      */
@@ -813,7 +813,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /**
      * Tests whether a WKB type contains m values.
-     * \returns true if type has m values
+     * \returns TRUE if type has m values
      * \see addM()
      * \see hasZ()
      */

@@ -240,7 +240,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Set input.
-      * Returns true if set correctly, false if cannot use that input
+      * Returns TRUE if set correctly, FALSE if cannot use that input
     */
     virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
@@ -290,8 +290,8 @@ class CORE_EXPORT QgsRasterInterface
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
-     * \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * \returns true if statistics are available (ready to use)
+     * \brief Returns TRUE if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+     * \returns TRUE if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsRasterInterface
 
 
     /**
-     * \brief Returns true if histogram is available (cached, already calculated)
+     * \brief Returns TRUE if histogram is available (cached, already calculated)
      * \note the parameters are the same as in \see histogram()
      */
 #ifndef SIP_RUN

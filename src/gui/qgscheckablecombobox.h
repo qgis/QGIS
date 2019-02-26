@@ -70,7 +70,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param index item index
      * \param value data value
      * \param role data role
-     * \returns true on success, false otherwise
+     * \returns TRUE on success, FALSE otherwise
      */
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 

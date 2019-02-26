@@ -105,8 +105,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Create a feature iterator for a specified field name or expression.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
      * \returns feature iterator
      * \since QGIS 3.0
      */
@@ -116,8 +116,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Fetches all values from a specified field name or expression.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
      * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
      * \see getDoubleValues
@@ -130,8 +130,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * invalid expression results are skipped.
      * \param layer vector layer to retrieve values from
      * \param fieldOrExpression field name or an expression string evaluating to a double value
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
      * \param nullCount optional pointer to integer to store number of null values encountered in
      * \param feedback optional feedback object to allow cancellation
      * \returns list of fetched values
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
 
     /**
-     * Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
+     * Returns TRUE if the specified value already exists within a field. This method can be used to test for uniqueness
      * of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
      * with IDs within this list are ignored when testing for existence of the value.
      * \see createUniqueValue()
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsVectorLayerUtils
 
     /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
-     * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
+     * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
     static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors SIP_OUT,

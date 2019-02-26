@@ -334,7 +334,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     int selectedItemType();
 
     /**
-     * Returns true if the "All" tab is selected.
+     * Returns TRUE if the "All" tab is selected.
      */
     bool allTypesSelected() const;
 

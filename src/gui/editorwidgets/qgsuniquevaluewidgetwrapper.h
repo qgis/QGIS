@@ -30,7 +30,7 @@ SIP_NO_FILE
  *
  * Options:
  * <ul>
- * <li><b>Editable</b> <i>If True the user can manually insert new (not yet used) values.</i></li>
+ * <li><b>Editable</b> <i>If TRUE the user can manually insert new (not yet used) values.</i></li>
  * </ul>
  * \note not available in Python bindings
  */

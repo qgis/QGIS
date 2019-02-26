@@ -41,9 +41,9 @@ class QgsValueRelationWidgetFactory;
  * <li><b>Layer</b> <i>The id of the referenced layer.</i></li>
  * <li><b>Key</b> <i>The key field on the referenced layer (code).</i></li>
  * <li><b>Value</b> <i>The value field on the referenced layer (human readable name).</i></li>
- * <li><b>AllowMulti</b> <i>If set to True, will allow multiple selections. This requires the data type to be a string. This does NOT work with normalized database structures.</i></li>
+ * <li><b>AllowMulti</b> <i>If set to TRUE, will allow multiple selections. This requires the data type to be a string. This does NOT work with normalized database structures.</i></li>
  * <li><b>AllowNull</b> <i>Will offer NULL as a possible value.</i></li>
- * <li><b>FilterExpression</b> <i>If not empty, will be used as expression. Only if this evaluates to True, the value will be shown.</i></li>
+ * <li><b>FilterExpression</b> <i>If not empty, will be used as expression. Only if this evaluates to TRUE, the value will be shown.</i></li>
  * <li><b>OrderByValue</b> <i>Will order by value instead of key.</i></li>
  * </ul>
  * \note not available in Python bindings
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
      *
      * \param attribute The name of the attribute that changed.
      * \param newValue     The new value of the attribute.
-     * \param attributeChanged If true, it corresponds to an actual change of the feature attribute
+     * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
      * \since QGIS 3.2.0
      */
     void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );

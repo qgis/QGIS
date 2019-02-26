@@ -112,14 +112,14 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         /**
          * Returns if this rule is active
          *
-         * \returns True if the rule is active
+         * \returns TRUE if the rule is active
          */
         bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * \returns True if this rule is an else rule
+         * \returns TRUE if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 
@@ -152,7 +152,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         /**
          * Sets if this rule is an ELSE rule
          *
-         * \param iselse If true, this rule is an ELSE rule
+         * \param iselse If TRUE, this rule is an ELSE rule
          */
         void setIsElse( bool iselse ) { mElseRule = iselse; }
 
@@ -262,7 +262,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
          *
          * \param f         The feature to test
          * \param context   The context in which the rendering happens
-         * \returns          True if the feature shall be rendered
+         * \returns          TRUE if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const;
 

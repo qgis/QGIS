@@ -59,7 +59,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
 
     /**
      * Remove \a provider implementation from the list (\a provider object is deleted)
-     * \returns true if the provider was actually removed and deleted
+     * \returns TRUE if the provider was actually removed and deleted
      */
     bool removeProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 

@@ -176,7 +176,7 @@ class CORE_EXPORT QgsRay2D
      *
      * If found, the intersection point will be stored in \a intersectPoint.
      *
-     * Returns true if the ray intersects the line segment.
+     * Returns TRUE if the ray intersects the line segment.
      */
     bool intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const;
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsLineSegmentDistanceComparer
      * line segment \a cd.
      * \param ab line segment: left hand side of the comparison operator
      * \param cd line segment: right hand side of the comparison operator
-     * \returns true if ab < cd (ab is closer than cd) to origin
+     * \returns TRUE if ab < cd (ab is closer than cd) to origin
      */
     bool operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const;
 

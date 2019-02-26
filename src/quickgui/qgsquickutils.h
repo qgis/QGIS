@@ -201,7 +201,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * Deletes file from a given path.
       *
       * \param filePath Absolute path to file
-      * \returns bool True, if removal was successful, otherwise false.
+      * \returns bool TRUE, if removal was successful, otherwise FALSE.
       *
       * \since QGIS 3.8
       */

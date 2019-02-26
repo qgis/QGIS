@@ -128,13 +128,13 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * Add a color to the list
      * \param color color to add
      * \param label label for color
-     * \param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
+     * \param allowDuplicate set to TRUE to allow duplicate colors to be added (colors which are already present in the list)
      */
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /**
      * Returns whether the color scheme model has been modified
-     * \returns true if colors have been modified
+     * \returns TRUE if colors have been modified
      */
     bool isDirty() const { return mIsDirty; }
 
@@ -198,7 +198,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
     /**
      * Returns whether the color scheme list has been modified
-     * \returns true if colors have been modified
+     * \returns TRUE if colors have been modified
      */
     bool isDirty() const;
 
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * Adds a color to the list
      * \param color color to add
      * \param label optional label for color
-     * \param allowDuplicate set to true to allow duplicate colors to be added, ie colors which already exist in the list
+     * \param allowDuplicate set to TRUE to allow duplicate colors to be added, ie colors which already exist in the list
      */
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 

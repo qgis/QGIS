@@ -380,7 +380,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * Whether to draw labels for this layer. For some layers it may be desirable
      * to register their features as obstacles for other labels without requiring
      * labels to be drawn for the layer itself. In this case drawLabels can be set
-     * to false and obstacle set to true, which will result in the layer acting
+     * to FALSE and obstacle set to TRUE, which will result in the layer acting
      * as an obstacle but having no labels of its own.
      * \since QGIS 2.12
      */
@@ -390,19 +390,19 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Name of field (or an expression) to use for label text.
-     * If fieldName is an expression, then isExpression should be set to true.
+     * If fieldName is an expression, then isExpression should be set to TRUE.
      * \see isExpression
      */
     QString fieldName;
 
     /**
-     * True if this label is made from a expression string, e.g., FieldName || 'mm'
+     * TRUE if this label is made from a expression string, e.g., FieldName || 'mm'
      * \see fieldName
      */
     bool isExpression;
 
     /**
-     * Returns the QgsExpression for this label settings. May be nullptr if isExpression is false.
+     * Returns the QgsExpression for this label settings. May be nullptr if isExpression is FALSE.
      */
     QgsExpression *getLabelExpression();
 
@@ -431,8 +431,8 @@ class CORE_EXPORT QgsPalLayerSettings
     int autoWrapLength = 0;
 
     /**
-     * If true, indicates that when auto wrapping label text the autoWrapLength length indicates the maximum
-     * ideal length of text lines. If false, then autoWrapLength indicates the ideal minimum length of text
+     * If TRUE, indicates that when auto wrapping label text the autoWrapLength length indicates the maximum
+     * ideal length of text lines. If FALSE, then autoWrapLength indicates the ideal minimum length of text
      * lines.
      *
      * If autoWrapLength is 0 then this value has no effect.
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsPalLayerSettings
     MultiLineAlign multilineAlign;
 
     /**
-     * If true, '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+     * If TRUE, '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
      * will be automatically added to the label text, pointing in the
      * direction of the line or polygon ring.
      * This setting only affects line or perimeter based labels.
@@ -481,7 +481,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool reverseDirectionSymbol;
 
     /**
-     * Set to true to format numeric label text as numbers (e.g. inserting thousand separators
+     * Set to TRUE to format numeric label text as numbers (e.g. inserting thousand separators
      * and fixed number of decimal places).
      * \see decimals
      * \see plusSign
@@ -489,14 +489,14 @@ class CORE_EXPORT QgsPalLayerSettings
     bool formatNumbers;
 
     /**
-     * Number of decimal places to show for numeric labels. formatNumbers must be true for this
+     * Number of decimal places to show for numeric labels. formatNumbers must be TRUE for this
      * setting to have an effect.
      * \see formatNumbers
      */
     int decimals;
 
     /**
-     * Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be true for this
+     * Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be TRUE for this
      * setting to have an effect.
      * \see formatNumbers
      */
@@ -508,14 +508,14 @@ class CORE_EXPORT QgsPalLayerSettings
     unsigned int placementFlags;
 
     /**
-     * True if feature centroid should be calculated from the whole feature, or
-     * false if only the visible part of the feature should be considered.
+     * TRUE if feature centroid should be calculated from the whole feature, or
+     * FALSE if only the visible part of the feature should be considered.
      */
     bool centroidWhole;
 
     /**
-     * True if centroid positioned labels must be placed inside their corresponding
-     * feature polygon, or false if centroids which fall outside the polygon
+     * TRUE if centroid positioned labels must be placed inside their corresponding
+     * feature polygon, or FALSE if centroids which fall outside the polygon
      * are permitted.
      */
     bool centroidInside;
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QVector< PredefinedPointPosition > predefinedPositionOrder SIP_SKIP;
 
     /**
-     * True if only labels which completely fit within a polygon are allowed.
+     * TRUE if only labels which completely fit within a polygon are allowed.
      */
     bool fitInPolygonOnly;
 
@@ -642,7 +642,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //-- rendering
 
     /**
-     * Set to true to limit label visibility to a range of scales.
+     * Set to TRUE to limit label visibility to a range of scales.
      * \see maximumScale
      * \see minimumScale
      */
@@ -653,7 +653,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no maximum scale visibility.
      *
-     * This setting is only considered if scaleVisibility is true.
+     * This setting is only considered if scaleVisibility is TRUE.
      *
      * \see minimumScale
      * \see scaleVisibility
@@ -665,7 +665,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no minimum scale visibility.
      *
-     * This setting is only considered if scaleVisibility is true.
+     * This setting is only considered if scaleVisibility is TRUE.
      *
      * \see maximumScale
      * \see scaleVisibility
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsPalLayerSettings
     double minimumScale;
 
     /**
-     * True if label sizes should be limited by pixel size.
+     * TRUE if label sizes should be limited by pixel size.
      * \see fontMinPixelSize
      * \see fontMaxPixelSize
      */
@@ -693,33 +693,33 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     int fontMaxPixelSize;
 
-    //! If true, all features will be labelled even when overlaps occur.
+    //! If TRUE, all features will be labelled even when overlaps occur.
     bool displayAll;
 
     //! Controls whether upside down labels are displayed and how they are handled.
     UpsideDownLabels upsidedownLabels = Upright;
 
     /**
-     * True if every part of a multi-part feature should be labeled. If false,
+     * TRUE if every part of a multi-part feature should be labeled. If FALSE,
      * only the largest part will be labeled.
      */
     bool labelPerPart;
 
     /**
-     * True if connected line features with identical label text should be merged
+     * TRUE if connected line features with identical label text should be merged
      * prior to generating label positions.
      */
     bool mergeLines;
 
     /**
-     * True if the number of labels drawn should be limited.
+     * TRUE if the number of labels drawn should be limited.
      * \see maxNumLabels
      */
     bool limitNumLabels;
 
     /**
      * The maximum number of labels which should be drawn for this layer.
-     * This only has an effect if limitNumLabels is true.
+     * This only has an effect if limitNumLabels is TRUE.
      * \see limitNumLabels
      */
     int maxNumLabels;
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsPalLayerSettings
     double minFeatureSize;
 
     /**
-     * True if features for layer are obstacles to labels of other layers.
+     * TRUE if features for layer are obstacles to labels of other layers.
      * \see obstacleFactor
      * \see obstacleType
      */
@@ -1009,7 +1009,7 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
      * \param clipGeometry geometry to clip features to, if applicable
-     * \returns true if geometry requires preparation
+     * \returns TRUE if geometry requires preparation
      * \since QGIS 2.9
      */
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
@@ -1022,7 +1022,7 @@ class CORE_EXPORT QgsPalLabeling
      * wrap text to (automatic wrapping is disabled if \a autoWrapLength is 0). This automatic wrapping is performed
      * after processing wrapping using \a wrapCharacter. When auto wrapping is enabled, the \a useMaxLineLengthWhenAutoWrapping
      * argument controls whether the lines should be wrapped to an ideal maximum of \a autoWrapLength characters, or
-     * if false then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
+     * if FALSE then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
      *
      * \since QGIS 2.9
      */
@@ -1067,7 +1067,7 @@ class CORE_EXPORT QgsPalLabeling
      * \param context render context
      * \param geom geometry
      * \param minSize minimum size for geometry
-     * \returns true if geometry exceeds minimum size
+     * \returns TRUE if geometry exceeds minimum size
      * \since QGIS 2.9
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry &geom, double minSize );

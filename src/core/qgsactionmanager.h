@@ -61,7 +61,7 @@ class CORE_EXPORT QgsActionManager: public QObject
     /**
      * Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
-     * capture is true, when running the action using doAction(),
+     * capture is TRUE, when running the action using doAction(),
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsActionManager: public QObject
     /**
      * Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
-     * capture is true, when running the action using doAction(),
+     * capture is TRUE, when running the action using doAction(),
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */

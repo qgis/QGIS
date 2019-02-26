@@ -95,8 +95,8 @@ class CORE_EXPORT QgsAnnotationRegistry
     }
 
     /**
-     * Adds a new annotation type to the registry. Returns true if adding the type
-     * was successful, or false if an annotation with duplicate type already exists
+     * Adds a new annotation type to the registry. Returns TRUE if adding the type
+     * was successful, or FALSE if an annotation with duplicate type already exists
      * in the registry.
      */
     bool addAnnotationType( const QgsAnnotationMetadata &metadata )

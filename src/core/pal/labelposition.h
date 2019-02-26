@@ -114,12 +114,12 @@ namespace pal
       bool isIntersect( double *bbox );
 
       /**
-       * Returns true if the label position intersects a \a geometry.
+       * Returns TRUE if the label position intersects a \a geometry.
        */
       bool intersects( const GEOSPreparedGeometry *geometry );
 
       /**
-       * Returns true if the label position is within a \a geometry.
+       * Returns TRUE if the label position is within a \a geometry.
        */
       bool within( const GEOSPreparedGeometry *geometry );
 
@@ -134,7 +134,7 @@ namespace pal
        * \brief Check whether or not this overlap with another labelPosition
        *
        * \param ls other labelposition
-       * \returns true or false
+       * \returns TRUE or FALSE
        */
       bool isInConflict( LabelPosition *ls );
 
@@ -144,10 +144,10 @@ namespace pal
       //! Gets distance from this label to a point. If point lies inside, returns negative number.
       double getDistanceToPoint( double xp, double yp ) const;
 
-      //! Returns true if this label crosses the specified line
+      //! Returns TRUE if this label crosses the specified line
       bool crossesLine( PointSet *line ) const;
 
-      //! Returns true if this label crosses the boundary of the specified polygon
+      //! Returns TRUE if this label crosses the boundary of the specified polygon
       bool crossesBoundary( PointSet *polygon ) const;
 
       /**
@@ -157,7 +157,7 @@ namespace pal
       int polygonIntersectionCost( PointSet *polygon ) const;
 
       /**
-       * Returns true if any intersection between polygon and position exists.
+       * Returns TRUE if any intersection between polygon and position exists.
       */
       bool intersectsWithPolygon( PointSet *polygon ) const;
 
@@ -205,7 +205,7 @@ namespace pal
 
       /**
        * Sets whether the position is marked as conflicting with an obstacle feature.
-       * \param conflicts set to true to mark candidate as being in conflict
+       * \param conflicts set to TRUE to mark candidate as being in conflict
        * \note This method applies to all label parts for the candidate position.
        * \see conflictsWithObstacle
        */

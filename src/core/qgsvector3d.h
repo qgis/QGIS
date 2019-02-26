@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVector3D
     QgsVector3D( const QVector3D &v )
       : mX( v.x() ), mY( v.y() ), mZ( v.z() ) {}
 
-    //! Returns true if all three coordinates are zero
+    //! Returns TRUE if all three coordinates are zero
     bool isNull() const { return mX == 0 && mY == 0 && mZ == 0; }
 
     //! Returns X coordinate

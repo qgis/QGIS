@@ -78,7 +78,7 @@
 namespace QgsTest
 {
 
-  //! Returns true if test is running on Travis infrastructure
+  //! Returns TRUE if test is running on Travis infrastructure
   bool isTravis()
   {
     return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );

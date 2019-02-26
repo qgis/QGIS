@@ -235,7 +235,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *  \param crs coordinate system of vrt
      *  \param geoTransform optional array of transformation matrix values
      *  \param type datatype of vrt
-     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destHasNoDataValueList TRUE if destination has no data value, indexed from 0
      *  \param destNoDataValueList no data value, indexed from 0
      */
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList );
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *  \param geoTransform optional array of transformation matrix values
      *  \param nBands number of bands
      *  \param type datatype of vrt
-     *  \param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  \param destHasNoDataValueList TRUE if destination has no data value, indexed from 0
      *  \param destNoDataValueList no data value, indexed from 0
      */
     QgsRasterDataProvider *initOutput( int nCols, int nRows,
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
-    //! False: Write one file, true: create a directory and add the files numbered
+    //! False: Write one file, TRUE: create a directory and add the files numbered
     bool mTiledMode = false;
     double mMaxTileWidth = 500;
     double mMaxTileHeight = 500;

@@ -110,7 +110,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setCustomDashVector( const QVector<qreal> &vector ) { mCustomDashVector = vector; }
 
     /**
-     * Returns true if the line should only be drawn inside polygons, and any portion
+     * Returns TRUE if the line should only be drawn inside polygons, and any portion
      * of the line which falls outside the polygon should be clipped away.
      *
      * This setting only has an effect when the line symbol is being
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     /**
      * Shall the marker be rotated.
      *
-     * \returns True if the marker should be rotated.
+     * \returns TRUE if the marker should be rotated.
      */
     bool rotateMarker() const { return mRotateMarker; }
 

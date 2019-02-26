@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLocator : public QObject
     void cancelWithoutBlocking();
 
     /**
-     * Returns true if a query is currently being executed by the locator.
+     * Returns TRUE if a query is currently being executed by the locator.
      */
     bool isRunning() const;
 

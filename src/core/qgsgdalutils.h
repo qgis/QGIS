@@ -36,7 +36,7 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Reads whether a driver supports GDALCreate() for raster purposes.
      * \param driver GDAL driver
-     * \returns true if a driver supports GDALCreate() for raster purposes.
+     * \returns TRUE if a driver supports GDALCreate() for raster purposes.
      */
     static bool supportsRasterCreate( GDALDriverH driver );
 };

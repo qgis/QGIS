@@ -75,7 +75,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     }
 
     /**
-     * Returns true if the ramp should be converted to a QgsGradientColorRamp.
+     * Returns TRUE if the ramp should be converted to a QgsGradientColorRamp.
      */
     bool saveAsGradientRamp() const;
 

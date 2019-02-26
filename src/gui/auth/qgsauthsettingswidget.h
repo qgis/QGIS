@@ -139,7 +139,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
 
     /**
      * \brief convertButtonEnabled, mainly useful for unit tests
-     * \return true if the convert button is enabled
+     * \return TRUE if the convert button is enabled
      */
     bool btnConvertToEncryptedIsEnabled( ) const;
 
@@ -168,19 +168,19 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
 
     /**
      * \brief storePassword
-     * \return true if "Store" checkbox for the password is checked
+     * \return TRUE if "Store" checkbox for the password is checked
      */
     bool storePasswordIsChecked( ) const;
 
     /**
      * \brief storeUsername
-     * \return true if "Store" checkbox for the username is checked
+     * \return TRUE if "Store" checkbox for the username is checked
      */
     bool storeUsernameIsChecked( ) const;
 
     /**
      * \brief configurationTabIsSelected
-     * \return true if the configuration tab is the currently selected tab
+     * \return TRUE if the configuration tab is the currently selected tab
      */
     bool configurationTabIsSelected( );
 
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief convertToEncrypted is called when the convert to encrypted button is
      *        clicked and it creates a Basic authentication configuration from
      *        username and password specified in the Basic tab
-     * \return return true on success
+     * \return return TRUE on success
      */
     bool convertToEncrypted( );
 

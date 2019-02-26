@@ -497,7 +497,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Attempts to parse mime data as a color
      * \param data mime data to parse
-     * \param hasAlpha will be set to true if mime data was interpreted as a color containing
+     * \param hasAlpha will be set to TRUE if mime data was interpreted as a color containing
      * an explicit alpha value
      * \returns valid color if mimedata could be interpreted as a color, otherwise an
      * invalid color
@@ -516,7 +516,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Creates mime data from a list of named colors
      * \param colorList list of named colors
-     * \param allFormats set to true to include additional mime formats, include text/plain and application/x-color
+     * \param allFormats set to TRUE to include additional mime formats, include text/plain and application/x-color
      * \returns mime data containing encoded colors
      * \since QGIS 2.5
      */
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param file destination file
      * \param paletteName name of palette, which is stored in gpl file
      * \param colors colors to export
-     * \returns true if export was successful
+     * \returns TRUE if export was successful
      * \see importColorsFromGpl
      */
     static bool saveColorsToGpl( QFile &file, const QString &paletteName, const QgsNamedColorList &colors );
@@ -535,7 +535,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Imports colors from a gpl GIMP palette file
      * \param file source gpl file
-     * \param ok will be true if file was successfully read
+     * \param ok will be TRUE if file was successfully read
      * \param name will be set to palette name from gpl file, if present
      * \returns list of imported colors
      * \see saveColorsToGpl
@@ -546,7 +546,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color
-     * \param strictEval set to true for stricter color parsing rules
+     * \param strictEval set to TRUE for stricter color parsing rules
      * \returns parsed color
      * \since QGIS 2.3
      */
@@ -556,8 +556,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse a string as a color using a variety of common formats, including hex
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color
-     * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
-     * \param strictEval set to true for stricter color parsing rules
+     * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to TRUE
+     * \param strictEval set to TRUE for stricter color parsing rules
      * \returns parsed color
      * \since QGIS 2.3
      */

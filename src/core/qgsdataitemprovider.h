@@ -65,13 +65,13 @@ class CORE_EXPORT QgsDataItemProvider
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { Q_UNUSED( path ); Q_UNUSED( parentItem ); return QVector<QgsDataItem *>(); }
 
     /**
-     * Returns true if the provider will handle the directory at the specified \a path.
+     * Returns TRUE if the provider will handle the directory at the specified \a path.
      *
      * If the provider indicates that it will handle the directory, the default creation and
      * population of directory items for the path will be avoided and it is left to the
      * provider to correctly populate relevant entries for the path.
      *
-     * The default implementation returns false for all paths.
+     * The default implementation returns FALSE for all paths.
      *
      * \since QGIS 3.0
      */

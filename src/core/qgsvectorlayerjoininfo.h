@@ -156,7 +156,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QStringList joinFieldNamesBlackList() const { return mBlackList; }
 
     /**
-     * Returns true if blacklisted fields is not empty or if a subset of names
+     * Returns TRUE if blacklisted fields is not empty or if a subset of names
      * has been set.
      *
      * \since QGIS 3.0

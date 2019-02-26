@@ -47,7 +47,7 @@ class PYTHON_EXPORT QgsPythonUtils
 
     virtual ~QgsPythonUtils() = default;
 
-    //! returns true if Python support is ready to use (must be inited first)
+    //! returns TRUE if Python support is ready to use (must be inited first)
     virtual bool isEnabled() = 0;
 
     //! initialize Python and import bindings
@@ -68,13 +68,13 @@ class PYTHON_EXPORT QgsPythonUtils
 
     /**
      * run a statement, show an error message on error
-     * \returns true if no error occurred
+     * \returns TRUE if no error occurred
      */
     virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
     /**
      * run a statement, error reporting is not done
-     * \returns true if no error occurred
+     * \returns TRUE if no error occurred
      */
     virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
@@ -82,7 +82,7 @@ class PYTHON_EXPORT QgsPythonUtils
 
     /**
      * Gets information about error to the supplied arguments
-     * \returns false if there was no Python error
+     * \returns FALSE if there was no Python error
      */
     virtual bool getError( QString &errorClassName, QString &errorText ) = 0;
 
