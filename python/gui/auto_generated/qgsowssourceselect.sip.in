@@ -144,7 +144,7 @@ Add a few example servers to the list.
 %Docstring
 Populate the layer list.
 
-\retval ``False`` if the layers could not be retrieved or parsed
+:return: ``False`` if the layers could not be retrieved or parsed
 %End
 
 

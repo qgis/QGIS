@@ -204,7 +204,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool calculateExtent() const;
@@ -222,7 +222,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
-     * \retval prepared uri
+     * \returns prepared uri
      */
     QString prepareUri( QString uri ) const;
 
