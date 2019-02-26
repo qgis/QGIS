@@ -185,7 +185,7 @@ class CORE_EXPORT QgsLegendSettings
     double mapUnitsPerPixel() const;
 
     /**
-     * Sets the the mMmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
+     * Sets the mMmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
      * \see mapUnitsPerPixel()
      * \since QGIS 3.8
      */
