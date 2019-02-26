@@ -57,6 +57,7 @@ from processing.algs.otb import OtbUtils
 
 
 class OtbAlgorithm(QgsProcessingAlgorithm):
+
     def __init__(self, group, name, descriptionfile, display_name='', groupId=''):
         super().__init__()
         self._name = name

@@ -35,6 +35,7 @@ from processing.gui.wrappers import (WidgetWrapper,
 
 
 class OtbChoiceWidgetWrapper(WidgetWrapper):
+
     def createWidget(self):
         widget = QComboBox()
         widget.addItems(self.param.options)
