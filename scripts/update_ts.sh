@@ -31,20 +31,12 @@ cleanup() {
 	if [ -f i18n/backup.tar ]; then
 		echo Restoring files...
 		tar -xf i18n/backup.tar
+		rm i18n/backup.tar
 	fi
 
 	echo Removing temporary files
-	for i in \
-		python/python-i18n.{ts,cpp} \
-		python/plugins/*/python-i18n.{ts,cpp} \
-		python/plugins/processing/processing-i18n.{ts,cpp} \
-		src/plugins/grass/grasslabels-i18n.cpp \
-		src/app/appinfo-i18n.cpp \
-		i18n/backup.tar \
-		qgis_ts.pro
-	do
-		[ -f "$i" ] && rm "$i"
-	done
+	rm -rf python/tmp python/plugins/processing/tmp python/plugins/*/tmp qgis_ts.pro
+	find . \( -name "*-i18n.ui" -o -name numerus-i18n.cpp \) -delete
 
 	trap "" EXIT
 }
@@ -138,8 +130,9 @@ fi
 echo Updating python translations
 (
 	cd python
+	mkdir -p tmp
 	pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
-	perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+	perl ../scripts/ts2ui.pl python-i18n.ts tmp
 	rm python-i18n.ts
 )
 for i in python/plugins/*/CMakeLists.txt; do
@@ -155,19 +148,21 @@ TRANSLATIONS = python-i18n.ts
 EOF
 
 	pylupdate5 -tr-function trAlgorithm python-i18n.pro
-	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+	mkdir -p tmp
+	perl ../../../scripts/ts2ui.pl python-i18n.ts tmp
 	rm python-i18n.ts python-i18n.pro
 	cd ../../..
 done
 
 echo Updating GRASS module translations
-perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
+perl scripts/qgm2ui.pl >src/plugins/grass/grasslabels-i18n.ui
 
 echo Updating processing translations
-perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
+mkdir -p python/plugins/processing/tmp
+perl scripts/processing2ui.pl python/plugins/processing/tmp
 
 echo Updating appinfo files
-python scripts/appinfo2cpp.py >src/app/appinfo-i18n.cpp
+python scripts/appinfo2ui.py >src/app/appinfo-i18n.ui
 
 echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
@@ -175,9 +170,9 @@ $QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
 echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
 
 echo Updating translations
-$LUPDATE -no-obsolete -locations absolute -verbose qgis_ts.pro
+$LUPDATE -no-ui-lines -no-obsolete -locations absolute -verbose qgis_ts.pro
 
-perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
+perl -i.bak -ne 'print unless /^\s+<location.*(qgs(expression|contexthelp)_texts\.cpp|-i18n\.(ui|cpp)).*$/;' i18n/qgis_*.ts
 
 if [ $action = push ]; then
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-uploading

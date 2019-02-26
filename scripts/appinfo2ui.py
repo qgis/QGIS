@@ -21,6 +21,7 @@
 
 import sys
 from xml.etree import ElementTree as et
+from html import escape
 
 strings = {}
 
@@ -45,15 +46,18 @@ for r in f.readlines():
 
 f.close()
 
-print("""
-/*
- This is NOT a proper c++ source code. This file is only designed to be caught
+print("""\
+<?xml version="1.0" encoding="UTF-8"?>
+ <!--
+ This is NOT a proper UI code. This file is only designed to be caught
  by qmake and included in lupdate. It contains all translateable strings collected
- by pylupdate5.
-*/
+ by scripts/appinfo2ui.py.
+ -->
+<ui version="4.0">
+  <class>appinfo</class>;
 """)
 
 for k in strings:
-    k = k.replace('"', '\\"')
-    k = k.replace('\n', '\\n')
-    print("translate( \"appinfo\", \"{}\" )".format(k))
+    print("<property><string>{}</string></property>".format(escape(k)))
+
+print("</ui>")
