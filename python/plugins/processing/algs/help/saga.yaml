@@ -23,7 +23,7 @@ saga:rastercalculator: >
 
   - cos(x): returns the cosine of x. x must be in radians
 
-  - cos(x): returns the tangente of x. x must be in radians
+  - tan(x): returns the tangent of x. x must be in radians
 
   - asin(x): returns the arcsine of x, in radians
 
