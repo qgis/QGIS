@@ -48,6 +48,7 @@ def otb_exe_file(f):
 
 
 class OtbAlgorithmProvider(QgsProcessingProvider):
+
     def __init__(self):
         super().__init__()
         self.algs = []
