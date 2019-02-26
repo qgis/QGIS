@@ -369,7 +369,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
           yFactor = -1;
         }
 
-        side = sqrt( pow( diagonals.at( symbolIndex ), 2 ) / 2.0 );
+        side = std::sqrt( std::pow( diagonals.at( symbolIndex ), 2 ) / 2.0 );
         QPointF labelShift( ( side * mLabelDistanceFactor * xFactor ), ( -side * mLabelDistanceFactor * yFactor ) );
         labelShifts.append( symbolPositions.at( symbolIndex ) - centerPoint + labelShift );
       }
