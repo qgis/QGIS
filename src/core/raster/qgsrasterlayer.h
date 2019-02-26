@@ -97,7 +97,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  * \endcode
  *
- *  In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
+ *  In order to automate redrawing of a raster layer, you should link it to a map canvas like this :
  *
  * \code{.cpp}
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
