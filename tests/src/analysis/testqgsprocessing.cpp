@@ -1486,59 +1486,66 @@ void TestQgsProcessing::parseDestinationString()
   QString layerName;
   QString format;
   QVariantMap options;
+  QString extension;
   bool useWriter = false;
 
   // simple shapefile output
   QString destination = QStringLiteral( "d:/test.shp" );
-  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( destination, QStringLiteral( "d:/test.shp" ) );
   QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
   QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
   QCOMPARE( format, QStringLiteral( "ESRI Shapefile" ) );
+  QCOMPARE( extension, QStringLiteral( "shp" ) );
   QVERIFY( useWriter );
 
   // postgis output
   destination = QStringLiteral( "postgis:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
-  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
   QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
   QVERIFY( !useWriter );
+  QVERIFY( extension.isEmpty() );
   // postgres key should also work
   destination = QStringLiteral( "postgres:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
-  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
   QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
   QVERIFY( !useWriter );
+  QVERIFY( extension.isEmpty() );
 
   // full uri shp output
   options.clear();
   destination = QStringLiteral( "ogr:d:/test.shp" );
-  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
   QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
   QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
   QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
   QVERIFY( !useWriter );
+  QCOMPARE( extension, QStringLiteral( "shp" ) );
 
 // full uri geopackage output
   options.clear();
   destination = QStringLiteral( "ogr:d:/test.gpkg" );
-  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
   QCOMPARE( uri, QStringLiteral( "d:/test.gpkg" ) );
   QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
   QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
   QVERIFY( !useWriter );
+  QCOMPARE( extension, QStringLiteral( "gpkg" ) );
 
 // full uri geopackage table output with layer name
   options.clear();
   destination = QStringLiteral( "ogr:dbname='d:/package.gpkg' table=\"mylayer\" (geom) sql=" );
-  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
   QCOMPARE( uri, QStringLiteral( "d:/package.gpkg" ) );
   QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
   QCOMPARE( options.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "mylayer" ) );
   QVERIFY( !useWriter );
+  QCOMPARE( extension, QStringLiteral( "gpkg" ) );
 }
 
 void TestQgsProcessing::createFeatureSink()
@@ -4859,6 +4866,16 @@ void TestQgsProcessing::parameterVectorOut()
 
   def.reset( new QgsProcessingParameterVectorDestination( "with_geom", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), true ) );
   DummyProvider3 provider;
+  QString error;
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.shp", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.SHP", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "ogr:d:/test.shp", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.SHP" ), def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.mif", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.MIF", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "ogr:d:/test.MIF", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIF" ), def.get(), context, error ) );
+
   provider.loadAlgorithms();
   def->mOriginalProvider = &provider;
   QCOMPARE( def->supportedOutputVectorLayerExtensions().count(), 2 );
@@ -4966,6 +4983,15 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  DummyProvider3 provider;
+  QString error;
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.tif", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( "d:/test.TIF", def.get(), context, error ) );
+  QVERIFY( !provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.tif" ), def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.mig", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( "d:/test.MIG", def.get(), context, error ) );
+  QVERIFY( provider.isSupportedOutputValue( QgsProcessingOutputLayerDefinition( "d:/test.MIG" ), def.get(), context, error ) );
 
   // test layers to load on completion
   def.reset( new QgsProcessingParameterRasterDestination( "x", QStringLiteral( "desc" ), QStringLiteral( "default.tif" ), true ) );
