@@ -139,35 +139,35 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString providerType() const;
 
     /**
-     * Returns native mesh (nullptr before rendering)
+     * Returns native mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     QgsMesh *nativeMesh() SIP_SKIP;
 
     /**
-     * Returns native mesh (nullptr before rendering)
+     * Returns native mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (nullptr before rendering)
+     * Returns triangular mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
     /**
-     * Returns triangular mesh (nullptr before rendering)
+     * Returns triangular mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */
     const QgsTriangularMesh *triangularMesh() const SIP_SKIP;
 
     /**
-     * Returns native mesh (nullptr before rendering)
+     * Returns native mesh (NULLPTR before rendering)
      *
      * \note Not available in Python bindings
      */

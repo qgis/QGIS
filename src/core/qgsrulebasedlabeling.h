@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     class CORE_EXPORT Rule
     {
       public:
-        //! takes ownership of settings, settings may be nullptr
+        //! takes ownership of settings, settings may be NULLPTR
         Rule( QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         };
 
         /**
-         * Returns the labeling settings. May return nullptr.
+         * Returns the labeling settings. May return NULLPTR.
          */
         QgsPalLayerSettings *settings() const { return mSettings.get(); }
 
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! Sets new settings (or nullptr). Deletes old settings if any.
+        //! Sets new settings (or NULLPTR). Deletes old settings if any.
         void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \param key The key of the rule to find
          *
-         * \returns The rule or a nullptr if not found
+         * \returns The rule or NULLPTR if not found
          *
          * \since QGIS 3.0
          */

@@ -1448,7 +1448,7 @@ Try to convert the geometry to the requested type
 :param destType: the geometry type to be converted to
 :param destMultipart: determines if the output geometry will be multipart or not
 
-:return: the converted geometry or None if the conversion fails.
+:return: the converted geometry or ``None`` if the conversion fails.
 
 .. versionadded:: 2.2
 %End

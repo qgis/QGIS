@@ -151,7 +151,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual bool prepareFooter();
 
     /**
-     * Returns the next body layout to export, or a nullptr if
+     * Returns the next body layout to export, or NULLPTR if
      * no body layout is required this iteration.
      *
      * \a ok will be set to FALSE if no bodies remain for this section.

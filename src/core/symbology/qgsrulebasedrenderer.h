@@ -253,7 +253,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
-        //! Sets a new symbol (or nullptr). Deletes old symbol.
+        //! Sets a new symbol (or NULLPTR). Deletes old symbol.
         void setSymbol( QgsSymbol *sym SIP_TRANSFER );
         void setLabel( const QString &label ) { mLabel = label; }
 

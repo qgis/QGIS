@@ -461,6 +461,7 @@ sub replace_macros {
     my $line = $_[0];
     $line =~ s/\bTRUE\b/``True``/g;
     $line =~ s/\bFALSE\b/``False``/g;
+    $line =~ s/\bNULLPTR\b/``None``/g;
     return $line;
 }
 

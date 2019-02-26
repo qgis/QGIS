@@ -205,7 +205,7 @@ then this will have no effect and will return ``False``.
 
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
 %Docstring
-Returns the metadata for the specified item ``type``. Returns None if
+Returns the metadata for the specified item ``type``. Returns ``None`` if
 a corresponding type was not found in the registry.
 
 .. seealso:: :py:func:`multiFrameMetadata`
@@ -213,7 +213,7 @@ a corresponding type was not found in the registry.
 
     QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
 %Docstring
-Returns the metadata for the specified multiframe ``type``. Returns None if
+Returns the metadata for the specified multiframe ``type``. Returns ``None`` if
 a corresponding type was not found in the registry.
 
 .. seealso:: :py:func:`itemMetadata`

@@ -459,7 +459,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
      * Ownership is transferred to the caller.
      *
-     * If the gridified geometry could not be calculated a nullptr will be returned.
+     * If the gridified geometry could not be calculated NULLPTR will be returned.
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
      * Example:

@@ -94,7 +94,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 
     /**
      * Gets a pointer to the underlying layer.
-     * May return a ``nullptr`` if the layer has been deleted.
+     * May return a ``NULLPTR`` if the layer has been deleted.
      * This must only be called from the main thread.
      */
     QgsVectorLayer *layer() const;

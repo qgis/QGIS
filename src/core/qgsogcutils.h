@@ -395,7 +395,7 @@ class QgsOgcUtilsExpressionFromFilter
 
     /**
      * Returns an expression node from a WFS filter embedded in a document
-     * element. nullptr is returned when an error happened.
+     * element. NULLPTR is returned when an error happened.
      * \param element The WFS filter
      */
     QgsExpressionNode *nodeFromOgcFilter( const QDomElement &element );

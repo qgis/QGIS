@@ -89,7 +89,7 @@ Find out about type of the node. It is usually shorter to use convenience functi
 %End
     QgsLayerTreeNode *parent();
 %Docstring
-Gets pointer to the parent. If parent is None, the node is a root node
+Gets pointer to the parent. If parent is ``None``, the node is a root node
 %End
     QList<QgsLayerTreeNode *> children();
 %Docstring

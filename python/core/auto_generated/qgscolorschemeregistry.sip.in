@@ -134,7 +134,7 @@ be made in order to update the cached list of available style colors.
 %Docstring
 Returns the color scheme used when fetching random colors to use for symbol styles.
 
-This may be None, in which case totally random colors are used for styles.
+This may be ``None``, in which case totally random colors are used for styles.
 
 .. seealso:: :py:func:`setRandomStyleColorScheme`
 

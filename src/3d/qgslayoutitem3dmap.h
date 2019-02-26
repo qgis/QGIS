@@ -87,7 +87,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
      * Ownership is transferred to the item.
      */
     void setMapSettings( Qgs3DMapSettings *settings SIP_TRANSFER );
-    //! Returns map scene. May be nullptr if not yet configured.
+    //! Returns map scene. May be NULLPTR if not yet configured.
     Qgs3DMapSettings *mapSettings() const { return mSettings.get(); }
 
     /**

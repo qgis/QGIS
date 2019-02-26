@@ -66,7 +66,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 
     QgsSymbol *symbol();
 %Docstring
-Returns the symbol that is currently active in the widget. Can be None.
+Returns the symbol that is currently active in the widget. Can be ``None``.
 
 :return: The active symbol.
 %End
@@ -232,7 +232,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 
     QgsSymbol *symbol();
 %Docstring
-Returns the symbol that is currently active in the widget. Can be None.
+Returns the symbol that is currently active in the widget. Can be ``None``.
 
 :return: The active symbol.
 %End

@@ -241,7 +241,7 @@ Returns the object (QAction or QShortcut) matching the specified key sequence,
 
 :param sequence: key sequence to find
 
-:return: object with matching sequence, or None if not found
+:return: object with matching sequence, or ``None`` if not found
 
 .. seealso:: :py:func:`actionForSequence`
 
@@ -250,7 +250,7 @@ Returns the object (QAction or QShortcut) matching the specified key sequence,
 
     QAction *actionForSequence( const QKeySequence &sequence ) const;
 %Docstring
-Returns the action which is associated for a shortcut sequence, or None if no action is associated.
+Returns the action which is associated for a shortcut sequence, or ``None`` if no action is associated.
 
 :param sequence: shortcut key sequence
 
@@ -261,7 +261,7 @@ Returns the action which is associated for a shortcut sequence, or None if no ac
 
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 %Docstring
-Returns the shortcut which is associated for a key sequence, or None if no shortcut is associated.
+Returns the shortcut which is associated for a key sequence, or ``None`` if no shortcut is associated.
 
 :param sequence: shortcut key sequence
 
@@ -272,7 +272,7 @@ Returns the shortcut which is associated for a key sequence, or None if no short
 
     QAction *actionByName( const QString &name ) const;
 %Docstring
-Returns an action by its name, or None if nothing found.
+Returns an action by its name, or ``None`` if nothing found.
 
 :param name: action name. Must match QAction's text.
 
@@ -281,7 +281,7 @@ Returns an action by its name, or None if nothing found.
 
     QShortcut *shortcutByName( const QString &name ) const;
 %Docstring
-Returns a shortcut by its name, or None if nothing found
+Returns a shortcut by its name, or ``None`` if nothing found
 
 :param name: shortcut name. Must match QShortcut's QObject.objectName() property.
 

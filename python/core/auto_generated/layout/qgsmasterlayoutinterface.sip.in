@@ -82,7 +82,7 @@ Sets the layout's name.
     virtual QgsProject *layoutProject() const = 0;
 %Docstring
 The project associated with the layout. Used to get access to layers, map themes,
-relations and various other bits. It is never None.
+relations and various other bits. It is never ``None``.
 %End
 
     virtual QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const = 0;

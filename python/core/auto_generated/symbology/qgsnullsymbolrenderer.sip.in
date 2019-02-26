@@ -64,7 +64,7 @@ Creates a QgsNullSymbolRenderer from an existing renderer.
 
 :param renderer: renderer to convert from
 
-:return: a new renderer if the conversion was possible, otherwise None.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 %End
 
 };

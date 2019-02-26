@@ -270,7 +270,7 @@ class CORE_EXPORT QgsExpressionContextScope
     /**
      * Retrieves a function from the scope.
      * \param name function name
-     * \returns function, or nullptr if matching function could not be found
+     * \returns function, or NULLPTR if matching function could not be found
      * \see hasFunction()
      * \see functionNames()
      * \see variable()
@@ -466,7 +466,7 @@ class CORE_EXPORT QgsExpressionContext
      * As scopes later in the stack override earlier contexts, this will be the last matching
      * scope which contains a matching variable.
      * \param name variable name
-     * \returns matching scope containing variable, or nullptr if none found
+     * \returns matching scope containing variable, or NULLPTR if none found
      */
     QgsExpressionContextScope *activeScopeForVariable( const QString &name );
 
@@ -475,7 +475,7 @@ class CORE_EXPORT QgsExpressionContext
      * As scopes later in the stack override earlier contexts, this will be the last matching
      * scope which contains a matching variable.
      * \param name variable name
-     * \returns matching scope containing variable, or nullptr if none found
+     * \returns matching scope containing variable, or NULLPTR if none found
      * \note not available in Python bindings
      */
     const QgsExpressionContextScope *activeScopeForVariable( const QString &name ) const SIP_SKIP;
@@ -483,7 +483,7 @@ class CORE_EXPORT QgsExpressionContext
     /**
      * Returns the scope at the specified index within the context.
      * \param index index of scope
-     * \returns matching scope, or nullptr if none found
+     * \returns matching scope, or NULLPTR if none found
      * \see lastScope()
      */
     QgsExpressionContextScope *scope( int index );
@@ -571,7 +571,7 @@ class CORE_EXPORT QgsExpressionContext
      * from the last scope contained within the context which has a matching
      * function set.
      * \param name function name
-     * \returns function if contained by the context, otherwise nullptr.
+     * \returns function if contained by the context, otherwise NULLPTR.
      * \see hasFunction
      */
     QgsExpressionFunction *function( const QString &name ) const;

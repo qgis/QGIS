@@ -350,14 +350,14 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     QgsLayoutItemRegistry &operator=( const QgsLayoutItemRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified item \a type. Returns nullptr if
+     * Returns the metadata for the specified item \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      * \see multiFrameMetadata()
      */
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
 
     /**
-     * Returns the metadata for the specified multiframe \a type. Returns nullptr if
+     * Returns the metadata for the specified multiframe \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      * \see itemMetadata()
      */

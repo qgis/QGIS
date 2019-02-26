@@ -127,7 +127,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     void setAction( QAction *action );
 
     /**
-     * Returns the action associated with the tool or nullptr if no action is associated.
+     * Returns the action associated with the tool or NULLPTR if no action is associated.
      * \see setAction()
      */
     QAction *action();

@@ -203,14 +203,14 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     /**
      * Returns the object (QAction or QShortcut) matching the specified key sequence,
      * \param sequence key sequence to find
-     * \returns object with matching sequence, or nullptr if not found
+     * \returns object with matching sequence, or NULLPTR if not found
      * \see actionForSequence()
      * \see shortcutForSequence()
      */
     QObject *objectForSequence( const QKeySequence &sequence ) const;
 
     /**
-     * Returns the action which is associated for a shortcut sequence, or nullptr if no action is associated.
+     * Returns the action which is associated for a shortcut sequence, or NULLPTR if no action is associated.
      * \param sequence shortcut key sequence
      * \see objectForSequence()
      * \see shortcutForSequence()
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     QAction *actionForSequence( const QKeySequence &sequence ) const;
 
     /**
-     * Returns the shortcut which is associated for a key sequence, or nullptr if no shortcut is associated.
+     * Returns the shortcut which is associated for a key sequence, or NULLPTR if no shortcut is associated.
      * \param sequence shortcut key sequence
      * \see objectForSequence()
      * \see actionForSequence()
@@ -226,14 +226,14 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 
     /**
-     * Returns an action by its name, or nullptr if nothing found.
+     * Returns an action by its name, or NULLPTR if nothing found.
      * \param name action name. Must match QAction's text.
      * \see shortcutByName()
      */
     QAction *actionByName( const QString &name ) const;
 
     /**
-     * Returns a shortcut by its name, or nullptr if nothing found
+     * Returns a shortcut by its name, or NULLPTR if nothing found
      * \param name shortcut name. Must match QShortcut's QObject::objectName() property.
      * \see actionByName()
      */

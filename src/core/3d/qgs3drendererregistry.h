@@ -43,7 +43,7 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
     QString type() const;
 
     /**
-     * Returns new instance of the renderer given the DOM element. Returns nullptr on error.
+     * Returns new instance of the renderer given the DOM element. Returns NULLPTR on error.
      * Pure virtual function: must be implemented in derived classes.
      */
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;

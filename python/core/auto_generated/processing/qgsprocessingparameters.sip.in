@@ -357,7 +357,7 @@ field parameters which depend on a parent layer parameter).
 
     QgsProcessingAlgorithm *algorithm() const;
 %Docstring
-Returns a pointer to the algorithm which owns this parameter. May be None
+Returns a pointer to the algorithm which owns this parameter. May be ``None``
 for non-owned parameters.
 
 .. seealso:: :py:func:`provider`
@@ -365,7 +365,7 @@ for non-owned parameters.
 
     QgsProcessingProvider *provider() const;
 %Docstring
-Returns a pointer to the provider for the algorithm which owns this parameter. May be None
+Returns a pointer to the provider for the algorithm which owns this parameter. May be ``None``
 for non-owned parameters or algorithms.
 
 .. seealso:: :py:func:`algorithm`

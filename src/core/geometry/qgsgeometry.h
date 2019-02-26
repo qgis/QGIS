@@ -1433,7 +1433,7 @@ class CORE_EXPORT QgsGeometry
      * Try to convert the geometry to the requested type
      * \param destType the geometry type to be converted to
      * \param destMultipart determines if the output geometry will be multipart or not
-     * \returns the converted geometry or nullptr if the conversion fails.
+     * \returns the converted geometry or NULLPTR if the conversion fails.
      * \since QGIS 2.2
      */
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const SIP_FACTORY;

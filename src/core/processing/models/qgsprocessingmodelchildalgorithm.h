@@ -129,7 +129,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     void setConfiguration( const QVariantMap &configuration );
 
     /**
-     * Returns the underlying child algorithm, or a nullptr
+     * Returns the underlying child algorithm, or NULLPTR
      * if a matching algorithm is not available.
      * \see reattach()
      * \see algorithmId()

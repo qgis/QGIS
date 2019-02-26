@@ -467,7 +467,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Georeferences a \a file (image of PDF) exported from the layout.
      *
-     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as nullptr, the
+     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as NULLPTR, the
      * default layout QgsLayout::referenceMap() will be used.
      *
      * The \a exportRegion argument can be set to a valid rectangle to indicate that only part of the layout was
@@ -528,7 +528,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Computes a GDAL style geotransform for georeferencing a layout.
      *
-     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as nullptr, the
+     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as NULLPTR, the
      * default layout QgsLayout::referenceMap() will be used.
      *
      * The \a exportRegion argument can be set to a valid rectangle to indicate that only part of the layout was

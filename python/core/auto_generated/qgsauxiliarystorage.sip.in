@@ -328,7 +328,7 @@ given in parameter.
 :param field: The primary key to join
 :param layer: The vector layer for which the auxiliary layer has to be created
 
-:return: A new auxiliary layer or a None if an error happened.
+:return: A new auxiliary layer or ``None`` if an error happened.
 %End
 
     static bool deleteTable( const QgsDataSourceUri &uri );

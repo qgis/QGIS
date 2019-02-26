@@ -202,7 +202,7 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
 
     /**
      * Find dataset group in provider with the name and copy all values to
-     * memory dataset group. Returns nullptr if no such dataset group
+     * memory dataset group. Returns NULLPTR if no such dataset group
      * exists
      */
     std::shared_ptr<QgsMeshMemoryDatasetGroup> create( const QString &datasetGroupName ) const;

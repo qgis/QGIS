@@ -70,7 +70,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     /**
      * Gets the configuration widget for an \a algorithm. This widget will be shown
      * next to parameter widgets. Most algorithms do not have a configuration widget
-     * and in this case, nullptr will be returned.
+     * and in this case, NULLPTR will be returned.
      *
      * \since QGIS 3.2
      */
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      * dictates the type of dialog the wrapper should be created for. The caller takes ownership
      * of the returned wrapper.
      *
-     * If no factory is registered which handles the given \a parameter, a nullptr will be returned.
+     * If no factory is registered which handles the given \a parameter, NULLPTR will be returned.
      *
      * \see createModelerParameterWidget()
      * \see addParameterWidgetFactory()
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      * with inside the given \a model.
      *
      * The caller takes ownership of the returned widget. If no factory is registered which
-     * handles the given \a parameter, a nullptr will be returned.
+     * handles the given \a parameter, NULLPTR will be returned.
      *
      * \see createParameterWidgetWrapper()
      * \see addParameterWidgetFactory()

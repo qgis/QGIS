@@ -169,7 +169,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns pointer to project storage implementation that handles read/write of the project file.
-     * If the project file is stored in the local file system, returns nullptr.
+     * If the project file is stored in the local file system, returns NULLPTR.
      * The project storage object is inferred from fileName() of the project.
      * \since QGIS 3.2
      */
@@ -603,7 +603,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the matching transaction group from a provider key and connection string.
      *
-     * Returns nullptr if a matching transaction group is not available.
+     * Returns NULLPTR if a matching transaction group is not available.
      *
      * \since QGIS 3.2
      */
@@ -696,7 +696,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
-     * \returns matching layer, or nullptr if no matching layer found
+     * \returns matching layer, or NULLPTR if no matching layer found
      * \see mapLayersByName()
      * \see mapLayers()
      */
@@ -707,7 +707,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Retrieve a pointer to a registered layer by \p layerId converted
      * to type T. This is a convenience template.
-     * A nullptr will be returned if the layer is not found or
+     * A NULLPTR will be returned if the layer is not found or
      * if it cannot be cast to type T.
      *
      * \code{cpp}
@@ -816,7 +816,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      If you specify FALSE here you have take care of deleting
      *                      the layer yourself. Not available in Python.
      *
-     * \returns nullptr if unable to add layer, otherwise pointer to newly added layer
+     * \returns NULLPTR if unable to add layer, otherwise pointer to newly added layer
      *
      * \see addMapLayers
      *
@@ -855,7 +855,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layers will be removed from the registry. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
-     * \param layers A list of layers to remove. nullptr values are ignored.
+     * \param layers A list of layers to remove. NULLPTR values are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayer()
@@ -885,7 +885,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The specified layer will be removed from the registry. If the registry has ownership
      * of the layer then it will also be deleted.
      *
-     * \param layer The layer to remove. nullptr values are ignored.
+     * \param layer The layer to remove. NULLPTR values are ignored.
      *
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayers()

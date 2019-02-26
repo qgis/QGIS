@@ -100,7 +100,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
      * \param widget widget which may be contained within a panel widget
-     * \returns parent panel widget if found, otherwise nullptr
+     * \returns parent panel widget if found, otherwise NULLPTR
      * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 
     /**
      * Returns the internal widget that is wrapped in this panel.
-     * \returns The internal widget. Can be nullptr.
+     * \returns The internal widget. Can be NULLPTR.
      */
     QWidget *widget() { return mWidget; }
 

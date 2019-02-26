@@ -40,7 +40,7 @@ map scale and other properties from the canvas.
 
     QgsRasterRendererWidget *currentRenderWidget();
 %Docstring
-Returns the active render widget. Can be None.
+Returns the active render widget. Can be ``None``.
 %End
 
   public slots:

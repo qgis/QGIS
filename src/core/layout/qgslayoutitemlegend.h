@@ -469,7 +469,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
   private:
     QgsLayoutItemLegend() = delete;
 
-    //! use new custom layer tree and update model. if new root is nullptr, will use project's tree
+    //! use new custom layer tree and update model. if new root is NULLPTR, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
     void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );

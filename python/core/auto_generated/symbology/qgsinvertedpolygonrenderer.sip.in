@@ -33,7 +33,7 @@ during renderFeature() and rendered on stopRender().
 %Docstring
 Constructor
 
-:param embeddedRenderer: optional embeddedRenderer. If None, a default one will be assigned.
+:param embeddedRenderer: optional embeddedRenderer. If ``None``, a default one will be assigned.
                          Ownership will be transferred.
 %End
 

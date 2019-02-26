@@ -35,10 +35,10 @@ class CORE_EXPORT QgsProjectStorageRegistry
   public:
     ~QgsProjectStorageRegistry();
 
-    //! Returns storage implementation if the storage type matches one. Returns nullptr otherwise (it is a normal file)
+    //! Returns storage implementation if the storage type matches one. Returns NULLPTR otherwise (it is a normal file)
     QgsProjectStorage *projectStorageFromType( const QString &type );
 
-    //! Returns storage implementation if the URI matches one. Returns nullptr otherwise (it is a normal file)
+    //! Returns storage implementation if the URI matches one. Returns NULLPTR otherwise (it is a normal file)
     QgsProjectStorage *projectStorageFromUri( const QString &uri );
 
     //! Returns a list of registered project storage implementations

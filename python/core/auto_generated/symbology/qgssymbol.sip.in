@@ -417,7 +417,7 @@ Returns whether the symbol utilizes any data defined properties.
 
 .. note::
 
-   the layer will be None after stopRender
+   the layer will be ``None`` after stopRender
 
 .. deprecated:: Will be removed in QGIS 4.0
 %End

@@ -105,7 +105,7 @@ the previously used toolbutton to pop out.
 
     QAction *action();
 %Docstring
-Returns the action associated with the tool or None if no action is associated.
+Returns the action associated with the tool or ``None`` if no action is associated.
 
 .. seealso:: :py:func:`setAction`
 %End

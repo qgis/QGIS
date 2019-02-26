@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAnnotationRegistry
     }
 
     /**
-     * Creates a new annotation of the specified type. Returns nullptr if no
+     * Creates a new annotation of the specified type. Returns NULLPTR if no
      * matching annotations types were found.
      */
     QgsAnnotation *create( const QString &typeName ) const

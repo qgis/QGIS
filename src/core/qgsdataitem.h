@@ -135,7 +135,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
      * \param child child to remove
-     * \returns pointer to the removed item or nullptr if no such item was found
+     * \returns pointer to the removed item or NULLPTR if no such item was found
      */
     virtual QgsDataItem *removeChildItem( QgsDataItem *child ) SIP_TRANSFERBACK;
 

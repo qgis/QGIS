@@ -104,20 +104,20 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
 
     /**
-     * Creates a configuration widget for an \a item of this type. Can return nullptr if no configuration GUI is required.
+     * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
     virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ); return nullptr; }
 
     /**
-     * Creates a rubber band for use when creating layout items of this type. Can return nullptr if no rubber band
+     * Creates a rubber band for use when creating layout items of this type. Can return NULLPTR if no rubber band
      * should be created. The default behavior is to create a rectangular rubber band.
      * \see createNodeRubberBand()
      */
     virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_FACTORY;
 
     /**
-     * Creates a rubber band for use when creating layout node based items of this type. Can return nullptr if no rubber band
-     * should be created. The default behavior is to return nullptr.
+     * Creates a rubber band for use when creating layout node based items of this type. Can return NULLPTR if no rubber band
+     * should be created. The default behavior is to return NULLPTR.
      * \see createRubberBand()
      */
     virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) SIP_FACTORY;
@@ -350,7 +350,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemGuiRegistry &operator=( const QgsLayoutItemGuiRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified item \a metadataId. Returns nullptr if
+     * Returns the metadata for the specified item \a metadataId. Returns NULLPTR if
      * a corresponding \a metadataId was not found in the registry.
      */
     QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
@@ -404,7 +404,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 
     /**
      * Creates a rubber band for the specified item \a metadataId and destination \a view.
-     * Can return nullptr if no node based rubber band should be created or is applicable for the item.
+     * Can return NULLPTR if no node based rubber band should be created or is applicable for the item.
      * \see createItemRubberBand()
      * \note not available from Python bindings
      */

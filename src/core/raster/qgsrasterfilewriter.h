@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * Create a raster file with one band without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \returns Instance of data provider in editing mode (on success) or NULLPTR on error.
      * \note Does not work with tiled mode enabled.
      * \since QGIS 3.0
      */
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * Create a raster file with given number of bands without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \returns Instance of data provider in editing mode (on success) or NULLPTR on error.
      * \note Does not work with tiled mode enabled.
      * \since QGIS 3.0
      */

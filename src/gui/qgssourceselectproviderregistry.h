@@ -63,7 +63,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
      */
     bool removeProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 
-    //! Returns a provider by \a name or nullptr if not found
+    //! Returns a provider by \a name or NULLPTR if not found
     QgsSourceSelectProvider *providerByName( const QString &name );
 
     //! Returns a (possibly empty) list of providers by data \a providerkey

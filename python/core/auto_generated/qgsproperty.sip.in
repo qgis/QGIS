@@ -469,7 +469,7 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 Sets an optional transformer to use for manipulating the calculated values for the property.
 
 :param transformer: transformer to install. Ownership is transferred to the property, and any
-                    existing transformer will be deleted. Set to None to remove an existing transformer.
+                    existing transformer will be deleted. Set to ``None`` to remove an existing transformer.
 
 .. seealso:: :py:func:`transformer`
 %End

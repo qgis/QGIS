@@ -299,7 +299,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     void drawGroup( const ClusteredGroup &group, QgsRenderContext &context );
 
     /**
-     * Returns first symbol from the embedded renderer for a feature or nullptr if none
+     * Returns first symbol from the embedded renderer for a feature or NULLPTR if none
      * \param feature source feature
      * \param context target render context
     */

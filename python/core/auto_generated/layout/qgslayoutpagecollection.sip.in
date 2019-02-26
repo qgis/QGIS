@@ -54,7 +54,7 @@ Returns the number of pages in the collection.
 Returns a specific page (by ``pageNumber``) from the collection.
 Internal page numbering starts at 0 - so a ``pageNumber`` of 0
 corresponds to the first page in the collection.
-A None is returned if an invalid page number is specified.
+A ``None`` is returned if an invalid page number is specified.
 
 .. seealso:: :py:func:`pages`
 %End
@@ -293,7 +293,7 @@ first page.
 %Docstring
 Returns the page at a specified ``point`` (in layout coordinates).
 
-If no page exists at ``point``, None will be returned.
+If no page exists at ``point``, ``None`` will be returned.
 
 .. note::
 

@@ -58,13 +58,13 @@ Sets the toolbox proxy model used to drive the view.
 
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index );
 %Docstring
-Returns the algorithm at the specified tree view ``index``, or a None
+Returns the algorithm at the specified tree view ``index``, or ``None``
 if the index does not correspond to an algorithm.
 %End
 
     const QgsProcessingAlgorithm *selectedAlgorithm();
 %Docstring
-Returns the currently selected algorithm in the tree view, or a None
+Returns the currently selected algorithm in the tree view, or ``None``
 if no algorithm is currently selected.
 %End
 

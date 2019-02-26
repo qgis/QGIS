@@ -41,7 +41,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
     /**
      * create a highlight widget implementation for the proper widget type.
      * For instance a QgsOptionsDialogHighlightButton for button.
-     * \return a QgsOptionsDialogHighlightWidget or a nullptr if there is no implementation
+     * \return a QgsOptionsDialogHighlightWidget or NULLPTR if there is no implementation
      * for the given widget.
      */
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) SIP_FACTORY;

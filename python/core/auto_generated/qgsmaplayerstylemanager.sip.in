@@ -43,7 +43,7 @@ style followed by restoration of the original style (for example, when rendering
 
     QgsMapLayerStyleManager( QgsMapLayer *layer /TransferThis/ );
 %Docstring
-Construct a style manager associated with a map layer (must not be None).
+Construct a style manager associated with a map layer (must not be ``None``).
 The style manager will be parented to ``layer``.
 %End
 

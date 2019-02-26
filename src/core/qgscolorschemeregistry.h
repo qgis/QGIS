@@ -146,7 +146,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
     /**
      * Returns the color scheme used when fetching random colors to use for symbol styles.
      *
-     * This may be nullptr, in which case totally random colors are used for styles.
+     * This may be NULLPTR, in which case totally random colors are used for styles.
      *
      * \see setRandomStyleColorScheme()
      * \see fetchRandomStyleColor()

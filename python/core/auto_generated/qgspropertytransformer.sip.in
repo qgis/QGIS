@@ -299,7 +299,7 @@ Attempts to parse an expression into a corresponding property transformer.
                   to the property transformer. This will be set to an
                   empty string if an expression is the transformer input.
 
-:return: - corresponding property transformer, or None if expression could not
+:return: - corresponding property transformer, or ``None`` if expression could not
          - baseExpression: will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
          be parsed to a transformer.
 %End
@@ -366,7 +366,7 @@ Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTran
                   to the property transformer. This will be set to an
                   empty string if an expression is the transformer input.
 
-:return: - corresponding :py:class:`QgsSizeScaleTransformer`, or None if expression could not
+:return: - corresponding :py:class:`QgsSizeScaleTransformer`, or ``None`` if expression could not
          - baseExpression: will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
          be parsed to a size scale transformer.
 %End
@@ -513,7 +513,7 @@ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
                   to the property transformer. This will be set to an
                   empty string if an expression is the transformer input.
 
-:return: - corresponding QgsSizeScaleTransformer, or None if expression could not
+:return: - corresponding QgsSizeScaleTransformer, or ``None`` if expression could not
          - baseExpression: will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
          be parsed to a size scale transformer.
 %End

@@ -88,7 +88,7 @@ Resets the ``flags`` for the canvas' map settings.
 
     const QgsLabelingResults *labelingResults() const;
 %Docstring
-Gets access to the labeling results (may be None)
+Gets access to the labeling results (may be ``None``)
 
 .. versionadded:: 2.4
 %End

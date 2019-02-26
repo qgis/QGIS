@@ -55,7 +55,7 @@ Associates overview canvas with the bridge, so the overview will be updated when
 
     QgsMapOverviewCanvas *overviewCanvas() const;
 %Docstring
-Returns associated overview canvas (may be None)
+Returns associated overview canvas (may be ``None``)
 
 .. versionadded:: 3.0
 %End

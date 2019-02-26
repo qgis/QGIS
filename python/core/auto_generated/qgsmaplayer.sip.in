@@ -180,7 +180,7 @@ Returns the display name of the layer.
 
     virtual QgsDataProvider *dataProvider();
 %Docstring
-Returns the layer's data provider, it may be None.
+Returns the layer's data provider, it may be ``None``.
 %End
 
 
@@ -1021,14 +1021,14 @@ Returns the format for a URL based layer legend.
 %Docstring
 Assign a legend controller to the map layer. The object will be responsible for providing legend items.
 
-:param legend: Takes ownership of the object. Can be None.
+:param legend: Takes ownership of the object. Can be ``None``.
 
 .. versionadded:: 2.6
 %End
 
     QgsMapLayerLegend *legend() const;
 %Docstring
-Can be None.
+Can be ``None``.
 
 .. versionadded:: 2.6
 %End
@@ -1049,7 +1049,7 @@ Sets 3D renderer for the layer. Takes ownership of the renderer.
 
     QgsAbstract3DRenderer *renderer3D() const;
 %Docstring
-Returns 3D renderer associated with the layer. May be None.
+Returns 3D renderer associated with the layer. May be ``None``.
 
 .. versionadded:: 3.0
 %End

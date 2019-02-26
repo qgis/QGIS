@@ -204,7 +204,7 @@ blacklisted fields and subset.
 %Docstring
 Sets the subset of fields to be used from joined layer.
 
-Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset`` of None indicates that all fields should be used.
+Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset`` of ``None`` indicates that all fields should be used.
 
 .. seealso:: :py:func:`joinFieldNamesSubset`
 
@@ -215,7 +215,7 @@ Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset`` of None i
 %Docstring
 Returns the subset of fields to be used from joined layer.
 
-All fields will be used if None is returned.
+All fields will be used if ``None`` is returned.
 
 .. seealso:: :py:func:`setJoinFieldNamesSubset`
 

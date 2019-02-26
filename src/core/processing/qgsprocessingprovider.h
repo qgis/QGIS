@@ -222,7 +222,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     QList< const QgsProcessingAlgorithm * > algorithms() const;
 
     /**
-     * Returns the matching algorithm by \a name, or a nullptr if no matching
+     * Returns the matching algorithm by \a name, or NULLPTR if no matching
      * algorithm is contained by this provider.
      * \see algorithms()
      */

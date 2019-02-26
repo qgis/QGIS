@@ -74,7 +74,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
     class _3D_EXPORT Rule
     {
       public:
-        //! takes ownership of symbol, symbol may be nullptr
+        //! takes ownership of symbol, symbol may be NULLPTR
         Rule( QgsAbstract3DSymbol *symbol SIP_TRANSFER, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -92,7 +92,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         };
 
         /**
-         * Returns the labeling settings. May return nullptr.
+         * Returns the labeling settings. May return NULLPTR.
          */
         QgsAbstract3DSymbol *symbol() const { return mSymbol.get(); }
 
@@ -126,7 +126,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
         QString ruleKey() const { return mRuleKey; }
 
-        //! Sets new symbol (or nullptr). Deletes old symbol if any.
+        //! Sets new symbol (or NULLPTR). Deletes old symbol if any.
         void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
 
         /**
@@ -212,7 +212,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
         /**
          * Find a rule thanks to its key.
          * \param key The key of the rule to find
-         * \returns The rule or a nullptr if not found
+         * \returns The rule or NULLPTR if not found
          */
         QgsRuleBased3DRenderer::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
 

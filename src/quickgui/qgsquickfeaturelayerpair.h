@@ -42,7 +42,7 @@ class QUICK_EXPORT QgsQuickFeatureLayerPair
     Q_GADGET
 
     /**
-     * Vector layer to which the feature belongs. May be nullptr if pair is not valid
+     * Vector layer to which the feature belongs. May be NULLPTR if pair is not valid
      *
      * This is a readonly property.
      */
@@ -57,7 +57,7 @@ class QUICK_EXPORT QgsQuickFeatureLayerPair
 
     /**
      * Whether
-     *  - layer is not nullptr
+     *  - layer is not NULLPTR
      *  - feature is valid
      *  - feature has geometry and the geometry is the same as geometry expected by layer
      *

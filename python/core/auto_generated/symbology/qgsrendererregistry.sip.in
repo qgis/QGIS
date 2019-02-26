@@ -54,16 +54,16 @@ Returns flags indicating the types of layer the renderer is compatible with.
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
-Returns new instance of the renderer given the DOM element. Returns None on error.
+Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
 Pure virtual function: must be implemented in derived classes.  *
 %End
 
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) /Factory/;
 %Docstring
-Returns new instance of settings widget for the renderer. Returns None on error.
+Returns new instance of settings widget for the renderer. Returns ``None`` on error.
 
-The ``oldRenderer`` argument may refer to previously used renderer (or it is None).
-If not None, it may be used to initialize GUI of the widget from the previous settings.
+The ``oldRenderer`` argument may refer to previously used renderer (or it is ``None``).
+If not ``None``, it may be used to initialize GUI of the widget from the previous settings.
 The old renderer does not have to be of the same type as returned by createRenderer().
 When using ``oldRenderer`` make sure to make a copy of it - it will be deleted afterwards.
 %End
@@ -148,7 +148,7 @@ Removes a renderer from registry.
 
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 %Docstring
-Returns the metadata for a specified renderer. Returns None if a matching
+Returns the metadata for a specified renderer. Returns ``None`` if a matching
 renderer was not found in the registry.
 %End
 

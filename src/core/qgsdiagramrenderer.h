@@ -741,7 +741,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
-     * Returns configuration of appearance of legend. Will return nullptr if no configuration has been set.
+     * Returns configuration of appearance of legend. Will return NULLPTR if no configuration has been set.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;

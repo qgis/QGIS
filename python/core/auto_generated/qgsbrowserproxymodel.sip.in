@@ -49,7 +49,7 @@ Returns the underlying browser model.
 
     QgsDataItem *dataItem( const QModelIndex &index ) const;
 %Docstring
-Returns the data item at the specified proxy ``index``, or a None if no item
+Returns the data item at the specified proxy ``index``, or ``None`` if no item
 exists at the index.
 %End
 

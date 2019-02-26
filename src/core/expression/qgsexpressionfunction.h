@@ -399,7 +399,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * This is only required if this cannot be determined by calling each parameter node's usesGeometry() or
      * referencedColumns() method. For example, an aggregate expression requires the geometry and all columns
      * if the parent variable is used.
-     * If a nullptr is passed as a node to these functions, they should stay on the safe side and return if they
+     * If NULLPTR is passed as a node to these functions, they should stay on the safe side and return if they
      * could potentially require a geometry or columns.
      */
     QgsStaticExpressionFunction( const QString &fnname,

@@ -137,11 +137,11 @@ Method to be overridden for progress reporting.
 
     void setProgressHandler( ProgressHandler *progressHandler );
 %Docstring
-Assign a progress handler instance. Does not take ownership. None can be passed.
+Assign a progress handler instance. Does not take ownership. ``None`` can be passed.
 %End
     ProgressHandler *progressHandler() const;
 %Docstring
-Gets associated progress handler. May be None (default)
+Gets associated progress handler. May be ``None`` (default)
 %End
 
     void setRasters( const List &list );

@@ -47,7 +47,7 @@ The action is used to determine whether tracing is currently enabled by the user
 
     QAction *actionEnableSnapping() const;
 %Docstring
-Access to action that user may use to toggle snapping on/off. May be None if no action was associated.
+Access to action that user may use to toggle snapping on/off. May be ``None`` if no action was associated.
 
 .. versionadded:: 3.0
 %End
