@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     /**
      * Draws label on the right side of the item
      * \param settings Legend layout configuration
-     * \param ctx Context for rendering - may be nullptrnullptr if only doing layout without actual rendering
+     * \param ctx Context for rendering - may be nullptr if only doing layout without actual rendering
      * \param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * \returns Size of the label (may span multiple lines)
      */
