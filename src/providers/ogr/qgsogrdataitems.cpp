@@ -672,12 +672,20 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ) };
 
+  // these extensions are trivial to read, so there's no need to rely on
+  // the extension only scan here -- avoiding it always gives us the correct data type
+  // and sublayer visiblity
+  static QStringList sSkipFastTrackExtensions { QStringLiteral( "xlsx" ),
+      QStringLiteral( "ods" ),
+      QStringLiteral( "csv" ),
+      QStringLiteral( "nc" ) };
+
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
   // netCDF files can be both raster or vector, so fallback to opening
   if ( ( scanExtSetting ||
          ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
-       suffix != QLatin1String( "nc" ) )
+       !sSkipFastTrackExtensions.contains( suffix ) )
   {
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
