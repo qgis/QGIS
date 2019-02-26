@@ -55,7 +55,7 @@ so the rasterlayer class appends the band number in brackets behind each band na
 
 Sample usage of the QgsRasterLayer class:
 
-In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
+In order to automate redrawing of a raster layer, you should link it to a map canvas like this :
 
 Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
 

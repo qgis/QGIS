@@ -651,7 +651,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Receives signal about selection change, and pass it on with layer info
     void selectionChangedSlot();
 
-    //! Save the convtents of the map canvas to disk as an image
+    //! Save the contents of the map canvas to disk as an image
     void saveAsImage( const QString &fileName, QPixmap *QPixmap = nullptr, const QString & = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers

@@ -739,7 +739,7 @@ Receives signal about selection change, and pass it on with layer info
 
     void saveAsImage( const QString &fileName, QPixmap *QPixmap = 0, const QString & = "PNG" );
 %Docstring
-Save the convtents of the map canvas to disk as an image
+Save the contents of the map canvas to disk as an image
 %End
 
     void layerStateChange();
