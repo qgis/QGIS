@@ -110,7 +110,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     Qt::CaseSensitivity caseSensitivity() const;
 
     /**
-     * Returns true if the model is filtered by map layer type.
+     * Returns TRUE if the model is filtered by map layer type.
      *
      * \see layerType()
      * \see setFilterByLayerType()
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     /**
      * Returns the layer type to filter the model by. This is only used if
-     * filterByLayerType() is true.
+     * filterByLayerType() is TRUE.
      *
      * \see setLayerType()
      * \see filterByLayerType()
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     /**
      * Sets the layer \a type to filter the model by. This is only used if
-     * filterByLayerType() is true.
+     * filterByLayerType() is TRUE.
      *
      * \see layerType()
      * \see setFilterByLayerType()
@@ -165,10 +165,10 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     //! Filter accepts string
     bool filterAcceptsString( const QString &value ) const;
 
-    //! Returns true if at least one ancestor is accepted by filter
+    //! Returns TRUE if at least one ancestor is accepted by filter
     bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
-    //! Returns true if at least one descendant s accepted by filter
+    //! Returns TRUE if at least one descendant s accepted by filter
     bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
     //! Filter accepts item name

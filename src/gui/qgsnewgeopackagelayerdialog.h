@@ -79,7 +79,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
     /**
      * Sets whether a newly created layer should automatically be added to the current project.
-     * Defaults to true.
+     * Defaults to TRUE.
      *
      * \since QGIS 3.6
      */

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note Adding a symbol with the name of existing one replaces it.
      *  \param name is the name of the symbol being added or updated
      *  \param symbol is the Vector symbol
-     *  \param update set to true when the style DB has to be updated, by default it is false
+     *  \param update set to TRUE when the style DB has to be updated, by default it is FALSE
      *  \returns success status of the operation
      */
     bool addSymbol( const QString &name, QgsSymbol *symbol SIP_TRANSFER, bool update = false );
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note Adding a color ramp with the name of existing one replaces it.
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the color ramp. Ownership is transferred.
-     *  \param update set to true when the style DB has to be updated, by default it is false
+     *  \param update set to TRUE when the style DB has to be updated, by default it is FALSE
      *  \returns success status of the operation
      */
     bool addColorRamp( const QString &name, QgsColorRamp *colorRamp SIP_TRANSFER, bool update = false );
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Renames a symbol from \a oldName to \a newName.
      *
-     * Returns true if symbol was successfully renamed.
+     * Returns TRUE if symbol was successfully renamed.
      */
     bool renameSymbol( const QString &oldName, const QString &newName );
 
@@ -563,7 +563,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * Convenience function that would run queries which don't generate return values
      *
      *  \param query query to run
-     *  \returns success true on success
+     *  \returns success TRUE on success
      */
     bool runEmptyQuery( const QString &query );
 

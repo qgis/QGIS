@@ -86,7 +86,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
     /**
      * \brief Start the download
-     * \param redownload if set to true, it will restart any achieved or pending download.
+     * \param redownload if set to TRUE, it will restart any achieved or pending download.
      */
     void download( bool redownload = false );
 

@@ -183,7 +183,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     /**
      * Make sure, there is an edit selection. If there is none, choose the first item.
-     * If \a inSelection is set to true, the edit selection is done in selected entries if
+     * If \a inSelection is set to TRUE, the edit selection is done in selected entries if
      * there is a selected entry visible.
      *
      */

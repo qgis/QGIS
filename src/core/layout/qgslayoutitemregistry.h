@@ -74,8 +74,8 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 
     /**
      * Resolve paths in the item's \a properties (if there are any paths).
-     * When \a saving is true, paths are converted from absolute to relative,
-     * when \a saving is false, paths are converted from relative to absolute.
+     * When \a saving is TRUE, paths are converted from absolute to relative,
+     * when \a saving is FALSE, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in item
      * instances the paths are always absolute.
      */
@@ -195,8 +195,8 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
 
     /**
      * Resolve paths in the item's \a properties (if there are any paths).
-     * When \a saving is true, paths are converted from absolute to relative,
-     * when \a saving is false, paths are converted from relative to absolute.
+     * When \a saving is TRUE, paths are converted from absolute to relative,
+     * when \a saving is FALSE, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in item
      * instances the paths are always absolute.
      */
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
     /**
      * Populates the registry with standard item types. If called on a non-empty registry
-     * then this will have no effect and will return false.
+     * then this will have no effect and will return FALSE.
      */
     bool populate();
 

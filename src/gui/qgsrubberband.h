@@ -202,7 +202,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
     /**
      * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
-     * If adding more points consider using update=false for better performance
+     * If adding more points consider using update=FALSE for better performance
      *  \param p             The vertex/point to add
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
@@ -212,7 +212,7 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
     /**
      * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
-     * \param doUpdate set to true to update the map canvas immediately
+     * \param doUpdate set to TRUE to update the map canvas immediately
      * \param geometryIndex index of the feature part (in case of multipart geometries)
      * \since QGIS 2.16
      */

@@ -99,7 +99,7 @@ class CORE_EXPORT QgsProcessingParameterType
 
     /**
      * Determines if this parameter is available in the modeler.
-     * The default implementation returns true.
+     * The default implementation returns TRUE.
      */
     virtual ParameterFlags flags() const;
 

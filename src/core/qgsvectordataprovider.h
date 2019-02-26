@@ -166,7 +166,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     long featureCount() const override = 0;
 
     /**
-     * Returns true if the layer contains at least one feature.
+     * Returns TRUE if the layer contains at least one feature.
      *
      * \since QGIS 3.4
      */
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param index the index of the attribute to calculate aggregate over
      * \param parameters parameters controlling aggregate calculation
      * \param context expression context for filter
-     * \param ok will be set to true if calculation was successfully performed by the data provider
+     * \param ok will be set to TRUE if calculation was successfully performed by the data provider
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
      * \param id list containing feature ids to delete
-     * \returns true in case of success and false in case of failure
+     * \returns TRUE in case of success and FALSE in case of failure
      * \see truncate()
      */
     virtual bool deleteFeatures( const QgsFeatureIds &id );
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
      * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
-     * \returns true in case of success and false in case of failure.
+     * \returns TRUE in case of success and FALSE in case of failure.
      * \see deleteFeatures()
      * \since QGIS 3.0
      */
@@ -277,14 +277,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Cancels the current reloading of data.
-     * \returns true if the reloading has been correctly interrupted, false otherwise
+     * \returns TRUE if the reloading has been correctly interrupted, FALSE otherwise
      * \see reloadData()
      * \since QGIS 3.2
      */
     virtual bool cancelReload();
 
     /**
-     * Adds new \a attributes to the provider. Returns true in case of success and false in case of failure.
+     * Adds new \a attributes to the provider. Returns TRUE in case of success and FALSE in case of failure.
      * If attributes are added using this method then QgsVectorLayer::updateFields() must be called
      * manually to ensure that the layer's field are correctly reported.
      */
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * If attributes are deleted using this method then QgsVectorLayer::updateFields() must be called
      * manually to ensure that the layer's field are correctly reported.
      * \param attributes a set containing indices of attributes
-     * \returns true in case of success and false in case of failure
+     * \returns TRUE in case of success and FALSE in case of failure
      */
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * If attributes are renamed using this method then QgsVectorLayer::updateFields() must be called
      * manually to ensure that the layer's field are correctly reported.
      * \param renamedAttributes map of attribute index to new attribute name
-     * \returns true in case of success and false in case of failure
+     * \returns TRUE in case of success and FALSE in case of failure
      * \since QGIS 2.16
      */
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Changes attribute values of existing features. This should
      * succeed if the provider reports the ChangeAttributeValues capability.
      * \param attr_map a map containing changed attributes
-     * \returns true in case of success and false in case of failure
+     * \returns TRUE in case of success and FALSE in case of failure
      */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
      *                       The second map parameter being the new geometries themselves
-     * \returns true in case of success and false in case of failure
+     * \returns TRUE in case of success and FALSE in case of failure
      */
     virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
                                  const QgsGeometryMap &geometry_map );
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
-     * Returns true if a constraint check should be skipped for a specified field (e.g., if
+     * Returns TRUE if a constraint check should be skipped for a specified field (e.g., if
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
      * \see fieldConstraints()
@@ -375,13 +375,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
      *                       The second map parameter being the new geometries themselves
-     * \returns               True in case of success and false in case of failure
+     * \returns               TRUE in case of success and FALSE in case of failure
      */
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map );
 
     /**
      * Creates a spatial index on the datasource (if supported by the provider type).
-     * \returns true in case of success
+     * \returns TRUE in case of success
      */
     virtual bool createSpatialIndex();
 
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
 
     /**
-     * Returns true if the provider is strict about the type of inserted features
+     * Returns TRUE if the provider is strict about the type of inserted features
      * (e.g. no multipolygon in a polygon layer)
      */
     virtual bool doesStrictFeatureTypeCheck() const { return true; }
@@ -494,14 +494,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QStringList errors() const;
 
     /**
-     * It returns false by default.
-     * Must be implemented by providers that support saving and loading styles to db returning true
+     * It returns FALSE by default.
+     * Must be implemented by providers that support saving and loading styles to db returning TRUE
      */
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
 
     /**
-     * It returns false by default.
-     * Must be implemented by providers that support delete styles from db returning true
+     * It returns FALSE by default.
+     * Must be implemented by providers that support delete styles from db returning TRUE
      */
     virtual bool isDeleteStyleFromDatabaseSupported() const;
 
@@ -591,9 +591,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); }
 
     /**
-     * Returns true if the data source has metadata, false otherwise.
+     * Returns TRUE if the data source has metadata, FALSE otherwise.
      *
-     * \returns true if data source has metadata, false otherwise.
+     * \returns TRUE if data source has metadata, FALSE otherwise.
      *
      * \since QGIS 3.0
      */

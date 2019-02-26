@@ -99,12 +99,12 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
 
     /**
-     * Process a new chunk of data. atEnd must be set to true when this is
+     * Process a new chunk of data. atEnd must be set to TRUE when this is
         the last chunk of data. */
     bool processData( const QByteArray &data, bool atEnd, QString &errorMsg );
 
     /**
-     * Process a new chunk of data. atEnd must be set to true when this is
+     * Process a new chunk of data. atEnd must be set to TRUE when this is
         the last chunk of data. */
     bool processData( const QByteArray &data, bool atEnd );
 

@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
     /**
      * Registers a new effect type.
      * \param metadata effect metadata. Ownership is transferred to the registry.
-     * \returns true if add was successful.
+     * \returns TRUE if add was successful.
      */
     bool addEffectType( QgsPaintEffectAbstractMetadata *metadata SIP_TRANSFER );
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
     /**
      * Tests whether a paint effect matches the default effects stack.
      * \param effect paint effect to test
-     * \returns true if effect is default stack
+     * \returns TRUE if effect is default stack
      * \see defaultStack()
      * \since QGIS 2.12
      */

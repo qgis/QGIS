@@ -86,8 +86,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     /**
      * Adds the layer corresponding to the specified model \a index.
      *
-     * Returns true if the index was successfully intrepreted as a map layer and loaded, or
-     * false if the index is not a map layer or could not be loaded.
+     * Returns TRUE if the index was successfully intrepreted as a map layer and loaded, or
+     * FALSE if the index is not a map layer or could not be loaded.
      *
      * \deprecated will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
      */

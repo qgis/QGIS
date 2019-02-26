@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Returns data associated with the item. Must be implemented in derived class.
     virtual QVariant data( int role ) const = 0;
 
-    //! Sets some data associated with the item. Default implementation does nothing and returns false.
+    //! Sets some data associated with the item. Default implementation does nothing and returns FALSE.
     virtual bool setData( const QVariant &value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }

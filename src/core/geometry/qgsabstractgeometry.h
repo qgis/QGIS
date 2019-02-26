@@ -182,7 +182,7 @@ class CORE_EXPORT QgsAbstractGeometry
     QString wktTypeStr() const;
 
     /**
-     * Returns true if the geometry is 3D and contains a z-value.
+     * Returns TRUE if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
     bool is3D() const
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAbstractGeometry
     }
 
     /**
-     * Returns true if the geometry contains m values.
+     * Returns TRUE if the geometry contains m values.
      * \see is3D
      */
     bool isMeasure() const
@@ -286,10 +286,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * Transforms the geometry using a coordinate transform
      * \param ct coordinate transform
      * \param d transformation direction
-     * \param transformZ set to true to also transform z coordinates. This requires that
+     * \param transformZ set to TRUE to also transform z coordinates. This requires that
      * the z coordinates in the geometry represent height relative to the vertical datum
      * of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
-     * units (generally meters). If false, then z coordinates will not be changed by the
+     * units (generally meters). If FALSE, then z coordinates will not be changed by the
      * transform.
      */
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param id initial value should be the starting vertex id. The next vertex id will be stored
      * in this variable if found.
      * \param vertex container for found node
-     * \returns false if at end
+     * \returns FALSE if at end
      */
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const = 0;
 
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param leftOf indicates whether the point lies on the left side of the geometry (-1 if point is to the left
      * of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
      * be determined, e.g. point exactly on a line)
-     * false if point is to right of segment)
+     * FALSE if point is to right of segment)
      * \param epsilon epsilon for segment snapping
      * \returns squared distance to closest segment or negative value on error
      */
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Inserts a vertex into the geometry
      * \param position vertex id for position of inserted vertex
      * \param vertex vertex to insert
-     * \returns true if insert was successful
+     * \returns TRUE if insert was successful
      * \see moveVertex
      * \see deleteVertex
      */
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Moves a vertex within the geometry
      * \param position vertex id for vertex to move
      * \param newPos new position of vertex
-     * \returns true if move was successful
+     * \returns TRUE if move was successful
      * \see insertVertex
      * \see deleteVertex
      */
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Deletes a vertex within the geometry
      * \param position vertex id for vertex to delete
-     * \returns true if delete was successful
+     * \returns TRUE if delete was successful
      * \see insertVertex
      * \see moveVertex
      */
@@ -430,12 +430,12 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsPoint centroid() const;
 
     /**
-     * Returns true if the geometry is empty
+     * Returns TRUE if the geometry is empty
      */
     virtual bool isEmpty() const;
 
     /**
-     * Returns true if the geometry contains curved segments
+     * Returns TRUE if the geometry contains curved segments
      */
     virtual bool hasCurvedSegments() const;
 
@@ -485,13 +485,13 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
      * with the same x and y coordinate but different z values will still be considered
-     * duplicate and one will be removed. If \a useZValues is true, then the z values are
+     * duplicate and one will be removed. If \a useZValues is TRUE, then the z values are
      * also tested and nodes with the same x and y but different z will be maintained.
      *
      * Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
      * a multipoint geometry with overlapping points will not be changed by this method.
      *
-     * The function will return true if nodes were removed, or false if no duplicate nodes
+     * The function will return TRUE if nodes were removed, or FALSE if no duplicate nodes
      * were found.
      *
      * \since QGIS 3.0
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Adds a z-dimension to the geometry, initialized to a preset value.
      * \param zValue initial z-value for all nodes
-     * \returns true on success
+     * \returns TRUE on success
      * \see dropZValue()
      * \see addMValue()
      * \since QGIS 2.12
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Adds a measure to the geometry, initialized to a preset value.
      * \param mValue initial m-value for all nodes
-     * \returns true on success
+     * \returns TRUE on success
      * \see dropMValue()
      * \see addZValue()
      * \since QGIS 2.12
@@ -546,7 +546,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Drops any z-dimensions which exist in the geometry.
-     * \returns true if Z values were present and have been removed
+     * \returns TRUE if Z values were present and have been removed
      * \see addZValue()
      * \see dropMValue()
      * \since QGIS 2.14
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Drops any measure values which exist in the geometry.
-     * \returns true if m-values were present and have been removed
+     * \returns TRUE if m-values were present and have been removed
      * \see addMValue()
      * \see dropZValue()
      * \since QGIS 2.14
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Converts the geometry to a specified type.
-     * \returns true if conversion was successful
+     * \returns TRUE if conversion was successful
      * \since QGIS 2.14
      */
     virtual bool convertTo( QgsWkbTypes::Type type );
@@ -580,7 +580,7 @@ class CORE_EXPORT QgsAbstractGeometry
 #ifndef SIP_RUN
 
     /**
-     * Filters the vertices from the geometry in place, removing any which do not return true for the \a filter function
+     * Filters the vertices from the geometry in place, removing any which do not return TRUE for the \a filter function
      * check. Has no meaning when called on a single point geometry.
      *
      * Depending on the \a filter used, this may result in an invalid geometry.
@@ -884,7 +884,7 @@ class CORE_EXPORT QgsAbstractGeometry
   protected:
 
     /**
-     * Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+     * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
      */
@@ -956,7 +956,7 @@ struct CORE_EXPORT QgsVertexId
   {}
 
   /**
-   * Returns true if the vertex id is valid
+   * Returns TRUE if the vertex id is valid
    */
   bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
 
@@ -1030,7 +1030,7 @@ class CORE_EXPORT QgsVertexIterator
       return g && g->vertices_end() != i;
     }
 
-    //! Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+    //! Returns next vertex of the geometry (undefined behavior if hasNext() returns FALSE before calling next())
     QgsPoint next();
 
 #ifdef SIP_RUN
@@ -1079,7 +1079,7 @@ class CORE_EXPORT QgsGeometryPartIterator
       return g && g->parts_end() != i;
     }
 
-    //! Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+    //! Returns next part of the geometry (undefined behavior if hasNext() returns FALSE before calling next())
     QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
@@ -1129,7 +1129,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
       return g && g->const_parts_end() != i;
     }
 
-    //! Returns next part of the geometry (undefined behavior if hasNext() returns false before calling next())
+    //! Returns next part of the geometry (undefined behavior if hasNext() returns FALSE before calling next())
     const QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN

@@ -114,25 +114,25 @@ class GUI_EXPORT QgsDetailedItemData
     QPixmap icon() const;
 
     /**
-     * Returns true if the item is checkable.
+     * Returns TRUE if the item is checkable.
      * \see setCheckable()
      */
     bool isCheckable() const;
 
     /**
-     * Returns true if the item is checked.
+     * Returns TRUE if the item is checked.
      * \see setChecked()
      */
     bool isChecked() const;
 
     /**
-     * Returns true if the item is enabled.
+     * Returns TRUE if the item is enabled.
      * \see setEnabled()
      */
     bool isEnabled() const;
 
     /**
-     * Returns true if the item will be rendered using a widget.
+     * Returns TRUE if the item will be rendered using a widget.
      * \see setRenderAsWidget()
      */
     bool isRenderedAsWidget() const;

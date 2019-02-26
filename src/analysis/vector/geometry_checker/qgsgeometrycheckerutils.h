@@ -55,7 +55,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         /**
          * Create a new layer/feature combination.
          * The layer is defined by \a pool, \a feature needs to be from this layer.
-         * If \a useMapCrs is True, geometries will be reprojected to the mapCrs defined
+         * If \a useMapCrs is TRUE, geometries will be reprojected to the mapCrs defined
          * in \a context.
          */
         LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs );

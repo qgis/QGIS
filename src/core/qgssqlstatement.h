@@ -54,14 +54,14 @@ class CORE_EXPORT QgsSQLStatement
     QgsSQLStatement &operator=( const QgsSQLStatement &other );
     ~QgsSQLStatement();
 
-    //! Returns true if an error occurred when parsing the input statement
+    //! Returns TRUE if an error occurred when parsing the input statement
     bool hasParserError() const;
     //! Returns parser error
     QString parserErrorString() const;
 
     /**
      * Performs basic validity checks. Basically checking that columns referencing
-     * a table, references a specified table. Returns true if the validation is
+     * a table, references a specified table. Returns TRUE if the validation is
      * successful
     */
     bool doBasicValidationChecks( QString &errorMsgOut SIP_OUT ) const;

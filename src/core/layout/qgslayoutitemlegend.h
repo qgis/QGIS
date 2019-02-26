@@ -89,7 +89,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets whether the legend should automatically resize to fit its contents.
-     * \param enabled set to false to disable automatic resizing. The legend frame will not
+     * \param enabled set to FALSE to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
      * \see resizeToContents()
      */
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
 
     /**
-     * When set to true, during an atlas rendering, it will filter out legend elements
+     * When set to TRUE, during an atlas rendering, it will filter out legend elements
      * where features are outside the current atlas feature.
      * \see legendFilterOutAtlas()
      */
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets whether a stroke will be drawn around raster symbol items.
-     * \param enabled set to true to draw borders
+     * \param enabled set to TRUE to draw borders
      * \see drawRasterStroke()
      * \see setRasterStrokeColor()
      * \see setRasterStrokeWidth()
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see setRasterStrokeColor()
      * \see drawRasterStroke()
      * \see rasterStrokeWidth()
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets the stroke \a color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see rasterStrokeColor()
      * \see setDrawRasterStroke()
      * \see setRasterStrokeWidth()
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see setRasterStrokeWidth()
      * \see drawRasterStroke()
      * \see rasterStrokeColor()
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see rasterStrokeWidth()
      * \see setDrawRasterStroke()
      * \see setRasterStrokeColor()
@@ -498,13 +498,13 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     bool mInAtlas = false;
 
-    //! Will be false until the associated map scale and DPI have been calculated
+    //! Will be FALSE until the associated map scale and DPI have been calculated
     bool mInitialMapScaleCalculated = false;
 
-    //! Will be true if the legend size should be totally reset at next paint
+    //! Will be TRUE if the legend size should be totally reset at next paint
     bool mForceResize = false;
 
-    //! Will be true if the legend should be resized automatically to fit contents
+    //! Will be TRUE if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
 
     friend class QgsCompositionConverter;

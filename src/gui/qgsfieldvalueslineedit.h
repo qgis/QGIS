@@ -63,7 +63,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     //! Informs the gatherer to immediately stop collecting values
     void stop();
 
-    //! Returns true if collection was canceled before completion
+    //! Returns TRUE if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }
 
   signals:
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex = -1;
 
-    //! Will be true when a background update of the completer values is occurring
+    //! Will be TRUE when a background update of the completer values is occurring
     bool mUpdateRequested = false;
 
     //! Timer to prevent multiple updates of autocomplete list

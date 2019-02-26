@@ -92,7 +92,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * \param vl        The layer
      * \param fieldIdx  The field index
-     * \returns          True if the type is supported for this field
+     * \returns          TRUE if the type is supported for this field
      *
      * \see fieldScore()
      */

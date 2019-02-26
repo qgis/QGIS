@@ -232,8 +232,8 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     /**
      * Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
-     * \param dismiss set to true (default) to immediately close the menu when a color is selected
-     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+     * \param dismiss set to TRUE (default) to immediately close the menu when a color is selected
+     * from the widget. If set to FALSE, the colorChanged signal will be emitted but the menu will
      * stay open.
      * \see dismissOnColorSelection()
      * \since QGIS 2.14

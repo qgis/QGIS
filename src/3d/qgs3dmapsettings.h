@@ -248,7 +248,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Returns terrain shading material. Diffuse color component is ignored since the diffuse component
-     * is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is true.
+     * is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is TRUE.
      * \since QGIS 3.6
      */
     QgsPhongMaterialSettings terrainShadingMaterial() const { return mTerrainShadingMaterial; }

@@ -202,7 +202,7 @@ class CORE_EXPORT QgsExpression
     ~QgsExpression();
 
     /**
-     * Compares two expressions. The operator returns true
+     * Compares two expressions. The operator returns TRUE
      * if the expression string is equal.
      *
      * \since QGIS 3.0
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsExpression
      */
     bool isValid() const;
 
-    //! Returns true if an error occurred when parsing the input expression
+    //! Returns TRUE if an error occurred when parsing the input expression
     bool hasParserError() const;
     //! Returns parser error
     QString parserErrorString() const;
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsExpression
      */
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 
-    //! Returns true if the expression uses feature geometry for some computation
+    //! Returns TRUE if the expression uses feature geometry for some computation
     bool needsGeometry() const;
 
     // evaluation
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsExpression
      */
     QVariant evaluate( const QgsExpressionContext *context );
 
-    //! Returns true if an error occurred when evaluating last input
+    //! Returns TRUE if an error occurred when evaluating last input
     bool hasEvalError() const;
     //! Returns evaluation error
     QString evalErrorString() const;
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsExpression
      * \param text string to test
      * \param context optional expression context
      * \param errorMessage will be filled with any error message from the validation
-     * \returns true if string is a valid expression
+     * \returns TRUE if string is a valid expression
      * \since QGIS 2.12
      */
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage SIP_OUT );
@@ -491,8 +491,8 @@ class CORE_EXPORT QgsExpression
     /**
      * Registers a function to the expression engine. This is required to allow expressions to utilize the function.
      * \param function function to register
-     * \param transferOwnership set to true to transfer ownership of function to expression engine
-     * \returns true on successful registration
+     * \param transferOwnership set to TRUE to transfer ownership of function to expression engine
+     * \returns TRUE on successful registration
      * \see unregisterFunction
      */
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
@@ -584,7 +584,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns formatted help text for a variable.
      * \param description translated description of variable
-     * \param showValue set to true to include current value of variable in help text
+     * \param showValue set to TRUE to include current value of variable in help text
      * \param value current value of variable to show in help text
      * \see helpText()
      * \see variableHelpText()
@@ -602,8 +602,8 @@ class CORE_EXPORT QgsExpression
      * Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
-     * \param htmlOutput set to true to allow HTML formatting, or false for plain text output
-     * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is true
+     * \param htmlOutput set to TRUE to allow HTML formatting, or FALSE for plain text output
+     * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is TRUE
      * \since QGIS 2.14
      */
     static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsError
 
     /**
      * Test if any error is set.
-     *  \returns true if contains error
+     *  \returns TRUE if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 

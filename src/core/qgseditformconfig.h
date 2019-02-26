@@ -162,7 +162,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName  The name of the widget to configure
      * \param config      The config to set for this widget
-     * \returns false if a field exists with the provided widgetName. In this case
+     * \returns FALSE if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
      * \see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
@@ -183,31 +183,31 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName The name of the widget.
      *
-     * \returns true if a configuration has been removed
+     * \returns TRUE if a configuration has been removed
      */
     bool removeWidgetConfig( const QString &widgetName );
 
     /**
-     * This returns true if the field is manually set to read only or if the field
+     * This returns TRUE if the field is manually set to read only or if the field
      * does not support editing like joins or virtual fields.
      */
     bool readOnly( int idx ) const;
 
     /**
-     * If set to false, the widget at the given index will be read-only.
+     * If set to FALSE, the widget at the given index will be read-only.
      */
     void setReadOnly( int idx, bool readOnly = true );
 
     /**
-     * If this returns true, the widget at the given index will receive its label on the previous line
-     * while if it returns false, the widget will receive its label on the left hand side.
+     * If this returns TRUE, the widget at the given index will receive its label on the previous line
+     * while if it returns FALSE, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
      **/
     bool labelOnTop( int idx ) const;
 
     /**
-     * If this is set to true, the widget at the given index will receive its label on
-     * the previous line while if it is set to false, the widget will receive its label
+     * If this is set to TRUE, the widget at the given index will receive its label on
+     * the previous line while if it is set to FALSE, the widget will receive its label
      * on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
      **/

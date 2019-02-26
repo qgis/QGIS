@@ -93,7 +93,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
      * Inserts the vertices of a feature into the triangulation
      * \param f the feature
      * \param source source for feature values to interpolate
-     * \param attr interpolation attribute index (if zCoord is false)
+     * \param attr interpolation attribute index (if zCoord is FALSE)
      * \param type point/structure line, break line
      * \returns 0 in case of success, -1 if the feature could not be inserted because of numerical problems
     */

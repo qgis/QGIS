@@ -89,7 +89,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add action to context menu for layers in the layer tree.
-     * If allLayers is true, then the action will be available for all layers of given type,
+     * If allLayers is TRUE, then the action will be available for all layers of given type,
      * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
      * after this call.
      *
@@ -137,7 +137,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void closeMapCanvas( const QString &name ) = 0;
 
     /**
-     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
      * for toolbars contained within docks is returned.
      */
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -609,7 +609,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Set the active layer (layer gets selected in the legend)
-     * returns true if the layer exists, false otherwise
+     * returns TRUE if the layer exists, FALSE otherwise
      */
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
@@ -903,9 +903,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
-     * QGIS documentation, set useQgisDocDirectory to false.
+     * QGIS documentation, set useQgisDocDirectory to FALSE.
      * \param url URL to open
-     * \param useQgisDocDirectory If true, the URL will be formed by concatenating
+     * \param useQgisDocDirectory If TRUE, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
      * \deprecated Use QDesktopServices instead
      */
@@ -916,11 +916,11 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Opens a new feature form.
-     * Returns true if dialog was accepted (if shown modal, true otherwise).
+     * Returns true if dialog was accepted (if shown modal, TRUE otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
-     * \param showModal if true, will wait for the dialog to be executed (only shown otherwise)
+     * \param showModal if TRUE, will wait for the dialog to be executed (only shown otherwise)
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
@@ -982,7 +982,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
-      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.
       * \since 3.0
       */
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;

@@ -233,7 +233,7 @@ class CORE_EXPORT QgsProcessingContext
     }
 
     /**
-     * Returns true if the given \a layer (by ID or datasource) will be loaded into the current project
+     * Returns TRUE if the given \a layer (by ID or datasource) will be loaded into the current project
      * upon completion of the algorithm or model.
      * \see layersToLoadOnCompletion()
      * \see setLayersToLoadOnCompletion()

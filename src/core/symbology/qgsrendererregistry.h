@@ -211,7 +211,7 @@ class CORE_EXPORT QgsRendererRegistry
     /**
      * Adds a renderer to the registry. Takes ownership of the metadata object.
      * \param metadata renderer metadata
-     * \returns true if renderer was added successfully, or false if renderer could not
+     * \returns TRUE if renderer was added successfully, or FALSE if renderer could not
      * be added (e.g., a renderer with a duplicate name already exists)
      */
     bool addRenderer( QgsRendererAbstractMetadata *metadata SIP_TRANSFER );
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsRendererRegistry
     /**
      * Removes a renderer from registry.
      * \param rendererName name of renderer to remove from registry
-     * \returns true if renderer was successfully removed, or false if matching
+     * \returns TRUE if renderer was successfully removed, or FALSE if matching
      * renderer could not be found
      */
     bool removeRenderer( const QString &rendererName );

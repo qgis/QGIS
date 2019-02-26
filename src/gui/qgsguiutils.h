@@ -45,7 +45,7 @@ namespace QgsGuiUtils
    * Although not the standard Mac modal look, it does lack the minimize
    * control which makes sense only for modeless dislogs.
    *
-   * The Qt3 method of creating a true Mac modal dialog is deprecated in Qt4
+   * The Qt3 method of creating a TRUE Mac modal dialog is deprecated in Qt4
    * and should not be used due to conflicts with QMessageBox style dialogs.
    *
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
@@ -130,7 +130,7 @@ namespace QgsGuiUtils
    * It is strongly recommended that you do not use this method, and instead use the standard
    * QgsFontButton widget to allow users consistent font selection behavior.
    *
-   * \param ok true on ok, false on cancel
+   * \param ok TRUE on ok, FALSE on cancel
    * \param initial initial font
    * \param title optional dialog title
    * \returns QFont the selected fon
@@ -142,7 +142,7 @@ namespace QgsGuiUtils
    * use keyName to save state into settings.
    * \param widget The widget to restore.
    * \param keyName Override for objectName() if needed.
-   * \return True if the geometry was restored.
+   * \return TRUE if the geometry was restored.
    */
   bool GUI_EXPORT restoreGeometry( QWidget *widget, const QString &keyName = QString() );
 

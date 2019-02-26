@@ -117,7 +117,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Check if the given widget or one of its parent is a QTableView.
      * \param parent the widget to check
-     * \returns true if yes
+     * \returns TRUE if yes
      */
     static bool isInTable( const QWidget *parent );
 
@@ -158,8 +158,8 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Gets the current constraint status.
-     * \returns true if the constraint is valid or if there's no constraint,
-     * false otherwise
+     * \returns TRUE if the constraint is valid or if there's no constraint,
+     * FALSE otherwise
      * \see constraintFailureReason()
      * \see isBlockingCommit()
      * \since QGIS 2.16
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool isValidConstraint() const;
 
     /**
-     * Returns true if the widget is preventing the feature from being committed. This may be true as a result
+     * Returns true if the widget is preventing the feature from being committed. This may be TRUE as a result
      * of attribute values failing enforced field constraints.
      * \see isValidConstraint()
      * \since QGIS 3.0
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Returns whether the constraint result is visible.
      *
-     * Returns true if the constraint result will be visualized on the widget (with color).
+     * Returns TRUE if the constraint result will be visualized on the widget (with color).
      * This will be disabled when the form is not editable.
      *
      * \since QGIS 3.0
@@ -302,7 +302,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Update the feature currently being edited by changing its
      * attribute \a attributeName to \a attributeValue
      *
-     * \return bool true on success
+     * \return bool TRUE on success
      * \since QGIS 3.2
      */
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );

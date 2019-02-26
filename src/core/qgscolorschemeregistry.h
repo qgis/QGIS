@@ -84,7 +84,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
     /**
      * Removes all matching color schemes from the registry
      * \param scheme color scheme to remove
-     * \returns true if scheme was found and removed
+     * \returns TRUE if scheme was found and removed
      * \see addColorScheme
      */
     bool removeColorScheme( QgsColorScheme *scheme );

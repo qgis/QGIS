@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item up the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the top of the z-order list.
      *
      * \see reorderItemDown()
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item down the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the bottom of the z-order list.
      *
      * \see reorderItemUp()
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item to the top of the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the top of the z-order list.
      *
      * \see reorderItemUp()
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item to the bottom of the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the bottom of the z-order list.
      *
      * \see reorderItemUp()

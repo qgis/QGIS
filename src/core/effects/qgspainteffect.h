@@ -151,7 +151,7 @@ class CORE_EXPORT QgsPaintEffect
      * properties().
      * \param doc destination DOM document
      * \param element destination DOM element
-     * \returns true if save was successful
+     * \returns TRUE if save was successful
      * \see readProperties
      */
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsPaintEffect
     /**
      * Restores the effect to the state described by a DOM element.
      * \param element DOM element describing an effect's state
-     * \returns true if read was successful
+     * \returns TRUE if read was successful
      * \see saveProperties
      */
     virtual bool readProperties( const QDomElement &element );
@@ -192,14 +192,14 @@ class CORE_EXPORT QgsPaintEffect
 
     /**
      * Returns whether the effect is enabled
-     * \returns true if effect is enabled
+     * \returns TRUE if effect is enabled
      * \see setEnabled
      */
     bool enabled() const { return mEnabled; }
 
     /**
      * Sets whether the effect is enabled
-     * \param enabled set to false to disable the effect
+     * \param enabled set to FALSE to disable the effect
      * \see enabled
      */
     void setEnabled( bool enabled );

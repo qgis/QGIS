@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     sipRes = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
     int __bool__() const;
     % MethodCode
     sipRes = true;
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \param layers A list of layer which should be added to the store.
      * \param takeOwnership Ownership will be transferred to the layer store.
-     *                      If you specify false here you have take care of deleting
+     *                      If you specify FALSE here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \param layer A layer to add to the store
      * \param takeOwnership Ownership will be transferred to the layer store.
-     *                      If you specify false here you have take care of deleting
+     *                      If you specify FALSE here you have take care of deleting
      *                      the layers yourself. Not available in Python.
      *
      * \returns nullptr if unable to add layer, otherwise pointer to newly added layer

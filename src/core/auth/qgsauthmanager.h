@@ -80,7 +80,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \brief init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
      * \param pluginPath the plugin path
      * \param authDatabasePath the authentication DB path
-     * \return true on success
+     * \return TRUE on success
      * \see QgsApplication::pluginPath
      * \see QgsApplication::qgisAuthDatabaseFilePath
      */
@@ -185,8 +185,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
-     * \param emitted Setting to false will cause signal to be emitted by the schedule timer.
-     * Setting to true will stop any emitting, but will not stop the schedule timer.
+     * \param emitted Setting to FALSE will cause signal to be emitted by the schedule timer.
+     * Setting to TRUE will stop any emitting, but will not stop the schedule timer.
      */
     void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted ) { mScheduledDbEraseRequestEmitted = emitted; }
 
@@ -738,7 +738,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * the erase. It relies upon a slot connected to the signal in calling application
      * (the one that initiated the erase) to initiate the erase, when it is ready.
      * Upon activation, a receiving slot should get confimation from the user, then
-     * IMMEDIATELY call setScheduledAuthDatabaseErase( false ) to stop the scheduling timer.
+     * IMMEDIATELY call setScheduledAuthDatabaseErase( FALSE ) to stop the scheduling timer.
      * If receiving slot is NOT ready to initiate the erase, e.g. project is still loading,
      * it can skip the confirmation and request another signal emit from the scheduling timer.
      */

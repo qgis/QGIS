@@ -67,7 +67,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite );
 
-    //! Returns true if current project is offline
+    //! Returns TRUE if current project is offline
     bool isOfflineProject() const;
 
     //! Synchronize to remote layers

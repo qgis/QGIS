@@ -263,7 +263,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void storeCurrentLayerStyles();
 
     /**
-     * Returns whether the map should follow a map theme. If true, the layers and layer styles
+     * Returns whether the map should follow a map theme. If TRUE, the layers and layer styles
      * will be used from given preset name (configured with setFollowVisibilityPresetName() method).
      * This means when preset's settings are changed, the new settings are automatically
      * picked up next time when rendering, without having to explicitly update them.
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Preset name that decides which layers and layer styles are used for map rendering. It is only
-     * used when followVisibilityPreset() returns true.
+     * used when followVisibilityPreset() returns TRUE.
      * \see setFollowVisibilityPresetName()
      */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void zoomContent( double factor, QPointF point ) override;
 
 
-    //! Returns true if the map contains a WMS layer.
+    //! Returns TRUE if the map contains a WMS layer.
     bool containsWmsLayer() const;
 
     bool requiresRasterization() const override;
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Returns whether the map extent is set to follow the current atlas feature.
-     * \returns true if map will follow the current atlas feature.
+     * \returns TRUE if map will follow the current atlas feature.
      * \see setAtlasDriven
      * \see atlasScalingMode
      */
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Sets whether the map extent will follow the current atlas feature.
-     * \param enabled set to true if the map extents should be set by the current atlas feature.
+     * \param enabled set to TRUE if the map extents should be set by the current atlas feature.
      * \see atlasDriven
      * \see setAtlasScalingMode
      */
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * \returns the current scaling mode
-     * \note this parameter is only used if atlasDriven() is true
+     * \note this parameter is only used if atlasDriven() is TRUE
      * \see setAtlasScalingMode
      * \see atlasDriven
      */
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * \param mode atlas scaling mode to set
-     * \note this parameter is only used if atlasDriven() is true
+     * \note this parameter is only used if atlasDriven() is TRUE
      * \see atlasScalingMode
      * \see atlasDriven
      */
@@ -458,9 +458,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Returns map settings that will be used for drawing of the map.
      *
-     * If \a includeLayerSettings is true, than settings specifically relating to map layers and map layer styles
+     * If \a includeLayerSettings is TRUE, than settings specifically relating to map layers and map layer styles
      * will be calculated. This can be expensive to calculate, so if they are not required in the map settings
-     * (e.g. for map settings which are used for scale related calculations only) then \a includeLayerSettings should be false.
+     * (e.g. for map settings which are used for scale related calculations only) then \a includeLayerSettings should be FALSE.
      */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const;
 
@@ -499,7 +499,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void removeLabelBlockingItem( QgsLayoutItem *item );
 
     /**
-     * Returns true if the specified \a item is a "label blocking item".
+     * Returns TRUE if the specified \a item is a "label blocking item".
      *
      * Items which are marked as label blocking items prevent any map labels from being placed
      * in the area of the map item covered by the item.
@@ -652,7 +652,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * differs from mMapRotation*/
     double mEvaluatedMapRotation = 0;
 
-    //! Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)
+    //! Flag if layers to be displayed should be read from qgis canvas (TRUE) or from stored list in mLayerSet (FALSE)
     bool mKeepLayerSet = false;
 
     //! Stored layer list (used if layer live-link mKeepLayerSet is disabled)
@@ -675,7 +675,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
-     *  is true. May be overridden by data-defined expression. */
+     *  is TRUE. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
 
     /**

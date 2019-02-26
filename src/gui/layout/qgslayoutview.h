@@ -132,20 +132,20 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Sets whether a preview effect should be used to alter the view's appearance.
-     * \param enabled Set to true to enable the preview effect on the view.
+     * \param enabled Set to TRUE to enable the preview effect on the view.
      * \see setPreviewMode()
      */
     void setPreviewModeEnabled( bool enabled );
 
     /**
-     * Returns true if a preview effect is being used to alter the view's appearance.
+     * Returns TRUE if a preview effect is being used to alter the view's appearance.
      * \see setPreviewModeEnabled()
      */
     bool previewModeEnabled() const;
 
     /**
      * Sets the preview \a mode which should be used to modify the view's appearance. Preview modes are only used
-     * if previewModeEnabled() is true.
+     * if previewModeEnabled() is TRUE.
      * \see setPreviewModeEnabled()
      * \see previewMode()
      */
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
-     * if previewModeEnabled() is true.
+     * if previewModeEnabled() is TRUE.
      * \see setPreviewMode()
      * \see previewModeEnabled()
      */
@@ -271,7 +271,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
 
     /**
-     * Returns true if the current clipboard contains layout items.
+     * Returns TRUE if the current clipboard contains layout items.
      * \see pasteItems()
      */
     bool hasItemsInClipboard() const;

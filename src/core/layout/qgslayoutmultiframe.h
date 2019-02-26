@@ -183,7 +183,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     /**
      * Adds a \a frame to the multiframe.
      *
-     * If \a recalcFrameSizes is set to true, then a recalculation of all existing frame sizes will be forced.
+     * If \a recalcFrameSizes is set to TRUE, then a recalculation of all existing frame sizes will be forced.
      *
      * \see removeFrame()
      */
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Removes a frame by \a index from the multiframe. This method automatically removes the frame from the
      * layout too.
      *
-     * If \a removeEmptyPages is set to true, then pages which are empty after the frame is removed will
+     * If \a removeEmptyPages is set to TRUE, then pages which are empty after the frame is removed will
      * also be removed from the layout.
      *
      * \see addFrame()
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param parentElement parent DOM element (e.g. 'Layout' element)
      * \param document DOM document
      * \param context read write context
-     * \param includeFrames set to true to write state information about child frames into DOM
+     * \param includeFrames set to TRUE to write state information about child frames into DOM
      * \see readXml()
      */
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool includeFrames = false ) const;
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
      * \param document DOM document
      * \param context read write context
-     * \param includeFrames set to true to read state information about child frames from DOM
+     * \param includeFrames set to TRUE to read state information about child frames from DOM
      * \see writeXml()
      */
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool includeFrames = false );

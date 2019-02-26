@@ -91,7 +91,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     Q_PROPERTY( double direction READ direction NOTIFY directionChanged )
 
     /**
-     * GPS position and accuracy is simulated (not real from GPS sensor). Default false (use real GPS)
+     * GPS position and accuracy is simulated (not real from GPS sensor). Default FALSE (use real GPS)
      *
      * This is a readonly property. To change to simulated position, see QgsQuickPositionKit::simulatePositionLongLatRad
      */

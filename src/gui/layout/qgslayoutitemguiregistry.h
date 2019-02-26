@@ -61,7 +61,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
      *
-     * If \a isNodeBased is true, then the corresponding item is a node based item.
+     * If \a isNodeBased is TRUE, then the corresponding item is a node based item.
      */
     QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = nullptr )
       : mType( type )
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     QString groupId() const { return mGroupId; }
 
     /**
-     * Returns true if the associated item is a node based item.
+     * Returns TRUE if the associated item is a node based item.
      */
     bool isNodeBased() const { return mIsNodeBased; }
 
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
      *
-     * If \a isNodeBased is true, then the corresponding item is a node based item.
+     * If \a isNodeBased is TRUE, then the corresponding item is a node based item.
      */
     QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon,
                               const QgsLayoutItemWidgetFunc &pfWidget = nullptr,
@@ -364,7 +364,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * Registers a new item group with the registry. This must be done before calling
      * addLayoutItemGuiMetadata() for any item types associated with the group.
      *
-     * Returns true if group was added, or false if group could not be added (e.g. due to
+     * Returns TRUE if group was added, or FALSE if group could not be added (e.g. due to
      * duplicate id value).
      *
      * \see itemGroup()

@@ -153,7 +153,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
-     * \param ok if specified, will be set to true if aggregate calculation was successful
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsAggregateCalculator
     /**
      * Converts a string to a aggregate type.
      * \param string string to convert
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns aggregate type
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );

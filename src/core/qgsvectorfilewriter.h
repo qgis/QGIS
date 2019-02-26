@@ -293,8 +293,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-     * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
-     * \param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * \param forceMulti set to TRUE to force creation of multi* geometries (added in QGIS 2.14)
+     * \param includeZ set to TRUE to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      * \param newLayer QString pointer which will contain the new layer name created (in case it is different to the provided layer name) (added in QGIS 3.4, not available in python)
@@ -319,8 +319,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-     * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
-     * \param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * \param forceMulti set to TRUE to force creation of multi* geometries (added in QGIS 2.14)
+     * \param includeZ set to TRUE to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      */
@@ -371,8 +371,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-     * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
-     * \param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * \param forceMulti set to TRUE to force creation of multi* geometries (added in QGIS 2.14)
+     * \param includeZ set to TRUE to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      * \param newLayer QString pointer which will contain the new layer name created (in case it is different to the provided layer name) (added in QGIS 3.4, not available in python)
@@ -399,8 +399,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
      * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
      * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
-     * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
-     * \param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+     * \param forceMulti set to TRUE to force creation of multi* geometries (added in QGIS 2.14)
+     * \param includeZ set to TRUE to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      * \since QGIS 2.2
@@ -490,10 +490,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * allows for conversion of geometryless tables to null geometries, etc */
         QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
-        //! Sets to true to force creation of multi* geometries
+        //! Sets to TRUE to force creation of multi* geometries
         bool forceMulti = false;
 
-        //! Sets to true to include z dimension in output. This option is only valid if overrideGeometryType is set
+        //! Sets to TRUE to include z dimension in output. This option is only valid if overrideGeometryType is set
         bool includeZ = false;
 
         /**
@@ -640,7 +640,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
     /**
-     * Returns true if the specified \a driverName supports feature styles.
+     * Returns TRUE if the specified \a driverName supports feature styles.
      *
      * The \a driverName argument must be a valid GDAL driver name.
      *
@@ -720,7 +720,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /**
      * Delete a shapefile (and its accompanying shx / dbf / prf)
      * \param fileName /path/to/file.shp
-     * \returns bool true if the file was deleted successfully
+     * \returns bool TRUE if the file was deleted successfully
      */
     static bool deleteShapeFile( const QString &fileName );
 

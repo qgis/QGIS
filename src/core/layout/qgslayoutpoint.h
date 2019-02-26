@@ -108,7 +108,7 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Tests whether the position is null, ie both its x and y coordinates
      * are zero.
-     * \returns true if point is null
+     * \returns TRUE if point is null
     */
     bool isNull() const;
 

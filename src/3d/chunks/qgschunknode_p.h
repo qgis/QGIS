@@ -120,7 +120,7 @@ class QgsChunkNode
     //! Returns updater job. Not null only when in Updating state
     QgsChunkQueueJob *updater() const { return mUpdater; }
 
-    //! Returns true if all child chunks are available and thus this node could be swapped to the child nodes
+    //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
 
     //! make sure that all child nodes are at least skeleton nodes
@@ -172,7 +172,7 @@ class QgsChunkNode
     //! called when bounding box
     void setExactBbox( const QgsAABB &box );
 
-    //! Sets whether the node has any data to be displayed. Can be used to set to false after load returned no data
+    //! Sets whether the node has any data to be displayed. Can be used to set to FALSE after load returned no data
     void setHasData( bool hasData ) { mHasData = hasData; }
     //! Returns whether the node has any data to be displayed. If not, it will be kept as a skeleton node and will not get loaded anymore
     bool hasData() const { return mHasData; }

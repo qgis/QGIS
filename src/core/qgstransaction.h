@@ -108,9 +108,9 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      * \param sql The sql query to execute
      * \param error The error message
      * \param isDirty Flag to indicate if the underlying data will be modified
-     * \param name Name of the transaction ( only used if `isDirty` is true)
+     * \param name Name of the transaction ( only used if `isDirty` is TRUE)
      *
-     * \returns true if everything is OK, false otherwise
+     * \returns TRUE if everything is OK, FALSE otherwise
      */
     virtual bool executeSql( const QString &sql, QString &error SIP_OUT, bool isDirty = false, const QString &name = QString() ) = 0;
 

@@ -148,7 +148,7 @@ class NATIVE_EXPORT QgsNative : public QObject
     virtual void setApplicationBadgeCount( int count );
 
     /**
-     * Returns true if the operating system is set to utilize a "dark" theme.
+     * Returns TRUE if the operating system is set to utilize a "dark" theme.
      * \since QGIS 3.4
      */
     virtual bool hasDarkTheme();
@@ -158,7 +158,7 @@ class NATIVE_EXPORT QgsNative : public QObject
      *
      * This method is only supported when the interface returns the NativeOpenTerminalAtPath flag for capabilities().
      *
-     * Returns true if terminal was successfully opened.
+     * Returns TRUE if terminal was successfully opened.
      */
     virtual bool openTerminalAtPath( const QString &path );
 
@@ -212,7 +212,7 @@ class NATIVE_EXPORT QgsNative : public QObject
      *
      * This method is only supported when the interface returns the NativeDesktopNotifications flag for capabilities().
      *
-     * Returns true if notification was successfully sent.
+     * Returns TRUE if notification was successfully sent.
      */
     virtual NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() );
 
@@ -253,7 +253,7 @@ class NATIVE_EXPORT QgsNative : public QObject
      *
      * The \a path argument gives the file path to the device (if available).
      *
-     * If \a inserted is true then the device was inserted. If \a inserted is false then
+     * If \a inserted is TRUE then the device was inserted. If \a inserted is FALSE then
      * the device was removed.
      *
      * \since QGIS 3.4

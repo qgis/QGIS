@@ -71,7 +71,7 @@ struct _LayerRef
   }
 
   /**
-   * Returns true if the layer reference is resolved and contains a reference to an existing
+   * Returns TRUE if the layer reference is resolved and contains a reference to an existing
    * map layer.
    */
   operator bool() const
@@ -110,7 +110,7 @@ struct _LayerRef
   QString provider;
 
   /**
-   * Returns true if a layer matches the weak references to layer public source,
+   * Returns TRUE if a layer matches the weak references to layer public source,
    * layer name and data provider contained in this layer reference.
    * \see resolveWeakly()
    */

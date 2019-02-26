@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns whether the specified \a page number should be included in exports of the layouts.
      *
-     * \warning This will always return true unless the layout is being currently exported -- it cannot
+     * \warning This will always return TRUE unless the layout is being currently exported -- it cannot
      * be used in advance to determine whether a given page will be exported!
      *
      * \see pageIsEmpty()
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QSizeF maximumPageSize() const;
 
     /**
-     * Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+     * Returns TRUE if the layout has uniform page sizes, e.g. all pages are the same size.
      *
      * This method does not consider differing units as non-uniform sizes, only the actual
      * physical size of the pages.

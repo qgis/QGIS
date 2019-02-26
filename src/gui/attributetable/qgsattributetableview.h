@@ -70,7 +70,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \param object The object which is the target of the event.
      * \param event  The intercepted event
      *
-     * \returns Returns always false, so the event gets processed
+     * \returns Returns always FALSE, so the event gets processed
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 

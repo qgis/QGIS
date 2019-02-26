@@ -210,7 +210,7 @@ class CORE_EXPORT QgsGeometryEngine
      * \param geom geometry to relate to
      * \param pattern DE-9IM pattern for match
      * \param errorMsg destination storage for any error message
-     * \returns true if geometry relationship matches with pattern
+     * \returns TRUE if geometry relationship matches with pattern
      * \since QGIS 2.14
      */
     virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = nullptr ) const = 0;
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsGeometryEngine
 
     /**
      * Checks if this is equal to \a geom.
-     * If both are Null geometries, `false` is returned.
+     * If both are Null geometries, `FALSE` is returned.
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsGeometryEngine
      * Splits this geometry according to a given line.
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
-     * \param topological true if topological editing is enabled
+     * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param[out] errorMsg error messages emitted, if any
      * \returns 0 in case of success, 1 if geometry has not been split, error else

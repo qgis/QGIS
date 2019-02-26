@@ -55,7 +55,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
     /**
      * Adds a \a layout to the manager. Ownership of the layout is transferred to the manager.
-     * Returns true if the addition was successful, or false if the layout could not be added (eg
+     * Returns TRUE if the addition was successful, or FALSE if the layout could not be added (eg
      * as a result of a duplicate layout name).
      * \see removeLayout()
      * \see layoutAdded()
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
     /**
      * Removes a \a layout from the manager. The layout is deleted.
-     * Returns true if the removal was successful, or false if the removal failed (eg as a result
+     * Returns TRUE if the removal was successful, or FALSE if the removal failed (eg as a result
      * of removing a layout which is not contained in the manager).
      * \see addLayout()
      * \see layoutRemoved()

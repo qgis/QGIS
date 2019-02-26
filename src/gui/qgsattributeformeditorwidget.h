@@ -62,12 +62,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     /**
      * Resets the widget to an initial value.
      * \param initialValue initial value to show in widget
-     * \param mixedValues set to true to initially show the mixed values state
+     * \param mixedValues set to TRUE to initially show the mixed values state
      */
     void initialize( const QVariant &initialValue, bool mixedValues = false );
 
     /**
-     * Returns true if the widget's value has been changed since it was initialized.
+     * Returns TRUE if the widget's value has been changed since it was initialized.
      * \see initialize()
      */
     bool hasChanged() const { return mIsChanged; }
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
 
     /**
      * Sets whether the widget should be displayed in a "mixed values" mode.
-     * \param mixed set to true to show in a mixed values state
+     * \param mixed set to TRUE to show in a mixed values state
      */
     void setIsMixed( bool mixed );
 

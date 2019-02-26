@@ -146,7 +146,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param object   The object for which the event has been sent
      * \param event    The event which is being filtered
      *
-     * \returns         true if the event has been handled (key was ESC)
+     * \returns         TRUE if the event has been handled (key was ESC)
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 
@@ -191,17 +191,17 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
-     * \param attributeChanged If true, it corresponds to an actual change of the feature attribute
+     * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
      * \since QGIS 3.0.1
      */
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
-     * You can set the parameter ok to false to notify the form that you don't want it to be saved.
+     * You can set the parameter ok to FALSE to notify the form that you don't want it to be saved.
      * If you want the form to be saved, leave the parameter untouched.
      *
-     * \param ok  Set this parameter to false if you don't want the form to be saved
+     * \param ok  Set this parameter to FALSE if you don't want the form to be saved
      * \note not available  in Python bindings
      */
     void beforeSave( bool &ok ) SIP_SKIP;
@@ -264,7 +264,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Save all the values from the editors to the layer.
      *
-     * \returns True if successful
+     * \returns TRUE if successful
      */
     bool save();
 
@@ -424,7 +424,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     int mFormNr;
     QString mPyFormVarName;
 
-    //! Sets to true while saving to prevent recursive saves
+    //! Sets to TRUE while saving to prevent recursive saves
     bool mIsSaving;
 
     //! Flag to prevent refreshFeature() to change mFeature

@@ -46,7 +46,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 
     /**
      * Define if a lock icon shall be shown on the left of the widget
-     * \param visible set to false to hide the lock icon
+     * \param visible set to FALSE to hide the lock icon
      */
     void setShowLockIcon( bool visible );
 

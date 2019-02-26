@@ -221,7 +221,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * \brief register a new vector data provider from its \a providerMetadata
-     * \return true on success, false if a provider with the same key was already registered
+     * \return TRUE on success, FALSE if a provider with the same key was already registered
      * \note ownership of the QgsProviderMetadata instance is transferred to the registry
      * \since QGIS 3.2
      */
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \param provider is the key for the dataprovider used to open name
      * \returns NULL if unable to open vector data source
      *
-     * Temporarily always returns false until finished implementing.
+     * Temporarily always returns FALSE until finished implementing.
      *
      * Eventually would be nice if could make QgsDataManager smart
      * enough to figure out whether the given name mapped to a vector,

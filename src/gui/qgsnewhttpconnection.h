@@ -104,7 +104,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
   protected:
 
     /**
-     * Returns true if dialog settings are valid, or false if current
+     * Returns TRUE if dialog settings are valid, or FALSE if current
      * settings are not valid and the dialog should not be acceptable.
      * \since QGIS 3.0
      */

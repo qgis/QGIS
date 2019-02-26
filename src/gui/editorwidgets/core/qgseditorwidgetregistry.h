@@ -170,7 +170,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param widgetId      The id which will be used later to refer to this widget type
      * \param widgetFactory The factory which will create this widget type
      *
-     * \returns true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
+     * \returns TRUE, if successful, FALSE, if the widgetId is already in use or widgetFactory is NULL
      */
     bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory SIP_TRANSFER );
 

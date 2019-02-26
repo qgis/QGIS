@@ -350,7 +350,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
 
     /**
-     * Returns true if \a index corresponds to an algorithm.
+     * Returns TRUE if \a index corresponds to an algorithm.
      *
      * \see algorithmForIndex()
      */
@@ -392,7 +392,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     void addProvider( QgsProcessingProvider *provider );
 
     /**
-     * Returns true if \a providerId is a "top-level" provider, which shows
+     * Returns TRUE if \a providerId is a "top-level" provider, which shows
      * groups directly under the root node and not under a provider child node.
      */
     static bool isTopLevelProvider( const QString &providerId );

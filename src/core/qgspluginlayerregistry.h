@@ -49,7 +49,7 @@ class CORE_EXPORT QgsPluginLayerType
      */
     virtual QgsPluginLayer *createLayer( const QString &uri ) SIP_FACTORY;
 
-    //! Show plugin layer properties dialog. Return false if the dialog cannot be shown.
+    //! Show plugin layer properties dialog. Return FALSE if the dialog cannot be shown.
     virtual bool showLayerProperties( QgsPluginLayer *layer );
 
   protected:
@@ -85,10 +85,10 @@ class CORE_EXPORT QgsPluginLayerRegistry
      */
     QStringList pluginLayerTypes();
 
-    //! Add plugin layer type (take ownership) and return true on success
+    //! Add plugin layer type (take ownership) and return TRUE on success
     bool addPluginLayerType( QgsPluginLayerType *pluginLayerType SIP_TRANSFER );
 
-    //! Remove plugin layer type and return true on success
+    //! Remove plugin layer type and return TRUE on success
     bool removePluginLayerType( const QString &typeName );
 
     //! Returns plugin layer type metadata or NULL if doesn't exist

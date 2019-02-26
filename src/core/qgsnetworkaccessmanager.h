@@ -422,8 +422,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * This method is safe to call in either the main thread or a worker thread.
      *
-     * If \a forceRefresh is false then previously cached replies may be used for the request. If
-     * it is set to true then a new query is always performed.
+     * If \a forceRefresh is FALSE then previously cached replies may be used for the request. If
+     * it is set to TRUE then a new query is always performed.
      *
      * If an \a authCfg has been specified, then that authentication configuration required will automatically be applied to
      * \a request. There is no need to manually apply the authentication to the request prior to calling
@@ -444,8 +444,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * This method is safe to call in either the main thread or a worker thread.
      *
-     * If \a forceRefresh is false then previously cached replies may be used for the request. If
-     * it is set to true then a new query is always performed.
+     * If \a forceRefresh is FALSE then previously cached replies may be used for the request. If
+     * it is set to TRUE then a new query is always performed.
      *
      * If an \a authCfg has been specified, then that authentication configuration required will automatically be applied to
      * \a request. There is no need to manually apply the authentication to the request prior to calling

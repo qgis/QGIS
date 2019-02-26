@@ -315,7 +315,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * OR the envelope surrounding all input nodes.
      * The \a tolerance parameter specifies an optional snapping tolerance which can
      * be used to improve the robustness of the diagram calculation.
-     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \since QGIS 3.0
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns the Delaunay triangulation for the vertices of the geometry.
      * The \a tolerance parameter specifies an optional snapping tolerance which can
      * be used to improve the robustness of the triangulation.
-     * If \a edgesOnly is true than line string boundary geometries will be returned
+     * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
      * \since QGIS 3.0

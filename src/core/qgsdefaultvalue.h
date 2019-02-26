@@ -87,13 +87,13 @@ class CORE_EXPORT QgsDefaultValue
 
     /**
      * Returns if this default value should be applied.
-     * \returns false if the expression is a null string.
+     * \returns FALSE if the expression is a null string.
      */
     bool isValid() const;
 
     /**
      * Checks if a default value is set. Alias for isValid().
-     * \returns false if the expression is a null string.
+     * \returns FALSE if the expression is a null string.
      */
     operator bool() const SIP_PYTHON_SPECIAL_BOOL( isValid );
 

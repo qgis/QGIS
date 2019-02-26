@@ -75,7 +75,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /**
      * Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.
-     * \param showClearButton set to true to show the clear button, or false to hide it
+     * \param showClearButton set to TRUE to show the clear button, or FALSE to hide it
      * \see showClearButton()
      */
     void setShowClearButton( bool showClearButton );
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /**
      * Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
-     * \param enabled set to true to allow expression entry
+     * \param enabled set to TRUE to allow expression entry
      * \since QGIS 2.7
      */
     void setExpressionsEnabled( bool enabled );
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /**
      * Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
-     * \returns true if spin box allows expression entry
+     * \returns TRUE if spin box allows expression entry
      * \since QGIS 2.7
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}

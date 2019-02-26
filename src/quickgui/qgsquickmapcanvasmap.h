@@ -64,13 +64,13 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings )
 
     /**
-     * When freeze property is set to true, the map canvas does not refresh.
+     * When freeze property is set to TRUE, the map canvas does not refresh.
      * The value temporary changes during the rendering process.
      */
     Q_PROPERTY( bool freeze READ freeze WRITE setFreeze NOTIFY freezeChanged )
 
     /**
-     * The isRendering property is set to true while a rendering job is pending for this map canvas map.
+     * The isRendering property is set to TRUE while a rendering job is pending for this map canvas map.
      * It can be used to show a notification icon about an ongoing rendering job.
      * This is a readonly property.
      */
@@ -84,7 +84,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     Q_PROPERTY( int mapUpdateInterval READ mapUpdateInterval WRITE setMapUpdateInterval NOTIFY mapUpdateIntervalChanged )
 
     /**
-     * When the incrementalRendering property is set to true, the automatic refresh of map canvas during rendering is allowed.
+     * When the incrementalRendering property is set to TRUE, the automatic refresh of map canvas during rendering is allowed.
      */
     Q_PROPERTY( bool incrementalRendering READ incrementalRendering WRITE setIncrementalRendering NOTIFY incrementalRenderingChanged )
 

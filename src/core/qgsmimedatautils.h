@@ -53,21 +53,21 @@ class CORE_EXPORT QgsMimeDataUtils
 
       /**
        * Gets vector layer from uri if possible, otherwise returns nullptr and error is set
-       * \param owner set to true if caller becomes owner
+       * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get vector
        */
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 
       /**
        * Gets raster layer from uri if possible, otherwise returns nullptr and error is set
-       * \param owner set to true if caller becomes owner
+       * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get raster
        */
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 
       /**
        * Gets mesh layer from uri if possible, otherwise returns nullptr and error is set
-       * \param owner set to true if caller becomes owner
+       * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get raster
        */
       QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;

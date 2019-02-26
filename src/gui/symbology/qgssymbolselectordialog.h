@@ -274,7 +274,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
      * \param style The style
      * \param vl Associated vector layer
      * \param parent Parent widget
-     * \param embedded True to embed in renderer properties dialog, false otherwise
+     * \param embedded TRUE to embed in renderer properties dialog, FALSE otherwise
      */
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
     ~QgsSymbolSelectorDialog() override;

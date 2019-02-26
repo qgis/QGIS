@@ -112,8 +112,8 @@ namespace pal
        * \param arrangement Howto place candidates
        * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
-       * \param toLabel the layer will be labeled only if toLablel is true
-       * \param displayAll if true, all features will be labelled even though overlaps occur
+       * \param toLabel the layer will be labeled only if toLablel is TRUE
+       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        * \throws PalException::LayerExists
        */

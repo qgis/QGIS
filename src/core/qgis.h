@@ -453,7 +453,7 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to double if possible
  * \see permissiveToInt
  * \since QGIS 2.9
@@ -464,7 +464,7 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to int if possible
  * \see permissiveToDouble
  * \since QGIS 2.9
@@ -475,7 +475,7 @@ CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
  * Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to int if possible
  * \see permissiveToInt
  * \since QGIS 3.4
@@ -498,7 +498,7 @@ CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
  *
  * \param lhs first value
  * \param rhs second value
- * \return true if values are equal
+ * \return TRUE if values are equal
  */
 CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 

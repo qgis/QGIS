@@ -121,7 +121,7 @@ class CORE_EXPORT QgsAbstractValidityCheck
     virtual int checkType() const = 0;
 
     /**
-     * Prepares the check for execution, and returns true if the check can be run.
+     * Prepares the check for execution, and returns TRUE if the check can be run.
      *
      * This method is always called from the main thread, and subclasses can implement
      * it to do preparatory steps which are not thread safe (e.g. obtaining feature

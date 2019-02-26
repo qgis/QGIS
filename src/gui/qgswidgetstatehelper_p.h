@@ -44,7 +44,7 @@ class QgsWidgetStateHelper : public QObject
      * Event filter to catch events from registered widgets.
      * \param object Object getting the event.
      * \param event Event sent from Qt.
-     * \return Always returns True so that widget still gets event.
+     * \return Always returns TRUE so that widget still gets event.
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 

@@ -116,7 +116,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * A datum \a transform of -1 indicates that no datum transform is required for the
      * source CRS.
      *
-     * Returns true if the new transform was added successfully.
+     * Returns TRUE if the new transform was added successfully.
      *
      * \warning Transforms set using this method may be overridden by specific source/destination
      * transforms set by addSourceDestinationDatumTransform().
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * A datum \a transform of -1 indicates that no datum transform is required for the
      * destination CRS.
      *
-     * Returns true if the new transform was added successfully.
+     * Returns TRUE if the new transform was added successfully.
      *
      * \warning Transforms set using this method may be overridden by specific source/destination
      * transforms set by addSourceDestinationDatumTransform().
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * If either \a sourceTransformId or \a destinationTransformId is -1, then no datum transform is
      * required for transformations for that source or destination.
      *
-     * Returns true if the new transform pair was added successfully.
+     * Returns TRUE if the new transform pair was added successfully.
      *
      * \note Transforms set using this method will override any specific source or destination
      * transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
         const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
-     * Returns true if the context has a valid datum transform to use
+     * Returns TRUE if the context has a valid datum transform to use
      * when transforming from the specified \a source CRS to \a destination CRS.
      * \note source and destination are reversible.
      */
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
     /**
      * Reads the context's state from a DOM \a element.
      *
-     * Returns false if transforms stored in the XML are not available. In this case \a missingTransforms will be
+     * Returns FALSE if transforms stored in the XML are not available. In this case \a missingTransforms will be
      * filled with missing datum transform strings.
      *
      * \see writeXml()

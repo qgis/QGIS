@@ -233,7 +233,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual Flags flags() const;
 
     /**
-     * Returns true if the algorithm can execute. Algorithm subclasses can return false
+     * Returns TRUE if the algorithm can execute. Algorithm subclasses can return FALSE
      * here to indicate that they are not able to execute, e.g. as a result of unmet
      * external dependencies. If specified, the \a errorMessage argument will be filled
      * with a localised error message describing why the algorithm cannot execute.
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * of this algorithm in the supplied \a context. The \a message parameter will be
      * filled with explanatory text if validation fails.
      * Overridden implementations should also check this base class implementation.
-     * \returns true if parameters are acceptable for the algorithm.
+     * \returns TRUE if parameters are acceptable for the algorithm.
      */
     virtual bool checkParameterValues( const QVariantMap &parameters,
                                        QgsProcessingContext &context, QString *message SIP_OUT = nullptr ) const;
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
 
     /**
-     * Returns true if this algorithm generates HTML outputs.
+     * Returns TRUE if this algorithm generates HTML outputs.
      */
     bool hasHtmlOutputs() const;
 
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * Algorithm progress should be reported using the supplied \a feedback object.
      *
-     * If specified, \a ok will be set to true if algorithm was successfully run.
+     * If specified, \a ok will be set to TRUE if algorithm was successfully run.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Runs the algorithm, which has been prepared by an earlier call to prepare().
-     * This method is safe to call from any thread. Returns true if the algorithm was successfully executed.
+     * This method is safe to call from any thread. Returns TRUE if the algorithm was successfully executed.
      * After runPrepared() has finished, the postProcess() method should be called from the main thread
      * to allow the algorithm to perform any required cleanup tasks and return its final result.
      * \see prepare()
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Checks whether the coordinate reference systems for the specified set of \a parameters
      * are valid for the algorithm. For instance, the base implementation performs
      * checks to ensure that all input CRS are equal
-     * Returns true if \a parameters have passed the CRS check.
+     * Returns TRUE if \a parameters have passed the CRS check.
      */
     virtual bool validateInputCrs( const QVariantMap &parameters,
                                    QgsProcessingContext &context ) const;
@@ -436,16 +436,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
-     * Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
+     * Returns TRUE if parameter could be successfully added, or FALSE if the parameter could not be added (e.g.
      * as a result of a duplicate name).
      *
      * This should usually be called from a subclass' initAlgorithm() implementation.
      *
-     * If the \a createOutput argument is true, then a corresponding output definition will also be created
+     * If the \a createOutput argument is TRUE, then a corresponding output definition will also be created
      * (and added to the algorithm) where appropriate. E.g. when adding a QgsProcessingParameterVectorDestination
-     * and \a createOutput is true, then a QgsProcessingOutputVectorLayer output will be created and
+     * and \a createOutput is TRUE, then a QgsProcessingOutputVectorLayer output will be created and
      * added to the algorithm. There is no need to call addOutput() to manually add a corresponding output
-     * for this vector. If \a createOutput is false then this automatic output creation will not
+     * for this vector. If \a createOutput is FALSE then this automatic output creation will not
      * occur.
      *
      * \see initAlgorithm()
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
-     * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
+     * Returns TRUE if the output could be successfully added, or FALSE if the output could not be added (e.g.
      * as a result of a duplicate name).
      *
      * This should usually be called from a subclass' initAlgorithm() implementation.
@@ -496,11 +496,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * well-behaved algorithms should periodically check \a feedback to determine whether the
      * algorithm should be canceled and exited early.
      *
-     * If the preparation was successful algorithms must return true. If a false value is returned
+     * If the preparation was successful algorithms must return TRUE. If a FALSE value is returned
      * this indicates that the preparation could not be completed, and the algorithm execution
      * will be canceled.
      *
-     * \returns true if preparation was successful.
+     * \returns TRUE if preparation was successful.
      * \see processAlgorithm()
      * \see postProcessAlgorithm()
      */
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * well-behaved algorithms should periodically check \a feedback to determine whether the
      * algorithm should be canceled and exited early.
      *
-     * This method will not be called if the prepareAlgorithm() step failed (returned false).
+     * This method will not be called if the prepareAlgorithm() step failed (returned FALSE).
      *
      * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
      * to indicate that a fatal error occurred within the execution. Python based subclasses
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * algorithms which are run as a step in a larger model or as a subcomponent of a script-based algorithm
      * will call postProcessAlgorithm from the same thread as that model/script it being executed in.
      *
-     * postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (returned false),
+     * postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (returned FALSE),
      * or if an exception was raised by the processAlgorithm() step.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
@@ -823,9 +823,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Checks whether this algorithm supports in-place editing on the given \a layer
-     * Default implementation returns false.
+     * Default implementation returns FALSE.
      *
-     * \return true if the algorithm supports in-place editing
+     * \return TRUE if the algorithm supports in-place editing
      * \since QGIS 3.4
      */
     virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
@@ -1010,7 +1010,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * Default implementation for feature based algorithms run some basic compatibility
      * checks based on the geometry type of the layer.
      *
-     * \return true if the algorithm supports in-place editing
+     * \return TRUE if the algorithm supports in-place editing
      * \since QGIS 3.4
      */
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;

@@ -50,7 +50,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * Constructor for QgsRendererPropertiesDialog.
      * \param layer associated layer
      * \param style style collection
-     * \param embedded set to true to indicate that the dialog will be embedded in another widget, rather
+     * \param embedded set to TRUE to indicate that the dialog will be embedded in another widget, rather
      * than shown as a dialog by itself
      * \param parent parent widget
      */
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * \param dockMode True to enable dock mode.
+     * \param dockMode TRUE to enable dock mode.
      */
     void setDockMode( bool dockMode );
 
@@ -113,10 +113,10 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
     /**
      * Open a panel or dialog depending on dock mode setting
-     * If dock mode is true this method will emit the showPanel signal
+     * If dock mode is TRUE this method will emit the showPanel signal
      * for connected slots to handle the open event.
      *
-     * If dock mode is false this method will open a dialog
+     * If dock mode is FALSE this method will open a dialog
      * and block the user.
      *
      * \param panel The panel widget to open.

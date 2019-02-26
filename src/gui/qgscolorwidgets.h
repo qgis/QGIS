@@ -98,7 +98,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /**
      * Sets the color for the widget
      * \param color widget color
-     * \param emitSignals set to true to emit the colorChanged signal after setting color
+     * \param emitSignals set to TRUE to emit the colorChanged signal after setting color
      * \see color
      */
     virtual void setColor( const QColor &color, bool emitSignals = false );
@@ -232,8 +232,8 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
     /**
      * Sets whether the parent menu should be dismissed and closed when a color is selected
      * from the action's color widget.
-     * \param dismiss set to true (default) to immediately close the menu when a color is selected
-     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+     * \param dismiss set to TRUE (default) to immediately close the menu when a color is selected
+     * from the widget. If set to FALSE, the colorChanged signal will be emitted but the menu will
      * stay open.
      * \see dismissOnColorSelection()
      */
@@ -534,14 +534,14 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
     /**
      * Sets whether the ramp should be drawn within a frame
-     * \param showFrame set to true to draw a frame around the ramp
+     * \param showFrame set to TRUE to draw a frame around the ramp
      * \see showFrame
      */
     void setShowFrame( bool showFrame );
 
     /**
      * Fetches whether the ramp is drawn within a frame
-     * \returns true if a frame is drawn around the ramp
+     * \returns TRUE if a frame is drawn around the ramp
      * \see setShowFrame
      */
     bool showFrame() const { return mShowFrame; }

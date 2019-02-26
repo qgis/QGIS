@@ -158,7 +158,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         /**
          * Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
-         * The returned value is valid only when hasExpandedStateInfo() returns true.
+         * The returned value is valid only when hasExpandedStateInfo() returns TRUE.
          * Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
          * and a forward slash, e.g. "level1/level2"
          * \since QGIS 3.2

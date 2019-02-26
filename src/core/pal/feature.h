@@ -202,8 +202,8 @@ namespace pal
        * \param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
        * \param index
        * \param distance distance to offset label along curve by
-       * \param reversed if true label is reversed from lefttoright to righttoleft
-       * \param flip if true label is placed on the other side of the line
+       * \param reversed if TRUE label is reversed from lefttoright to righttoleft
+       * \param flip if TRUE label is placed on the other side of the line
        * \returns calculated label position
        */
       LabelPosition *curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
@@ -229,7 +229,7 @@ namespace pal
        * Tests whether this feature part belongs to the same QgsLabelFeature as another
        * feature part.
        * \param part part to compare to
-       * \returns true if both parts belong to same QgsLabelFeature
+       * \returns TRUE if both parts belong to same QgsLabelFeature
        */
       bool hasSameLabelFeatureAs( FeaturePart *part ) const;
 
@@ -246,22 +246,22 @@ namespace pal
       double getLabelHeight() const { return mLF->size().height(); }
       double getLabelDistance() const { return mLF->distLabel(); }
 
-      //! Returns true if the feature's label has a fixed rotation
+      //! Returns TRUE if the feature's label has a fixed rotation
       bool hasFixedRotation() const { return mLF->hasFixedAngle(); }
 
       //! Returns the fixed angle for the feature's label
       double fixedAngle() const { return mLF->fixedAngle(); }
 
-      //! Returns true if the feature's label has a fixed position
+      //! Returns TRUE if the feature's label has a fixed position
       bool hasFixedPosition() const { return mLF->hasFixedPosition(); }
 
       /**
-       * Returns true if the feature's label should always been shown,
+       * Returns TRUE if the feature's label should always been shown,
        * even when it collides with other labels
        */
       bool alwaysShow() const { return mLF->alwaysShow(); }
 
-      //! Returns true if the feature should act as an obstacle to labels
+      //! Returns TRUE if the feature should act as an obstacle to labels
       bool isObstacle() const { return mLF->isObstacle(); }
 
       /**
@@ -283,7 +283,7 @@ namespace pal
 
       /**
        * Merge other (connected) part with this one and save the result in this part (other is unchanged).
-       * Returns true on success, false if the feature wasn't modified */
+       * Returns TRUE on success, FALSE if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart *other );
 
       void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
@@ -294,10 +294,10 @@ namespace pal
        */
       double calculatePriority() const;
 
-      //! Returns true if feature's label must be displayed upright
+      //! Returns TRUE if feature's label must be displayed upright
       bool showUprightLabels() const;
 
-      //! Returns true if the next char position is found. The referenced parameters are updated.
+      //! Returns TRUE if the next char position is found. The referenced parameters are updated.
       bool nextCharPosition( double charWidth, double segment_length, PointSet *path_positions, int &index, double &distance,
                              double &start_x, double &start_y, double &end_x, double &end_y ) const;
 

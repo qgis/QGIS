@@ -160,7 +160,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       /**
        * Method to be overridden for progress reporting.
        * \param complete Overall progress of the alignment operation
-       * \returns false if the execution should be canceled, true otherwise
+       * \returns FALSE if the execution should be canceled, TRUE otherwise
        */
       virtual bool progress( double complete ) = 0;
 
@@ -219,7 +219,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
      * If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
      * to determine suitable defaults for cell size and grid offset.
      *
-     * \returns true on success (may fail if it is not possible to reproject raster to given CRS)
+     * \returns TRUE on success (may fail if it is not possible to reproject raster to given CRS)
      */
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 
@@ -231,7 +231,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     /**
      * Determine destination extent from the input rasters and calculate derived values
-     * \returns true on success, sets error on error (see errorMessage())
+     * \returns TRUE on success, sets error on error (see errorMessage())
      */
     bool checkInputParameters();
 
@@ -249,13 +249,13 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     /**
      * Run the alignment process
-     * \returns true on success, sets error on error (see errorMessage())
+     * \returns TRUE on success, sets error on error (see errorMessage())
      */
     bool run();
 
     /**
      * Returns the error from a previous run() call.
-     * Error message is empty if run() succeeded (returned true)
+     * Error message is empty if run() succeeded (returned TRUE)
      */
     QString errorMessage() const { return mErrorMessage; }
 
@@ -270,7 +270,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)
     bool createAndWarp( const Item &raster );
 
-    //! Determine suggested output of raster warp to a different CRS. Returns true on success
+    //! Determine suggested output of raster warp to a different CRS. Returns TRUE on success
     static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = nullptr, QPointF *gridOffset = nullptr, QgsRectangle *rect = nullptr );
 
   protected:

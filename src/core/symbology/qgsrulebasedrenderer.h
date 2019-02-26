@@ -163,7 +163,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
         /**
-         * Returns true if this rule or one of its chilren needs the geometry to be applied.
+         * Returns TRUE if this rule or one of its chilren needs the geometry to be applied.
          */
         bool needsGeometry() const;
 
@@ -178,14 +178,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \param f         The feature to test
          * \param context   The context in which the rendering happens
-         * \returns          True if the feature shall be rendered
+         * \returns          TRUE if the feature shall be rendered
          */
         bool isFilterOK( const QgsFeature &f, QgsRenderContext *context = nullptr ) const;
 
         /**
          * Check if this rule applies for a given \a scale.
          * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-         * If set to 0, it will always return true.
+         * If set to 0, it will always return TRUE.
          *
          * \returns If the rule will be evaluated at this scale
          */
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Returns if this rule is active
          *
-         * \returns True if the rule is active
+         * \returns TRUE if the rule is active
          */
         bool active() const { return mIsActive; }
 
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \param feature The feature for which rules have to be find
          * \param context The rendering context
-         * \param onlyActive True to search for active rules only, false otherwise
+         * \param onlyActive TRUE to search for active rules only, FALSE otherwise
          */
         QgsRuleBasedRenderer::RuleList rulesForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr, bool onlyActive = true );
 
@@ -417,14 +417,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Sets if this rule is an ELSE rule
          *
-         * \param iselse If true, this rule is an ELSE rule
+         * \param iselse If TRUE, this rule is an ELSE rule
          */
         void setIsElse( bool iselse );
 
         /**
          * Check if this rule is an ELSE rule
          *
-         * \returns True if this rule is an else rule
+         * \returns TRUE if this rule is an else rule
          */
         bool isElse() const { return mElseRule; }
 

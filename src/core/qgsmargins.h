@@ -27,7 +27,7 @@
  *
  * QgsMargins defines a set of four margins; left, top, right and bottom, that describe the size of the borders surrounding a rectangle.
  *
- * The isNull() function returns true only if all margins are set to zero.
+ * The isNull() function returns TRUE only if all margins are set to zero.
  * \since QGIS 3.0
  */
 
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMargins
     {}
 
     /**
-     * Returns \c true if all margins are is 0; otherwise returns false.
+     * Returns \c TRUE if all margins are is 0; otherwise returns FALSE.
      */
     bool isNull() const
     {
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsMargins
 
 
 /**
- * Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
+ * Returns \c TRUE if \a lhs and \a rhs are equal; otherwise returns \c FALSE.
  */
 inline bool operator==( const QgsMargins &lhs, const QgsMargins &rhs )
 {
@@ -181,7 +181,7 @@ inline bool operator==( const QgsMargins &lhs, const QgsMargins &rhs )
 }
 
 /**
- * Returns \c true if \a lhs and \a rhs are different; otherwise returns \c false.
+ * Returns \c TRUE if \a lhs and \a rhs are different; otherwise returns \c FALSE.
  */
 inline bool operator!=( const QgsMargins &lhs, const QgsMargins &rhs )
 {

@@ -213,7 +213,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Sets whether empty rows should be drawn. Tables default to hiding empty rows.
-     * \param showEmpty set to true to show empty rows in the table
+     * \param showEmpty set to TRUE to show empty rows in the table
      * \see showEmptyRows()
      */
     void setShowEmptyRows( bool showEmpty );
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Sets whether grid lines should be drawn in the table
-     * \param showGrid set to true to show grid lines
+     * \param showGrid set to TRUE to show grid lines
      * \see showGrid()
      * \see setGridStrokeWidth()
      * \see setGridColor()
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Sets whether the grid's horizontal lines should be drawn in the table
-     * \param horizontalGrid set to true to draw grid's horizontal lines
+     * \param horizontalGrid set to TRUE to draw grid's horizontal lines
      * \see setShowGrid()
      * \see setGridStrokeWidth()
      * \see setGridColor()
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Sets whether the grid's vertical lines should be drawn in the table
-     * \param verticalGrid set to true to draw grid's vertical lines
+     * \param verticalGrid set to TRUE to draw grid's vertical lines
      * \see setShowGrid()
      * \see setGridStrokeWidth()
      * \see setGridColor()
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Fetches the contents used for the cells in the table.
-     * \returns true if table contents were successfully retrieved.
+     * \returns TRUE if table contents were successfully retrieved.
      * \param contents QgsLayoutTableContents to store retrieved row data in
      */
     virtual bool getTableContents( QgsLayoutTableContents &contents ) = 0;
@@ -588,10 +588,10 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * height.
      * \param frameHeight height of frame
      * \param firstRow index of first row visible in frame (where 0 = first row in table)
-     * \param includeHeader set to true if frame would include a header row
-     * \param includeEmptyRows set to true to also include rows which would be empty in the returned count. For instance,
+     * \param includeHeader set to TRUE if frame would include a header row
+     * \param includeEmptyRows set to TRUE to also include rows which would be empty in the returned count. For instance,
      * if the frame would include all table content rows and have space left for extra rows then setting this parameter
-     * to true would also include a count of these extra blank rows.
+     * to TRUE would also include a count of these extra blank rows.
      * \returns number of visible content rows (excluding header row)
      */
     int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
@@ -600,9 +600,9 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Calculates how many content rows are visible within a given frame.
      * \param frameIndex index number for frame
      * \param firstRow index of first row visible in frame (where 0 = first row in table)
-     * \param includeEmptyRows set to true to also include rows which would be empty in the returned count. For instance,
+     * \param includeEmptyRows set to TRUE to also include rows which would be empty in the returned count. For instance,
      * if the frame would include all table content rows and have space left for extra rows then setting this parameter
-     * to true would also include a count of these extra blank rows.
+     * to TRUE would also include a count of these extra blank rows.
      * \returns number of visible content rows (excludes header rows)
      */
     int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
@@ -620,7 +620,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \param firstRow index corresponding to first row shown in frame
      * \param lastRow index corresponding to last row shown in frame. If greater than the number of content rows in the
      * table, then the default row height will be used for the remaining rows.
-     * \param drawHeaderLines set to true to include for the table header
+     * \param drawHeaderLines set to TRUE to include for the table header
      * \see drawVerticalGridLines()
      */
     void drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
@@ -633,8 +633,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \param firstRow index corresponding to first row shown in frame
      * \param lastRow index corresponding to last row shown in frame. If greater than the number of content rows in the
      * table, then the default row height will be used for the remaining rows.
-     * \param hasHeader set to true if table frame includes header cells
-     * \param mergeCells set to true to merge table content cells
+     * \param hasHeader set to TRUE if table frame includes header cells
+     * \param mergeCells set to TRUE to merge table content cells
      * \note not available in Python bindings
      * \see drawVerticalGridLines()
      * \see calculateMaxColumnWidths()
@@ -651,7 +651,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Checks whether a table contents contains a given row
      * \param contents table contents to check
      * \param row row to check for
-     * \returns true if contents contains rows
+     * \returns TRUE if contents contains rows
      */
     bool contentsContainsRow( const QgsLayoutTableContents &contents, const QgsLayoutTableRow &row ) const;
 

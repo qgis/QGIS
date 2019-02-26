@@ -91,7 +91,7 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
      * will be used wherever the source raster has a no data value or a source pixel value
      * does not have a matching class.
      *
-     * If \a useNoDataForMissingValues is true, then any raster values which do not match to
+     * If \a useNoDataForMissingValues is TRUE, then any raster values which do not match to
      * a class will be changed to the no data value. Otherwise they are saved unchanged.
      *
      * The \a feedback argument gives an optional processing feedback, for progress reports
@@ -110,10 +110,10 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
     /**
      * Reclassifies a single \a input value, using the specified list of \a classes.
      *
-     * If a matching class was found, then \a reclassified will be set to true and the
+     * If a matching class was found, then \a reclassified will be set to TRUE and the
      * class output value returned.
      *
-     * If no matching class was found then \a reclassified will be set to false, and the
+     * If no matching class was found then \a reclassified will be set to FALSE, and the
      * original \a input value returned unchanged.
      */
     static double reclassifyValue( const QVector< RasterClass > &classes, double input, bool &reclassified )

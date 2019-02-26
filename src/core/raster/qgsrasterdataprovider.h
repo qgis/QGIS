@@ -230,7 +230,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Read block of data using given extent and size.
     QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    //! Returns true if source band has no data value
+    //! Returns TRUE if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo - 1 ); }
 
     //! Returns the source nodata value usage
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) // clazy:exclude=function-args-by-ref
     { Q_UNUSED( overviewList ); return QList<QgsRasterPyramid>(); }
 
-    //! \brief Returns true if raster has at least one populated histogram.
+    //! \brief Returns TRUE if raster has at least one populated histogram.
     bool hasPyramids();
 
     /**
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * resolution is used.
      *
      * If \a ok is specified and the point is outside data source extent, or an invalid
-     * band number was specified, then \a ok will be set to false. In this case the function will return
+     * band number was specified, then \a ok will be set to FALSE. In this case the function will return
      * a NaN value.
      *
      * \see identify(), which is much more flexible but considerably less efficient.
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Turns on/off editing mode of the provider. When in editing mode, it is possible
      * to overwrite data of the provider using writeBlock() calls.
-     * \returns true if the switch to/from editing mode was successful
+     * \returns TRUE if the switch to/from editing mode was successful
      * \note Only some providers support editing mode and even those may fail to turn
      * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
@@ -462,7 +462,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Writing is supported only by some data providers. Provider has to be in editing mode
      * in order to allow write operations.
      * \see isEditable(), setEditable()
-     * \returns true on success
+     * \returns TRUE on success
      * \since QGIS 3.0
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }
 
-    //! Returns true if user no data contains value
+    //! Returns TRUE if user no data contains value
     bool userNoDataValuesContains( int bandNo, double value ) const;
 
     //! Copy member variables from other raster data provider. Useful for implementation of clone() method in subclasses
