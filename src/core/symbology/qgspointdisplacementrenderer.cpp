@@ -255,7 +255,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
   }
   else if ( nPosition == 1 ) //If there is only one feature, draw it exactly at the center position
   {
-    const double side = sqrt( pow( symbolDiagonal, 2 ) / 2.0 );
+    const double side = std::sqrt( std::pow( symbolDiagonal, 2 ) / 2.0 );
     symbolPositions.append( centerPoint );
     labelShifts.append( QPointF( side * mLabelDistanceFactor, -side * mLabelDistanceFactor ) );
     return;
