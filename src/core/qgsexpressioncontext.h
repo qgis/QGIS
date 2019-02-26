@@ -305,7 +305,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see hasFeature()
      * \since QGIS 3.0
      */
-    QgsFeature feature() const { return mFeature; }
+    const QgsFeature &feature() const { return mFeature; }
 
     /**
      * Convenience function for setting a feature for the scope. Any existing
@@ -640,7 +640,7 @@ class CORE_EXPORT QgsExpressionContext
      * Convenience function for retrieving the feature for the context, if set.
      * \see setFeature
      */
-    QgsFeature feature() const;
+    const QgsFeature &feature() const;
 
     /**
      * Convenience function for setting a fields for the context. The fields
@@ -731,6 +731,8 @@ class CORE_EXPORT QgsExpressionContext
     static const QString EXPR_CLUSTER_COLOR;
 
   private:
+
+    static const QgsFeature missingFeature;
 
     QList< QgsExpressionContextScope * > mStack;
     QStringList mHighlightedVariables;

@@ -1237,10 +1237,10 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
     }
   }
 
-  if ( context && context->hasFeature() )
+  if ( context )
   {
-    QgsFeature feature = context->feature();
-    if ( index >= 0 )
+    const QgsFeature &feature = context->feature();
+    if ( index >= 0 && feature.isValid() )
       return feature.attribute( index );
     else
       return feature.attribute( mName );

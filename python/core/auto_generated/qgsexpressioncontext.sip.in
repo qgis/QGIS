@@ -300,7 +300,7 @@ Returns true if the scope has a feature associated with it.
 .. versionadded:: 3.0
 %End
 
-    QgsFeature feature() const;
+    const QgsFeature &feature() const;
 %Docstring
 Sets the feature associated with the scope.
 
@@ -677,7 +677,7 @@ Returns true if the context has a feature associated with it.
 .. versionadded:: 3.0
 %End
 
-    QgsFeature feature() const;
+    const QgsFeature &feature() const;
 %Docstring
 Convenience function for retrieving the feature for the context, if set.
 
