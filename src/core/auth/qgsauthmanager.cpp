@@ -140,12 +140,14 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
       // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
       // Right about now is a good time to re-evaluate your selected career ;)
-      connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName, this ]
+      QMetaObject::Connection connection = connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName, this ]
       {
         QMutexLocker locker( mMutex );
-        QgsDebugMsgLevel( QStringLiteral( "Removing outdated connection to %1 on thread exit" ).arg( connectionName ), 2 );
         QSqlDatabase::removeDatabase( connectionName );
+        mConnectedThreads.remove( QThread::currentThread() );
       }, Qt::DirectConnection );
+
+      mConnectedThreads.insert( QThread::currentThread(), connection );
     }
   }
   else
@@ -2961,6 +2963,15 @@ void QgsAuthManager::tryToStartDbErase()
 
 QgsAuthManager::~QgsAuthManager()
 {
+  QMutexLocker locker( mMutex );
+  QMapIterator<QThread *, QMetaObject::Connection> iterator( mConnectedThreads );
+  while ( iterator.hasNext() )
+  {
+    iterator.next();
+    iterator.key()->disconnect( iterator.value() );
+  }
+  locker.unlock();
+
   if ( !isDisabled() )
   {
     delete QgsAuthMethodRegistry::instance();
