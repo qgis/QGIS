@@ -1240,10 +1240,13 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
   if ( context )
   {
     const QgsFeature &feature = context->feature();
-    if ( index >= 0 && feature.isValid() )
-      return feature.attribute( index );
-    else
-      return feature.attribute( mName );
+    if ( feature.isValid() )
+    {
+      if ( index >= 0 )
+        return feature.attribute( index );
+      else
+        return feature.attribute( mName );
+    }
   }
   return QVariant( '[' + mName + ']' );
 }
