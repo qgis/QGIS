@@ -200,7 +200,7 @@ Returns the factor of map units per pixel for symbols with size given in map uni
 
 .. seealso:: :py:func:`setMapUnitsPerPixel`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.8
 %End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
@@ -209,7 +209,7 @@ Sets the the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from t
 
 .. seealso:: :py:func:`mapUnitsPerPixel`
 
-.. versionadded:: 3.6
+.. versionadded:: 3.8
 %End
 
     int dpi() const;
