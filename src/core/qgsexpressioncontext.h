@@ -732,8 +732,6 @@ class CORE_EXPORT QgsExpressionContext
 
   private:
 
-    static const QgsFeature missingFeature;
-
     QList< QgsExpressionContextScope * > mStack;
     QStringList mHighlightedVariables;
     QStringList mHighlightedFunctions;

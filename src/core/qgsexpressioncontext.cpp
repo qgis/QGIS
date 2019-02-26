@@ -18,7 +18,7 @@
 #include "qgsxmlutils.h"
 #include "qgsexpression.h"
 
-const QgsFeature QgsExpressionContext::missingFeature;
+const QgsFeature missingFeature;
 
 const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );
