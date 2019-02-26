@@ -898,7 +898,7 @@ IMAGE_PATH             =
 # need to set EXTENSION_MAPPING for the extension otherwise the files are not
 # properly processed by doxygen.
 
-INPUT_FILTER           = "sed -e 's/TRUE/\\c true/' -e 's/FALSE/\\c false/'" -e 's/NULLPTR/\\c nullptr/'"
+INPUT_FILTER           = "sed -e 's/TRUE/\\c true/' -e 's/FALSE/\\c false/' -e 's/NULLPTR/\\c nullptr/'"
 
 # The FILTER_PATTERNS tag can be used to specify filters on a per file pattern
 # basis. Doxygen will compare the file name with each pattern and apply the
