@@ -40,6 +40,9 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 
+#include <QFileInfo>
+#include <QDir>
+
 class TestQgs3DRendering : public QObject
 {
     Q_OBJECT
@@ -399,15 +402,15 @@ void TestQgs3DRendering::testAnimationExport()
 {
   QgsRectangle fullExtent = mLayerDtm->extent();
 
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  Qgs3DMapSettings map;
+  map.setCrs( mProject->crs() );
+  map.setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map.setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map.crs() );
   flatTerrain->setExtent( fullExtent );
-  map->setTerrainGenerator( flatTerrain );
+  map.setTerrainGenerator( flatTerrain );
 
   Qgs3DAnimationSettings animSettings;
   Qgs3DAnimationSettings::Keyframes keyframes;
@@ -425,7 +428,7 @@ void TestQgs3DRendering::testAnimationExport()
 
   bool success = Qgs3DUtils::exportAnimation(
                    animSettings,
-                   *map,
+                   map,
                    1,
                    dir,
                    "test3danimation###.png",
@@ -434,7 +437,7 @@ void TestQgs3DRendering::testAnimationExport()
                    nullptr );
 
   QVERIFY( success );
-
+  QVERIFY( QFileInfo( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ).exists() );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

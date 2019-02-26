@@ -64,7 +64,7 @@ class _3D_EXPORT Qgs3DUtils
      * \param framesPerSecond number of frames per second to export
      * \param outputDirectory output directory where to export frames
      * \param fileNameTemplate template for exporting the frames.
-     *        Must be in format prefix####.<format>, where number of
+     *        Must be in format prefix####.format, where number of
      *        # represents how many 0 should be left-padded to the frame number
      *        e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
      * \param outputSize size of the frame in pixels
