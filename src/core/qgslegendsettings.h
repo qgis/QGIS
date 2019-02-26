@@ -180,12 +180,14 @@ class CORE_EXPORT QgsLegendSettings
     /**
      * Returns the factor of map units per pixel for symbols with size given in map units calculated by mDpi and mMmPerMapUnit
      * \see setMapUnitsPerPixel()
+     * \since QGIS 3.8
      */
     double mapUnitsPerPixel() const;
 
     /**
      * Sets the the mMmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
      * \see mapUnitsPerPixel()
+     * \since QGIS 3.8
      */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
 
