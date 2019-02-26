@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT Triangulation
 
     /**
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
-     * Returns TRUE in case of success and flase in case of failure
+     * Returns TRUE in case of success and FALSE in case of failure
      */
     virtual bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) = 0;
 
