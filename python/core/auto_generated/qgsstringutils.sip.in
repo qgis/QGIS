@@ -32,8 +32,8 @@ Constructor for QgsStringReplacement.
 
 :param match: string to match
 :param replacement: string to replace match with
-:param caseSensitive: set to true for a case sensitive match
-:param wholeWordOnly: set to true to match complete words only, or false to allow partial word matches
+:param caseSensitive: set to ``True`` for a case sensitive match
+:param wholeWordOnly: set to ``True`` to match complete words only, or ``False`` to allow partial word matches
 %End
 
     QString match() const;
@@ -48,12 +48,12 @@ Returns the string to replace matches with
 
     bool caseSensitive() const;
 %Docstring
-Returns true if match is case sensitive
+Returns ``True`` if match is case sensitive
 %End
 
     bool wholeWordOnly() const;
 %Docstring
-Returns true if match only applies to whole words, or false if partial word matches are permitted
+Returns ``True`` if match only applies to whole words, or ``False`` if partial word matches are permitted
 %End
 
     QString process( const QString &input ) const;
@@ -209,7 +209,7 @@ one string to another.
 
 :param string1: first string
 :param string2: second string
-:param caseSensitive: set to true for case sensitive comparison
+:param caseSensitive: set to ``True`` for case sensitive comparison
 
 :return: edit distance. Lower distances indicate more similar strings.
 %End
@@ -222,7 +222,7 @@ of "ABABC" and "BABCA" is "ABC".
 
 :param string1: first string
 :param string2: second string
-:param caseSensitive: set to true for case sensitive comparison
+:param caseSensitive: set to ``True`` for case sensitive comparison
 
 :return: longest common substring
 %End
@@ -235,7 +235,7 @@ strings must be the same length.
 
 :param string1: first string
 :param string2: second string
-:param caseSensitive: set to true for case sensitive comparison
+:param caseSensitive: set to ``True`` for case sensitive comparison
 
 :return: Hamming distance between strings, or -1 if strings are different lengths.
 %End
@@ -256,7 +256,7 @@ Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to 
 links.
 
 :param string: string to insert links into
-:param foundLinks: if specified, will be set to true if any links were inserted into the string
+:param foundLinks: if specified, will be set to ``True`` if any links were inserted into the string
 
 :return: string with inserted links
 
@@ -268,8 +268,8 @@ links.
 Automatically wraps a ``string`` by inserting new line characters at appropriate locations in the string.
 
 The ``length`` argument specifies either the minimum or maximum length of lines desired, depending
-on whether ``useMaxLineLength`` is true. If ``useMaxLineLength`` is true, then the string will be wrapped
-so that each line ideally will not exceed ``length`` of characters. If ``useMaxLineLength`` is false, then
+on whether ``useMaxLineLength`` is true. If ``useMaxLineLength`` is ``True``, then the string will be wrapped
+so that each line ideally will not exceed ``length`` of characters. If ``useMaxLineLength`` is ``False``, then
 the string will be wrapped so that each line will ideally exceed ``length`` of characters.
 
 A custom delimiter can be specified to use instead of space characters.

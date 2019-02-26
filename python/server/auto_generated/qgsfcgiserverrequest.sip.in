@@ -29,7 +29,7 @@ Class defining fcgi request
 
     bool hasError() const;
 %Docstring
-Returns true if an error occurred during initialization
+Returns ``True`` if an error occurred during initialization
 %End
 
 };

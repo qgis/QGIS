@@ -66,7 +66,7 @@ Returns the title for the color ramp dialog window.
 %Docstring
 Returns whether the button accepts live updates from :py:class:`QgsColorRampDialog`.
 
-:return: true if the button will be accepted immediately when the dialog's color ramp changes
+:return: ``True`` if the button will be accepted immediately when the dialog's color ramp changes
 
 .. seealso:: :py:func:`setAcceptLiveUpdates`
 %End
@@ -76,7 +76,7 @@ Returns whether the button accepts live updates from :py:class:`QgsColorRampDial
 Sets whether the button accepts live updates from :py:class:`QgsColorRampDialog`. Live updates may cause changes
 that are not undoable on QColorRampDialog cancel.
 
-:param accept: set to true to enable live updates
+:param accept: set to ``True`` to enable live updates
 
 .. seealso:: :py:func:`acceptLiveUpdates`
 %End
@@ -86,7 +86,7 @@ that are not undoable on QColorRampDialog cancel.
 Sets whether the drop-down menu should be shown for the button. The default behavior is to
 show the menu.
 
-:param showMenu: set to false to hide the drop-down menu
+:param showMenu: set to ``False`` to hide the drop-down menu
 
 .. seealso:: :py:func:`showMenu`
 %End
@@ -95,7 +95,7 @@ show the menu.
 %Docstring
 Returns whether the drop-down menu is shown for the button.
 
-:return: true if drop-down menu is shown
+:return: ``True`` if drop-down menu is shown
 
 .. seealso:: :py:func:`setShowMenu`
 %End
@@ -126,7 +126,7 @@ Returns a copy of the default color ramp for the button, which is shown in the b
 %Docstring
 Sets whether a random colors option is shown in the button's drop-down menu.
 
-:param showRandom: set to true to show a random colors option
+:param showRandom: set to ``True`` to show a random colors option
 
 .. seealso:: :py:func:`showRandomColorRamp`
 %End
@@ -140,7 +140,7 @@ Returns whether random colors option is shown in the button's drop-down menu.
 
     bool isRandomColorRamp() const;
 %Docstring
-Returns true if the current color is null.
+Returns ``True`` if the current color is null.
 
 .. seealso:: :py:func:`setShowNull`
 
@@ -151,7 +151,7 @@ Returns true if the current color is null.
 %Docstring
 Sets whether a set to null (clear) option is shown in the button's drop-down menu.
 
-:param showNull: set to true to show a null option
+:param showNull: set to ``True`` to show a null option
 
 .. seealso:: :py:func:`showNull`
 
@@ -169,7 +169,7 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
 
     bool isNull() const;
 %Docstring
-Returns true if the current color is null.
+Returns ``True`` if the current color is null.
 
 .. seealso:: :py:func:`setShowNull`
 
@@ -202,14 +202,14 @@ based on the context.
 %Docstring
 Sets whether the color ramp button only shows gradient type ramps
 
-:param gradientonly: set to true to show only gradient type ramps
+:param gradientonly: set to ``True`` to show only gradient type ramps
 
 .. seealso:: :py:func:`showGradientOnly`
 %End
 
     bool showGradientOnly() const;
 %Docstring
-Returns true if the color ramp button only shows gradient type ramps
+Returns ``True`` if the color ramp button only shows gradient type ramps
 
 .. seealso:: :py:func:`setShowGradientOnly`
 %End

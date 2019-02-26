@@ -30,7 +30,7 @@ Utility functions for use with processing classes.
 Returns a list of raster layers from a ``project`` which are compatible with the processing
 framework.
 
-If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleVectorLayers`
@@ -52,7 +52,7 @@ If the ``sourceTypes`` list is non-empty then the layers will be sorted so that 
 layers with the specified source type included in the list will be returned. Leaving the ``sourceTypes``
 list empty will cause all vector layers, regardless of their geometry type, to be returned.
 
-If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleRasterLayers`
@@ -67,7 +67,7 @@ value.
 Returns a list of mesh layers from a ``project`` which are compatible with the processing
 framework.
 
-If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleRasterLayers`
@@ -84,7 +84,7 @@ value.
 Returns a list of map layers from a ``project`` which are compatible with the processing
 framework.
 
-If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleRasterLayers`
@@ -107,7 +107,7 @@ Interprets a string as a map layer within the supplied ``context``.
 The method will attempt to
 load a layer matching the passed ``string``. E.g. if the string matches a layer ID or name
 within the context's project or temporary layer store then this layer will be returned.
-If the string is a file path and ``allowLoadingNewLayers`` is true, then the layer at this
+If the string is a file path and ``allowLoadingNewLayers`` is ``True``, then the layer at this
 file path will be loaded and added to the context's temporary layer store.
 Ownership of the layer remains with the ``context`` or the context's current project.
 
@@ -288,9 +288,9 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
 %Docstring
 Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
 and processing ``context``.
-Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is false,
+Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is ``False``,
 ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
-If ``ownsOriginalSource`` is true, then this object will take ownership of ``originalSource``.
+If ``ownsOriginalSource`` is ``True``, then this object will take ownership of ``originalSource``.
 %End
 
     ~QgsProcessingFeatureSource();

@@ -49,7 +49,7 @@ Convert current project for offline editing
 
     bool isOfflineProject() const;
 %Docstring
-Returns true if current project is offline
+Returns ``True`` if current project is offline
 %End
 
     void synchronize();

@@ -334,7 +334,7 @@ exported.
 
 Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 
-The function will return true if the output was successfully georeferenced.
+The function will return ``True`` if the output was successfully georeferenced.
 
 .. seealso:: :py:func:`computeWorldFileParameters`
 %End

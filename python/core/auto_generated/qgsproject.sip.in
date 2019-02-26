@@ -74,7 +74,7 @@ Returns the project's title.
 
     bool isDirty() const;
 %Docstring
-Returns true if the project has been modified since the last write()
+Returns ``True`` if the project has been modified since the last write()
 %End
 
     void setFileName( const QString &name );
@@ -239,14 +239,14 @@ Reads given project file from the given file.
 
 :param filename: name of project file to read
 
-:return: true if project file has been read successfully
+:return: ``True`` if project file has been read successfully
 %End
 
     bool read();
 %Docstring
 Reads the project from its currently associated file (see fileName() ).
 
-:return: true if project file has been read successfully
+:return: ``True`` if project file has been read successfully
 %End
 
     bool readLayer( const QDomNode &layerNode );
@@ -268,7 +268,7 @@ Writes the project to a file.
 
 :param filename: destination file
 
-:return: true if project was written successfully
+:return: ``True`` if project was written successfully
 
 .. note::
 
@@ -276,7 +276,7 @@ Writes the project to a file.
 
 .. note::
 
-   isDirty() will be set to false if project is successfully written
+   isDirty() will be set to ``False`` if project is successfully written
 
 .. versionadded:: 3.0
 %End
@@ -285,11 +285,11 @@ Writes the project to a file.
 %Docstring
 Writes the project to its current associated file (see fileName() ).
 
-:return: true if project was written successfully
+:return: ``True`` if project was written successfully
 
 .. note::
 
-   isDirty() will be set to false if project is successfully written
+   isDirty() will be set to ``False`` if project is successfully written
 %End
 
     bool writeEntry( const QString &scope, const QString &key, bool value ) /PyName=writeEntryBool/;
@@ -749,7 +749,7 @@ Returns a map of all registered layers by layer ID.
 
     bool isZipped() const;
 %Docstring
-Returns true if the project comes from a zip archive, false otherwise.
+Returns ``True`` if the project comes from a zip archive, ``False`` otherwise.
 %End
 
 
@@ -760,12 +760,12 @@ Returns true if the project comes from a zip archive, false otherwise.
 Add a list of layers to the map of loaded layers.
 
 The layersAdded() and layerWasAdded() signals will always be emitted.
-The legendLayersAdded() signal is emitted only if addToLegend is true.
+The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
 
 :param mapLayers: A list of layer which should be added to the registry
-:param addToLegend: If true (by default), the layers will be added to the
+:param addToLegend: If ``True`` (by default), the layers will be added to the
                     legend and to the main canvas. If you have a private
-                    layer you can set this parameter to false to hide it.
+                    layer you can set this parameter to ``False`` to hide it.
 
 :return: a list of the map layers that were added
          successfully. If a layer or already exists in the registry,
@@ -793,14 +793,14 @@ The legendLayersAdded() signal is emitted only if addToLegend is true.
 Add a layer to the map of loaded layers.
 
 The layersAdded() and layerWasAdded() signals will always be emitted.
-The legendLayersAdded() signal is emitted only if addToLegend is true.
+The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
 If you are adding multiple layers at once, you should use
 addMapLayers() instead.
 
 :param mapLayer: A layer to add to the registry
-:param addToLegend: If true (by default), the layer will be added to the
+:param addToLegend: If ``True`` (by default), the layer will be added to the
                     legend and to the main canvas. If you have a private
-                    layer you can set this parameter to false to hide it.
+                    layer you can set this parameter to ``False`` to hide it.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
 
@@ -951,14 +951,14 @@ data provider has to determine it. Moreover, when this option is
 activated, primary key unicity is not checked for views and
 materialized views with Postgres provider.
 
-:param trust: True to trust the project, false otherwise
+:param trust: ``True`` to trust the project, ``False`` otherwise
 
 .. versionadded:: 3.0
 %End
 
     bool trustLayerMetadata() const;
 %Docstring
-Returns true if the trust option is activated, false otherwise. This
+Returns ``True`` if the trust option is activated, ``False`` otherwise. This
 option allows indicateing if the extent has to be read from the XML
 document when data source has no metadata or if the data provider has
 to determine it. Moreover, when this option is activated, primary key
@@ -1387,7 +1387,7 @@ advertised by this signal.
 %Docstring
 Emitted when the project dirty status changes.
 
-:param dirty: True if the project is in a dirty state and has pending unsaved changes.
+:param dirty: ``True`` if the project is in a dirty state and has pending unsaved changes.
 
 .. versionadded:: 3.2
 %End

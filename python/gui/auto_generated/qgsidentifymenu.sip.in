@@ -102,7 +102,7 @@ define if attribute actions(1) and map layer actions(2) can be listed and run fr
 
     void setResultsIfExternalAction( bool resultsIfExternalAction );
 %Docstring
-setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
+setResultsIfExternalAction if set to ``False`` (default) the menu will not return any results if an external action has been triggered
 
 .. note::
 

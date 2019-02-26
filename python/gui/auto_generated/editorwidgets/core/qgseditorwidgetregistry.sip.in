@@ -144,7 +144,7 @@ Register a new widget factory with the given id
 :param widgetId: The id which will be used later to refer to this widget type
 :param widgetFactory: The factory which will create this widget type
 
-:return: true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
+:return: ``True``, if successful, ``False``, if the widgetId is already in use or widgetFactory is NULL
 %End
 
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin );

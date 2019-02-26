@@ -137,11 +137,11 @@ Returns the targeted feature corresponding to the joined feature.
 
     bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
 %Docstring
-Returns true if the join information is about auxiliary layer, false otherwise
+Returns ``True`` if the join information is about auxiliary layer, ``False`` otherwise
 
 :param info: The join information
 
-:return: true if the join information is about auxiliary layer, false otherwise
+:return: ``True`` if the join information is about auxiliary layer, ``False`` otherwise
 
 
 .. versionadded:: 3.0
@@ -166,7 +166,7 @@ created nor added.
 :param features: The list of features added in the target layer
 :param flags: Unused parameter
 
-:return: false if an error happened, true otherwise
+:return: ``False`` if an error happened, ``True`` otherwise
 
 
 .. versionadded:: 3.0
@@ -184,7 +184,7 @@ created if its fields are not empty.
 :param newValue: The new value of the attribute
 :param oldValue: The old value of the attribute
 
-:return: false if an error happened, true otherwise
+:return: ``False`` if an error happened, ``True`` otherwise
 
 
 .. versionadded:: 3.0
@@ -201,7 +201,7 @@ created if its fields are not empty.
 :param newValues: The new values for attributes
 :param oldValues: The old values for attributes
 
-:return: false if an error happened, true otherwise
+:return: ``False`` if an error happened, ``True`` otherwise
 
 
 .. versionadded:: 3.0
@@ -214,7 +214,7 @@ parameter is the one coming from the target layer.
 
 :param fid: The feature id from the target layer to delete
 
-:return: false if an error happened, true otherwise
+:return: ``False`` if an error happened, ``True`` otherwise
 
 
 .. versionadded:: 3.0
@@ -227,7 +227,7 @@ in a parameter are those coming from the target layer.
 
 :param fids: Feature ids from the target layer to delete
 
-:return: false if an error happened, true otherwise
+:return: ``False`` if an error happened, ``True`` otherwise
 
 
 .. versionadded:: 3.0

@@ -45,7 +45,7 @@ This will return a HTML table.
 Formats the "Extents" section according to a ``metadata`` object (extent and temporal).
 This will return a HTML table.
 
-:param showSpatialExtent: flag if the spatial extent needs to be displayed. Default to true.
+:param showSpatialExtent: flag if the spatial extent needs to be displayed. Default to ``True``.
 %End
 
     QString identificationSectionHtml() const;

@@ -47,7 +47,7 @@ Returns cached document (or 0 if document not in cache) like capabilities
 :param request: the request used to generate the document to provider parameters or data
 :param accessControl: the access control to identify different documents for the same request provided by server interface
 
-:return: true if the document has been found in cache and the document's content set
+:return: ``True`` if the document has been found in cache and the document's content set
 %End
 
     bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
@@ -59,7 +59,7 @@ Updates or inserts the document in cache like capabilities
 :param request: the request used to generate the document to provider parameters or data
 :param accessControl: the access control to identify different documents for the same request provided by server interface
 
-:return: true if the document has been cached
+:return: ``True`` if the document has been cached
 %End
 
     bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
@@ -70,7 +70,7 @@ Deletes the cached document
 :param request: the request used to generate the document to provider parameters or data
 :param accessControl: the access control to identify different documents for the same request provided by server interface
 
-:return: true if the document has been deleted
+:return: ``True`` if the document has been deleted
 %End
 
     bool deleteCachedDocuments( const QgsProject *project ) const;
@@ -79,7 +79,7 @@ Deletes all cached documents for a QGIS project
 
 :param project: the project used to generate the document to provide path
 
-:return: true if the document has been deleted
+:return: ``True`` if the document has been deleted
 %End
 
     QByteArray getCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
@@ -102,7 +102,7 @@ Updates or inserts the image in cache like tiles
 :param request: the request used to generate the image to provider parameters or data
 :param accessControl: the access control to identify different documents for the same request provided by server interface
 
-:return: true if the image has been cached
+:return: ``True`` if the image has been cached
 %End
 
     bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
@@ -113,7 +113,7 @@ Deletes the cached image
 :param request: the request used to generate the image to provider parameters or data
 :param accessControl: the access control to identify different documents for the same request provided by server interface
 
-:return: true if the image has been deleted
+:return: ``True`` if the image has been deleted
 %End
 
     bool deleteCachedImages( const QgsProject *project ) const;
@@ -122,7 +122,7 @@ Deletes all cached images for a QGIS project
 
 :param project: the project used to generate the images to provide path
 
-:return: true if the images have been deleted
+:return: ``True`` if the images have been deleted
 %End
 
     void registerServerCache( QgsServerCacheFilter *serverCache, int priority = 0 );

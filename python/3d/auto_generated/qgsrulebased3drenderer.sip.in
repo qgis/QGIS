@@ -110,14 +110,14 @@ A human readable description for this rule
 %Docstring
 Returns if this rule is active
 
-:return: True if the rule is active
+:return: ``True`` if the rule is active
 %End
 
         bool isElse() const;
 %Docstring
 Check if this rule is an ELSE rule
 
-:return: True if this rule is an else rule
+:return: ``True`` if this rule is an else rule
 %End
 
         QString ruleKey() const;
@@ -155,7 +155,7 @@ Sets if this rule is active
 %Docstring
 Sets if this rule is an ELSE rule
 
-:param iselse: If true, this rule is an ELSE rule
+:param iselse: If ``True``, this rule is an ELSE rule
 %End
 
         void setRuleKey( const QString &key );

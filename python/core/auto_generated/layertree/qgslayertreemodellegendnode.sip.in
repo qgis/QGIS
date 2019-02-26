@@ -57,7 +57,7 @@ Returns data associated with the item. Must be implemented in derived class.
 
     virtual bool setData( const QVariant &value, int role );
 %Docstring
-Sets some data associated with the item. Default implementation does nothing and returns false.
+Sets some data associated with the item. Default implementation does nothing and returns ``False``.
 %End
 
     virtual bool isEmbeddedInParent() const;

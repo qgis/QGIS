@@ -47,7 +47,7 @@ a set of layers.
 %Docstring
 Create a new layer/feature combination.
 The layer is defined by ``pool``, ``feature`` needs to be from this layer.
-If ``useMapCrs`` is True, geometries will be reprojected to the mapCrs defined
+If ``useMapCrs`` is ``True``, geometries will be reprojected to the mapCrs defined
 in ``context``.
 %End
 

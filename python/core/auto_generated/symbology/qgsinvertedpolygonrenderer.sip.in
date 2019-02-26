@@ -58,7 +58,7 @@ This will here collect features. The actual rendering will be postponed to stopR
 :param selected: whether this feature has been selected (this will add decorations)
 :param drawVertexMarker: whether this feature has vertex markers (in edit mode usually)
 
-:return: true if the rendering was OK
+:return: ``True`` if the rendering was OK
 %End
 
     virtual void stopRender( QgsRenderContext &context );
@@ -152,7 +152,7 @@ Creates a renderer out of an XML, for loading
     bool preprocessingEnabled() const;
 %Docstring
 
-:return: true if the geometries are to be preprocessed (merged with an union) before rendering.
+:return: ``True`` if the geometries are to be preprocessed (merged with an union) before rendering.
 %End
 
     void setPreprocessingEnabled( bool enabled );

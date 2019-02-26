@@ -49,7 +49,7 @@ result of an expression.
 :param fieldOrExpression: field name or expression to be evaluated
 :param feedback: optional feedback object to allow cancellation of calculation
 
-:return: true if values were successfully set
+:return: ``True`` if values were successfully set
 %End
 
     double optimalBinWidth() const;

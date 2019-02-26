@@ -43,7 +43,7 @@ Returns if it valid: if the widget type is handled and if the widget is not stil
 %Docstring
 search for a text pattern and highlight the widget if the text is found
 
-:return: true if the text pattern is found
+:return: ``True`` if the text pattern is found
 %End
 
     QWidget *widget();
@@ -60,14 +60,14 @@ Returns the widget
 
     virtual bool searchText( const QString &text ) = 0;
 %Docstring
-Search for the ``text`` in the widget and return true if it was found
+Search for the ``text`` in the widget and return ``True`` if it was found
 %End
 
     virtual bool highlightText( const QString &text ) = 0;
 %Docstring
 Highlight the ``text`` in the widget.
 
-:return: true if the text could be highlighted.
+:return: ``True`` if the text could be highlighted.
 %End
 
     virtual void reset() = 0;

@@ -113,7 +113,7 @@ consistent with that required by the cache.
 %Docstring
 Triggered after remote content (i.e. HTTP linked content at the given ``url``) has been fetched.
 
-The ``success`` argument will be true if the content was successfully fetched, or false if
+The ``success`` argument will be ``True`` if the content was successfully fetched, or ``False`` if
 it was not fetched successfully.
 %End
 

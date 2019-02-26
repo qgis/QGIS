@@ -63,7 +63,7 @@ Returns the current collapsed state of this group box
 %Docstring
 Collapse or uncollapse this groupbox
 
-:param collapse: Will collapse on true and uncollapse on false
+:param collapse: Will collapse on ``True`` and uncollapse on ``False``
 %End
 
     QString syncGroup() const;
@@ -78,12 +78,12 @@ Named group which synchronizes collapsing action when triangle is clicked while 
 
     void setScrollOnExpand( bool scroll );
 %Docstring
-Sets this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+Sets this to ``False`` to not automatically scroll parent QScrollArea to this widget's contents when expanded
 %End
 
     bool scrollOnExpand();
 %Docstring
-If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
+If this is set to ``False`` the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
 %End
 
   signals:
@@ -150,12 +150,12 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 
     void setSaveCollapsedState( bool save );
 %Docstring
-Sets this to false to not save/restore collapsed state
+Sets this to ``False`` to not save/restore collapsed state
 %End
 
     void setSaveCheckedState( bool save );
 %Docstring
-Set this to true to save/restore checked state
+Set this to ``True`` to save/restore checked state
 
 .. note::
 

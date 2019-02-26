@@ -22,7 +22,7 @@ class QgsVectorLayerEditBuffer : QObject
 
     virtual bool isModified() const;
 %Docstring
-Returns true if the provider has been modified since the last commit
+Returns ``True`` if the provider has been modified since the last commit
 %End
 
 
@@ -32,7 +32,7 @@ Adds a feature
 
 :param f: feature to add
 
-:return: True in case of success and False in case of error
+:return: ``True`` in case of success and False in case of error
 %End
 
     virtual bool addFeatures( QgsFeatureList &features );
@@ -64,7 +64,7 @@ Changed an attribute value (but does not commit it)
 %Docstring
 Changes values of attributes (but does not commit it).
 
-:return: true if attributes are well updated, false otherwise
+:return: ``True`` if attributes are well updated, ``False`` otherwise
 
 .. versionadded:: 3.0
 %End
@@ -121,7 +121,7 @@ Returns a map of new features which are not committed.
 
     bool isFeatureAdded( QgsFeatureId id ) const;
 %Docstring
-Returns true if the specified feature ID has been added but not committed.
+Returns ``True`` if the specified feature ID has been added but not committed.
 
 :param id: feature ID
 
@@ -139,7 +139,7 @@ Returns a map of features with changed attributes values which are not committed
 
     bool isFeatureAttributesChanged( QgsFeatureId id ) const;
 %Docstring
-Returns true if the specified feature ID has had an attribute changed but not committed.
+Returns ``True`` if the specified feature ID has had an attribute changed but not committed.
 
 :param id: feature ID
 
@@ -157,7 +157,7 @@ Returns a list of deleted attributes fields which are not committed. The list is
 
     bool isAttributeDeleted( int index ) const;
 %Docstring
-Returns true if the specified attribute has been deleted but not committed.
+Returns ``True`` if the specified attribute has been deleted but not committed.
 
 :param index: attribute index
 
@@ -180,7 +180,7 @@ Returns a map of features with changed geometries which are not committed.
 
     bool isFeatureGeometryChanged( QgsFeatureId id ) const;
 %Docstring
-Returns true if the specified feature ID has had its geometry changed but not committed.
+Returns ``True`` if the specified feature ID has had its geometry changed but not committed.
 
 :param id: feature ID
 
@@ -198,7 +198,7 @@ Returns a list of deleted feature IDs which are not committed.
 
     bool isFeatureDeleted( QgsFeatureId id ) const;
 %Docstring
-Returns true if the specified feature ID has been deleted but not committed.
+Returns ``True`` if the specified feature ID has been deleted but not committed.
 
 :param id: feature ID
 

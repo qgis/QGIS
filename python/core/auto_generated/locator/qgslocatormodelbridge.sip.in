@@ -49,12 +49,12 @@ Returns the proxy model
 
     bool hasQueueRequested() const;
 %Docstring
-Returns true if some text to be search is pending in the queue
+Returns ``True`` if some text to be search is pending in the queue
 %End
 
     bool isRunning() const;
 %Docstring
-Returns true if the a search is currently running
+Returns ``True`` if the a search is currently running
 %End
 
     void triggerResult( const QModelIndex &index,  const int actionId = -1 );

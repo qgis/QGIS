@@ -153,14 +153,14 @@ Add a child element to this container. This may be another container, a field or
 %Docstring
 Determines if this container is rendered as collapsible group box or tab in a tabwidget
 
-:param isGroupBox: If true, this will be a group box
+:param isGroupBox: If ``True``, this will be a group box
 %End
 
     virtual bool isGroupBox() const;
 %Docstring
 Returns if this container is going to be rendered as a group box
 
-:return: True if it will be a group box, false if it will be a tab
+:return: ``True`` if it will be a group box, ``False`` if it will be a tab
 %End
 
     QList<QgsAttributeEditorElement *> children() const;
@@ -324,7 +324,7 @@ Initializes the relation from the id
 
 :param relManager: The relation manager to use for the initialization
 
-:return: true if the relation was found in the relationmanager
+:return: ``True`` if the relation was found in the relationmanager
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;

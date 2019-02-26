@@ -142,7 +142,7 @@ Converts a string to a double in a permissive way, e.g., allowing for incorrect
 numbers of digits between thousand separators
 
 :param string: string to convert
-:param ok: will be set to true if conversion was successful
+:param ok: will be set to ``True`` if conversion was successful
 
 :return: string converted to double if possible
 
@@ -157,7 +157,7 @@ Converts a string to an integer in a permissive way, e.g., allowing for incorrec
 numbers of digits between thousand separators
 
 :param string: string to convert
-:param ok: will be set to true if conversion was successful
+:param ok: will be set to ``True`` if conversion was successful
 
 :return: string converted to int if possible
 
@@ -172,7 +172,7 @@ Converts a string to an qlonglong in a permissive way, e.g., allowing for incorr
 numbers of digits between thousand separators
 
 :param string: string to convert
-:param ok: will be set to true if conversion was successful
+:param ok: will be set to ``True`` if conversion was successful
 
 :return: string converted to int if possible
 
@@ -199,7 +199,7 @@ Compares two QVariant values and returns whether they are equal, NULL values are
 :param lhs: first value
 :param rhs: second value
 
-:return: true if values are equal
+:return: ``True`` if values are equal
 %End
 
 

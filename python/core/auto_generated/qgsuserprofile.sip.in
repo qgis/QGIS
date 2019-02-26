@@ -67,7 +67,7 @@ Set the alias of the profile. The alias is a user friendly name.
 
 :param alias: A user friendly name for the profile.
 
-:return: True of setting the alias was successful.
+:return: ``True`` of setting the alias was successful.
 %End
 
     const QIcon icon() const;

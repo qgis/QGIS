@@ -89,28 +89,28 @@ Returns data of a stored style - accessed by its unique name
 %Docstring
 Add a style with given name and data
 
-:return: true on success (name is unique and style is valid)
+:return: ``True`` on success (name is unique and style is valid)
 %End
 
     bool addStyleFromLayer( const QString &name );
 %Docstring
 Add style by cloning the current one
 
-:return: true on success
+:return: ``True`` on success
 %End
 
     bool removeStyle( const QString &name );
 %Docstring
 Remove a stored style
 
-:return: true on success (style exists and it is not the last one)
+:return: ``True`` on success (style exists and it is not the last one)
 %End
 
     bool renameStyle( const QString &name, const QString &newName );
 %Docstring
 Rename a stored style to a different name
 
-:return: true on success (style exists and new name is unique)
+:return: ``True`` on success (style exists and new name is unique)
 %End
 
     QString currentStyle() const;
@@ -122,7 +122,7 @@ Returns name of the current style
 %Docstring
 Set a different style as the current style - will apply it to the layer
 
-:return: true on success
+:return: ``True`` on success
 %End
 
     bool setOverrideStyle( const QString &styleDef );
@@ -138,7 +138,7 @@ Restore the original store after a call to setOverrideStyle()
 
     bool isDefault( const QString &styleName ) const;
 %Docstring
-Returns true if this is the default style
+Returns ``True`` if this is the default style
 
 .. versionadded:: 3.0
 %End

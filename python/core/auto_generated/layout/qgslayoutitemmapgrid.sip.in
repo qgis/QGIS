@@ -697,7 +697,7 @@ of the map item the grid frame is drawn on.
 Sets whether the grid frame is drawn for a certain side of the map item.
 
 :param flag: flag for grid frame side
-:param on: set to true to draw grid frame on that side of the map
+:param on: set to ``True`` to draw grid frame on that side of the map
 
 .. seealso:: :py:func:`setFrameSideFlags`
 
@@ -725,7 +725,7 @@ item.
 
 :param flag: flag for grid frame side
 
-:return: true if grid frame should be drawn for that side of the map
+:return: ``True`` if grid frame should be drawn for that side of the map
 
 .. seealso:: :py:func:`setFrameSideFlags`
 

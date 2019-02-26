@@ -133,7 +133,7 @@ Constructor for QgsGradientColorRamp
 
 :param color1: start color, corresponding to a position of 0.0
 :param color2: end color, corresponding to a position of 1.0
-:param discrete: set to true for discrete interpolation instead of smoothly
+:param discrete: set to ``True`` for discrete interpolation instead of smoothly
                  interpolating between colors
 :param stops: optional list of additional color stops
 %End
@@ -198,7 +198,7 @@ Sets the gradient end color.
 
     bool isDiscrete() const;
 %Docstring
-Returns true if the gradient is using discrete interpolation, rather than
+Returns ``True`` if the gradient is using discrete interpolation, rather than
 smoothly interpolating between colors.
 
 .. seealso:: :py:func:`setDiscrete`
@@ -209,7 +209,7 @@ smoothly interpolating between colors.
 Sets whether the gradient should use discrete interpolation, rather than
 smoothly interpolating between colors.
 
-:param discrete: set to true to use discrete interpolation
+:param discrete: set to ``True`` to use discrete interpolation
 
 .. seealso:: :py:func:`convertToDiscrete`
 
@@ -221,8 +221,8 @@ smoothly interpolating between colors.
 Converts a gradient with existing color stops to or from discrete
 interpolation.
 
-:param discrete: set to true to convert the gradient stops to discrete,
-                 or false to convert them to smooth interpolation
+:param discrete: set to ``True`` to convert the gradient stops to discrete,
+                 or ``False`` to convert them to smooth interpolation
 
 .. seealso:: :py:func:`isDiscrete`
 %End

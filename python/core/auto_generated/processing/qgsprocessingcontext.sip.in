@@ -181,7 +181,7 @@ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the 
 
     bool willLoadLayerOnCompletion( const QString &layer ) const;
 %Docstring
-Returns true if the given ``layer`` (by ID or datasource) will be loaded into the current project
+Returns ``True`` if the given ``layer`` (by ID or datasource) will be loaded into the current project
 upon completion of the algorithm or model.
 
 .. seealso:: :py:func:`layersToLoadOnCompletion`

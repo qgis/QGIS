@@ -97,7 +97,7 @@ Returns whether item filtering is case sensitive.
 
     bool filterByLayerType() const;
 %Docstring
-Returns true if the model is filtered by map layer type.
+Returns ``True`` if the model is filtered by map layer type.
 
 .. seealso:: :py:func:`layerType`
 
@@ -116,7 +116,7 @@ Sets whether the model is filtered by map layer type.
     QgsMapLayer::LayerType layerType() const;
 %Docstring
 Returns the layer type to filter the model by. This is only used if
-filterByLayerType() is true.
+filterByLayerType() is ``True``.
 
 .. seealso:: :py:func:`setLayerType`
 
@@ -126,7 +126,7 @@ filterByLayerType() is true.
     void setLayerType( QgsMapLayer::LayerType type );
 %Docstring
 Sets the layer ``type`` to filter the model by. This is only used if
-filterByLayerType() is true.
+filterByLayerType() is ``True``.
 
 .. seealso:: :py:func:`layerType`
 

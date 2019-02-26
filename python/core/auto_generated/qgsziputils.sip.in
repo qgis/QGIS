@@ -17,12 +17,12 @@ namespace QgsZipUtils
 
   bool isZipFile( const QString &filename );
 %Docstring
-Returns true if the file name is a zipped file ( i.e with a '.qgz'
-extension, false otherwise.
+Returns ``True`` if the file name is a zipped file ( i.e with a '.qgz'
+extension, ``False`` otherwise.
 
 :param filename: The name of the file
 
-:return: true if the file is zipped, false otherwise
+:return: ``True`` if the file is zipped, ``False`` otherwise
 %End
 
   bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/ );
@@ -32,7 +32,7 @@ Unzip a zip file in an output directory.
 :param zip: The zip filename
 :param dir: The output directory
 
-:return: - false if the zip filename does not exist, the output directory
+:return: - ``False`` if the zip filename does not exist, the output directory
          - files: The absolute path of unzipped files
          does not exist or is not writable.
 

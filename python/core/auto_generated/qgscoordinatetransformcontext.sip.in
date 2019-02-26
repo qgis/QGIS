@@ -100,7 +100,7 @@ from the specified ``sourceCrs`` to the specified ``destinationCrs``.
 If either ``sourceTransformId`` or ``destinationTransformId`` is -1, then no datum transform is
 required for transformations for that source or destination.
 
-Returns true if the new transform pair was added successfully.
+Returns ``True`` if the new transform pair was added successfully.
 
 .. note::
 
@@ -124,7 +124,7 @@ Removes the source to destination datum transform pair for the specified ``sourc
     bool hasTransform( const QgsCoordinateReferenceSystem &source,
                        const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
-Returns true if the context has a valid datum transform to use
+Returns ``True`` if the context has a valid datum transform to use
 when transforming from the specified ``source`` CRS to ``destination`` CRS.
 
 .. note::
@@ -150,7 +150,7 @@ destination.
 %Docstring
 Reads the context's state from a DOM ``element``.
 
-Returns false if transforms stored in the XML are not available. In this case ``missingTransforms`` will be
+Returns ``False`` if transforms stored in the XML are not available. In this case ``missingTransforms`` will be
 filled with missing datum transform strings.
 
 .. seealso:: :py:func:`writeXml`

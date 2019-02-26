@@ -184,7 +184,7 @@ Returns the list of fields to ignore.
 
     bool hasSubset( bool blacklisted = true ) const;
 %Docstring
-Returns true if blacklisted fields is not empty or if a subset of names
+Returns ``True`` if blacklisted fields is not empty or if a subset of names
 has been set.
 
 .. versionadded:: 3.0

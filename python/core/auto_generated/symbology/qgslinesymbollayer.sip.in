@@ -104,7 +104,7 @@ Returns the units for lengths used in the custom dash pattern.
 
     bool drawInsidePolygon() const;
 %Docstring
-Returns true if the line should only be drawn inside polygons, and any portion
+Returns ``True`` if the line should only be drawn inside polygons, and any portion
 of the line which falls outside the polygon should be clipped away.
 
 This setting only has an effect when the line symbol is being
@@ -234,7 +234,7 @@ Create a new MarkerLineSymbolLayerV2 from SLD
 %Docstring
 Shall the marker be rotated.
 
-:return: True if the marker should be rotated.
+:return: ``True`` if the marker should be rotated.
 %End
 
     void setRotateMarker( bool rotate );

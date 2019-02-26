@@ -59,7 +59,7 @@ Set the attribute table model that backs this model
 
     void setSelectedOnTop( bool selectedOnTop );
 %Docstring
-Changes the sort order of the features. If set to true, selected features
+Changes the sort order of the features. If set to ``True``, selected features
 will be sorted on top, regardless of the current sort column
 
 :param selectedOnTop: Specify, if selected features should be sorted on top
@@ -69,7 +69,7 @@ will be sorted on top, regardless of the current sort column
 %Docstring
 Returns if selected features are currently shown on top
 
-:return: True if selected are shown on top
+:return: ``True`` if selected are shown on top
 %End
 
     virtual void setFilteredFeatures( const QgsFeatureIds &ids );
@@ -213,7 +213,7 @@ Emitted whenever the sort column is changed
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 %Docstring
-Returns true if the source row will be accepted
+Returns ``True`` if the source row will be accepted
 
 :param sourceRow: row from the source model
 :param sourceParent: parent index in the source model

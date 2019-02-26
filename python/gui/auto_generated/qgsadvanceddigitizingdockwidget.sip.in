@@ -89,7 +89,7 @@ Is any kind of lock mode enabled
 
         bool isRepeatingLock() const;
 %Docstring
-Returns true if a repeating lock is set for the constraint. Repeating locks are not
+Returns ``True`` if a repeating lock is set for the constraint. Repeating locks are not
 automatically cleared after a new point is added.
 
 .. seealso:: :py:func:`setRepeatingLock`
@@ -122,7 +122,7 @@ Set the lock mode
 Sets whether a repeating lock is set for the constraint. Repeating locks are not
 automatically cleared after a new point is added.
 
-:param repeating: set to true to set the lock to repeat automatically
+:param repeating: set to ``True`` to set the lock to repeat automatically
 
 .. seealso:: :py:func:`isRepeatingLock`
 
@@ -139,7 +139,7 @@ Set if the constraint should be treated relative
 Set the value of the constraint
 
 :param value: new value for constraint
-:param updateWidget: set to false to prevent automatically updating the associated widget's value
+:param updateWidget: set to ``False`` to prevent automatically updating the associated widget's value
 %End
 
         void toggleLocked();
@@ -181,7 +181,7 @@ Filter key events to e.g. toggle construction mode or adapt constraints
 %Docstring
 apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
 
-:return: false if no solution was found (invalid constraints)
+:return: ``False`` if no solution was found (invalid constraints)
 %End
 
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
@@ -196,7 +196,7 @@ If additional constraints are used, this will determine the angle to be locked d
 %Docstring
 unlock all constraints
 
-:param releaseRepeatingLocks: set to false to preserve the lock for any constraints set to repeating lock mode
+:param releaseRepeatingLocks: set to ``False`` to preserve the lock for any constraints set to repeating lock mode
 
 .. versionadded:: 3.0
 %End
@@ -242,7 +242,7 @@ Returns the ``CadConstraint`` on the Y coordinate
 %End
     bool commonAngleConstraint() const;
 %Docstring
-Returns true if a constraint on a common angle is active
+Returns ``True`` if a constraint on a common angle is active
 %End
 
     QgsPointLocator::Match mapPointMatch() const;

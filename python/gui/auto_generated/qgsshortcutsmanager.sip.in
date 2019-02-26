@@ -42,7 +42,7 @@ Automatically registers all QActions and QShortcuts which are children of the
 passed object.
 
 :param object: parent object containing actions and shortcuts to register
-:param recursive: set to true to recursively add child actions and shortcuts
+:param recursive: set to ``True`` to recursively add child actions and shortcuts
 
 .. seealso:: :py:func:`registerAllChildActions`
 
@@ -54,7 +54,7 @@ passed object.
 Automatically registers all QActions which are children of the passed object.
 
 :param object: parent object containing actions to register
-:param recursive: set to true to recursively add child actions
+:param recursive: set to ``True`` to recursively add child actions
 
 .. seealso:: :py:func:`registerAction`
 
@@ -68,7 +68,7 @@ Automatically registers all QActions which are children of the passed object.
 Automatically registers all QShortcuts which are children of the passed object.
 
 :param object: parent object containing shortcuts to register
-:param recursive: set to true to recursively add child shortcuts
+:param recursive: set to ``True`` to recursively add child shortcuts
 
 .. seealso:: :py:func:`registerShortcut`
 
@@ -85,7 +85,7 @@ Registers an action with the manager so the shortcut can be configured in GUI.
                identification.
 :param defaultShortcut: default key sequence for action
 
-:return: true if action was successfully registered
+:return: ``True`` if action was successfully registered
 
 .. seealso:: :py:func:`registerShortcut`
 
@@ -102,7 +102,7 @@ Registers a QShortcut with the manager so the shortcut can be configured in GUI.
                  identification.
 :param defaultSequence: default key sequence for shortcut
 
-:return: true if shortcut was successfully registered
+:return: ``True`` if shortcut was successfully registered
 
 .. seealso:: :py:func:`registerAction`
 
@@ -115,8 +115,8 @@ Removes an action from the manager.
 
 :param action: action to remove
 
-:return: true if action was previously registered in manager and has been removed, or
-         false if action was not previously registered in manager
+:return: ``True`` if action was previously registered in manager and has been removed, or
+         ``False`` if action was not previously registered in manager
 
 .. seealso:: :py:func:`registerAction`
 
@@ -129,8 +129,8 @@ Removes a shortcut from the manager.
 
 :param shortcut: shortcut to remove
 
-:return: true if shortcut was previously registered in manager and has been removed, or
-         false if shortcut was not previously registered in manager
+:return: ``True`` if shortcut was previously registered in manager and has been removed, or
+         ``False`` if shortcut was not previously registered in manager
 
 .. seealso:: :py:func:`registerShortcut`
 

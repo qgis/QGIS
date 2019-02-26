@@ -125,7 +125,7 @@ Will return a wrapper for a given widget
 
     virtual bool valid() const = 0;
 %Docstring
-Returns true if the widget has been properly initialized.
+Returns ``True`` if the widget has been properly initialized.
 This acts as hint for the calling party if this wrapper can be used
 after initializing it.
 If it cannot be used this is a hint to the caller that he may try to find

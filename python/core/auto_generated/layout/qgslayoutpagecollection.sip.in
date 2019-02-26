@@ -102,7 +102,7 @@ Returns whether the specified ``page`` number should be included in exports of t
 
 .. warning::
 
-   This will always return true unless the layout is being currently exported -- it cannot
+   This will always return ``True`` unless the layout is being currently exported -- it cannot
    be used in advance to determine whether a given page will be exported!
 
 .. seealso:: :py:func:`pageIsEmpty`
@@ -244,7 +244,7 @@ is in layout units.
 
     bool hasUniformPageSizes() const;
 %Docstring
-Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+Returns ``True`` if the layout has uniform page sizes, e.g. all pages are the same size.
 
 This method does not consider differing units as non-uniform sizes, only the actual
 physical size of the pages.

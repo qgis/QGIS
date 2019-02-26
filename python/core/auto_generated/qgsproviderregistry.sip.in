@@ -230,7 +230,7 @@ Returns a string containing the available protocol drivers
 %Docstring
 register a new vector data provider from its ``providerMetadata``
 
-:return: true on success, false if a provider with the same key was already registered
+:return: ``True`` on success, ``False`` if a provider with the same key was already registered
 
 .. note::
 

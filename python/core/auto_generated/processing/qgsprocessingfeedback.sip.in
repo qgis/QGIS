@@ -39,7 +39,7 @@ setProgress() to provide detailed progress reports, such as "Transformed
 %Docstring
 Reports that the algorithm encountered an ``error`` while executing.
 
-If ``fatalError`` is true then the error prevented the algorithm from executing.
+If ``fatalError`` is ``True`` then the error prevented the algorithm from executing.
 %End
 
     virtual void pushInfo( const QString &info );

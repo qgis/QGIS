@@ -44,7 +44,7 @@ Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type
 
 An optional ``groupId`` can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
 
-If ``isNodeBased`` is true, then the corresponding item is a node based item.
+If ``isNodeBased`` is ``True``, then the corresponding item is a node based item.
 %End
 
     virtual ~QgsLayoutItemAbstractGuiMetadata();
@@ -66,7 +66,7 @@ Returns the item group ID, if set.
 
     bool isNodeBased() const;
 %Docstring
-Returns true if the associated item is a node based item.
+Returns ``True`` if the associated item is a node based item.
 %End
 
     QString visibleName() const;
@@ -199,7 +199,7 @@ Registers the gui metadata for a new layout item type. Takes ownership of the me
 Registers a new item group with the registry. This must be done before calling
 addLayoutItemGuiMetadata() for any item types associated with the group.
 
-Returns true if group was added, or false if group could not be added (e.g. due to
+Returns ``True`` if group was added, or ``False`` if group could not be added (e.g. due to
 duplicate id value).
 
 .. seealso:: :py:func:`itemGroup`

@@ -519,7 +519,7 @@ mime data's text with the color's hex code.
 Attempts to parse mime data as a color
 
 :param data: mime data to parse
-:param hasAlpha: will be set to true if mime data was interpreted as a color containing
+:param hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing
                  an explicit alpha value
 
 :return: valid color if mimedata could be interpreted as a color, otherwise an
@@ -544,7 +544,7 @@ Attempts to parse mime data as a list of named colors
 Creates mime data from a list of named colors
 
 :param colorList: list of named colors
-:param allFormats: set to true to include additional mime formats, include text/plain and application/x-color
+:param allFormats: set to ``True`` to include additional mime formats, include text/plain and application/x-color
 
 :return: mime data containing encoded colors
 
@@ -559,7 +559,7 @@ Exports colors to a gpl GIMP palette file
 :param paletteName: name of palette, which is stored in gpl file
 :param colors: colors to export
 
-:return: true if export was successful
+:return: ``True`` if export was successful
 
 .. seealso:: :py:func:`importColorsFromGpl`
 %End
@@ -569,7 +569,7 @@ Exports colors to a gpl GIMP palette file
 Imports colors from a gpl GIMP palette file
 
 :param file: source gpl file
-:param ok: will be true if file was successfully read
+:param ok: will be ``True`` if file was successfully read
 :param name: will be set to palette name from gpl file, if present
 
 :return: list of imported colors
@@ -583,7 +583,7 @@ Attempts to parse a string as a color using a variety of common formats, includi
 codes, rgb and rgba strings.
 
 :param colorStr: string representing the color
-:param strictEval: set to true for stricter color parsing rules
+:param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
 
@@ -596,8 +596,8 @@ Attempts to parse a string as a color using a variety of common formats, includi
 codes, rgb and rgba strings.
 
 :param colorStr: string representing the color
-:param containsAlpha: if colorStr contains an explicit alpha value then containsAlpha will be set to true
-:param strictEval: set to true for stricter color parsing rules
+:param containsAlpha: if colorStr contains an explicit alpha value then containsAlpha will be set to ``True``
+:param strictEval: set to ``True`` for stricter color parsing rules
 
 :return: parsed color
 

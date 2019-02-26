@@ -50,7 +50,7 @@ Creates a DOM element representing the range in SLD format.
 :param doc: DOM document
 :param element: destination DOM element
 :param props: graduated renderer properties
-:param firstRange: set to true if the range is the first range, where the lower value uses a <= test
+:param firstRange: set to ``True`` if the range is the first range, where the lower value uses a <= test
                    rather than a < test.
 %End
 
@@ -179,7 +179,7 @@ Add a breakpoint by splitting existing classes so that the specified
 value becomes a break between two classes.
 
 :param breakValue: position to insert break
-:param updateSymbols: set to true to reapply ramp colors to the new
+:param updateSymbols: set to ``True`` to reapply ramp colors to the new
                       symbol ranges
 
 .. versionadded:: 2.9
@@ -197,7 +197,7 @@ Moves the category at index position from to index position to.
 %Docstring
 Tests whether classes assigned to the renderer have ranges which overlap.
 
-:return: true if ranges overlap
+:return: ``True`` if ranges overlap
 
 .. versionadded:: 2.10
 %End
@@ -206,7 +206,7 @@ Tests whether classes assigned to the renderer have ranges which overlap.
 %Docstring
 Tests whether classes assigned to the renderer have gaps between the ranges.
 
-:return: true if ranges have gaps
+:return: ``True`` if ranges have gaps
 
 .. versionadded:: 2.10
 %End
@@ -321,7 +321,7 @@ Returns the label format used to generate default classification labels
 Set the label format used to generate default classification labels
 
 :param labelFormat: The string appended to classification labels
-:param updateRanges: If true then ranges ending with the old unit string are updated to the new.
+:param updateRanges: If ``True`` then ranges ending with the old unit string are updated to the new.
 
 .. versionadded:: 2.6
 %End
@@ -330,7 +330,7 @@ Set the label format used to generate default classification labels
 %Docstring
 Reset the label decimal places to a numberbased on the minimum class interval
 
-:param updateRanges: if true then ranges currently using the default label will be updated
+:param updateRanges: if ``True`` then ranges currently using the default label will be updated
 
 .. versionadded:: 2.6
 %End

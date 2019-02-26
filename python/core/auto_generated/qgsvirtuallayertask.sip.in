@@ -51,7 +51,7 @@ Returns the virtual layer definition.
 %Docstring
 Reloads the data.
 
-:return: True if the virtual layer is valid, false otherwise.
+:return: ``True`` if the virtual layer is valid, ``False`` otherwise.
 %End
 
     virtual void cancel();
