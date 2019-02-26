@@ -180,6 +180,13 @@ class CORE_EXPORT QgsSqliteUtils
      * \since QGIS 3.6
      */
     static QString quotedValue( const QVariant &value );
+
+    /**
+     * Returns a string list of SQLite (and spatialite) system tables
+     *
+     * \since QGIS 3.8
+     */
+    static QStringList systemTables();
 };
 
 /**
