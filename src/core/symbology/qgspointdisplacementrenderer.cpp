@@ -61,22 +61,24 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
 
   //calculate max diagonal size from all symbols in group
   double diagonal = 0;
-  QList<double> diagonals;
+  QVector<double> diagonals(group.size());
   double currentDiagonal;
 
+  int groupPosition = 0;
   for ( const GroupedFeature &feature : group )
   {
     if ( QgsMarkerSymbol *symbol = feature.symbol() )
     {
       currentDiagonal = M_SQRT2 * symbol->size( context );
-      diagonals.append( currentDiagonal );
+      diagonals[groupPosition] = currentDiagonal;
       diagonal = std::max( diagonal, currentDiagonal );
 
     }
     else
     {
-      diagonals.append( 0.0 );
+    	diagonals[groupPosition] = 0.0;
     }
+    groupPosition++;
   }
 
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderMillimeters, 1.0, false );
@@ -244,7 +246,7 @@ void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol *symbol )
 
 void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition,
     double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius, double &gridRadius,
-    int &gridSize, QList<double> &diagonals ) const
+    int &gridSize, QVector<double> &diagonals ) const
 {
   symbolPositions.clear();
   labelShifts.clear();
