@@ -43,9 +43,10 @@ Returns the type of the parameter as a string.
 Returns true if the parameter is valid, false otherwise.
 %End
 
-    QString toString() const;
+    QString toString( bool defaultValue = false ) const;
 %Docstring
-Converts the parameter into a string.
+Converts the parameter into a string. If ``defaultValue`` is true
+and current value is empty, then the default value is returned.
 %End
 
     QStringList toStringList( char delimiter = ',' ) const;

@@ -310,7 +310,9 @@ namespace QgsWms
     const QgsWmsParameter pSRS( QgsWmsParameter::SRS );
     save( pSRS );
 
-    const QgsWmsParameter pFormat( QgsWmsParameter::FORMAT );
+    const QgsWmsParameter pFormat( QgsWmsParameter::FORMAT,
+                                   QVariant::String,
+                                   QVariant( "png" ) );
     save( pFormat );
 
     const QgsWmsParameter pInfoFormat( QgsWmsParameter::INFO_FORMAT );
@@ -713,21 +715,42 @@ namespace QgsWms
 
   QString QgsWmsParameters::formatAsString() const
   {
-    return mWmsParameters[ QgsWmsParameter::FORMAT ].toString();
+    return mWmsParameters[ QgsWmsParameter::FORMAT ].toString( true );
+  }
+
+  QString QgsWmsParameters::formatAsString( const QgsWmsParameters::Format format )
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameters::Format>() );
+    return metaEnum.valueToKey( format );
   }
 
   QgsWmsParameters::Format QgsWmsParameters::format() const
   {
-    QString fStr = formatAsString();
+    const QString fStr = formatAsString();
 
-    if ( fStr.isEmpty() )
-      return Format::NONE;
-
-    Format f = Format::PNG;
-    if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
-         || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
-         || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    Format f = Format::NONE;
+    if ( fStr.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
+         fStr.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::PNG;
+    }
+    else if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
+              || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
+              || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    {
       f = Format::JPG;
+    }
+    else if ( fStr.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::SVG;
+    }
+    else if ( fStr.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    {
+      f = Format::PDF;
+    }
 
     return f;
   }

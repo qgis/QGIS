@@ -285,7 +285,7 @@ namespace QgsWms
   }
 
 
-  QByteArray QgsRenderer::getPrint( const QString &formatString )
+  QByteArray QgsRenderer::getPrint()
   {
     //GetPrint request needs a template parameter
     QString templateName = mWmsParameters.composerTemplate();
@@ -474,7 +474,10 @@ namespace QgsWms
     configurePrintLayout( layout.get(), mapSettings, atlas );
 
     // Get the temporary output file
-    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( formatString.toLower() ) );
+    const QgsWmsParameters::Format format = mWmsParameters.format();
+    const QString extension = QgsWmsParameters::formatAsString( format ).toLower();
+
+    QTemporaryFile tempOutputFile( QDir::tempPath() +  '/' + QStringLiteral( "XXXXXX.%1" ).arg( extension ) );
     if ( !tempOutputFile.open() )
     {
       throw QgsServerException( QStringLiteral( "Could not open temporary file for the GetPrint request." ) );
@@ -482,7 +485,7 @@ namespace QgsWms
     }
 
     QString exportError;
-    if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( format == QgsWmsParameters::SVG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::SvgExportSettings exportSettings;
@@ -511,10 +514,11 @@ namespace QgsWms
         exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || formatString.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PNG )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::ImageExportSettings exportSettings;
+
       // Get the dpi from input or use the default
       double dpi( layout->renderContext().dpi( ) );
       if ( !mWmsParameters.dpi().isEmpty() )
@@ -550,7 +554,7 @@ namespace QgsWms
         exporter.exportToImage( tempOutputFile.fileName(), exportSettings );
       }
     }
-    else if ( formatString.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format == QgsWmsParameters::PDF )
     {
       // Settings for the layout exporter
       QgsLayoutExporter::PdfExportSettings exportSettings;
@@ -581,7 +585,7 @@ namespace QgsWms
     else //unknown format
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
-                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( formatString ) );
+                                    QStringLiteral( "Output format '%1' is not supported in the GetPrint request" ).arg( mWmsParameters.formatAsString() ) );
     }
 
     if ( atlas )
@@ -1759,10 +1763,10 @@ namespace QgsWms
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
-          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), getWMSPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), getWMSPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), getWMSPrecision() ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), getWMSPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), wmsPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), wmsPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), wmsPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), wmsPrecision() ) );
           featureElement.appendChild( bBoxElem );
         }
 
@@ -1793,7 +1797,7 @@ namespace QgsWms
             }
             QDomElement geometryElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
             geometryElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( getWMSPrecision() ) );
+            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( wmsPrecision() ) );
             geometryElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "derived" ) );
             featureElement.appendChild( geometryElement );
           }
@@ -2465,11 +2469,11 @@ namespace QgsWms
       QDomElement boxElem;
       if ( version < 3 )
       {
-        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, getWMSPrecision() );
+        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, wmsPrecision() );
       }
       else
       {
-        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, getWMSPrecision() );
+        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, wmsPrecision() );
       }
 
       if ( crs.isValid() )
@@ -2493,11 +2497,11 @@ namespace QgsWms
       QDomElement gmlElem;
       if ( version < 3 )
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, getWMSPrecision() );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, wmsPrecision() );
       }
       else
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), getWMSPrecision() );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), wmsPrecision() );
       }
 
       if ( !gmlElem.isNull() )
@@ -2570,7 +2574,7 @@ namespace QgsWms
     return value;
   }
 
-  int QgsRenderer::getImageQuality() const
+  int QgsRenderer::imageQuality() const
   {
     // First taken from QGIS project
     int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
@@ -2584,7 +2588,7 @@ namespace QgsWms
     return imageQuality;
   }
 
-  int QgsRenderer::getWMSPrecision() const
+  int QgsRenderer::wmsPrecision() const
   {
     // First taken from QGIS project and the default value is 6
     int WMSPrecision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );

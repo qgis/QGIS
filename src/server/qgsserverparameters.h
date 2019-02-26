@@ -59,9 +59,10 @@ class SERVER_EXPORT QgsServerParameterDefinition
     virtual bool isValid() const;
 
     /**
-     * Converts the parameter into a string.
+     * Converts the parameter into a string. If \a defaultValue is true
+     * and current value is empty, then the default value is returned.
      */
-    QString toString() const;
+    QString toString( bool defaultValue = false ) const;
 
     /**
      * Converts the parameter into a list of strings.

@@ -98,15 +98,20 @@ namespace QgsWms
 
       /**
        * Returns printed page as binary
-        \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
         \returns printed page as binary or 0 in case of error*/
-      QByteArray getPrint( const QString &formatString );
+      QByteArray getPrint();
 
       /**
        * Creates an xml document that describes the result of the getFeatureInfo request.
        * May throw an exception
        */
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
+
+      //! Returns the image quality to use for getMap request
+      int imageQuality() const;
+
+      //! Returns the precision to use for GetFeatureInfo request
+      int wmsPrecision() const;
 
     private:
 
@@ -290,8 +295,6 @@ namespace QgsWms
 
       void handlePrintErrors( const QgsLayout *layout ) const;
 
-    private:
-
       const QgsWmsParameters &mWmsParameters;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -306,15 +309,6 @@ namespace QgsWms
       QMap<QString, QgsMapLayer *> mNicknameLayers;
       QMap<QString, QList<QgsMapLayer *> > mLayerGroups;
       QList<QgsMapLayer *> mTemporaryLayers;
-
-    public:
-
-      //! Returns the image quality to use for getMap request
-      int getImageQuality() const;
-
-      //! Returns the precision to use for GetFeatureInfo request
-      int getWMSPrecision() const;
-
   };
 
 } // namespace QgsWms
