@@ -65,7 +65,7 @@ Used for older code that identifies legend entries from symbol pointer within re
 
     bool isScaleOK( double scale ) const;
 %Docstring
-Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
+Determine whether given scale is within the scale range. Returns ``True`` if scale or scale range is invalid (value <= 0)
 %End
 
     int scaleMinDenom() const;

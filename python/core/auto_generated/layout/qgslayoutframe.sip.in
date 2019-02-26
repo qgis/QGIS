@@ -74,7 +74,7 @@ is shown in this frame, in layout units.
 %Docstring
 Returns whether the page should be hidden (ie, not included in layout exports) if this frame is empty
 
-:return: true if page should be hidden if frame is empty
+:return: ``True`` if page should be hidden if frame is empty
 
 .. seealso:: :py:func:`setHidePageIfEmpty`
 %End
@@ -83,7 +83,7 @@ Returns whether the page should be hidden (ie, not included in layout exports) i
 %Docstring
 Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
 
-:param hidePageIfEmpty: set to true if page should be hidden if frame is empty
+:param hidePageIfEmpty: set to ``True`` if page should be hidden if frame is empty
 
 .. seealso:: :py:func:`hidePageIfEmpty`
 %End
@@ -92,7 +92,7 @@ Sets whether the page should be hidden (ie, not included in layout exports) if t
 %Docstring
 Returns whether the background and frame stroke should be hidden if this frame is empty
 
-:return: true if background and stroke should be hidden if frame is empty
+:return: ``True`` if background and stroke should be hidden if frame is empty
 
 .. seealso:: :py:func:`setHideBackgroundIfEmpty`
 %End
@@ -101,7 +101,7 @@ Returns whether the background and frame stroke should be hidden if this frame i
 %Docstring
 Sets whether the background and frame stroke should be hidden if this frame is empty
 
-:param hideBackgroundIfEmpty: set to true if background and stroke should be hidden if frame is empty
+:param hideBackgroundIfEmpty: set to ``True`` if background and stroke should be hidden if frame is empty
 
 .. seealso:: :py:func:`hideBackgroundIfEmpty`
 %End

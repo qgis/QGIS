@@ -271,7 +271,7 @@ color ramp or by specificing a single color.
 Specifies whether the glow is drawn outside the picture or within
 the picture.
 
-:return: true if glow is to be drawn outside the picture, or false
+:return: ``True`` if glow is to be drawn outside the picture, or ``False``
          to draw glow within the picture
 %End
 

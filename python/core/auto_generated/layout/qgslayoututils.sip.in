@@ -34,7 +34,7 @@ Rotates a point / vector around the origin.
     static double normalizedAngle( double angle, bool allowNegative = false );
 %Docstring
 Ensures that an ``angle`` (in degrees) is in the range 0 <= angle < 360.
-If ``allowNegative`` is true then angles between (-360, 360) are allowed. If false,
+If ``allowNegative`` is ``True`` then angles between (-360, 360) are allowed. If ``False``,
 angles are converted to positive angles in the range [0, 360).
 %End
 
@@ -217,7 +217,7 @@ the a specified ``rotation`` amount.
 %Docstring
 Decodes a ``string`` representing a paper orientation and returns the
 decoded orientation.
-If the string was correctly decoded, ``ok`` will be set to true.
+If the string was correctly decoded, ``ok`` will be set to ``True``.
 %End
 
     static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style );

@@ -95,7 +95,7 @@ Set item state. It also take care about starting/stopping loading icon animation
 Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
 
 :param child: child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-:param refresh: - set to true to refresh populated item, emitting relevant signals to the model
+:param refresh: - set to ``True`` to refresh populated item, emitting relevant signals to the model
 
 .. seealso:: :py:func:`deleteChildItem`
 %End
@@ -120,7 +120,7 @@ Removes a child item and returns it without deleting it. Emits relevant signals 
 
     virtual bool equal( const QgsDataItem *other );
 %Docstring
-Returns true if this item is equal to another item (by testing item type and path).
+Returns ``True`` if this item is equal to another item (by testing item type and path).
 %End
 
     virtual QWidget *paramWidget() /Factory/;
@@ -165,7 +165,7 @@ accept dropped layers.
 
     virtual bool handleDoubleClick();
 %Docstring
-Called when a user double clicks on the item. Subclasses should return true
+Called when a user double clicks on the item. Subclasses should return ``True``
 if they have implemented a double-click handler and do not want the default
 double-click behavior for items.
 
@@ -174,8 +174,8 @@ double-click behavior for items.
 
     virtual bool hasDragEnabled() const;
 %Docstring
-Returns true if the item may be dragged.
-Default implementation returns false.
+Returns ``True`` if the item may be dragged.
+Default implementation returns ``False``.
 A draggable item has to implement mimeUri() that will be used to pass data.
 
 .. seealso:: :py:func:`mimeUri`
@@ -216,7 +216,7 @@ method.
 
     virtual bool rename( const QString &name );
 %Docstring
-Sets a new ``name`` for the item, and returns true if the item was successfully renamed.
+Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.
 
 Items which implement this method should return the QgsDataItem.Rename capability.
 
@@ -329,9 +329,9 @@ Refresh the items from a specified list of child items.
 %Docstring
 The item is scheduled to be deleted. E.g. if deleteLater() is called when
 item is in Populating state (createChildren() running in another thread),
-the deferredDelete() returns true and item will be deleted once Populating finished.
+the deferredDelete() returns ``True`` and item will be deleted once Populating finished.
 Items with slow reateChildren() (for example network or database based) may
-check during createChildren() if deferredDelete() returns true and return from
+check during createChildren() if deferredDelete() returns ``True`` and return from
 createChildren() immediately because result will be useless. *
 %End
 

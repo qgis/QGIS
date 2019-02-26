@@ -27,7 +27,7 @@ Added in QGIS v?
 
     static bool isValid();
 %Docstring
-Returns true if the runner has an instance
+Returns ``True`` if the runner has an instance
 (and thus is able to run commands) *
 %End
 

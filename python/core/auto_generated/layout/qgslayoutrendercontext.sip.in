@@ -132,14 +132,14 @@ for translating between other measurement units and the layout's native unit.
 
     bool isPreviewRender() const;
 %Docstring
-Returns true if the render current being conducted is a preview render,
+Returns ``True`` if the render current being conducted is a preview render,
 i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
 device (such as an image).
 %End
 
     bool gridVisible() const;
 %Docstring
-Returns true if the page grid should be drawn.
+Returns ``True`` if the page grid should be drawn.
 
 .. seealso:: :py:func:`setGridVisible`
 %End
@@ -153,7 +153,7 @@ Sets whether the page grid should be ``visible``.
 
     bool boundingBoxesVisible() const;
 %Docstring
-Returns true if the item bounding boxes should be drawn.
+Returns ``True`` if the item bounding boxes should be drawn.
 
 .. seealso:: :py:func:`setBoundingBoxesVisible`
 %End

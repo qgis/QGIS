@@ -99,7 +99,7 @@ Gets current legend node. May be null if current node is not a legend node.
 %Docstring
 Returns list of selected nodes
 
-:param skipInternal: If true, will ignore nodes which have an ancestor in the selection
+:param skipInternal: If ``True``, will ignore nodes which have an ancestor in the selection
 %End
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring

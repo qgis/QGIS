@@ -61,8 +61,8 @@ Sets the ``size`` of the page.
 Sets the page size to a known page ``size``, e.g. "A4" and ``orientation``.
 The known page sizes are managed by :py:class:`QgsPageSizeRegistry`. Valid page sizes
 can be retrieved via :py:func:`QgsPageSizeRegistry.entries()`
-The function returns true if ``size`` was a valid page size and the page
-size was changed. If false is returned then ``size`` could not be matched
+The function returns ``True`` if ``size`` was a valid page size and the page
+size was changed. If ``False`` is returned then ``size`` could not be matched
 to a known page size.
 
 .. seealso:: :py:func:`pageSize`
@@ -87,7 +87,7 @@ Returns the page orientiation.
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``string`` representing a page orientation. If specified, ``ok``
-will be set to true if string could be successfully interpreted as a
+will be set to ``True`` if string could be successfully interpreted as a
 page orientation.
 %End
 

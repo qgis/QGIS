@@ -97,7 +97,7 @@ Are we authorized to modify the following geometry
 :param layer: the layer to control
 :param feature: the concerned feature
 
-:return: true if we are allowed to edit
+:return: ``True`` if we are allowed to edit
 %End
 
     virtual QString cacheKey() const;

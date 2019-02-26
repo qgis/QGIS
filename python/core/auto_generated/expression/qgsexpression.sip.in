@@ -128,7 +128,7 @@ A valid expression could be parsed but does not necessarily evaluate properly.
 
     bool hasParserError() const;
 %Docstring
-Returns true if an error occurred when parsing the input expression
+Returns ``True`` if an error occurred when parsing the input expression
 %End
     QString parserErrorString() const;
 %Docstring
@@ -195,7 +195,7 @@ Returns a list of field name indexes obtained from the provided fields.
 
     bool needsGeometry() const;
 %Docstring
-Returns true if the expression uses feature geometry for some computation
+Returns ``True`` if the expression uses feature geometry for some computation
 %End
 
 
@@ -225,7 +225,7 @@ Evaluate the expression against the specified context and return the result.
 
     bool hasEvalError() const;
 %Docstring
-Returns true if an error occurred when evaluating last input
+Returns ``True`` if an error occurred when evaluating last input
 %End
     QString evalErrorString() const;
 %Docstring
@@ -250,7 +250,7 @@ Tests whether a string is a valid expression.
 :param text: string to test
 :param context: optional expression context
 
-:return: - true if string is a valid expression
+:return: - ``True`` if string is a valid expression
          - errorMessage: will be filled with any error message from the validation
 
 .. versionadded:: 2.12
@@ -436,9 +436,9 @@ value.
 Registers a function to the expression engine. This is required to allow expressions to utilize the function.
 
 :param function: function to register
-:param transferOwnership: set to true to transfer ownership of function to expression engine
+:param transferOwnership: set to ``True`` to transfer ownership of function to expression engine
 
-:return: true on successful registration
+:return: ``True`` on successful registration
 
 .. seealso:: :py:func:`unregisterFunction`
 %End
@@ -552,7 +552,7 @@ Returns the help text for a specified variable.
 Returns formatted help text for a variable.
 
 :param description: translated description of variable
-:param showValue: set to true to include current value of variable in help text
+:param showValue: set to ``True`` to include current value of variable in help text
 :param value: current value of variable to show in help text
 
 .. seealso:: :py:func:`helpText`
@@ -575,9 +575,9 @@ Formats an expression result for friendly display to the user. Truncates the res
 length, and presents text representations of non numeric/text types (e.g., geometries and features).
 
 :param value: expression result to format
-:param htmlOutput: set to true to allow HTML formatting, or false for plain text output
+:param htmlOutput: set to ``True`` to allow HTML formatting, or ``False`` for plain text output
 
-:return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is true
+:return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is ``True``
 
 .. versionadded:: 2.14
 %End

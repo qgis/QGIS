@@ -122,7 +122,7 @@ take some time to cancel after calling this.
 
     bool isRunning() const;
 %Docstring
-Returns true if a query is currently being executed by the locator.
+Returns ``True`` if a query is currently being executed by the locator.
 %End
 
     void clearPreviousResults();

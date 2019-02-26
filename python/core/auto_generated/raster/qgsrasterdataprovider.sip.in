@@ -159,7 +159,7 @@ Read block of data using given extent and size.
 
     virtual bool sourceHasNoDataValue( int bandNo ) const;
 %Docstring
-Returns true if source band has no data value
+Returns ``True`` if source band has no data value
 %End
 
     virtual bool useSourceNoDataValue( int bandNo ) const;
@@ -236,7 +236,7 @@ Returns the raster layers pyramid list.
 
     bool hasPyramids();
 %Docstring
-Returns true if raster has at least one populated histogram.
+Returns ``True`` if raster has at least one populated histogram.
 %End
 
     virtual QString htmlMetadata() = 0;
@@ -288,7 +288,7 @@ caching (WCS). If context params are not specified the highest
 resolution is used.
 
 If ``ok`` is specified and the point is outside data source extent, or an invalid
-band number was specified, then ``ok`` will be set to false. In this case the function will return
+band number was specified, then ``ok`` will be set to ``False``. In this case the function will return
 a NaN value.
 
 .. seealso:: :py:func:`identify`
@@ -356,7 +356,7 @@ By default providers are not editable. Use setEditable() method to enable/disabl
 Turns on/off editing mode of the provider. When in editing mode, it is possible
 to overwrite data of the provider using writeBlock() calls.
 
-:return: true if the switch to/from editing mode was successful
+:return: ``True`` if the switch to/from editing mode was successful
 
 .. note::
 
@@ -387,7 +387,7 @@ in order to allow write operations.
 
 .. seealso:: :py:func:`isEditable`
 
-:return: true on success
+:return: ``True`` on success
 
 .. versionadded:: 3.0
 %End
@@ -483,7 +483,7 @@ Emit a message to be displayed on status bar, usually used by network providers 
 
     bool userNoDataValuesContains( int bandNo, double value ) const;
 %Docstring
-Returns true if user no data contains value
+Returns ``True`` if user no data contains value
 %End
 
     void copyBaseSettings( const QgsRasterDataProvider &other );

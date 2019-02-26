@@ -95,7 +95,7 @@ legends and the layer tree.
 
     bool renderState() const;
 %Docstring
-Returns true if the category is currently enabled and should be rendered.
+Returns ``True`` if the category is currently enabled and should be rendered.
 
 .. seealso:: :py:func:`setRenderState`
 
@@ -427,8 +427,8 @@ to a symbol in ``style``.
 The ``unmatchedSymbols`` list will be filled with all symbol names from ``style`` which were not matched
 to an existing category.
 
-If ``caseSensitive`` is false, then a case-insensitive match will be performed. If ``useTolerantMatch``
-is true, then non-alphanumeric characters in style and category names will be ignored during the match.
+If ``caseSensitive`` is ``False``, then a case-insensitive match will be performed. If ``useTolerantMatch``
+is ``True``, then non-alphanumeric characters in style and category names will be ignored during the match.
 
 Returns the count of symbols matched.
 
@@ -479,7 +479,7 @@ Returns the matching symbol corresponding to an attribute ``value``.
 Will return None if no matching symbol was found for ``value``, or
 if the category corresponding to ``value`` is currently disabled (see QgsRendererCategory.renderState()).
 
-If ``foundMatchingSymbol`` is specified then it will be set to true if
+If ``foundMatchingSymbol`` is specified then it will be set to ``True`` if
 a matching category was found. This can be used to differentiate between
 a None returned as a result of no matching category vs a None as a result
 of disabled categories.

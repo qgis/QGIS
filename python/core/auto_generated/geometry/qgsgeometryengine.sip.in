@@ -200,7 +200,7 @@ pattern.
 :param pattern: DE-9IM pattern for match
 :param errorMsg: destination storage for any error message
 
-:return: true if geometry relationship matches with pattern
+:return: ``True`` if geometry relationship matches with pattern
 
 .. versionadded:: 2.14
 %End
@@ -224,7 +224,7 @@ If ``errorLoc`` is specified, it will be set to the geometry of the error locati
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if this is equal to ``geom``.
-If both are Null geometries, `false` is returned.
+If both are Null geometries, ```False``` is returned.
 
 .. versionadded:: 3.0
 %End
@@ -246,7 +246,7 @@ Splits this geometry according to a given line.
 
 :param splitLine: the line that splits the geometry
 \param[out] newGeometries list of new geometries that have been created with the split
-:param topological: true if topological editing is enabled
+:param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 \param[out] errorMsg error messages emitted, if any
 

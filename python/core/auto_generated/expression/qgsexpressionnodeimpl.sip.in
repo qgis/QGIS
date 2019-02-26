@@ -170,7 +170,7 @@ Returns the precedence index for the operator. Higher values have higher precede
 
     bool leftAssociative() const;
 %Docstring
-Returns true if the operator is left-associative.
+Returns ``True`` if the operator is left-associative.
 %End
 
     QString text() const;
@@ -251,7 +251,7 @@ An expression node for value IN or NOT IN clauses.
 
     QgsExpressionNodeInOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode::NodeList *list /Transfer/, bool notin = false );
 %Docstring
-This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
+This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is ``False``.
 %End
     ~QgsExpressionNodeInOperator();
 
@@ -262,7 +262,7 @@ Returns the expression node.
 
     bool isNotIn() const;
 %Docstring
-Returns true if this node is a "NOT IN" operator, or false if the node is a normal "IN" operator.
+Returns ``True`` if this node is a "NOT IN" operator, or ``False`` if the node is a normal "IN" operator.
 %End
 
     QgsExpressionNode::NodeList *list() const;

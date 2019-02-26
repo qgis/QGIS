@@ -37,7 +37,7 @@ Constructs a vector from single-precision QVector3D
 %End
     bool isNull() const;
 %Docstring
-Returns true if all three coordinates are zero
+Returns ``True`` if all three coordinates are zero
 %End
 
     double x() const;

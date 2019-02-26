@@ -95,7 +95,7 @@ connection string
 
 .. note::
 
-   The default authentication configuration expansion is FALSE. This keeps credentials
+   The default authentication configuration expansion is ``False``. This keeps credentials
    out of layer data source URIs and project files. Expansion should be specifically done
    only when needed within a provider
 %End
@@ -124,7 +124,7 @@ Returns the extent of the layer
 
     virtual bool isValid() const = 0;
 %Docstring
-Returns true if this is a valid layer. It is up to individual providers
+Returns ``True`` if this is a valid layer. It is up to individual providers
 to determine what constitutes a valid layer.
 %End
 
@@ -146,7 +146,7 @@ Must be implemented in the dataprovider.
 
     virtual bool supportsSubsetString() const;
 %Docstring
-Returns true if the provider supports setting of subset strings.
+Returns ``True`` if the provider supports setting of subset strings.
 %End
 
     virtual QString subsetString() const;
@@ -300,7 +300,7 @@ Enter update mode.
 This is aimed at providers that can open differently the connection to
 the datasource, according it to be in update mode or in read-only mode.
 A call to this method shall be balanced with a call to leaveUpdateMode(),
-if this method returns true.
+if this method returns ``True``.
 
 Most providers will have an empty implementation for that method.
 
@@ -312,7 +312,7 @@ Several successive calls to enterUpdateMode() can be done. So there is
 a concept of stack of calls that must be handled by the provider. Only the first
 call to enterUpdateMode() will really turn update mode on.
 
-:return: true in case of success (or no-op implementation), false in case of failure.
+:return: ``True`` in case of success (or no-op implementation), ``False`` in case of failure.
 
 .. versionadded:: 2.16
 %End
@@ -331,7 +331,7 @@ Several successive calls to enterUpdateMode() can be done. So there is
 a concept of stack of calls that must be handled by the provider. Only the last
 call to leaveUpdateMode() will really turn update mode off.
 
-:return: true in case of success (or no-op implementation), false in case of failure.
+:return: ``True`` in case of success (or no-op implementation), ``False`` in case of failure.
 
 .. versionadded:: 2.16
 %End
@@ -381,7 +381,7 @@ Individual data providers must implement this method if they support collecting 
 Writes layer ``metadata`` to the underlying provider source. Support depends
 on individual provider capabilities.
 
-Returns true if metadata was successfully written to the data provider.
+Returns ``True`` if metadata was successfully written to the data provider.
 
 .. seealso:: :py:func:`layerMetadata`
 

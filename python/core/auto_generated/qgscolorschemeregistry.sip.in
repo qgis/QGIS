@@ -88,7 +88,7 @@ Removes all matching color schemes from the registry
 
 :param scheme: color scheme to remove
 
-:return: true if scheme was found and removed
+:return: ``True`` if scheme was found and removed
 
 .. seealso:: :py:func:`addColorScheme`
 %End

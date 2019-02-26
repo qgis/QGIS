@@ -116,7 +116,7 @@ Registers a new effect type.
 
 :param metadata: effect metadata. Ownership is transferred to the registry.
 
-:return: true if add was successful.
+:return: ``True`` if add was successful.
 %End
 
     QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const /Factory/;
@@ -165,7 +165,7 @@ Tests whether a paint effect matches the default effects stack.
 
 :param effect: paint effect to test
 
-:return: true if effect is default stack
+:return: ``True`` if effect is default stack
 
 .. seealso:: :py:func:`defaultStack`
 

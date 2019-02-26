@@ -53,7 +53,7 @@ Add a ``provider`` implementation. Takes ownership of the object.
 %Docstring
 Remove ``provider`` implementation from the list (``provider`` object is deleted)
 
-:return: true if the provider was actually removed and deleted
+:return: ``True`` if the provider was actually removed and deleted
 %End
 
     QgsSourceSelectProvider *providerByName( const QString &name );

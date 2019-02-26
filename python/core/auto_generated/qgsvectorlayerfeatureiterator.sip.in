@@ -123,7 +123,7 @@ end of iterating: free the resources / lock
     virtual bool fetchFeature( QgsFeature &feature );
 
 %Docstring
-fetch next feature, return true on success
+fetch next feature, return ``True`` on success
 %End
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );

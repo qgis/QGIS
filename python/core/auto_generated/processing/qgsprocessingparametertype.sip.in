@@ -80,7 +80,7 @@ A static id for this type which will be used for storing this parameter type.
     virtual ParameterFlags flags() const;
 %Docstring
 Determines if this parameter is available in the modeler.
-The default implementation returns true.
+The default implementation returns ``True``.
 %End
 
     virtual QVariantMap metadata() const;

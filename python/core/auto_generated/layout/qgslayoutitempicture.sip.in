@@ -256,7 +256,7 @@ Returns the current picture mode (image format).
 
     bool isMissingImage() const;
 %Docstring
-Returns true if the source image is missing and the picture
+Returns ``True`` if the source image is missing and the picture
 cannot be rendered.
 
 .. versionadded:: 3.6

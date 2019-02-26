@@ -113,7 +113,7 @@ Returns the attributes used to evaluate the expression of this rule
 
         bool needsGeometry() const;
 %Docstring
-Returns true if this rule or one of its chilren needs the geometry to be applied.
+Returns ``True`` if this rule or one of its chilren needs the geometry to be applied.
 %End
 
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
@@ -137,14 +137,14 @@ Check if a given feature shall be rendered by this rule
 :param f: The feature to test
 :param context: The context in which the rendering happens
 
-:return: True if the feature shall be rendered
+:return: ``True`` if the feature shall be rendered
 %End
 
         bool isScaleOK( double scale ) const;
 %Docstring
 Check if this rule applies for a given ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-If set to 0, it will always return true.
+If set to 0, it will always return ``True``.
 
 :return: If the rule will be evaluated at this scale
 %End
@@ -204,7 +204,7 @@ A human readable description for this rule
 %Docstring
 Returns if this rule is active
 
-:return: True if the rule is active
+:return: ``True`` if the rule is active
 %End
 
         QString ruleKey() const;
@@ -331,7 +331,7 @@ context.
 
 :param feature: The feature for which rules have to be find
 :param context: The rendering context
-:param onlyActive: True to search for active rules only, false otherwise
+:param onlyActive: ``True`` to search for active rules only, ``False`` otherwise
 %End
 
         void stopRender( QgsRenderContext &context );
@@ -413,14 +413,14 @@ Try to find a rule given its unique key
 %Docstring
 Sets if this rule is an ELSE rule
 
-:param iselse: If true, this rule is an ELSE rule
+:param iselse: If ``True``, this rule is an ELSE rule
 %End
 
         bool isElse() const;
 %Docstring
 Check if this rule is an ELSE rule
 
-:return: True if this rule is an else rule
+:return: ``True`` if this rule is an else rule
 %End
 
       protected:

@@ -191,7 +191,7 @@ Returns whether the feature associated with a diagram acts as an obstacle for ot
 %Docstring
 Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
 
-:param isObstacle: set to true for feature to act as obstacle
+:param isObstacle: set to ``True`` for feature to act as obstacle
 
 .. seealso:: :py:func:`isObstacle`
 
@@ -273,7 +273,7 @@ Returns whether the layer should show all diagrams, including overlapping diagra
 %Docstring
 Sets whether the layer should show all diagrams, including overlapping diagrams
 
-:param showAllDiagrams: set to true to show all diagrams
+:param showAllDiagrams: set to ``True`` to show all diagrams
 
 .. seealso:: :py:func:`showAllDiagrams`
 
@@ -298,7 +298,7 @@ Writes the diagram settings to a DOM element.
 %Docstring
 Prepares the diagrams for a specified expression context. Calling prepare before rendering
 multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
-Returns true if preparation was successful.
+Returns ``True`` if preparation was successful.
 
 .. versionadded:: 3.0
 %End
@@ -547,7 +547,7 @@ Returns list of legend nodes for the diagram
 
     bool attributeLegend() const;
 %Docstring
-Returns true if renderer will show legend items for diagram attributes.
+Returns ``True`` if renderer will show legend items for diagram attributes.
 
 .. seealso:: :py:func:`setAttributeLegend`
 
@@ -558,7 +558,7 @@ Returns true if renderer will show legend items for diagram attributes.
 %Docstring
 Sets whether the renderer will show legend items for diagram attributes.
 
-:param enabled: set to true to show diagram attribute legend
+:param enabled: set to ``True`` to show diagram attribute legend
 
 .. seealso:: :py:func:`attributeLegend`
 
@@ -570,7 +570,7 @@ Sets whether the renderer will show legend items for diagram attributes.
 
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const = 0;
 %Docstring
-Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
+Returns diagram settings for a feature (or ``False`` if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
 
 :param feature: the feature
 :param c: render context

@@ -85,7 +85,7 @@ or geometry of the currently edited feature).
 
 :param expression: The widget's filter expression
 
-:return: true if the expression requires a form scope
+:return: ``True`` if the expression requires a form scope
 
 .. versionadded:: 3.2
 %End
@@ -116,7 +116,7 @@ Returns a list of variables required by the form context ``expression``
 %Docstring
 Check whether the ``feature`` has all values required by the ``expression``
 
-:return: True if the expression can be used
+:return: ``True`` if the expression can be used
 
 .. versionadded:: 3.2
 %End

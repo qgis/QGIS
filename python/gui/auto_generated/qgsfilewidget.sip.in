@@ -113,7 +113,7 @@ Returns the selected filter from the last opened file dialog.
 Sets whether a confirmation to overwrite an existing file will appear.
 By default, a confirmation will appear.
 
-:param confirmOverwrite: If set to true, an overwrite confirmation will be shown
+:param confirmOverwrite: If set to ``True``, an overwrite confirmation will be shown
 %End
 
     bool confirmOverwrite() const;

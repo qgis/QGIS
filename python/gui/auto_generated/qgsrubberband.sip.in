@@ -164,7 +164,7 @@ Sets the representation type according to geometryType.
 %Docstring
 Adds a vertex to the rubberband and update canvas.
 The rendering of the vertex depends on the current GeometryType and icon.
-If adding more points consider using update=false for better performance
+If adding more points consider using update=``False`` for better performance
 
 :param p: The vertex/point to add
 :param doUpdate: Should the map canvas be updated immediately?
@@ -176,7 +176,7 @@ If adding more points consider using update=false for better performance
 Ensures that a polygon geometry is closed and that the last vertex equals the
 first vertex.
 
-:param doUpdate: set to true to update the map canvas immediately
+:param doUpdate: set to ``True`` to update the map canvas immediately
 :param geometryIndex: index of the feature part (in case of multipart geometries)
 
 .. versionadded:: 2.16

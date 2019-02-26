@@ -46,7 +46,7 @@ Adds a single ``feature`` to the sink. Feature addition behavior is controlled b
 
 .. seealso:: :py:func:`addFeatures`
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) = 0;
@@ -55,21 +55,21 @@ Adds a list of ``features`` to the sink. Feature addition behavior is controlled
 
 .. seealso:: :py:func:`addFeature`
 
-:return: true in case of success and false in case of failure
+:return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 );
 %Docstring
 Adds all features from the specified ``iterator`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
-:return: true if all features were added successfully, or false if any feature could not be added
+:return: ``True`` if all features were added successfully, or ``False`` if any feature could not be added
 %End
 
     virtual bool flushBuffer();
 %Docstring
 Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
 
-:return: false if any buffered features could not be added to the sink.
+:return: ``False`` if any buffered features could not be added to the sink.
 %End
 };
 

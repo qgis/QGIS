@@ -44,7 +44,7 @@ Returns encoded representation of the object
 %Docstring
 Gets vector layer from uri if possible, otherwise returns None and error is set
 
-:param owner: set to true if caller becomes owner
+:param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get vector
 %End
 
@@ -52,7 +52,7 @@ Gets vector layer from uri if possible, otherwise returns None and error is set
 %Docstring
 Gets raster layer from uri if possible, otherwise returns None and error is set
 
-:param owner: set to true if caller becomes owner
+:param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get raster
 %End
 
@@ -60,7 +60,7 @@ Gets raster layer from uri if possible, otherwise returns None and error is set
 %Docstring
 Gets mesh layer from uri if possible, otherwise returns None and error is set
 
-:param owner: set to true if caller becomes owner
+:param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get raster
 %End
 

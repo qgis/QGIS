@@ -68,7 +68,7 @@ Sets whether an optional empty field ("not set") option is shown in the combo bo
 
     bool allowEmptyFieldName() const;
 %Docstring
-Returns true if the combo box allows the empty field ("not set") choice.
+Returns ``True`` if the combo box allows the empty field ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyFieldName`
 
@@ -97,12 +97,12 @@ currentField returns the currently selected field or expression if allowed
 
     bool isValidExpression( QString *expressionError = 0 ) const;
 %Docstring
-Returns true if the current expression is valid
+Returns ``True`` if the current expression is valid
 %End
 
     bool isExpression() const;
 %Docstring
-If the content is not just a simple field this method will return true.
+If the content is not just a simple field this method will return ``True``.
 %End
 
     QString currentText() const;

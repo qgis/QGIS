@@ -44,7 +44,7 @@ Add a node in current shape.
 :param point: is the location of the new node (in scene coordinates)
 :param checkArea: is a flag to indicate if there's a space constraint.
 :param radius: is the space contraint and is used only if checkArea is
-               true. Typically, if this flag is true, the new node has to be nearer
+               true. Typically, if this flag is ``True``, the new node has to be nearer
                than radius to the shape to be added.
 %End
 
@@ -69,7 +69,7 @@ index of the nearest node or -1 if no node was found.
 :param point: is the location to search for nodes from (in scene coordinates)
 :param searchInRadius: is a flag to indicate if the area of research is
                        limited in space.
-:param radius: is only used if searchInRadius is true
+:param radius: is only used if searchInRadius is ``True``
 %End
 
     bool nodePosition( int index, QPointF &position ) const;
@@ -79,7 +79,7 @@ Gets the position of a node in scene coordinates.
 :param index: of the node
 :param position: the position of the node
 
-:return: true if the index is valid and the position is set, false otherwise
+:return: ``True`` if the index is valid and the position is set, ``False`` otherwise
 %End
 
     bool removeNode( int index );

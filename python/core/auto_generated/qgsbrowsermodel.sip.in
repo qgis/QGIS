@@ -138,7 +138,7 @@ items, i.e. it does not fetch children.
 
     bool initialized() const;
 %Docstring
-Returns true if the model has been initialized.
+Returns ``True`` if the model has been initialized.
 
 .. seealso:: :py:func:`initialize`
 %End

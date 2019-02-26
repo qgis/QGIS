@@ -41,7 +41,7 @@ Returns new layer of this type, using layer URI (specific to this plugin layer t
 
     virtual bool showLayerProperties( QgsPluginLayer *layer );
 %Docstring
-Show plugin layer properties dialog. Return false if the dialog cannot be shown.
+Show plugin layer properties dialog. Return ``False`` if the dialog cannot be shown.
 %End
 
   protected:
@@ -76,12 +76,12 @@ List all known layer types
 
     bool addPluginLayerType( QgsPluginLayerType *pluginLayerType /Transfer/ );
 %Docstring
-Add plugin layer type (take ownership) and return true on success
+Add plugin layer type (take ownership) and return ``True`` on success
 %End
 
     bool removePluginLayerType( const QString &typeName );
 %Docstring
-Remove plugin layer type and return true on success
+Remove plugin layer type and return ``True`` on success
 %End
 
     QgsPluginLayerType *pluginLayerType( const QString &typeName );

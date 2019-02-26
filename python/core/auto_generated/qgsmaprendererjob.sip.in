@@ -78,7 +78,7 @@ Tell whether the rendering job is currently running in background.
 
     virtual bool usedCachedLabels() const = 0;
 %Docstring
-Returns true if the render job was able to use a cached labeling solution.
+Returns ``True`` if the render job was able to use a cached labeling solution.
 If so, any previously stored labeling results (see takeLabelingResults())
 should be retained.
 

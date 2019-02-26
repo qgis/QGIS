@@ -37,7 +37,7 @@ Create a copy of this statement.
 
     bool hasParserError() const;
 %Docstring
-Returns true if an error occurred when parsing the input statement
+Returns ``True`` if an error occurred when parsing the input statement
 %End
     QString parserErrorString() const;
 %Docstring
@@ -47,7 +47,7 @@ Returns parser error
     bool doBasicValidationChecks( QString &errorMsgOut /Out/ ) const;
 %Docstring
 Performs basic validity checks. Basically checking that columns referencing
-a table, references a specified table. Returns true if the validation is
+a table, references a specified table. Returns ``True`` if the validation is
 successful
 %End
 

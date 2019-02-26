@@ -122,7 +122,7 @@ ie. no conversion is done.
 Tests whether the size is empty, ie both its width and height
 are zero.
 
-:return: true if size is empty
+:return: ``True`` if size is empty
 %End
 
     QSizeF toQSizeF() const;

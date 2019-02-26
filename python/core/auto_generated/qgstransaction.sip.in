@@ -90,9 +90,9 @@ Execute the ``sql`` string.
 
 :param sql: The sql query to execute
 :param isDirty: Flag to indicate if the underlying data will be modified
-:param name: Name of the transaction ( only used if `isDirty` is true)
+:param name: Name of the transaction ( only used if `isDirty` is ``True``)
 
-:return: - true if everything is OK, false otherwise
+:return: - ``True`` if everything is OK, ``False`` otherwise
          - error: The error message
 %End
 

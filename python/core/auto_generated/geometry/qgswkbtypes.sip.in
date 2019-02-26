@@ -147,7 +147,7 @@ Attempts to extract the WKB type from a WKT string.
 
     static bool isSingleType( Type type );
 %Docstring
-Returns true if the WKB type is a single type.
+Returns ``True`` if the WKB type is a single type.
 
 .. seealso:: :py:func:`isMultiType`
 
@@ -156,7 +156,7 @@ Returns true if the WKB type is a single type.
 
     static bool isMultiType( Type type );
 %Docstring
-Returns true if the WKB type is a multi type.
+Returns ``True`` if the WKB type is a multi type.
 
 .. seealso:: :py:func:`isSingleType`
 
@@ -165,7 +165,7 @@ Returns true if the WKB type is a multi type.
 
     static bool isCurvedType( Type type );
 %Docstring
-Returns true if the WKB type is a curved type or can contain curved geometries.
+Returns ``True`` if the WKB type is a curved type or can contain curved geometries.
 
 .. versionadded:: 2.14
 %End
@@ -224,7 +224,7 @@ This will return one of the following strings:
 %Docstring
 Tests whether a WKB type contains the z-dimension.
 
-:return: true if type has z values
+:return: ``True`` if type has z values
 
 .. seealso:: :py:func:`addZ`
 
@@ -235,7 +235,7 @@ Tests whether a WKB type contains the z-dimension.
 %Docstring
 Tests whether a WKB type contains m values.
 
-:return: true if type has m values
+:return: ``True`` if type has m values
 
 .. seealso:: :py:func:`addM`
 

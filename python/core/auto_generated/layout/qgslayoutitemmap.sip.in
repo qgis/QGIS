@@ -264,7 +264,7 @@ Stores the current project layer styles into style overrides.
 
     bool followVisibilityPreset() const;
 %Docstring
-Returns whether the map should follow a map theme. If true, the layers and layer styles
+Returns whether the map should follow a map theme. If ``True``, the layers and layer styles
 will be used from given preset name (configured with setFollowVisibilityPresetName() method).
 This means when preset's settings are changed, the new settings are automatically
 picked up next time when rendering, without having to explicitly update them.
@@ -282,7 +282,7 @@ Sets whether the map should follow a map theme. See followVisibilityPreset() for
     QString followVisibilityPresetName() const;
 %Docstring
 Preset name that decides which layers and layer styles are used for map rendering. It is only
-used when followVisibilityPreset() returns true.
+used when followVisibilityPreset() returns ``True``.
 
 .. seealso:: :py:func:`setFollowVisibilityPresetName`
 %End
@@ -305,7 +305,7 @@ Sets preset name for map rendering. See followVisibilityPresetName() for more de
 
     bool containsWmsLayer() const;
 %Docstring
-Returns true if the map contains a WMS layer.
+Returns ``True`` if the map contains a WMS layer.
 %End
 
     virtual bool requiresRasterization() const;
@@ -355,7 +355,7 @@ Returns whether annotations are drawn within the map.
 %Docstring
 Returns whether the map extent is set to follow the current atlas feature.
 
-:return: true if map will follow the current atlas feature.
+:return: ``True`` if map will follow the current atlas feature.
 
 .. seealso:: :py:func:`setAtlasDriven`
 
@@ -366,7 +366,7 @@ Returns whether the map extent is set to follow the current atlas feature.
 %Docstring
 Sets whether the map extent will follow the current atlas feature.
 
-:param enabled: set to true if the map extents should be set by the current atlas feature.
+:param enabled: set to ``True`` if the map extents should be set by the current atlas feature.
 
 .. seealso:: :py:func:`atlasDriven`
 
@@ -383,7 +383,7 @@ is enabled.
 
 .. note::
 
-   this parameter is only used if atlasDriven() is true
+   this parameter is only used if atlasDriven() is ``True``
 
 .. seealso:: :py:func:`setAtlasScalingMode`
 
@@ -400,7 +400,7 @@ is enabled.
 
 .. note::
 
-   this parameter is only used if atlasDriven() is true
+   this parameter is only used if atlasDriven() is ``True``
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -513,9 +513,9 @@ current visible map extent.
 %Docstring
 Returns map settings that will be used for drawing of the map.
 
-If ``includeLayerSettings`` is true, than settings specifically relating to map layers and map layer styles
+If ``includeLayerSettings`` is ``True``, than settings specifically relating to map layers and map layer styles
 will be calculated. This can be expensive to calculate, so if they are not required in the map settings
-(e.g. for map settings which are used for scale related calculations only) then ``includeLayerSettings`` should be false.
+(e.g. for map settings which are used for scale related calculations only) then ``includeLayerSettings`` should be ``False``.
 %End
 
     virtual void finalizeRestoreFromXml();
@@ -557,7 +557,7 @@ in the area of the map item covered by the item.
 
     bool isLabelBlockingItem( QgsLayoutItem *item ) const;
 %Docstring
-Returns true if the specified ``item`` is a "label blocking item".
+Returns ``True`` if the specified ``item`` is a "label blocking item".
 
 Items which are marked as label blocking items prevent any map labels from being placed
 in the area of the map item covered by the item.

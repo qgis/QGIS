@@ -36,7 +36,7 @@ Adds a 'Cancel All' button for the user to click
 %End
     bool cancelAll();
 %Docstring
-Returns true if the user clicked 'Cancel All'
+Returns ``True`` if the user clicked 'Cancel All'
 %End
 
   public slots:

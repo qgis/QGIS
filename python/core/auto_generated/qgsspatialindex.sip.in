@@ -115,7 +115,7 @@ The ``flags`` argument is ignored.
 %Docstring
 Add a feature ``id`` to the index with a specified bounding box.
 
-:return: true if feature was successfully added to index.
+:return: ``True`` if feature was successfully added to index.
 
 .. deprecated:: Use addFeature() instead
 %End
@@ -124,7 +124,7 @@ Add a feature ``id`` to the index with a specified bounding box.
 %Docstring
 Add a feature ``id`` to the index with a specified bounding box.
 
-:return: true if feature was successfully added to index.
+:return: ``True`` if feature was successfully added to index.
 
 .. versionadded:: 3.4
 %End

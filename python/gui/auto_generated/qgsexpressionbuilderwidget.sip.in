@@ -208,7 +208,7 @@ Registers a node item for the expression builder.
 :param expressionText: The text that is inserted into the expression area when the user double clicks on the item.
 :param helpText: The help text that the user will see when item is selected.
 :param type: The type of the expression item.
-:param highlightedItem: set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+:param highlightedItem: set to ``True`` to make the item highlighted, which inserts a bold copy of the item at the top level
 :param sortOrder: sort ranking for item
 :param icon: custom icon to show for item
 %End
@@ -281,7 +281,7 @@ controls which layers and relations and other project-specific items are shown i
 
     bool evalError() const;
 %Docstring
-Will be set to true if the current expression text reported an eval error
+Will be set to ``True`` if the current expression text reported an eval error
 with the context.
 
 .. versionadded:: 3.0
@@ -289,7 +289,7 @@ with the context.
 
     bool parserError() const;
 %Docstring
-Will be set to true if the current expression text reports a parser error
+Will be set to ``True`` if the current expression text reports a parser error
 with the context.
 
 .. versionadded:: 3.0
@@ -317,7 +317,7 @@ Auto save the current Python function code.
 Enabled or disable auto saving. When enabled Python scripts will be auto saved
 when text changes.
 
-:param enabled: True to enable auto saving.
+:param enabled: ``True`` to enable auto saving.
 %End
 
   signals:
@@ -328,12 +328,12 @@ Emitted when the user changes the expression in the widget.
 Users of this widget should connect to this signal to decide if to let the user
 continue.
 
-:param isValid: Is true if the expression the user has typed is valid.
+:param isValid: Is ``True`` if the expression the user has typed is valid.
 %End
 
     void evalErrorChanged();
 %Docstring
-Will be set to true if the current expression text reported an eval error
+Will be set to ``True`` if the current expression text reported an eval error
 with the context.
 
 .. versionadded:: 3.0
@@ -341,7 +341,7 @@ with the context.
 
     void parserErrorChanged();
 %Docstring
-Will be set to true if the current expression text reported a parser error
+Will be set to ``True`` if the current expression text reported a parser error
 with the context.
 
 .. versionadded:: 3.0

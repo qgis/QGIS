@@ -53,7 +53,7 @@ Has to be called to initialize the dual view.
 :param request: Use a modified request to limit the shown features
 :param context: The context in which this view is shown
 :param loadFeatures: whether to initially load all features into the view. If set to
-                     false, limited features can later be loaded using setFilterMode()
+                     ``False``, limited features can later be loaded using setFilterMode()
 %End
 
     void setView( ViewMode view );
@@ -92,8 +92,8 @@ Gets the filter mode
 %Docstring
 Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
 
-:param selectedOnTop: True: Show selected features on top.
-                      False: Use defined sorting column.
+:param selectedOnTop: ``True``: Show selected features on top.
+                      ``False``: Use defined sorting column.
 %End
 
     int featureCount();
@@ -187,7 +187,7 @@ Set the current edit selection in the AttributeEditor mode.
 %Docstring
 saveEditChanges
 
-:return: true if the saving was OK. false is possible due to connected
+:return: ``True`` if the saving was OK. ``False`` is possible due to connected
          validation logic.
 %End
 
@@ -204,7 +204,7 @@ Sets whether multi edit mode is enabled.
 %Docstring
 Toggles whether search mode should be enabled in the form.
 
-:param enabled: set to true to switch on search mode
+:param enabled: set to ``True`` to switch on search mode
 
 .. versionadded:: 2.16
 %End

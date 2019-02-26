@@ -77,7 +77,7 @@ Check if this editor widget type supports a certain field.
 :param vl: The layer
 :param fieldIdx: The field index
 
-:return: True if the type is supported for this field
+:return: ``True`` if the type is supported for this field
 
 .. seealso:: :py:func:`fieldScore`
 %End

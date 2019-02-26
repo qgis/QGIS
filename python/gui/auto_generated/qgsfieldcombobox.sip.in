@@ -55,7 +55,7 @@ Sets whether an optional empty field ("not set") option is shown in the combo bo
 
     bool allowEmptyFieldName() const;
 %Docstring
-Returns true if the combo box allows the empty field ("not set") choice.
+Returns ``True`` if the combo box allows the empty field ("not set") choice.
 
 .. seealso:: :py:func:`setAllowEmptyFieldName`
 

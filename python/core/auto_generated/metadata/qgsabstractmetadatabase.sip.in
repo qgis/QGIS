@@ -407,7 +407,7 @@ Sets state from DOM document.
 
 :param metadataElement: The DOM element corresponding to ``resourceMetadata'' tag
 
-:return: true if successful
+:return: ``True`` if successful
 
 Subclasses which override this method should take care to also call the base
 class method in order to read common metadata properties.
@@ -420,7 +420,7 @@ Stores state in a DOM node.
 :param metadataElement: is a DOM element corresponding to ``resourceMetadata'' tag
 :param document: is a the DOM document being written
 
-:return: true if successful
+:return: ``True`` if successful
 
 Subclasses which override this method should take care to also call the base
 class method in order to write common metadata properties.

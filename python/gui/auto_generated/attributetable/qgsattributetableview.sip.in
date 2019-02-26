@@ -49,7 +49,7 @@ which can be slow due to recurring canvas repaints.
 :param object: The object which is the target of the event.
 :param event: The intercepted event
 
-:return: Returns always false, so the event gets processed
+:return: Returns always ``False``, so the event gets processed
 %End
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
