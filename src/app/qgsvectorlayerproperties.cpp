@@ -463,12 +463,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     }
     mTopologyChecksGroupBox->setLayout( topologyCheckLayout );
     mTopologyChecksGroupBox->setVisible( !topologyCheckFactories.isEmpty() );
+    mAutomaticProblemResolutionCheckbox->setChecked( mLayer->geometryOptions()->automaticProblemResolutionEnabled() );
   }
   else
   {
     mRemoveDuplicateNodesCheckbox->setEnabled( false );
     mGeometryPrecisionLineEdit->setEnabled( false );
     mGeometryAutoFixesGroupBox->setEnabled( false );
+    mAutomaticProblemResolutionCheckbox->setEnabled( false );
   }
 
   mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#information-properties" ) );
@@ -839,6 +841,7 @@ void QgsVectorLayerProperties::apply()
       activeChecks << it.value();
   }
   mLayer->geometryOptions()->setGeometryChecks( activeChecks );
+  mLayer->geometryOptions()->setAutomaticProblemResolutionEnabled( mAutomaticProblemResolutionCheckbox->isChecked() );
 
   mLayer->triggerRepaint();
   // notify the project we've made a change

@@ -164,6 +164,14 @@ void QgsGeometryValidationDock::onRowsInserted()
   setUserVisible( true );
 }
 
+void QgsGeometryValidationDock::updateResolutionWidgetVisibility()
+{
+  if ( !mCurrentLayer )
+    return;
+
+  mResolutionWidget->setVisible( mCurrentLayer->geometryOptions()->automaticProblemResolutionEnabled() );
+}
+
 QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const
 {
   return mGeometryValidationService;
@@ -275,6 +283,8 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
     disconnect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     disconnect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     disconnect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
+    disconnect( mCurrentLayer->geometryOptions(), &QgsGeometryOptions::automaticProblemResolutionEnabledChanged, this, &QgsGeometryValidationDock::updateResolutionWidgetVisibility );
+    updateResolutionWidgetVisibility();
   }
 
   mCurrentLayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -284,6 +294,7 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
     connect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     connect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     connect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
+    connect( mCurrentLayer->geometryOptions(), &QgsGeometryOptions::automaticProblemResolutionEnabledChanged, this, &QgsGeometryValidationDock::updateResolutionWidgetVisibility );
   }
 
   onLayerEditingStatusChanged();

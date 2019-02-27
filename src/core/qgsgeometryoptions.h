@@ -131,6 +131,24 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      */
     void readXml( const QDomNode &node );
 
+    /**
+     * Automatic problem resolution offers strategies to fix errors with
+     * a single click.
+     * This is currently experimental
+     *
+     * \since QGIS 3.8
+     */
+    bool automaticProblemResolutionEnabled() const;
+
+    /**
+     * Automatic problem resolution offers strategies to fix errors with
+     * a single click.
+     * This is currently experimental
+     *
+     * \since QGIS 3.8
+     */
+    void setAutomaticProblemResolutionEnabled( bool automaticProblemResolutionEnabled );
+
   signals:
 
     /**
@@ -163,6 +181,11 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      */
     void geometryPrecisionChanged();
 
+    /**
+     * Defines if the automatic fixes
+     */
+    void automaticProblemResolutionEnabledChanged();
+
   private:
 
     /**
@@ -183,6 +206,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
 
     QStringList mGeometryChecks;
     QVariantMap mCheckConfiguration;
+    bool mAutomaticProblemResolutionEnabled = false;
 };
 
 #endif // QGSGEOMETRYOPTIONS_H
