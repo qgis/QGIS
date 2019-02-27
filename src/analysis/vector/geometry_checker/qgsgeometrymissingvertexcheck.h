@@ -36,6 +36,7 @@ class QgsCurvePolygon;
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryCheckError
 {
   public:
+  
     /**
      * Create a new missing vertex check error.
      */
