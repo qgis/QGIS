@@ -53,6 +53,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     void setCurrentLayer( QgsVectorLayer *currentLayer );
 
   private slots:
+    void onSingleGeometryCheckCleared( QgsVectorLayer *layer );
     void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError> > &errors );
     void onGeometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
