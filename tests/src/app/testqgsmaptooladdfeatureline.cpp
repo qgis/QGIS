@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsmaptooladdfeature.cpp
+     testqgsmaptooladdfeatureline.cpp
      ----------------------
     Date                 : October 2017
     Copyright            : (C) 2017 by Martin Dobias
@@ -53,11 +53,11 @@ namespace QTest
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolAddFeature : public QObject
+class TestQgsMapToolAddFeatureLine : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolAddFeature();
+    TestQgsMapToolAddFeatureLine();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -81,11 +81,11 @@ class TestQgsMapToolAddFeature : public QObject
     QgsFeatureId mFidLineF1 = 0;
 };
 
-TestQgsMapToolAddFeature::TestQgsMapToolAddFeature() = default;
+TestQgsMapToolAddFeatureLine::TestQgsMapToolAddFeatureLine() = default;
 
 
 //runs before all tests
-void TestQgsMapToolAddFeature::initTestCase()
+void TestQgsMapToolAddFeatureLine::initTestCase()
 {
   qDebug() << "TestMapToolCapture::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -177,14 +177,14 @@ void TestQgsMapToolAddFeature::initTestCase()
 }
 
 //runs after all tests
-void TestQgsMapToolAddFeature::cleanupTestCase()
+void TestQgsMapToolAddFeatureLine::cleanupTestCase()
 {
   delete mCaptureTool;
   delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolAddFeature::testNoTracing()
+void TestQgsMapToolAddFeatureLine::testNoTracing()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
@@ -205,7 +205,7 @@ void TestQgsMapToolAddFeature::testNoTracing()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 }
 
-void TestQgsMapToolAddFeature::testTracing()
+void TestQgsMapToolAddFeatureLine::testTracing()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
@@ -250,7 +250,7 @@ void TestQgsMapToolAddFeature::testTracing()
   mEnableTracingAction->setChecked( false );
 }
 
-void TestQgsMapToolAddFeature::testTracingWithOffset()
+void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
@@ -328,7 +328,7 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
   mEnableTracingAction->setChecked( false );
 }
 
-void TestQgsMapToolAddFeature::testZ()
+void TestQgsMapToolAddFeatureLine::testZ()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
@@ -369,7 +369,7 @@ void TestQgsMapToolAddFeature::testZ()
   mCanvas->setCurrentLayer( mLayerLine );
 }
 
-void TestQgsMapToolAddFeature::testZMSnapping()
+void TestQgsMapToolAddFeatureLine::testZMSnapping()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
@@ -397,5 +397,5 @@ void TestQgsMapToolAddFeature::testZMSnapping()
   mCanvas->snappingUtils()->setConfig( cfg );
 }
 
-QGSTEST_MAIN( TestQgsMapToolAddFeature )
-#include "testqgsmaptooladdfeature.moc"
+QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
+#include "testqgsmaptooladdfeatureline.moc"
