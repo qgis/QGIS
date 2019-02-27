@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QJsonObject>
 #include <QPainter>
 
 
@@ -43,6 +44,79 @@ QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 void QgsLegendRenderer::drawLegend( QPainter *painter )
 {
   paintAndDetermineSize( painter );
+}
+
+void QgsLegendRenderer::drawLegend( QJsonObject &json )
+{
+  QgsLayerTreeGroup *rootGroup = mLegendModel->rootGroup();
+  if ( !rootGroup )
+    return;
+
+  json["title"] = mSettings.title();
+  drawLegend( rootGroup, json );
+}
+
+void QgsLegendRenderer::drawLegend( QgsLayerTreeGroup *nodeGroup, QJsonObject &json )
+{
+  QJsonArray nodes;
+  Q_FOREACH ( QgsLayerTreeNode *node, nodeGroup->children() )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
+
+      QModelIndex idx = mLegendModel->node2index( nodeGroup );
+      QgsExpressionContext tempContext;
+      const QString text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
+
+      QJsonObject group;
+      group[ "type" ] = "group";
+      group[ "title" ] = text;
+      drawLegend( nodeGroup, group );
+      nodes.append( group );
+    }
+    else if ( QgsLayerTree::isLayer( node ) )
+    {
+      QJsonObject group;
+      group[ "type" ] = "layer";
+
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+
+      QString text;
+      if ( nodeLegendStyle( nodeLayer ) != QgsLegendStyle::Hidden )
+      {
+        QModelIndex idx = mLegendModel->node2index( nodeLayer );
+        text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
+      }
+
+      QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
+
+      if ( legendNodes.isEmpty() && mLegendModel->legendFilterMapSettings() )
+        continue;
+
+      if ( legendNodes.count() == 1 )
+      {
+        legendNodes.at( 0 )->draw( mSettings, group );
+        nodes.append( group );
+      }
+      else if ( legendNodes.count() > 1 )
+      {
+        QJsonArray symbols;
+        for ( int j = 0; j < legendNodes.count(); j++ )
+        {
+          QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
+          QJsonObject symbol;
+          legendNode->draw( mSettings, symbol );
+          symbols.append( symbol );
+        }
+        group[ "title" ] = text;
+        group[ "symbols" ] = symbols;
+        nodes.append( group );
+      }
+    }
+  }
+
+  json["nodes"] = nodes;
 }
 
 QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter *painter )

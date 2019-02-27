@@ -71,6 +71,11 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   return im;
 }
 
+void QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, QJsonObject &json )
+{
+  drawSymbolText( settings, json );
+  json[ "symbol" ] = "TODO";
+}
 
 QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
@@ -127,6 +132,13 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   }
 
   return labelSize;
+}
+
+void QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &settings, QJsonObject &json ) const
+{
+  QgsExpressionContext tempContext;
+  const QString text = data( Qt::DisplayRole ).toString();
+  json[ "title" ] = text;
 }
 
 // -------------------------------------------------------------------------

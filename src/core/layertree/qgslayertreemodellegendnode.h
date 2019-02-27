@@ -110,6 +110,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
+    void draw( const QgsLegendSettings &settings, QJsonObject &json );
+
     /**
      * Draws symbol on the left side of the item
      * \param settings Legend layout configuration
@@ -127,6 +129,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \returns Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
+
+    void drawSymbolText( const QgsLegendSettings &settings, QJsonObject &json ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
