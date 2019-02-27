@@ -24,6 +24,37 @@
 class QgsCurvePolygon;
 
 /**
+ * A geometry check error for a missing vertex.
+ * Includes additional details about the bounding box of the error,
+ * centered on the missing error location and scaled by taking neighbouring
+ * vertices into account.
+ *
+ * \since QGIS 3.8
+ */
+class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryCheckError
+{
+  public:
+    QgsGeometryMissingVertexCheckError( const QgsGeometryCheck *check,
+                                        const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+                                        const QgsPointXY &errorLocation,
+                                        QgsVertexId vidx = QgsVertexId(),
+                                        const QVariant &value = QVariant(),
+                                        ValueType valueType = ValueOther );
+
+    QgsRectangle affectedAreaBBox() const override;
+
+    /**
+     * Set the bounding box of the affected area.
+     *
+     * \since QGIS 3.8
+     */
+    void setAffectedAreaBBox( const QgsRectangle &affectedAreaBBox );
+
+  private:
+    QgsRectangle mAffectedAreaBBox;
+};
+
+/**
  * \ingroup analysis
  *
  * A topology check for missing vertices.
@@ -73,6 +104,8 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
 
   private:
     void processPolygon( const QgsCurvePolygon *polygon, QgsFeaturePool *featurePool, QList<QgsGeometryCheckError *> &errors, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, QgsFeedback *feedback ) const;
+
+    QgsRectangle contextBoundingBox( const QgsCurvePolygon *polygon, const QgsVertexId &vertexId, const QgsPoint &point ) const;
 };
 
 

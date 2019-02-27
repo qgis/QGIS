@@ -135,7 +135,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
   const int numRings = polygon->numInteriorRings();
   for ( int i = 0; i < numRings; ++i )
   {
-    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->exteriorRing(), mContext->tolerance );
+    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->interiorRing( i ), mContext->tolerance );
     boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
   }
 
@@ -177,12 +177,34 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
               }
             }
             if ( !alreadyReported )
-              errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( pt ) ) );
+            {
+              std::unique_ptr<QgsGeometryMissingVertexCheckError> error = qgis::make_unique<QgsGeometryMissingVertexCheckError>( this, layerFeature, QgsPointXY( pt ) );
+              error->setAffectedAreaBBox( contextBoundingBox( polygon, vertexId, pt ) );
+
+              errors.append( error.release() );
+            }
           }
         }
       }
     }
   }
+}
+
+QgsRectangle QgsGeometryMissingVertexCheck::contextBoundingBox( const QgsCurvePolygon *polygon, const QgsVertexId &vertexId, const QgsPoint &point ) const
+{
+  QgsVertexId vertexBefore;
+  QgsVertexId vertexAfter;
+
+  polygon->adjacentVertices( vertexId, vertexBefore, vertexAfter );
+
+  QgsPoint ptBefore = polygon->vertexAt( vertexBefore );
+  QgsPoint ptAt = polygon->vertexAt( vertexId );
+  QgsPoint ptAfter = polygon->vertexAt( vertexAfter );
+
+  double length = std::abs( ptAt.distance( ptBefore ) ) + std::abs( ptAt.distance( ptAfter ) );
+
+  QgsRectangle rect( point.x() - length / 2, point.y() - length / 2, point.x() + length / 2, point.y() + length / 2 );
+  return rect;
 }
 
 QString QgsGeometryMissingVertexCheck::id() const
@@ -236,3 +258,18 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::factoryCheckType()
   return QgsGeometryCheck::LayerCheck;
 }
 ///@endcond private
+
+QgsGeometryMissingVertexCheckError::QgsGeometryMissingVertexCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, QgsGeometryCheckError::ValueType valueType )
+  : QgsGeometryCheckError( check, layerFeature, errorLocation, vidx, value, valueType )
+{
+}
+
+QgsRectangle QgsGeometryMissingVertexCheckError::affectedAreaBBox() const
+{
+  return mAffectedAreaBBox;
+}
+
+void QgsGeometryMissingVertexCheckError::setAffectedAreaBBox( const QgsRectangle &affectedAreaBBox )
+{
+  mAffectedAreaBBox = affectedAreaBBox;
+}
