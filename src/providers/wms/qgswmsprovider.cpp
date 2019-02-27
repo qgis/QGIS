@@ -655,6 +655,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       Q_ASSERT( mTileMatrixSet );
       Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
 
+      // if we know both source and output DPI, let's scale the tiles
+      if ( mDpi != -1 && mTileLayer->dpi != -1 )
+        vres *= mDpi / mTileLayer->dpi;
+
       // find nearest resolution
       tm = mTileMatrixSet->findNearestResolution( vres );
       Q_ASSERT( tm );
@@ -1219,6 +1223,22 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   tl.tileMode = XYZ;
   tl.identifier = QStringLiteral( "xyz" );  // as set in parseUri
   tl.boundingBoxes << bbox;
+
+  double tilePixelRatio = 0.;  // unknown
+  if ( parsedUri.hasParam( QStringLiteral( "tilePixelRatio" ) ) )
+    tilePixelRatio = parsedUri.param( QStringLiteral( "tilePixelRatio" ) ).toDouble();
+
+  if ( tilePixelRatio != 0 )
+  {
+    // known tile pixel ratio - will be doing auto-scaling of tiles based on output DPI
+    tl.dpi = 96 * tilePixelRatio;  // TODO: is 96 correct base DPI ?
+  }
+  else
+  {
+    // unknown tile pixel ratio - no scaling of tiles based on output DPI
+    tilePixelRatio = 1;
+  }
+
   mCaps.mTileLayersSupported.append( tl );
 
   QgsWmtsTileMatrixSet tms;
@@ -1239,7 +1259,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
     QgsWmtsTileMatrix tm;
     tm.identifier = QString::number( zoom );
     tm.topLeft = topLeft;
-    tm.tileWidth = tm.tileHeight = 256;
+    tm.tileWidth = tm.tileHeight = 256 * tilePixelRatio;
     tm.matrixWidth = tm.matrixHeight = 1 << zoom;
     tm.tres = xspan / ( tm.tileWidth * tm.matrixWidth );
     tm.scaleDenom = 0.0;
