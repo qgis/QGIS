@@ -24,6 +24,8 @@
 class QgsCurvePolygon;
 
 /**
+ * \ingroup analysis
+ *
  * A geometry check error for a missing vertex.
  * Includes additional details about the bounding box of the error,
  * centered on the missing error location and scaled by taking neighbouring
@@ -34,6 +36,9 @@ class QgsCurvePolygon;
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryCheckError
 {
   public:
+    /**
+     * Create a new missing vertex check error.
+     */
     QgsGeometryMissingVertexCheckError( const QgsGeometryCheck *check,
                                         const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                         const QgsPointXY &errorLocation,
