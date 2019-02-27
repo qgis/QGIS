@@ -53,6 +53,7 @@ from .Aspect import Aspect
 from .BasicStatistics import BasicStatisticsForField
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
+from .CreateAtlasGrid import CreateAtlasGrid
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
@@ -163,6 +164,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 BasicStatisticsForField(),
                 CheckValidity(),
                 ConcaveHull(),
+                CreateAtlasGrid(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
