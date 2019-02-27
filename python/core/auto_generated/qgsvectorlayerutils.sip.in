@@ -79,7 +79,7 @@ Fetches all values from a specified field name or expression.
 :param fieldOrExpression: field name or an expression string
 :param ok: will be set to false if field or expression is invalid, otherwise true
 :param selectedOnly: set to true to get values from selected features only
-:param feedback: optional feedback object to allow cancelation
+:param feedback: optional feedback object to allow cancellation
 
 :return: list of fetched values
 
@@ -98,7 +98,7 @@ invalid expression results are skipped.
 :param ok: will be set to false if field or expression is invalid, otherwise true
 :param selectedOnly: set to true to get values from selected features only
 :param nullCount: optional pointer to integer to store number of null values encountered in
-:param feedback: optional feedback object to allow cancelation
+:param feedback: optional feedback object to allow cancellation
 
 :return: list of fetched values
 

@@ -175,7 +175,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
-      Canceled, //!< Writing was interrupted by manual cancelation
+      Canceled, //!< Writing was interrupted by manual cancellation
     };
 
     enum SymbologyExport
@@ -504,7 +504,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          */
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr;
 
-        //! Optional feedback object allowing cancelation of layer save
+        //! Optional feedback object allowing cancellation of layer save
         QgsFeedback *feedback = nullptr;
     };
 

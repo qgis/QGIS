@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * Constructor - creates R-tree and bulk loads it with features from the iterator.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * The optional \a feedback object can be used to allow cancellation of bulk feature loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      *
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * Constructor - creates R-tree and bulk loads it with features from the source.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * The optional \a feedback object can be used to allow cancellation of bulk feature loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
 

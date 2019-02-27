@@ -113,6 +113,13 @@ Returns const reference to origin of min/max values
 Sets origin of min/max values
 %End
 
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+%Docstring
+Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+
+.. versionadded:: 3.4.5
+%End
+
   protected:
 
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;

@@ -321,7 +321,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
 
     /**
      * Returns the underlying error string describing potential errors
-     * hapenning in saveAs(). Empty by default.
+     * happening in saveAs(). Empty by default.
      *
      * \since QGIS 3.4
      */

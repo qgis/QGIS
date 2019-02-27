@@ -414,7 +414,6 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
 
   if ( ! d->mIsPrepared )
   {
-    qWarning( "QgsExpression::evaluate() called on an expression not yet prepared !" );
     prepare( context );
   }
   return d->mRootNode->eval( this, context );
@@ -475,18 +474,19 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+    static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ) };
 
-    int pos = rx.indexIn( action, index );
-    if ( pos < 0 )
+    const QRegularExpressionMatch match = sRegEx.match( action, index );
+    if ( !match.hasMatch() )
       break;
 
-    int start = index;
-    index = pos + rx.matchedLength();
-    QString to_replace = rx.cap( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + to_replace );
+    const int pos = action.indexOf( sRegEx, index );
+    const int start = index;
+    index = pos + match.capturedLength( 0 );
+    const QString toReplace = match.captured( 1 ).trimmed();
+    QgsDebugMsg( "Found expression: " + toReplace );
 
-    QgsExpression exp( to_replace );
+    QgsExpression exp( toReplace );
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );

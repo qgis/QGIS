@@ -70,7 +70,10 @@ TARGET_LINK_LIBRARIES(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
 
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+IF(NOT MSVC)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+ENDIF(NOT MSVC)
+
 ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
 
 ADD_QGIS_TEST(wmscapabilitiestest

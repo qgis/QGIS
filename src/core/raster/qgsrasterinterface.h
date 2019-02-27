@@ -234,7 +234,7 @@ class CORE_EXPORT QgsRasterInterface
      * \param extent extent of block
      * \param width pixel width of block
      * \param height pixel height of block
-     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
 

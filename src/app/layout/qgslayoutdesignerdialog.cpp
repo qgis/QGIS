@@ -3909,6 +3909,8 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   // Image size
   if ( mLayout )
   {
+    settings.flags = mLayout->renderContext().flags();
+
     maxPageSize = mLayout->pageCollection()->maximumPageSize();
     hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
     dpi = mLayout->renderContext().dpi();
@@ -3955,9 +3957,11 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.imageSize = imageSize;
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
-  settings.flags = QgsLayoutRenderContext::FlagUseAdvancedEffects;
+  settings.flags |= QgsLayoutRenderContext::FlagUseAdvancedEffects;
   if ( imageDlg.antialiasing() )
     settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
+  else
+    settings.flags &= ~QgsLayoutRenderContext::FlagAntialiasing;
 
   return true;
 }
@@ -3981,6 +3985,8 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   bool includeMetadata = true;
   if ( mLayout )
   {
+    settings.flags = mLayout->renderContext().flags();
+
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
     layersAsGroup = mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool();
     cropToContents = mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool();
@@ -4059,6 +4065,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool includeMetadata = true;
   if ( mLayout )
   {
+    settings.flags = mLayout->renderContext().flags();
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     const int prevLayoutSettingLabelsAsOutlines = mLayout->customProperty( QStringLiteral( "pdfTextFormat" ), -1 ).toInt();

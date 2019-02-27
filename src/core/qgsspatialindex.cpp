@@ -172,7 +172,7 @@ class QgsSpatialIndexData : public QSharedData
      * Constructor for QgsSpatialIndexData which bulk loads features from the specified feature iterator
      * \a fi.
      *
-     * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
+     * The optional \a feedback object can be used to allow cancellation of bulk feature loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      */
