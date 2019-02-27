@@ -18,8 +18,6 @@
 #include "qgsxmlutils.h"
 #include "qgsexpression.h"
 
-const QgsFeature missingFeature;
-
 const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );
 const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( QStringLiteral( "symbol_color" ) );
@@ -526,7 +524,7 @@ bool QgsExpressionContext::hasFeature() const
   return false;
 }
 
-const QgsFeature &QgsExpressionContext::feature() const
+QgsFeature QgsExpressionContext::feature() const
 {
   //iterate through stack backwards, so that higher priority variables take precedence
   QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
@@ -536,7 +534,7 @@ const QgsFeature &QgsExpressionContext::feature() const
     if ( ( *it )->hasFeature() )
       return ( *it )->feature();
   }
-  return missingFeature;
+  return QgsFeature();
 }
 
 void QgsExpressionContext::setFields( const QgsFields &fields )

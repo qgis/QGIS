@@ -640,7 +640,7 @@ class CORE_EXPORT QgsExpressionContext
      * Convenience function for retrieving the feature for the context, if set.
      * \see setFeature
      */
-    const QgsFeature &feature() const;
+    QgsFeature feature() const;
 
     /**
      * Convenience function for setting a fields for the context. The fields
