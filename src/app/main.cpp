@@ -1032,7 +1032,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
-#ifdef Q_OS_MAC
+#if defined(Q_OS_UNIX)
   // Resulting libraryPaths has critical QGIS plugin paths first, then any Qt plugin paths, then
   // any dev-defined paths (in app's qt.conf) and/or user-defined paths (QT_PLUGIN_PATH env var).
   //
@@ -1040,7 +1040,7 @@ int main( int argc, char *argv[] )
   //       built against a different Qt/QGIS, while still allowing custom C++ plugins to load.
   QStringList libPaths( QCoreApplication::libraryPaths() );
 
-  QgsDebugMsgLevel( QStringLiteral( "Initial macOS QCoreApplication::libraryPaths: %1" )
+  QgsDebugMsgLevel( QStringLiteral( "Initial macOS/UNIX QCoreApplication::libraryPaths: %1" )
                     .arg( libPaths.join( " " ) ), 4 );
 
   // Strip all critical paths that should always be prepended
