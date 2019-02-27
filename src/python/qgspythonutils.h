@@ -47,11 +47,15 @@ class PYTHON_EXPORT QgsPythonUtils
 
     virtual ~QgsPythonUtils() = default;
 
-    //! returns TRUE if Python support is ready to use (must be inited first)
+    /**
+     * Returns TRUE if Python support is ready to use.
+     *
+     * Python support must be initialized first, via a call to initPython().
+     */
     virtual bool isEnabled() = 0;
 
     /**
-     * Initialize Python and import bindings.
+     * Initializes Python and imports the PyQGIS bindings.
      *
      * The \a iface argument should be set to an instance of the QGIS interface, or
      * NULLPTR if no interface is available.
@@ -61,30 +65,41 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual void initPython( QgisInterface *iface, bool installErrorHook ) = 0;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! initialize Python and import server bindings
+
+    /**
+     * Initializes Python and imports server bindings.
+     */
     virtual void initServerPython( QgsServerInterface *iface ) = 0;
 
-    //! start server plugin: call plugin's classServerFactory(serverInterface) add to active plugins
+    /**
+     * Starts a server plugin.
+     *
+     * Calls the plugin's classServerFactory(serverInterface) and adds the matching plugin to the
+     * active plugins list.
+     */
     virtual bool startServerPlugin( QString packageName ) = 0;
 #endif
 
-    //! close Python interpreter
+    /**
+     * Gracefully closes the Python interpreter and cleans up Python library handles.
+     */
     virtual void exitPython() = 0;
 
-    /* console */
-
     /**
-     * run a statement, show an error message on error
+     * Runs a Python \a command, showing an error message if one occurred.
      * \returns TRUE if no error occurred
      */
     virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
     /**
-     * run a statement, error reporting is not done
+     * Runs a Python \a command. No error reporting is not performed.
      * \returns TRUE if no error occurred
      */
     virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
+    /**
+     * Evaluates a Python \a command and stores the result in a the \a result string.
+     */
     virtual bool evalString( const QString &command, QString &result ) = 0;
 
     /**
@@ -95,31 +110,68 @@ class PYTHON_EXPORT QgsPythonUtils
 
     /* plugins */
 
-    //! Returns a list of all available Python plugins
+    /**
+     * Returns a list of all available Python plugins.
+     *
+     * \see listActivePlugins()
+     */
     virtual QStringList pluginList() = 0;
 
-    //! Returns whether the plugin is loaded (active)
+    /**
+     * Returns TRUE if the plugin with matching name is loaded (active).
+     *
+     * \see listActivePlugins()
+     * \see loadPlugin()
+     */
     virtual bool isPluginLoaded( const QString &packageName ) = 0;
 
-    //! Returns a list of active plugins
+    /**
+     * Returns a list of active (loaded) plugins.
+     *
+     * \see isPluginLoaded()
+     * \see loadPlugin()
+     */
     virtual QStringList listActivePlugins() = 0;
 
-    //! load Python plugin (import)
+    /**
+     * Loads a Python plugin (via import) and returns TRUE if the plugin was successfully loaded.
+     *
+     * \see isPluginLoaded()
+     * \see startPlugin()
+     */
     virtual bool loadPlugin( const QString &packageName ) = 0;
 
-    //! start plugin: add to active plugins and call initGui()
+    /**
+     * Starts the plugin with matching \a packageName. The plugin must have already been loaded
+     * via a call to loadPlugin().
+     *
+     * Calling this adds the plugin to the active plugins list and calls its initGui() implementation.
+     *
+     * Returns TRUE if the plugin was successfully started.
+     *
+     * \see loadPlugin()
+     */
     virtual bool startPlugin( const QString &packageName ) = 0;
 
     /**
-     * helper function to get some information about plugin
-     * \param function one of these strings: name, tpye, version, description
+     * Helper function to return some information about a plugin.
+     *
+     * \param function metadata component to return. Must match one of the strings: name, type, version, or description.
      */
     virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
 
-    //! confirm that the plugin can be uninstalled
+    /**
+     * Confirms that the plugin can be uninstalled.
+     */
     virtual bool canUninstallPlugin( const QString &packageName ) = 0;
 
-    //! unload plugin
+    /**
+     * Unloads a plugin.
+     *
+     * Triggers the plugin's unload() implementation and removes it from the list of loaded plugins.
+     *
+     * Returns TRUE if the plugin was successfully unloaded.
+     */
     virtual bool unloadPlugin( const QString &packageName ) = 0;
 };
 
