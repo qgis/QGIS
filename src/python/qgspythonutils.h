@@ -120,10 +120,18 @@ class PYTHON_EXPORT QgsPythonUtils
     /**
      * Returns TRUE if the plugin with matching name is loaded (active).
      *
+     * \see isPluginEnabled()
      * \see listActivePlugins()
      * \see loadPlugin()
      */
     virtual bool isPluginLoaded( const QString &packageName ) = 0;
+
+    /**
+     * Returns TRUE if the plugin is user enabled (i.e. installed and checked in the user's plugin configuration)
+     *
+     * \see isPluginLoaded()
+     */
+    virtual bool isPluginEnabled( const QString &packageName ) const = 0;
 
     /**
      * Returns a list of active (loaded) plugins.
@@ -173,6 +181,7 @@ class PYTHON_EXPORT QgsPythonUtils
      * Returns TRUE if the plugin was successfully unloaded.
      */
     virtual bool unloadPlugin( const QString &packageName ) = 0;
+
 };
 
 #endif

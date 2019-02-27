@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgssettings.h"
 
 #include <QStringList>
 #include <QDir>
@@ -633,6 +634,11 @@ bool QgsPythonUtilsImpl::unloadPlugin( const QString &packageName )
   QString output;
   evalString( "qgis.utils.unloadPlugin('" + packageName + "')", output );
   return ( output == QLatin1String( "True" ) );
+}
+
+bool QgsPythonUtilsImpl::isPluginEnabled( const QString &packageName ) const
+{
+  return QgsSettings().value( "/PythonPlugins/" + packageName, QVariant( false ) ).toBool();
 }
 
 bool QgsPythonUtilsImpl::isPluginLoaded( const QString &packageName )
