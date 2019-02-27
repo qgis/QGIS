@@ -541,7 +541,7 @@ bool QgsPythonUtilsImpl::evalString( const QString &command, QString &result )
   return success;
 }
 
-QString QgsPythonUtilsImpl::pythonPath()
+QString QgsPythonUtilsImpl::pythonPath() const
 {
   if ( QgsApplication::isRunningFromBuildDir() )
     return QgsApplication::buildOutputPath() + "/python";
@@ -549,12 +549,12 @@ QString QgsPythonUtilsImpl::pythonPath()
     return QgsApplication::pkgDataPath() + "/python";
 }
 
-QString QgsPythonUtilsImpl::pluginsPath()
+QString QgsPythonUtilsImpl::pluginsPath() const
 {
   return pythonPath() + "/plugins";
 }
 
-QString QgsPythonUtilsImpl::homePythonPath()
+QString QgsPythonUtilsImpl::homePythonPath() const
 {
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
   if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QStringLiteral( "/.qgis3" ) )
@@ -567,12 +567,12 @@ QString QgsPythonUtilsImpl::homePythonPath()
   }
 }
 
-QString QgsPythonUtilsImpl::homePluginsPath()
+QString QgsPythonUtilsImpl::homePluginsPath() const
 {
   return homePythonPath() + " + \"/plugins\"";
 }
 
-QStringList QgsPythonUtilsImpl::extraPluginsPaths()
+QStringList QgsPythonUtilsImpl::extraPluginsPaths() const
 {
   const char *cpaths = getenv( "QGIS_PLUGINPATH" );
   if ( !cpaths )
