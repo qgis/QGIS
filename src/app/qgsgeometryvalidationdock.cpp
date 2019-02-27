@@ -50,7 +50,6 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
-  connect( mTopologyChecksPendingButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::triggerTopologyChecks );
 
   mFeatureRubberband = new QgsRubberBand( mMapCanvas );
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
@@ -129,13 +128,6 @@ void QgsGeometryValidationDock::zoomToFeature()
     QgsRectangle mapExtent = mLayerTransform.transform( featureExtent );
     mMapCanvas->zoomToFeatureExtent( mapExtent );
   }
-}
-
-void QgsGeometryValidationDock::triggerTopologyChecks()
-{
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( layer )
-    mGeometryValidationService->triggerTopologyChecks( layer );
 }
 
 void QgsGeometryValidationDock::updateLayerTransform()
@@ -305,7 +297,6 @@ void QgsGeometryValidationDock::onLayerEditingStatusChanged()
       }
     }
   }
-  mTopologyChecksPendingButton->setEnabled( enabled );
 }
 
 void QgsGeometryValidationDock::onLayerDestroyed( QObject *layer )

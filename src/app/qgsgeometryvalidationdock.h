@@ -53,7 +53,6 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void gotoPreviousError();
     void zoomToProblem();
     void zoomToFeature();
-    void triggerTopologyChecks();
     void updateLayerTransform();
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
     void onRowsInserted();
