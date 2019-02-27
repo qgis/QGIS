@@ -473,8 +473,8 @@ SET (QGIS_APP_MOC_HDRS
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
-    3d/qgs3danimationsettings.cpp
     3d/qgs3danimationwidget.cpp
+    3d/qgs3danimationexportdialog.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
@@ -496,6 +496,7 @@ IF (WITH_3D)
   SET (QGIS_APP_MOC_HDRS
     ${QGIS_APP_MOC_HDRS}
     3d/qgs3danimationwidget.h
+    3d/qgs3danimationexportdialog.h
     3d/qgs3dmapcanvas.h
     3d/qgs3dmapcanvasdockwidget.h
     3d/qgs3dmapconfigwidget.h
