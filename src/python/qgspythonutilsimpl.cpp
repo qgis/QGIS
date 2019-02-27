@@ -216,7 +216,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface *interface, const bool instal
   if ( interface )
   {
     // initialize 'iface' object
-    runString( "qgis.utils.initInterface(" + QString::number( ( quint64 ) interface ) + ')' );
+    runString( QStringLiteral( "qgis.utils.initInterface(%1)" ).arg( reinterpret_cast< quint64 >( interface ) ) );
   }
 
   if ( !checkQgisUser() )
@@ -250,7 +250,7 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface *interface )
   }
 
   // This is the other main difference with initInterface() for desktop plugins
-  runString( "qgis.utils.initServerInterface(" + QString::number( ( quint64 ) interface ) + ')' );
+  runString( QStringLiteral( "qgis.utils.initServerInterface(%1)" ).arg( reinterpret_cast< quint64 >( interface ) ) );
 
   doCustomImports();
   finish();
@@ -371,37 +371,37 @@ QString QgsPythonUtilsImpl::getTraceback()
 
   modStringIO = PyImport_ImportModule( iomod );
   if ( !modStringIO )
-    TRACEBACK_FETCH_ERROR( QString( "can't import %1" ).arg( iomod ) );
+    TRACEBACK_FETCH_ERROR( QStringLiteral( "can't import %1" ).arg( iomod ) );
 
-  obStringIO = PyObject_CallMethod( modStringIO, ( char * ) "StringIO", nullptr );
+  obStringIO = PyObject_CallMethod( modStringIO, reinterpret_cast< const char * >( "StringIO" ), nullptr );
 
   /* Construct a cStringIO object */
   if ( !obStringIO )
-    TRACEBACK_FETCH_ERROR( "cStringIO.StringIO() failed" );
+    TRACEBACK_FETCH_ERROR( QStringLiteral( "cStringIO.StringIO() failed" ) );
 
   modTB = PyImport_ImportModule( "traceback" );
   if ( !modTB )
-    TRACEBACK_FETCH_ERROR( "can't import traceback" );
+    TRACEBACK_FETCH_ERROR( QStringLiteral( "can't import traceback" ) );
 
-  obResult = PyObject_CallMethod( modTB, ( char * ) "print_exception",
-                                  ( char * ) "OOOOO",
+  obResult = PyObject_CallMethod( modTB,  reinterpret_cast< const char * >( "print_exception" ),
+                                  reinterpret_cast< const char * >( "OOOOO" ),
                                   type, value ? value : Py_None,
                                   traceback ? traceback : Py_None,
                                   Py_None,
                                   obStringIO );
 
   if ( !obResult )
-    TRACEBACK_FETCH_ERROR( "traceback.print_exception() failed" );
+    TRACEBACK_FETCH_ERROR( QStringLiteral( "traceback.print_exception() failed" ) );
 
   Py_DECREF( obResult );
 
-  obResult = PyObject_CallMethod( obStringIO, ( char * ) "getvalue", nullptr );
+  obResult = PyObject_CallMethod( obStringIO,  reinterpret_cast< const char * >( "getvalue" ), nullptr );
   if ( !obResult )
-    TRACEBACK_FETCH_ERROR( "getvalue() failed." );
+    TRACEBACK_FETCH_ERROR( QStringLiteral( "getvalue() failed." ) );
 
   /* And it should be a string all ready to go - duplicate it. */
   if ( !PyUnicode_Check( obResult ) )
-    TRACEBACK_FETCH_ERROR( "getvalue() did not return a string" );
+    TRACEBACK_FETCH_ERROR( QStringLiteral( "getvalue() did not return a string" ) );
 
   result = QString::fromUtf8( PyUnicode_AsUTF8( obResult ) );
 
