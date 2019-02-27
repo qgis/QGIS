@@ -34,6 +34,11 @@ namespace QgsWms
     // get parameters from query
     QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
+    // init render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
+    context.setParameters( parameters );
+
     const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
     ImageOutputFormat outputFormat = parseImageFormat( format );
 
@@ -76,11 +81,6 @@ namespace QgsWms
       }
     }
 #endif
-    // init render context
-    QgsWmsRenderContext context( project, serverIface );
-    context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
-    context.setParameters( parameters );
-
     QgsRenderer renderer( context );
 
     std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
