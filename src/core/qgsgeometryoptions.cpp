@@ -52,7 +52,7 @@ void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
     geometry = geometry.snappedToGrid( mGeometryPrecision, mGeometryPrecision );
 
   if ( mRemoveDuplicateNodes )
-    geometry.removeDuplicateNodes();
+    geometry.removeDuplicateNodes( 4 * std::numeric_limits<double>::epsilon(), true );
 }
 
 QStringList QgsGeometryOptions::geometryChecks() const
@@ -107,4 +107,16 @@ void QgsGeometryOptions::readXml( const QDomNode &node )
   QDomElement checkConfigurationElem = node.namedItem( QStringLiteral( "checkConfiguration" ) ).toElement();
   const QVariant checkConfiguration = QgsXmlUtils::readVariant( checkConfigurationElem );
   mCheckConfiguration = checkConfiguration.toMap();
+}
+
+bool QgsGeometryOptions::automaticProblemResolutionEnabled() const
+{
+  return mAutomaticProblemResolutionEnabled;
+}
+
+void QgsGeometryOptions::setAutomaticProblemResolutionEnabled( bool automaticFixesEnabled )
+{
+  if ( automaticFixesEnabled != mAutomaticProblemResolutionEnabled )
+    mAutomaticProblemResolutionEnabled = automaticFixesEnabled;
+  emit automaticProblemResolutionEnabledChanged();
 }
