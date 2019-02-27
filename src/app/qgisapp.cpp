@@ -10511,7 +10511,7 @@ void QgisApp::loadPythonSupport()
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
-    mPythonUtils->initPython( mQgisInterface );
+    mPythonUtils->initPython( mQgisInterface, true );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )

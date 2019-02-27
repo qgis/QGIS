@@ -39,9 +39,6 @@ PyThreadState *_mainState = nullptr;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 {
-  mMainModule = nullptr;
-  mMainDict = nullptr;
-  mPythonEnabled = false;
 }
 
 QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
@@ -208,7 +205,7 @@ void QgsPythonUtilsImpl::doCustomImports()
   }
 }
 
-void QgsPythonUtilsImpl::initPython( QgisInterface *interface )
+void QgsPythonUtilsImpl::initPython( QgisInterface *interface, const bool installErrorHook )
 {
   init();
   if ( !checkSystemImports() )
@@ -216,15 +213,21 @@ void QgsPythonUtilsImpl::initPython( QgisInterface *interface )
     exitPython();
     return;
   }
-  // initialize 'iface' object
-  runString( "qgis.utils.initInterface(" + QString::number( ( quint64 ) interface ) + ')' );
+
+  if ( interface )
+  {
+    // initialize 'iface' object
+    runString( "qgis.utils.initInterface(" + QString::number( ( quint64 ) interface ) + ')' );
+  }
+
   if ( !checkQgisUser() )
   {
     exitPython();
     return;
   }
   doCustomImports();
-  installErrorHook();
+  if ( installErrorHook )
+    QgsPythonUtilsImpl::installErrorHook();
   finish();
 }
 
@@ -265,7 +268,8 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 
 void QgsPythonUtilsImpl::exitPython()
 {
-  uninstallErrorHook();
+  if ( mErrorHookInstalled )
+    uninstallErrorHook();
   Py_Finalize();
   mMainModule = nullptr;
   mMainDict = nullptr;
@@ -281,6 +285,7 @@ bool QgsPythonUtilsImpl::isEnabled()
 void QgsPythonUtilsImpl::installErrorHook()
 {
   runString( QStringLiteral( "qgis.utils.installErrorHook()" ) );
+  mErrorHookInstalled = true;
 }
 
 void QgsPythonUtilsImpl::uninstallErrorHook()

@@ -36,8 +36,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     /* general purpose functions */
 
-    //! initialize Python and import bindings
-    void initPython( QgisInterface *interface ) override;
+    void initPython( QgisInterface *interface, bool installErrorHook ) override;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! initialize Python for server and import bindings
@@ -156,7 +155,11 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     PyObject *mMainDict = nullptr;
 
     //! flag determining that Python support is enabled
-    bool mPythonEnabled;
+    bool mPythonEnabled = false;
+
+  private:
+
+    bool mErrorHookInstalled = false;
 };
 
 #endif
