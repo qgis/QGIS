@@ -163,6 +163,20 @@ class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface
+        self.options_factory = None
+        self.drop_handler = None
+        self.item_provider = None
+        self.locator_filter = None
+        self.edit_features_locator_filter = None
+        self.initialized = False
+        self.initProcessing()
+
+    def initProcessing(self):
+        if not self.initialized:
+            self.initialized = True
+            Processing.initialize()
+
+    def initGui(self):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
@@ -176,9 +190,7 @@ class ProcessingPlugin:
         iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
-        Processing.initialize()
 
-    def initGui(self):
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
