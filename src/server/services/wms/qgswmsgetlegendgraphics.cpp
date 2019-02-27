@@ -54,7 +54,7 @@ namespace QgsWms
         break;
       default:
         throw QgsServiceException( "InvalidFormat",
-                                   QString( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
+                                   QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
         break;
     }
 
