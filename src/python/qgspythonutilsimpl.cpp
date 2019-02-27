@@ -29,7 +29,6 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 
-#include <QMessageBox>
 #include <QStringList>
 #include <QDir>
 #include <QStandardPaths>
