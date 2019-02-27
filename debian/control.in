@@ -395,8 +395,8 @@ Depends:
  ${shlibs:Depends},
  ${sip3:Depends}
  ${misc:Depends},
-Breaks: python-qgis (<= 3.7.0)
-Replaces: python-qgis (<= 3.7.0)
+Breaks: python-qgis (<< 1:3.7.0)
+Replaces: python-qgis (<< 1:3.7.0)
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -414,8 +414,8 @@ Depends:
  libqgis-customwidgets (>= ${source:Version}),
  ${python3:Depends},
  ${misc:Depends}
-Breaks: python-qgis-common (<= 3.7.0)
-Replaces: python-qgis-common (<= 3.7.0)
+Breaks: python-qgis-common (<< 1:3.7.0)
+Replaces: python-qgis-common (<< 1:3.7.0)
 Suggests: saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and

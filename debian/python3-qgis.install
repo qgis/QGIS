@@ -1,1 +1,10 @@
-usr/lib/python*/*-packages/qgis/
+usr/lib/python*/*-packages/qgis/3d/*
+usr/lib/python*/*-packages/qgis/_3d.so
+usr/lib/python*/*-packages/qgis/_analysis.so
+usr/lib/python*/*-packages/qgis/_core.so
+usr/lib/python*/*-packages/qgis/_gui.so
+usr/lib/python*/*-packages/qgis/_server.so
+usr/lib/python*/*-packages/qgis/analysis/*
+usr/lib/python*/*-packages/qgis/core/*
+usr/lib/python*/*-packages/qgis/gui/*
+usr/lib/python*/*-packages/qgis/server/*
