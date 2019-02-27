@@ -180,6 +180,10 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
             {
               std::unique_ptr<QgsGeometryMissingVertexCheckError> error = qgis::make_unique<QgsGeometryMissingVertexCheckError>( this, layerFeature, QgsPointXY( pt ) );
               error->setAffectedAreaBBox( contextBoundingBox( polygon, vertexId, pt ) );
+              QMap<QString, QgsFeatureIds> involvedFeatures;
+              involvedFeatures[layerFeature.layerId()].insert( layerFeature.feature().id() );
+              involvedFeatures[featurePool->layerId()].insert( fid );
+              error->setInvolvedFeatures( involvedFeatures );
 
               errors.append( error.release() );
             }
@@ -272,4 +276,14 @@ QgsRectangle QgsGeometryMissingVertexCheckError::affectedAreaBBox() const
 void QgsGeometryMissingVertexCheckError::setAffectedAreaBBox( const QgsRectangle &affectedAreaBBox )
 {
   mAffectedAreaBBox = affectedAreaBBox;
+}
+
+QMap<QString, QgsFeatureIds> QgsGeometryMissingVertexCheckError::involvedFeatures() const
+{
+  return mInvolvedFeatures;
+}
+
+void QgsGeometryMissingVertexCheckError::setInvolvedFeatures( const QMap<QString, QgsFeatureIds> &involvedFeatures )
+{
+  mInvolvedFeatures = involvedFeatures;
 }

@@ -162,6 +162,15 @@ Will be used to update existing errors whenever they are re-checked.
 %End
 
 
+    virtual QMap<QString, QgsFeatureIds> involvedFeatures() const;
+%Docstring
+Return a list of involved features.
+By default returns an empty map.
+The map keys are layer ids, the map value is a set of feature ids.
+
+.. versionadded:: 3.8
+%End
+
   protected:
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,

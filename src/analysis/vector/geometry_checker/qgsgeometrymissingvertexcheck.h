@@ -36,7 +36,7 @@ class QgsCurvePolygon;
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryCheckError
 {
   public:
-  
+
     /**
      * Create a new missing vertex check error.
      */
@@ -56,8 +56,19 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryChe
      */
     void setAffectedAreaBBox( const QgsRectangle &affectedAreaBBox );
 
+    QMap<QString, QgsFeatureIds> involvedFeatures() const override;
+
+    /**
+     * The two involved features, that share a common boundary but not all common
+     * vertices on this boundary.
+     *
+     * \since QGIS 3.8
+     */
+    void setInvolvedFeatures( const QMap<QString, QgsFeatureIds> &involvedFeatures );
+
   private:
     QgsRectangle mAffectedAreaBBox;
+    QMap<QString, QgsFeatureIds> mInvolvedFeatures;
 };
 
 /**

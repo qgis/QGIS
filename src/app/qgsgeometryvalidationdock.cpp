@@ -244,17 +244,6 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
   mZoomToFeatureButton->setEnabled( hasFeature );
-
-  switch ( mLastZoomToAction )
-  {
-    case  ZoomToProblem:
-      zoomToProblem();
-      break;
-
-    case ZoomToFeature:
-      zoomToFeature();
-      break;
-  }
 }
 
 void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )

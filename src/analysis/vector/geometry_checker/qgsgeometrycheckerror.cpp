@@ -180,6 +180,11 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
   return true;
 }
 
+QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
+{
+  return QMap<QString, QSet<QgsFeatureId> >();
+}
+
 void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
 {
   Q_ASSERT( mCheck == other->mCheck );
