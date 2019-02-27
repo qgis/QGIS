@@ -50,8 +50,15 @@ class PYTHON_EXPORT QgsPythonUtils
     //! returns TRUE if Python support is ready to use (must be inited first)
     virtual bool isEnabled() = 0;
 
-    //! initialize Python and import bindings
-    virtual void initPython( QgisInterface *iface ) = 0;
+    /**
+     * Initialize Python and import bindings.
+     *
+     * The \a iface argument should be set to an instance of the QGIS interface, or
+     * NULLPTR if no interface is available.
+     *
+     * If \a installErrorHook is true then the custom QGIS GUI error hook will be used.
+     */
+    virtual void initPython( QgisInterface *iface, bool installErrorHook ) = 0;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! initialize Python and import server bindings
