@@ -76,7 +76,7 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
     }
     else
     {
-    	diagonals[groupPosition] = 0.0;
+      diagonals[groupPosition] = 0.0;
     }
     groupPosition++;
   }
