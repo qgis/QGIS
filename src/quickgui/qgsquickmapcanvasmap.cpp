@@ -193,7 +193,12 @@ void QgsQuickMapCanvasMap::onWindowChanged( QQuickWindow *window )
 void QgsQuickMapCanvasMap::onScreenChanged( QScreen *screen )
 {
   if ( screen )
-    mMapSettings->setOutputDpi( screen->physicalDotsPerInch() );
+  {
+    // QgsMapSettings by default uses DPI from qt_defaultDpiX()
+    // which outputs qRound(QGuiApplication::primaryScreen()->logicalDotsPerInchX())
+    // (see implementation in qtbase/src/gui/text/qfont.cpp)
+    mMapSettings->setOutputDpi( std::round( screen->logicalDotsPerInchX() ) );
+  }
 }
 
 void QgsQuickMapCanvasMap::onExtentChanged()
