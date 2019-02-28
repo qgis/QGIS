@@ -281,7 +281,17 @@ void QgsSettings::setArrayIndex( int i )
 void QgsSettings::setValue( const QString &key, const QVariant &value, const QgsSettings::Section section )
 {
   // TODO: add valueChanged signal
-  mUserSettings->setValue( prefixedKey( key, section ), value );
+  // Do not store if it hasn't changed from default value
+  QVariant v = QgsSettings::value( prefixedKey( key, section ) );
+  QVariant currentValue { QgsSettings::value( prefixedKey( key, section ) ) };
+  if ( ( currentValue.isValid() || value.isValid() ) && ( currentValue != value ) )
+  {
+    mUserSettings->setValue( prefixedKey( key, section ), value );
+  }
+  else if ( mGlobalSettings->value( prefixedKey( key, section ) ) == currentValue )
+  {
+    mUserSettings->remove( prefixedKey( key, section ) );
+  }
 }
 
 // To lower case and clean the path
