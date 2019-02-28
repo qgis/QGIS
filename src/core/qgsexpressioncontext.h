@@ -305,7 +305,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see hasFeature()
      * \since QGIS 3.0
      */
-    const QgsFeature &feature() const { return mFeature; }
+    QgsFeature feature() const { return mFeature; }
 
     /**
      * Convenience function for setting a feature for the scope. Any existing
