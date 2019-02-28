@@ -75,6 +75,10 @@
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
+        <file>themes/default/checks/SliverOrGap.svg</file>
+        <file>themes/default/checks/InvalidGeometry.svg</file>
+        <file>themes/default/checks/MissingVertex.svg</file>
+        <file>themes/default/checks/Overlap.svg</file>
         <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
         <file>themes/default/algorithms/mAlgorithmBasicStatistics.svg</file>
         <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>

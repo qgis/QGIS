@@ -67,6 +67,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 
     QMap<QString, QgsFeatureIds > involvedFeatures() const override;
 
+    QIcon icon() const override;
+
   private:
     QMap<QString, QgsFeatureIds> mNeighbors;
     QgsRectangle mGapAreaBBox;

@@ -19,6 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgsapplication.h"
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
@@ -311,4 +312,13 @@ QMap<QString, QgsFeatureIds> QgsGeometryOverlapCheckError::involvedFeatures() co
   features[layerId()].insert( featureId() );
   features[mOverlappedFeature.layerId()].insert( mOverlappedFeature.featureId() );
   return features;
+}
+
+QIcon QgsGeometryOverlapCheckError::icon() const
+{
+
+  if ( status() == QgsGeometryCheckError::StatusFixed )
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+  else
+    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/Overlap.svg" ) );
 }

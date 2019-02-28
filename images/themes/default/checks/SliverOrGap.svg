@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24"
+   height="24"
+   viewBox="0 0 6.35 6.35"
+   id="svg3025"
+   version="1.1"
+   inkscape:version="0.92.4 (unknown)"
+   sodipodi:docname="SliverOrGap.svg">
+  <metadata
+     id="metadata3043">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3041" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1376"
+     id="namedview3039"
+     showgrid="true"
+     inkscape:zoom="20.536738"
+     inkscape:cx="16.213422"
+     inkscape:cy="14.036282"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3898" />
+  </sodipodi:namedview>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Polygon fill"
+     style="display:inline">
+    <path
+       style="fill:#84a8de;fill-opacity:1;stroke:none"
+       d="M -5,-6 30,29 V -6 H -5 L 2,1 6.0000001,18 23,22 30,29 H -5.0000001 L -5,-6"
+       id="path4466"
+       inkscape:connector-curvature="0"
+       transform="scale(0.26458333)" />
+    <path
+       style="fill:#8cbe8c;fill-opacity:1;stroke:none"
+       d="M -5,29 H 30 L 19,18 H 6 L 7.0000001,6.0000001 -5,-6 v 35"
+       id="path4468"
+       inkscape:connector-curvature="0"
+       transform="scale(0.26458333)"
+       sodipodi:nodetypes="ccccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Polygon outline"
+     style="display:inline">
+    <path
+       style="fill:none;stroke:#2e2e2e;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M -5,-6 30,29"
+       id="path4462"
+       inkscape:connector-curvature="0"
+       transform="scale(0.26458333)" />
+    <path
+       style="fill:none;stroke:#2e2e2e;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 7.0000001,6.0000001 6,18 h 13"
+       id="path4464"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       transform="scale(0.26458333)" />
+  </g>
+</svg>

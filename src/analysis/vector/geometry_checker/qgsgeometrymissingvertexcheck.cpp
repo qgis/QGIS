@@ -23,6 +23,7 @@
 #include "qgslinestring.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
+#include "qgsapplication.h"
 
 QgsGeometryMissingVertexCheck::QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration )
   : QgsGeometryCheck( context, geometryCheckConfiguration )
@@ -288,4 +289,13 @@ QMap<QString, QgsFeatureIds> QgsGeometryMissingVertexCheckError::involvedFeature
 void QgsGeometryMissingVertexCheckError::setInvolvedFeatures( const QMap<QString, QgsFeatureIds> &involvedFeatures )
 {
   mInvolvedFeatures = involvedFeatures;
+}
+
+QIcon QgsGeometryMissingVertexCheckError::icon() const
+{
+
+  if ( status() == QgsGeometryCheckError::StatusFixed )
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+  else
+    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/MissingVertex.svg" ) );
 }

@@ -66,6 +66,8 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryChe
      */
     void setInvolvedFeatures( const QMap<QString, QgsFeatureIds> &involvedFeatures );
 
+    QIcon icon() const override;
+
   private:
     QgsRectangle mAffectedAreaBBox;
     QMap<QString, QgsFeatureIds> mInvolvedFeatures;

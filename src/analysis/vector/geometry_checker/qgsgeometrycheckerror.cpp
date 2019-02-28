@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerror.h"
+#include "qgsapplication.h"
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     const QString &layerId,
@@ -184,6 +185,14 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
 QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
 {
   return QMap<QString, QSet<QgsFeatureId> >();
+}
+
+QIcon QgsGeometryCheckError::icon() const
+{
+  if ( status() == QgsGeometryCheckError::StatusFixed )
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+  else
+    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
 }
 
 void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
