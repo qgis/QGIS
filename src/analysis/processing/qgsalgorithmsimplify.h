@@ -51,7 +51,7 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
-
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
   private:
 
     double mTolerance = 1.0;

@@ -48,7 +48,7 @@ if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\L
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
-	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex_i.lib
+	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-32.lib
 goto cmake
 
 :cmake_x86_64

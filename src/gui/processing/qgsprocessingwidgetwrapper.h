@@ -320,6 +320,17 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     virtual QVariant widgetValue() const = 0;
 
+    /**
+     * Returns the optional vector layer associated with this widget wrapper, or nullptr if no vector
+     * layer is applicable.
+     *
+     * This is used to correctly generate expression contexts within the GUI, e.g. to allow expression
+     * buttons and property override buttons to correctly show the appropriate vector layer fields.
+     *
+     * \since QGIS 3.6
+     */
+    virtual const QgsVectorLayer *linkedVectorLayer() const;
+
   protected:
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
@@ -334,7 +345,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
 
-    void setDynamicParentLayerParameter( const QVariant &value );
+    void setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
 
     QPointer< QWidget > mWidget;
     QPointer< QgsPropertyOverrideButton > mPropertyButton;

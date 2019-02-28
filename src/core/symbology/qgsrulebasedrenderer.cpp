@@ -246,7 +246,7 @@ QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( int currentLe
 
 bool QgsRuleBasedRenderer::Rule::isFilterOK( const QgsFeature &f, QgsRenderContext *context ) const
 {
-  if ( ! mFilter || mElseRule )
+  if ( ! mFilter || mElseRule || ! context )
     return true;
 
   context->expressionContext().setFeature( f );
@@ -647,7 +647,7 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( const QgsFeature
 QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( const QgsFeature &feature, QgsRenderContext *context, bool onlyActive )
 {
   RuleList lst;
-  if ( !isFilterOK( feature, context ) )
+  if ( ! isFilterOK( feature, context ) || ( context && ! isScaleOK( context->rendererScale() ) ) )
     return lst;
 
   if ( mSymbol )

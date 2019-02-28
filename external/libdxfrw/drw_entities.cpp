@@ -10,6 +10,9 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
+// #define DWGDEBUG 1
+
 #include <cstdlib>
 
 #include "drw_entities.h"
@@ -17,9 +20,18 @@
 #include "intern/dwgbuffer.h"
 #include "intern/drw_dbg.h"
 
-#undef QGISDEBUG
-#include "qgslogger.h"
 #include <QStringList>
+
+#include "qgslogger.h"
+
+#ifndef DWGDEBUG
+#undef QgsDebugCall
+#undef QgsDebugMsg
+#undef QgsDebugMsgLevel
+#define QgsDebugCall
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
+#endif
 
 #define RESERVE( vector, size ) try { \
     vector.reserve(size); \
@@ -436,7 +448,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strB
     duint8 unk = buf->getBit();
     QgsDebugMsg( QString( "unknown bit: %1" ).arg( unk ) );
   }
-#endif
+#endif // 0
   return buf->isGood();
 }
 
@@ -1537,7 +1549,7 @@ bool DRW_LWPolyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
 #if 0
         if ( vertlist.size() < i )
           vertlist.at( i )->vertexId = vertexId;
-#endif
+#endif // 0
       }
     }
     //add widths
@@ -1592,7 +1604,7 @@ void DRW_Text::parseCode( int code, dxfReader *reader )
       angle = reader->getDouble() / ARAD;
       break;
     case 51:
-      oblique = reader->getDouble();
+      oblique = reader->getDouble() / ARAD;
       break;
     case 71:
       textgen = reader->getInt32();
@@ -1789,6 +1801,7 @@ bool DRW_MText::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   extPoint = buf->get3BitDouble(); /* Extrusion 3BD 210 Undocumented; */
   secPoint = buf->get3BitDouble(); /* X-axis dir 3BD 11 */
+  haveXAxis = true;
   updateAngle();
   widthscale = buf->getBitDouble(); /* Rect width BD 41 */
   if ( version > DRW::AC1018 )  //2007+
@@ -2178,7 +2191,7 @@ void DRW_Hatch::parseCode( int code, dxfReader *reader )
       else if ( ellipse ) ellipse->endparam = reader->getDouble() / ARAD;
       break;
     case 52:
-      angle = reader->getDouble();
+      angle = reader->getDouble() / ARAD;
       break;
     case 73:
       if ( arc ) arc->isccw = reader->getInt32();
@@ -2320,7 +2333,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
       QgsDebugMsg( QString( "segs: %1" ).arg( numPathSeg ) );
 
-      for ( dint32 j = 0; j < numPathSeg; ++j )
+      for ( dint32 j = 0; j < numPathSeg && buf->isGood(); ++j )
       {
         duint8 typePath = buf->getRawChar8();
         QgsDebugMsg( QString( "  typepath: %1" ).arg( typePath ) );
@@ -2364,15 +2377,26 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
                        .arg( spline->nknots ).arg( spline->ncontrol )
                      );
           RESERVE( spline->knotslist, spline->nknots );
-          for ( dint32 j = 0; j < spline->nknots; ++j )
+          dint32 j;
+          for ( j = 0; j < spline->nknots && buf->isGood(); ++j )
           {
             spline->knotslist.push_back( buf->getBitDouble() );
             QgsDebugMsg( QString( "  knot %1: %2" ).arg( j )
                          .arg( spline->knotslist.back() )
                        );
           }
+
+          if ( !buf->isGood() )
+          {
+            QgsDebugMsg( QStringLiteral( "NOT GOOD at %1!  degree:%2 flags:0x%3 nknots:%4 ncontrol:%5" )
+                         .arg( j )
+                         .arg( spline->degree ).arg( spline->flags, 0, 16 )
+                         .arg( spline->nknots ).arg( spline->ncontrol )
+                       );
+          }
+
           RESERVE( spline->controllist, spline->ncontrol );
-          for ( dint32 j = 0; j < spline->ncontrol && buf->isGood(); ++j )
+          for ( j = 0; j < spline->ncontrol && buf->isGood(); ++j )
           {
             DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
             spline->controllist.push_back( crd );
@@ -2933,10 +2957,10 @@ void DRW_Dimension::parseCode( int code, dxfReader *reader )
       rot = reader->getDouble();
       break;
     case 50:
-      angle = reader->getDouble();
+      angle = reader->getDouble() / ARAD;
       break;
     case 52:
-      oblique = reader->getDouble();
+      oblique = reader->getDouble() / ARAD;
       break;
     case 40:
       length = reader->getDouble();

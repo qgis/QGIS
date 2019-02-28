@@ -564,6 +564,54 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
+////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for vertices - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.6
+*/
+class QgsPointLocator_VisitorVerticesInRect : public IVisitor
+{
+  public:
+    //! Constructs the visitor
+    QgsPointLocator_VisitorVerticesInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mList( lst )
+      , mSrcRect( srcRect )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      for ( QgsAbstractGeometry::vertex_iterator it = geom->vertices_begin(); it != geom->vertices_end(); ++it )
+      {
+        if ( mSrcRect.contains( *it ) )
+        {
+          QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, 0, *it, geom->vertexNrFromVertexId( it.vertexId() ) );
+
+          // in range queries the filter may reject some matches
+          if ( mFilter && !mFilter->acceptMatch( m ) )
+            continue;
+
+          mList << m;
+        }
+      }
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::MatchList &mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1018,6 +1066,28 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   return edgesInRect( rect, filter );
+}
+
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
+{
+  if ( !mRTree )
+  {
+    init();
+    if ( !mRTree ) // still invalid?
+      return MatchList();
+  }
+
+  MatchList lst;
+  QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+
+  return lst;
+}
+
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
+{
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  return verticesInRect( rect, filter );
 }
 
 

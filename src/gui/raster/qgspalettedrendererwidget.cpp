@@ -807,7 +807,7 @@ void QgsPalettedRendererClassGatherer::run()
 {
   mWasCanceled = false;
 
-  // allow responsive cancelation
+  // allow responsive cancellation
   mFeedback = new QgsRasterBlockFeedback();
   connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
 

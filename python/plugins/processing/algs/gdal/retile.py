@@ -33,7 +33,6 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingOutputFolder,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -210,12 +209,11 @@ class retile(GdalAlgorithm):
         layers = [l.source() for l in self.parameterAsLayerList(parameters, self.INPUT, context)]
         arguments.extend(layers)
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = [self.commandName() + '.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

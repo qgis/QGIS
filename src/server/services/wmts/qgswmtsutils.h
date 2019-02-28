@@ -41,9 +41,9 @@ namespace QgsWmts
 
     QgsRectangle extent;
 
-    double scaleDenominator = 0.0;
+    QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::DistanceMeters;
 
-    QgsUnitTypes::DistanceUnit unit;
+    double scaleDenominator = 0.0;
   };
 
   struct tileMatrixDef
@@ -67,7 +67,7 @@ namespace QgsWmts
 
     QgsRectangle extent;
 
-    QgsUnitTypes::DistanceUnit unit;
+    QgsUnitTypes::DistanceUnit unit = QgsUnitTypes::DistanceMeters;
 
     QList< tileMatrixDef > tileMatrixList;
   };

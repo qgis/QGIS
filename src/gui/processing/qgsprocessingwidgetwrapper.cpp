@@ -187,6 +187,13 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
   return nullptr;
 }
 
+const QgsVectorLayer *QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mPropertyButton )
+    return mPropertyButton->vectorLayer();
+  return nullptr;
+}
+
 void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
   switch ( mType )
@@ -200,7 +207,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
         {
           if ( wrapper->parameterDefinition()->name() == parameterDefinition()->dynamicLayerParameterName() )
           {
-            setDynamicParentLayerParameter( wrapper->parameterValue() );
+            setDynamicParentLayerParameter( wrapper );
             connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged );
             break;
           }
@@ -230,16 +237,13 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
 
   QgsExpressionContext c = context->expressionContext();
 
-  if ( mPropertyButton->vectorLayer() )
-    c << QgsExpressionContextUtils::layerScope( mPropertyButton->vectorLayer() );
-
   if ( mWidgetContext.model() )
   {
     const QgsProcessingAlgorithm *alg = nullptr;
     if ( mWidgetContext.model()->childAlgorithms().contains( mWidgetContext.modelChildAlgorithmId() ) )
       alg = mWidgetContext.model()->childAlgorithm( mWidgetContext.modelChildAlgorithmId() ).algorithm();
 
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), *context );
+    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : mParameterDefinition->algorithm(), QVariantMap(), *context );
     c << algorithmScope;
     QgsExpressionContextScope *childScope = mWidgetContext.model()->createExpressionContextScopeForChildAlgorithm( mWidgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
     c << childScope;
@@ -251,6 +255,14 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );
   }
+  else
+  {
+    if ( mParameterDefinition->algorithm() )
+      c << QgsExpressionContextUtils::processingAlgorithmScope( mParameterDefinition->algorithm(), QVariantMap(), *context );
+  }
+
+  if ( linkedVectorLayer() )
+    c << QgsExpressionContextUtils::layerScope( linkedVectorLayer() );
 
   return c;
 }
@@ -259,11 +271,11 @@ void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstrac
 {
   if ( wrapper )
   {
-    setDynamicParentLayerParameter( wrapper->parameterValue() );
+    setDynamicParentLayerParameter( wrapper );
   }
 }
 
-void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter( const QVariant &value )
+void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
 {
   if ( mPropertyButton )
   {
@@ -279,7 +291,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
       context = tmpContext.get();
     }
 
-    QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition(), value, *context );
+    QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
     if ( !layer )
     {
       mPropertyButton->setVectorLayer( nullptr );

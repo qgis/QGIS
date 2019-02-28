@@ -3857,6 +3857,9 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
         self.assertEqual(str(got_f2[1]['name']), 'sdf')
 
+    def testGeomAndAllAttributes(self):
+        pass # skip this feature source test -- provider is not affected
+
     def testFilteredFeatureRequests(self):
         """Test https://issues.qgis.org/issues/21077 """
 

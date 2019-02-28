@@ -102,6 +102,7 @@ void QgsExpression::setExpression( const QString &expression )
   d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
   d->mEvalErrorString = QString();
   d->mExp = expression;
+  d->mIsPrepared = false;
 }
 
 QString QgsExpression::expression() const
@@ -313,13 +314,37 @@ bool QgsExpression::needsGeometry() const
   return d->mRootNode->needsGeometry();
 }
 
-void QgsExpression::initGeomCalculator()
+void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
 {
-  if ( d->mCalc )
-    return;
+  // Set the geometry calculator from the context if it has not been set by setGeomCalculator()
+  if ( context && ! d->mCalc )
+  {
+    QString ellipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
+    QgsCoordinateReferenceSystem crs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
+    QgsCoordinateTransformContext tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
+    if ( crs.isValid() )
+    {
+      d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+      d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? GEO_NONE : ellipsoid );
+      d->mCalc->setSourceCrs( crs, tContext );
+    }
+  }
 
-  // Use planimetric as default
-  d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+  // Set the distance units from the context if it has not been set by setDistanceUnits()
+  if ( context && distanceUnits() == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    QString distanceUnitsStr = context->variable( QStringLiteral( "project_distance_units" ) ).toString();
+    if ( ! distanceUnitsStr.isEmpty() )
+      setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
+  }
+
+  // Set the area units from the context if it has not been set by setAreaUnits()
+  if ( context && areaUnits() == QgsUnitTypes::AreaUnknownUnit )
+  {
+    QString areaUnitsStr = context->variable( QStringLiteral( "project_area_units" ) ).toString();
+    if ( ! areaUnitsStr.isEmpty() )
+      setAreaUnits( QgsUnitTypes::stringToAreaUnit( areaUnitsStr ) );
+  }
 }
 
 void QgsExpression::detach()
@@ -361,6 +386,8 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     return false;
   }
 
+  initGeomCalculator( context );
+  d->mIsPrepared = true;
   return d->mRootNode->prepare( this, context );
 }
 
@@ -385,6 +412,10 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
     return QVariant();
   }
 
+  if ( ! d->mIsPrepared )
+  {
+    prepare( context );
+  }
   return d->mRootNode->eval( this, context );
 }
 
@@ -443,18 +474,19 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+    static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ) };
 
-    int pos = rx.indexIn( action, index );
-    if ( pos < 0 )
+    const QRegularExpressionMatch match = sRegEx.match( action, index );
+    if ( !match.hasMatch() )
       break;
 
-    int start = index;
-    index = pos + rx.matchedLength();
-    QString to_replace = rx.cap( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + to_replace );
+    const int pos = action.indexOf( sRegEx, index );
+    const int start = index;
+    index = pos + match.capturedLength( 0 );
+    const QString toReplace = match.captured( 1 ).trimmed();
+    QgsDebugMsg( "Found expression: " + toReplace );
 
-    QgsExpression exp( to_replace );
+    QgsExpression exp( toReplace );
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
@@ -684,8 +716,10 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "qgis_version" ), QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
   sVariableHelpTexts.insert( QStringLiteral( "qgis_version_no" ), QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
   sVariableHelpTexts.insert( QStringLiteral( "qgis_release_name" ), QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_short_version" ), QCoreApplication::translate( "variable_help", "Short QGIS version string." ) );
   sVariableHelpTexts.insert( QStringLiteral( "qgis_os_name" ), QCoreApplication::translate( "variable_help", "Operating system name, e.g., 'windows', 'linux' or 'osx'." ) );
   sVariableHelpTexts.insert( QStringLiteral( "qgis_platform" ), QCoreApplication::translate( "variable_help", "QGIS platform, e.g., 'desktop' or 'server'." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "qgis_locale" ), QCoreApplication::translate( "variable_help", "Two letter identifier for current QGIS locale." ) );
   sVariableHelpTexts.insert( QStringLiteral( "user_account_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system account name." ) );
   sVariableHelpTexts.insert( QStringLiteral( "user_full_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system user name (if available)." ) );
 
@@ -703,6 +737,9 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_identifier" ), QCoreApplication::translate( "variable_help", "Project identifier, taken from project metadata." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_keywords" ), QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_area_units" ), QCoreApplication::translate( "variable_help", "Area unit for current project, used when calculating areas of geometries." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_distance_units" ), QCoreApplication::translate( "variable_help", "Distance unit for current project, used when calculating lengths of geometries." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_ellipsoid" ), QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
 
   //layer variables
   sVariableHelpTexts.insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );

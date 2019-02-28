@@ -45,7 +45,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   {
     geomList.append( layerFeature.geometry().constGet()->clone() );
 
-    if ( feedback->isCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       qDeleteAll( geomList );
       geomList.clear();

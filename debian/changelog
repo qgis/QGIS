@@ -1,8 +1,14 @@
-qgis (3.4.4) UNRELEASED; urgency=medium
+qgis (3.4.5) UNRELEASED; urgency=medium
+
+  * Release of 3.4.5
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 22 Feb 2019 13:34:19 +0100
+
+qgis (3.4.4) unstable; urgency=medium
 
   * Release of 3.4.4
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 18 Jan 2019 13:53:20 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 22 Feb 2019 13:34:19 +0100
 
 qgis (3.4.3) unstable; urgency=medium
 

@@ -19,27 +19,55 @@
 #ifndef QGSVERTEXEDITOR_H
 #define QGSVERTEXEDITOR_H
 
-#include "qgsdockwidget.h"
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
 
-class QgsMapCanvas;
-class QgsRubberBand;
-class QgsSelectedFeature;
-class QgsVectorLayer;
+#include "qgis_app.h"
+#include "qgsdockwidget.h"
+#include "qgspoint.h"
 
 class QLabel;
 class QTableView;
 
-class QgsVertexEditorModel : public QAbstractTableModel
+class QgsMapCanvas;
+class QgsLockedFeature;
+class QgsVectorLayer;
+
+
+class APP_EXPORT QgsVertexEntry
+{
+  public:
+    QgsVertexEntry( const QgsPoint &p,
+                    QgsVertexId vertexId )
+      : mSelected( false )
+      , mPoint( p )
+      , mVertexId( vertexId )
+    {
+    }
+
+    QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
+    QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;
+
+    const QgsPoint &point() const { return mPoint; }
+    QgsVertexId vertexId() const { return mVertexId; }
+    bool isSelected() const { return mSelected; }
+    void setSelected( bool selected ) { mSelected = selected; }
+
+  private:
+    bool mSelected;
+    QgsPoint mPoint;
+    QgsVertexId mVertexId;
+};
+
+class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
 
-    QgsVertexEditorModel( QgsVectorLayer *layer,
-                          QgsSelectedFeature *selectedFeature,
-                          QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent = nullptr );
+
+    void setFeature( QgsLockedFeature *lockedFeature );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -49,18 +77,16 @@ class QgsVertexEditorModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   private:
-
-    QgsVectorLayer *mLayer = nullptr;
-    QgsSelectedFeature *mSelectedFeature = nullptr;
+    QgsLockedFeature *mLockedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
-    bool mHasZ;
-    bool mHasM;
-    bool mHasR;
+    bool mHasZ = false;
+    bool mHasM = false;
+    bool mHasR = true; //always show for now - avoids scanning whole feature for curves TODO - avoid this
 
-    int mZCol;
-    int mMCol;
-    int mRCol;
+    int mZCol = -1;
+    int mMCol = -1;
+    int mRCol = -1;
 
     QFont mWidgetFont;
 
@@ -68,18 +94,14 @@ class QgsVertexEditorModel : public QAbstractTableModel
 
 };
 
-class QgsVertexEditor : public QgsDockWidget
+class APP_EXPORT QgsVertexEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsVertexEditor( QgsVectorLayer *layer,
-                     QgsSelectedFeature *selectedFeature,
-                     QgsMapCanvas *canvas );
+    QgsVertexEditor( QgsMapCanvas *canvas );
 
-  public:
-    void updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature );
-    QgsVectorLayer *mLayer = nullptr;
-    QgsSelectedFeature *mSelectedFeature = nullptr;
+    void updateEditor( QgsLockedFeature *lockedFeature );
+    QgsLockedFeature *mLockedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QTableView *mTableView = nullptr;
     QgsVertexEditorModel *mVertexModel = nullptr;
@@ -94,7 +116,7 @@ class QgsVertexEditor : public QgsDockWidget
 
   private slots:
     void updateTableSelection();
-    void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
+    void updateVertexSelection( const QItemSelection &, const QItemSelection &deselected );
 
   private:
 
@@ -105,7 +127,7 @@ class QgsVertexEditor : public QgsDockWidget
 };
 
 
-class CoordinateItemDelegate : public QStyledItemDelegate
+class APP_EXPORT CoordinateItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 

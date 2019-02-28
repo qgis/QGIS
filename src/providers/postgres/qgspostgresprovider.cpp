@@ -2051,19 +2051,22 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( mPrimaryKeyAttrs.size() == 1 &&
            defaultValueClause( mPrimaryKeyAttrs[0] ).startsWith( "nextval(" ) )
       {
-        bool foundNonNullPK = false;
+        bool foundNonEmptyPK = false;
         int idx = mPrimaryKeyAttrs[0];
+        QString defaultValue = defaultValueClause( idx );
         for ( int i = 0; i < flist.size(); i++ )
         {
           QgsAttributes attrs2 = flist[i].attributes();
           QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) );
-          if ( !v2.isNull() )
+          // a PK field with a sequence val is auto populate by QGIS with this default
+          // we are only interested in non default values
+          if ( !v2.isNull() && v2.toString() != defaultValue )
           {
-            foundNonNullPK = true;
+            foundNonEmptyPK = true;
             break;
           }
         }
-        skipSinglePKField = !foundNonNullPK;
+        skipSinglePKField = !foundNonEmptyPK;
       }
 
       if ( !skipSinglePKField )
@@ -3769,6 +3772,46 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
   return true;
 }
 
+
+void postgisGeometryType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
+{
+  dim = 2;
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  geometryType = QgsWkbTypes::displayString( flatType ).toUpper();
+  switch ( flatType )
+  {
+    case QgsWkbTypes::Unknown:
+      geometryType = QStringLiteral( "GEOMETRY" );
+      break;
+
+    case QgsWkbTypes::NoGeometry:
+      geometryType.clear();
+      dim = 0;
+      break;
+
+    default:
+      break;
+  }
+
+  if ( QgsWkbTypes::hasZ( wkbType ) && QgsWkbTypes::hasM( wkbType ) )
+  {
+    dim = 4;
+  }
+  else if ( QgsWkbTypes::hasZ( wkbType ) )
+  {
+    dim = 3;
+  }
+  else if ( QgsWkbTypes::hasM( wkbType ) )
+  {
+    geometryType += QLatin1String( "M" );
+    dim = 3;
+  }
+  else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
+  {
+    dim = 3;
+  }
+}
+
 QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
@@ -3953,7 +3996,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
     int dim = 2;
     long srid = srs.postgisSrid();
 
-    QgsPostgresConn::postgisWkbType( wkbType, geometryType, dim );
+    postgisGeometryType( wkbType, geometryType, dim );
 
     // create geometry column
     if ( !geometryType.isEmpty() )

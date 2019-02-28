@@ -121,9 +121,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * algorithms in a model, allowing them to adjust their behavior at run time
      * according to some user configuration.
      *
+     * Raises a QgsProcessingException if a new algorithm instance could not be created,
+     * e.g. if there is an issue with the subclass' createInstance() method.
+     *
      * \see initAlgorithm()
      */
-    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_THROW( QgsProcessingException ) SIP_TRANSFERBACK;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
@@ -408,7 +411,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method should return a 'pristine' instance of the algorithm class.
      */
-    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY;
+    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Initializes the algorithm using the specified \a configuration.
@@ -890,7 +893,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * input feature results in multiple output features.
      *
      * The provided \a feedback object can be used to push messages to the log and for giving feedback
-     * to users. Note that handling of progress reports and algorithm cancelation is handled by
+     * to users. Note that handling of progress reports and algorithm cancellation is handled by
      * the base class and subclasses do not need to reimplement this logic.
      *
      * Algorithms can throw a QgsProcessingException if a fatal error occurred which should

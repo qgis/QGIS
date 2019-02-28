@@ -68,6 +68,9 @@ Takes ownership
     virtual QList<int> usesBands() const;
 
 
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+
   private:
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );

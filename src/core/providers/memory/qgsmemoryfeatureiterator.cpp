@@ -71,6 +71,11 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
     if ( it != mSource->mFeatures.constEnd() )
       mFeatureIdList.append( mRequest.filterFid() );
   }
+  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  {
+    mUsingFeatureIdList = true;
+    mFeatureIdList = mRequest.filterFids().toList();
+  }
   else
   {
     mUsingFeatureIdList = false;
@@ -103,20 +108,36 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
   bool hasFeature = false;
 
   // option 1: we have a list of features to traverse
+  QgsFeature candidate;
   while ( mFeatureIdListIterator != mFeatureIdList.constEnd() )
   {
-    if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    candidate = mSource->mFeatures.value( *mFeatureIdListIterator );
+    if ( !mFilterRect.isNull() )
     {
-      // do exact check in case we're doing intersection
-      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().constGet() ) )
+      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // do exact check in case we're doing intersection
+        if ( candidate.hasGeometry() && mSelectRectEngine->intersects( candidate.geometry().constGet() ) )
+          hasFeature = true;
+      }
+      else if ( mSource->mSpatialIndex )
+      {
+        // using a spatial index - so we already know that the bounding box intersects correctly
         hasFeature = true;
+      }
+      else
+      {
+        // do bounding box check if we aren't using a spatial index
+        if ( candidate.hasGeometry() && candidate.geometry().boundingBoxIntersects( mFilterRect ) )
+          hasFeature = true;
+      }
     }
     else
       hasFeature = true;
 
-    if ( mSubsetExpression )
+    if ( hasFeature && mSubsetExpression )
     {
-      mSource->mExpressionContext.setFeature( mSource->mFeatures.value( *mFeatureIdListIterator ) );
+      mSource->mExpressionContext.setFeature( candidate );
       if ( !mSubsetExpression->evaluate( &mSource->mExpressionContext ).toBool() )
         hasFeature = false;
     }
@@ -130,7 +151,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
   // copy feature
   if ( hasFeature )
   {
-    feature = mSource->mFeatures.value( *mFeatureIdListIterator );
+    feature = candidate;
     ++mFeatureIdListIterator;
   }
   else

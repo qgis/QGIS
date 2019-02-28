@@ -2984,7 +2984,7 @@ void QgisApp::createToolBars()
   vertexToolButton->addAction( mActionVertexTool );
   vertexToolButton->addAction( mActionVertexToolActiveLayer );
   QAction *defActionVertexTool = mActionVertexTool;
-  switch ( settings.enumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::AllLayers ) )
+  switch ( settings.enumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::ActiveLayer ) )
   {
     case QgsVertexTool::AllLayers:
       defActionVertexTool = mActionVertexTool;
@@ -4808,7 +4808,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   if ( ! zipItem )
     return false;
 
-  zipItem->populate();
+  zipItem->populate( true );
   QgsDebugMsg( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
@@ -8801,7 +8801,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
 
     QgsAttributeMap attrMap;
-    for ( int i = 0; i < feature.fields().count(); i++ )
+    for ( int i = 0; i < feature.attributes().count(); i++ )
     {
       attrMap[i] = feature.attribute( i );
     }

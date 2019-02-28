@@ -55,6 +55,7 @@ class TestQgsExpression: public QObject
   private:
 
     QgsVectorLayer *mPointsLayer = nullptr;
+    QgsVectorLayer *mPointsLayerMetadata = nullptr;
     QgsVectorLayer *mMemoryLayer = nullptr;
     QgsVectorLayer *mAggregatesLayer = nullptr;
     QgsVectorLayer *mChildLayer = nullptr;
@@ -89,6 +90,25 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
       mPointsLayer->setMinimumScale( 500 );
       mPointsLayer->setMaximumScale( 1000 );
+
+      mPointsLayerMetadata = new QgsVectorLayer( pointFileInfo.filePath(),
+          pointFileInfo.completeBaseName() + "_metadata", QStringLiteral( "ogr" ) );
+      QgsProject::instance()->addMapLayer( mPointsLayerMetadata );
+      QgsLayerMetadata metadata;
+      metadata.setTitle( QStringLiteral( "metadata title" ) );
+      metadata.setAbstract( QStringLiteral( "metadata abstract" ) );
+      QMap<QString, QStringList> keywords;
+      keywords.insert( QStringLiteral( "key1" ), QStringList() << QStringLiteral( "val1" ) << QStringLiteral( "val2" ) );
+      keywords.insert( QStringLiteral( "key2" ), QStringList() << QStringLiteral( "val3" ) );
+      metadata.setKeywords( keywords );
+      metadata.setRights( QStringList() << QStringLiteral( "right1" ) << QStringLiteral( "right2" ) );
+      mPointsLayerMetadata->setMetadata( metadata );
+      mPointsLayerMetadata->setTitle( QStringLiteral( "layer title" ) );
+      mPointsLayerMetadata->setAbstract( QStringLiteral( "layer abstract" ) );
+      mPointsLayerMetadata->setKeywordList( QStringLiteral( "layer,keywords" ) );
+      mPointsLayerMetadata->setDataUrl( QStringLiteral( "data url" ) );
+      mPointsLayerMetadata->setAttribution( QStringLiteral( "layer attribution" ) );
+      mPointsLayerMetadata->setAttributionUrl( QStringLiteral( "attribution url" ) );
 
       QString rasterFileName = testDataDir + "tenbytenraster.asc";
       QFileInfo rasterFileInfo( rasterFileName );
@@ -1129,6 +1149,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp match false" ) << "regexp_match('abc DEF','\\\\s[a-z]+')" << false << QVariant( 0 );
       QTest::newRow( "if true" ) << "if(1=1, 1, 0)" << false << QVariant( 1 );
       QTest::newRow( "if false" ) << "if(1=2, 1, 0)" << false << QVariant( 0 );
+      QTest::newRow( "try valid" ) << "try(to_int('1'),0)" << false << QVariant( 1 );
+      QTest::newRow( "try invalid with alternative" ) << "try(to_int('a'),0)" << false << QVariant( 0 );
+      QTest::newRow( "try invalid without alternative" ) << "try(to_int('a'))" << false << QVariant();
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
@@ -1259,6 +1282,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property type" ) << QStringLiteral( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );
       QTest::newRow( "layer_property storage_type" ) << QStringLiteral( "layer_property('%1','storage_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "ESRI Shapefile" );
       QTest::newRow( "layer_property geometry_type" ) << QStringLiteral( "layer_property('%1','geometry_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Point" );
+
+      QTest::newRow( "layer_property title with metadata" ) << QStringLiteral( "layer_property('%1','title')" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "metadata title" );
+      QTest::newRow( "layer_property abstract with metadata" ) << QStringLiteral( "layer_property('%1','abstract')" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "metadata abstract" );
+      QTest::newRow( "layer_property keywords with metadata" ) << QStringLiteral( "array_to_string(layer_property('%1','keywords'),',')" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "val1,val2,val3" );
+      QTest::newRow( "layer_property attribution with metadata" ) << QStringLiteral( "array_to_string(layer_property('%1','attribution'))" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "right1,right2" );
 
       // raster_statistic tests
       QTest::newRow( "raster_statistic no layer" ) << "raster_statistic('',1,'min')" << false << QVariant();
@@ -3174,6 +3202,25 @@ class TestQgsExpression: public QObject
       QVariant v2 = e.evaluate();
 
       QCOMPARE( v.toDateTime().toMSecsSinceEpoch(), v2.toDateTime().toMSecsSinceEpoch() );
+    }
+
+    void testReplaceExpressionText_data()
+    {
+      QTest::addColumn<QString>( "input" );
+      QTest::addColumn<QString>( "expected" );
+      QTest::newRow( "no exp" ) << "some text" << "some text";
+      QTest::newRow( "simple exp" ) << "some text [% 1 + 2 %]" << "some text 3";
+      QTest::newRow( "multiple exp" ) << "some [% 3+ 7 %] text [% 1 + 2 %]" << "some 10 text 3";
+      QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << "some my text] text";
+    }
+
+    void testReplaceExpressionText()
+    {
+      QFETCH( QString, input );
+      QFETCH( QString, expected );
+
+      QgsExpressionContext context;
+      QCOMPARE( QgsExpression::replaceExpressionText( input, &context ), expected );
     }
 };
 

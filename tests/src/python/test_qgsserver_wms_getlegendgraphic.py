@@ -529,6 +529,106 @@ class TestQgsServerWMSGetLegendGraphic(QgsServerTestBase):
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
+    def test_wms_GetLegendGraphic_ScaleSymbol_Min(self):
+        # 1:500000000 min
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "HEIGHT": "550",
+            "WIDTH": "850",
+            "BBOX": "-608.4,-1002.6,698.2,1019.0",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Min", max_size_diff=QSize(1, 1))
+
+        # 1:1000000000 min
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "HEIGHT": "550",
+            "WIDTH": "850",
+            "BBOX": "-1261.7,-2013.5,1351.5,2029.9",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Min", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_01(self):
+        # 1:10000000 scaled
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "HEIGHT": "550",
+            "WIDTH": "850",
+            "BBOX": "31.8,-12.0,58.0,28.4",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_01", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_02(self):
+        # 1:15000000 scaled
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "HEIGHT": "550",
+            "WIDTH": "850",
+            "BBOX": "25.3,-22.1,64.5,38.5",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Scaled_02", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_ScaleSymbol_Max(self):
+        # 1:100000 max
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "HEIGHT": "550",
+            "WIDTH": "850",
+            "BBOX": "44.8,8.0,45.0,8.4",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
+
+        # 1:1000000 max
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "HEIGHT": "550",
+            "WIDTH": "850",
+            "BBOX": "43.6,6.2,46.2,10.2",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_Max", max_size_diff=QSize(15, 15))
+
 
 if __name__ == '__main__':
     unittest.main()
