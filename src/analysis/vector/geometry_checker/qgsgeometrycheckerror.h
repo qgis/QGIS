@@ -102,6 +102,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      */
     virtual QMap<QString, QgsFeatureIds > involvedFeatures() const SIP_SKIP;
 
+    /**
+     * Returns an icon that should be shown for this kind of error.
+     *
+     * \since QGIS 3.8
+     */
+    virtual QIcon icon() const;
   protected:
     // Users of this constructor must ensure geometry and errorLocation are in map coordinates
     QgsGeometryCheckError( const QgsGeometryCheck *check,
