@@ -16,6 +16,8 @@
 
 set -e
 
+export SRCDIR=$PWD
+
 action=$1
 
 case "$action" in
@@ -28,6 +30,8 @@ pull|push|update)
 esac
 
 cleanup() {
+	cd $SRCDIR
+
 	if [ -f i18n/backup.tar ]; then
 		echo Restoring files...
 		tar -xf i18n/backup.tar
@@ -36,7 +40,7 @@ cleanup() {
 
 	echo Removing temporary files
 	rm -rf python/tmp python/plugins/processing/tmp python/plugins/*/tmp qgis_ts.pro
-	find . \( -name "*-i18n.ui" -o -name numerus-i18n.cpp \) -delete
+	find src python \( -name "*-i18n.ui" -o -name "*-i18n.cpp" -o -name "*-i18n.ts" \) -delete
 
 	trap "" EXIT
 }
@@ -44,6 +48,10 @@ cleanup() {
 export QT_SELECT=5
 
 PATH=$QTDIR/bin:$PATH
+
+if type cygpath >/dev/null 2>&1; then
+	SRCDIR=$(cygpath -am $SRCDIR)
+fi
 
 if type qmake-qt5 >/dev/null 2>&1; then
 	QMAKE=qmake-qt5
@@ -116,7 +124,7 @@ if [ $action = push ]; then
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-downloaded
 	perl scripts/ts-clear.pl  # reset English translations
 elif [ $action = pull ]; then
-	rm i18n/qgis_*.ts
+	rm -f i18n/qgis_*.ts
 
 	echo Pulling new translations...
 	if [ "$#" -gt 0 ]; then
@@ -163,12 +171,14 @@ mkdir -p python/plugins/processing/tmp
 perl scripts/processing2ui.pl python/plugins/processing/tmp
 
 echo Updating appinfo files
-python scripts/appinfo2ui.py >src/app/appinfo-i18n.ui
+python3 scripts/appinfo2ui.py >src/app/appinfo-i18n.ui
 
 echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
+$QMAKE -project -o qgis_ts.pro -nopwd $SRCDIR/src $SRCDIR/python $SRCDIR/i18n $textcpp
 
-echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
+QT_INSTALL_HEADERS=$(qmake -query QT_INSTALL_HEADERS)
+
+echo "TR_EXCLUDE = ${QT_INSTALL_HEADERS%}/*" >>qgis_ts.pro
 
 echo Updating translations
 $LUPDATE -no-ui-lines -no-obsolete -locations absolute -verbose qgis_ts.pro

@@ -49,11 +49,12 @@ EOF
 
 die "context expected" unless exists $xml->{context};
 
+my $i = 0;
 foreach my $context ( @{ $xml->{context} } ) {
+	$i++;
 	my $name = $context->{name}->[0];
 
-	die "$ARGV[1]/$name-i18n.ui already exists" if -f "$ARGV[1]/$name-i18n.ui";
-	open UI, ">$ARGV[1]/$name-i18n.ui";
+	open UI, ">$ARGV[1]/$name-$i-i18n.ui";
 	binmode(UI, ":utf8");
 
 	print UI <<EOF;
