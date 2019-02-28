@@ -266,7 +266,8 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 void QgsPythonUtilsImpl::exitPython()
 {
   uninstallErrorHook();
-  Py_Finalize();
+  // causes segfault!
+  //Py_Finalize();
   mMainModule = nullptr;
   mMainDict = nullptr;
   mPythonEnabled = false;
