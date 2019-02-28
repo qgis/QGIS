@@ -270,7 +270,8 @@ void QgsPythonUtilsImpl::exitPython()
 {
   if ( mErrorHookInstalled )
     uninstallErrorHook();
-  Py_Finalize();
+  // causes segfault!
+  //Py_Finalize();
   mMainModule = nullptr;
   mMainDict = nullptr;
   mPythonEnabled = false;
