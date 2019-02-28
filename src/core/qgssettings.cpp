@@ -288,7 +288,7 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
   {
     mUserSettings->setValue( prefixedKey( key, section ), value );
   }
-  else if ( mGlobalSettings->value( prefixedKey( key, section ) ) == currentValue )
+  else if ( mGlobalSettings && mGlobalSettings->value( prefixedKey( key, section ) ) == currentValue )
   {
     mUserSettings->remove( prefixedKey( key, section ) );
   }
