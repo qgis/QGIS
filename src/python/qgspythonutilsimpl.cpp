@@ -623,6 +623,13 @@ bool QgsPythonUtilsImpl::startPlugin( const QString &packageName )
   return ( output == QLatin1String( "True" ) );
 }
 
+bool QgsPythonUtilsImpl::startProcessingPlugin( const QString &packageName )
+{
+  QString output;
+  evalString( "qgis.utils.startProcessingPlugin('" + packageName + "')", output );
+  return ( output == QLatin1String( "True" ) );
+}
+
 bool QgsPythonUtilsImpl::canUninstallPlugin( const QString &packageName )
 {
   QString output;

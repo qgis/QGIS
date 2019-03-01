@@ -40,6 +40,9 @@ class TestQgisAppPython : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void hasPython();
+    void plugins();
+    void pythonPlugin();
     void runString();
     void evalString();
 
@@ -53,6 +56,8 @@ TestQgisAppPython::TestQgisAppPython() = default;
 //runs before all tests
 void TestQgisAppPython::initTestCase()
 {
+  qputenv( "QGIS_PLUGINPATH", QByteArray( TEST_DATA_DIR ) + "/test_plugin_path" );
+
   // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
@@ -73,6 +78,33 @@ void TestQgisAppPython::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
+void TestQgisAppPython::hasPython()
+{
+  QVERIFY( mQgisApp->mPythonUtils->isEnabled() );
+}
+
+void TestQgisAppPython::plugins()
+{
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( !mQgisApp->mPythonUtils->isPluginLoaded( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->listActivePlugins().isEmpty() );
+  // load plugin
+  QVERIFY( !mQgisApp->mPythonUtils->unloadPlugin( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->loadPlugin( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( !mQgisApp->mPythonUtils->isPluginLoaded( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->startPlugin( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->isPluginLoaded( QStringLiteral( "PluginPathTest" ) ) );
+  QCOMPARE( mQgisApp->mPythonUtils->listActivePlugins(), QStringList() << QStringLiteral( "PluginPathTest" ) );
+}
+
+void TestQgisAppPython::pythonPlugin()
+{
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "ProcessingPluginTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->loadPlugin( QStringLiteral( "ProcessingPluginTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->startProcessingPlugin( QStringLiteral( "ProcessingPluginTest" ) ) );
+  QVERIFY( !mQgisApp->mPythonUtils->startProcessingPlugin( QStringLiteral( "PluginPathTest" ) ) );
+}
+
 void TestQgisAppPython::runString()
 {
   QVERIFY( mQgisApp->mPythonUtils->runString( "a=1+1" ) );
@@ -90,6 +122,7 @@ void TestQgisAppPython::evalString()
   //bad string
   QVERIFY( !mQgisApp->mPythonUtils->evalString( "1+", result ) );
 }
+
 
 QGSTEST_MAIN( TestQgisAppPython )
 #include "testqgisapppython.moc"

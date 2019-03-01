@@ -314,8 +314,8 @@ def loadPlugin(packageName):
         return False
 
 
-def startPlugin(packageName):
-    """ initialize the plugin """
+def _startPlugin(packageName):
+    """ initializes a plugin, but does not load GUI """
     global plugins, active_plugins, iface, plugin_times
 
     if packageName in active_plugins:
@@ -326,17 +326,29 @@ def startPlugin(packageName):
 
     package = sys.modules[packageName]
 
-    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
-
-    start = time.process_time()
-
     # create an instance of the plugin
     try:
         plugins[packageName] = package.classFactory(iface)
     except:
         _unloadPluginModules(packageName)
+        errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
+    return True
+
+
+def _addToActivePlugins(packageName, duration):
+    """ Adds a plugin to the list of active plugins """
+    active_plugins.append(packageName)
+    plugin_times[packageName] = "{0:02f}s".format(duration)
+
+
+def startPlugin(packageName):
+    """ initialize the plugin """
+    global plugins, active_plugins, iface, plugin_times
+    start = time.process_time()
+    if not _startPlugin(packageName):
         return False
 
     # initGui
@@ -345,14 +357,43 @@ def startPlugin(packageName):
     except:
         del plugins[packageName]
         _unloadPluginModules(packageName)
+        errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
-    # add to active plugins
-    active_plugins.append(packageName)
     end = time.process_time()
-    plugin_times[packageName] = "{0:02f}s".format(end - start)
+    _addToActivePlugins(packageName, end - start)
+    return True
+
+
+def startProcessingPlugin(packageName):
+    """ initialize only the Processing components of a plugin """
+    global plugins, active_plugins, iface, plugin_times
+    start = time.process_time()
+    if not _startPlugin(packageName):
+        return False
+
+    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
+    if not hasattr(plugins[packageName], 'initProcessing'):
+        del plugins[packageName]
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python", "{0} - plugin has no initProcessing() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
+
+    # initProcessing
+    try:
+        plugins[packageName].initProcessing()
+    except:
+        del plugins[packageName]
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initProcessing() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
+
+    end = time.process_time()
+    _addToActivePlugins(packageName, end - start)
 
     return True
 

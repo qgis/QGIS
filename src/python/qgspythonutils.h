@@ -162,6 +162,16 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual bool startPlugin( const QString &packageName ) = 0;
 
     /**
+     * Start a Processing plugin
+     *
+     * This command adds a plugin to active plugins and calls initProcessing(),
+     * initializing only Processing related components of that plugin.
+     *
+     * \since QGIS 3.8
+     */
+    virtual bool startProcessingPlugin( const QString &packageName ) = 0;
+
+    /**
      * Helper function to return some information about a plugin.
      *
      * \param function metadata component to return. Must match one of the strings: name, type, version, or description.
