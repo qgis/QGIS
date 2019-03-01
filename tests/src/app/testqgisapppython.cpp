@@ -43,6 +43,7 @@ class TestQgisAppPython : public QObject
     void hasPython();
     void plugins();
     void pythonPlugin();
+    void pluginMetadata();
     void runString();
     void evalString();
 
@@ -103,6 +104,25 @@ void TestQgisAppPython::pythonPlugin()
   QVERIFY( mQgisApp->mPythonUtils->loadPlugin( QStringLiteral( "ProcessingPluginTest" ) ) );
   QVERIFY( mQgisApp->mPythonUtils->startProcessingPlugin( QStringLiteral( "ProcessingPluginTest" ) ) );
   QVERIFY( !mQgisApp->mPythonUtils->startProcessingPlugin( QStringLiteral( "PluginPathTest" ) ) );
+}
+
+void TestQgisAppPython::pluginMetadata()
+{
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "not a plugin" ), QStringLiteral( "name" ) ), QStringLiteral( "__error__" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "invalid" ) ), QStringLiteral( "__error__" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "name" ) ), QStringLiteral( "plugin path test" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "qgisMinimumVersion" ) ), QStringLiteral( "2.0" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "description" ) ), QStringLiteral( "desc" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "version" ) ), QStringLiteral( "0.1" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "author" ) ), QStringLiteral( "HM/Oslandia" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "email" ) ), QStringLiteral( "hugo.mercier@oslandia.com" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "__error__" ) );
+  QVERIFY( !mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "x" ) ) );
+  QVERIFY( !mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "PluginPathTest" ) ) );
+
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest" ), QStringLiteral( "name" ) ), QStringLiteral( "processing plugin test" ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "yes" ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "ProcessingPluginTest" ) ) );
 }
 
 void TestQgisAppPython::runString()

@@ -609,6 +609,11 @@ QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const 
   return res;
 }
 
+bool QgsPythonUtilsImpl::pluginHasProcessingProvider( const QString &pluginName )
+{
+  return getPluginMetadata( pluginName, QStringLiteral( "hasProcessingProvider" ) ).compare( QLatin1String( "yes" ), Qt::CaseInsensitive ) == 0;
+}
+
 bool QgsPythonUtilsImpl::loadPlugin( const QString &packageName )
 {
   QString output;
