@@ -535,10 +535,23 @@ void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonOb
   context.setExpressionContext( expContext );
 
   QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &context );
+  QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+
+  int opacity = 255;
+  if ( QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( layerNode()->layer() ) )
+    opacity = ( 255 * vectorLayer->opacity() );
+
+  if ( opacity != 255 )
+  {
+    QPainter painter;
+    painter.begin( &img );
+    painter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+    painter.fillRect( pix.rect(), QColor( 0, 0, 0, opacity ) );
+    painter.end();
+  }
 
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
-  QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
   img.save( &buffer, "PNG" );
   QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
   json[ "icon" ] = base64;
