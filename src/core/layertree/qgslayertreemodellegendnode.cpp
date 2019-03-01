@@ -73,8 +73,8 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
 void QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, QJsonObject &json )
 {
+  drawSymbol( settings, json );
   drawSymbolText( settings, json );
-  json[ "symbol" ] = "TODO";
 }
 
 QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
@@ -89,6 +89,19 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
   return settings.symbolSize();
 }
 
+void QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
+{
+  QIcon icon = data( Qt::DecorationRole ).value<QIcon>();
+  if ( icon.isNull() )
+    return;
+
+  QImage image( icon.pixmap( settings.symbolSize().width(), settings.symbolSize().height() ).toImage() );
+  QByteArray byteArray;
+  QBuffer buffer( &byteArray );
+  image.save( &buffer, "PNG" );
+  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  json[ "symbol" ] = base64;
+}
 
 QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const
 {
@@ -134,7 +147,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   return labelSize;
 }
 
-void QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &settings, QJsonObject &json ) const
+void QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &, QJsonObject &json ) const
 {
   QgsExpressionContext tempContext;
   const QString text = data( Qt::DisplayRole ).toString();
@@ -502,6 +515,40 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
                  std::max( height + 2 * heightOffset, static_cast< double >( settings.symbolSize().height() ) ) );
 }
 
+void QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const
+{
+  QgsSymbol *s = mItem.symbol();
+  if ( !s )
+  {
+    return;
+  }
+
+  QgsRenderContext context;
+  context.setScaleFactor( settings.dpi() / 25.4 );
+  context.setRendererScale( settings.mapScale() );
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
+  context.setForceVectorOutput( true );
+
+  // setup a minimal expression context
+  QgsExpressionContext expContext;
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  context.setExpressionContext( expContext );
+
+  QImage tempImage = QImage( minimumIconSize(), QImage::Format_ARGB32 );
+  tempImage.fill( Qt::transparent );
+  QPainter imagePainter( &tempImage );
+  imagePainter.setRenderHint( QPainter::Antialiasing );
+  context.setPainter( &imagePainter );
+
+  QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), minimumIconSize(), 0, &context );
+
+  QByteArray byteArray;
+  QBuffer buffer( &byteArray );
+  QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+  img.save( &buffer, "PNG" );
+  QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+  json[ "icon" ] = base64;
+}
 
 void QgsSymbolLegendNode::setEmbeddedInParent( bool embedded )
 {
@@ -610,6 +657,10 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCo
   return settings.wmsLegendSize();
 }
 
+void QgsImageLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject & ) const
+{
+}
+
 // -------------------------------------------------------------------------
 
 QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent )
@@ -664,6 +715,10 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings,
                                     settings.symbolSize().width(), settings.symbolSize().height() ) );
   }
   return settings.symbolSize();
+}
+
+void QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject & ) const
+{
 }
 
 // -------------------------------------------------------------------------
@@ -732,6 +787,10 @@ QSizeF QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCont
                              QRectF( QPointF( 0, 0 ), mImage.size() ) );
   }
   return settings.wmsLegendSize();
+}
+
+void QgsWmsLegendNode::drawSymbol( const QgsLegendSettings &, QJsonObject & ) const
+{
 }
 
 /* private */

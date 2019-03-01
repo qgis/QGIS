@@ -121,6 +121,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
+    virtual void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const;
+
     /**
      * Draws label on the right side of the item
      * \param settings Legend layout configuration
@@ -178,6 +180,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     bool setData( const QVariant &value, int role ) override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const override;
 
     void setEmbeddedInParent( bool embedded ) override;
 
@@ -358,6 +362,8 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
+    void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const override;
+
   private:
     QImage mImage;
 };
@@ -386,6 +392,8 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const override;
 
   private:
     QColor mColor;
@@ -416,6 +424,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    void drawSymbol( const QgsLegendSettings &settings, QJsonObject &json ) const override;
 
     void invalidateMapBasedData() override;
 
