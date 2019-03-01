@@ -111,6 +111,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
   QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
   const QgsGeometry geometryA = layerFeatureA.geometry();
   std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geometryA.constGet(), mContext->reducedTolerance );
+  geomEngineA->prepareGeometry();
 
   const QgsGeometry geometryB = layerFeatureB.geometry();
   if ( !geomEngineA->overlaps( geometryB.constGet() ) )
@@ -160,6 +161,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
       QgsGeometryCheckerUtils::filter1DTypes( diff1.get() );
     }
     std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( geometryB.constGet(), mContext->reducedTolerance );
+    geomEngineB->prepareGeometry();
     std::unique_ptr< QgsAbstractGeometry > diff2( geomEngineB->difference( interPart, &errMsg ) );
     if ( !diff2 || diff2->isEmpty() )
     {
