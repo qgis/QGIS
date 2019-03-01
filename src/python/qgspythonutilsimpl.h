@@ -87,6 +87,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool startPlugin( const QString &packageName ) override;
     bool startProcessingPlugin( const QString &packageName ) override;
     QString getPluginMetadata( const QString &pluginName, const QString &function ) override;
+    bool pluginHasProcessingProvider( const QString &pluginName ) override;
     bool canUninstallPlugin( const QString &packageName ) override;
     bool unloadPlugin( const QString &packageName ) override;
     bool isPluginEnabled( const QString &packageName ) const override;

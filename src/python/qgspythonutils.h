@@ -167,6 +167,7 @@ class PYTHON_EXPORT QgsPythonUtils
      * This command adds a plugin to active plugins and calls initProcessing(),
      * initializing only Processing related components of that plugin.
      *
+     * \see pluginHasProcessingProvider()
      * \since QGIS 3.8
      */
     virtual bool startProcessingPlugin( const QString &packageName ) = 0;
@@ -174,9 +175,19 @@ class PYTHON_EXPORT QgsPythonUtils
     /**
      * Helper function to return some information about a plugin.
      *
-     * \param function metadata component to return. Must match one of the strings: name, type, version, or description.
+     * \param function metadata component to return. Must match one of the strings: name, type, version, description, hasProcessingProvider.
      */
     virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
+
+    /**
+     * Returns TRUE if a plugin implements a Processing provider.
+     *
+     * This is determined by checking the plugin metadata for the "hasProcessingProvider=yes" line.
+     *
+     * \see startProcessingPlugin()
+     * \since QGIS 3.8
+     */
+    virtual bool pluginHasProcessingProvider( const QString &pluginName ) = 0;
 
     /**
      * Confirms that the plugin can be uninstalled.
