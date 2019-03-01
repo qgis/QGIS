@@ -52,7 +52,7 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
   }
 }
 
-const QgsFeature &QgsGeometryCheckerUtils::LayerFeature::feature() const
+QgsFeature QgsGeometryCheckerUtils::LayerFeature::feature() const
 {
   return mFeature;
 }
@@ -67,7 +67,7 @@ QString QgsGeometryCheckerUtils::LayerFeature::layerId() const
   return mFeaturePool->layerId();
 }
 
-const QgsGeometry &QgsGeometryCheckerUtils::LayerFeature::geometry() const
+QgsGeometry QgsGeometryCheckerUtils::LayerFeature::geometry() const
 {
   return mGeometry;
 }
