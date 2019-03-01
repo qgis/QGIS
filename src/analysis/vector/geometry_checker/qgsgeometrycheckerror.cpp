@@ -53,7 +53,8 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
   if ( vidx.part != -1 )
   {
-    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry().constGet(), vidx.part )->clone() );
+    const QgsGeometry geom = layerFeature.geometry();
+    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom.constGet(), vidx.part )->clone() );
   }
   else
   {
