@@ -1184,7 +1184,7 @@ QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int prec
   QString json = QStringLiteral( "[ " );
   for ( const QgsPoint &p : points )
   {
-    json += '[' + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
+    json += '[' + qgsDoubleToString( p.x(), precision ) + QLatin1String( ", " ) + qgsDoubleToString( p.y(), precision ) + QLatin1String( "], " );
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
   {

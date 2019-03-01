@@ -374,7 +374,7 @@ QByteArray QgsGeometryCollection::asWkb() const
 
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
+  QString wkt = wktTypeStr() + QLatin1String( " (" );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     QString childWkt = geom->asWkt( precision );
@@ -421,7 +421,7 @@ QString QgsGeometryCollection::asJson( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    json += geom->asJson( precision ) + ", ";
+    json += geom->asJson( precision ) + QLatin1String( ", " );
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
   {

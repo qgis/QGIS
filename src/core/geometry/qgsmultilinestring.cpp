@@ -105,7 +105,7 @@ QString QgsMultiLineString::asJson( int precision ) const
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
       lineString->points( pts );
-      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
+      json += QgsGeometryUtils::pointsToJSON( pts, precision ) + QLatin1String( ", " );
     }
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
