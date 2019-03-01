@@ -133,15 +133,11 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
 
   if ( item == mCurrentItem )
   {
-    if ( mCurrentItem )
-    {
-      QWidget *widget = mCurrentItem;
-      mLayout->removeWidget( widget );
-      mCurrentItem->hide();
-      disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
-      mCurrentItem->deleteLater();
-      mCurrentItem = nullptr;
-    }
+    mLayout->removeWidget( mCurrentItem );
+    mCurrentItem->hide();
+    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+    mCurrentItem->deleteLater();
+    mCurrentItem = nullptr;
 
     if ( !mItems.isEmpty() )
     {
@@ -171,7 +167,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     return true;
   }
 
-  Q_FOREACH ( QgsMessageBarItem *existingItem, mItems )
+  for ( QgsMessageBarItem *existingItem : qgis::as_const( mItems ) )
   {
     if ( existingItem == item )
     {
