@@ -51,6 +51,7 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def __init__(self, element, model, controls, scene=None):
         super(ModelerGraphicItem, self).__init__(None)
+        self.setAcceptHoverEvents(True)
         self.controls = controls
         self.model = model
         self.scene = scene
@@ -175,6 +176,18 @@ class ModelerGraphicItem(QGraphicsItem):
     def mouseDoubleClickEvent(self, event):
         self.editElement()
 
+    def hoverEnterEvent(self, event):
+        self.updateToolTip(event)
+
+    def hoverMoveEvent(self, event):
+        self.updateToolTip(event)
+
+    def updateToolTip(self, event):
+        if self.itemRect().contains(event.pos()):
+            self.setToolTip(self.text)
+        else:
+            self.setToolTip('')
+
     def contextMenuEvent(self, event):
         if isinstance(self.element, QgsProcessingModelOutput):
             return
@@ -291,11 +304,14 @@ class ModelerGraphicItem(QGraphicsItem):
             w = fm.width(text)
         return text
 
-    def paint(self, painter, option, widget=None):
-        rect = QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2.0,
+    def itemRect(self):
+        return QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2.0,
                       -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2.0,
                       ModelerGraphicItem.BOX_WIDTH + 2,
                       ModelerGraphicItem.BOX_HEIGHT + 2)
+
+    def paint(self, painter, option, widget=None):
+        rect = self.itemRect()
 
         if isinstance(self.element, QgsProcessingModelParameter):
             color = QColor(238, 242, 131)
