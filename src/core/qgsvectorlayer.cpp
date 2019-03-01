@@ -588,16 +588,7 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRenderer *r )
 
 QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
 {
-  if ( mValid && mDataProvider )
-  {
-    return QgsWkbTypes::geometryType( mDataProvider->wkbType() );
-  }
-  else
-  {
-    QgsDebugMsgLevel( QStringLiteral( "invalid layer or pointer to mDataProvider is null" ), 3 );
-  }
-  QgsDebugMsgLevel( QStringLiteral( "Vector layer with unknown geometry type." ), 3 );
-  return QgsWkbTypes::UnknownGeometry;
+  return QgsWkbTypes::geometryType( mWkbType );
 }
 
 QgsWkbTypes::Type QgsVectorLayer::wkbType() const
