@@ -2092,6 +2092,7 @@ Calculates an aggregated value from the layer's features.
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for expressions and filters
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param fids: List of feature Id to perform the aggregation on a subset 
 
 :return: calculated aggregate value
 
