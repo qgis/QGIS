@@ -31,7 +31,6 @@ from PyQt5.uic import *
 
 __PyQtLoadUiType = loadUiType
 
-
 def __loadUiType(*args, **kwargs):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=DeprecationWarning)
