@@ -56,6 +56,7 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.scene = scene
         self.element = element
+        self.hover_over_item = False
         if isinstance(element, QgsProcessingModelParameter):
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'input.svg'))
             self.picture = QPicture()
@@ -182,11 +183,22 @@ class ModelerGraphicItem(QGraphicsItem):
     def hoverMoveEvent(self, event):
         self.updateToolTip(event)
 
+    def hoverLeaveEvent(self, event):
+        self.setToolTip('')
+        if self.hover_over_item:
+            self.hover_over_item = False
+            self.update()
+
     def updateToolTip(self, event):
+        prev_status = self.hover_over_item
         if self.itemRect().contains(event.pos()):
             self.setToolTip(self.text)
+            self.hover_over_item = True
         else:
             self.setToolTip('')
+            self.hover_over_item = False
+        if self.hover_over_item != prev_status:
+            self.update()
 
     def contextMenuEvent(self, event):
         if isinstance(self.element, QgsProcessingModelOutput):
@@ -328,6 +340,8 @@ class ModelerGraphicItem(QGraphicsItem):
         if self.isSelected():
             stroke = selected
             color = color.darker(110)
+        if self.hover_over_item:
+            color = color.darker(105)
         painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
